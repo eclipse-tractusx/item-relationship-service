@@ -9,4 +9,5 @@ python ../../testing/testdata/transform-and-upload.py \
   -au http://cx-irs-dependencies-registry-svc:8080 \
   -edc http://edc-provider-control-plane:8282 \
   -eu http://localhost:6181 \
-  -k password
+  -k password \
+  --aas3

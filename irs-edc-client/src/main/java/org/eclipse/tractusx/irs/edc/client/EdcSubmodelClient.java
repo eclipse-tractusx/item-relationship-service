@@ -59,7 +59,7 @@ public interface EdcSubmodelClient {
     CompletableFuture<List<Relationship>> getRelationships(String submodelEndpointAddress,
             RelationshipAspect traversalAspectType) throws EdcClientException;
 
-    CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) throws EdcClientException;
+    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelSufix, String assetId) throws EdcClientException;
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
             EdcNotification notification) throws EdcClientException;
@@ -96,8 +96,8 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress) {
-        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(submodelEndpointAddress);
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSufix, final String assetId) {
+        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(connectorEndpoint);
         return CompletableFuture.completedFuture(StringMapper.mapToString(submodel));
     }
 
@@ -174,6 +174,29 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                 decodedTarget);
         final CatalogItem catalogItem = catalogCache.getCatalogItem(providerWithSuffix, decodedTarget).orElseThrow();
         return contractNegotiationService.negotiate(providerWithSuffix, catalogItem);
+    }
+
+    private NegotiationResponse fetchNegotiationResponseWithFilter(final String connectorEndpoint, final String assetId)
+            throws EdcClientException {
+        final StopWatch stopWatch = new StopWatch();
+        final String filterKey = "asset:prop:id";
+        stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + connectorEndpoint);
+
+        final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(connectorEndpoint, filterKey, assetId);
+
+        final List<CatalogItem> items = catalog.getContractOffers()
+                                               .stream()
+                                               .map(contractOffer -> CatalogItem.builder()
+                                                                                .itemId(contractOffer.getId())
+                                                                                .assetPropId(
+                                                                                        contractOffer.getAsset()
+                                                                                                     .getId())
+                                                                                .connectorId(catalog.getId())
+                                                                                .policy(contractOffer.getPolicy())
+                                                                                .build())
+                                               .toList();
+        return contractNegotiationService.negotiate(connectorEndpoint,
+                items.stream().findFirst().orElseThrow());
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
@@ -259,15 +282,15 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress)
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSufix, final String assetId)
             throws EdcClientException {
-        return execute(submodelEndpointAddress, () -> {
+        return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
-            stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + submodelEndpointAddress);
+            stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
 
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(connectorEndpoint, assetId);
             return pollingService.<String>createJob()
-                                 .action(() -> retrieveSubmodelData(config.getSubmodel().getPath(),
+                                 .action(() -> retrieveSubmodelData(submodelSufix,
                                          negotiationResponse.getContractAgreementId(), stopWatch))
                                  .timeToLive(config.getSubmodel().getRequestTtl())
                                  .description("waiting for submodel retrieval")

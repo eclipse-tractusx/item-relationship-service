@@ -30,6 +30,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
@@ -142,8 +143,9 @@ public class JobConfiguration {
 
     @Bean
     public SubmodelDelegate submodelDelegate(final EdcSubmodelFacade submodelFacade,
-            final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService) {
-        return new SubmodelDelegate(submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil());
+            final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
+            final ConnectorEndpointsService connectorEndpointsService) {
+        return new SubmodelDelegate(submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil(), connectorEndpointsService);
     }
 
 }

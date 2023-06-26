@@ -510,6 +510,11 @@ irs:
     endpoint: "http://irs-minio:9000"
     accessKey: "${MINIO_ACCESS_KEY}"
     secretKey: "${MINIO_SECRET_KEY}"
+  policystore:
+    persistence:
+      endpoint: "http://irs-minio:9000"
+      accessKey: "${MINIO_ACCESS_KEY}"
+      secretKey: "${MINIO_SECRET_KEY}"
   keycloak:
     oauth2:
       clientId: *config-keycloak-client-id
@@ -519,8 +524,8 @@ irs:
 
   digitalTwinRegistry:
     url: "http://cx-irs-dependencies-registry-svc:8080"
-    descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/registry/shell-descriptors/{aasIdentifier}"
-    shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/lookup/shells?assetIds={assetIds}"
+    descriptorEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/api/v3.0/shell-descriptors/{aasIdentifier}"
+    shellLookupEndpoint: "{{ tpl .Values.digitalTwinRegistry.url . }}/api/v3.0/lookup/shells?assetIds={assetIds}"
   semanticshub:
     url: http://semantic-hub:8080/hub/api/v1/models
     defaultUrns: >-

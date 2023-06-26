@@ -49,9 +49,9 @@ class BPNIncidentValidationTest {
 
     private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
         return AssetAdministrationShellDescriptor.builder()
-                                                 .globalAssetId(Reference.builder().value(List.of(catenaXId)).build())
+                                                 .globalAssetId(catenaXId)
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .key("manufacturerId")
+                                                                                                 .name("manufacturerId")
                                                                                                  .value(bpn)
                                                                                                  .build()))
                                                  .build();
@@ -153,9 +153,7 @@ class BPNIncidentValidationTest {
         String parentId = "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e";
 
         final var shellDescriptor = AssetAdministrationShellDescriptor.builder()
-                                                                      .globalAssetId(Reference.builder()
-                                                                                              .value(List.of(parentId))
-                                                                                              .build())
+                                                                      .globalAssetId(parentId)
                                                                       .specificAssetIds(List.of())
                                                                       .build();
         final Jobs jobs = Jobs.builder()

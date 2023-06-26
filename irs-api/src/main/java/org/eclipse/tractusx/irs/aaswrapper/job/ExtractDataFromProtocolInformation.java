@@ -20,35 +20,34 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.assetadministrationshell;
+package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
- * IdentifierKeyValuePair
+ * Extract asset id and path suffix from Protocol Information
  */
-@Data
-@Builder
-@Jacksonized
-public class IdentifierKeyValuePair {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class ExtractDataFromProtocolInformation {
+    private static final String ASSET_ID_SEPARATOR = ";";
 
-    /**
-     * name
-     */
-    private String name;
-    /**
-     * subjectId
-     */
-    private Reference subjectId;
-    /**
-     * value
-     */
-    private String value;
-    /**
-     * semanticId
-     */
-    private Reference semanticId;
+    public static String extractAssetId(final String subprotocolBody) {
+        final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
+                                                  .map(str -> str.split("="))
+                                                  .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+        return parametersFromPath.get("id");
+    }
+
+    public static String extractSuffix(final String href) throws URISyntaxException {
+        final URI uri = new URI(href);
+        return uri.getPath();
+    }
 
 }

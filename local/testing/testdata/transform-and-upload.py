@@ -158,8 +158,12 @@ def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, end
             "idShort": id_short_,
             "id": identification_,
             "semanticId": {
-                "value": [
-                    semantic_id_
+                "type": "ModelReference",
+                "keys": [
+                   {
+                      "type": "Submodel",
+                      "value": semantic_id_
+                   }
                 ]
             },
             "endpoints": [
@@ -168,9 +172,9 @@ def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, end
                     "protocolInformation": {
                         "href": endpoint_address_,
                         "endpointProtocol": "AAS/IDS",
-                        "endpointProtocolVersion": "0.1",
+                        "endpointProtocolVersion": ["0.1"],
                         "subprotocol": "IDS",
-                        "subprotocolBody": "TDB",
+                        "subprotocolBody": "id=" + identification_,
                         "subprotocolBodyEncoding": "plain"
                     }
                 }
@@ -393,6 +397,11 @@ if __name__ == "__main__":
             for tmp_key in tmp_keys:
                 if "Batch" in tmp_key or "SerialPartTypization" in tmp_key:
                     specific_asset_ids = copy(tmp_data[tmp_key][0]["localIdentifiers"])
+                    if is_aas3:
+                        for specific_asset in specific_asset_ids:
+                            specific_asset["name"] = specific_asset.pop("key")
+
+
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(" ",
                                                                                                                      "")
                 if "PartAsPlanned" in tmp_key:
@@ -400,12 +409,12 @@ if __name__ == "__main__":
                                                                                                                      "")
                     specific_asset_ids.append({
                         "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
-                        "key": "manufacturerPartId"
+                        "name": "manufacturerPartId"
                     })
             print(name_at_manufacturer)
 
             specific_asset_ids.append({
-                "key": "manufacturerId",
+                "name": "manufacturerId",
                 "value": tmp_data["bpnl"]
             })
 
@@ -482,7 +491,7 @@ if __name__ == "__main__":
                 else:
                     payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
                                                submodel_descriptors)
-                response = session.request(method="POST", url=f"{aas_url}/registry/shell-descriptors",
+                response = session.request(method="POST", url=f"{aas_url}/api/v3.0/shell-descriptors",
                                            headers=headers,
                                            data=payload)
                 print_response(response)

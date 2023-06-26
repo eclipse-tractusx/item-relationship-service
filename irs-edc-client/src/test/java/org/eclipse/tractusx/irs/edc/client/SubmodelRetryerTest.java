@@ -95,7 +95,9 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "http://test.com/urn:uuid:12345/submodel?content=value")).hasCauseInstanceOf(
+                "https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(
                 HttpServerErrorException.class);
 
         // Assert
@@ -111,7 +113,9 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "http://test.com/urn:uuid:12345/submodel?content=value")).hasCauseInstanceOf(RuntimeException.class);
+                "https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class), eq(

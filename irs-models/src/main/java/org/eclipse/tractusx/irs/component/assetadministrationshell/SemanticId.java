@@ -27,28 +27,22 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * IdentifierKeyValuePair
+ * Reference
  */
 @Data
 @Builder
 @Jacksonized
-public class IdentifierKeyValuePair {
+public class SemanticId {
 
-    /**
-     * name
-     */
-    private String name;
-    /**
-     * subjectId
-     */
-    private Reference subjectId;
     /**
      * value
      */
     private String value;
+
+
     /**
-     * semanticId
+     * type
      */
-    private Reference semanticId;
+    private String type;
 
 }

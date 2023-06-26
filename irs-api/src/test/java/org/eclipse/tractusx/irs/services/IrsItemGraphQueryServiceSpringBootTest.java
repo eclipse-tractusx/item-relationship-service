@@ -41,6 +41,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.tractusx.irs.TestConfig;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -94,6 +95,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @MockBean
     private SemanticsHubFacade semanticsHubFacade;
 
+    @MockBean
+    private ConnectorEndpointsService connectorEndpointsService;
+
     private static AspectModel getAspectModel(final String aspect, final String urn) {
         return AspectModel.builder().name(aspect).urn(urn).build();
     }
@@ -130,6 +134,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("https://connector.endpoint.nl"));
+
         final RegisterJob registerJob = registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100,
                 List.of(AspectType.SERIAL_PART_TYPIZATION.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
                         AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()), true, false, Direction.DOWNWARD);
@@ -149,6 +155,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobShouldCreateTombstonesWhenNotPassingJsonSchemaValidation() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("https://connector.endpoint.nl"));
+
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
         final int expectedTombstonesSizeFullTree = 1; // stub

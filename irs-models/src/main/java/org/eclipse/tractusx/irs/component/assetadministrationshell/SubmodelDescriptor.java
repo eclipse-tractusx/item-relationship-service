@@ -36,6 +36,7 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Builder
 @Jacksonized
+@SuppressWarnings("PMD.ShortVariable")
 public class SubmodelDescriptor {
 
     /**
@@ -54,7 +55,7 @@ public class SubmodelDescriptor {
     /**
      * identification
      */
-    private String identification;
+    private String id;
     /**
      * semanticId
      */
@@ -70,7 +71,7 @@ public class SubmodelDescriptor {
      */
     @JsonIgnore
     public String getAspectType() {
-        return this.getSemanticId().getValue().stream().findFirst().orElse(null);
+        return this.getSemanticId().getKeys().stream().findFirst().map(SemanticId::getValue).orElse(null);
     }
 
 }

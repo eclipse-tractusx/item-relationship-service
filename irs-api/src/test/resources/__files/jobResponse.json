@@ -662,11 +662,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:8ae3c8a9-2c80-4223-a798-db94c854465b"
-				]
-			},
+			"globalAssetId":  "urn:uuid:8ae3c8a9-2c80-4223-a798-db94c854465b",
 			"idShort": "Taillight front_BPNL00000003AYRE_NO-577666297086581459258590",
 			"identification": "urn:uuid:858951f5-fb9c-4ec2-93be-e49fcc2c9361",
 			"specificAssetIds": [
@@ -694,7 +690,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:3b9fd040-5eb1-42f7-b35c-fc1fe48899ff",
+					"id": "urn:uuid:3b9fd040-5eb1-42f7-b35c-fc1fe48899ff",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -703,9 +699,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:858951f5-fb9c-4ec2-93be-e49fcc2c9361-urn:uuid:3b9fd040-5eb1-42f7-b35c-fc1fe48899ff/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:858951f5-fb9c-4ec2-93be-e49fcc2c9361-urn:uuid:3b9fd040-5eb1-42f7-b35c-fc1fe48899ff/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -719,11 +715,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:73477f4a-f49f-4306-b30f-3ab36ef72e6f"
-				]
-			},
+			"globalAssetId":  "urn:uuid:73477f4a-f49f-4306-b30f-3ab36ef72e6f",
 			"idShort": "Exterior mirror left_BPNL00000003AYRE_NO-637839747432704841361574",
 			"identification": "urn:uuid:21527461-ab6d-4e52-b703-39c656f92d75",
 			"specificAssetIds": [
@@ -751,7 +743,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:594bf514-ec44-479d-90d6-d1544450a759",
+					"id": "urn:uuid:594bf514-ec44-479d-90d6-d1544450a759",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -760,9 +752,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:21527461-ab6d-4e52-b703-39c656f92d75-urn:uuid:594bf514-ec44-479d-90d6-d1544450a759/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:21527461-ab6d-4e52-b703-39c656f92d75-urn:uuid:594bf514-ec44-479d-90d6-d1544450a759/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -776,11 +768,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:ef4ef0e2-4658-464c-ad1e-eae5afb77942"
-				]
-			},
+			"globalAssetId":  "urn:uuid:ef4ef0e2-4658-464c-ad1e-eae5afb77942",
 			"idShort": "Rims_BPNL00000003AYRE_NO-698813188915827969458218",
 			"identification": "urn:uuid:73ed3cf8-c124-444b-9524-95d1e17185e3",
 			"specificAssetIds": [
@@ -808,7 +796,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:a025a127-82e2-4361-84da-b94305e7191f",
+					"id": "urn:uuid:a025a127-82e2-4361-84da-b94305e7191f",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -817,9 +805,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:73ed3cf8-c124-444b-9524-95d1e17185e3-urn:uuid:a025a127-82e2-4361-84da-b94305e7191f/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:73ed3cf8-c124-444b-9524-95d1e17185e3-urn:uuid:a025a127-82e2-4361-84da-b94305e7191f/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -833,11 +821,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:ec215159-fae3-47d8-98c6-d67b7ffe7c0c"
-				]
-			},
+			"globalAssetId":  "urn:uuid:ec215159-fae3-47d8-98c6-d67b7ffe7c0c",
 			"idShort": "Bumper rear_BPNL00000003AYRE_NO-182909772702645317572786",
 			"identification": "urn:uuid:66e8a142-dcf6-47d7-8a9a-03c45187b0ee",
 			"specificAssetIds": [
@@ -865,7 +849,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:39960158-4d7c-4361-b043-e833c6dc1629",
+					"id": "urn:uuid:39960158-4d7c-4361-b043-e833c6dc1629",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -874,9 +858,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:66e8a142-dcf6-47d7-8a9a-03c45187b0ee-urn:uuid:39960158-4d7c-4361-b043-e833c6dc1629/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:66e8a142-dcf6-47d7-8a9a-03c45187b0ee-urn:uuid:39960158-4d7c-4361-b043-e833c6dc1629/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -890,11 +874,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:67885579-9ddc-4daa-b59e-d7348e9581d3"
-				]
-			},
+			"globalAssetId":  "urn:uuid:67885579-9ddc-4daa-b59e-d7348e9581d3",
 			"idShort": "Catalysator_BPNL00000003AYRE_NO-699623586834062230296181",
 			"identification": "urn:uuid:5d403d5d-adc8-4acd-8393-78473eaa8138",
 			"specificAssetIds": [
@@ -922,7 +902,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:7d83fe06-34cd-4cb3-b354-1cc16965c95e",
+					"id": "urn:uuid:7d83fe06-34cd-4cb3-b354-1cc16965c95e",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -931,9 +911,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:5d403d5d-adc8-4acd-8393-78473eaa8138-urn:uuid:7d83fe06-34cd-4cb3-b354-1cc16965c95e/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:5d403d5d-adc8-4acd-8393-78473eaa8138-urn:uuid:7d83fe06-34cd-4cb3-b354-1cc16965c95e/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -947,11 +927,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:868df1e0-b497-4059-a0d3-3899630020da"
-				]
-			},
+			"globalAssetId": "urn:uuid:868df1e0-b497-4059-a0d3-3899630020da",
 			"idShort": "Indicator left_BPNL00000003AYRE_NO-263034085930445959442824",
 			"identification": "urn:uuid:aec68fca-ff25-433e-8816-dc2a74a3d0e2",
 			"specificAssetIds": [
@@ -979,7 +955,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:56922085-f377-46c0-88d3-4410431dbfd4",
+					"id": "urn:uuid:56922085-f377-46c0-88d3-4410431dbfd4",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -988,9 +964,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:aec68fca-ff25-433e-8816-dc2a74a3d0e2-urn:uuid:56922085-f377-46c0-88d3-4410431dbfd4/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:aec68fca-ff25-433e-8816-dc2a74a3d0e2-urn:uuid:56922085-f377-46c0-88d3-4410431dbfd4/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1004,11 +980,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:087372bf-e9f0-49e6-98e8-0ce98140605c"
-				]
-			},
+			"globalAssetId": "urn:uuid:087372bf-e9f0-49e6-98e8-0ce98140605c",
 			"idShort": "AC compressor_BPNL00000003AYRE_NO-990379220039630047372226",
 			"identification": "urn:uuid:030d6ff6-1410-4600-a072-ba10e658e067",
 			"specificAssetIds": [
@@ -1036,7 +1008,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:ee9c7192-5a31-4e37-9e21-9e10e689c833",
+					"id": "urn:uuid:ee9c7192-5a31-4e37-9e21-9e10e689c833",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1045,9 +1017,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:030d6ff6-1410-4600-a072-ba10e658e067-urn:uuid:ee9c7192-5a31-4e37-9e21-9e10e689c833/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:030d6ff6-1410-4600-a072-ba10e658e067-urn:uuid:ee9c7192-5a31-4e37-9e21-9e10e689c833/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1061,11 +1033,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:f3f33eec-d7ed-44b5-8cf2-752b6c2c22ca"
-				]
-			},
+			"globalAssetId": "urn:uuid:f3f33eec-d7ed-44b5-8cf2-752b6c2c22ca",
 			"idShort": "Fender left_BPNL00000003AYRE_NO-825143168313832059901794",
 			"identification": "urn:uuid:c0fecc9b-0d9e-4482-b873-fa4205b5a51b",
 			"specificAssetIds": [
@@ -1093,7 +1061,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:7f7112ca-74b8-46ef-9950-08f1b42de144",
+					"id": "urn:uuid:7f7112ca-74b8-46ef-9950-08f1b42de144",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1102,9 +1070,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:c0fecc9b-0d9e-4482-b873-fa4205b5a51b-urn:uuid:7f7112ca-74b8-46ef-9950-08f1b42de144/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:c0fecc9b-0d9e-4482-b873-fa4205b5a51b-urn:uuid:7f7112ca-74b8-46ef-9950-08f1b42de144/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1118,11 +1086,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:6c2f4f41-3924-43da-969d-1afee232194c"
-				]
-			},
+			"globalAssetId": "urn:uuid:6c2f4f41-3924-43da-969d-1afee232194c",
 			"idShort": "Door r-r_BPNL00000003AYRE_NO-521971425971587921853227",
 			"identification": "urn:uuid:2dfce279-eebe-4ccb-aad1-18df9e5e73ef",
 			"specificAssetIds": [
@@ -1150,7 +1114,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:bbc75609-9643-4b3b-bf17-1757afdf83fd",
+					"id": "urn:uuid:bbc75609-9643-4b3b-bf17-1757afdf83fd",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1159,9 +1123,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:2dfce279-eebe-4ccb-aad1-18df9e5e73ef-urn:uuid:bbc75609-9643-4b3b-bf17-1757afdf83fd/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:2dfce279-eebe-4ccb-aad1-18df9e5e73ef-urn:uuid:bbc75609-9643-4b3b-bf17-1757afdf83fd/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1175,11 +1139,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:d3ab8367-7d12-4991-bd89-cea117a62297"
-				]
-			},
+			"globalAssetId": "urn:uuid:d3ab8367-7d12-4991-bd89-cea117a62297",
 			"idShort": "Chassis_BPNL00000003AYRE_NO-446614016547833512657672",
 			"identification": "urn:uuid:4db46718-42cc-4e5d-a801-ce4409a50933",
 			"specificAssetIds": [
@@ -1207,7 +1167,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:61f0f858-42a9-4f97-9d47-6e498042ec40",
+					"id": "urn:uuid:61f0f858-42a9-4f97-9d47-6e498042ec40",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1216,9 +1176,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:4db46718-42cc-4e5d-a801-ce4409a50933-urn:uuid:61f0f858-42a9-4f97-9d47-6e498042ec40/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:4db46718-42cc-4e5d-a801-ce4409a50933-urn:uuid:61f0f858-42a9-4f97-9d47-6e498042ec40/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1232,11 +1192,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:3940c819-dd95-422b-aa32-f7d3f1930de8"
-				]
-			},
+			"globalAssetId": "urn:uuid:3940c819-dd95-422b-aa32-f7d3f1930de8",
 			"idShort": "Led headlight_BPNL00000003AYRE_NO-085197958619364691310676",
 			"identification": "urn:uuid:c9cc717e-89f1-4f31-9626-0c633e93e3b0",
 			"specificAssetIds": [
@@ -1264,7 +1220,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:593c2438-7023-4ab3-bcee-0499612f6afa",
+					"id": "urn:uuid:593c2438-7023-4ab3-bcee-0499612f6afa",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1273,9 +1229,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:c9cc717e-89f1-4f31-9626-0c633e93e3b0-urn:uuid:593c2438-7023-4ab3-bcee-0499612f6afa/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:c9cc717e-89f1-4f31-9626-0c633e93e3b0-urn:uuid:593c2438-7023-4ab3-bcee-0499612f6afa/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1289,11 +1245,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:b32a9cda-b026-4715-b253-c08a7d11b840"
-				]
-			},
+			"globalAssetId": "urn:uuid:b32a9cda-b026-4715-b253-c08a7d11b840",
 			"idShort": "Differential Gear_BPNL00000003AYRE_NO-864558822157392253912002",
 			"identification": "urn:uuid:d7b8d6d5-b564-44e6-bc31-4b70f734362d",
 			"specificAssetIds": [
@@ -1321,7 +1273,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:0d99f1f4-be57-40df-83ca-5dc294410fa1",
+					"id": "urn:uuid:0d99f1f4-be57-40df-83ca-5dc294410fa1",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1330,9 +1282,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:d7b8d6d5-b564-44e6-bc31-4b70f734362d-urn:uuid:0d99f1f4-be57-40df-83ca-5dc294410fa1/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:d7b8d6d5-b564-44e6-bc31-4b70f734362d-urn:uuid:0d99f1f4-be57-40df-83ca-5dc294410fa1/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1346,11 +1298,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:0391b219-9bf5-44cc-89af-e5db399a7d21"
-				]
-			},
+			"globalAssetId":  "urn:uuid:0391b219-9bf5-44cc-89af-e5db399a7d21",
 			"idShort": "Engine hood_BPNL00000003AYRE_NO-090051782799791537084391",
 			"identification": "urn:uuid:6efe2455-8927-4bab-9fe6-f71b911a04e4",
 			"specificAssetIds": [
@@ -1378,7 +1326,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:c9dd6460-c83e-453c-821e-3e95f1f50837",
+					"id": "urn:uuid:c9dd6460-c83e-453c-821e-3e95f1f50837",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1387,9 +1335,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:6efe2455-8927-4bab-9fe6-f71b911a04e4-urn:uuid:c9dd6460-c83e-453c-821e-3e95f1f50837/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:6efe2455-8927-4bab-9fe6-f71b911a04e4-urn:uuid:c9dd6460-c83e-453c-821e-3e95f1f50837/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1403,11 +1351,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:18f9d1ef-100e-4c0a-bb83-a407c644fcba"
-				]
-			},
+			"globalAssetId": "urn:uuid:18f9d1ef-100e-4c0a-bb83-a407c644fcba",
 			"idShort": "Exterior mirror right_BPNL00000003AYRE_NO-653368825144313419172899",
 			"identification": "urn:uuid:5e2e6ae0-bcb1-487e-9133-937010263c77",
 			"specificAssetIds": [
@@ -1435,7 +1379,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:62d03e40-dfa0-411e-a230-3fac6ed8786e",
+					"id": "urn:uuid:62d03e40-dfa0-411e-a230-3fac6ed8786e",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1444,9 +1388,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:5e2e6ae0-bcb1-487e-9133-937010263c77-urn:uuid:62d03e40-dfa0-411e-a230-3fac6ed8786e/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:5e2e6ae0-bcb1-487e-9133-937010263c77-urn:uuid:62d03e40-dfa0-411e-a230-3fac6ed8786e/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1460,11 +1404,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:7b2484b1-21b5-434a-aa2b-fd5434cc7ae3"
-				]
-			},
+			"globalAssetId": "urn:uuid:7b2484b1-21b5-434a-aa2b-fd5434cc7ae3",
 			"idShort": "Turbocharger_BPNL00000003AYRE_NO-517977969951032933278547",
 			"identification": "urn:uuid:d2400778-0674-4b8a-a855-c5e54cb21643",
 			"specificAssetIds": [
@@ -1492,7 +1432,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:6c40e92d-0598-469b-b281-565cfbe462d8",
+					"id": "urn:uuid:6c40e92d-0598-469b-b281-565cfbe462d8",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1501,9 +1441,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:d2400778-0674-4b8a-a855-c5e54cb21643-urn:uuid:6c40e92d-0598-469b-b281-565cfbe462d8/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:d2400778-0674-4b8a-a855-c5e54cb21643-urn:uuid:6c40e92d-0598-469b-b281-565cfbe462d8/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1517,11 +1457,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:8fc21b03-1796-44af-bd52-c6998bfae1bb"
-				]
-			},
+			"globalAssetId": "urn:uuid:8fc21b03-1796-44af-bd52-c6998bfae1bb",
 			"idShort": "Taillight rear_BPNL00000003AYRE_NO-031797809646836273892252",
 			"identification": "urn:uuid:f806d532-2446-4717-a087-cd77037ce638",
 			"specificAssetIds": [
@@ -1549,7 +1485,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:57e14eba-eac3-4266-b38a-38bf9bde35de",
+					"id": "urn:uuid:57e14eba-eac3-4266-b38a-38bf9bde35de",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1558,9 +1494,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f806d532-2446-4717-a087-cd77037ce638-urn:uuid:57e14eba-eac3-4266-b38a-38bf9bde35de/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f806d532-2446-4717-a087-cd77037ce638-urn:uuid:57e14eba-eac3-4266-b38a-38bf9bde35de/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1574,11 +1510,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:09c48e81-5c73-4e1a-85a2-0bf2fff4dada"
-				]
-			},
+			"globalAssetId": "urn:uuid:09c48e81-5c73-4e1a-85a2-0bf2fff4dada",
 			"idShort": "Door r-l_BPNL00000003AYRE_NO-357763365151675109323378",
 			"identification": "urn:uuid:7d8e404a-5fec-4942-884e-32d5883218a4",
 			"specificAssetIds": [
@@ -1606,7 +1538,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:cefc374b-ebeb-4238-89e3-2f3b18bae8f8",
+					"id": "urn:uuid:cefc374b-ebeb-4238-89e3-2f3b18bae8f8",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1615,9 +1547,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:7d8e404a-5fec-4942-884e-32d5883218a4-urn:uuid:cefc374b-ebeb-4238-89e3-2f3b18bae8f8/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:7d8e404a-5fec-4942-884e-32d5883218a4-urn:uuid:cefc374b-ebeb-4238-89e3-2f3b18bae8f8/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1631,11 +1563,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:643ff5cd-4468-4041-95d9-eeb2cc42c487"
-				]
-			},
+			"globalAssetId": "urn:uuid:643ff5cd-4468-4041-95d9-eeb2cc42c487",
 			"idShort": "Alternator_BPNL00000003AYRE_NO-234089394021291722206714",
 			"identification": "urn:uuid:85c0a681-278c-4653-8e31-a7c1c4c874d0",
 			"specificAssetIds": [
@@ -1663,7 +1591,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:133dd88f-31be-4cbb-a8b8-ec19654fe95b",
+					"id": "urn:uuid:133dd88f-31be-4cbb-a8b8-ec19654fe95b",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1672,9 +1600,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:85c0a681-278c-4653-8e31-a7c1c4c874d0-urn:uuid:133dd88f-31be-4cbb-a8b8-ec19654fe95b/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:85c0a681-278c-4653-8e31-a7c1c4c874d0-urn:uuid:133dd88f-31be-4cbb-a8b8-ec19654fe95b/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1688,11 +1616,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:ad1f1627-a57e-481f-9cff-10990674f486"
-				]
-			},
+			"globalAssetId": "urn:uuid:ad1f1627-a57e-481f-9cff-10990674f486",
 			"idShort": "Bumper front_BPNL00000003AYRE_NO-515224917844344882891590",
 			"identification": "urn:uuid:ba5dacdf-5f43-4ea6-a901-ade29e7371eb",
 			"specificAssetIds": [
@@ -1720,7 +1644,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:a017f0cf-7e81-4977-ad0c-1c18afb7611c",
+					"id": "urn:uuid:a017f0cf-7e81-4977-ad0c-1c18afb7611c",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1729,9 +1653,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:ba5dacdf-5f43-4ea6-a901-ade29e7371eb-urn:uuid:a017f0cf-7e81-4977-ad0c-1c18afb7611c/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:ba5dacdf-5f43-4ea6-a901-ade29e7371eb-urn:uuid:a017f0cf-7e81-4977-ad0c-1c18afb7611c/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1745,11 +1669,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:e35161e7-803d-4746-9528-db9d9814c692"
-				]
-			},
+			"globalAssetId": "urn:uuid:e35161e7-803d-4746-9528-db9d9814c692",
 			"idShort": "Fender right_BPNL00000003AYRE_NO-531750159545557912983689",
 			"identification": "urn:uuid:70ab8baf-eb87-47df-818b-e8f68fbf3ca9",
 			"specificAssetIds": [
@@ -1777,7 +1697,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:0a3bc1cc-eb6b-4715-9212-45a2791b938e",
+					"id": "urn:uuid:0a3bc1cc-eb6b-4715-9212-45a2791b938e",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1786,9 +1706,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:70ab8baf-eb87-47df-818b-e8f68fbf3ca9-urn:uuid:0a3bc1cc-eb6b-4715-9212-45a2791b938e/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:70ab8baf-eb87-47df-818b-e8f68fbf3ca9-urn:uuid:0a3bc1cc-eb6b-4715-9212-45a2791b938e/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1802,11 +1722,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:fbd019cc-6eda-4416-a668-e5d83271781d"
-				]
-			},
+			"globalAssetId": "urn:uuid:fbd019cc-6eda-4416-a668-e5d83271781d",
 			"idShort": "Trailer coupling_BPNL00000003AYRE_NO-741711117019957866246192",
 			"identification": "urn:uuid:f2af6d36-a18f-4361-82dd-2574d0060911",
 			"specificAssetIds": [
@@ -1834,7 +1750,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:3702e0dc-908d-4a5a-92bb-9578d849eee5",
+					"id": "urn:uuid:3702e0dc-908d-4a5a-92bb-9578d849eee5",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1843,9 +1759,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f2af6d36-a18f-4361-82dd-2574d0060911-urn:uuid:3702e0dc-908d-4a5a-92bb-9578d849eee5/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f2af6d36-a18f-4361-82dd-2574d0060911-urn:uuid:3702e0dc-908d-4a5a-92bb-9578d849eee5/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1859,11 +1775,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:00ce78e5-3bf3-4847-92c1-28771e83f998"
-				]
-			},
+			"globalAssetId": "urn:uuid:00ce78e5-3bf3-4847-92c1-28771e83f998",
 			"idShort": "Tires_BPNL00000003AYRE_NO-383688996769055538071023",
 			"identification": "urn:uuid:b2e7eef0-0114-4fe8-bbdf-31a93a70f46b",
 			"specificAssetIds": [
@@ -1891,7 +1803,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:092c6537-0e92-4ad4-b79b-c3c4f3f3bdc7",
+					"id": "urn:uuid:092c6537-0e92-4ad4-b79b-c3c4f3f3bdc7",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1900,9 +1812,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:b2e7eef0-0114-4fe8-bbdf-31a93a70f46b-urn:uuid:092c6537-0e92-4ad4-b79b-c3c4f3f3bdc7/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:b2e7eef0-0114-4fe8-bbdf-31a93a70f46b-urn:uuid:092c6537-0e92-4ad4-b79b-c3c4f3f3bdc7/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1916,11 +1828,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:5c48d1a1-bc81-4a9d-84db-53fc9c69e677"
-				]
-			},
+			"globalAssetId": "urn:uuid:5c48d1a1-bc81-4a9d-84db-53fc9c69e677",
 			"idShort": "Engine_BPNL00000003AYRE_NO-498815506813804675206852",
 			"identification": "urn:uuid:7b6f3b9d-1c43-4faa-985c-541231e4f4c2",
 			"specificAssetIds": [
@@ -1948,7 +1856,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:f3a5401b-db30-46ec-a3c8-ca676a0df69a",
+					"id": "urn:uuid:f3a5401b-db30-46ec-a3c8-ca676a0df69a",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -1957,9 +1865,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:7b6f3b9d-1c43-4faa-985c-541231e4f4c2-urn:uuid:f3a5401b-db30-46ec-a3c8-ca676a0df69a/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:7b6f3b9d-1c43-4faa-985c-541231e4f4c2-urn:uuid:f3a5401b-db30-46ec-a3c8-ca676a0df69a/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1973,11 +1881,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:8c21d03f-b15e-427f-9cd0-c23701ed8f9c"
-				]
-			},
+			"globalAssetId": "urn:uuid:8c21d03f-b15e-427f-9cd0-c23701ed8f9c",
 			"idShort": "Tailgate_BPNL00000003AYRE_NO-623352977854691316219658",
 			"identification": "urn:uuid:99887bc8-7e62-4b22-b01f-c7ec4a6242bc",
 			"specificAssetIds": [
@@ -2005,7 +1909,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:95347a8d-6541-4b83-99a0-119499e84c41",
+					"id": "urn:uuid:95347a8d-6541-4b83-99a0-119499e84c41",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2014,9 +1918,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:99887bc8-7e62-4b22-b01f-c7ec4a6242bc-urn:uuid:95347a8d-6541-4b83-99a0-119499e84c41/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:99887bc8-7e62-4b22-b01f-c7ec4a6242bc-urn:uuid:95347a8d-6541-4b83-99a0-119499e84c41/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2030,11 +1934,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:98484975-27ed-4c79-ad94-c82c2c0360e8"
-				]
-			},
+			"globalAssetId": "urn:uuid:98484975-27ed-4c79-ad94-c82c2c0360e8",
 			"idShort": "Dashboard_BPNL00000003AYRE_NO-775119044565305680099730",
 			"identification": "urn:uuid:900ed7b7-1f3b-4051-83c1-f778cbf9ed9e",
 			"specificAssetIds": [
@@ -2062,7 +1962,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:72719cdf-5def-41f4-8f2e-b69435c423df",
+					"id": "urn:uuid:72719cdf-5def-41f4-8f2e-b69435c423df",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2071,9 +1971,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:900ed7b7-1f3b-4051-83c1-f778cbf9ed9e-urn:uuid:72719cdf-5def-41f4-8f2e-b69435c423df/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:900ed7b7-1f3b-4051-83c1-f778cbf9ed9e-urn:uuid:72719cdf-5def-41f4-8f2e-b69435c423df/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2087,11 +1987,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:e83c5a1f-7558-4978-990f-9c796224ce63"
-				]
-			},
+			"globalAssetId": "urn:uuid:e83c5a1f-7558-4978-990f-9c796224ce63",
 			"idShort": "Axle part front_BPNL00000003AYRE_NO-619372392092235773470630",
 			"identification": "urn:uuid:396d4426-0982-49be-a0eb-efbd0fec2722",
 			"specificAssetIds": [
@@ -2119,7 +2015,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:eb18c41a-1548-4c3d-a12a-eb1f9fff1262",
+					"id": "urn:uuid:eb18c41a-1548-4c3d-a12a-eb1f9fff1262",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2128,9 +2024,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:396d4426-0982-49be-a0eb-efbd0fec2722-urn:uuid:eb18c41a-1548-4c3d-a12a-eb1f9fff1262/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:396d4426-0982-49be-a0eb-efbd0fec2722-urn:uuid:eb18c41a-1548-4c3d-a12a-eb1f9fff1262/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2144,11 +2040,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af"
-				]
-			},
+			"globalAssetId": "urn:uuid:f1f14335-bda1-4dea-8818-0a1042bef7af",
 			"idShort": "Vehicle Combustion_BPNL00000003AYRE_OMAXALZZSKVQLDQYW",
 			"identification": "urn:uuid:b8d4f010-ab02-4e98-9ca6-b760846ac837",
 			"specificAssetIds": [
@@ -2182,7 +2074,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:71b71999-092d-4938-9eee-ada6085cea89",
+					"id": "urn:uuid:71b71999-092d-4938-9eee-ada6085cea89",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2191,9 +2083,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:b8d4f010-ab02-4e98-9ca6-b760846ac837-urn:uuid:71b71999-092d-4938-9eee-ada6085cea89/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:b8d4f010-ab02-4e98-9ca6-b760846ac837-urn:uuid:71b71999-092d-4938-9eee-ada6085cea89/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2207,11 +2099,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:b995cae9-0196-4ab5-b768-798eda1b5726"
-				]
-			},
+			"globalAssetId": "urn:uuid:b995cae9-0196-4ab5-b768-798eda1b5726",
 			"idShort": "Indicator right_BPNL00000003AYRE_NO-704843739978034957603374",
 			"identification": "urn:uuid:8b50909d-91ef-4797-ac19-fa27bd53bde3",
 			"specificAssetIds": [
@@ -2239,7 +2127,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:ae249a4e-e14a-470b-bb87-0667aa729ebd",
+					"id": "urn:uuid:ae249a4e-e14a-470b-bb87-0667aa729ebd",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2248,9 +2136,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:8b50909d-91ef-4797-ac19-fa27bd53bde3-urn:uuid:ae249a4e-e14a-470b-bb87-0667aa729ebd/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:8b50909d-91ef-4797-ac19-fa27bd53bde3-urn:uuid:ae249a4e-e14a-470b-bb87-0667aa729ebd/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2264,11 +2152,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:867a1fd9-6a8b-4f56-a5ef-2b61f12f8bce"
-				]
-			},
+			"globalAssetId": "urn:uuid:867a1fd9-6a8b-4f56-a5ef-2b61f12f8bce",
 			"idShort": "Starter motor_BPNL00000003AYRE_NO-308048468179502884344759",
 			"identification": "urn:uuid:f50b671f-2dfa-4145-af1e-36eec69b46f2",
 			"specificAssetIds": [
@@ -2296,7 +2180,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:6835125a-6575-4f46-b1e0-1e0eb4a91ce6",
+					"id": "urn:uuid:6835125a-6575-4f46-b1e0-1e0eb4a91ce6",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2305,9 +2189,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f50b671f-2dfa-4145-af1e-36eec69b46f2-urn:uuid:6835125a-6575-4f46-b1e0-1e0eb4a91ce6/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f50b671f-2dfa-4145-af1e-36eec69b46f2-urn:uuid:6835125a-6575-4f46-b1e0-1e0eb4a91ce6/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2321,11 +2205,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:d7d61cd8-27b2-4707-a4c2-d735cf1a0dcd"
-				]
-			},
+			"globalAssetId": "urn:uuid:d7d61cd8-27b2-4707-a4c2-d735cf1a0dcd",
 			"idShort": "Steering wheel_BPNL00000003AYRE_NO-940456958374895706746333",
 			"identification": "urn:uuid:65be17f0-3ef1-4ae8-b8e4-a00cf728c6d2",
 			"specificAssetIds": [
@@ -2353,7 +2233,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:6fd2cb7f-9350-48b8-b91e-c74b8d024f5f",
+					"id": "urn:uuid:6fd2cb7f-9350-48b8-b91e-c74b8d024f5f",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2362,9 +2242,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:65be17f0-3ef1-4ae8-b8e4-a00cf728c6d2-urn:uuid:6fd2cb7f-9350-48b8-b91e-c74b8d024f5f/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:65be17f0-3ef1-4ae8-b8e4-a00cf728c6d2-urn:uuid:6fd2cb7f-9350-48b8-b91e-c74b8d024f5f/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2378,11 +2258,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:a9d00358-d560-4a4b-98cc-d3a4d61c253b"
-				]
-			},
+			"globalAssetId": "urn:uuid:a9d00358-d560-4a4b-98cc-d3a4d61c253b",
 			"idShort": "Axle part rear_BPNL00000003AYRE_NO-679687669439872282538739",
 			"identification": "urn:uuid:ac449c62-f160-42e6-b22e-054a3d9bb84f",
 			"specificAssetIds": [
@@ -2410,7 +2286,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:53814187-0f3d-40b0-8499-73cb99136086",
+					"id": "urn:uuid:53814187-0f3d-40b0-8499-73cb99136086",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2419,9 +2295,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:ac449c62-f160-42e6-b22e-054a3d9bb84f-urn:uuid:53814187-0f3d-40b0-8499-73cb99136086/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:ac449c62-f160-42e6-b22e-054a3d9bb84f-urn:uuid:53814187-0f3d-40b0-8499-73cb99136086/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2435,11 +2311,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4"
-				]
-			},
+			"globalAssetId": "urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4",
 			"idShort": "urn:uuid:9abcceb1-02ed-4384-83bb-e3f5b3be77d4",
 			"identification": "urn:uuid:58a1b78a-e3cb-4bc9-b3a6-e5bdb3caba3b",
 			"specificAssetIds": [
@@ -2467,7 +2339,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:3dd5a4eb-ba85-499b-8f3a-1de84014d82e",
+					"id": "urn:uuid:3dd5a4eb-ba85-499b-8f3a-1de84014d82e",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2476,9 +2348,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "http://cxdev.germanywestcentral.cloudapp.azure.com:8185/BPNL00000003B5MJ/urn:uuid:58a1b78a-e3cb-4bc9-b3a6-e5bdb3caba3b-urn:uuid:3dd5a4eb-ba85-499b-8f3a-1de84014d82e/submodel?content=value&extent=withBlobValue",
+								"href": "http://cxdev.germanywestcentral.cloudapp.azure.com:8185/BPNL00000003B5MJ/urn:uuid:58a1b78a-e3cb-4bc9-b3a6-e5bdb3caba3b-urn:uuid:3dd5a4eb-ba85-499b-8f3a-1de84014d82e/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.0",
+								"endpointProtocolVersion": ["0.0.0"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2492,11 +2364,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:816f9c8d-6ef1-439e-89de-ef1d34481c17"
-				]
-			},
+			"globalAssetId": "urn:uuid:816f9c8d-6ef1-439e-89de-ef1d34481c17",
 			"idShort": "urn:uuid:816f9c8d-6ef1-439e-89de-ef1d34481c17",
 			"identification": "urn:uuid:816f9c8d-6ef1-439e-89de-ef1d34481c17",
 			"specificAssetIds": [
@@ -2524,11 +2392,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4"
-				]
-			},
+			"globalAssetId": "urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4",
 			"idShort": "BPNL00000003B3NX_urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4",
 			"identification": "urn:uuid:62040498-b48c-40ee-9522-dded6d10cff7",
 			"specificAssetIds": [
@@ -2556,7 +2420,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "SerialPartTypization",
-					"identification": "urn:uuid:18910f3e-f051-48e7-bd7a-b61d2e9c420e",
+					"id": "urn:uuid:18910f3e-f051-48e7-bd7a-b61d2e9c420e",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2565,9 +2429,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://subtier-a-edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B3NX/urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4-urn:uuid:18910f3e-f051-48e7-bd7a-b61d2e9c420e/submodel?content=value&extent=withBlobValue",
+								"href": "https://subtier-a-edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B3NX/urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4-urn:uuid:18910f3e-f051-48e7-bd7a-b61d2e9c420e/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1",
+								"endpointProtocolVersion": ["0.0.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2581,11 +2445,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768"
-				]
-			},
+			"globalAssetId": "urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768",
 			"idShort": "urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768",
 			"identification": "urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768",
 			"specificAssetIds": [
@@ -2607,7 +2467,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:ea2193b6-72e4-439b-9e7f-f582eb20f56d",
+					"id": "urn:uuid:ea2193b6-72e4-439b-9e7f-f582eb20f56d",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2616,9 +2476,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://catenax.apps.demonstrator.dps.oncite.cloud/BPNL00000003CSGV/urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768-urn:uuid:ea2193b6-72e4-439b-9e7f-f582eb20f56d/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://catenax.apps.demonstrator.dps.oncite.cloud/BPNL00000003CSGV/urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768-urn:uuid:ea2193b6-72e4-439b-9e7f-f582eb20f56d/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.1.1",
+								"endpointProtocolVersion": ["0.1.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2632,11 +2492,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c"
-				]
-			},
+			"globalAssetId": "urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c",
 			"idShort": "urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c",
 			"identification": "urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c",
 			"specificAssetIds": [
@@ -2658,7 +2514,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "serialPartTypization",
-					"identification": "urn:uuid:618b1b64-72e4-439b-9e7f-f582eb20f56d",
+					"id": "urn:uuid:618b1b64-72e4-439b-9e7f-f582eb20f56d",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2667,9 +2523,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://catenax.apps.demonstrator.dps.oncite.cloud/BPNL00000003CSGV/urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c-urn:uuid:618b1b64-72e4-439b-9e7f-f582eb20f56d/submodel?content=value&extent=WithBLOBValue",
+								"href": "https://catenax.apps.demonstrator.dps.oncite.cloud/BPNL00000003CSGV/urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c-urn:uuid:618b1b64-72e4-439b-9e7f-f582eb20f56d/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.1.1",
+								"endpointProtocolVersion": ["0.1.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2683,11 +2539,7 @@
 		{
 			"administration": null,
 			"description": [],
-			"globalAssetId": {
-				"value": [
-					"urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b"
-				]
-			},
+			"globalAssetId": "urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b",
 			"idShort": "BPNL00000003B2OM_urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b",
 			"identification": "urn:uuid:af3a3d93-124b-42c1-9c4e-e1078840fbba",
 			"specificAssetIds": [
@@ -2715,7 +2567,7 @@
 					"administration": null,
 					"description": [],
 					"idShort": "SerialPartTypization",
-					"identification": "urn:uuid:9926c5c1-81e4-44bb-b2c1-7fed197777de",
+					"id": "urn:uuid:9926c5c1-81e4-44bb-b2c1-7fed197777de",
 					"semanticId": {
 						"value": [
 							"urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization"
@@ -2724,9 +2576,9 @@
 					"endpoints": [
 						{
 							"protocolInformation": {
-								"endpointAddress": "https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM/urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b-urn:uuid:9926c5c1-81e4-44bb-b2c1-7fed197777de/submodel?content=value&extent=withBlobValue",
+								"href": "https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM/urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b-urn:uuid:9926c5c1-81e4-44bb-b2c1-7fed197777de/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1",
+								"endpointProtocolVersion": ["0.0.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null

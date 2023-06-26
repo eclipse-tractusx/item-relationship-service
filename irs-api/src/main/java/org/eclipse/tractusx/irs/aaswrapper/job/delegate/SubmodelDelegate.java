@@ -22,12 +22,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractAssetId;
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractSuffix;
+
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -60,14 +65,17 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final SemanticsHubFacade semanticsHubFacade;
     private final JsonValidatorService jsonValidatorService;
     private final JsonUtil jsonUtil;
+    private final ConnectorEndpointsService connectorEndpointsService;
 
     public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
-            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil) {
+            final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil,
+            final ConnectorEndpointsService connectorEndpointsService) {
         super(null); // no next step
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;
         this.jsonValidatorService = jsonValidatorService;
         this.jsonUtil = jsonUtil;
+        this.connectorEndpointsService = connectorEndpointsService;
     }
 
     @Override
@@ -84,7 +92,7 @@ public class SubmodelDelegate extends AbstractDelegate {
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
                 filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
-                        getSubmodels(submodelDescriptor, itemContainerBuilder, itemId)));
+                        getSubmodels(submodelDescriptor, itemContainerBuilder, itemId, jobData.getBpn())));
             }
             log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
             log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
@@ -97,53 +105,61 @@ public class SubmodelDelegate extends AbstractDelegate {
     }
 
     private List<Submodel> getSubmodels(final SubmodelDescriptor submodelDescriptor,
-            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId) {
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId, final String bpn) {
         final List<Submodel> submodels = new ArrayList<>();
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
             try {
                 final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
-                final String submodelRawPayload = requestSubmodelAsString(endpoint);
+                final String submodelRawPayload = requestSubmodelAsString(endpoint, bpn);
 
                 final ValidationResult validationResult = jsonValidatorService.validate(jsonSchema, submodelRawPayload);
 
                 if (validationResult.isValid()) {
-                    final Submodel submodel = Submodel.from(submodelDescriptor.getIdentification(),
+                    final Submodel submodel = Submodel.from(submodelDescriptor.getId(),
                             submodelDescriptor.getAspectType(), jsonUtil.fromString(submodelRawPayload, Map.class));
                     submodels.add(submodel);
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
                     itemContainerBuilder.tombstone(
-                            Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(),
+                            Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
                                     new IllegalArgumentException("Submodel payload validation failed. " + errors), 0,
                                     ProcessStep.SCHEMA_VALIDATION));
                 }
             } catch (final JsonParseException e) {
                 itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e,
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e,
                                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(),
                                 ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             } catch (final SchemaNotFoundException | InvalidSchemaException | RestClientException e) {
                 itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
                                 ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
             } catch (final UsagePolicyException e) {
                 log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
                 itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
                                 ProcessStep.USAGE_POLICY_VALIDATION));
             } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getEndpointAddress(), e, 0,
+                        Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
                                 ProcessStep.SUBMODEL_REQUEST));
             }
         });
         return submodels;
     }
 
-    private String requestSubmodelAsString(final Endpoint endpoint) throws EdcClientException {
-        return submodelFacade.getSubmodelRawPayload(endpoint.getProtocolInformation().getEndpointAddress());
+    private String requestSubmodelAsString(final Endpoint endpoint, final String bpn) throws EdcClientException {
+        final String connectorEndpoint = connectorEndpointsService.fetchConnectorEndpoints(bpn).stream().findFirst().orElseThrow();
+        try {
+            return submodelFacade.getSubmodelRawPayload(
+                    connectorEndpoint,
+                    extractSuffix(endpoint.getProtocolInformation().getHref()),
+                    extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
+        } catch (URISyntaxException e) {
+            throw new EdcClientException(e);
+        }
     }
 }

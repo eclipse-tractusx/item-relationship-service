@@ -33,6 +33,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
@@ -52,8 +54,10 @@ class SubmodelDelegateTest {
     final EdcSubmodelFacade submodelFacade = mock(EdcSubmodelFacade.class);
     final SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
     final JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
+    final ConnectorEndpointsService connectorEndpointsService = mock(
+            ConnectorEndpointsService.class);
     final SubmodelDelegate submodelDelegate = new SubmodelDelegate(submodelFacade,
-            semanticsHubFacade, jsonValidatorService, new JsonUtil());
+            semanticsHubFacade, jsonValidatorService, new JsonUtil(), connectorEndpointsService);
 
     @Test
     void shouldFilterSubmodelDescriptorsByAspectTypeFilter() {
@@ -106,7 +110,8 @@ class SubmodelDelegateTest {
                                 "testAssemblyPartRelationshipEndpoint"))));
 
         // when
-        when(submodelFacade.getSubmodelRawPayload(any())).thenThrow(new UsagePolicyException("itemId"));
+        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId"));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
                 jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
 

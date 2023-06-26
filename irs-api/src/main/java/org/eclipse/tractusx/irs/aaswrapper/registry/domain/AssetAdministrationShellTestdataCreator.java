@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKey
 import org.eclipse.tractusx.irs.component.assetadministrationshell.LangString;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.springframework.web.client.RestClientException;
 
@@ -67,13 +68,12 @@ class AssetAdministrationShellTestdataCreator {
         cxTestData.get().getProductDescription().ifPresent(submodel -> submodelDescriptors.add(createProductDescriptionSubmodelDescriptor(catenaXId)));
         cxTestData.get().getPhysicalDimension().ifPresent(submodel -> submodelDescriptors.add(createPhysicalDimensionSubmodelDescriptor(catenaXId)));
 
-        final Reference globalAssetId = Reference.builder().value(List.of(catenaXId)).build();
         return AssetAdministrationShellDescriptor.builder()
                                                  .description(List.of(LangString.builder().build()))
-                                                 .globalAssetId(globalAssetId)
+                                                 .globalAssetId(catenaXId)
                                                  .idShort("idShort")
-                                                 .identification(catenaXId)
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder().key("ManufacturerId").value("BPNL00000003AYRE").build()))
+                                                 .id(catenaXId)
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder().name("ManufacturerId").value("BPNL00000003AYRE").build()))
                                                  .submodelDescriptors(submodelDescriptors)
                                                  .build();
     }
@@ -126,9 +126,10 @@ class AssetAdministrationShellTestdataCreator {
     private SubmodelDescriptor createSubmodelDescriptor(final String catenaXId, final String submodelUrn,
             final String submodelName) {
         final ProtocolInformation protocolInformation = ProtocolInformation.builder()
-                                                                           .endpointAddress(catenaXId.concat("_").concat(submodelName))
+                                                                           .href(catenaXId.concat("_").concat(submodelName))
                                                                            .endpointProtocol("AAS/SUBMODEL")
-                                                                           .endpointProtocolVersion("1.0RC02")
+                                                                           .endpointProtocolVersion(List.of("1.0RC02"))
+                                                                           .subprotocolBody("id=9300395e-c0a5-4e88-bc57-a3973fec4c26;idsEndpoint=http://edc.control.plane/")
                                                                            .build();
 
         final Endpoint endpoint = Endpoint.builder()
@@ -136,10 +137,10 @@ class AssetAdministrationShellTestdataCreator {
                                           .protocolInformation(protocolInformation)
                                           .build();
 
-        final Reference reference = Reference.builder().value(List.of(submodelUrn)).build();
+        final Reference reference = Reference.builder().keys(List.of(SemanticId.builder().value(submodelUrn).build())).build();
 
         return SubmodelDescriptor.builder()
-                                 .identification(catenaXId)
+                                 .id(catenaXId)
                                  .idShort(submodelName)
                                  .endpoints(List.of(endpoint))
                                  .semanticId(reference)

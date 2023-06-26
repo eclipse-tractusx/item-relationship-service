@@ -50,7 +50,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(assemblyPartRelationshipIdWithAspectName);
     }
 
     @Test
@@ -64,7 +64,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipId);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(assemblyPartRelationshipId);
     }
 
     @Test
@@ -79,7 +79,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(assemblyPartRelationshipIdWithAspectName);
     }
 
     @Test
@@ -94,7 +94,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationId);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartTypizationId);
     }
 
     @Test
@@ -111,7 +111,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartTypizationIdWithAspectName);
     }
 
     @Test
@@ -129,8 +129,8 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationIdWithAspectName);
-        assertThat(result.get(1).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartTypizationIdWithAspectName);
+        assertThat(result.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(assemblyPartRelationshipIdWithAspectName);
     }
 
 }

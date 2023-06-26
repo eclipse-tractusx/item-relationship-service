@@ -40,35 +40,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
-
-    private final DiscoveryFinderClient discoveryFinderClient;
     private final EndpointDataForConnectorsService endpointDataForConnectorsService;
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
+    private final ConnectorEndpointsService connectorEndpointsService;
 
     @Override
     public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
         log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
-        final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
-        final List<String> providedBpn = List.of(key.bpn());
-        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
-                                                                                .endpoints();
-        final List<String> connectorEndpoints = discoveryEndpoints.stream()
-                                                                  .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
-                                                                                                                         discoveryEndpoint.endpointAddress(),
-                                                                                                                         providedBpn)
-                                                                                                                 .stream()
-                                                                                                                 .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
-                                                                                                                                                                 .equals(key.bpn()))
-                                                                                                                 .map(EdcDiscoveryResult::connectorEndpoint)
-                                                                                                                 .toList())
-                                                                  .flatMap(List::stream)
-                                                                  .flatMap(List::stream)
-                                                                  .toList();
+        final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(key.bpn());
         // take first
         final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
                 connectorEndpoints).stream().findFirst().orElseThrow();
         final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
-                                                                                    .key("globalAssetId")
+                                                                                    .name("globalAssetId")
                                                                                     .value(key.globalAssetId())
                                                                                     .build();
         final String aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
@@ -80,7 +64,5 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         return decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(endpointDataReference,
                 aaShellIdentification);
-
     }
-
 }

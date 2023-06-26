@@ -196,42 +196,42 @@
 			"parameters": [
 				{
 					"name": "assetIds",
-					"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003AYRE\"}],",
+					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AYRE\"}],",
 					"disabled": true
 				},
 				{
 					"name": "assetIds",
-					"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003AVTH\"}],",
+					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AVTH\"}],",
 					"disabled": true
 				},
 				{
 					"name": "assetIds",
-					"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003AZQP\"}]",
+					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AZQP\"}]",
 					"disabled": true
 				},
 				{
 					"name": "assetIds",
-					"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003B2OM\"}],",
+					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003B2OM\"}],",
 					"disabled": true
 				},
 				{
 					"name": "assetIds",
-					"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003B3NX\"}],",
+					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003B3NX\"}],",
 					"disabled": true
 				},
 				{
 					"name": "assetIds",
-					"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003B5MJ\"}],",
+					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003B5MJ\"}],",
 					"disabled": true
 				},
 				{
 					"name": "assetIds",
-					"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003B0Q0\"}],",
+					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003B0Q0\"}],",
 					"disabled": true
 				},
 				{
 					"name": "assetIds",
-					"value": "[{\"key\": \"manufacturerId\",\"value\":\"BPNL00000003AXS3\"}],",
+					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AXS3\"}],",
 					"disabled": true
 				}
 			],
@@ -267,7 +267,7 @@
 			"parameters": [
 				{
 					"name": "assetIds",
-					"value": "[{\"key\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
+					"value": "[{\"name\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
 					"disabled": false
 				}
 			],
@@ -302,7 +302,7 @@
 			"parameters": [
 				{
 					"name": "assetIds",
-					"value": "[{\"key\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"}]",
+					"value": "[{\"name\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"}]",
 					"disabled": false
 				}
 			],

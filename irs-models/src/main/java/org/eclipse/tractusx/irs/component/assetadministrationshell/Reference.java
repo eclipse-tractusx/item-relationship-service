@@ -41,7 +41,13 @@ public class Reference {
     /**
      * value
      */
-    @ArraySchema(schema = @Schema(implementation = String.class), maxItems = Integer.MAX_VALUE)
-    private List<String> value;
+    @ArraySchema(schema = @Schema(implementation = SemanticId.class), maxItems = Integer.MAX_VALUE)
+    private List<SemanticId> keys;
+
+
+    /**
+     * type
+     */
+    private String type;
 
 }
