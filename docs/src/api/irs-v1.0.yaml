@@ -999,7 +999,7 @@ components:
             idShort: future concept x
             id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
             specificAssetIds:
-              - key: engineserialid
+              - name: engineserialid
                 value: "12309481209312"
             submodelDescriptors:
               - description:
@@ -1175,7 +1175,7 @@ components:
             idShort: future concept x
             id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
             specificAssetIds:
-              - key: engineserialid
+              - name: engineserialid
                 value: "12309481209312"
             submodelDescriptors:
               - description:
@@ -1595,7 +1595,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        key:
+        name:
           type: string
         semanticId:
           $ref: '#/components/schemas/Reference'

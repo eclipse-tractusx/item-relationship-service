@@ -11,15 +11,15 @@
   "specificAssetIds": [
     {
       "value": "BPNLTIERAZZ",
-      "key": "ManufacturerID"
+      "name": "ManufacturerID"
     },
     {
       "value": "1O222E8-43",
-      "key": "ManufacturerPartID"
+      "name": "ManufacturerPartID"
     },
     {
       "value": "NO-612632984474248940327249",
-      "key": "PartInstanceID"
+      "name": "PartInstanceID"
     }
   ],
   "submodelDescriptors": [
