@@ -2478,7 +2478,7 @@
 							"protocolInformation": {
 								"endpointAddress": "http://cxdev.germanywestcentral.cloudapp.azure.com:8185/BPNL00000003B5MJ/urn:uuid:58a1b78a-e3cb-4bc9-b3a6-e5bdb3caba3b-urn:uuid:3dd5a4eb-ba85-499b-8f3a-1de84014d82e/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.0",
+								"endpointProtocolVersion": ["0.0.0"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2567,7 +2567,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://subtier-a-edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B3NX/urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4-urn:uuid:18910f3e-f051-48e7-bd7a-b61d2e9c420e/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1",
+								"endpointProtocolVersion": ["0.0.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2618,7 +2618,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://catenax.apps.demonstrator.dps.oncite.cloud/BPNL00000003CSGV/urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768-urn:uuid:ea2193b6-72e4-439b-9e7f-f582eb20f56d/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.1.1",
+								"endpointProtocolVersion": ["0.1.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2669,7 +2669,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://catenax.apps.demonstrator.dps.oncite.cloud/BPNL00000003CSGV/urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c-urn:uuid:618b1b64-72e4-439b-9e7f-f582eb20f56d/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.1.1",
+								"endpointProtocolVersion": ["0.1.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2726,7 +2726,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM/urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b-urn:uuid:9926c5c1-81e4-44bb-b2c1-7fed197777de/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1",
+								"endpointProtocolVersion": ["0.0.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
