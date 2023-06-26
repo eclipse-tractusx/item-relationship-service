@@ -44,7 +44,7 @@ tractusx-connector:
       dapsPublicKey: irs-dev-daps-cert-provider
 
   daps:
-    clientId: B9:7B:1A:54:74:DC:C7:45:6E:A2:24:DC:3F:6D:A7:4A:DD:D2:26:6A:keyid:B9:7B:1A:54:74:DC:C7:45:6E:A2:24:DC:3F:6D:A7:4A:DD:D2:26:6A
+    clientId: <path:traceability-irs/data/dev/controlplane#edc.oauth.client.id-provider1>
 
   postgresql:
     jdbcUrl: "jdbc:postgresql://irs-provider-edc-postgresql-hl:5432/edc"
