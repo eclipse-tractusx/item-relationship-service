@@ -1861,7 +1861,7 @@ components:
           example: BPNL0123456789XX
           maxLength: 16
           minLength: 16
-          pattern: "^(BPN)(L|S|A)(\\d{10})([a-zA-Z0-9]{2})$"
+          #pattern: "^(BPN)(L|S|A)(\\d{10})([a-zA-Z0-9]{2})$"
         globalAssetId:
           type: string
           description: Id of global asset.
