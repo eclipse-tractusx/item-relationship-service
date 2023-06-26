@@ -48,6 +48,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -242,7 +243,7 @@ public class TestMother {
     }
 
     public static SubmodelDescriptor submodelDescriptor(final String semanticId, final String endpointAddress) {
-        final Reference semanticIdSerial = Reference.builder().value(List.of(semanticId)).build();
+        final Reference semanticIdSerial = Reference.builder().keys(List.of(SemanticId.builder().value(semanticId).build())).build();
         final List<Endpoint> endpointSerial = List.of(endpoint(endpointAddress));
         return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
     }

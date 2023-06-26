@@ -1010,12 +1010,14 @@ components:
                     protocolInformation:
                       href: https://catena-x.net/vehicle/basedetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: "1.0"
+                      endpointProtocolVersion: ["1.0"]
                 idShort: vehicle base details
                 id: 4a738a24-b7d8-4989-9cd6-387772f40565
                 semanticId:
-                  value:
-                    - urn:bamm:com.catenax.vehicle:0.1.1
+                  type: ModelReference
+                  keys:
+                    - type: Submodel
+                      value: urn:bamm:com.catenax.vehicle:0.1.1
               - description:
                   - language: en
                     text: Provides base vehicle information
@@ -1024,12 +1026,14 @@ components:
                     protocolInformation:
                       href: https://catena-x.net/vehicle/partdetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: "1.0"
+                      endpointProtocolVersion: ["1.0"]
                 idShort: vehicle part details
                 id: dae4d249-6d66-4818-b576-bf52f3b9ae90
                 semanticId:
-                  value:
-                    - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+                  type: ModelReference
+                  keys:
+                    - type: Submodel
+                      value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         submodels:
           - aspectType: urn:bamm:io.catenax.assembly_part_relationship:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
@@ -1186,12 +1190,14 @@ components:
                     protocolInformation:
                       href: https://catena-x.net/vehicle/basedetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: "1.0"
+                      endpointProtocolVersion: ["1.0"]
                 idShort: vehicle base details
                 id: 4a738a24-b7d8-4989-9cd6-387772f40565
                 semanticId:
-                  value:
-                    - urn:bamm:com.catenax.vehicle:0.1.1
+                  type: ModelReference
+                  keys:
+                    - type: Submodel
+                      value: urn:bamm:com.catenax.vehicle:0.1.1
               - description:
                   - language: en
                     text: Provides base vehicle information
@@ -1200,12 +1206,14 @@ components:
                     protocolInformation:
                       href: https://catena-x.net/vehicle/partdetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: "1.0"
+                      endpointProtocolVersion: ["1.0"]
                 idShort: vehicle part details
                 id: dae4d249-6d66-4818-b576-bf52f3b9ae90
                 semanticId:
-                  value:
-                    - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+                  type: ModelReference
+                  keys:
+                    - type: Submodel
+                      value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         submodels:
           - aspectType: urn:bamm:io.catenax.assembly_part_relationship:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
@@ -1914,7 +1922,9 @@ components:
         endpointProtocol:
           type: string
         endpointProtocolVersion:
-          type: string
+          type: array
+          items:
+            type: string
         subprotocol:
           type: string
         subprotocolBody:
@@ -1937,10 +1947,12 @@ components:
       type: object
       additionalProperties: false
       properties:
-        value:
+        type:
+          type: string
+        keys:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SemanticId'
           maxItems: 2147483647
     RegisterBatchOrder:
       type: object
@@ -2120,6 +2132,14 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
+    SemanticId:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        value:
+          type: string
     Submodel:
       type: object
       additionalProperties: false

@@ -78,8 +78,8 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
 
         assertThat(endpoint.getProtocolInformation().getHref()).contains(existingCatenaXId);
-        assertThat(shellEndpoints.get(0).getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);
-        assertThat(shellEndpoints.get(1).getSemanticId().getValue()).containsExactly(serialPartTypizationURN);
+        assertThat(shellEndpoints.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(assemblyPartRelationshipURN);
+        assertThat(shellEndpoints.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartTypizationURN);
     }
 
     @Test
@@ -153,6 +153,6 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);
 
-        assertThat(endpoint.getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);
+        assertThat(endpoint.getSemanticId().getKeys().get(0).getValue()).isEqualTo(assemblyPartRelationshipURN);
     }
 }

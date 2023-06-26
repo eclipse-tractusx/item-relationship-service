@@ -71,7 +71,7 @@ public class SubmodelDescriptor {
      */
     @JsonIgnore
     public String getAspectType() {
-        return this.getSemanticId().getValue().stream().findFirst().orElse(null);
+        return this.getSemanticId().getKeys().stream().findFirst().map(SemanticId::getValue).orElse(null);
     }
 
 }

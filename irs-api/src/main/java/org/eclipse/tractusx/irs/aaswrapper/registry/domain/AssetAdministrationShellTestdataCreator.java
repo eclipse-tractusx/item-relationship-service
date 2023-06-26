@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKey
 import org.eclipse.tractusx.irs.component.assetadministrationshell.LangString;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.springframework.web.client.RestClientException;
 
@@ -127,7 +128,7 @@ class AssetAdministrationShellTestdataCreator {
         final ProtocolInformation protocolInformation = ProtocolInformation.builder()
                                                                            .href(catenaXId.concat("_").concat(submodelName))
                                                                            .endpointProtocol("AAS/SUBMODEL")
-                                                                           .endpointProtocolVersion("1.0RC02")
+                                                                           .endpointProtocolVersion(List.of("1.0RC02"))
                                                                            .subprotocolBody("id=9300395e-c0a5-4e88-bc57-a3973fec4c26;idsEndpoint=http://edc.control.plane/")
                                                                            .build();
 
@@ -136,7 +137,7 @@ class AssetAdministrationShellTestdataCreator {
                                           .protocolInformation(protocolInformation)
                                           .build();
 
-        final Reference reference = Reference.builder().value(List.of(submodelUrn)).build();
+        final Reference reference = Reference.builder().keys(List.of(SemanticId.builder().value(submodelUrn).build())).build();
 
         return SubmodelDescriptor.builder()
                                  .id(catenaXId)
