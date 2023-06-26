@@ -164,8 +164,8 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
             throws EdcClientException {
-        Pattern pairRegex = Pattern.compile(UUID_REGEX + "-" + UUID_REGEX);
-        Matcher matcher = pairRegex.matcher(submodelEndpointAddress);
+        final Pattern pairRegex = Pattern.compile(UUID_REGEX + "-" + UUID_REGEX);
+        final Matcher matcher = pairRegex.matcher(submodelEndpointAddress);
         if (!matcher.find()) {
             throw new EdcClientException(
                     "Cannot extract assetId from endpoint address, malformed format: " + submodelEndpointAddress);
