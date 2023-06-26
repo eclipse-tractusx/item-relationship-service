@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -212,7 +213,7 @@ class EdcTransformerTest {
     }
 
     @Test
-    void shouldDeserializeJsonLdResponseToCatalog() {
+    void shouldDeserializeJsonLdResponseToCatalog() throws JsonProcessingException {
         // Arrange
         final String key = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1";
         final String catalogAsString = getCatalogAsString();
@@ -228,17 +229,18 @@ class EdcTransformerTest {
         // Assert
         assertThat(actualCatalog).isNotNull();
         assertThat(actualCatalog.getId()).isEqualTo("78ff625c-0c05-4014-965c-bd3d0a6a0de0");
-        assertThat(actualCatalog.getProperties()).containsEntry("https://w3id.org/edc/v0.0.1/ns/participantId", "BPNL00000003CRHK");
+        assertThat(actualCatalog.getProperties()).containsEntry("https://w3id.org/edc/v0.0.1/ns/participantId",
+                "BPNL00000003CRHK");
 
         final Dataset expectedDataset = createDataset();
         final Distribution expectedDistribution = expectedDataset.getDistributions().get(0);
         final Policy expectedPolicy = expectedDataset.getOffers().get(key);
-        final Permission expectedPermission = expectedPolicy.getPermissions().get(0);
+        final String expectedPermission = objectMapper().writeValueAsString(expectedPolicy.getPermissions().get(0));
 
         final Dataset actualDataset = actualCatalog.getDatasets().get(0);
         final Distribution actualDistribution = actualDataset.getDistributions().get(0);
         final Policy actualPolicy = actualDataset.getOffers().get(key);
-        final Permission actualPermission = actualPolicy.getPermissions().get(0);
+        final String actualPermission = objectMapper().writeValueAsString(actualPolicy.getPermissions().get(0));
 
         assertThat(actualDataset.getId()).isEqualTo(expectedDataset.getId());
         assertThat(actualDataset.getProperties()).isEqualTo(expectedDataset.getProperties());
@@ -246,7 +248,7 @@ class EdcTransformerTest {
         assertThat(actualDistribution.getDataService().getId()).isEqualTo(
                 expectedDistribution.getDataService().getId());
         assertThat(actualPolicy.getTarget()).isEqualTo(expectedPolicy.getTarget());
-        assertThat(actualPermission.toString()).isEqualTo(expectedPermission.toString());
+        assertThat(actualPermission).isEqualTo(expectedPermission);
         assertThat(actualCatalog.getDataServices().get(0)).isEqualTo(expectedDataService);
         assertThat(actualCatalog.getContractOffers()).isNull();
     }

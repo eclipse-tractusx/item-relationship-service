@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.edc.client;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -45,6 +44,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -66,6 +66,14 @@ public class EdcControlPlaneClient {
     private final EdcConfiguration config;
     private final EdcTransformer edcTransformer;
 
+    private static String getResponseBody(final ResponseEntity<String> response) {
+        String responseBody = "";
+        if (response.hasBody() && response.getBody() != null) {
+            responseBody = response.getBody();
+        }
+        return responseBody;
+    }
+
     /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
         final var limit = config.getControlplane().getCatalogPageSize();
 
@@ -79,9 +87,10 @@ public class EdcControlPlaneClient {
 
         final String requestJson = edcTransformer.transformCatalogRequestToJson(requestBody).toString();
 
-        final String catalog = edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(requestJson, headers()),
-                String.class).getBody();
-        return edcTransformer.transformCatalog(Objects.requireNonNull(catalog), StandardCharsets.UTF_8);
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<>(requestJson, headers()), String.class);
+        final String catalog = getResponseBody(response);
+        return edcTransformer.transformCatalog(catalog, StandardCharsets.UTF_8);
     }
 
     private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit) {
@@ -152,11 +161,10 @@ public class EdcControlPlaneClient {
         final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId()
                 + endpoint.getStateSuffix();
 
-        final String negotiationStateResponse = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
-                String.class).getBody();
-
-        return edcTransformer.transformJsonToNegotiationState(Objects.requireNonNull(negotiationStateResponse),
-                StandardCharsets.UTF_8);
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                String.class);
+        final String negotiationStateResponse = getResponseBody(response);
+        return edcTransformer.transformJsonToNegotiationState(negotiationStateResponse, StandardCharsets.UTF_8);
     }
 
     private NegotiationResponse getContractNegotiationResponse(final Response negotiationId,
@@ -164,19 +172,16 @@ public class EdcControlPlaneClient {
         final var endpoint = config.getControlplane().getEndpoint();
         final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId();
 
-        final String negotiationResponse = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, String.class)
-                                                          .getBody();
-
-        return edcTransformer.transformJsonToNegotiationResponse(Objects.requireNonNull(negotiationResponse),
-                StandardCharsets.UTF_8);
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                String.class);
+        final String negotiationResponse = getResponseBody(response);
+        return edcTransformer.transformJsonToNegotiationResponse(negotiationResponse, StandardCharsets.UTF_8);
     }
 
     /* package */ Response startTransferProcess(final TransferProcessRequest request) {
         final String jsonObject = edcTransformer.transformTransferProcessRequestToJson(request).toString();
-        final var endpoint = config.getControlplane().getEndpoint();
-        final String url = endpoint.getData() + endpoint.getTransferProcess();
-        return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
-                              .getBody();
+        return edcRestTemplate.exchange(config.getControlplane().getEndpoint().getData() + "/transferprocesses",
+                HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class).getBody();
     }
 
     /* package */ CompletableFuture<TransferProcessResponse> getTransferProcess(final Response transferProcessId) {
@@ -217,11 +222,11 @@ public class EdcControlPlaneClient {
         final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getResponseId()
                 + endpoint.getStateSuffix();
 
-        final String transferProcessStateResponse = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
-                String.class).getBody();
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                String.class);
+        final String transferProcessStateResponse = getResponseBody(response);
 
-        return edcTransformer.transformJsonToNegotiationState(Objects.requireNonNull(transferProcessStateResponse),
-                StandardCharsets.UTF_8);
+        return edcTransformer.transformJsonToNegotiationState(transferProcessStateResponse, StandardCharsets.UTF_8);
     }
 
     private TransferProcessResponse getTransferProcessResponse(final Response transferProcessId,

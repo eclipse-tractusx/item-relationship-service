@@ -48,11 +48,11 @@ public class JsonObjectFromContractOfferDescriptionTransformer
     public @Nullable JsonObject transform(@NotNull final ContractOfferDescription dto,
             final @NotNull TransformerContext context) {
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add(JsonLdKeywords.TYPE, ContractOfferDescription.TYPE)
-               .add(ContractOfferDescription.OFFER_ID, dto.getOfferId())
-               .add(ContractOfferDescription.ASSET_ID, dto.getAssetId())
+        builder.add(JsonLdKeywords.TYPE, ContractOfferDescription.CONTRACT_OFFER_TYPE)
+               .add(ContractOfferDescription.CONTRACT_OFFER_OFFER_ID, dto.getOfferId())
+               .add(ContractOfferDescription.CONTRACT_OFFER_ASSET_ID, dto.getAssetId())
                .add("validity", dto.getValidity())
-               .add(ContractOfferDescription.POLICY, context.transform(dto.getPolicy(), JsonObject.class));
+               .add(ContractOfferDescription.CONTRACT_OFFER_POLICY, context.transform(dto.getPolicy(), JsonObject.class));
 
         return builder.build();
     }
