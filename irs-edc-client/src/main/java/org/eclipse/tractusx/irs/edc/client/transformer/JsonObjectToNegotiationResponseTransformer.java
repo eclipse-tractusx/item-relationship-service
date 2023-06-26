@@ -69,6 +69,9 @@ public class JsonObjectToNegotiationResponseTransformer
                         builder.callbackAddresses(this.transformArray(value, String.class, transformerContext));
                 case CONTRACT_NEGOTIATION_ERRORDETAIL ->
                         builder.errorDetail(this.transformString(value, transformerContext));
+                default -> {
+                    // Do nothing in case no key matches
+                }
             }
         });
         return builder.build();
