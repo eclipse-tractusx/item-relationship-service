@@ -228,8 +228,7 @@ class EdcTransformerTest {
         // Assert
         assertThat(actualCatalog).isNotNull();
         assertThat(actualCatalog.getId()).isEqualTo("78ff625c-0c05-4014-965c-bd3d0a6a0de0");
-        assertThat(actualCatalog.getProperties().get("https://w3id.org/edc/v0.0.1/ns/participantId")).isEqualTo(
-                "BPNL00000003CRHK");
+        assertThat(actualCatalog.getProperties()).containsEntry("https://w3id.org/edc/v0.0.1/ns/participantId", "BPNL00000003CRHK");
 
         final Dataset expectedDataset = createDataset();
         final Distribution expectedDistribution = expectedDataset.getDistributions().get(0);
@@ -322,10 +321,10 @@ class EdcTransformerTest {
         final JsonObject negotiationJson = edcTransformer.transformNegotiationRequestToJson(
                 negotiationInitiateRequestDto);
 
-        assertThat(negotiationJson).isNotEmpty();
-        assertThat(negotiationJson).contains(entry("edc:connectorAddress", Json.createValue(providerConnector)));
-        assertThat(negotiationJson).contains(entry("edc:connectorId", Json.createValue(consumerBPN)));
-        assertThat(negotiationJson).contains(entry("edc:protocol", Json.createValue(protocol)));
+        assertThat(negotiationJson).isNotEmpty()
+                                   .contains(entry("edc:connectorAddress", Json.createValue(providerConnector)))
+                                   .contains(entry("edc:connectorId", Json.createValue(consumerBPN)))
+                                   .contains(entry("edc:protocol", Json.createValue(protocol)));
     }
 
     @Test
