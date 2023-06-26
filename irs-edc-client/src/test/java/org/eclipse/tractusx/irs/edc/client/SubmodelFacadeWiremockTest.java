@@ -65,7 +65,7 @@ import org.springframework.web.client.RestTemplate;
 
 class SubmodelFacadeWiremockTest {
 
-    private final static String URL = "https://edc.io/urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
+    private final static String URL = "https://edc.io/5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7/submodel?content=value&extent=withBlobValue";
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
     private WireMockServer wireMockServer;
@@ -175,7 +175,7 @@ class SubmodelFacadeWiremockTest {
                                                                                 .withHeader("Content-Type", contentType)
                                                                                 .withBodyFile(
                                                                                         "edc/responseStartTransferprocess.json")));
-        final var contractAgreementId = "7681f966-36ea-4542-b5ea-0d0db81967de:urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
+        final var contractAgreementId = "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
         final EndpointDataReference ref = EndpointDataReference.Builder.newInstance()
                                                                        .authKey("testkey")
                                                                        .authCode("testcode")

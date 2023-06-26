@@ -78,7 +78,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
-    private static final String ENDPOINT_ADDRESS = "http://localhost/urn:123456/submodel";
+    private static final String ENDPOINT_ADDRESS = "http://localhost/d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4/submodel";
+    private static final String ASSET_ID = "d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4";
     private static final String PROVIDER_SUFFIX = "/test";
     private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
             Duration.ofMinutes(1));
@@ -208,7 +209,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(existingCatenaXId, "_assemblyPartRelationship");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + existingCatenaXId + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
+                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
@@ -222,7 +223,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(catenaXId, "_singleLevelBomAsPlanned");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)
+                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
@@ -240,7 +241,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SINGLE_LEVEL_USAGE_AS_BUILT)
+                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.SINGLE_LEVEL_USAGE_AS_BUILT)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
@@ -253,7 +254,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(catenaXId, "_assemblyPartRelationship");
 
         final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
+                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
                                                           .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isEmpty();
@@ -265,7 +266,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(existingCatenaXId, "_serialPartTypization");
 
         final String submodelResponse = testee.getSubmodelRawPayload(
-                "http://localhost/" + existingCatenaXId + "/submodel").get(5, TimeUnit.SECONDS);
+                "http://localhost/" + ASSET_ID + "/submodel").get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
@@ -275,7 +276,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void shouldUseDecodedTargetId() throws Exception {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
         prepareTestdata(existingCatenaXId, "_serialPartTypization");
-        final String target = URLEncoder.encode(existingCatenaXId, StandardCharsets.UTF_8);
+        final String target = URLEncoder.encode(ASSET_ID, StandardCharsets.UTF_8);
 
         final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/" + target + "/submodel")
                                               .get(5, TimeUnit.SECONDS);
@@ -291,7 +292,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         prepareTestdata(parentCatenaXId, "_assemblyPartRelationship");
         final List<Relationship> assemblyPartRelationships = testee.getRelationships(
-                "http://localhost/" + parentCatenaXId + "/submodel",
+                "http://localhost/" + ASSET_ID + "/submodel",
                 RelationshipAspect.from(asBuilt, Direction.DOWNWARD)).get(5, TimeUnit.SECONDS);
 
         final GlobalAssetIdentification childCatenaXId = assemblyPartRelationships.stream()
@@ -302,7 +303,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         prepareTestdata(childCatenaXId.getGlobalAssetId(), "_singleLevelUsageAsBuilt");
         final List<Relationship> singleLevelUsageRelationships = testee.getRelationships(
-                "http://localhost/" + childCatenaXId.getGlobalAssetId() + "/submodel",
+                "http://localhost/" + ASSET_ID + "/submodel",
                 RelationshipAspect.from(asBuilt, Direction.UPWARD)).get(5, TimeUnit.SECONDS);
 
         assertThat(assemblyPartRelationships).isNotEmpty();
