@@ -450,7 +450,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_api_model">API Model</a></li>
 <li><a href="#_jobstatus">JobStatus</a></li>
 <li><a href="#_job_store_datamodel">Job Store Datamodel</a></li>
-<li><a href="#_job_response_datamodel">Job Response  Datamodel</a></li>
+<li><a href="#_job_response_datamodel">Job Response Datamodel</a></li>
 </ul>
 </li>
 <li><a href="#_safety_and_security_concepts">Safety and security concepts</a>
@@ -467,7 +467,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_under_the_hood_concepts">"Under-the-hood" concepts</a>
 <ul class="sectlevel2">
-<li><a href="#_persistency">Persistency</a></li>
+<li><a href="#_persistence">Persistence</a></li>
 <li><a href="#_transaction_handling">Transaction handling</a></li>
 <li><a href="#_session_handling">Session handling</a></li>
 <li><a href="#_communication_and_integration">Communication and integration</a></li>
@@ -582,7 +582,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_job_response_datamodel">Job Response  Datamodel</h3>
+<h3 id="_job_response_datamodel">Job Response Datamodel</h3>
 <div class="imageblock">
 <div class="content">
 <img src="job-response-model.svg" alt="job response model" width="3585" height="865">
@@ -617,6 +617,12 @@ JWT token should also contain two fields:</p>
 <h4 id="_irs_as_dtr_client">IRS as DTR client</h4>
 <div class="paragraph">
 <p>The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_irs_as_decentralized_dtr_client">IRS as decentralized DTR client</h4>
+<div class="paragraph">
+<p>In a decentralized network, IRS uses the EDC client to access the provider DTR. This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.</p>
 </div>
 </div>
 <div class="sect3">
@@ -676,7 +682,7 @@ Abstractions should not depend on details. Details (concrete implementations) sh
 <h2 id="_under_the_hood_concepts">"Under-the-hood" concepts</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_persistency">Persistency</h3>
+<h3 id="_persistence">Persistence</h3>
 <div class="paragraph">
 <p>The IRS stores two types of data in a persistent way:</p>
 </div>
@@ -784,7 +790,7 @@ In the future, another approach or an additional way to to index the data might 
 <p>The heart of the IRS is the parallel execution of planned jobs. As almost each job requires multiple calls to various endpoints, those are done in parallel as well to reduce the total execution time for each job.</p>
 </div>
 <div class="paragraph">
-<p>Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a cental ExecutorService, which manages the number of threads and schedules new Task as they come in.</p>
+<p>Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a central ExecutorService, which manages the number of threads and schedules new Task as they come in.</p>
 </div>
 </div>
 <div class="sect2">
@@ -824,6 +830,12 @@ In the future, another approach or an additional way to to index the data might 
 </div>
 <div class="paragraph">
 <p>Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_edc_catalog">EDC Catalog</h4>
+<div class="paragraph">
+<p>Whenever a EDC catalog is requested, IRS stores all returned contract offers inside a cache. This cache will be used for subsequent requests to the same EDC provider. If the requested contract offer could not be found within the cache, the catalog will be requested again and the cache will be updated.</p>
 </div>
 </div>
 </div>
@@ -989,7 +1001,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-26 11:36:27 UTC
+Last updated 2023-06-26 12:17:43 UTC
 </div>
 </div>
 </body>

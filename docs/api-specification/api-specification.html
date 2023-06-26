@@ -664,10 +664,13 @@ font-style: italic;
   <ul>
   <li><a href="#cancelBatchOrder"><code><span class="http-method">put</span> /irs/orders/{orderId}</code></a></li>
   <li><a href="#cancelJobByJobId"><code><span class="http-method">put</span> /irs/jobs/{id}</code></a></li>
+  <li><a href="#deleteAllowedPolicy"><code><span class="http-method">delete</span> /irs/policies/{policyId}</code></a></li>
+  <li><a href="#getAllowedPolicies"><code><span class="http-method">get</span> /irs/policies</code></a></li>
   <li><a href="#getBatch"><code><span class="http-method">get</span> /irs/orders/{orderId}/batches/{batchId}</code></a></li>
   <li><a href="#getBatchOrder"><code><span class="http-method">get</span> /irs/orders/{orderId}</code></a></li>
   <li><a href="#getJobForJobId"><code><span class="http-method">get</span> /irs/jobs/{id}</code></a></li>
   <li><a href="#getJobsByJobStates"><code><span class="http-method">get</span> /irs/jobs</code></a></li>
+  <li><a href="#registerAllowedPolicy"><code><span class="http-method">post</span> /irs/policies</code></a></li>
   <li><a href="#registerJobForGlobalAssetId"><code><span class="http-method">post</span> /irs/jobs</code></a></li>
   <li><a href="#registerOrder"><code><span class="http-method">post</span> /irs/orders</code></a></li>
   </ul>
@@ -3202,6 +3205,7 @@ font-style: italic;
     },
     "completedOn" : "2000-01-23T04:56:07.000+00:00",
     "parameter" : {
+      "bpn" : "bpn",
       "depth" : 171976544,
       "bomLifecycle" : "asBuilt",
       "collectAspects" : true,
@@ -3689,6 +3693,7 @@ font-style: italic;
   },
   "completedOn" : "2000-01-23T04:56:07.000+00:00",
   "parameter" : {
+    "bpn" : "bpn",
     "depth" : 171976544,
     "bomLifecycle" : "asBuilt",
     "collectAspects" : true,
@@ -3727,6 +3732,103 @@ font-style: italic;
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">404</h4>
     Job for requested jobId not found.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="deleteAllowedPolicy"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="delete"><code class="huge"><span class="http-method">delete</span> /irs/policies/{policyId}</code></pre></div>
+    <div class="method-summary">Removes a policy that should no longer be accepted in EDC negotiation. (<span class="nickname">deleteAllowedPolicy</span>)</div>
+    <div class="method-notes">Removes a policy that should no longer be accepted in EDC negotiation.</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">policyId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div>
+    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    OK
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Policy deletion failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getAllowedPolicies"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /irs/policies</code></pre></div>
+    <div class="method-summary">Lists the registered policies that should be accepted in EDC negotiation. (<span class="nickname">getAllowedPolicies</span>)</div>
+    <div class="method-notes">Lists the registered policies that should be accepted in EDC negotiation.</div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      array[<a href="#Policy">Policy</a>]
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ {
+  "policyId" : "policyId",
+  "validUntil" : "2000-01-23T04:56:07.000+00:00",
+  "createdOn" : "2000-01-23T04:56:07.000+00:00"
+}, {
+  "policyId" : "policyId",
+  "validUntil" : "2000-01-23T04:56:07.000+00:00",
+  "createdOn" : "2000-01-23T04:56:07.000+00:00"
+} ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns the policies.
+        
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
@@ -6540,6 +6642,7 @@ font-style: italic;
     },
     "completedOn" : "2000-01-23T04:56:07.000+00:00",
     "parameter" : {
+      "bpn" : "bpn",
       "depth" : 171976544,
       "bomLifecycle" : "asBuilt",
       "collectAspects" : true,
@@ -6707,6 +6810,57 @@ font-style: italic;
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
+  <div class="method"><a name="registerAllowedPolicy"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /irs/policies</code></pre></div>
+    <div class="method-summary">Register a policy that should be accepted in EDC negotiation. (<span class="nickname">registerAllowedPolicy</span>)</div>
+    <div class="method-notes">Register a policy that should be accepted in EDC negotiation.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">CreatePolicyRequest <a href="#CreatePolicyRequest">CreatePolicyRequest</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    Created
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Policy registration failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
   <div class="method"><a name="registerJobForGlobalAssetId"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
@@ -6844,6 +6998,7 @@ font-style: italic;
     <li><a href="#BatchOrderResponse"><code>BatchOrderResponse</code> - </a></li>
     <li><a href="#BatchResponse"><code>BatchResponse</code> - </a></li>
     <li><a href="#Bpn"><code>Bpn</code> - </a></li>
+    <li><a href="#CreatePolicyRequest"><code>CreatePolicyRequest</code> - </a></li>
     <li><a href="#EdcNotification"><code>EdcNotification</code> - </a></li>
     <li><a href="#EdcNotificationHeader"><code>EdcNotificationHeader</code> - </a></li>
     <li><a href="#Endpoint"><code>Endpoint</code> - </a></li>
@@ -6859,6 +7014,8 @@ font-style: italic;
     <li><a href="#LinkedItem"><code>LinkedItem</code> - </a></li>
     <li><a href="#MeasurementUnit"><code>MeasurementUnit</code> - </a></li>
     <li><a href="#PageResult"><code>PageResult</code> - </a></li>
+    <li><a href="#PartChainIdentificationKey"><code>PartChainIdentificationKey</code> - </a></li>
+    <li><a href="#Policy"><code>Policy</code> - </a></li>
     <li><a href="#ProcessingError"><code>ProcessingError</code> - </a></li>
     <li><a href="#ProtocolInformation"><code>ProtocolInformation</code> - </a></li>
     <li><a href="#Quantity"><code>Quantity</code> - </a></li>
@@ -6968,6 +7125,14 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="CreatePolicyRequest"><code>CreatePolicyRequest</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>Request to add a policy</div>
+    <div class="field-items">
+      <div class="param">policyId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The ID of the policy to add </div>
+<div class="param">validUntil </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Timestamp after which the policy will no longer be accepted in negotiations format: date-time</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="EdcNotification"><code>EdcNotification</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -7061,6 +7226,7 @@ font-style: italic;
 <div class="param">bomLifecycle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The lifecycle context in which the child part was assembled into the parent part. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div>
+<div class="param">bpn (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">collectAspects (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
 <div class="param">depth (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
@@ -7135,6 +7301,23 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="PartChainIdentificationKey"><code>PartChainIdentificationKey</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>Key object contains required attributes for identify part chain entry node.</div>
+    <div class="field-items">
+      <div class="param">bpn (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> BPN for part chain identification needed in decentral registry approach </div>
+<div class="param">globalAssetId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of global asset. </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Policy"><code>Policy</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">createdOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">policyId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">validUntil (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="ProcessingError"><code>ProcessingError</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -7191,8 +7374,8 @@ font-style: italic;
 <div class="param">direction (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Item graph traversal direction. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">upward</div><div class="param-enum">downward</div>
-<div class="param">globalAssetIds </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
 <div class="param">jobTimeout (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Timeout in seconds for each job processing inside the complete order. format: int32</div>
+<div class="param">keys </div><div class="param-desc"><span class="param-type"><a href="#PartChainIdentificationKey">array[PartChainIdentificationKey]</a></span>  </div>
 <div class="param">lookupBPNs (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false. </div>
 <div class="param">timeout (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Timeout in seconds for the complete batch order processing. format: int32</div>
     </div>  <!-- field-items -->
@@ -7223,7 +7406,7 @@ font-style: italic;
 <div class="param">direction (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Item graph traversal direction. </div>
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">upward</div><div class="param-enum">downward</div>
-<div class="param">globalAssetId </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of global asset. </div>
+<div class="param">key </div><div class="param-desc"><span class="param-type"><a href="#PartChainIdentificationKey">PartChainIdentificationKey</a></span>  </div>
 <div class="param">lookupBPNs (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span> Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false. </div>
     </div>  <!-- field-items -->
   </div>
@@ -7281,7 +7464,7 @@ font-style: italic;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-26 11:36:27 UTC
+Last updated 2023-06-26 12:17:43 UTC
 </div>
 </div>
 </body>

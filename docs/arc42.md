@@ -67,7 +67,7 @@ The following table entries define overall IRS quality goals. The order of the t
 | --- | --- |
 | Open Source | FOSS licenses approved by the eclipse foundation has to be used. It could represent the initial set that the CX community agrees on to regulate the content contribution under FOSS licenses. |
 | Apache License 2.0 | Apache License 2.0 is one of the approved licenses which should be used to respect and guarantee Intellectual property (IP). |
-| Java OpenJDK Version JDK >= 11 | IRS provides an open source application standard. OpenJDK is used, which is licensed under GNU General Public License (GNU GPL) Version 2. |
+| Java OpenJDK Version JDK >= 17 | IRS provides an open source application standard. OpenJDK is used, which is licensed under GNU General Public License (GNU GPL) Version 2. |
 
 ### Development conventions
 
@@ -127,6 +127,13 @@ In order to consume the Restful application IRS, the security aspect should be t
 
 The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like AssemblyPartRelationship, SerialPartTypization etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.
 
+##### Discovery Service
+
+In a decentralized system, the digital twin registry is moved behind an EDC. To access the registry of a data provider, a new set of central services was introduces. These discovery services consist of BPN Discovery, Discovery Finder and EDC Discovery.
+IRS uses the Discovery Finder and EDC Discovery.
+Discovery Finder is used to find the correct EDC Discovery URL for the type BPN. EDC Discovery returns the EDC connector URLs for a specific BPN.
+With these EDC connector URLs, IRS searches the provider catalog for a asset of type `asset:prop:type=data.core.digitalTwinRegistry`. This asset should be part of every provider EDC catalog. With this asset, IRS can access the decentralized registry and after this step, the flow stays the same as in the paragraph above.
+
 #### EDC API
 
 The integrated EDC client in the IRS is responsible for creating restful requests to the component EDC. The IRS application builds from the retrieved AAS Descriptor (see previous section) the corresponding submodel endpoint URLs, negotiates an EDC contract and sends via the submodel REST client requests to the EDC. The EDC responds with the corresponding submodel data.
@@ -182,9 +189,8 @@ The interfaces show how the components interact with each other and which interf
 | --- | --- |
 | IRSApiConsumer | Proxy for any consumer of the IRS api. |
 | IRS | The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS |
-| AAS Proxy | The AAS Proxy is a System, which enables the consumer to simplify the communication with other CX Partners. |
 | EDC Consumer | The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane. |
-| EDC Provider | The EDC Provider Component connects with EDC Consumer component and  forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications. |
+| EDC Provider | The EDC Provider Component connects with EDC Consumer component and forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications. |
 | Submodel Server | The Submodel Server offers endpoints for requesting the Submodel aspects. |
 | IAM/DAPS | DAPS as central Identity Provider |
 
@@ -208,6 +214,7 @@ The interfaces show how the components interact with each other and which interf
 | **BlobStore** | The BlobStore is the database where the relationships and tombstones are stored for a requested item. |
 | **JobStore** | The JobStore is the database where the jobs with the information about the requested item are stored. |
 | **Digital Twin Client** | The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells. |
+| **Decentralized Digital Twin Client** | In a decentralized network, the Digital Twin Client connects to the EDC which then proxies the requests to the digital twin registry on provider side. |
 | **EDC Client** | The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data. |
 
 ## Level 2
@@ -263,7 +270,7 @@ The TransferProcessManager creates executions and provides them to the executor 
 | DigitalTwinRegistryFacade | The DigitalTwinRegistryFacade calls the DigitalTwinRegistry to retrieve data form the AAS registry and transforms the response to internal data models. |
 | SubmodelFacade | The SubmodelFacade calls the EDC to retrieve data from the submodel server and transforms the response to internal data models. |
 | BlobStore | The BlobStore is the database where the relationships and tombstones are stored for a requested item. |
-| DigitalTwinRegistry | The DigitalTwinRegistry is the central database of registered assets. |
+| DigitalTwinRegistry | The DigitalTwinRegistry is the central database of registered assets. In a decentralized network, the registry is no longer central, but every provider has its own registry. |
 | ExecutorService | The ExecutorService enables the simultaneous execution of requests of transfer processes. |
 
 ## IRS API
@@ -379,9 +386,9 @@ Every secret information needed at runtime must be stored here and must never be
 GitHub contains the application source code as well as the Helm charts used for deployment.
 The IRS Helm charts can be found here: <https://github.com/eclipse-tractusx/item-relationship-service/tree/main/charts>
 
-### GitHub Container Registry (GHCR)
+### Docker Hub
 
-When the IRS is built by GitHub Action workflows, the final image is pushed to the GHCR, where it can be picked up for deployment.
+When the IRS is built by GitHub Action workflows, the final image is pushed to Docker Hub, where it can be picked up for deployment.
 
 ### Kubernetes
 
@@ -470,7 +477,7 @@ A job can be in one of the following states:
 
 ![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
 
-### Job Response  Datamodel
+### Job Response Datamodel
 
 ![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
 
@@ -619,6 +626,10 @@ JWT token should also contain two fields:
 
 The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
 
+#### IRS as decentralized DTR client
+
+In a decentralized network, IRS uses the EDC client to access the provider DTR. This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.
+
 #### IRS as EDC client
 
 The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a DAPS certificate, which was provided to the IRS via the network authority.
@@ -652,7 +663,7 @@ For the IRS, this means decoupling the application logic from components like th
 
 ## "Under-the-hood" concepts
 
-### Persistency
+### Persistence
 
 The IRS stores two types of data in a persistent way:
 
@@ -722,7 +733,7 @@ It’s good to inform the user, why their request did not work, but only if they
 
 The heart of the IRS is the parallel execution of planned jobs. As almost each job requires multiple calls to various endpoints, those are done in parallel as well to reduce the total execution time for each job.
 
-Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a cental ExecutorService, which manages the number of threads and schedules new Task as they come in.
+Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a central ExecutorService, which manages the number of threads and schedules new Task as they come in.
 
 ### Plausibility checks and validation
 
@@ -746,6 +757,10 @@ Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as 
 Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable). The IRS can preload configured schema models on startup to reduce on demand call times.
 
 Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.
+
+#### EDC Catalog
+
+Whenever a EDC catalog is requested, IRS stores all returned contract offers inside a cache. This cache will be used for subsequent requests to the same EDC provider. If the requested contract offer could not be found within the cache, the catalog will be requested again and the cache will be updated.
 
 ## Development concepts
 
@@ -869,5 +884,5 @@ This section will be filled soon.
 | IRS | Item Relationship Service |
 | Item Graph | The result returned via the IRS. This corresponds to a tree structure in which each node represents a part of a virtual asset. |
 | MTPDC | Formerly known Service Name: Multi Tier Parts Data Chain |
-| PRS | Formerly known Service Name: Parts Relationship Name |
+| PRS | Formerly known Service Name: Parts Relationship Service |
 | Traversal Aspect | aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship. Samples: SingleLevelBomAsPlanned, AssemblyPartRelationship and SingleLevelUsageAsBuilt |

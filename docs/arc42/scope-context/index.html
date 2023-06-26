@@ -495,7 +495,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="integrated-overview.svg" alt="integrated overview" width="1262" height="417">
+<img src="integrated-overview.svg" alt="integrated overview" width="1241" height="452">
 </div>
 </div>
 <div class="sect2">
@@ -514,6 +514,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like AssemblyPartRelationship, SerialPartTypization etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
 </div>
+<div class="sect4">
+<h5 id="_discovery_service">Discovery Service</h5>
+<div class="paragraph">
+<p>In a decentralized system, the digital twin registry is moved behind an EDC. To access the registry of a data provider, a new set of central services was introduces. These discovery services consist of BPN Discovery, Discovery Finder and EDC Discovery.
+IRS uses the Discovery Finder and EDC Discovery.
+Discovery Finder is used to find the correct EDC Discovery URL for the type BPN. EDC Discovery returns the EDC connector URLs for a specific BPN.
+With these EDC connector URLs, IRS searches the provider catalog for a asset of type <code>asset:prop:type=data.core.digitalTwinRegistry</code>. This asset should be part of every provider EDC catalog. With this asset, IRS can access the decentralized registry and after this step, the flow stays the same as in the paragraph above.</p>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_edc_api">EDC API</h4>
@@ -527,7 +536,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-05-26 11:36:27 UTC
+Last updated 2023-06-26 12:17:43 UTC
 </div>
 </div>
 </body>

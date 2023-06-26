@@ -166,6 +166,14 @@ blobstore:
   secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
   bucketName: irsbucket # the name of the S3 bucket to be created / used by the IRS
 
+policystore:
+  persistence:
+    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
+    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
+
 resilience4j:
   retry: # REST client retry configuration
     configs:
@@ -214,9 +222,11 @@ edc:
       allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability # List of comma separated names of the policies to accept.
 
 digitalTwinRegistry:
+  type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
   descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}
   shellLookupEndpoint: ${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:} # The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}
   oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+  discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
   timeout:
     read: PT90S # HTTP read timeout for the digital twin registry client
     connect: PT90S # HTTP connect timeout for the digital twin registry client
@@ -284,11 +294,13 @@ ingress:
   enabled: false
 
 digitalTwinRegistry:
+  type: decentral  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
   url:  # "https://<digital-twin-registry-url>"
   descriptorEndpoint: >-
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/registry/shell-descriptors/{aasIdentifier}
   shellLookupEndpoint: >-
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}
+  discoveryFinderUrl:  # "https://<discovery-finder-url>
 semanticshub:
   url:  # https://<semantics-hub-url>
   pageSize: "100"  # Number of aspect models to retrieve per page
@@ -393,6 +405,11 @@ minio:
       memory: 4Gi
   rootUser: "minio"  # <minio-username>
   rootPassword: "minioPass"  # <minio-password>
+  securityContext:
+    enabled: true  # Enable to run containers as non-root. NOTE: if persistence.enabled=false then securityContext will be automatically disabled
+    runAsUser: 1000  # User id of the user for the container
+    runAsGroup: 3000  # Group id of the user for the container
+    fsGroup: 2000  # Group id of the persistent volume mount for the container
 
   environment:
     MINIO_PROMETHEUS_JOB_ID: minio-actuator
@@ -452,13 +469,6 @@ grafana:
   datasources:
     datasources.yaml:
       apiVersion: 1
-      datasources:
-        - name: Prometheus
-          type: prometheus
-          url: "http://{{ .Release.Name }}-prometheus-server"
-          isDefault: true
-
-  dashboardProviders:
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -472,6 +482,10 @@ The hostname where the IRS will be made available.
 ##### digital-twin-registry-url
 
 The URL of the Digital Twin Registry. The IRS uses this service to fetch AAS shells.
+
+##### discovery-finder-url
+
+The URL of the Discovery Finder. The IRS uses this service to discover EDC to a particular BPN.
 
 ##### semantics-hub-url
 
