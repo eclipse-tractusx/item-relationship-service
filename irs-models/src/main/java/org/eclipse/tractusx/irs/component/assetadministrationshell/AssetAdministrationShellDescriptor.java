@@ -141,7 +141,8 @@ public class AssetAdministrationShellDescriptor {
     }
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {
-        final Optional<String> submodelAspectType = submodelDescriptor.getSemanticId().getKeys().stream().findFirst().map(SemanticId::getValue);
+        final Optional<String> submodelAspectType = Optional.ofNullable(submodelDescriptor.getSemanticId().getKeys())
+                                                            .flatMap(key -> key.stream().findFirst()).map(SemanticId::getValue);
         return submodelAspectType.map(
                 semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter)
                         || semanticId.equals(aspectTypeFilter)).orElse(false);
