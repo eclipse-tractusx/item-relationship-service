@@ -26,7 +26,7 @@ import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,20 +35,20 @@ import java.util.List;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 
 class DigitalTwinDelegateTest {
 
-    final DigitalTwinRegistryFacade digitalTwinRegistryFacade = mock(DigitalTwinRegistryFacade.class);
-    final DigitalTwinDelegate digitalTwinDelegate = new DigitalTwinDelegate(null, digitalTwinRegistryFacade);
+    final DigitalTwinRegistryService digitalTwinRegistryService = mock(DigitalTwinRegistryService.class);
+    final DigitalTwinDelegate digitalTwinDelegate = new DigitalTwinDelegate(null, digitalTwinRegistryService);
 
     @Test
     void shouldFillItemContainerWithShell() {
         // given
-        when(digitalTwinRegistryFacade.getAAShellDescriptor(anyString())).thenReturn(shellDescriptor(
+        when(digitalTwinRegistryService.getAAShellDescriptor(any())).thenReturn(shellDescriptor(
                 List.of(submodelDescriptorWithoutEndpoint("any"))));
 
         // when
@@ -63,7 +63,7 @@ class DigitalTwinDelegateTest {
     @Test
     void shouldCatchRestClientExceptionAndPutTombstone() {
         // given
-        when(digitalTwinRegistryFacade.getAAShellDescriptor(anyString())).thenThrow(
+        when(digitalTwinRegistryService.getAAShellDescriptor(any())).thenThrow(
                 new RestClientException("Unable to call endpoint"));
 
         // when

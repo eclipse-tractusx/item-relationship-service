@@ -20,23 +20,11 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-
-package org.eclipse.tractusx.irs.persistence;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
 /**
- * Interface for storing data blobs.
+ * A single Discovery Endpoint.
  */
-public interface BlobPersistence {
-
-    void putBlob(String targetBlobName, byte[] blob) throws BlobPersistenceException;
-
-    Optional<byte[]> getBlob(String sourceBlobName) throws BlobPersistenceException;
-
-    Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException;
-
-    boolean delete(String jobId, List<String> processIds) throws BlobPersistenceException;
+public record DiscoveryEndpoint(String type, String description, String endpointAddress, String documentation,
+                                String resourceId) {
 }

@@ -20,15 +20,12 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
-package org.eclipse.tractusx.irs.persistence;
+import java.util.List;
 
 /**
- * Exception for everything related to BlobPersistence actions
+ * The result of searching the Discovery Finder. Contains a list of {@link DiscoveryEndpoint}s.
  */
-public class BlobPersistenceException extends Exception {
-
-    public BlobPersistenceException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
+public record DiscoveryResponse(List<DiscoveryEndpoint> endpoints) {
 }

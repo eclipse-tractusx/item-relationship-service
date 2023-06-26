@@ -30,6 +30,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -41,19 +42,19 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.BpdmDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryFacade;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
-import org.eclipse.tractusx.irs.persistence.MinioBlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -64,20 +65,25 @@ import org.springframework.context.annotation.Profile;
  * Spring configuration for job-related beans.
  */
 @Configuration
-@SuppressWarnings({ "PMD.ExcessiveImports", "PMD.TooManyMethods" })
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 public class JobConfiguration {
-
+    public static final String JOB_BLOB_PERSISTENCE = "JobPersistence";
     public static final int EXECUTOR_CORE_POOL_SIZE = 5;
+    private static final Integer EXPIRE_AFTER_DAYS = 7;
 
     @Bean
-    public OutboundMeterRegistryService outboundMeterRegistryService(final MeterRegistry meterRegistry, final RetryRegistry retryRegistry) {
+    public OutboundMeterRegistryService outboundMeterRegistryService(final MeterRegistry meterRegistry,
+            final RetryRegistry retryRegistry) {
         return new OutboundMeterRegistryService(meterRegistry, retryRegistry);
     }
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinDelegate digitalTwinDelegate, final BlobPersistence blobStore, final JobStore jobStore,
-            final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
+            final DigitalTwinDelegate digitalTwinDelegate, @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
+            final JobStore jobStore, final MeterRegistryService meterService,
+            final ApplicationEventPublisher applicationEventPublisher,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
             @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs) {
 
@@ -101,10 +107,10 @@ public class JobConfiguration {
     }
 
     @Profile("!test")
-    @Bean
+    @Bean(JOB_BLOB_PERSISTENCE)
     public BlobPersistence blobStore(final BlobstoreConfiguration config) throws BlobPersistenceException {
         return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(),
-                config.getBucketName());
+                config.getBucketName(), EXPIRE_AFTER_DAYS);
     }
 
     @Bean
@@ -119,13 +125,12 @@ public class JobConfiguration {
 
     @Bean
     public DigitalTwinDelegate digitalTwinDelegate(final BpdmDelegate bpdmDelegate,
-            final DigitalTwinRegistryFacade digitalTwinRegistryFacade) {
-        return new DigitalTwinDelegate(bpdmDelegate, digitalTwinRegistryFacade);
+            final DigitalTwinRegistryService digitalTwinRegistryService) {
+        return new DigitalTwinDelegate(bpdmDelegate, digitalTwinRegistryService);
     }
 
     @Bean
-    public BpdmDelegate bpdmDelegate(final RelationshipDelegate relationshipDelegate,
-            final BpdmFacade bpdmFacade) {
+    public BpdmDelegate bpdmDelegate(final RelationshipDelegate relationshipDelegate, final BpdmFacade bpdmFacade) {
         return new BpdmDelegate(relationshipDelegate, bpdmFacade);
     }
 

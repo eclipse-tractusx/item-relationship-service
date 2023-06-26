@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add parameter for `digitalTwinRegistry.type` and `digitalTwinRegistry.discoveryFinderUrl`
+- Added new configmap values for policy store blobstore connection
+
+### Changed
+- Minio is deployed by default with non-root rights
 
 ## [5.3.1] - 2023-05-15
 ### Fixed

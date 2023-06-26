@@ -48,7 +48,7 @@ class IrsClientTest {
     void shouldStartJob() {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
-        IrsRequest irsRequest = IrsRequest.builder().globalAssetId("global-id").bomLifecycle("asBuilt").build();
+        IrsRequest irsRequest = IrsRequest.builder().key(IrsRequest.IdentificationKey.builder().globalAssetId("global-id").build()).bomLifecycle("asBuilt").build();
         JobHandle expectedResponse = JobHandle.builder().id(UUID.fromString(JOB_ID)).build();
 
         given(restTemplate.postForObject(URL + "/irs/jobs",

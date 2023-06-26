@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.dataspaceconnector.spi.query.Criterion;
 import org.eclipse.dataspaceconnector.spi.query.QuerySpec;
 import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogRequest;
@@ -62,13 +63,12 @@ public class EdcControlPlaneClient {
     private final EdcConfiguration config;
 
     /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
-        final var catalogUrl = config.getControlplane().getEndpoint().getData()
-                + "/catalog/request";
-        final var providerUrl = providerConnectorUrl + config.getControlplane().getProviderSuffix();
+        final var catalogUrl = config.getControlplane().getEndpoint().getData() + "/catalog/request";
         final var limit = config.getControlplane().getCatalogPageSize();
 
-        final CatalogRequest request = buildCatalogRequest(offset, providerUrl, limit);
-        return edcRestTemplate.exchange(catalogUrl, HttpMethod.POST, new HttpEntity<>(request, headers()), Catalog.class).getBody();
+        final CatalogRequest request = buildCatalogRequest(offset, providerConnectorUrl, limit);
+        return edcRestTemplate.exchange(catalogUrl, HttpMethod.POST, new HttpEntity<>(request, headers()),
+                Catalog.class).getBody();
     }
 
     private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit) {
@@ -77,6 +77,18 @@ public class EdcControlPlaneClient {
             querySpec.limit(limit);
         }
         return CatalogRequest.builder().providerUrl(providerUrl).querySpec(querySpec.build()).build();
+    }
+
+    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key, final String value) {
+        final var catalogUrl = config.getControlplane().getEndpoint().getData() + "/catalog/request";
+
+        final var querySpec = QuerySpec.Builder.newInstance().filter(List.of(new Criterion(key, "=", value)));
+        final var catalogRequest = CatalogRequest.builder()
+                                                 .providerUrl(providerConnectorUrl)
+                                                 .querySpec(querySpec.build())
+                                                 .build();
+        return edcRestTemplate.exchange(catalogUrl, HttpMethod.POST, new HttpEntity<>(catalogRequest, headers()),
+                Catalog.class).getBody();
     }
 
     /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {
