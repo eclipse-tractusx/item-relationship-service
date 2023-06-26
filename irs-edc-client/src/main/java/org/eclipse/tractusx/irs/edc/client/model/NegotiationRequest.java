@@ -39,16 +39,16 @@ import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 @Builder(toBuilder = true)
 @Jacksonized
 public class NegotiationRequest {
-    public static final String CONNECTOR_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/connectorAddress";
-    public static final String PROTOCOL = "https://w3id.org/edc/v0.0.1/ns/protocol";
-    public static final String CONNECTOR_ID = "https://w3id.org/edc/v0.0.1/ns/connectorId";
-    public static final String PROVIDER_ID = "https://w3id.org/edc/v0.0.1/ns/providerId";
-    public static final String CONSUMER_ID = "https://w3id.org/edc/v0.0.1/ns/consumerId";
-    public static final String OFFER = "https://w3id.org/edc/v0.0.1/ns/offer";
-    public static final String CALLBACK_ADDRESSES = "https://w3id.org/edc/v0.0.1/ns/callbackAddresses";
-    public static final String OFFER_ID = "https://w3id.org/edc/v0.0.1/ns/offerId";
-    public static final String ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
-    public static final String POLICY = "https://w3id.org/edc/v0.0.1/ns/policy";
+    public static final String NEGOTIATION_CONNECTOR_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/connectorAddress";
+    public static final String NEGOTIATION_PROTOCOL = "https://w3id.org/edc/v0.0.1/ns/protocol";
+    public static final String NEGOTIATION_CONNECTOR_ID = "https://w3id.org/edc/v0.0.1/ns/connectorId";
+    public static final String NEGOTIATION_PROVIDER_ID = "https://w3id.org/edc/v0.0.1/ns/providerId";
+    public static final String NEGOTIATION_CONSUMER_ID = "https://w3id.org/edc/v0.0.1/ns/consumerId";
+    public static final String NEGOTIATION_OFFER = "https://w3id.org/edc/v0.0.1/ns/offer";
+    public static final String NEGOTIATION_CALLBACK_ADDRESSES = "https://w3id.org/edc/v0.0.1/ns/callbackAddresses";
+    public static final String NEGOTIATION_OFFER_ID = "https://w3id.org/edc/v0.0.1/ns/offerId";
+    public static final String NEGOTIATION_ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
+    public static final String NEGOTIATION_POLICY = "https://w3id.org/edc/v0.0.1/ns/policy";
 
     @NotBlank(message = "connectorAddress is mandatory")
     private String connectorAddress;
