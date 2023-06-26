@@ -5,9 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [5.3.1] - 2023-06-26
 ### Added
 - Add parameter for `digitalTwinRegistry.type` and `digitalTwinRegistry.discoveryFinderUrl`
 - Added new configmap values for policy store blobstore connection
+- Callback url parameter so set the EDC EDR callback for IRS `edc.callbackurl`
+- EDC endpoints for catalog, contractnegotiation, transferprocess and state are now configurable via edc.controlplane.endpoint 
 
 ### Changed
 - Minio is deployed by default with non-root rights
