@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ import org.springframework.web.client.RestClientException;
 @RequiredArgsConstructor
 public class EndpointDataForConnectorsService {
 
-    private static final String DT_REGISTRY_ASSET_TYPE = "asset:prop:type";
+    private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
 
     private final EdcSubmodelFacade edcSubmodelFacade;

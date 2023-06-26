@@ -28,11 +28,12 @@ import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
-import org.eclipse.dataspaceconnector.policy.model.Constraint;
-import org.eclipse.dataspaceconnector.policy.model.Operator;
-import org.eclipse.dataspaceconnector.policy.model.Permission;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.edc.policy.model.AtomicConstraint;
+import org.eclipse.edc.policy.model.Constraint;
+import org.eclipse.edc.policy.model.Operator;
+import org.eclipse.edc.policy.model.OrConstraint;
+import org.eclipse.edc.policy.model.Permission;
+import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.StringMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,9 @@ public class PolicyCheckerService {
 
     private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {
         return permission.getAction().getType().equals(policyDefinition.getPermissionActionType())
-                && permission.getConstraints().stream().anyMatch(constraint -> isValid(constraint, policyDefinition));
+                && permission.getConstraints()
+                             .stream()
+                .anyMatch(constraint -> isValid(constraint, policyDefinition));
     }
 
     private boolean isValid(final Constraint constraint, final PolicyDefinition policyDefinition) {
@@ -84,6 +87,10 @@ public class PolicyCheckerService {
                                                     Operator.valueOf(policyDefinition.getConstraintOperator()))
                                             .build()
                                             .isValid();
+        } else if (constraint instanceof OrConstraint orConstraint) {
+            return orConstraint.getConstraints()
+                               .stream()
+                               .anyMatch(constraint1 -> isValid(constraint1, policyDefinition));
         }
         return false;
     }

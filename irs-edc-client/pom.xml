@@ -48,16 +48,43 @@
 
         <!-- EDC Client -->
         <dependency>
-            <groupId>org.eclipse.dataspaceconnector</groupId>
-            <artifactId>catalog-spi</artifactId>
-            <version>0.0.1-milestone-6</version>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>connector-core</artifactId>
+            <version>0.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>runtime-metamodel</artifactId>
+                    <groupId>org.eclipse.edc</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.dataspaceconnector</groupId>
-            <artifactId>contract-spi</artifactId>
-            <version>0.0.1-milestone-6</version>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp</artifactId>
+            <version>0.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>runtime-metamodel</artifactId>
+                    <groupId>org.eclipse.edc</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>json-ld</artifactId>
+            <version>0.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>runtime-metamodel</artifactId>
+                    <groupId>org.eclipse.edc</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <artifactId>runtime-metamodel</artifactId>
+            <groupId>org.eclipse.edc</groupId>
+            <version>0.1.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
