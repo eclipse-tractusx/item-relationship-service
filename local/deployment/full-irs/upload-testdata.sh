@@ -1,7 +1,7 @@
 #!/bin/bash
 ##################################################################################
 echo "Uploading testdata"
-py ../../testing/testdata/transform-and-upload.py \
+python ../../testing/testdata/transform-and-upload.py \
   -f ../../testing/testdata/CX_Testdata_v1.4.1-AsBuilt-reduced-with-asPlanned.json \
   -s http://irs-provider-backend:8080 \
   -su http://localhost:10199 \

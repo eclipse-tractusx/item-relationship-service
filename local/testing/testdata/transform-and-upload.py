@@ -491,7 +491,6 @@ if __name__ == "__main__":
                 else:
                     payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
                                                submodel_descriptors)
-                print(payload)
                 response = session.request(method="POST", url=f"{aas_url}/api/v3.0/shell-descriptors",
                                            headers=headers,
                                            data=payload)

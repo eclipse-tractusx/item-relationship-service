@@ -53,7 +53,7 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
 
     private String getAAShellIdentificationOrGlobalAssetId(final String globalAssetId) {
         final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
-                                                                           .key("globalAssetId")
+                                                                           .name("globalAssetId")
                                                                            .value(globalAssetId)
                                                                            .build();
 

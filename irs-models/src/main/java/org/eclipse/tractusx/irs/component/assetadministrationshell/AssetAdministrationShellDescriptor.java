@@ -90,7 +90,7 @@ public class AssetAdministrationShellDescriptor {
      */
     public Optional<String> findManufacturerId() {
         return this.specificAssetIds.stream()
-                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getKey()))
+                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getName()))
                                     .map(IdentifierKeyValuePair::getValue)
                                     .findFirst();
     }

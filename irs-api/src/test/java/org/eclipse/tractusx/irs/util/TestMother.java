@@ -255,7 +255,7 @@ public class TestMother {
             final List<SubmodelDescriptor> submodelDescriptors) {
         return AssetAdministrationShellDescriptor.builder()
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .key("ManufacturerId")
+                                                                                                 .name("ManufacturerId")
                                                                                                  .value("BPNL00000003AYRE")
                                                                                                  .build()))
                                                  .submodelDescriptors(submodelDescriptors)

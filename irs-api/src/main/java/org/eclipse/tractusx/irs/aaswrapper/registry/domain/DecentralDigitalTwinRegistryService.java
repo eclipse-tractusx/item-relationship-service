@@ -52,7 +52,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
                 connectorEndpoints).stream().findFirst().orElseThrow();
         final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
-                                                                                    .key("globalAssetId")
+                                                                                    .name("globalAssetId")
                                                                                     .value(key.globalAssetId())
                                                                                     .build();
         final String aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(

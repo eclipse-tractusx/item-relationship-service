@@ -162,7 +162,7 @@ class BpdmDelegateTest {
                 AssetAdministrationShellDescriptor
                         .builder()
                         .specificAssetIds(List.of(
-                                IdentifierKeyValuePair.builder().key(key).value(value).build()))
+                                IdentifierKeyValuePair.builder().name(key).value(value).build()))
                         .build());
     }
 

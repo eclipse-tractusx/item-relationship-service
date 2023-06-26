@@ -327,7 +327,7 @@ public class OpenApiExamples {
                                                  .idShort("future concept x")
                                                  .id("882fc530-b69b-4707-95f6-5dbc5e9baaa8")
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .key("engineserialid")
+                                                                                                 .name("engineserialid")
                                                                                                  .value("12309481209312")
                                                                                                  .build()))
                                                  .submodelDescriptors(List.of(createBaseSubmodelDescriptor(),

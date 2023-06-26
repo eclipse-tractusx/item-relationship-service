@@ -35,9 +35,9 @@ import lombok.extern.jackson.Jacksonized;
 public class IdentifierKeyValuePair {
 
     /**
-     * key
+     * name
      */
-    private String key;
+    private String name;
     /**
      * subjectId
      */

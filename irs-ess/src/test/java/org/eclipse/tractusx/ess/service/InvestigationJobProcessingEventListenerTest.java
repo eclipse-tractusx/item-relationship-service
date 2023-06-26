@@ -141,7 +141,7 @@ class InvestigationJobProcessingEventListenerTest {
         return AssetAdministrationShellDescriptor.builder()
                                                  .globalAssetId(catenaXId)
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .key("manufacturerId")
+                                                                                                 .name("manufacturerId")
                                                                                                  .value(bpn)
                                                                                                  .build()))
                                                  .build();

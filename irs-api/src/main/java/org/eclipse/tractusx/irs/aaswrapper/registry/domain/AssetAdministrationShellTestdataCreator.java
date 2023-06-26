@@ -72,7 +72,7 @@ class AssetAdministrationShellTestdataCreator {
                                                  .globalAssetId(catenaXId)
                                                  .idShort("idShort")
                                                  .id(catenaXId)
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder().key("ManufacturerId").value("BPNL00000003AYRE").build()))
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder().name("ManufacturerId").value("BPNL00000003AYRE").build()))
                                                  .submodelDescriptors(submodelDescriptors)
                                                  .build();
     }

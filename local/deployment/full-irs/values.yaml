@@ -510,6 +510,11 @@ irs:
     endpoint: "http://irs-minio:9000"
     accessKey: "${MINIO_ACCESS_KEY}"
     secretKey: "${MINIO_SECRET_KEY}"
+  policystore:
+    persistence:
+      endpoint: "http://irs-minio:9000"
+      accessKey: "${MINIO_ACCESS_KEY}"
+      secretKey: "${MINIO_SECRET_KEY}"
   keycloak:
     oauth2:
       clientId: *config-keycloak-client-id
