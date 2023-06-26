@@ -173,8 +173,10 @@ public class EdcControlPlaneClient {
 
     /* package */ Response startTransferProcess(final TransferProcessRequest request) {
         final String jsonObject = edcTransformer.transformTransferProcessRequestToJson(request).toString();
-        return edcRestTemplate.exchange(config.getControlplane().getEndpoint().getData() + "/transferprocesses",
-                HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class).getBody();
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getTransferProcess();
+        return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
+                              .getBody();
     }
 
     /* package */ CompletableFuture<TransferProcessResponse> getTransferProcess(final Response transferProcessId) {
