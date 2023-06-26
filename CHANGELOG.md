@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+
+## [3.0.0] - 2023-06-26
 ### Added
 - Handling of Decentral Digital Twin Registry as a way of request AAS for identifier
   - Extend Register Job with key field that contain BPN and globalAssetId
@@ -25,9 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `edc.controlplane.endpoint.contract-negotiation` 
     - `edc.controlplane.endpoint.transfer-process`
 - EDR Callback is now configurable via property `edc.callback-url`
-
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [2.6.1] - 2023-05-15
 ### Added
@@ -241,7 +242,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.1...3.0.0
 [2.6.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.1...2.6.0
 [2.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.0...2.5.1
