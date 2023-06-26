@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [5.3.1] - 2023-06-26
+## [6.0.0] - 2023-06-26
 ### Added
 - Add parameter for `digitalTwinRegistry.type` and `digitalTwinRegistry.discoveryFinderUrl`
 - Added new configmap values for policy store blobstore connection
@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Minio is deployed by default with non-root rights
+- Update to IRS 3.0.0
 
 ## [5.3.1] - 2023-05-15
 ### Fixed
