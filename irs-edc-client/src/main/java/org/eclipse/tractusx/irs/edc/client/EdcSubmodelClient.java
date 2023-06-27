@@ -47,6 +47,7 @@ import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.common.Masker;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
@@ -321,13 +322,18 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                                                                      .stream()
                                                                      .findFirst()
                                                                      .orElseThrow();
-                return CatalogItem.builder()
-                                  .itemId(contractOffer.getId())
-                                  .assetPropId(contractOffer.getProperty(NAMESPACE_EDC_ID).toString())
-                                  .connectorId(catalog.getId())
-                                  .offerId(offer.getKey())
-                                  .policy(offer.getValue())
-                                  .build();
+                final var catalogItem = CatalogItem.builder()
+                                                   .itemId(contractOffer.getId())
+                                                   .assetPropId(contractOffer.getProperty(NAMESPACE_EDC_ID).toString())
+                                                   .connectorId(catalog.getId())
+                                                   .offerId(offer.getKey())
+                                                   .policy(offer.getValue());
+                if (catalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
+                    catalogItem.connectorId(
+                            catalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString());
+                }
+
+                return catalogItem.build();
             }).toList();
             final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
                     items.stream().findFirst().orElseThrow());
