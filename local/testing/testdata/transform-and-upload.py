@@ -33,10 +33,10 @@ def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submode
             "@type": "DataAddress",
             "type": "HttpData",
             "baseUrl": f"{submodel_url_}/data/{digital_twin_submodel_id_}",
-            "proxyPath": "true",
-            "proxyBody": "true",
-            "proxyMethod": "true",
-            "proxyQueryParams": "true"
+            "proxyPath": "false",
+            "proxyBody": "false",
+            "proxyMethod": "false",
+            "proxyQueryParams": "false"
         }
     })
 
