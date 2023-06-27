@@ -100,6 +100,14 @@ blobstore:
   secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
   bucketName: irsbucket # the name of the S3 bucket to be created / used by the IRS
 
+policystore:
+  persistence:
+    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
+    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
+
 resilience4j:
   retry: # REST client retry configuration
     configs:
@@ -115,11 +123,16 @@ resilience4j:
         baseConfig: default
 
 edc:
+  callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
       data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
-    provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data} # Suffix to add to data requests to the EDC provider controlplane
+      catalog: ${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request} # EDC consumer controlplane catalog path
+      contract-negotiation: ${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations} # EDC consumer controlplane contract negotiation path
+      transfer-process: ${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses} # EDC consumer controlplane transfer process path
+      state-suffix: ${EDC_CONTROLPLANE_ENDPOINT_DATA:/v2/state} # Path of the state suffix for contract negotiation and transfer process
+    provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp} # Suffix to add to data requests to the EDC provider controlplane
     catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000} # Max number of items to fetch from the EDC provider catalog
     catalog-page-size: ${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50} # Number of items to fetch at one page from the EDC provider catalog when using pagination
     api-key:
@@ -201,8 +214,8 @@ ess:
     timeout:
       read: PT90S # HTTP read timeout for the discovery client
       connect: PT90S # HTTP connect timeout for the discovery client
-    mockEdcAddress: {} # Mocked EDC BPN Addresses
-    mockEdcResult: {} # Mocked BPN Investigation results
+    mockEdcAddress: { } # Mocked EDC BPN Addresses
+    mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
 apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API

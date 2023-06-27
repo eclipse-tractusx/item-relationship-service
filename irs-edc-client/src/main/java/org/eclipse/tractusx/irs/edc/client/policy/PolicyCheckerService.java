@@ -22,17 +22,20 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
-import org.eclipse.dataspaceconnector.policy.model.Constraint;
-import org.eclipse.dataspaceconnector.policy.model.Operator;
-import org.eclipse.dataspaceconnector.policy.model.Permission;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.edc.policy.model.AtomicConstraint;
+import org.eclipse.edc.policy.model.Constraint;
+import org.eclipse.edc.policy.model.Operator;
+import org.eclipse.edc.policy.model.OrConstraint;
+import org.eclipse.edc.policy.model.Permission;
+import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.StringMapper;
-import org.springframework.beans.factory.annotation.Value;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
 
@@ -41,30 +44,37 @@ import org.springframework.web.util.UriUtils;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PolicyCheckerService {
 
-    private final List<String> allowedPolicies;
-
-    public PolicyCheckerService(@Value("${edc.catalog.policies.allowedNames}") final List<String> allowedPolicies) {
-        this.allowedPolicies = allowedPolicies;
-    }
+    private final AcceptedPoliciesProvider policyStore;
 
     public boolean isValid(final Policy policy) {
-        final List<PolicyDefinition> policyList = allowedPolicies.stream()
-                                                                 .flatMap(this::addEncodedVersion)
-                                                                 .map(this::createPolicy)
-                                                                 .toList();
+        final List<PolicyDefinition> policyList = getAllowedPolicies();
         log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policy),
-                String.join(",", allowedPolicies));
+                String.join(",", policyList.stream().map(PolicyDefinition::getRightExpressionValue).toList()));
         return policy.getPermissions()
                      .stream()
                      .anyMatch(permission -> policyList.stream()
                                                        .anyMatch(allowedPolicy -> isValid(permission, allowedPolicy)));
     }
 
+    @NotNull
+    private List<PolicyDefinition> getAllowedPolicies() {
+        return policyStore.getAcceptedPolicies()
+                          .stream()
+                          .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
+                          .map(AcceptedPolicy::policyId)
+                          .flatMap(this::addEncodedVersion)
+                          .map(this::createPolicy)
+                          .toList();
+    }
+
     private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {
         return permission.getAction().getType().equals(policyDefinition.getPermissionActionType())
-                && permission.getConstraints().stream().anyMatch(constraint -> isValid(constraint, policyDefinition));
+                && permission.getConstraints()
+                             .stream()
+                .anyMatch(constraint -> isValid(constraint, policyDefinition));
     }
 
     private boolean isValid(final Constraint constraint, final PolicyDefinition policyDefinition) {
@@ -77,6 +87,10 @@ public class PolicyCheckerService {
                                                     Operator.valueOf(policyDefinition.getConstraintOperator()))
                                             .build()
                                             .isValid();
+        } else if (constraint instanceof OrConstraint orConstraint) {
+            return orConstraint.getConstraints()
+                               .stream()
+                               .anyMatch(constraint1 -> isValid(constraint1, policyDefinition));
         }
         return false;
     }

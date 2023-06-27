@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.edc.client.model;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import org.eclipse.dataspaceconnector.spi.query.QuerySpec;
+import org.eclipse.edc.spi.query.QuerySpec;
 
 /**
  * Retrieving Catalog request

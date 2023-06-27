@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
@@ -43,5 +45,6 @@ public class NegotiationResponse {
     private String protocol;
     private String state;
     private String type;
+    private List<String> callbackAddresses;
 
 }

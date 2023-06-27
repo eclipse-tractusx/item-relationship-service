@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createCatalog;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,12 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
-import org.eclipse.dataspaceconnector.policy.model.Policy;
-import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
-import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,9 +50,7 @@ class EDCCatalogFacadeTest {
     @BeforeEach
     void setUp() {
         controlPlaneClient = mock(EdcControlPlaneClient.class);
-        final EdcConfiguration.ControlplaneConfig controlplaneConfig = new EdcConfiguration.ControlplaneConfig();
-        controlplaneConfig.setCatalogPageSize(DEFAULT_PAGE_SIZE);
-        edcConfig.setControlplane(controlplaneConfig);
+        edcConfig.getControlplane().setCatalogPageSize(DEFAULT_PAGE_SIZE);
         edcCatalogFacade = new EDCCatalogFacade(controlPlaneClient, edcConfig);
     }
 
@@ -99,7 +93,7 @@ class EDCCatalogFacadeTest {
     @Test
     void shouldReturnOnePageIfOfferIsFound() {
         // arrange
-        final var assetId = "testTarget";
+        final var assetId = "testTarget2";
         final String connectorUrl = "testConnector";
         final var firstPage = createCatalog("testTarget", DEFAULT_PAGE_SIZE);
         final var secondPage = createCatalog("other", DEFAULT_PAGE_SIZE);
@@ -115,21 +109,4 @@ class EDCCatalogFacadeTest {
         verify(controlPlaneClient, times(1)).getCatalog(any(), anyInt());
     }
 
-    private Catalog createCatalog(final String assetId, final int numberOfOffers) {
-        final Policy policy = mock(Policy.class);
-
-        final List<ContractOffer> contractOffers = IntStream.range(0, numberOfOffers)
-                                                            .boxed()
-                                                            .map(i -> ContractOffer.Builder.newInstance()
-                                                                                           .id("offer"+i)
-                                                                                           .asset(createAsset(assetId))
-                                                                                           .policy(policy)
-                                                                                           .build())
-                                                            .toList();
-        return Catalog.Builder.newInstance().id("default").contractOffers(contractOffers).build();
-    }
-
-    private static Asset createAsset(final String assetId) {
-        return Asset.Builder.newInstance().id(assetId).property("asset:prop:id", assetId).build();
-    }
 }

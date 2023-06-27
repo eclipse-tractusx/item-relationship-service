@@ -39,6 +39,7 @@ public class EdcConfiguration {
 
     private ControlplaneConfig controlplane = new ControlplaneConfig();
     private SubmodelConfig submodel = new SubmodelConfig();
+    private String callbackUrl;
 
     /**
      * Container for controlplane config
@@ -63,6 +64,10 @@ public class EdcConfiguration {
         @Data
         public static class EndpointConfig {
             private String data;
+            private String catalog;
+            private String contractNegotiation;
+            private String transferProcess;
+            private String stateSuffix;
 
         }
 

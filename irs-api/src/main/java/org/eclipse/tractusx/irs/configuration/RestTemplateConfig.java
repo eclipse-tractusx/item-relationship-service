@@ -31,7 +31,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.policy.model.PolicyRegistrationTypes;
+import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;

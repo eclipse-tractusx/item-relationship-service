@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
+
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URLDecoder;
@@ -30,14 +32,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.common.Masker;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
@@ -55,6 +60,7 @@ import org.springframework.web.client.ResourceAccessException;
 /**
  * Public API facade for EDC domain
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public interface EdcSubmodelClient {
     CompletableFuture<List<Relationship>> getRelationships(String submodelEndpointAddress,
             RelationshipAspect traversalAspectType) throws EdcClientException;
@@ -125,6 +131,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 @SuppressWarnings("PMD.TooManyMethods")
 class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
+    public static final String UUID_REGEX = "\\p{XDigit}{8}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{12}";
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
@@ -157,7 +164,15 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
             throws EdcClientException {
-        final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodel().getUrnPrefix());
+        final Pattern pairRegex = Pattern.compile(UUID_REGEX + "-" + UUID_REGEX);
+        final Matcher matcher = pairRegex.matcher(submodelEndpointAddress);
+        if (!matcher.find()) {
+            throw new EdcClientException(
+                    "Cannot extract assetId from endpoint address, malformed format: " + submodelEndpointAddress);
+        }
+        final String assetId = matcher.group(0);
+
+        final int indexOfUrn = findIndexOf(submodelEndpointAddress, assetId);
         final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodel().getPath());
 
         if (indexOfUrn == -1 || indexOfSubModel == -1) {
@@ -166,8 +181,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         }
 
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
-        final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
+        final String decodedTarget = URLDecoder.decode(assetId, StandardCharsets.UTF_8);
         final String providerWithSuffix = appendSuffix(providerConnectorUrl,
                 config.getControlplane().getProviderSuffix());
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerWithSuffix,
@@ -295,21 +309,26 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return execute(endpointAddress, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
-            final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
+            final String providerWithSuffix = appendSuffix(endpointAddress,
+                    config.getControlplane().getProviderSuffix());
 
-            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey, filterValue);
+            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey,
+                    filterValue);
 
-            final List<CatalogItem> items = catalog.getContractOffers()
-                                                   .stream()
-                                                   .map(contractOffer -> CatalogItem.builder()
-                                                                                    .itemId(contractOffer.getId())
-                                                                                    .assetPropId(
-                                                                                            contractOffer.getAsset()
-                                                                                                         .getId())
-                                                                                    .connectorId(catalog.getId())
-                                                                                    .policy(contractOffer.getPolicy())
-                                                                                    .build())
-                                                   .toList();
+            final List<CatalogItem> items = catalog.getDatasets().stream().map(contractOffer -> {
+                final Map.Entry<String, Policy> offer = contractOffer.getOffers()
+                                                                     .entrySet()
+                                                                     .stream()
+                                                                     .findFirst()
+                                                                     .orElseThrow();
+                return CatalogItem.builder()
+                                  .itemId(contractOffer.getId())
+                                  .assetPropId(contractOffer.getProperty(NAMESPACE_EDC_ID).toString())
+                                  .connectorId(catalog.getId())
+                                  .offerId(offer.getKey())
+                                  .policy(offer.getValue())
+                                  .build();
+            }).toList();
             final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
                     items.stream().findFirst().orElseThrow());
 
