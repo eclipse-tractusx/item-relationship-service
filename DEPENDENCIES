@@ -10,8 +10,8 @@ maven/mavencentral/com.fasterxml.jackson.core/jackson-databind/2.14.2, Apache-2.
 maven/mavencentral/com.fasterxml.jackson.core/jackson-databind/2.15.0, Apache-2.0, approved, #7934
 maven/mavencentral/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.14.2, Apache-2.0, approved, #5933
 maven/mavencentral/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.15.0, Apache-2.0, approved, #8802
-maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jakarta-jsonp/2.15.0, None, restricted, #9180
-maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jakarta-jsonp/2.15.1, None, restricted, #9179
+maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jakarta-jsonp/2.15.0, Apache-2.0, approved, #9180
+maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jakarta-jsonp/2.15.1, Apache-2.0, approved, #9179
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.15.0, Apache-2.0, approved, #8808
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.15.0, Apache-2.0, approved, #7930
 maven/mavencentral/com.fasterxml.jackson.module/jackson-module-parameter-names/2.15.0, Apache-2.0, approved, #8803
@@ -41,7 +41,7 @@ maven/mavencentral/commons-digester/commons-digester/2.1, Apache-2.0, approved, 
 maven/mavencentral/commons-io/commons-io/2.11.0, Apache-2.0, approved, CQ23745
 maven/mavencentral/commons-logging/commons-logging/1.2, Apache-2.0, approved, CQ10162
 maven/mavencentral/commons-validator/commons-validator/1.7, Apache-2.0, approved, clearlydefined
-maven/mavencentral/dev.failsafe/failsafe-okhttp/3.3.1, None, restricted, #9178
+maven/mavencentral/dev.failsafe/failsafe-okhttp/3.3.1, Apache-2.0, approved, #9178
 maven/mavencentral/dev.failsafe/failsafe/3.3.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/dk.brics.automaton/automaton/1.11-8, BSD-2-Clause, approved, clearlydefined
 maven/mavencentral/io.github.classgraph/classgraph/4.8.149, MIT, approved, CQ22530
