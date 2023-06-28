@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.1] - 2023-06-26
+### Changed
+- Update IRS to version 3.0.1
+- Disable EDC Catalog caching by default. You can enable it again by setting `edc.catalog.cache.enabled` to true
+
 ## [6.0.0] - 2023-06-26
 ### Added
 - Add parameter for `digitalTwinRegistry.type` and `digitalTwinRegistry.discoveryFinderUrl`
