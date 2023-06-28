@@ -189,11 +189,16 @@ resilience4j:
         baseConfig: default
 
 edc:
+  callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
       data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
-    provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data} # Suffix to add to data requests to the EDC provider controlplane
+      catalog: ${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request} # EDC consumer controlplane catalog path
+      contract-negotiation: ${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations} # EDC consumer controlplane contract negotiation path
+      transfer-process: ${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses} # EDC consumer controlplane transfer process path
+      state-suffix: ${EDC_CONTROLPLANE_ENDPOINT_DATA:/state} # Path of the state suffix for contract negotiation and transfer process
+    provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp} # Suffix to add to data requests to the EDC provider controlplane
     catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000} # Max number of items to fetch from the EDC provider catalog
     catalog-page-size: ${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50} # Number of items to fetch at one page from the EDC provider catalog when using pagination
     api-key:
@@ -275,8 +280,8 @@ ess:
     timeout:
       read: PT90S # HTTP read timeout for the discovery client
       connect: PT90S # HTTP connect timeout for the discovery client
-    mockEdcAddress: {} # Mocked EDC BPN Addresses
-    mockEdcResult: {} # Mocked BPN Investigation results
+    mockEdcAddress: { } # Mocked EDC BPN Addresses
+    mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
 apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API
@@ -340,16 +345,21 @@ edc:
   controlplane:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
+      catalog: /v2/catalog/request  # EDC consumer controlplane catalog path
+      contractnegotiation: /v2/contractnegotiations  # EDC consumer controlplane contract negotiation path
+      transferprocess: /v2/transferprocesses  # EDC consumer controlplane transfer process path
+      statesuffix: /state  # Path of the state suffix for contract negotiation and transfer process
     request:
       ttl: PT10M  # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     provider:
-      suffix: /api/v1/ids/data
+      suffix: /api/v1/dsp
     catalog:
       limit: 1000  # Max number of catalog items to retrieve from the controlplane
       pagesize: 50  # Number of catalog items to retrieve on one page for pagination
     apikey:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
+  callbackurl:
   submodel:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
@@ -464,11 +474,6 @@ grafana:
   admin:
     existingSecret: "{{ .Release.Name }}-irs-helm"
     userKey: grafanaUser
-    passwordKey: grafanaPassword
-
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -530,116 +535,160 @@ The **key** of each entry is the `Base64` encoded URN of the model. The **value*
 If you want to provide your own EDC consumer, add the following entries to your values.yaml:
 
 ```yaml
+tractusx-connector:
+  install:
+    daps: false
+    vault: false
+  participant:
+    id:
+  controlplane:
+    ingresses:
+      - enabled: false
+
+    endpoints:
+      # -- default api for health checks, should not be added to any ingress
+      default:
+        port: 8080
+        path: /api
+      # -- data management api, used by internal users, can be added to an ingress and must not be internet facing
+      management:
+        port: 8081
+        path: /management
+        # -- authentication key, must be attached to each 'X-Api-Key' request header
+        authKey: ""
+      # -- control api, used for internal control calls. can be added to the internal ingress, but should probably not
+      control:
+        port: 8083
+        path: /control
+      # -- ids api, used for inter connector communication and must be internet facing
+      protocol:
+        port: 8084
+        path: /api/v1/dsp
+      # -- metrics api, used for application metrics, must not be internet facing
+      metrics:
+        port: 9090
+        path: /metrics
+      # -- observability api with unsecured access, must not be internet facing
+      observability:
+        port: 8085
+        # -- observability api, provides /health /readiness and /liveness endpoints
+        path: /observability
+        # -- allow or disallow insecure access, i.e. access without authentication
+        insecure: true
+
+    internationalDataSpaces:
+      id: TXDC
+      description: Tractus-X Eclipse IDS Data Space Connector
+      title: ""
+      maintainer: ""
+      curator: ""
+      catalogId: TXDC-Catalog
+
+    # Explicitly declared url for reaching the ids api (e.g. if ingresses not used)
+    url:
+      ids: ""
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 200m
+        memory: 512Mi
+
+  dataplane:
+    ingresses:
+      - enabled: false
+
+    endpoints:
+      default:
+        port: 8080
+        path: /api
+      public:
+        port: 8081
+        path: /api/public
+      control:
+        port: 8083
+        path: /api/dataplane/control
+      observability:
+        port: 8085
+        path: /observability
+        insecure: true
+      metrics:
+        port: 9090
+        path: /metrics
+
+    # Explicitly declared url for reaching the public api (e.g. if ingresses not used)
+    url:
+      public: ""
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+
+  # URL where the EndpointDataReference callback will be sent to
+  backendService:
+    httpProxyTokenReceiverUrl: ""
+
+  ################################
+  # EDC Vault/DAPS Configuration #
+  ################################
+  vault:
+    hashicorp:
+      url: ""
+      token: ""
+      timeout: 30
+      healthCheck:
+        enabled: true
+        standbyOk: true
+      paths:
+        secret: /v1/
+        health: /v1/sys/health
+    secretNames:
+      transferProxyTokenSignerPrivateKey:
+      transferProxyTokenSignerPublicKey:
+      transferProxyTokenEncryptionAesKey:
+      dapsPrivateKey:
+      dapsPublicKey:
+
+  daps:
+    url: ""
+    clientId: ""
+    paths:
+      jwks: /.well-known/jwks.json
+      token: /token
+
+  ##################################
+  # EDC Postgres Configuration #
+  ##################################
+  postgresql:
+    auth:
+      database: "edc"
+      username: <databaseuser>
+      password: <databasepassword>
+    enabled: true
+    jdbcUrl: ""
+    username: ""
+    password: ""
+
 ##############################
 # EDC Postgres Configuration #
 ##############################
+# EDC chart do not support multiple postgres instances in the same namespace at the moment.
+# Enable this to use the postgres dependency for when you want to deploy multiple EDC instances in one namespace
 postgresql:
+  enabled:
+
+edc-postgresql:
   auth:
-    username: edc
+    username: <databaseuser>
     database: edc
-    postgresPassword: <postgres-admin-password>
-    password: <postgres-password>
-
-##################################
-# EDC Controlplane Configuration #
-##################################
-edc-controlplane:
-  ingresses:
-    - enabled: true
-      hostname: "<controlplane-url>"
-      annotations:
-        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      endpoints:
-        - protocol
-      className: ""
-      tls:
-        - hosts:
-            - "<controlplane-url>"
-          secretName: tls-secret
-      certManager:
-        issuer: ""
-        clusterIssuer: ""
-
-  edc:
-    receiver:
-      callback:
-        url: "http://{{ .Release.Name }}-irs-helm:8181/internal/endpoint-data-reference"  # IRS EDC callback URL, e.g. http://app-irs-helm:8181/internal/endpoint-data-reference
-    postgresql:
-      user: edc
-      password: <postgres-password>
-    transfer:
-      proxy:
-        token:
-          verifier:
-            publickey:
-              alias: <daps-certificate-name>
-          signer:
-            privatekey:
-              alias: <daps-privatekey-name>
-    api:
-      auth:
-        key: "<edc-api-key>"
-    controlplane:
-      url: "https://<controlplane-url>"
-    dataplane:
-      url: "https://<dataplane-url>"
-    vault:
-      hashicorp:
-        token: "<vault-token>"
-  configuration:
-    properties: |-
-      edc.oauth.client.id=<daps-client-id>
-      edc.oauth.private.key.alias=<daps-privatekey-name>
-      edc.oauth.provider.jwks.url=<daps-jwks-url>
-      edc.oauth.certificate.alias=<daps-certificate-name>
-      edc.oauth.token.url=<daps-token-url>
-      edc.vault.hashicorp.url=<vault-url>
-      edc.vault.hashicorp.api.secret.path=<vault-secret-store-path>
-      edc.data.encryption.keys.alias=<daps-privatekey-name>
-      edc.data.encryption.algorithm=NONE
-
-###############################
-# EDC Dataplane Configuration #
-###############################
-edc-dataplane:
-  edc:
-    api:
-      auth:
-        key: "<edc-api-key>"
-    vault:
-      hashicorp:
-        token: "<vault-token>"
-  ## Ingress declaration to expose the network service.
-  ingresses:
-    - enabled: true
-      hostname: "<dataplane-url>"
-      annotations:
-        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
-        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      endpoints:
-        - public
-      className: "nginx"
-      tls:
-        - hosts:
-            - "<dataplane-url>"
-          secretName: tls-secret
-      certManager:
-        issuer: ""
-        clusterIssuer: ""
-
-  configuration:
-    properties: |-
-      edc.oauth.client.id=<daps-client-id>
-      edc.oauth.private.key.alias=<daps-privatekey-name>
-      edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
-      edc.oauth.provider.jwks.url=<daps-jwks-url>
-      edc.oauth.certificate.alias=<daps-certificate-name>
-      edc.oauth.token.url=<daps-token-url>
-      edc.vault.hashicorp.url=<vault-url>
-      edc.vault.hashicorp.api.secret.path=<vault-secret-store-path>
+    postgresPassword: <databasepassword>
+    password: <databasepassword>
 ```
 
 #### Values explained

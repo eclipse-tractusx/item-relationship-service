@@ -787,11 +787,16 @@ pre.rouge {
         <span class="na">baseConfig</span><span class="pi">:</span> <span class="s">default</span>
 
 <span class="na">edc</span><span class="pi">:</span>
+  <span class="na">callback-url</span><span class="pi">:</span> <span class="s">${EDC_TRANSFER_CALLBACK_URL:}</span> <span class="c1"># The URL where the EDR token callback will be sent to.</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration</span>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:}</span> <span class="c1"># URL of the EDC consumer controlplane data endpoint</span>
-    <span class="na">provider-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data}</span> <span class="c1"># Suffix to add to data requests to the EDC provider controlplane</span>
+      <span class="na">catalog</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request}</span> <span class="c1"># EDC consumer controlplane catalog path</span>
+      <span class="na">contract-negotiation</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations}</span> <span class="c1"># EDC consumer controlplane contract negotiation path</span>
+      <span class="na">transfer-process</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses}</span> <span class="c1"># EDC consumer controlplane transfer process path</span>
+      <span class="na">state-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:/state}</span> <span class="c1"># Path of the state suffix for contract negotiation and transfer process</span>
+    <span class="na">provider-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp}</span> <span class="c1"># Suffix to add to data requests to the EDC provider controlplane</span>
     <span class="na">catalog-limit</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_LIMIT:1000}</span> <span class="c1"># Max number of items to fetch from the EDC provider catalog</span>
     <span class="na">catalog-page-size</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50}</span> <span class="c1"># Number of items to fetch at one page from the EDC provider catalog when using pagination</span>
     <span class="na">api-key</span><span class="pi">:</span>
@@ -873,8 +878,8 @@ pre.rouge {
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the discovery client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the discovery client</span>
-    <span class="na">mockEdcAddress</span><span class="pi">:</span> <span class="pi">{}</span> <span class="c1"># Mocked EDC BPN Addresses</span>
-    <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{}</span> <span class="c1"># Mocked BPN Investigation results</span>
+    <span class="na">mockEdcAddress</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked EDC BPN Addresses</span>
+    <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked BPN Investigation results</span>
     <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
 
 <span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000003CRHK}</span> <span class="c1"># BPN value that is allowed to access IRS API</span></code></pre>
@@ -883,7 +888,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-06-26 12:17:43 UTC
+Last updated 2023-06-28 10:42:52 UTC
 </div>
 </div>
 </body>

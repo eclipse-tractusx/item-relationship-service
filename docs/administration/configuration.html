@@ -832,11 +832,16 @@ You can define the URLs as well as most of the secrets yourself.</p>
         <span class="na">baseConfig</span><span class="pi">:</span> <span class="s">default</span>
 
 <span class="na">edc</span><span class="pi">:</span>
+  <span class="na">callback-url</span><span class="pi">:</span> <span class="s">${EDC_TRANSFER_CALLBACK_URL:}</span> <span class="c1"># The URL where the EDR token callback will be sent to.</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration</span>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:}</span> <span class="c1"># URL of the EDC consumer controlplane data endpoint</span>
-    <span class="na">provider-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data}</span> <span class="c1"># Suffix to add to data requests to the EDC provider controlplane</span>
+      <span class="na">catalog</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request}</span> <span class="c1"># EDC consumer controlplane catalog path</span>
+      <span class="na">contract-negotiation</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations}</span> <span class="c1"># EDC consumer controlplane contract negotiation path</span>
+      <span class="na">transfer-process</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses}</span> <span class="c1"># EDC consumer controlplane transfer process path</span>
+      <span class="na">state-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_ENDPOINT_DATA:/state}</span> <span class="c1"># Path of the state suffix for contract negotiation and transfer process</span>
+    <span class="na">provider-suffix</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp}</span> <span class="c1"># Suffix to add to data requests to the EDC provider controlplane</span>
     <span class="na">catalog-limit</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_LIMIT:1000}</span> <span class="c1"># Max number of items to fetch from the EDC provider catalog</span>
     <span class="na">catalog-page-size</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50}</span> <span class="c1"># Number of items to fetch at one page from the EDC provider catalog when using pagination</span>
     <span class="na">api-key</span><span class="pi">:</span>
@@ -918,8 +923,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the discovery client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the discovery client</span>
-    <span class="na">mockEdcAddress</span><span class="pi">:</span> <span class="pi">{}</span> <span class="c1"># Mocked EDC BPN Addresses</span>
-    <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{}</span> <span class="c1"># Mocked BPN Investigation results</span>
+    <span class="na">mockEdcAddress</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked EDC BPN Addresses</span>
+    <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked BPN Investigation results</span>
     <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
 
 <span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000003CRHK}</span> <span class="c1"># BPN value that is allowed to access IRS API</span></code></pre>
@@ -987,16 +992,21 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>  <span class="c1"># &lt;edc-controlplane-endpoint-data&gt;</span>
+      <span class="na">catalog</span><span class="pi">:</span> <span class="s">/v2/catalog/request</span>  <span class="c1"># EDC consumer controlplane catalog path</span>
+      <span class="na">contractnegotiation</span><span class="pi">:</span> <span class="s">/v2/contractnegotiations</span>  <span class="c1"># EDC consumer controlplane contract negotiation path</span>
+      <span class="na">transferprocess</span><span class="pi">:</span> <span class="s">/v2/transferprocesses</span>  <span class="c1"># EDC consumer controlplane transfer process path</span>
+      <span class="na">statesuffix</span><span class="pi">:</span> <span class="s">/state</span>  <span class="c1"># Path of the state suffix for contract negotiation and transfer process</span>
     <span class="na">request</span><span class="pi">:</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)</span>
     <span class="na">provider</span><span class="pi">:</span>
-      <span class="na">suffix</span><span class="pi">:</span> <span class="s">/api/v1/ids/data</span>
+      <span class="na">suffix</span><span class="pi">:</span> <span class="s">/api/v1/dsp</span>
     <span class="na">catalog</span><span class="pi">:</span>
       <span class="na">limit</span><span class="pi">:</span> <span class="m">1000</span>  <span class="c1"># Max number of catalog items to retrieve from the controlplane</span>
       <span class="na">pagesize</span><span class="pi">:</span> <span class="m">50</span>  <span class="c1"># Number of catalog items to retrieve on one page for pagination</span>
     <span class="na">apikey</span><span class="pi">:</span>
       <span class="na">header</span><span class="pi">:</span> <span class="s2">"</span><span class="s">X-Api-Key"</span>  <span class="c1"># Name of the EDC api key header field</span>
       <span class="na">secret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>  <span class="c1"># &lt;edc-api-key&gt;</span>
+  <span class="na">callbackurl</span><span class="pi">:</span>
   <span class="na">submodel</span><span class="pi">:</span>
     <span class="na">request</span><span class="pi">:</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)</span>
@@ -1110,12 +1120,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
   <span class="na">admin</span><span class="pi">:</span>
     <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm"</span>
-    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
-    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span>
-
-  <span class="na">datasources</span><span class="pi">:</span>
-    <span class="na">datasources.yaml</span><span class="pi">:</span>
-      <span class="na">apiVersion</span><span class="pi">:</span> <span class="s">1</span></code></pre>
+    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1218,116 +1223,160 @@ The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="yaml"><span class="c1">##############################</span>
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">tractusx-connector</span><span class="pi">:</span>
+  <span class="na">install</span><span class="pi">:</span>
+    <span class="na">daps</span><span class="pi">:</span> <span class="no">false</span>
+    <span class="na">vault</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">participant</span><span class="pi">:</span>
+    <span class="na">id</span><span class="pi">:</span>
+  <span class="na">controlplane</span><span class="pi">:</span>
+    <span class="na">ingresses</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
+
+    <span class="na">endpoints</span><span class="pi">:</span>
+      <span class="c1"># -- default api for health checks, should not be added to any ingress</span>
+      <span class="na">default</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/api</span>
+      <span class="c1"># -- data management api, used by internal users, can be added to an ingress and must not be internet facing</span>
+      <span class="na">management</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8081</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/management</span>
+        <span class="c1"># -- authentication key, must be attached to each 'X-Api-Key' request header</span>
+        <span class="na">authKey</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+      <span class="c1"># -- control api, used for internal control calls. can be added to the internal ingress, but should probably not</span>
+      <span class="na">control</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8083</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/control</span>
+      <span class="c1"># -- ids api, used for inter connector communication and must be internet facing</span>
+      <span class="na">protocol</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8084</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/api/v1/dsp</span>
+      <span class="c1"># -- metrics api, used for application metrics, must not be internet facing</span>
+      <span class="na">metrics</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">9090</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/metrics</span>
+      <span class="c1"># -- observability api with unsecured access, must not be internet facing</span>
+      <span class="na">observability</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8085</span>
+        <span class="c1"># -- observability api, provides /health /readiness and /liveness endpoints</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/observability</span>
+        <span class="c1"># -- allow or disallow insecure access, i.e. access without authentication</span>
+        <span class="na">insecure</span><span class="pi">:</span> <span class="no">true</span>
+
+    <span class="na">internationalDataSpaces</span><span class="pi">:</span>
+      <span class="na">id</span><span class="pi">:</span> <span class="s">TXDC</span>
+      <span class="na">description</span><span class="pi">:</span> <span class="s">Tractus-X Eclipse IDS Data Space Connector</span>
+      <span class="na">title</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+      <span class="na">maintainer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+      <span class="na">curator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+      <span class="na">catalogId</span><span class="pi">:</span> <span class="s">TXDC-Catalog</span>
+
+    <span class="c1"># Explicitly declared url for reaching the ids api (e.g. if ingresses not used)</span>
+    <span class="na">url</span><span class="pi">:</span>
+      <span class="na">ids</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+
+    <span class="na">resources</span><span class="pi">:</span>
+      <span class="na">limits</span><span class="pi">:</span>
+        <span class="na">cpu</span><span class="pi">:</span> <span class="s">500m</span>
+        <span class="na">memory</span><span class="pi">:</span> <span class="s">1Gi</span>
+      <span class="na">requests</span><span class="pi">:</span>
+        <span class="na">cpu</span><span class="pi">:</span> <span class="s">200m</span>
+        <span class="na">memory</span><span class="pi">:</span> <span class="s">512Mi</span>
+
+  <span class="na">dataplane</span><span class="pi">:</span>
+    <span class="na">ingresses</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
+
+    <span class="na">endpoints</span><span class="pi">:</span>
+      <span class="na">default</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/api</span>
+      <span class="na">public</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8081</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/api/public</span>
+      <span class="na">control</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8083</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/api/dataplane/control</span>
+      <span class="na">observability</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">8085</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/observability</span>
+        <span class="na">insecure</span><span class="pi">:</span> <span class="no">true</span>
+      <span class="na">metrics</span><span class="pi">:</span>
+        <span class="na">port</span><span class="pi">:</span> <span class="m">9090</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">/metrics</span>
+
+    <span class="c1"># Explicitly declared url for reaching the public api (e.g. if ingresses not used)</span>
+    <span class="na">url</span><span class="pi">:</span>
+      <span class="na">public</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+
+    <span class="na">resources</span><span class="pi">:</span>
+      <span class="na">limits</span><span class="pi">:</span>
+        <span class="na">cpu</span><span class="pi">:</span> <span class="s">500m</span>
+        <span class="na">memory</span><span class="pi">:</span> <span class="s">1Gi</span>
+      <span class="na">requests</span><span class="pi">:</span>
+        <span class="na">cpu</span><span class="pi">:</span> <span class="s">500m</span>
+        <span class="na">memory</span><span class="pi">:</span> <span class="s">1Gi</span>
+
+  <span class="c1"># URL where the EndpointDataReference callback will be sent to</span>
+  <span class="na">backendService</span><span class="pi">:</span>
+    <span class="na">httpProxyTokenReceiverUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+
+  <span class="c1">################################</span>
+  <span class="c1"># EDC Vault/DAPS Configuration #</span>
+  <span class="c1">################################</span>
+  <span class="na">vault</span><span class="pi">:</span>
+    <span class="na">hashicorp</span><span class="pi">:</span>
+      <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+      <span class="na">token</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+      <span class="na">timeout</span><span class="pi">:</span> <span class="m">30</span>
+      <span class="na">healthCheck</span><span class="pi">:</span>
+        <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+        <span class="na">standbyOk</span><span class="pi">:</span> <span class="no">true</span>
+      <span class="na">paths</span><span class="pi">:</span>
+        <span class="na">secret</span><span class="pi">:</span> <span class="s">/v1/</span>
+        <span class="na">health</span><span class="pi">:</span> <span class="s">/v1/sys/health</span>
+    <span class="na">secretNames</span><span class="pi">:</span>
+      <span class="na">transferProxyTokenSignerPrivateKey</span><span class="pi">:</span>
+      <span class="na">transferProxyTokenSignerPublicKey</span><span class="pi">:</span>
+      <span class="na">transferProxyTokenEncryptionAesKey</span><span class="pi">:</span>
+      <span class="na">dapsPrivateKey</span><span class="pi">:</span>
+      <span class="na">dapsPublicKey</span><span class="pi">:</span>
+
+  <span class="na">daps</span><span class="pi">:</span>
+    <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+    <span class="na">clientId</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+    <span class="na">paths</span><span class="pi">:</span>
+      <span class="na">jwks</span><span class="pi">:</span> <span class="s">/.well-known/jwks.json</span>
+      <span class="na">token</span><span class="pi">:</span> <span class="s">/token</span>
+
+  <span class="c1">##################################</span>
+  <span class="c1"># EDC Postgres Configuration #</span>
+  <span class="c1">##################################</span>
+  <span class="na">postgresql</span><span class="pi">:</span>
+    <span class="na">auth</span><span class="pi">:</span>
+      <span class="na">database</span><span class="pi">:</span> <span class="s2">"</span><span class="s">edc"</span>
+      <span class="na">username</span><span class="pi">:</span> <span class="s">&lt;databaseuser&gt;</span>
+      <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;databasepassword&gt;</span>
+    <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">jdbcUrl</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+    <span class="na">username</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+    <span class="na">password</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
+
+<span class="c1">##############################</span>
 <span class="c1"># EDC Postgres Configuration #</span>
 <span class="c1">##############################</span>
+<span class="c1"># EDC chart do not support multiple postgres instances in the same namespace at the moment.</span>
+<span class="c1"># Enable this to use the postgres dependency for when you want to deploy multiple EDC instances in one namespace</span>
 <span class="na">postgresql</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span>
+
+<span class="na">edc-postgresql</span><span class="pi">:</span>
   <span class="na">auth</span><span class="pi">:</span>
-    <span class="na">username</span><span class="pi">:</span> <span class="s">edc</span>
+    <span class="na">username</span><span class="pi">:</span> <span class="s">&lt;databaseuser&gt;</span>
     <span class="na">database</span><span class="pi">:</span> <span class="s">edc</span>
-    <span class="na">postgresPassword</span><span class="pi">:</span> <span class="s">&lt;postgres-admin-password&gt;</span>
-    <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;postgres-password&gt;</span>
-
-<span class="c1">##################################</span>
-<span class="c1"># EDC Controlplane Configuration #</span>
-<span class="c1">##################################</span>
-<span class="na">edc-controlplane</span><span class="pi">:</span>
-  <span class="na">ingresses</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
-      <span class="na">hostname</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;controlplane-url&gt;"</span>
-      <span class="na">annotations</span><span class="pi">:</span>
-        <span class="na">nginx.ingress.kubernetes.io/ssl-passthrough</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
-        <span class="na">nginx.ingress.kubernetes.io/backend-protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">HTTP"</span>
-        <span class="na">nginx.ingress.kubernetes.io/force-ssl-redirect</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
-      <span class="na">endpoints</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">protocol</span>
-      <span class="na">className</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-      <span class="na">tls</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
-            <span class="pi">-</span> <span class="s2">"</span><span class="s">&lt;controlplane-url&gt;"</span>
-          <span class="na">secretName</span><span class="pi">:</span> <span class="s">tls-secret</span>
-      <span class="na">certManager</span><span class="pi">:</span>
-        <span class="na">issuer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-        <span class="na">clusterIssuer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-
-  <span class="na">edc</span><span class="pi">:</span>
-    <span class="na">receiver</span><span class="pi">:</span>
-      <span class="na">callback</span><span class="pi">:</span>
-        <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">http://{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm:8181/internal/endpoint-data-reference"</span>  <span class="c1"># IRS EDC callback URL, e.g. http://app-irs-helm:8181/internal/endpoint-data-reference</span>
-    <span class="na">postgresql</span><span class="pi">:</span>
-      <span class="na">user</span><span class="pi">:</span> <span class="s">edc</span>
-      <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;postgres-password&gt;</span>
-    <span class="na">transfer</span><span class="pi">:</span>
-      <span class="na">proxy</span><span class="pi">:</span>
-        <span class="na">token</span><span class="pi">:</span>
-          <span class="na">verifier</span><span class="pi">:</span>
-            <span class="na">publickey</span><span class="pi">:</span>
-              <span class="na">alias</span><span class="pi">:</span> <span class="s">&lt;daps-certificate-name&gt;</span>
-          <span class="na">signer</span><span class="pi">:</span>
-            <span class="na">privatekey</span><span class="pi">:</span>
-              <span class="na">alias</span><span class="pi">:</span> <span class="s">&lt;daps-privatekey-name&gt;</span>
-    <span class="na">api</span><span class="pi">:</span>
-      <span class="na">auth</span><span class="pi">:</span>
-        <span class="na">key</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;edc-api-key&gt;"</span>
-    <span class="na">controlplane</span><span class="pi">:</span>
-      <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;controlplane-url&gt;"</span>
-    <span class="na">dataplane</span><span class="pi">:</span>
-      <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">https://&lt;dataplane-url&gt;"</span>
-    <span class="na">vault</span><span class="pi">:</span>
-      <span class="na">hashicorp</span><span class="pi">:</span>
-        <span class="na">token</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;vault-token&gt;"</span>
-  <span class="na">configuration</span><span class="pi">:</span>
-    <span class="na">properties</span><span class="pi">:</span> <span class="pi">|-</span>
-      <span class="s">edc.oauth.client.id=&lt;daps-client-id&gt;</span>
-      <span class="s">edc.oauth.private.key.alias=&lt;daps-privatekey-name&gt;</span>
-      <span class="s">edc.oauth.provider.jwks.url=&lt;daps-jwks-url&gt;</span>
-      <span class="s">edc.oauth.certificate.alias=&lt;daps-certificate-name&gt;</span>
-      <span class="s">edc.oauth.token.url=&lt;daps-token-url&gt;</span>
-      <span class="s">edc.vault.hashicorp.url=&lt;vault-url&gt;</span>
-      <span class="s">edc.vault.hashicorp.api.secret.path=&lt;vault-secret-store-path&gt;</span>
-      <span class="s">edc.data.encryption.keys.alias=&lt;daps-privatekey-name&gt;</span>
-      <span class="s">edc.data.encryption.algorithm=NONE</span>
-
-<span class="c1">###############################</span>
-<span class="c1"># EDC Dataplane Configuration #</span>
-<span class="c1">###############################</span>
-<span class="na">edc-dataplane</span><span class="pi">:</span>
-  <span class="na">edc</span><span class="pi">:</span>
-    <span class="na">api</span><span class="pi">:</span>
-      <span class="na">auth</span><span class="pi">:</span>
-        <span class="na">key</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;edc-api-key&gt;"</span>
-    <span class="na">vault</span><span class="pi">:</span>
-      <span class="na">hashicorp</span><span class="pi">:</span>
-        <span class="na">token</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;vault-token&gt;"</span>
-  <span class="c1">## Ingress declaration to expose the network service.</span>
-  <span class="na">ingresses</span><span class="pi">:</span>
-    <span class="pi">-</span> <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
-      <span class="na">hostname</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&lt;dataplane-url&gt;"</span>
-      <span class="na">annotations</span><span class="pi">:</span>
-        <span class="na">nginx.ingress.kubernetes.io/ssl-passthrough</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
-        <span class="na">nginx.ingress.kubernetes.io/backend-protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">HTTP"</span>
-        <span class="na">nginx.ingress.kubernetes.io/force-ssl-redirect</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
-      <span class="na">endpoints</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="s">public</span>
-      <span class="na">className</span><span class="pi">:</span> <span class="s2">"</span><span class="s">nginx"</span>
-      <span class="na">tls</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
-            <span class="pi">-</span> <span class="s2">"</span><span class="s">&lt;dataplane-url&gt;"</span>
-          <span class="na">secretName</span><span class="pi">:</span> <span class="s">tls-secret</span>
-      <span class="na">certManager</span><span class="pi">:</span>
-        <span class="na">issuer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-        <span class="na">clusterIssuer</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>
-
-  <span class="na">configuration</span><span class="pi">:</span>
-    <span class="na">properties</span><span class="pi">:</span> <span class="pi">|-</span>
-      <span class="s">edc.oauth.client.id=&lt;daps-client-id&gt;</span>
-      <span class="s">edc.oauth.private.key.alias=&lt;daps-privatekey-name&gt;</span>
-      <span class="s">edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL</span>
-      <span class="s">edc.oauth.provider.jwks.url=&lt;daps-jwks-url&gt;</span>
-      <span class="s">edc.oauth.certificate.alias=&lt;daps-certificate-name&gt;</span>
-      <span class="s">edc.oauth.token.url=&lt;daps-token-url&gt;</span>
-      <span class="s">edc.vault.hashicorp.url=&lt;vault-url&gt;</span>
-      <span class="s">edc.vault.hashicorp.api.secret.path=&lt;vault-secret-store-path&gt;</span></code></pre>
+    <span class="na">postgresPassword</span><span class="pi">:</span> <span class="s">&lt;databasepassword&gt;</span>
+    <span class="na">password</span><span class="pi">:</span> <span class="s">&lt;databasepassword&gt;</span></code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -1491,7 +1540,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-06-26 12:17:43 UTC
+Last updated 2023-06-28 10:42:52 UTC
 </div>
 </div>
 </body>
