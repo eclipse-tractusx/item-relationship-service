@@ -42,6 +42,9 @@ irs-helm:
     controlplane:
       apikey:
         secret: <path:traceability-irs/data/int/controlplane#apiKey>
+    catalog:
+      cache:
+        enabled: false
 
 
   #######################

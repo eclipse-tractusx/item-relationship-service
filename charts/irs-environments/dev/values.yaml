@@ -39,6 +39,9 @@ irs-helm:
     controlplane:
       apikey:
         secret: "123456"
+    catalog:
+      cache:
+        enabled: false
 
   #######################
   # Minio Configuration #
