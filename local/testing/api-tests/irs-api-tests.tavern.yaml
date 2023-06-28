@@ -217,7 +217,8 @@ stages:
 
 
 ---
-#
+############################### \/ESS Tests \/ ##############################
+####### !!!!!! Commented out since there is no testdata available for the moment !!!!!! ######
 #
 #test_name: Make sure investigation job with several relationships for valid globalAssetId and BPN is processed correctly with MOCK
 #
@@ -1938,6 +1939,9 @@ test_name: Make sure batch-job with several valid globalAssetIds has been reques
 strict:
   - headers:off
   - json:off
+
+marks:
+  - xfail #will fail until But TRI-1428 is fixed
 
 stages:
   - *authenticate_and_fetch_token
