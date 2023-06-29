@@ -53,7 +53,7 @@ class EndpointDataForConnectorsServiceTest {
     @Test
     void shouldReturnExpectedEndpointDataReference() throws EdcClientException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionOneAddress), DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE)).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE)).thenReturn(
                 EndpointDataReference.Builder.newInstance().endpoint(connectionOneAddress).build());
 
         // when
@@ -68,9 +68,9 @@ class EndpointDataForConnectorsServiceTest {
     @Test
     void shouldReturnExpectedEndpointDataReferenceFromSecondConnectionEndpoint() throws EdcClientException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionOneAddress), DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE))
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE))
                 .thenThrow(new EdcClientException("EdcClientException"));
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionTwoAddress), DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE)).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE)).thenReturn(
                 EndpointDataReference.Builder.newInstance().endpoint(connectionTwoAddress).build());
 
         // when
@@ -85,11 +85,12 @@ class EndpointDataForConnectorsServiceTest {
     @Test
     void shouldThrowExceptionWhenConnectorEndpointsNotReachable() throws EdcClientException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE))
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE), eq(DT_REGISTRY_ASSET_VALUE)))
                 .thenThrow(new EdcClientException("EdcClientException"));
+        final List<String> connectorEndpoints = List.of(connectionOneAddress, connectionTwoAddress);
 
         // when + then
-        assertThatThrownBy(() -> endpointDataForConnectorsService.findEndpointDataForConnectors(List.of(connectionOneAddress, connectionTwoAddress)))
+        assertThatThrownBy(() -> endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints))
                 .isInstanceOf(RestClientException.class).hasMessageContainingAll(connectionOneAddress, connectionTwoAddress);
     }
 
