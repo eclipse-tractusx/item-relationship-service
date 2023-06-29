@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -39,7 +38,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 
-public class EndpointDataForConnectorsServiceTest {
+class EndpointDataForConnectorsServiceTest {
 
     private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
@@ -54,7 +53,7 @@ public class EndpointDataForConnectorsServiceTest {
     @Test
     void shouldReturnExpectedEndpointDataReference() throws EdcClientException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionOneAddress), eq(DT_REGISTRY_ASSET_TYPE), eq(DT_REGISTRY_ASSET_VALUE))).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionOneAddress), DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE)).thenReturn(
                 EndpointDataReference.Builder.newInstance().endpoint(connectionOneAddress).build());
 
         // when
@@ -69,9 +68,9 @@ public class EndpointDataForConnectorsServiceTest {
     @Test
     void shouldReturnExpectedEndpointDataReferenceFromSecondConnectionEndpoint() throws EdcClientException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionOneAddress), eq(DT_REGISTRY_ASSET_TYPE), eq(DT_REGISTRY_ASSET_VALUE)))
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionOneAddress), DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE))
                 .thenThrow(new EdcClientException("EdcClientException"));
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionTwoAddress), eq(DT_REGISTRY_ASSET_TYPE), eq(DT_REGISTRY_ASSET_VALUE))).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(eq(connectionTwoAddress), DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE)).thenReturn(
                 EndpointDataReference.Builder.newInstance().endpoint(connectionTwoAddress).build());
 
         // when
@@ -86,7 +85,7 @@ public class EndpointDataForConnectorsServiceTest {
     @Test
     void shouldThrowExceptionWhenConnectorEndpointsNotReachable() throws EdcClientException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE), eq(DT_REGISTRY_ASSET_VALUE)))
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE))
                 .thenThrow(new EdcClientException("EdcClientException"));
 
         // when + then
