@@ -64,9 +64,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                   .flatMap(List::stream)
                                                                   .flatMap(List::stream)
                                                                   .toList();
-        // take first
+
         final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
-                connectorEndpoints).stream().findFirst().orElseThrow();
+                connectorEndpoints);
         final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
                                                                                     .key("globalAssetId")
                                                                                     .value(key.globalAssetId())
