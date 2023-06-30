@@ -1,10 +1,14 @@
 {
+	"key":
+	{
+		"globalAssetId": "urn:uuid:b86bfe10-6a4f-41be-8a00-6f11ce38702e",
+		"bpn": "BPNL00000003AXS3"
+	},
 	"bomLifecycle": "asBuilt",
 	"aspects": [
 		"AssemblyPartRelationship"
 	],
 	"depth": 10,
 	"direction": "downward",
-	"collectAspects": true,
-	"globalAssetId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6"
+	"collectAspects": true
 }
