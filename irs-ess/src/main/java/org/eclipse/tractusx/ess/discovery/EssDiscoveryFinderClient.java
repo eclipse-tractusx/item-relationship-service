@@ -60,16 +60,17 @@ class EssDiscoveryFinderClientImpl implements EssDiscoveryFinderClient {
 
     @Override
     @Retry(name = "registry")
-    public DiscoveryResponse findDiscoveryEndpoints(final DiscoveryFinderRequest request) {
-        return restTemplate.postForObject(discoveryFinderUrl, request, DiscoveryResponse.class);
+    public DiscoveryResponse findDiscoveryEndpoints(final DiscoveryFinderRequest discoveryRequest) {
+        return restTemplate.postForObject(discoveryFinderUrl, discoveryRequest, DiscoveryResponse.class);
     }
 
     @Override
     @Retry(name = "registry")
     public List<EdcDiscoveryResult> findConnectorEndpoints(final String endpointAddress, final List<String> bpns) {
-        final EdcDiscoveryResult[] edcDiscoveryResults = restTemplate.postForObject(endpointAddress, bpns,
-                EdcDiscoveryResult[].class);
+        return emptyListOrResult(restTemplate.postForObject(endpointAddress, bpns, EdcDiscoveryResult[].class));
+    }
 
+    private List<EdcDiscoveryResult> emptyListOrResult(final EdcDiscoveryResult[] edcDiscoveryResults) {
         return edcDiscoveryResults == null ? List.of() : List.of(edcDiscoveryResults);
     }
 }
