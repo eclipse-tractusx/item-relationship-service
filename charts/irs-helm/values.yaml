@@ -194,6 +194,7 @@ discovery:
 ess:
   mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
   mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
+  managementPath: "/management/v2"  # EDC management API path - used for notification asset creation
 
 config:
   # If true, the config provided below will completely replace the configmap.
