@@ -36,6 +36,10 @@ tractusx-connector:
     httpProxyTokenReceiverUrl: "https://irs-submodel-server.dev.demo.catena-x.net/data/endpoint-data-reference-provider-test"
 
   vault:
+    hashicorp:
+      healthCheck:
+        enabled: false
+        standbyOk: false
     secretNames:
       transferProxyTokenSignerPrivateKey: dev-provider3-key
       transferProxyTokenSignerPublicKey: dev-provider3-cert
