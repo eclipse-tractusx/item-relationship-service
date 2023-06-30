@@ -27,6 +27,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
+import org.eclipse.tractusx.ess.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
@@ -44,7 +47,9 @@ class EdcNotificationSenderTest {
     private final String localBpn = "BPNS000000000AAA";
     private final String essLocalEdcEndpoint = "example.com/url";
 
-    private final EdcNotificationSender sender = new EdcNotificationSender(edcSubmodelFacade, localBpn, essLocalEdcEndpoint);
+    private final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
+
+    private final EdcNotificationSender sender = new EdcNotificationSender(edcSubmodelFacade, localBpn, essLocalEdcEndpoint, connectorEndpointsService);
 
     @Captor
     ArgumentCaptor<EdcNotification> notificationCaptor;
@@ -55,6 +60,7 @@ class EdcNotificationSenderTest {
         final EdcNotification edcNotification = prepareNotification("notification-id");
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), notificationCaptor.capture())).thenReturn(
                 () -> true);
+        when(connectorEndpointsService.fetchConnectorEndpoints("senderBpn")).thenReturn(List.of("senderEdc"));
 
         // when
         sender.sendEdcNotification(edcNotification, SupplyChainImpacted.NO);
@@ -67,7 +73,6 @@ class EdcNotificationSenderTest {
     private EdcNotification prepareNotification(String notificationId) {
         final EdcNotificationHeader header = EdcNotificationHeader.builder()
                                                                   .notificationId(notificationId)
-                                                                  .senderEdc("senderEdc")
                                                                   .senderBpn("senderBpn")
                                                                   .recipientBpn("recipientBpn")
                                                                   .replyAssetId("ess-response-asset")
