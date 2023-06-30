@@ -35,8 +35,8 @@ import java.util.List;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 

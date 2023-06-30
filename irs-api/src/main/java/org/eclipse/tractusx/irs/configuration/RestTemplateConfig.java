@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.configuration;
 import static java.util.Objects.isNull;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.time.Duration;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
+import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -74,23 +76,32 @@ public class RestTemplateConfig {
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
 
-    private RestTemplate oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder, final Duration readTimeout,
-            final Duration connectTimeout, final String clientRegistrationId) {
+    private RestTemplateBuilder oAuthRestTemplate(final RestTemplateBuilder restTemplateBuilder,
+            final Duration readTimeout, final Duration connectTimeout, final String clientRegistrationId) {
         final var clientRegistration = clientRegistrationRepository.findByRegistrationId(clientRegistrationId);
 
         return restTemplateBuilder.additionalInterceptors(
                                           new OAuthClientCredentialsRestTemplateInterceptor(authorizedClientManager(), clientRegistration))
                                   .setReadTimeout(readTimeout)
-                                  .setConnectTimeout(connectTimeout)
-                                  .build();
+                                  .setConnectTimeout(connectTimeout);
     }
 
     @Bean(DTR_REST_TEMPLATE)
         /* package */ RestTemplate digitalTwinRegistryRestTemplate(final RestTemplateBuilder restTemplateBuilder,
             @Value("${digitalTwinRegistry.timeout.read}") final Duration readTimeout,
             @Value("${digitalTwinRegistry.timeout.connect}") final Duration connectTimeout,
-            @Value("${digitalTwinRegistry.oAuthClientId}") final String clientRegistrationId) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
+            @Value("${digitalTwinRegistry.oAuthClientId}") final String clientRegistrationId,
+            final OutboundMeterRegistryService meterRegistryService) {
+
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout,
+                clientRegistrationId).additionalInterceptors((request, body, execution) -> {
+            try {
+                return execution.execute(request, body);
+            } catch (SocketTimeoutException e) {
+                meterRegistryService.incrementRegistryTimeoutCounter();
+                throw e;
+            }
+        }).build();
     }
 
     @Bean(SEMHUB_REST_TEMPLATE)
@@ -98,7 +109,7 @@ public class RestTemplateConfig {
             @Value("${semanticshub.timeout.read}") final Duration readTimeout,
             @Value("${semanticshub.timeout.connect}") final Duration connectTimeout,
             @Value("${semanticshub.oAuthClientId}") final String clientRegistrationId) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId).build();
     }
 
     @Bean(BPDM_REST_TEMPLATE)
@@ -106,7 +117,7 @@ public class RestTemplateConfig {
             @Value("${bpdm.timeout.read}") final Duration readTimeout,
             @Value("${bpdm.timeout.connect}") final Duration connectTimeout,
             @Value("${bpdm.oAuthClientId}") final String clientRegistrationId) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId).build();
     }
 
     @Bean(DISCOVERY_REST_TEMPLATE)
@@ -114,7 +125,7 @@ public class RestTemplateConfig {
             @Value("${ess.discovery.timeout.read}") final Duration readTimeout,
             @Value("${ess.discovery.timeout.connect}") final Duration connectTimeout,
             @Value("${ess.discovery.oAuthClientId}") final String clientRegistrationId) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId);
+        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId).build();
     }
 
     @Bean(NO_ERROR_REST_TEMPLATE)
