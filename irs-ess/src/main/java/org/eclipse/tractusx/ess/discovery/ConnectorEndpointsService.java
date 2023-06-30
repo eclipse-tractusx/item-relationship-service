@@ -36,22 +36,22 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ConnectorEndpointsService {
 
-    private final DiscoveryFinderClient discoveryFinderClient;
+    private final EssDiscoveryFinderClient essDiscoveryFinderClient;
 
     public List<String> fetchConnectorEndpoints(final String bpn) {
         final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
-        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
-                                                                                .endpoints();
+        final List<DiscoveryEndpoint> discoveryEndpoints = essDiscoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
+                                                                                   .endpoints();
         final List<String> providedBpn = List.of(bpn);
         return discoveryEndpoints.stream()
-                                 .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
+                                 .map(discoveryEndpoint -> essDiscoveryFinderClient.findConnectorEndpoints(
                                                                                         discoveryEndpoint.endpointAddress(),
                                                                                         providedBpn)
-                                                                                .stream()
-                                                                                .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
+                                                                                   .stream()
+                                                                                   .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
                                                                                                                                 .equals(bpn))
-                                                                                .map(EdcDiscoveryResult::connectorEndpoint)
-                                                                                .toList())
+                                                                                   .map(EdcDiscoveryResult::connectorEndpoint)
+                                                                                   .toList())
                                  .flatMap(List::stream)
                                  .flatMap(List::stream)
                                  .toList();

@@ -13,18 +13,18 @@ import org.mockito.Mockito;
 
 class ConnectorEndpointsServiceTest {
 
-    private final DiscoveryFinderClient discoveryFinderClient = Mockito.mock(DiscoveryFinderClient.class);
-    private final ConnectorEndpointsService service = new ConnectorEndpointsService(discoveryFinderClient);
+    private final EssDiscoveryFinderClient essDiscoveryFinderClient = Mockito.mock(EssDiscoveryFinderClient.class);
+    private final ConnectorEndpointsService service = new ConnectorEndpointsService(essDiscoveryFinderClient);
 
     @Test
     void shouldFindConnectorEndpoints() {
         // given
         final String bpn = "BPN123";
-        given(discoveryFinderClient.findDiscoveryEndpoints(any()))
+        given(essDiscoveryFinderClient.findDiscoveryEndpoints(any()))
                   .willReturn(new DiscoveryResponse(List.of(createEndpoint("address1"), createEndpoint("address2"))));
-        given(discoveryFinderClient.findConnectorEndpoints(eq("address1"), any()))
+        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("address1"), any()))
                 .willReturn(List.of(createResult(List.of("connector1", "connector2"))));
-        given(discoveryFinderClient.findConnectorEndpoints(eq("address2"), any()))
+        given(essDiscoveryFinderClient.findConnectorEndpoints(eq("address2"), any()))
                 .willReturn(List.of(createResult(List.of("connector3", "connector4"))));
 
         // when

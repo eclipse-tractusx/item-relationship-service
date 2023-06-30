@@ -31,9 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
- *
+ * ESS Discovery Finder Client that should be replace by dDTR client in future
  */
-public interface DiscoveryFinderClient {
+public interface EssDiscoveryFinderClient {
 
     DiscoveryResponse findDiscoveryEndpoints(DiscoveryFinderRequest request);
 
@@ -45,13 +45,13 @@ public interface DiscoveryFinderClient {
  *
  */
 @Service
-class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
+class EssDiscoveryFinderClientImpl implements EssDiscoveryFinderClient {
 
     private final String discoveryFinderUrl;
 
     private final RestTemplate restTemplate;
 
-    /* package */ DiscoveryFinderClientImpl(
+    /* package */ EssDiscoveryFinderClientImpl(
             @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String discoveryFinderUrl,
             @Qualifier("oAuthRestTemplate") final RestTemplate restTemplate) {
         this.discoveryFinderUrl = discoveryFinderUrl;

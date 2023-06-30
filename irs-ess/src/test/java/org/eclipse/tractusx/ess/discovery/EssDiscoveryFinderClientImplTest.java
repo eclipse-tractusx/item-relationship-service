@@ -34,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
-class DiscoveryFinderClientImplTest {
+class EssDiscoveryFinderClientImplTest {
     @Mock
     private RestTemplate restTemplate;
 
@@ -44,7 +44,7 @@ class DiscoveryFinderClientImplTest {
         final String discoveryFinderUrl = "https://discovery.mock/api/administration/connectors/discovery/search";
         final String providerUrl = "https://discovery.mock/api/administration/connectors/discovery";
         final List<String> bpns = List.of("BPN123");
-        final DiscoveryFinderClientImpl discoveryFinderClient = new DiscoveryFinderClientImpl(discoveryFinderUrl,
+        final EssDiscoveryFinderClientImpl discoveryFinderClient = new EssDiscoveryFinderClientImpl(discoveryFinderUrl,
                 restTemplate);
         when(restTemplate.postForObject(providerUrl, bpns, EdcDiscoveryResult[].class)).thenReturn(null);
 
@@ -62,7 +62,7 @@ class DiscoveryFinderClientImplTest {
         final String discoveryFinderUrl = "https://discovery.mock/api/administration/connectors/discovery/search";
         final String providerUrl = "https://discovery.mock/api/administration/connectors/discovery";
         final List<String> bpns = List.of("BPN123");
-        final DiscoveryFinderClientImpl discoveryFinderClient = new DiscoveryFinderClientImpl(discoveryFinderUrl,
+        final EssDiscoveryFinderClientImpl discoveryFinderClient = new EssDiscoveryFinderClientImpl(discoveryFinderUrl,
                 restTemplate);
         final EdcDiscoveryResult[] discoveryResponse = { new EdcDiscoveryResult("BPN123",
                 List.of("https://provider.edc"))
