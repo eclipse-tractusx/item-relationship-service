@@ -216,14 +216,14 @@ public class EdcRegistration {
             log.info("Requesting asset from EDC provider with url {}", url);
             final String filter = """
                     {
-                    	"@context": {},
-                    	"filterExpression": [
-                    			{
-                    				"operandLeft": "https://w3id.org/edc/v0.0.1/ns/id",
-                    				"operandRight": "%s",
-                    				"operator": "="
-                    			}
-                    		]
+                        "@context": {},
+                        "filterExpression": [
+                                {
+                                    "operandLeft": "https://w3id.org/edc/v0.0.1/ns/id",
+                                    "operandRight": "%s",
+                                    "operator": "="
+                                }
+                            ]
                     }
                     """.formatted(assetId);
             final var entity = restTemplate.exchange(url, HttpMethod.POST, toEntity(filter), String.class);
