@@ -70,7 +70,7 @@ class EssDiscoveryFinderClientImpl implements EssDiscoveryFinderClient {
         return emptyListOrResult(restTemplate.postForObject(endpointAddress, bpns, EdcDiscoveryResult[].class));
     }
 
-    private List<EdcDiscoveryResult> emptyListOrResult(final EdcDiscoveryResult[] edcDiscoveryResults) {
+    private List<EdcDiscoveryResult> emptyListOrResult(final EdcDiscoveryResult... edcDiscoveryResults) {
         return edcDiscoveryResults == null ? List.of() : List.of(edcDiscoveryResults);
     }
 }
