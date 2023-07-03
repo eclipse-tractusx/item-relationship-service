@@ -54,16 +54,17 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
 
     @Override
     public Collection<DigitalTwinRegistryKey> lookupShells(final String bpn) throws RegistryServiceException {
-        return null; // TODO
+        log.info("Looking up shells for bpn {}", bpn);
+        final var shellIds = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(List.of());
+        log.info("Found {} shells in total", shellIds.size());
+        return shellIds.stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
     }
-
-
 
     private String getAAShellIdentificationOrGlobalAssetId(final String globalAssetId) {
         final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
-                                                                           .key("globalAssetId")
-                                                                           .value(globalAssetId)
-                                                                           .build();
+                                                                                    .key("globalAssetId")
+                                                                                    .value(globalAssetId)
+                                                                                    .build();
 
         final List<String> allAssetAdministrationShellIdsByAssetLink = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                 Collections.singletonList(identifierKeyValuePair));

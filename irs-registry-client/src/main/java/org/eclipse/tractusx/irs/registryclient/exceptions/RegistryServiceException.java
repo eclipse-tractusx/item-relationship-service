@@ -25,5 +25,5 @@ package org.eclipse.tractusx.irs.registryclient.exceptions;
 /**
  * Base exception for the registry client
  */
-public class RegistryServiceException extends Exception {
+public class RegistryServiceException extends RuntimeException {
 }

@@ -39,7 +39,7 @@ public interface DigitalTwinRegistryService {
      * @param key The Asset Administration Shell's DigitalTwinRegistryKey
      * @return AAShell
      */
-    AssetAdministrationShellDescriptor getAAShellDescriptor(DigitalTwinRegistryKey key);
+    AssetAdministrationShellDescriptor getAAShellDescriptor(DigitalTwinRegistryKey key) throws RegistryServiceException;
 
     /**
      * Retrieves all registered shell identifiers for a given BPN.
