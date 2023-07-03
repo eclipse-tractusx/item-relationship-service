@@ -269,3 +269,18 @@ def order_informations_for_batchprocessing_are_given(response, amount_batches):
         assert 'https://irs.dev.demo.catena-x.net/irs/orders' in batches.get("batchUrl")
         assert batches.get("batchProcessingState") == 'INITIALIZED'
         assert batches.get("errors") is None
+
+
+def job_parameter_are_as_requested(response):
+    print("Check if job parameter are as requested:")
+    parameter = response.json().get('job').get('parameter')
+    print(parameter)
+    assert parameter.get('bomLifecycle') == 'asPlanned'
+    assert parameter.get('collectAspects') is True
+    assert parameter.get('depth') == 2
+    assert parameter.get('direction') == 'downward'
+    assert parameter.get('lookupBPNs') is True
+    assert parameter.get('callbackUrl') == 'https://www.check123.com'
+    aspects_list = parameter.get("aspects")
+    assert 'SerialPartTypization' in aspects_list
+    assert 'PartAsPlanned' in aspects_list

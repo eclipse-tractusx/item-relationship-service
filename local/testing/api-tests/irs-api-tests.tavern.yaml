@@ -1764,6 +1764,64 @@ stages:
 ---
 
 
+test_name: Make sure requested parameter has been set correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - *authenticate_and_fetch_token
+
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+          bpn: "BPNL00000003AYRE"
+        collectAspects: true
+        depth: 2
+        direction: "downward"
+        bomLifecycle: "asPlanned"
+        lookupBPNs: true
+        callbackUrl: "https://www.check123.com"
+        aspects:
+          - SerialPartTypization
+          - PartAsPlanned
+      method: POST
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 2
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        Authorization: "Bearer {access_token:s}"
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:job_parameter_are_as_requested
+      headers:
+        content-type: application/json
+
+
+---
+
+
 test_name: Make sure IRS-jobs are running without BPN-lookups by default
 
 strict:
