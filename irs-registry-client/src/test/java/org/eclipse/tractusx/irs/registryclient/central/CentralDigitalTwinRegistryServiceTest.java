@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +41,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,12 +72,15 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
     }
 
     @Test
-    void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
+    void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() throws RegistryServiceException {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
 
-        final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryService.getAAShellDescriptor(
-                new DigitalTwinRegistryKey(existingCatenaXId, ""));
-        final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.getSubmodelDescriptors();
+        final Collection<AssetAdministrationShellDescriptor> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
+                List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")));
+        final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.stream()
+                                                                          .findFirst()
+                                                                          .get()
+                                                                          .getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
@@ -93,7 +98,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                 new RestClientException("Dummy"));
 
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> dtRegistryFacadeWithMock.getAAShellDescriptor(key));
+                () -> dtRegistryFacadeWithMock.fetchShells(List.of(key)));
     }
 
     @Test
@@ -104,8 +109,8 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
 
-        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(
-                new DigitalTwinRegistryKey(catenaXId, "")).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(
+                List.of(new DigitalTwinRegistryKey(catenaXId, ""))).stream().findFirst().get().getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -117,7 +122,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
 
-        dtRegistryFacadeWithMock.getAAShellDescriptor(new DigitalTwinRegistryKey(catenaXId, ""));
+        dtRegistryFacadeWithMock.fetchShells(List.of(new DigitalTwinRegistryKey(catenaXId, "")));
 
         verify(this.dtRegistryClientMock, times(1)).getAllAssetAdministrationShellIdsByAssetLink(anyList());
         verify(this.dtRegistryClientMock, times(1)).getAssetAdministrationShellDescriptor(catenaXId);
@@ -134,8 +139,12 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                 Collections.singletonList(identification));
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(identification)).thenReturn(shellDescriptor);
 
-        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.getAAShellDescriptor(
-                new DigitalTwinRegistryKey(globalAssetId, "")).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(
+                                                                                           List.of(new DigitalTwinRegistryKey(globalAssetId, "")))
+                                                                                   .stream()
+                                                                                   .findFirst()
+                                                                                   .get()
+                                                                                   .getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -150,11 +159,15 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
     }
 
     @Test
-    void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
+    void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() throws RegistryServiceException {
         final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
 
-        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryService.getAAShellDescriptor(
-                new DigitalTwinRegistryKey(existingCatenaXId, "")).getSubmodelDescriptors();
+        final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryService.fetchShells(
+                                                                                          List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")))
+                                                                                  .stream()
+                                                                                  .findFirst()
+                                                                                  .get()
+                                                                                  .getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);

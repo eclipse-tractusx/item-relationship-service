@@ -24,16 +24,18 @@ package org.eclipse.tractusx.irs.configuration;
 
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
-import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl;
-import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
+import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -44,12 +46,18 @@ public class RegistryConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "central")
-    public CentralDigitalTwinRegistryService centralDigitalTwinRegistryService(
+    public CentralDigitalTwinRegistryService centralDigitalTwinRegistryService(final DigitalTwinRegistryClient client) {
+        return new CentralDigitalTwinRegistryService(client);
+    }
+
+    @Bean
+    @Profile({ "!local && !stubtest" })
+    @ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "central")
+    public DigitalTwinRegistryClient digitalTwinRegistryClientImpl(
             @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate restTemplate,
             @Value("${digitalTwinRegistry.descriptorEndpoint:}") final String descriptorEndpoint,
             @Value("${digitalTwinRegistry.shellLookupEndpoint:}") final String shellLookupEndpoint) {
-        return new CentralDigitalTwinRegistryService(
-                new DigitalTwinRegistryClientImpl(restTemplate, descriptorEndpoint, shellLookupEndpoint));
+        return new DigitalTwinRegistryClientImpl(restTemplate, descriptorEndpoint, shellLookupEndpoint);
     }
 
     @Bean
@@ -62,7 +70,5 @@ public class RegistryConfiguration {
         return new DecentralDigitalTwinRegistryService(new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate),
                 new EndpointDataForConnectorsService(facade), new DecentralDigitalTwinRegistryClient(edcRestTemplate));
     }
-
-
 
 }

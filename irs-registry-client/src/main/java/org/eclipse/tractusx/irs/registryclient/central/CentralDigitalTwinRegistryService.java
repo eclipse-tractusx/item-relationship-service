@@ -37,7 +37,6 @@ import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceExcepti
 /**
  * Central implementation of DigitalTwinRegistryService
  */
-
 @RequiredArgsConstructor
 @Slf4j
 public class CentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
@@ -45,11 +44,14 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
     private final DigitalTwinRegistryClient digitalTwinRegistryClient;
 
     @Override
-    public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
-        final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.globalAssetId());
-        log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.globalAssetId());
+    public Collection<AssetAdministrationShellDescriptor> fetchShells(final Collection<DigitalTwinRegistryKey> keys) {
+        return keys.stream().map(key -> {
+            final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.globalAssetId());
+            log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification,
+                    key.globalAssetId());
 
-        return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification);
+            return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification);
+        }).toList();
     }
 
     @Override

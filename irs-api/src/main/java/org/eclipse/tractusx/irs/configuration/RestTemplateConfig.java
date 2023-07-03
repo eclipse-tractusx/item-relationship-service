@@ -94,14 +94,20 @@ public class RestTemplateConfig {
             final OutboundMeterRegistryService meterRegistryService) {
 
         return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout,
-                clientRegistrationId).additionalInterceptors((request, body, execution) -> {
+                clientRegistrationId).additionalInterceptors(getRegistryInterceptor(meterRegistryService)).build();
+    }
+
+    @NotNull
+    private static ClientHttpRequestInterceptor getRegistryInterceptor(
+            final OutboundMeterRegistryService meterRegistryService) {
+        return (request, body, execution) -> {
             try {
                 return execution.execute(request, body);
             } catch (SocketTimeoutException e) {
                 meterRegistryService.incrementRegistryTimeoutCounter();
                 throw e;
             }
-        }).build();
+        };
     }
 
     @Bean(SEMHUB_REST_TEMPLATE)
@@ -171,15 +177,8 @@ public class RestTemplateConfig {
             final OutboundMeterRegistryService meterRegistryService) {
         final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(readTimeout)
                                                              .setConnectTimeout(connectTimeout)
-                                                             .additionalInterceptors((request, body, execution) -> {
-                                                                 try {
-                                                                     return execution.execute(request, body);
-                                                                 } catch (SocketTimeoutException e) {
-                                                                     meterRegistryService.incrementSubmodelTimeoutCounter(
-                                                                             request.getURI().getHost());
-                                                                     throw e;
-                                                                 }
-                                                             })
+                                                             .additionalInterceptors(
+                                                                     getEdcInterceptor(meterRegistryService))
                                                              .build();
         final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
         for (final HttpMessageConverter<?> converter : messageConverters) {
@@ -190,6 +189,19 @@ public class RestTemplateConfig {
             }
         }
         return restTemplate;
+    }
+
+    @NotNull
+    private static ClientHttpRequestInterceptor getEdcInterceptor(
+            final OutboundMeterRegistryService meterRegistryService) {
+        return (request, body, execution) -> {
+            try {
+                return execution.execute(request, body);
+            } catch (SocketTimeoutException e) {
+                meterRegistryService.incrementSubmodelTimeoutCounter(request.getURI().getHost());
+                throw e;
+            }
+        };
     }
 
     /**

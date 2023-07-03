@@ -38,14 +38,10 @@ import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderRequest;
 import org.eclipse.tractusx.irs.registryclient.discovery.EdcDiscoveryResult;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.stereotype.Service;
 
 /**
  * Decentral implementation of DigitalTwinRegistryService
  */
-@Service
-@ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "decentral")
 @RequiredArgsConstructor
 @Slf4j
 public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
@@ -55,23 +51,25 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
 
     @Override
-    public AssetAdministrationShellDescriptor getAAShellDescriptor(final DigitalTwinRegistryKey key) {
-        log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
-        final EndpointDataReference endpointDataReference = getEndpointDataReference(key.bpn());
-        final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
-                                                                                    .key("globalAssetId")
-                                                                                    .value(key.globalAssetId())
-                                                                                    .build();
-        final String aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                                                                                       endpointDataReference, List.of(identifierKeyValuePair))
-                                                                               .stream()
-                                                                               .findFirst()
-                                                                               .orElse(key.globalAssetId());
-        log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.globalAssetId());
+    public Collection<AssetAdministrationShellDescriptor> fetchShells(final Collection<DigitalTwinRegistryKey> keys) {
+        return keys.stream().map(key -> {
+            log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
+            final EndpointDataReference endpointDataReference = getEndpointDataReference(key.bpn());
+            final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
+                                                                                        .key("globalAssetId")
+                                                                                        .value(key.globalAssetId())
+                                                                                        .build();
+            final String aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
+                                                                                           endpointDataReference, List.of(identifierKeyValuePair))
+                                                                                   .stream()
+                                                                                   .findFirst()
+                                                                                   .orElse(key.globalAssetId());
+            log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification,
+                    key.globalAssetId());
 
-        return decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(endpointDataReference,
-                aaShellIdentification);
-
+            return decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(endpointDataReference,
+                    aaShellIdentification);
+        }).toList();
     }
 
     @NotNull

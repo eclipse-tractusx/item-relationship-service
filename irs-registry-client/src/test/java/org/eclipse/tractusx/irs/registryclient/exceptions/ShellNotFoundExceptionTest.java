@@ -20,32 +20,20 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.registryclient;
+package org.eclipse.tractusx.irs.registryclient.exceptions;
 
-import java.util.Collection;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
+import java.util.List;
 
-/**
- * Public API Service for digital twin registry domain
- */
-public interface DigitalTwinRegistryService {
+import org.junit.jupiter.api.Test;
 
-    /**
-     * Retrieves all registered shell identifiers for a given BPN.
-     *
-     * @param bpn the BPN to retrieve the shells for
-     * @return the collection of shell identifiers
-     */
-    Collection<DigitalTwinRegistryKey> lookupShells(String bpn) throws RegistryServiceException;
+class ShellNotFoundExceptionTest {
 
-    /**
-     * Retrieves the shell details for the given identifiers.
-     *
-     * @param identifiers the shell identifiers
-     * @return the shell descriptors
-     */
-    Collection<AssetAdministrationShellDescriptor> fetchShells(Collection<DigitalTwinRegistryKey> identifiers)
-            throws RegistryServiceException;
+    @Test
+    void getCalledEndpoints() {
+        final ShellNotFoundException testee = new ShellNotFoundException(List.of("test"));
+
+        assertThat(testee.getCalledEndpoints()).containsExactly("test");
+    }
 }

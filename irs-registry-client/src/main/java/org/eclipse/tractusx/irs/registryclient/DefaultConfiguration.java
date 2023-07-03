@@ -24,10 +24,12 @@ package org.eclipse.tractusx.irs.registryclient;
 
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
+import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,25 +49,48 @@ public class DefaultConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "central")
-    public CentralDigitalTwinRegistryService centralDigitalTwinRegistryService(
+    public CentralDigitalTwinRegistryService centralDigitalTwinRegistryService(final DigitalTwinRegistryClient client) {
+        return new CentralDigitalTwinRegistryService(client);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "central")
+    public DigitalTwinRegistryClient digitalTwinRegistryClientImpl(
             @Qualifier(DIGITAL_TWIN_REGISTRY_REST_TEMPLATE) final RestTemplate restTemplate,
             @Value("${digitalTwinRegistryClient.descriptorEndpoint:}") final String descriptorEndpoint,
             @Value("${digitalTwinRegistryClient.shellLookupEndpoint:}") final String shellLookupEndpoint) {
-        return new CentralDigitalTwinRegistryService(
-                new DigitalTwinRegistryClientImpl(restTemplate, descriptorEndpoint, shellLookupEndpoint));
+        return new DigitalTwinRegistryClientImpl(restTemplate, descriptorEndpoint, shellLookupEndpoint);
     }
 
     @Bean
     @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "decentral")
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
-            @Qualifier(EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate,
-            @Qualifier(DIGITAL_TWIN_REGISTRY_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
-            final EdcSubmodelFacade facade,
-            @Value("${digitalTwinRegistryClient.discoveryFinderUrl:}") final String finderUrl) {
-        return new DecentralDigitalTwinRegistryService(new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate),
-                new EndpointDataForConnectorsService(facade), new DecentralDigitalTwinRegistryClient(edcRestTemplate));
+            final DiscoveryFinderClient discoveryFinderClient,
+            final EndpointDataForConnectorsService endpointDataForConnectorsService,
+            final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient) {
+        return new DecentralDigitalTwinRegistryService(discoveryFinderClient, endpointDataForConnectorsService,
+                decentralDigitalTwinRegistryClient);
     }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "decentral")
+    public DiscoveryFinderClient discoveryFinderClient(
+            @Qualifier(DIGITAL_TWIN_REGISTRY_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
+            @Value("${digitalTwinRegistryClient.discoveryFinderUrl:}") final String finderUrl) {
+        return new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate);
+    }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "decentral")
+    public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
+        return new EndpointDataForConnectorsService(facade);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "decentral")
+    public DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient(
+            @Qualifier(EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate) {
+        return new DecentralDigitalTwinRegistryClient(edcRestTemplate);
+    }
 
 }

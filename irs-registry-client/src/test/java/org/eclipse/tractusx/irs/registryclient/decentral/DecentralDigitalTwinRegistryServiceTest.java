@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,11 +74,11 @@ class DecentralDigitalTwinRegistryServiceTest {
                 ArgumentMatchers.any())).thenReturn(expectedShell);
 
         // when
-        final AssetAdministrationShellDescriptor actualShell = decentralDigitalTwinRegistryService.getAAShellDescriptor(
-                digitalTwinRegistryKey);
+        final Collection<AssetAdministrationShellDescriptor> actualShell = decentralDigitalTwinRegistryService.fetchShells(
+                List.of(digitalTwinRegistryKey));
 
         // then
-        Assertions.assertThat(actualShell).isEqualTo(expectedShell);
+        Assertions.assertThat(actualShell).containsExactly(expectedShell);
     }
 
     public static AssetAdministrationShellDescriptor shellDescriptor(

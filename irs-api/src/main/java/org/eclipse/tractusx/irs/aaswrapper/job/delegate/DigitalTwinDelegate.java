@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
@@ -31,6 +33,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -53,12 +56,12 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             final AASTransferProcess aasTransferProcess, final String itemId) {
 
         try {
-            final AssetAdministrationShellDescriptor aaShell = digitalTwinRegistryService.getAAShellDescriptor(
-                    new DigitalTwinRegistryKey(itemId, jobData.getBpn())
-            );
+            final AssetAdministrationShellDescriptor aaShell = digitalTwinRegistryService.fetchShells(
+                    List.of(new DigitalTwinRegistryKey(itemId, jobData.getBpn()))
+            ).stream().findFirst().orElseThrow();
 
             itemContainerBuilder.shell(aaShell);
-        } catch (final RestClientException e) {
+        } catch (final RestClientException | RegistryServiceException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
         }

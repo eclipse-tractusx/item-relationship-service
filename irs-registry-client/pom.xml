@@ -12,23 +12,37 @@
 
     <artifactId>irs-registry-client</artifactId>
     <name>Digital Twin Registry Client</name>
+    <version>1.0.0-SNAPSHOT</version>
     <description>Client library to easily talk to the DTR</description>
 
     <dependencies>
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-edc-client</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
-            <artifactId>irs-testing</artifactId>
-            <version>${project.version}</version>
+            <artifactId>irs-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-models</artifactId>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-testing</artifactId>
+            <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
