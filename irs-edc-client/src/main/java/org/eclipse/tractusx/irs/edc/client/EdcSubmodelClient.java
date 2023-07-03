@@ -24,7 +24,6 @@ package org.eclipse.tractusx.irs.edc.client;
 
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 
-import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -45,7 +44,6 @@ import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.common.Masker;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -56,7 +54,6 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationRes
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
-import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Public API facade for EDC domain
@@ -138,7 +135,6 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
     private final AsyncPollingService pollingService;
-    private final OutboundMeterRegistryService meterRegistryService;
     private final RetryRegistry retryRegistry;
     private final CatalogCache catalogCache;
     private final EdcControlPlaneClient edcControlPlaneClient;
@@ -373,16 +369,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final String host = URI.create(endpointAddress).getHost();
         final Retry retry = retryRegistry.retry(host, "default");
         try {
-            return Retry.decorateCallable(retry, () -> {
-                try {
-                    return supplier.get();
-                } catch (ResourceAccessException e) {
-                    if (e.getCause() instanceof SocketTimeoutException) {
-                        meterRegistryService.incrementSubmodelTimeoutCounter(endpointAddress);
-                    }
-                    throw e;
-                }
-            }).call();
+            return Retry.decorateCallable(retry, supplier::get).call();
         } catch (EdcClientException e) {
             throw e;
         } catch (Exception e) {

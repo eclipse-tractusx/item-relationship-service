@@ -167,9 +167,19 @@ public class RestTemplateConfig {
     @Bean(EDC_REST_TEMPLATE)
         /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
             @Value("${edc.submodel.timeout.read}") final Duration readTimeout,
-            @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout) {
+            @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout,
+            final OutboundMeterRegistryService meterRegistryService) {
         final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(readTimeout)
                                                              .setConnectTimeout(connectTimeout)
+                                                             .additionalInterceptors((request, body, execution) -> {
+                                                                 try {
+                                                                     return execution.execute(request, body);
+                                                                 } catch (SocketTimeoutException e) {
+                                                                     meterRegistryService.incrementSubmodelTimeoutCounter(
+                                                                             request.getURI().getHost());
+                                                                     throw e;
+                                                                 }
+                                                             })
                                                              .build();
         final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
         for (final HttpMessageConverter<?> converter : messageConverters) {

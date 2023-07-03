@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -98,8 +97,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Mock
     private CatalogCache catalogCache;
     private EdcSubmodelClient testee;
-    @Mock
-    private OutboundMeterRegistryService meterRegistry;
 
     EdcSubmodelClientTest() throws IOException {
         super();
@@ -118,7 +115,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, meterRegistry, retryRegistry, catalogCache,
+                endpointDataReferenceStorage, pollingService, retryRegistry, catalogCache,
                 edcControlPlaneClient);
     }
 
