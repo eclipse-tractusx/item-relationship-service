@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.transformer;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
+
 import jakarta.json.JsonObject;
 import org.eclipse.edc.jsonld.spi.transformer.AbstractJsonLdTransformer;
 import org.eclipse.edc.transform.spi.TransformerContext;
@@ -35,13 +37,13 @@ import org.jetbrains.annotations.Nullable;
 public class JsonObjectToNegotiationResponseTransformer
         extends AbstractJsonLdTransformer<JsonObject, NegotiationResponse> {
 
-    public static final String CONTRACT_NEGOTIATION_AGREEMENT_ID = "https://w3id.org/edc/v0.0.1/ns/contractAgreementId";
-    public static final String CONTRACT_NEGOTIATION_COUNTERPARTY_ADDR = "https://w3id.org/edc/v0.0.1/ns/counterPartyAddress";
-    public static final String CONTRACT_NEGOTIATION_ERRORDETAIL = "https://w3id.org/edc/v0.0.1/ns/errorDetail";
-    public static final String CONTRACT_NEGOTIATION_PROTOCOL = "https://w3id.org/edc/v0.0.1/ns/protocol";
-    public static final String CONTRACT_NEGOTIATION_STATE = "https://w3id.org/edc/v0.0.1/ns/state";
-    public static final String CONTRACT_NEGOTIATION_NEG_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
-    public static final String CONTRACT_NEGOTIATION_CALLBACK_ADDR = "https://w3id.org/edc/v0.0.1/ns/callbackAddresses";
+    public static final String CONTRACT_NEGOTIATION_AGREEMENT_ID = NAMESPACE_EDC + "contractAgreementId";
+    public static final String CONTRACT_NEGOTIATION_COUNTERPARTY_ADDR = NAMESPACE_EDC + "counterPartyAddress";
+    public static final String CONTRACT_NEGOTIATION_ERRORDETAIL = NAMESPACE_EDC + "errorDetail";
+    public static final String CONTRACT_NEGOTIATION_PROTOCOL = NAMESPACE_EDC + "protocol";
+    public static final String CONTRACT_NEGOTIATION_STATE = NAMESPACE_EDC + "state";
+    public static final String CONTRACT_NEGOTIATION_NEG_TYPE = NAMESPACE_EDC + "type";
+    public static final String CONTRACT_NEGOTIATION_CALLBACK_ADDR = NAMESPACE_EDC + "callbackAddresses";
     public static final String CONTRACT_NEGOTIATION_ID = "@id";
 
     public JsonObjectToNegotiationResponseTransformer() {

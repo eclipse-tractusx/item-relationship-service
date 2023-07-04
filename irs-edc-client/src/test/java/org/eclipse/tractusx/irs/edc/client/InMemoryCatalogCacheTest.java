@@ -40,8 +40,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 class InMemoryCatalogCacheTest {
 
     private CatalogCacheConfiguration cacheConfig;

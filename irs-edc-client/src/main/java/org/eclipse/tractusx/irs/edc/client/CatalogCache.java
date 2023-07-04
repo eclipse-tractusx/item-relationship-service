@@ -23,7 +23,6 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,11 @@ import org.springframework.stereotype.Service;
 /**
  * Cache Facade which returns a ContractOffer. Either from cache or directly from the
  * EDC if not found in Cache.
+ *
+ * @deprecated Due to changes in the EDC Catalog, this Class is no longer used.
+ * Use {@link EDCCatalogFacade} instead.
  */
+@Deprecated
 public interface CatalogCache {
 
     /**
@@ -70,7 +73,7 @@ class InMemoryCatalogCache implements CatalogCache {
             log.info("Retrieved Item from cache: '{}'", catalogItem);
         } else {
             log.info("Retrieving Catalog from connector '{}'", connectorUrl);
-            catalogItem = getOfferFromCatalog(connectorUrl, target);
+            catalogItem = getOfferFromCatalogByFilter(connectorUrl, target);
             catalogItem.ifPresent(item -> log.info("Retrieved Item from connector: '{}'", item));
         }
         return catalogItem;
@@ -88,26 +91,8 @@ class InMemoryCatalogCache implements CatalogCache {
         }
     }
 
-    private Optional<CatalogItem> getOfferFromCatalog(final String connectorUrl, final String target) {
-        final List<CatalogItem> catalog = catalogFetcher.fetchCatalogItemsUntilMatch(connectorUrl, target);
-
-        if (cacheConfig.isEnabled()) {
-            List<CatalogItem> catalogItems = new ArrayList<>();
-            if (catalogCache.containsKey(connectorUrl)) {
-                catalogItems = catalogCache.get(connectorUrl);
-            }
-            final int catalogSize = catalog.size();
-            final int cacheSize = getCacheSize();
-            if (!cacheHasSpaceLeft(cacheSize, catalogSize)) {
-                final long numberOfItemsToBeRemoved = cacheSize + catalogSize - cacheConfig.getMaxCachedItems();
-                removeOldestCacheValues(numberOfItemsToBeRemoved);
-            }
-            catalogItems.addAll(catalog.stream().limit(cacheConfig.getMaxCachedItems()).map(this::updateTTL).toList());
-
-            catalogCache.put(connectorUrl, catalogItems);
-        }
-
-        return catalog.stream().filter(catalogItem -> catalogItem.getAssetPropId().equals(target)).findFirst();
+    private Optional<CatalogItem> getOfferFromCatalogByFilter(final String connectorUrl, final String target) {
+        return catalogFetcher.fetchCatalogById(connectorUrl, target).stream().findFirst();
     }
 
     private void cleanupExpiredCacheValues() {
@@ -145,11 +130,7 @@ class InMemoryCatalogCache implements CatalogCache {
     }
 
     private int getCacheSize() {
-        return catalogCache.keySet()
-                           .stream()
-                           .map(s -> catalogCache.get(s).size())
-                           .mapToInt(Integer::intValue)
-                           .sum();
+        return catalogCache.keySet().stream().map(s -> catalogCache.get(s).size()).mapToInt(Integer::intValue).sum();
     }
 
     private CatalogItem updateTTL(final CatalogItem catalogItem) {
