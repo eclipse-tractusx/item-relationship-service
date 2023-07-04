@@ -59,6 +59,7 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TimeoutException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
@@ -330,7 +331,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
-            throws ContractNegotiationException, IOException, UsagePolicyException {
+            throws ContractNegotiationException, IOException, UsagePolicyException, TransferProcessException {
         when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(catenaXId).build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(

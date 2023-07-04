@@ -33,6 +33,7 @@ import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
@@ -72,7 +73,8 @@ class ContractNegotiationServiceTest {
     }
 
     @Test
-    void shouldNegotiateSuccessfully() throws ContractNegotiationException, UsagePolicyException {
+    void shouldNegotiateSuccessfully()
+            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
         // arrange
         final var assetId = "testTarget";
         final String offerId = "offerId";
