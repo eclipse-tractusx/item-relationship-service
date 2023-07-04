@@ -22,7 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
