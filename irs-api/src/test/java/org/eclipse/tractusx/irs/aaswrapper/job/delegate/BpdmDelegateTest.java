@@ -25,22 +25,17 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterCollectBpns;
-import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.component.Bpn;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -65,25 +60,6 @@ class BpdmDelegateTest {
         assertThat(result.getBpns()).isNotEmpty();
         assertThat(result.getBpns().stream().findFirst().get().getManufacturerName()).isEqualTo("Tier A");
     }
-
-//    @Test
-//    void shouldCreateTombstoneForMissingManufacturerId() {
-//        // given
-//        given(bpdmFacade.findManufacturerName(any())).willReturn(Optional.of("Tier A"));
-//        final ItemContainer.ItemContainerBuilder itemContainerWithShell = itemContainerWithAssetId("ManufaAAAA", "BPNL00000003AYRE");
-//
-//        // when
-//        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
-//                new AASTransferProcess("id", 0), "itemId");
-//
-//        // then
-//        assertThat(result).isNotNull();
-//        assertThat(result.getBpns()).isEmpty();
-//        assertThat(result.getTombstones()).hasSize(1);
-//        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
-//        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
-//                ProcessStep.BPDM_REQUEST);
-//    }
 
     @Test
     void shouldCreateTombstoneForNotValidBpn() {
