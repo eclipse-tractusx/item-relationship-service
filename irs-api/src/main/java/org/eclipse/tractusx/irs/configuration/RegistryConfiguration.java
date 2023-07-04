@@ -23,11 +23,13 @@
 package org.eclipse.tractusx.irs.configuration;
 
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,7 +70,13 @@ public class RegistryConfiguration {
             final EdcSubmodelFacade facade,
             @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String finderUrl) {
         return new DecentralDigitalTwinRegistryService(new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate),
-                new EndpointDataForConnectorsService(facade), new DecentralDigitalTwinRegistryClient(edcRestTemplate));
+                new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
+                    try {
+                        return facade.getEndpointReferenceForAsset(edcConnectorEndpoint, assetType, assetValue);
+                    } catch (EdcClientException e) {
+                        throw new EdcRetrieverException(e);
+                    }
+                }), new DecentralDigitalTwinRegistryClient(edcRestTemplate));
     }
 
 }

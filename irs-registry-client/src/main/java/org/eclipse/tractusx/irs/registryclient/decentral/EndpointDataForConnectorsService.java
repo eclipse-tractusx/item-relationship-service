@@ -27,8 +27,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -42,18 +40,20 @@ public class EndpointDataForConnectorsService {
     private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
 
-    private final EdcSubmodelFacade edcSubmodelFacade;
+    private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
-    /* package */ EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
+    public EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
         for (final String connector : connectorEndpoints) {
             try {
-                return edcSubmodelFacade.getEndpointReferenceForAsset(
-                        connector, DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE);
-            } catch (EdcClientException e) {
-                log.warn("Exception occurred when retrieving EndpointDataReference from " + connector);
+                return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
+                        DT_REGISTRY_ASSET_VALUE);
+            } catch (EdcRetrieverException e) {
+                log.warn("Exception occurred when retrieving EndpointDataReference from " + connector, e);
             }
         }
-        throw new RestClientException("EndpointDataReference was not found. Requested connectorEndpoints: " + String.join(", ", connectorEndpoints));
+        throw new RestClientException(
+                "EndpointDataReference was not found. Requested connectorEndpoints: " + String.join(", ",
+                        connectorEndpoints));
     }
 
 }

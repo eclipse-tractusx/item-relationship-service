@@ -33,7 +33,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -46,14 +45,16 @@ class EndpointDataForConnectorsServiceTest {
     private static final String connectionOneAddress = "connectionOneAddress";
     private static final String connectionTwoAddress = "connectionTwoAddress";
 
-    private final EdcSubmodelFacade edcSubmodelFacade = mock(EdcSubmodelFacade.class);
+    private final EdcEndpointReferenceRetriever edcSubmodelFacade = mock(EdcEndpointReferenceRetriever.class);
 
-    private final EndpointDataForConnectorsService endpointDataForConnectorsService = new EndpointDataForConnectorsService(edcSubmodelFacade);
+    private final EndpointDataForConnectorsService endpointDataForConnectorsService = new EndpointDataForConnectorsService(
+            edcSubmodelFacade);
 
     @Test
-    void shouldReturnExpectedEndpointDataReference() throws EdcClientException {
+    void shouldReturnExpectedEndpointDataReference() throws EdcRetrieverException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE)).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE)).thenReturn(
                 EndpointDataReference.Builder.newInstance().endpoint(connectionOneAddress).build());
 
         // when
@@ -66,11 +67,13 @@ class EndpointDataForConnectorsServiceTest {
     }
 
     @Test
-    void shouldReturnExpectedEndpointDataReferenceFromSecondConnectionEndpoint() throws EdcClientException {
+    void shouldReturnExpectedEndpointDataReferenceFromSecondConnectionEndpoint() throws EdcRetrieverException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE))
-                .thenThrow(new EdcClientException("EdcClientException"));
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE)).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE)).thenThrow(
+                new EdcRetrieverException(new EdcClientException("EdcClientException")));
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE)).thenReturn(
                 EndpointDataReference.Builder.newInstance().endpoint(connectionTwoAddress).build());
 
         // when
@@ -83,15 +86,17 @@ class EndpointDataForConnectorsServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenConnectorEndpointsNotReachable() throws EdcClientException {
+    void shouldThrowExceptionWhenConnectorEndpointsNotReachable() throws EdcRetrieverException {
         // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE), eq(DT_REGISTRY_ASSET_VALUE)))
-                .thenThrow(new EdcClientException("EdcClientException"));
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE),
+                eq(DT_REGISTRY_ASSET_VALUE))).thenThrow(
+                new EdcRetrieverException(new EdcClientException("EdcClientException")));
         final List<String> connectorEndpoints = List.of(connectionOneAddress, connectionTwoAddress);
 
         // when + then
-        assertThatThrownBy(() -> endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints))
-                .isInstanceOf(RestClientException.class).hasMessageContainingAll(connectionOneAddress, connectionTwoAddress);
+        assertThatThrownBy(
+                () -> endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints)).isInstanceOf(
+                RestClientException.class).hasMessageContainingAll(connectionOneAddress, connectionTwoAddress);
     }
 
 }
