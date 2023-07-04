@@ -724,6 +724,7 @@ stages:
           - SerialPartTypization
           - AssemblyPartRelationship
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
@@ -787,6 +788,7 @@ stages:
           - BatteryPass
           - MaterialForRecycling
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
@@ -848,6 +850,7 @@ stages:
           - Batch
           - CertificateOfDestruction
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
@@ -909,6 +912,7 @@ stages:
           - SerialPartTypization
           - DiagnosticData
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
@@ -1130,6 +1134,7 @@ stages:
           - MaterialForHomologation
           - PartAsPlanned
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
