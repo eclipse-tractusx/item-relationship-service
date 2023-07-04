@@ -23,7 +23,6 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Bpn;
@@ -73,8 +72,7 @@ public class RelationshipDelegate extends AbstractDelegate {
 
                     aasTransferProcess.addIdsToProcess(idsToProcess);
                     itemContainerBuilder.relationships(relationships);
-                    getBpnFromFirstRelationship(relationships).ifPresent(
-                            manufacturerId -> itemContainerBuilder.bpn(Bpn.withManufacturerId(manufacturerId)));
+                    itemContainerBuilder.bpns(getBpnsFrom(relationships));
                 } catch (final EdcClientException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);
@@ -89,8 +87,8 @@ public class RelationshipDelegate extends AbstractDelegate {
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }
 
-    private static Optional<String> getBpnFromFirstRelationship(final List<Relationship> relationships) {
-        return relationships.stream().findFirst().map(Relationship::getBpn);
+    private static List<Bpn> getBpnsFrom(final List<Relationship> relationships) {
+        return relationships.stream().map(Relationship::getBpn).map(Bpn::withManufacturerId).toList();
     }
 
     private List<String> getIdsToProcess(final List<Relationship> relationships, final Direction direction) {
