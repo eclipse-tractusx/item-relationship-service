@@ -156,16 +156,21 @@ edc:
   controlplane:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
+      catalog: /v2/catalog/request  # EDC consumer controlplane catalog path
+      contractnegotiation: /v2/contractnegotiations  # EDC consumer controlplane contract negotiation path
+      transferprocess: /v2/transferprocesses  # EDC consumer controlplane transfer process path
+      statesuffix: /state  # Path of the state suffix for contract negotiation and transfer process
     request:
       ttl: PT10M  # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     provider:
-      suffix: /api/v1/ids/data
+      suffix: /api/v1/dsp
     catalog:
       limit: 1000  # Max number of catalog items to retrieve from the controlplane
       pagesize: 50  # Number of catalog items to retrieve on one page for pagination
     apikey:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
+  callbackurl:
   submodel:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
@@ -173,7 +178,7 @@ edc:
     urnprefix: /urn
   catalog:
     cache:
-      enabled: true  # Set to false to disable caching
+      enabled: false  # Set to false to disable caching
       ttl: P1D  # Time after which a cached Item is no longer valid and the real catalog is called instead
       maxCachedItems: 64000  # Maximum amount of cached catalog items
     policies:

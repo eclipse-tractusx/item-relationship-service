@@ -26,7 +26,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -64,9 +64,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                   .flatMap(List::stream)
                                                                   .flatMap(List::stream)
                                                                   .toList();
-        // take first
+
         final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
-                connectorEndpoints).stream().findFirst().orElseThrow();
+                connectorEndpoints);
         final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
                                                                                     .key("globalAssetId")
                                                                                     .value(key.globalAssetId())

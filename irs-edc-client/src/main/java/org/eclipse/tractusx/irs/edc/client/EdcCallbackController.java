@@ -25,9 +25,10 @@ package org.eclipse.tractusx.irs.edc.client;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.ApiConstants;
 import org.eclipse.tractusx.irs.common.Masker;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +51,7 @@ public class EdcCallbackController {
         log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(dataReference));
         log.debug("Received EndpointDataReference with ID {} and endpoint {}", dataReference.getId(),
                 dataReference.getEndpoint());
-        final var contractAgreementId = dataReference.getProperties().get("cid");
+        final var contractAgreementId = dataReference.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_CID);
         storage.put(contractAgreementId, dataReference);
         log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractAgreementId));
     }

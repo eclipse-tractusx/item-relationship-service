@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +62,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         when(discoveryFinderClient.findDiscoveryEndpoints(any(DiscoveryFinderRequest.class))).thenReturn(
                 new DiscoveryResponse(discoveryEndpoints));
         when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(
-                List.of(endpointDataReference));
+                endpointDataReference);
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                 anyList())).thenReturn(Collections.emptyList());
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
@@ -75,4 +75,5 @@ class DecentralDigitalTwinRegistryServiceTest {
         // then
         assertThat(actualShell).isEqualTo(expectedShell);
     }
+
 }

@@ -1,11 +1,18 @@
 {
-	"createdAt": 1669197004371,
-	"updatedAt": 1669197045765,
-	"contractAgreementId": "1bbaec6e-c316-4e1e-8258-c07a648cc43c",
-	"counterPartyAddress": "http://edc.io/BPNL0000000BB2OK/api/v1/ids/data",
-	"errorDetail": "",
-	"id": "1cbaec6e-c316-4e3e-8258-c07a648cc44a",
-	"protocol": "ids-multipart",
-	"state": "CONFIRMED",
-	"type": "CONSUMER"
+	"@type": "edc:ContractNegotiationDto",
+	"@id": "1bbaec6e-c316-4e1e-8258-c07a648cc43c",
+	"edc:type": "CONSUMER",
+	"edc:protocol": "dataspace-protocol-http",
+	"edc:state": "FINALIZED",
+	"edc:counterPartyAddress": "http://edc.io/api/v1/dsp",
+	"edc:callbackAddresses": [],
+	"edc:contractAgreementId": "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f",
+	"@context": {
+		"dct": "https://purl.org/dc/terms/",
+		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+		"edc": "https://w3id.org/edc/v0.0.1/ns/",
+		"dcat": "https://www.w3.org/ns/dcat/",
+		"odrl": "http://www.w3.org/ns/odrl/2/",
+		"dspace": "https://w3id.org/dspace/v0.8/"
+	}
 }

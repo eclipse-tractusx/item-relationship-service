@@ -114,7 +114,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithoutDepthShouldBuildFullTree() {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
-        final int expectedRelationshipsSizeFullTree = 1; // stub
+        final int expectedRelationshipsSizeFullTree = 44; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -130,10 +130,10 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
-        final RegisterJob registerJob = registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100,
+        final RegisterJob registerJob = registerJob("urn:uuid:0a4cc16b-5f00-4ee2-833c-a3a46a1992c6", 100,
                 List.of(AspectType.SERIAL_PART.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
                         AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), true, false, Direction.DOWNWARD);
-        final int expectedSubmodelsSizeFullTree = 3; // stub
+        final int expectedSubmodelsSizeFullTree = 5; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -151,7 +151,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));
-        final int expectedTombstonesSizeFullTree = 1; // stub
+        final int expectedTombstonesSizeFullTree = 8; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -167,7 +167,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(1, null);
-        final int expectedRelationshipsSizeFirstDepth = 1; // stub
+        final int expectedRelationshipsSizeFirstDepth = 34; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -182,9 +182,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithUpwardDirectionShouldBuildRelationships() {
         // given
-        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0",
+        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:0b45c63b-0e5e-4232-9074-a05607783c33",
                 Direction.UPWARD);
-        final int expectedRelationshipsSizeFirstDepth = 2; // stub
+        final int expectedRelationshipsSizeFirstDepth = 1; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);

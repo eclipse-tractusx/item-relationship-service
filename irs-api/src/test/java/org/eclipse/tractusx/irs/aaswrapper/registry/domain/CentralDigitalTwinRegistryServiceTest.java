@@ -68,7 +68,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
-        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+        final String existingCatenaXId = "urn:uuid:bdadc54c-9ac3-478b-95e6-f968580d85b3";
 
         final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryService.getAAShellDescriptor(
                 new DigitalTwinRegistryKey(existingCatenaXId, ""));
@@ -146,7 +146,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
-        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+        final String existingCatenaXId = "urn:uuid:bdadc54c-9ac3-478b-95e6-f968580d85b3";
 
         final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryService.getAAShellDescriptor(new DigitalTwinRegistryKey(existingCatenaXId, "")).getSubmodelDescriptors();
 
