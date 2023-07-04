@@ -77,9 +77,9 @@ stages:
         json:
           job_id: id
 
-  - &verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - &verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
     name: verify job response with desired test steps and wait for desired job status
-    max_retries: 90
+    max_retries: 30
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
       params:
@@ -145,7 +145,14 @@ stages:
         json:
           job_id: id
 
-  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+
 
   - name: get response for created investigation
     request:
@@ -247,7 +254,14 @@ stages:
         json:
           job_id: id
 
-  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: get response for created investigation
     request:
@@ -302,7 +316,14 @@ stages:
 #        json:
 #          job_id: id
 #
-#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+#  - *authenticate_and_fetch_token
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+#  - *authenticate_and_fetch_token
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+#  - *authenticate_and_fetch_token
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+#  - *authenticate_and_fetch_token
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
 #
 #  - name: get response for created investigation
 #    request:
@@ -352,7 +373,14 @@ stages:
 #        json:
 #          job_id: id
 #
-#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+#  - *authenticate_and_fetch_token
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+#  - *authenticate_and_fetch_token
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+#  - *authenticate_and_fetch_token
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
+#  - *authenticate_and_fetch_token
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_5_minutes_for_COMPLETED
 #
 #  - name: get response for created investigation
 #    request:
@@ -452,13 +480,13 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
 
-  - &verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - &verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
     name: verify job is running and wait for desired job status
-    max_retries: 90
+    max_retries: 30
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -473,6 +501,15 @@ stages:
         job:
           state: COMPLETED
     delay_after: 10
+
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -523,11 +560,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+   # delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -616,11 +660,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -677,11 +728,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -738,13 +796,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
-
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
   - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -802,11 +865,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -864,11 +934,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -926,11 +1003,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+   # delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -1148,13 +1232,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+#    delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
-
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
   - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -1690,7 +1779,11 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
 
   - name: verify job response with desired test steps
     request:
@@ -1857,11 +1950,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1914,11 +2014,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1971,11 +2078,18 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 300
+    #delay_after: 300
 
   - *authenticate_and_fetch_token
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
+  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_5_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
