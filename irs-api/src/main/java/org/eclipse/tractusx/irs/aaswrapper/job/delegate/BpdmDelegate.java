@@ -60,20 +60,7 @@ public class BpdmDelegate extends AbstractDelegate {
         try {
             itemContainerBuilder.build()
                                 .getBpns()
-                                .stream()
-                                .findFirst()
-                                .ifPresentOrElse(
-                                        bpn -> lookupBPN(itemContainerBuilder, itemId, bpn, jobData.isLookupBPNs(), requestMetric),
-                                        () -> {
-                                            if (jobData.isLookupBPNs()) {
-                                                final String message = String.format(
-                                                        "Cannot find ManufacturerId for CatenaXId: %s", itemId);
-                                                log.warn(message);
-                                                requestMetric.incrementFailed();
-                                                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
-                                                        ProcessStep.BPDM_REQUEST)).metric(requestMetric);
-                                            }
-                                        });
+                                .forEach(bpn -> lookupBPN(itemContainerBuilder, itemId, bpn, jobData.isLookupBPNs(), requestMetric));
         } catch (final RestClientException e) {
             log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             requestMetric.incrementFailed();

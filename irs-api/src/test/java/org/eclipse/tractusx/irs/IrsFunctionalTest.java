@@ -86,10 +86,6 @@ class IrsFunctionalTest {
         minioContainer.stop();
     }
 
-    @BeforeEach
-    void setUp() {
-    }
-
     @Test
     void shouldStartJobAndRetrieveResult() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
@@ -111,7 +107,7 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getShells()).isNotEmpty();
         assertThat(finishedJob.get().getTombstones()).isEmpty();
         assertThat(finishedJob.get().getSubmodels()).isEmpty();
-        assertThat(finishedJob.get().getBpns()).isEmpty();
+        assertThat(finishedJob.get().getBpns()).isNotEmpty();
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();
         assertThat(finishedJob.get().getJob().getParameter()).isNotNull();

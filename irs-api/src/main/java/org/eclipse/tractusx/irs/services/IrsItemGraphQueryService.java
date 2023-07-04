@@ -120,7 +120,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         this.meterRegistryService = meterRegistryService;
         this.semanticsHubFacade = semanticsHubFacade;
         this.applicationEventPublisher = applicationEventPublisher;
-        this.bpdmUrl = bpdmUrl;
+        this.bpdmUrl = "https://partners-pool.int.demo.catena-x.net";
     }
 
     @Override
