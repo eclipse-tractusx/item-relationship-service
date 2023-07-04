@@ -89,11 +89,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                                                                     .map(EdcDiscoveryResult::connectorEndpoint))
                                                                   .flatMap(List::stream)
                                                                   .toList();
-        // take first
-        return endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints)
-                                               .stream()
-                                               .findFirst()
-                                               .orElseThrow();
+
+        return endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints);
     }
 
     @Override

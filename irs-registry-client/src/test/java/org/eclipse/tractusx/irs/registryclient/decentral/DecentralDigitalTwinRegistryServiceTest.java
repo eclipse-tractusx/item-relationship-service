@@ -66,7 +66,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         Mockito.when(discoveryFinderClient.findDiscoveryEndpoints(ArgumentMatchers.any(DiscoveryFinderRequest.class)))
                .thenReturn(new DiscoveryResponse(discoveryEndpoints));
         Mockito.when(endpointDataForConnectorsService.findEndpointDataForConnectors(ArgumentMatchers.anyList()))
-               .thenReturn(List.of(endpointDataReference));
+               .thenReturn(endpointDataReference);
         Mockito.when(
                 decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(ArgumentMatchers.any(),
                         ArgumentMatchers.anyList())).thenReturn(Collections.emptyList());

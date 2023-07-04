@@ -46,15 +46,19 @@ public class DefaultConfiguration {
 
     public static final String DIGITAL_TWIN_REGISTRY_REST_TEMPLATE = "digitalTwinRegistryRestTemplate";
     public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
+    private static final String CONFIG_PREFIX = "digitalTwinRegistryClient";
+    private static final String CONFIG_FIELD_TYPE = "type";
+    private static final String CONFIG_VALUE_DECENTRAL = "decentral";
+    private static final String CONFIG_VALUE_CENTRAL = "central";
 
     @Bean
-    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "central")
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_CENTRAL)
     public CentralDigitalTwinRegistryService centralDigitalTwinRegistryService(final DigitalTwinRegistryClient client) {
         return new CentralDigitalTwinRegistryService(client);
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "central")
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_CENTRAL)
     public DigitalTwinRegistryClient digitalTwinRegistryClientImpl(
             @Qualifier(DIGITAL_TWIN_REGISTRY_REST_TEMPLATE) final RestTemplate restTemplate,
             @Value("${digitalTwinRegistryClient.descriptorEndpoint:}") final String descriptorEndpoint,
@@ -63,7 +67,7 @@ public class DefaultConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "decentral")
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
             final DiscoveryFinderClient discoveryFinderClient,
             final EndpointDataForConnectorsService endpointDataForConnectorsService,
@@ -73,7 +77,7 @@ public class DefaultConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "decentral")
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public DiscoveryFinderClient discoveryFinderClient(
             @Qualifier(DIGITAL_TWIN_REGISTRY_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
             @Value("${digitalTwinRegistryClient.discoveryFinderUrl:}") final String finderUrl) {
@@ -81,13 +85,13 @@ public class DefaultConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "decentral")
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
         return new EndpointDataForConnectorsService(facade);
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "digitalTwinRegistryClient", name = "type", havingValue = "decentral")
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient(
             @Qualifier(EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate) {
         return new DecentralDigitalTwinRegistryClient(edcRestTemplate);
