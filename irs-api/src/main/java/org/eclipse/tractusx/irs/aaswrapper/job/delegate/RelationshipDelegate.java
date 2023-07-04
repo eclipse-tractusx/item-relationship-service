@@ -71,11 +71,10 @@ public class RelationshipDelegate extends AbstractDelegate {
 
                     log.info("Processing Relationships with {} items", idsToProcess.size());
 
-
                     aasTransferProcess.addIdsToProcess(idsToProcess);
                     itemContainerBuilder.relationships(relationships);
                     getBpnFromFirstRelationship(relationships).ifPresent(
-                            manufacturerId -> itemContainerBuilder.bpn(Bpn.of(manufacturerId, "")));
+                            manufacturerId -> itemContainerBuilder.bpn(Bpn.withManufacturerId(manufacturerId)));
                 } catch (final EdcClientException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);

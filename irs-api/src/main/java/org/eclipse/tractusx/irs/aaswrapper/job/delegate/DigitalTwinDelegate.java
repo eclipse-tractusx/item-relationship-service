@@ -63,7 +63,17 @@ public class DigitalTwinDelegate extends AbstractDelegate {
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
         }
 
-        return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+        if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
+            return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+        }
+
+        // depth reached - stop processing
+        return itemContainerBuilder.build();
+    }
+
+    private boolean expectedDepthOfTreeIsNotReached(final int expectedDepth, final int currentDepth) {
+        log.info("Expected tree depth is {}, current depth is {}", expectedDepth, currentDepth);
+        return currentDepth < expectedDepth;
     }
 
 }

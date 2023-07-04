@@ -38,6 +38,7 @@ import java.util.Optional;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
+import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
@@ -53,11 +54,10 @@ class BpdmDelegateTest {
     void shouldFillItemContainerWithBpn() {
         // given
         given(bpdmFacade.findManufacturerName(any())).willReturn(Optional.of("Tier A"));
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint("any"))));
+        final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder().bpn(Bpn.withManufacturerId("BPNL00000003AYRE"));
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
+        final ItemContainer result = bpdmDelegate.process(itemContainer, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
@@ -89,15 +89,15 @@ class BpdmDelegateTest {
     void shouldCreateTombstoneForNotValidBpn() {
         // given
         given(bpdmFacade.findManufacturerName(any())).willReturn(Optional.of("Tier A"));
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = itemContainerWithAssetId("ManufacturerId", "dsfvzsdfvzsvdszvzdsvdszvdszvds");
+        final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder().bpn(Bpn.withManufacturerId("dsfvzsdfvzsvdszvzdsvdszvdszvds"));
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
+        final ItemContainer result = bpdmDelegate.process(itemContainer, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getBpns()).isEmpty();
+        assertThat(result.getBpns()).isNotEmpty();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
@@ -141,22 +141,6 @@ class BpdmDelegateTest {
                 ProcessStep.BPDM_REQUEST);
     }
 
-    @Test
-    void shouldNotCreateBpnsAndTombstonesIfShellIsMissing() {
-        // given
-        final ItemContainer.ItemContainerBuilder itemContainerWithoutShell = ItemContainer.builder();
-
-        // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithoutShell, jobParameterCollectBpns(),
-                new AASTransferProcess("id", 0), "itemId");
-
-        // then
-        assertThat(result).isNotNull();
-        assertThat(result.getShells()).isEmpty();
-        assertThat(result.getBpns()).isEmpty();
-        assertThat(result.getTombstones()).isEmpty();
-    }
-
     private ItemContainer.ItemContainerBuilder itemContainerWithAssetId(String key, String value) {
         return ItemContainer.builder().shell(
                 AssetAdministrationShellDescriptor
@@ -187,11 +171,10 @@ class BpdmDelegateTest {
     void shouldResolveBPNsWhenFlagIsTrue() {
         // given
         given(bpdmFacade.findManufacturerName(any())).willReturn(Optional.of("Tier A"));
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint("any"))));
+        final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder().bpn(Bpn.withManufacturerId("BPNL00000003AYRE"));
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
+        final ItemContainer result = bpdmDelegate.process(itemContainer, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
@@ -206,16 +189,15 @@ class BpdmDelegateTest {
     void shouldIncrementFailedMetricWhenFacadeResultIsEmpty() {
         // given
         given(bpdmFacade.findManufacturerName(any())).willReturn(Optional.empty());
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint("any"))));
+        final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder().bpn(Bpn.withManufacturerId("BPNL00000003AYRE"));
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
+        final ItemContainer result = bpdmDelegate.process(itemContainer, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getBpns()).isEmpty();
+        assertThat(result.getBpns()).isNotEmpty();
         assertThat(result.getMetrics()).isNotEmpty();
         assertThat(result.getMetrics().stream().findFirst().get().getFailed()).isOne();
         assertThat(result.getMetrics().stream().findFirst().get().getCompleted()).isZero();
@@ -225,16 +207,15 @@ class BpdmDelegateTest {
     void shouldIncrementFailedMetricWhenExceptionIsThrown() {
         // given
         given(bpdmFacade.findManufacturerName(any())).willThrow(new RestClientException("test"));
-        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint("any"))));
+        final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder().bpn(Bpn.withManufacturerId("BPNL00000003AYRE"));
 
         // when
-        final ItemContainer result = bpdmDelegate.process(itemContainerWithShell, jobParameterCollectBpns(),
+        final ItemContainer result = bpdmDelegate.process(itemContainer, jobParameterCollectBpns(),
                 new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getBpns()).isEmpty();
+        assertThat(result.getBpns()).isNotEmpty();
         assertThat(result.getMetrics()).isNotEmpty();
         assertThat(result.getMetrics().stream().findFirst().get().getFailed()).isOne();
         assertThat(result.getMetrics().stream().findFirst().get().getCompleted()).isZero();

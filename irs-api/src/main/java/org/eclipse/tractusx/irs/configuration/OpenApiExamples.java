@@ -237,7 +237,7 @@ public class OpenApiExamples {
                              .shells(List.of(createShell()))
                              .tombstone(createTombstone())
                              .submodel(createSubmodel())
-                             .bpn(Bpn.of("BPNL00000003AYRE", "OEM A"))
+                             .bpn(Bpn.withManufacturerId("BPNL00000003AYRE").updateManufacturerName("OEM A"))
                              .build());
     }
 

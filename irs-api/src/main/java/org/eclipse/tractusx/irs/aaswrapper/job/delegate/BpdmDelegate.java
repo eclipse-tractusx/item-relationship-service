@@ -63,9 +63,18 @@ public class BpdmDelegate extends AbstractDelegate {
                                 .getBpns()
                                 .stream()
                                 .findFirst()
-                                .ifPresent(
-                                        bpn -> lookupBPN(itemContainerBuilder, itemId, bpn, jobData.isLookupBPNs(),
-                                                requestMetric));
+                                .ifPresentOrElse(
+                                        bpn -> lookupBPN(itemContainerBuilder, itemId, bpn, jobData.isLookupBPNs(), requestMetric),
+                                        () -> {
+                                            if (jobData.isLookupBPNs()) {
+                                                final String message = String.format(
+                                                        "Cannot find ManufacturerId for CatenaXId: %s", itemId);
+                                                log.warn(message);
+                                                requestMetric.incrementFailed();
+                                                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
+                                                        ProcessStep.BPDM_REQUEST)).metric(requestMetric);
+                                            }
+                                        });
         } catch (final RestClientException e) {
             log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             requestMetric.incrementFailed();
@@ -73,66 +82,38 @@ public class BpdmDelegate extends AbstractDelegate {
                                 .metric(requestMetric);
         }
 
-        if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
-            return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
-        }
-
-        // depth reached - stop processing
-        return itemContainerBuilder.build();
+        return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }
 
     private void lookupBPN(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId,
-            final Bpn bpn, final boolean bpnLookupEnabled,
-            final RequestMetric metric) {
+            final Bpn bpn, final boolean bpnLookupEnabled, final RequestMetric metric) {
         if (bpnLookupEnabled) {
             log.debug("BPN Lookup enabled, collecting BPN information");
-            Optional.ofNullable(bpn)
-                    .ifPresentOrElse(
-                         manufacturerId -> bpnFromManufacturerId(itemContainerBuilder, bpn, itemId, metric),
-                         () -> {
-                             final String message = String.format("Cannot find ManufacturerId for CatenaXId: %s",
-                                     itemId);
-                             log.warn(message);
-                             metric.incrementFailed();
-                             itemContainerBuilder.tombstone(
-                                     Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
-                                             ProcessStep.BPDM_REQUEST))
-                                                 .metric(metric);
-                         });
+            bpdmFacade.findManufacturerName(bpn.getManufacturerId()).ifPresentOrElse(name -> {
+                if (BPN_RGX.matcher(bpn.getManufacturerId() + bpn.getManufacturerName()).find()) {
+                    bpn.updateManufacturerName(name);
+                    metric.incrementCompleted();
+                    itemContainerBuilder.metric(metric);
+                } else {
+                    final String message = String.format("BPN: \"%s\" for CatenaXId: %s is not valid.",
+                            bpn.getManufacturerId() + bpn.getManufacturerName(), itemId);
+                    log.warn(message);
+                    metric.incrementFailed();
+                    itemContainerBuilder.tombstone(
+                            Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
+                                    ProcessStep.BPDM_VALIDATION)).metric(metric);
+                }
+            }, () -> {
+                final String message = String.format("BPN not exist for given ManufacturerId: %s and for CatenaXId: %s.",
+                        bpn.getManufacturerId(), itemId);
+                log.warn(message);
+                metric.incrementFailed();
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
+                        ProcessStep.BPDM_REQUEST)).metric(metric);
+            });
         } else {
             log.debug("BPN lookup disabled, no BPN information will be collected.");
         }
-    }
-
-    private void bpnFromManufacturerId(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
-            final Bpn bpn, final String itemId, final RequestMetric metric) {
-        bpdmFacade.findManufacturerName(bpn.getManufacturerId()).ifPresentOrElse(name -> {
-            bpn.updateManufacturerName(name);
-            if (BPN_RGX.matcher(bpn.getManufacturerId() + bpn.getManufacturerName()).find()) {
-                metric.incrementCompleted();
-                itemContainerBuilder.metric(metric);
-            } else {
-                final String message = String.format("BPN: \"%s\" for CatenaXId: %s is not valid.",
-                        bpn.getManufacturerId() + bpn.getManufacturerName(), itemId);
-                log.warn(message);
-                metric.incrementFailed();
-                itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
-                                ProcessStep.BPDM_VALIDATION)).metric(metric);
-            }
-        }, () -> {
-            final String message = String.format("BPN not exist for given ManufacturerId: %s and for CatenaXId: %s.",
-                    bpn.getManufacturerId(), itemId);
-            log.warn(message);
-            metric.incrementFailed();
-            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
-                    ProcessStep.BPDM_REQUEST)).metric(metric);
-        });
-    }
-
-    private boolean expectedDepthOfTreeIsNotReached(final int expectedDepth, final int currentDepth) {
-        log.info("Expected tree depth is {}, current depth is {}", expectedDepth, currentDepth);
-        return currentDepth < expectedDepth;
     }
 
 }

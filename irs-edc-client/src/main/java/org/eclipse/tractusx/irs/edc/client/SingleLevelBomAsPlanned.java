@@ -103,12 +103,9 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
             return Relationship.builder()
                                .catenaXId(GlobalAssetIdentification.of(catenaXId))
                                .linkedItem(linkedItem.build())
+                               .bpn(this.businessPartner)
                                .aspectType(AspectType.SINGLE_LEVEL_BOM_AS_PLANNED.toString())
                                .build();
-        }
-
-        private boolean thereIsMeasurementUnit() {
-            return this.quantity != null && this.quantity.getMeasurementUnit() != null;
         }
 
         private boolean thereIsQuantity() {
