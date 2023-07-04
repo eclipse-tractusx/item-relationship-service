@@ -91,4 +91,5 @@ class DecentralDigitalTwinRegistryServiceTest {
                                                  .submodelDescriptors(submodelDescriptors)
                                                  .build();
     }
+
 }
