@@ -79,15 +79,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
                                                                                 .endpoints();
         final List<String> connectorEndpoints = discoveryEndpoints.stream()
-                                                                  .map(discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
-                                                                                                                         discoveryEndpoint.endpointAddress(),
-                                                                                                                         providedBpn)
-                                                                                                                 .stream()
-                                                                                                                 .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
-                                                                                                                                                                 .equals(bpn))
-                                                                                                                 .map(EdcDiscoveryResult::connectorEndpoint)
-                                                                                                                 .toList())
-                                                                  .flatMap(List::stream)
+                                                                  .flatMap(
+                                                                          discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
+                                                                                                                            discoveryEndpoint.endpointAddress(),
+                                                                                                                            providedBpn)
+                                                                                                                    .stream()
+                                                                                                                    .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
+                                                                                                                                                                    .equals(bpn))
+                                                                                                                    .map(EdcDiscoveryResult::connectorEndpoint))
                                                                   .flatMap(List::stream)
                                                                   .toList();
         // take first
