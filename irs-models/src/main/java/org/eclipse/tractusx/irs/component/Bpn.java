@@ -23,10 +23,8 @@
 package org.eclipse.tractusx.irs.component;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * Business partner id with name
