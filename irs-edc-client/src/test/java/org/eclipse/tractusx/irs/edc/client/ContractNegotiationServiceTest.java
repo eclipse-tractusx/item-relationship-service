@@ -116,6 +116,30 @@ class ContractNegotiationServiceTest {
     }
 
     @Test
+    void shouldThrowErrorWhenRetrievingTransferResult() {
+        // arrange
+        final var assetId = "testTarget";
+        final String offerId = "offerId";
+        final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
+
+        when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
+                Response.builder().responseId("negotiationId").build());
+        CompletableFuture<NegotiationResponse> negotiationResponse = CompletableFuture.completedFuture(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(negotiationResponse);
+
+        when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
+                Response.builder().responseId("transferProcessId").build());
+        CompletableFuture<TransferProcessResponse> transferError = CompletableFuture.failedFuture(
+                new RuntimeException("Test exception"));
+        when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(transferError);
+
+        // act & assert
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem)).isInstanceOf(EdcClientException.class);
+    }
+
+    @Test
     void shouldThrowErrorWhenPolicyCheckerReturnFalse() {
         // arrange
         final var assetId = "testTarget";
