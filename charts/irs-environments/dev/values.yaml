@@ -134,11 +134,11 @@ tractusx-connector:
 
     resources:
       limits:
-        cpu: 1
-        memory: 1Gi
+        cpu: 1.5
+        memory: 2Gi
       requests:
         cpu: 500m
-        memory: 1Gi
+        memory: 2Gi
 
     # Files system has to be set to writeable for now since controlplane relies on temporary files to write SSI related things to
     securityContext:
