@@ -15,7 +15,9 @@
         "odrl:constraint": {
           "odrl:or": {
             "odrl:leftOperand": "idsc:PURPOSE",
-            "odrl:operator": "EQ",
+            "odrl:operator": {
+              "@id": "odrl:eq"
+            },
             "odrl:rightOperand": "ID 3.0 Trace"
           }
         }
