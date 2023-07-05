@@ -7,6 +7,9 @@ on:
       - main
       - feature/TRI-1409-ddtr-library
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   build-and-upload:
     runs-on: ubuntu-latest
@@ -35,6 +38,19 @@ jobs:
       - name: Build with Maven
         run: mvn package -pl irs-testing,irs-models,irs-common,irs-edc-client,irs-registry-client --batch-mode
 
+      - name: Configure Maven settings
+        run: |
+          mkdir -p $HOME/.m2
+          echo "<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'>
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${{ github.actor }}</username>
+                <password>${{ secrets.GITHUB_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>" > $HOME/.m2/settings.xml
+
       - name: Publish to GitHub Maven Registry
         run: |
-          mvn deploy:deploy-file -Durl=https://maven.pkg.github.com/${{ github.repository }} -DrepositoryId=github -Dfile=irs-registry-client/target/irs-registry-client-1.0.0-SNAPSHOT-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=1.0.0-SNAPSHOT -Dpackaging=jar
+          mvn deploy:deploy-file -Durl=https://maven.pkg.github.com/${{ github.repository }} -DrepositoryId=github -Dfile=irs-registry-client/target/irs-registry-client-1.0.0-SNAPSHOT-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=1.0.0-SNAPSHOT -Dpackaging=jar --settings $HOME/.m2/settings.xml
