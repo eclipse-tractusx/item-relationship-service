@@ -9,6 +9,13 @@
     <version>1.0.0-SNAPSHOT</version>
     <description>Client library to easily talk to the DTR</description>
 
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
