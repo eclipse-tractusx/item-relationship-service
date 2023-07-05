@@ -1,0 +1,36 @@
+name: Upload to GitHub Maven Registry
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - feature/TRI-1409-ddtr-library
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn package -pl irs-testing,irs-models,irs-common,irs-edc-client,irs-registry-client --batch-mode
+
+      - name: Publish to GitHub Maven Registry
+        run: |
+          mvn deploy:deploy-file -Durl=https://maven.pkg.github.com/${{ github.repository_owner }}/${{ github.repository }} -DrepositoryId=github -Dfile=irs-registry-client/target/irs-registry-client-1.0.0-SNAPSHOT-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=1.0.0-SNAPSHOT -Dpackaging=jar
