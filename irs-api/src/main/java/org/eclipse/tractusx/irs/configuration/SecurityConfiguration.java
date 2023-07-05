@@ -67,6 +67,7 @@ public class SecurityConfiguration {
         "/ess/notification/receive-recursive"
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
+    private static final String ONLY_SELF_SCRIPT_SRC = "script-src 'self'";
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
@@ -86,6 +87,8 @@ public class SecurityConfiguration {
 
         httpSecurity.headers(headers -> headers.xssProtection(xXssConfig ->
                 xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
+
+        httpSecurity.headers(headers -> headers.contentSecurityPolicy(ONLY_SELF_SCRIPT_SRC));
 
         httpSecurity.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
