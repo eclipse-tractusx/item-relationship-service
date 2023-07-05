@@ -3,18 +3,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.eclipse.tractusx.irs</groupId>
+    <parent>
+        <groupId>org.eclipse.tractusx.irs</groupId>
+        <artifactId>irs-parent-spring-boot</artifactId>
+        <version>${revision}</version>
+        <relativePath>../irs-parent-spring-boot</relativePath>
+    </parent>
+
     <artifactId>irs-registry-client</artifactId>
     <name>Digital Twin Registry Client</name>
     <version>1.0.0-SNAPSHOT</version>
     <description>Client library to easily talk to the DTR</description>
-
-    <properties>
-        <java.version>17</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -36,7 +35,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
-            <version>1.18.26</version>
         </dependency>
 
 
