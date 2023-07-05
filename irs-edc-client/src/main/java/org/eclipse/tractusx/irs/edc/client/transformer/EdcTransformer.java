@@ -54,6 +54,7 @@ import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDataServiceTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDatasetTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDistributionTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDutyTransformer;
+import org.eclipse.edc.jsonld.transformer.to.JsonObjectToOperatorTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToPermissionTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToPolicyTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToProhibitionTransformer;
@@ -118,6 +119,7 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectToAssetTransformer());
         typeTransformerRegistry.register(new JsonObjectToQuerySpecTransformer());
         typeTransformerRegistry.register(new JsonObjectToCriterionTransformer());
+        typeTransformerRegistry.register(new JsonObjectToOperatorTransformer());
         typeTransformerRegistry.register(jsonObjectToNegotiationResponseTransformer);
         // JSON from Object
         typeTransformerRegistry.register(jsonObjectFromNegotiationInitiateDtoTransformer);
