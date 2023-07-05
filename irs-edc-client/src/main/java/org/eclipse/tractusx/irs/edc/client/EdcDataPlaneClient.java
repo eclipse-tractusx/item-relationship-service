@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -44,11 +44,14 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class EdcDataPlaneClient {
 
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("\\{\"data\":\"(?<embeddedData>.*)\"\\}");
     private final RestTemplate edcRestTemplate;
+
+    public EdcDataPlaneClient(@Qualifier("edcRestTemplate") final RestTemplate edcRestTemplate) {
+        this.edcRestTemplate = edcRestTemplate;
+    }
 
     public String getData(final EndpointDataReference dataReference, final String subUrl) {
 

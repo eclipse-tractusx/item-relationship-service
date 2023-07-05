@@ -22,6 +22,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient;
 
+import java.time.Clock;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
@@ -35,6 +39,7 @@ import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +57,7 @@ public class DefaultConfiguration {
     private static final String CONFIG_FIELD_TYPE = "type";
     private static final String CONFIG_VALUE_DECENTRAL = "decentral";
     private static final String CONFIG_VALUE_CENTRAL = "central";
+    private static final int POOL_SIZE = 20;
 
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_CENTRAL)
@@ -103,6 +109,18 @@ public class DefaultConfiguration {
     public DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient(
             @Qualifier(EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate) {
         return new DecentralDigitalTwinRegistryClient(edcRestTemplate);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(value = Clock.class)
+    public Clock clock() {
+        return Clock.systemUTC();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(value = ScheduledExecutorService.class)
+    public ScheduledExecutorService scheduledExecutorService() {
+        return Executors.newScheduledThreadPool(POOL_SIZE);
     }
 
 }

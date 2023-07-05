@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
@@ -40,6 +39,7 @@ import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -53,7 +53,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 @SuppressWarnings({ "PMD.TooManyMethods" })
 public class EdcControlPlaneClient {
 
@@ -66,6 +65,14 @@ public class EdcControlPlaneClient {
     private final AsyncPollingService pollingService;
     private final EdcConfiguration config;
     private final EdcTransformer edcTransformer;
+
+    public EdcControlPlaneClient(@Qualifier("edcRestTemplate") final RestTemplate edcRestTemplate, final AsyncPollingService pollingService,
+            final EdcConfiguration config, final EdcTransformer edcTransformer) {
+        this.edcRestTemplate = edcRestTemplate;
+        this.pollingService = pollingService;
+        this.config = config;
+        this.edcTransformer = edcTransformer;
+    }
 
     private static String getResponseBody(final ResponseEntity<String> response) {
         String responseBody = "";

@@ -57,9 +57,7 @@ edc:
 
 ```
 
-Please note that you also need to provide a `RestTemplate` bean for the **Qualifier
-** `digitalTwinRegistryRestTemplate` (
-central approach) or `edcRestTemplate` (decentral approach).
+Please note that you also need to provide a `RestTemplate` bean for the **Qualifier** `digitalTwinRegistryRestTemplate` (central approach) or `edcRestTemplate` (decentral approach).
 
 ### Manual setup
 
