@@ -53,7 +53,7 @@ public class DigitalTwinDelegate extends AbstractDelegate {
 
         try {
             itemContainerBuilder.shell(digitalTwinRegistryService.getAAShellDescriptor(
-                    new DigitalTwinRegistryKey(itemId, jobData.getBpn()));
+                    new DigitalTwinRegistryKey(itemId, jobData.getBpn())));
         } catch (final RestClientException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
