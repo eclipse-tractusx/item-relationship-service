@@ -1,6 +1,4 @@
 tractusx-connector:
-  participant:
-    id: BPNL00000003CRHK
 
   controlplane:
     ingresses:

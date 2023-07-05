@@ -3,7 +3,7 @@ tractusx-connector:
     postgresql: false
     vault: false
   participant:
-    id: BPNL00000001CRHK
+    id: <path:traceability-irs/data/dev/controlplane#participantId>
 
   controlplane:
     # SSI configuration
