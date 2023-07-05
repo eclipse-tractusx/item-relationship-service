@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Known knowns
+- Removed catalog cache
+- Changed EDC catalog retrieval from pagination to filter
+
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
 ## [3.0.1] - 2023-06-28
