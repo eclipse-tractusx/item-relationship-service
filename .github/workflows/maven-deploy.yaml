@@ -11,6 +11,10 @@ jobs:
   build-and-upload:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -33,4 +37,4 @@ jobs:
 
       - name: Publish to GitHub Maven Registry
         run: |
-          mvn deploy:deploy-file -Durl=https://maven.pkg.github.com/${{ github.repository }} -DrepositoryId=github -Dfile=irs-registry-client/target/irs-registry-client-1.0.0-SNAPSHOT-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=1.0.0-SNAPSHOT -Dpackaging=jar --settings $HOME/.m2/settings.xml
+          mvn deploy:deploy-file -Durl=https://maven.pkg.github.com/${{ github.repository }} -DrepositoryId=github -Dfile=irs-registry-client/target/irs-registry-client-1.0.0-SNAPSHOT-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=1.0.0-SNAPSHOT -Dpackaging=jar
