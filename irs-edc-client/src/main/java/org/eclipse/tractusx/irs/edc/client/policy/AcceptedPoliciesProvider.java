@@ -35,7 +35,8 @@ public interface AcceptedPoliciesProvider {
     List<AcceptedPolicy> getAcceptedPolicies();
 
     /**
-     * Default provider if no other beans are loaded. Can be filled with accepted policies programmatically.
+     * Default provider if no other beans are loaded.
+     * Can be filled with accepted policies programmatically.
      */
     @Service
     @ConditionalOnMissingBean(value = AcceptedPoliciesProvider.class, ignored = DefaultAcceptedPoliciesProvider.class)
