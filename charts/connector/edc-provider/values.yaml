@@ -62,6 +62,10 @@ tractusx-connector:
     url:
       ids: ""
 
+    # Files system has to be set to writeable for now since controlplane relies on temporary files to write SSI related things to
+    securityContext:
+      readOnlyRootFilesystem: false
+
     resources:
       limits:
         cpu: 1

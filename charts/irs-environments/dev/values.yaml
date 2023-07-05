@@ -140,6 +140,10 @@ tractusx-connector:
         cpu: 500m
         memory: 1Gi
 
+    # Files system has to be set to writeable for now since controlplane relies on temporary files to write SSI related things to
+    securityContext:
+      readOnlyRootFilesystem: false
+
   dataplane:
     ingresses:
       - enabled: true
