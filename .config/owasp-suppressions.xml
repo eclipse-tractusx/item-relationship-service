@@ -21,4 +21,11 @@
         <gav regex="true">com\.google\.guava:guava.*</gav>
         <vulnerabilityName>CVE-2023-2976</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Vulnerability is a false positive.
+        ]]></notes>
+        <gav regex="true">com\.fasterxml\.jackson\.core:jackson-databind.*</gav>
+        <vulnerabilityName>CVE-2023-35116</vulnerabilityName>
+    </suppress>
 </suppressions>
