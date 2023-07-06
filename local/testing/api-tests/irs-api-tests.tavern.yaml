@@ -9,8 +9,8 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
-        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-        incidentBpns:
+        globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+        incidentBpns11:
           - BPNL00000003B6LU
       method: POST
       headers:
