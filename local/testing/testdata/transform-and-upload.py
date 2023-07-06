@@ -390,7 +390,7 @@ if __name__ == "__main__":
                           headers_with_api_key, session, edc_urls, default_policy, registry_asset_id, aas_upload_url)
 
     esr = "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
-    apr = "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship"
+    apr = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt"
     for tmp_data in testdata:
         if bpns_list is None or tmp_data["bpnl"] in bpns_list or not bpns_list:
             catenax_id = tmp_data["catenaXId"]
@@ -405,7 +405,7 @@ if __name__ == "__main__":
             name_at_manufacturer = ""
 
             for tmp_key in tmp_keys:
-                if "Batch" in tmp_key or "SerialPartTypization" in tmp_key:
+                if "Batch" in tmp_key or "SerialPart" in tmp_key:
                     specific_asset_ids = copy(tmp_data[tmp_key][0]["localIdentifiers"])
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
@@ -425,7 +425,7 @@ if __name__ == "__main__":
                 "value": tmp_data["bpnl"]
             })
 
-            if esr_url and apr in tmp_keys and "childParts" in tmp_data[apr][0] and tmp_data[apr][0]["childParts"]:
+            if esr_url and apr in tmp_keys and "childItems" in tmp_data[apr][0] and tmp_data[apr][0]["childItems"]:
                 tmp_data.update({esr: ""})
 
             policy_id = default_policy
