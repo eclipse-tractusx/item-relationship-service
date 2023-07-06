@@ -1,4 +1,35 @@
 {
+  "policies": {
+    "ID 3.0 Trace": {
+      "id": "id-3.0-trace",
+      "policy": {
+        "prohibitions": [],
+        "obligations": [],
+        "permissions": [
+          {
+            "edctype": "dataspaceconnector:permission",
+            "action": {
+              "type": "USE"
+            },
+            "constraints": [
+              {
+                "edctype": "AtomicConstraint",
+                "leftExpression": {
+                  "edctype": "dataspaceconnector:literalexpression",
+                  "value": "idsc:PURPOSE"
+                },
+                "rightExpression": {
+                  "edctype": "dataspaceconnector:literalexpression",
+                  "value": "ID 3.0 Trace"
+                },
+                "operator": "EQ"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
   "https://catenax.io/schema/TestDataContainer/1.0.0" : [ {
     "catenaXId" : "urn:uuid:646bb5e0-dbb8-4fa0-a8d7-9ae1a05e9a2d",
     "bpnl" : "null",
