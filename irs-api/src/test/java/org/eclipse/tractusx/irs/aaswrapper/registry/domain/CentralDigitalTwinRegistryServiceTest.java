@@ -49,8 +49,8 @@ import org.springframework.web.client.RestClientException;
 @ExtendWith(MockitoExtension.class)
 class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAware {
 
-    private final String assemblyPartRelationshipURN = "urn:bamm:io.catenax.assembly_part_relationship:1.0.0";
-    private final String serialPartTypizationURN = "urn:bamm:io.catenax.serial_part_typization:1.0.0";
+    private final String singleLevelBomAsBuiltURN = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0";
+    private final String serialPartURN = "urn:bamm:io.catenax.serial_part:1.0.0";
     private DigitalTwinRegistryService digitalTwinRegistryService;
     @Mock
     private DigitalTwinRegistryClient dtRegistryClientMock;
@@ -68,7 +68,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() {
-        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+        final String existingCatenaXId = "urn:uuid:bdadc54c-9ac3-478b-95e6-f968580d85b3";
 
         final AssetAdministrationShellDescriptor aasShellDescriptor = digitalTwinRegistryService.getAAShellDescriptor(
                 new DigitalTwinRegistryKey(existingCatenaXId, ""));
@@ -78,8 +78,8 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
 
         assertThat(endpoint.getProtocolInformation().getEndpointAddress()).contains(existingCatenaXId);
-        assertThat(shellEndpoints.get(0).getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);
-        assertThat(shellEndpoints.get(1).getSemanticId().getValue()).containsExactly(serialPartTypizationURN);
+        assertThat(shellEndpoints.get(0).getSemanticId().getValue()).containsExactly(singleLevelBomAsBuiltURN);
+        assertThat(shellEndpoints.get(1).getSemanticId().getValue()).containsExactly(serialPartURN);
     }
 
     @Test
@@ -146,13 +146,13 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() {
-        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+        final String existingCatenaXId = "urn:uuid:bdadc54c-9ac3-478b-95e6-f968580d85b3";
 
         final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryService.getAAShellDescriptor(new DigitalTwinRegistryKey(existingCatenaXId, "")).getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);
 
-        assertThat(endpoint.getSemanticId().getValue()).containsExactly(assemblyPartRelationshipURN);
+        assertThat(endpoint.getSemanticId().getValue()).containsExactly(singleLevelBomAsBuiltURN);
     }
 }

@@ -188,7 +188,7 @@ semanticshub:
     #          │ │ │  │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
     #          │ │ │  │ │ │
     scheduler: 0 0 23 * * * # How often to clear the semantic model cache
-  defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization}" # IDs of models to cache at IRS startup
+  defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part:1.0.0#SerialPart}" # IDs of models to cache at IRS startup
   oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the semantic hub client
