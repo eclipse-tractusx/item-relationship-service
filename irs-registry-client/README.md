@@ -29,7 +29,16 @@ Include the library into your project:
     </dependency>
 </dependencies>
 ```
-*__Note__: while the library is only available on GitHub, you need to provide a personal access token (PAT) for local builds. Add `username:PAT@` before the repository hostname. Example: `https://dummyuser:personalAccessToken123@maven.pkg.github.com/catenax-ng/tx-item-relationship-service`* 
+**Note**: Since the library is currently only available on GitHub Packages, you need to provide a personal access token (PAT) for local builds. Update your Maven settings.xml (usually located at ~/.m2/settings.xml) like this:
+```
+<servers>
+    <server>
+        <id>github</id>
+        <username>enter-your-github-username</username>
+        <password>enter-your-generated-personal-access-token</password>
+    </server>
+</servers>
+```
 
 Add the following configuration to your `application.yaml`:
 
