@@ -94,8 +94,8 @@ def submodels_are_not_empty(response):
 def errors_for_invalid_globalAssetId_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
-    assert 'globalAssetId:size must be between 45 and 45' in error_list
-    assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
+    assert 'key.globalAssetId:size must be between 45 and 45' in error_list
+    assert 'key.globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
 
 
 def errors_for_invalid_depth_are_correct(response):
