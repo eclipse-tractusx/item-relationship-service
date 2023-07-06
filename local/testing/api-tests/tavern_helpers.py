@@ -2,6 +2,7 @@
 from datetime import datetime
 
 import requests
+import os
 
 
 def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
@@ -290,7 +291,6 @@ def job_parameter_are_as_requested(response):
 
 
 def create_bearer_token():
-    import os
     url = os.getenv('KEYCLOAK_HOST')
     client_id = os.getenv('KEYCLOAK_CLIENT_ID')
     client_secret = os.getenv('KEYCLOAK_CLIENT_SECRET')
