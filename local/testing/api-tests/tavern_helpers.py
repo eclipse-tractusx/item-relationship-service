@@ -1,6 +1,9 @@
 # testing_utils.py
 from datetime import datetime
 
+import requests
+
+
 def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
@@ -284,3 +287,14 @@ def job_parameter_are_as_requested(response):
     aspects_list = parameter.get("aspects")
     assert 'SerialPartTypization' in aspects_list
     assert 'PartAsPlanned' in aspects_list
+
+
+def create_bearer_token():
+    import os
+    url = os.getenv('KEYCLOAK_HOST')
+    client_id = os.getenv('KEYCLOAK_CLIENT_ID')
+    client_secret = os.getenv('KEYCLOAK_CLIENT_SECRET')
+
+    data = {"grant_type": "client_credentials", "client_id": client_id, "client_secret": client_secret}
+    token = requests.post(url, data).json().get('access_token')
+    return {"Authorization": f"Bearer {token}"}
