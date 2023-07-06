@@ -10,7 +10,28 @@ The library is based on Spring Boot and uses its configuration features.
 
 ### Auto setup
 
-Add this library to your classpath and add the following configuration to your `application.yaml`:
+Include the library into your project:
+
+```
+<repositories>
+    <repository>
+        <id>github</id>
+        <name>GitHub Packages</name>
+        <url>https://maven.pkg.github.com/catenax-ng/tx-item-relationship-service</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>org.eclipse.tractusx.irs</groupId>
+        <artifactId>irs-registry-client</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+```
+*Note: while the library is only available on GitHub, you need to provide a personal access token (PAT) for local builds. Add `username:PAT@` before the repository hostname.* 
+
+Add the following configuration to your `application.yaml`:
 
 ```yaml
 digitalTwinRegistryClient:
@@ -58,6 +79,15 @@ edc:
 ```
 
 Please note that you also need to provide a `RestTemplate` bean for the **Qualifier** `digitalTwinRegistryRestTemplate` (central approach) or `edcRestTemplate` (decentral approach).
+
+As a last step, add this annotation to your Application class:
+
+```
+@ComponentScan({ "<your.base.package>",
+                 "org.eclipse.tractusx.irs.registryclient",
+                 "org.eclipse.tractusx.irs.edc.client"
+})
+```
 
 ### Manual setup
 
