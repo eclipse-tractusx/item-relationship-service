@@ -112,13 +112,13 @@ public class DefaultConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean(value = Clock.class)
+    @ConditionalOnMissingBean(Clock.class)
     public Clock clock() {
         return Clock.systemUTC();
     }
 
     @Bean
-    @ConditionalOnMissingBean(value = ScheduledExecutorService.class)
+    @ConditionalOnMissingBean(ScheduledExecutorService.class)
     public ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(POOL_SIZE);
     }
