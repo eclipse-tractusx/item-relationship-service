@@ -66,7 +66,7 @@ public class EdcControlPlaneClient {
     private final EdcConfiguration config;
     private final EdcTransformer edcTransformer;
 
-    public EdcControlPlaneClient(@Qualifier("edcRestTemplate") final RestTemplate edcRestTemplate, final AsyncPollingService pollingService,
+    public EdcControlPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate, final AsyncPollingService pollingService,
             final EdcConfiguration config, final EdcTransformer edcTransformer) {
         this.edcRestTemplate = edcRestTemplate;
         this.pollingService = pollingService;

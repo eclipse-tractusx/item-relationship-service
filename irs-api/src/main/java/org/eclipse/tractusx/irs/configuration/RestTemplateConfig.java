@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -71,7 +72,7 @@ public class RestTemplateConfig {
     public static final String SEMHUB_REST_TEMPLATE = "oAuthRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
     public static final String DISCOVERY_REST_TEMPLATE = "discoveryRestTemplate";
-    public static final String EDC_REST_TEMPLATE = "edcRestTemplate";
+    public static final String EDC_REST_TEMPLATE = "edcClientRestTemplate";
 
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final ClientRegistrationRepository clientRegistrationRepository;
@@ -171,6 +172,7 @@ public class RestTemplateConfig {
     }
 
     @Bean(EDC_REST_TEMPLATE)
+    @Qualifier(EDC_REST_TEMPLATE)
         /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
             @Value("${edc.submodel.timeout.read}") final Duration readTimeout,
             @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout,

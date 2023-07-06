@@ -49,7 +49,7 @@ public class EdcDataPlaneClient {
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("\\{\"data\":\"(?<embeddedData>.*)\"\\}");
     private final RestTemplate edcRestTemplate;
 
-    public EdcDataPlaneClient(@Qualifier("edcRestTemplate") final RestTemplate edcRestTemplate) {
+    public EdcDataPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate) {
         this.edcRestTemplate = edcRestTemplate;
     }
 

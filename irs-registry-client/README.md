@@ -29,7 +29,7 @@ Include the library into your project:
     </dependency>
 </dependencies>
 ```
-*Note: while the library is only available on GitHub, you need to provide a personal access token (PAT) for local builds. Add `username:PAT@` before the repository hostname.* 
+*__Note__: while the library is only available on GitHub, you need to provide a personal access token (PAT) for local builds. Add `username:PAT@` before the repository hostname. Example: `https://dummyuser:personalAccessToken123@maven.pkg.github.com/catenax-ng/tx-item-relationship-service`* 
 
 Add the following configuration to your `application.yaml`:
 
@@ -78,7 +78,7 @@ edc:
 
 ```
 
-Please note that you also need to provide a `RestTemplate` bean for the **Qualifier** `digitalTwinRegistryRestTemplate` (central approach) or `edcRestTemplate` (decentral approach).
+Please note that you also need to provide a `RestTemplate` bean for the **Qualifier** `digitalTwinRegistryRestTemplate` (central approach) or `edcClientRestTemplate` (decentral approach).
 
 As a last step, add this annotation to your Application class:
 
@@ -88,6 +88,8 @@ As a last step, add this annotation to your Application class:
                  "org.eclipse.tractusx.irs.edc.client"
 })
 ```
+
+Now you can start using the client by injecting a bean of the `DigitalTwinRegistryService` interface. Depending on the configured mode, it will be central or decentral. 
 
 ### Manual setup
 
