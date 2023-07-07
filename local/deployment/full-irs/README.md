@@ -135,8 +135,8 @@ use these snippets for testing purposes.
 ```json
 {
   "aspects": [
-    "AssemblyPartRelationship",
-    "SerialPartTypization"
+    "SingleLevelBomAsBuilt",
+    "SerialPart"
   ],
   "bomLifecycle": "asBuilt",
   "collectAspects": true,
@@ -149,7 +149,7 @@ use these snippets for testing purposes.
 ```json
 {
   "aspects": [
-    "SerialPartTypization"
+    "SerialPart"
   ],
   "depth": 1,
   "globalAssetId": "urn:uuid:d387fa8e-603c-42bd-98c3-4d87fef8d2bb"

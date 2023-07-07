@@ -60,7 +60,7 @@ curl -X 'POST' \
   -H 'Authorization: Bearer <token_value>' \
   -d '{
   "aspects": [
-    "SerialPartTypization"
+    "SerialPart"
   ],
   "bomLifecycle": "asBuilt",
   "depth": 1,

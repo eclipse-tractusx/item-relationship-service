@@ -21,7 +21,7 @@ skinparam shadowing false
              }},
             "queryParameter": {
                 "bomLifecycle" : "asBuilt",
-                "aspect" : ["SerialPartTypization", "Contact"],
+                "aspect" : ["SerialPart", "Contact"],
                 "depth": 4,
                 "direction": "downward"
              },

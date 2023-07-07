@@ -135,7 +135,7 @@ class SubmodelFacadeWiremockTest {
                                                                          .withHeader("Content-Type",
                                                                                  "application/json;charset=UTF-8")
                                                                          .withBodyFile(
-                                                                                 "assemblyPartRelationship.json")));
+                                                                                 "singleLevelBomAsBuilt.json")));
 
         // Act
         final String submodel = edcSubmodelClient.getSubmodelRawPayload(URL).get();
