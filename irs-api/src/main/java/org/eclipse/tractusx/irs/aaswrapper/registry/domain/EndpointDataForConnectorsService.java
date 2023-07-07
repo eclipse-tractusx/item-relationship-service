@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.registry.domain;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -36,6 +37,7 @@ import org.springframework.web.client.RestClientException;
  * to find DigitalTwinRegistry asset
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EndpointDataForConnectorsService {
 
@@ -44,15 +46,16 @@ public class EndpointDataForConnectorsService {
 
     private final EdcSubmodelFacade edcSubmodelFacade;
 
-    /* package */ List<EndpointDataReference> findEndpointDataForConnectors(final List<String> connectorEndpoints) {
-        return connectorEndpoints.stream().map(connector -> {
+    /* package */ EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
+        for (final String connector : connectorEndpoints) {
             try {
-                return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
-                        DT_REGISTRY_ASSET_VALUE);
+                return edcSubmodelFacade.getEndpointReferenceForAsset(
+                        connector, DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE);
             } catch (EdcClientException e) {
-                throw new RestClientException(e.getMessage(), e);
+                log.warn("Exception occurred when retrieving EndpointDataReference from " + connector);
             }
-        }).toList();
+        }
+        throw new RestClientException("EndpointDataReference was not found. Requested connectorEndpoints: " + String.join(", ", connectorEndpoints));
     }
 
 }

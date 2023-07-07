@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -42,7 +43,7 @@ import org.eclipse.tractusx.irs.common.JsonParseException;
 
 /**
  * Builds relationship array for AAShell from previous step.
- * To build relationships AssemblyPartRelationship submodels
+ * To build relationships traversal submodels
  * are being retrieved from EDC's components.
  */
 @Slf4j
@@ -71,6 +72,7 @@ public class RelationshipDelegate extends AbstractDelegate {
 
                     aasTransferProcess.addIdsToProcess(idsToProcess);
                     itemContainerBuilder.relationships(relationships);
+                    itemContainerBuilder.bpns(getBpnsFrom(relationships));
                 } catch (final EdcClientException e) {
                     log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                             address);
@@ -83,6 +85,10 @@ public class RelationshipDelegate extends AbstractDelegate {
         );
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+    }
+
+    private static List<Bpn> getBpnsFrom(final List<Relationship> relationships) {
+        return relationships.stream().map(Relationship::getBpn).map(Bpn::withManufacturerId).toList();
     }
 
     private List<String> getIdsToProcess(final List<Relationship> relationships, final Direction direction) {

@@ -108,8 +108,7 @@ class SubmodelFacadeWiremockTest {
         cacheConfig.setTtl(Duration.ofMinutes(10));
         cacheConfig.setMaxCachedItems(1000L);
 
-        final InMemoryCatalogCache catalogCache = new InMemoryCatalogCache(
-                new EDCCatalogFacade(controlPlaneClient, config), cacheConfig);
+        final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
 
         final PolicyCheckerService policyCheckerService = mock(PolicyCheckerService.class);
         when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
@@ -119,7 +118,7 @@ class SubmodelFacadeWiremockTest {
         final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
         this.edcSubmodelClient = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
-                pollingService, meterRegistry, retryRegistry, catalogCache, controlPlaneClient);
+                pollingService, meterRegistry, retryRegistry, catalogFacade);
     }
 
     @AfterEach
@@ -136,7 +135,7 @@ class SubmodelFacadeWiremockTest {
                                                                          .withHeader("Content-Type",
                                                                                  "application/json;charset=UTF-8")
                                                                          .withBodyFile(
-                                                                                 "assemblyPartRelationship.json")));
+                                                                                 "singleLevelBomAsBuilt.json")));
 
         // Act
         final String submodel = edcSubmodelClient.getSubmodelRawPayload(URL).get();
@@ -149,7 +148,7 @@ class SubmodelFacadeWiremockTest {
         final var contentType = "application/json;charset=UTF-8";
         final var pathCatalog = "/catalog/request";
         final var pathNegotiate = "/contractnegotiations";
-        final var pathStartTransfer = "/transferprocesses";
+        final var pathTransfer = "/transferprocesses";
         givenThat(post(urlPathEqualTo(pathCatalog)).willReturn(aResponse().withStatus(200)
                                                                           .withHeader("Content-Type", contentType)
                                                                           .withBodyFile("edc/responseCatalog.json")));
@@ -171,10 +170,22 @@ class SubmodelFacadeWiremockTest {
                            .withHeader("Content-Type", contentType)
                            .withBodyFile("edc/responseGetNegotiationState.json")));
 
-        givenThat(post(urlPathEqualTo(pathStartTransfer)).willReturn(aResponse().withStatus(200)
-                                                                                .withHeader("Content-Type", contentType)
-                                                                                .withBodyFile(
-                                                                                        "edc/responseStartTransferprocess.json")));
+        givenThat(post(urlPathEqualTo(pathTransfer)).willReturn(aResponse().withStatus(200)
+                                                                           .withHeader("Content-Type", contentType)
+                                                                           .withBodyFile(
+                                                                                   "edc/responseStartTransferprocess.json")));
+        final var transferProcessId = "1b21e963-0bc5-422a-b30d-fd3511861d88";
+        givenThat(get(urlPathEqualTo(pathTransfer + "/" + transferProcessId + "/state")).willReturn(
+                aResponse().withStatus(200)
+                           .withHeader("Content-Type", contentType)
+                           .withBodyFile("edc/responseGetTransferState.json")));
+        givenThat(get(urlPathEqualTo(pathTransfer + "/" + transferProcessId)).willReturn(aResponse().withStatus(200)
+                                                                                                    .withHeader(
+                                                                                                            "Content-Type",
+                                                                                                            contentType)
+                                                                                                    .withBodyFile(
+                                                                                                            "edc/responseGetTransferConfirmed.json")));
+
         final var contractAgreementId = "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
         final EndpointDataReference ref = EndpointDataReference.Builder.newInstance()
                                                                        .authKey("testkey")
