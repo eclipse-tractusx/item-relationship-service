@@ -852,7 +852,7 @@ pre.rouge {
     <span class="c1">#          │ │ │  │ │ │          (or MON-SUN -- 0 or 7 is Sunday)</span>
     <span class="c1">#          │ │ │  │ │ │</span>
     <span class="na">scheduler</span><span class="pi">:</span> <span class="s">0 0 23 * * *</span> <span class="c1"># How often to clear the semantic model cache</span>
-  <span class="na">defaultUrns</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization}"</span> <span class="c1"># IDs of models to cache at IRS startup</span>
+  <span class="na">defaultUrns</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part:1.0.0#SerialPart}"</span> <span class="c1"># IDs of models to cache at IRS startup</span>
   <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">keycloak</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the semantic hub client</span>
@@ -870,6 +870,7 @@ pre.rouge {
 <span class="na">ess</span><span class="pi">:</span>
   <span class="na">localBpn</span><span class="pi">:</span> <span class="s">${ESS_LOCAL_BPN:}</span> <span class="c1"># BPN value of product - used during EDC notification communication</span>
   <span class="na">localEdcEndpoint</span><span class="pi">:</span> <span class="s">${EDC_PROVIDER_URL:}</span> <span class="c1"># EDC Provider Url - used during EDC notification communication</span>
+  <span class="na">managementPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2}</span> <span class="c1"># EDC management API path - used for notification asset creation</span>
   <span class="na">irs</span><span class="pi">:</span>
     <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
   <span class="na">discovery</span><span class="pi">:</span>
@@ -888,7 +889,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-06-28 10:42:52 UTC
+Last updated 2023-07-07 14:35:10 UTC
 </div>
 </div>
 </body>
