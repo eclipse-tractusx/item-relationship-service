@@ -121,8 +121,7 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         print("RetryCounter: ", processingErrorRetryCounter)
         assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
         assert 'DigitalTwinRequest' in processingErrorStep
-        assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail
-        #assert '404 : \"{\"error\":{\"message\":\"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found\",\"path\":\"/registry/shell-descriptors/urn%3Auuid%3Acce14502-958a-42e1-8bb7-f4f41aaaaaaa\",\"details\":{}}}\"' in processingErrorDetail
+        #assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail ##commented out since this error message is not possible currently after DTR changes
         assert processingErrorLastAttempt is not None
         assert 3 is processingErrorRetryCounter
 
@@ -286,7 +285,7 @@ def job_parameter_are_as_requested(response):
     assert parameter.get('lookupBPNs') is True
     assert parameter.get('callbackUrl') == 'https://www.check123.com'
     aspects_list = parameter.get("aspects")
-    assert 'SerialPartTypization' in aspects_list
+    assert 'SerialPart' in aspects_list
     assert 'PartAsPlanned' in aspects_list
 
 

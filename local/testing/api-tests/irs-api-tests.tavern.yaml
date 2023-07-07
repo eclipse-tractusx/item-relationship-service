@@ -648,7 +648,7 @@ stages:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AsPlanned}"
           bpn: "BPNL00000003AYRE"
-        bomLifecycle: "asBuilt"
+        bomLifecycle: "asPlanned"
         depth: 2
         collectAspects: true
       method: POST
@@ -704,7 +704,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AsBuilt}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AsBuild}"
           bpn: "BPNL00000003AYRE"
         aspects:
           - SerialPart
@@ -1067,7 +1067,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 200
+    delay_after: 60
 
   - name: fetch response for running job and check existence of submodels and relationships
     request:
@@ -1182,6 +1182,7 @@ stages:
       save:
         json:
           job_id: id
+    delay_after: 300
 
   - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
