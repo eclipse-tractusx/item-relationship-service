@@ -5,13 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Known knowns
+- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+
+## [3.1.0] - 2023-06-28
 ### Changed
 - Removed catalog cache
 - Changed EDC catalog retrieval from pagination to filter
-- Update ESS notification asset creation to new EDC DSP protocol
-
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+- Item graphs with asBuilt lifecycle & downward direction are now built with usage of SingleLevelBomAsBuilt aspect, instead of AssemblyPartRelationship aspect
+- Changed retrieval of BPN value from AAS Shell to SingleLevelBomAsBuilt
+- Renamed SerialPartTypization to SerialPart aspect
+- ESS
+  - Update ESS notification asset creation to new EDC DSP protocol
+  - Include DiscoveryFinder into ESS flow
 
 ## [3.0.1] - 2023-06-28
 ### Fixed
@@ -252,7 +258,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.2...HEAD
+[3.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.1...3.0.0
 [2.6.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.0...2.6.1
