@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
@@ -40,6 +41,7 @@ import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessDataDestination;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
+import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.springframework.stereotype.Service;
 
@@ -59,7 +61,7 @@ public class ContractNegotiationService {
     private final EdcConfiguration config;
 
     public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem)
-            throws ContractNegotiationException, UsagePolicyException {
+            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
         if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
             log.info("Policy was not allowed, canceling negotiation.");
             throw new UsagePolicyException(catalogItem.getItemId());
@@ -82,11 +84,11 @@ public class ContractNegotiationService {
         final Response transferProcessId = edcControlPlaneClient.startTransferProcess(transferProcessRequest);
 
         // can be added to cache after completed
-        edcControlPlaneClient.getTransferProcess(transferProcessId).exceptionally(throwable -> {
-            log.error("Error while receiving transfer process", throwable);
-            return null;
-        });
-        log.info("Transfer process completed for transferProcessId: {}", transferProcessId.getResponseId());
+        final CompletableFuture<TransferProcessResponse> transferProcessFuture = edcControlPlaneClient.getTransferProcess(
+                transferProcessId);
+        final TransferProcessResponse transferProcessResponse = Objects.requireNonNull(
+                getTransferProcessResponse(transferProcessFuture));
+        log.info("Transfer process completed for transferProcessId: {}", transferProcessResponse.getResponseId());
         return negotiationResponse;
     }
 
@@ -140,5 +142,16 @@ public class ContractNegotiationService {
         return null;
     }
 
+    private TransferProcessResponse getTransferProcessResponse(
+            final CompletableFuture<TransferProcessResponse> transferProcessResponse) throws TransferProcessException {
+        try {
+            return transferProcessResponse.get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new TransferProcessException(e);
+        }
+        return null;
+    }
 }
 

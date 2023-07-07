@@ -177,10 +177,6 @@ edc:
     path: /submodel
     urnprefix: /urn
   catalog:
-    cache:
-      enabled: false  # Set to false to disable caching
-      ttl: P1D  # Time after which a cached Item is no longer valid and the real catalog is called instead
-      maxCachedItems: 64000  # Maximum amount of cached catalog items
     policies:
       # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
       # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.

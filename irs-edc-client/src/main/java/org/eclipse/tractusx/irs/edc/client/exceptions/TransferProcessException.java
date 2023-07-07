@@ -20,31 +20,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.model;
-
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+package org.eclipse.tractusx.irs.edc.client.exceptions;
 
 /**
- * EDC negotiation response.
+ * Exception for errors in the contract negotiation.
  */
-@Data
-@Builder(toBuilder = true)
-@Jacksonized
-public class NegotiationResponse {
-
-    @JsonProperty("@id")
-    private String responseId;
-    private String contractAgreementId;
-    private String counterPartyAddress;
-    private String errorDetail;
-    private String protocol;
-    private String state;
-    private String type;
-    private List<String> callbackAddresses;
-
+public class TransferProcessException extends EdcClientException {
+    public TransferProcessException(final Throwable cause) {
+        super(cause);
+    }
 }
