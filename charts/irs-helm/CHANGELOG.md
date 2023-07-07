@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Remove EDC Catalog cache configuration
 
+### Added
+- New configuration for ess asset creation EDC management API path `ess.managementPath`
+
 ## [6.0.1] - 2023-06-26
 ### Changed
 - Update IRS to version 3.0.1

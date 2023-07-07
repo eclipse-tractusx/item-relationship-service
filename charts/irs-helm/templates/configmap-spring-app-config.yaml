@@ -113,6 +113,7 @@ data:
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
+      managementPath: {{ tpl (.Values.ess.managementPath | default "/management/v2") . | quote }}
       irs:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:

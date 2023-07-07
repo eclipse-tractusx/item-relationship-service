@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Removed catalog cache
 - Changed EDC catalog retrieval from pagination to filter
+- Update ESS notification asset creation to new EDC DSP protocol
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
