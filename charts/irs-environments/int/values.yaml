@@ -36,6 +36,10 @@ irs-helm:
       clientSecret: <path:traceability-irs/data/int/keycloak/oauth2#clientSecret>
       clientTokenUri: <path:traceability-irs/data/int/keycloak/oauth2#tokenUri>
       jwkSetUri: <path:traceability-irs/data/int/keycloak/oauth2#jwkSetUri>
+  portal:
+    oauth2:
+      clientId: <path:traceability-irs/data/int/keycloak/dataspacediscovery#clientId>
+      clientSecret: <path:traceability-irs/data/int/keycloak/dataspacediscovery#clientSecret>
   edc:
     provider:
       host:
