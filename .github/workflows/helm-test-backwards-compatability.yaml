@@ -1,0 +1,36 @@
+name: Test k8s version compatability
+
+on:
+  workflow_dispatch:
+    inputs:
+      node_image_latest:
+        description: 'First version of kindest/node image for k8s kind cluster'
+        default: 'kindest/node:v1.27.3'
+        required: false
+        type: string
+      node_image_second_latest:
+        description: 'Second version of kindest/node image for k8s kind cluster'
+        default: 'kindest/node:v1.26.6'
+        required: false
+        type: string
+      node_image_third_latest:
+        description: 'Third version of kindest/node image for k8s kind cluster'
+        default: 'kindest/node:v1.25.11'
+        required: false
+        type: string
+
+jobs:
+  test-latest:
+    uses: ./.github/workflows/helm-test.yaml
+    with:
+      node_image: ${{ github.event.inputs.node_image_latest || 'kindest/node:v1.27.3' }}
+
+  test-second-latest:
+    uses: ./.github/workflows/helm-test.yaml
+    with:
+      node_image: ${{ github.event.inputs.node_image_second_latest || 'kindest/node:v1.26.6' }}
+
+  test-third-latest:
+    uses: ./.github/workflows/helm-test.yaml
+    with:
+      node_image: ${{ github.event.inputs.node_image_third_latest || 'kindest/node:v1.25.11' }}

@@ -57,8 +57,8 @@ class AssetAdministrationShellTestdataCreator {
         }
 
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
-        cxTestData.get().getAssemblyPartRelationship().ifPresent(submodel -> submodelDescriptors.add(createAssemblyPartRelationshipSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getSerialPartTypization().ifPresent(submodel -> submodelDescriptors.add(createSerialPartTypizationSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getSingleLevelBomAsBuilt().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsBuiltSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getSerialPart().ifPresent(submodel -> submodelDescriptors.add(createSerialPartSubmodelDescriptor(catenaXId)));
         cxTestData.get().getSingleLevelUsageAsBuilt().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelUsageAsBuiltSubmodelDescriptor(catenaXId)));
         cxTestData.get().getSingleLevelBomAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get().getPartAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
@@ -78,9 +78,9 @@ class AssetAdministrationShellTestdataCreator {
                                                  .build();
     }
 
-    private SubmodelDescriptor createAssemblyPartRelationshipSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.assembly_part_relationship:1.0.0",
-                "assemblyPartRelationship");
+    private SubmodelDescriptor createSingleLevelBomAsBuiltSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0",
+                "singleLevelBomAsBuilt");
     }
 
     private SubmodelDescriptor createSingleLevelUsageAsBuiltSubmodelDescriptor(final String catenaXId) {
@@ -88,9 +88,9 @@ class AssetAdministrationShellTestdataCreator {
                 "singleLevelUsageAsBuilt");
     }
 
-    private SubmodelDescriptor createSerialPartTypizationSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.serial_part_typization:1.0.0",
-                "serialPartTypization");
+    private SubmodelDescriptor createSerialPartSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.serial_part:1.0.0",
+                "serialPart");
     }
 
     private SubmodelDescriptor createSingleLevelBomAsPlannedSubmodelDescriptor(final String catenaXId) {

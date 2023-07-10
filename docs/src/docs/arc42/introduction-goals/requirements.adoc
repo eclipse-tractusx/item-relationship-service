@@ -9,7 +9,7 @@ The IRS is a:
 - Data chain provider
 
 == Substantial Features
-- provide a top-down BoM asBuilt tree structure along the submodel "AssemblyPartRelationship"
+- provide a top-down BoM asBuilt tree structure along the submodel "SingleLevelBomAsBuilt"
 - usage of EDC consumer for communicating with the Catena-X network
 - functionality of IRS provider will be handled by providers submodel servers
 - federated IRS service

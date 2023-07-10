@@ -71,9 +71,7 @@ class SubmodelExponentialRetryTest {
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService, config,
                 createEdcTransformer());
 
-        final EDCCatalogFacade edcCatalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
-        final CatalogCacheConfiguration cacheConfiguration = mock(CatalogCacheConfiguration.class);
-        final CatalogCache catalogCache = new InMemoryCatalogCache(edcCatalogFacade, cacheConfiguration);
+        final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
 
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
@@ -81,7 +79,7 @@ class SubmodelExponentialRetryTest {
         final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
 
         final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient, storage,
-                pollingService, retryRegistry, catalogCache, controlPlaneClient);
+                pollingService, retryRegistry, catalogFacade);
         testee = new EdcSubmodelFacade(client);
     }
 
@@ -110,8 +108,7 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "http://test.com/" + ASSET_ID + "/submodel?content=value")).hasCauseInstanceOf(
-                RuntimeException.class);
+                "http://test.com/" + ASSET_ID + "/submodel?content=value")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),

@@ -39,13 +39,10 @@ import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.eclipse.edc.catalog.spi.Catalog;
-import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.CxTestDataContainer;
 import org.eclipse.tractusx.irs.common.Masker;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
@@ -136,8 +133,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
     private final AsyncPollingService pollingService;
     private final RetryRegistry retryRegistry;
-    private final CatalogCache catalogCache;
-    private final EdcControlPlaneClient edcControlPlaneClient;
+    private final EDCCatalogFacade catalogFacade;
     private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
 
     private static void stopWatchOnEdcTask(final StopWatch stopWatch) {
@@ -183,7 +179,10 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
                 config.getControlplane().getProviderSuffix());
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerWithSuffix,
                 decodedTarget);
-        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerWithSuffix, decodedTarget).orElseThrow();
+        final CatalogItem catalogItem = catalogFacade.fetchCatalogById(providerWithSuffix, decodedTarget)
+                                                     .stream()
+                                                     .findFirst()
+                                                     .orElseThrow();
         return contractNegotiationService.negotiate(providerWithSuffix, catalogItem);
     }
 
@@ -309,28 +308,9 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final String providerWithSuffix = appendSuffix(endpointAddress,
                     config.getControlplane().getProviderSuffix());
 
-            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey,
+            final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey,
                     filterValue);
 
-            final List<CatalogItem> items = catalog.getDatasets().stream().map(contractOffer -> {
-                final Map.Entry<String, Policy> offer = contractOffer.getOffers()
-                                                                     .entrySet()
-                                                                     .stream()
-                                                                     .findFirst()
-                                                                     .orElseThrow();
-                final var catalogItem = CatalogItem.builder()
-                                                   .itemId(contractOffer.getId())
-                                                   .assetPropId(contractOffer.getProperty(NAMESPACE_EDC_ID).toString())
-                                                   .connectorId(catalog.getId())
-                                                   .offerId(offer.getKey())
-                                                   .policy(offer.getValue());
-                if (catalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
-                    catalogItem.connectorId(
-                            catalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString());
-                }
-
-                return catalogItem.build();
-            }).toList();
             final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
                     items.stream().findFirst().orElseThrow());
 

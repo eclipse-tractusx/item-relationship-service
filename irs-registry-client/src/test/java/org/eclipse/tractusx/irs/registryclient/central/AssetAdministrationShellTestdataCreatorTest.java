@@ -46,7 +46,7 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
 
     @Test
     void shouldReturnAssetAdministrationShellDescriptorWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
+        final String catenaXId = "urn:uuid:0b45c63b-0e5e-4232-9074-a05607783c33";
 
         final AssetAdministrationShellDescriptor aasDescriptor = assetAdministrationShellTestdataCreator.createDummyAssetAdministrationShellDescriptorForId(
                 catenaXId);
@@ -60,10 +60,10 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
 
         assertThat(aasDescriptor.getSubmodelDescriptors()).isNotEmpty();
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
-        assertThat(endpointAddress).isEqualTo(catenaXId + "_assemblyPartRelationship");
+        assertThat(endpointAddress).isEqualTo(catenaXId + "_singleLevelBomAsBuilt");
 
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:io.catenax.assembly_part_relationship:1.0.0");
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:io.catenax.serial_part_typization:1.0.0");
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0");
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getValue().get(0)).isEqualTo("urn:bamm:io.catenax.serial_part:1.0.0");
     }
 
     @Test
