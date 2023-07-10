@@ -22,8 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
-
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
