@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 
 /**
  * Class to create Submodel Testdata

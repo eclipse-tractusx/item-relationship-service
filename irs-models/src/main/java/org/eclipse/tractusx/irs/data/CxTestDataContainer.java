@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.data;
 
 import java.util.List;
 import java.util.Map;

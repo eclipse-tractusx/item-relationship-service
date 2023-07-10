@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.registryclient.central;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.springframework.context.annotation.Profile;

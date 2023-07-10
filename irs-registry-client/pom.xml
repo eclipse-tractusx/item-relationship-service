@@ -53,12 +53,6 @@
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.eclipse.tractusx.irs</groupId>
-            <artifactId>irs-common</artifactId>
-            <version>${revision}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>

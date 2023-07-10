@@ -35,7 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
@@ -97,8 +97,9 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenThrow(
                 new RestClientException("Dummy"));
 
+        final var keys = List.of(key);
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
-                () -> dtRegistryFacadeWithMock.fetchShells(List.of(key)));
+                () -> dtRegistryFacadeWithMock.fetchShells(keys));
     }
 
     @Test

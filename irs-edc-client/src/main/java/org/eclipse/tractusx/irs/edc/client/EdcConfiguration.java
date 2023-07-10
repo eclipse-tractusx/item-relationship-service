@@ -26,11 +26,13 @@ import java.time.Duration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * EDC configuration settings. Automatically populated by Spring from application.yml
  * and other configuration sources.
  */
+@Configuration("irsEdcClientEdcConfiguration")
 @ConfigurationProperties(prefix = "edc")
 @Data
 public class EdcConfiguration {

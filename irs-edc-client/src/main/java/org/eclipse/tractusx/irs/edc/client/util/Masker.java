@@ -20,31 +20,26 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.edc.client.util;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
- * Local spring configuration for loading test data from resrouces.
+ * Utility class to mask strings for log output
  */
-@Profile({ "local", "stubtest" })
-@Configuration
-@RequiredArgsConstructor
-public class LocalTestDataConfiguration {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class Masker {
 
-    @Bean
-    public CxTestDataContainer cxTestDataContainer() throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        try (var stream = LocalTestDataConfiguration.class.getResourceAsStream("/test_data/CX_Testdata.json")) {
-            return objectMapper.readValue(stream, CxTestDataContainer.class);
+    public static final int UNMASKED_LENGTH = 4;
+
+    public static String mask(final String stringToMask) {
+        if (StringUtils.isBlank(stringToMask) || StringUtils.length(stringToMask) <= UNMASKED_LENGTH) {
+            return "****"; // mask everything
         }
+        // mask everything after the first 4 characters
+        final String mask = StringUtils.repeat("*", stringToMask.length() - UNMASKED_LENGTH);
+        return StringUtils.overlay(stringToMask, mask, UNMASKED_LENGTH, stringToMask.length());
     }
 }

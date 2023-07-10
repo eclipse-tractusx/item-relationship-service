@@ -26,8 +26,8 @@ import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.common.ApiConstants;
-import org.eclipse.tractusx.irs.common.Masker;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController("irsEdcClientEdcCallbackController")
-@RequestMapping(ApiConstants.API_PREFIX_INTERNAL)
+@RequestMapping("internal")
 @Hidden
 @RequiredArgsConstructor
 public class EdcCallbackController {

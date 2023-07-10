@@ -20,13 +20,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common;
+package org.eclipse.tractusx.irs.data;
+
+import java.io.IOException;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
- * Exception when parsing JSON
+ * Local spring configuration for loading test data from resrouces.
  */
-public class JsonParseException extends RuntimeException {
-    public JsonParseException(final Throwable cause) {
-        super(cause);
+@Profile({ "local", "stubtest" })
+@Configuration
+@RequiredArgsConstructor
+public class LocalTestDataConfiguration {
+
+    @Bean
+    public CxTestDataContainer cxTestDataContainer() throws IOException {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        try (var stream = LocalTestDataConfiguration.class.getResourceAsStream("/test_data/CX_Testdata.json")) {
+            return objectMapper.readValue(stream, CxTestDataContainer.class);
+        }
     }
 }

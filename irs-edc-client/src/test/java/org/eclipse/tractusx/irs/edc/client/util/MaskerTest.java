@@ -20,11 +20,11 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.util;
+package org.eclipse.tractusx.irs.edc.client.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.eclipse.tractusx.irs.common.Masker;
+import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.junit.jupiter.api.Test;
 
 class MaskerTest {
