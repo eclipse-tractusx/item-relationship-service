@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 /**
  * Provides scheduling services for asynchronous polling.
  */
-@Service
+@Service("irsEdcClientAsyncPollingService")
 @RequiredArgsConstructor
 public class AsyncPollingService {
 

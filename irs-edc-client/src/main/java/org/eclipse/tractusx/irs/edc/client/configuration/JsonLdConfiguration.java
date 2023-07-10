@@ -39,7 +39,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * JsonLD configuration and namespace constants.
  */
-@Configuration
+@Configuration("irsEdcClientJsonLdConfiguration")
 public class JsonLdConfiguration {
 
     public static final String NAMESPACE_ODRL = "http://www.w3.org/ns/odrl/2/";

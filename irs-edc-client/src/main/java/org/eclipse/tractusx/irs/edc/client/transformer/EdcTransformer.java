@@ -72,7 +72,7 @@ import org.springframework.stereotype.Component;
 /**
  * Transformer to convert between EDC models and JSON-LD.
  */
-@Component
+@Component("irsEdcClientEdcTransformer")
 @SuppressWarnings("PMD.ExcessiveImports")
 public class EdcTransformer {
     private final JsonObjectToCatalogTransformer jsonObjectToCatalogTransformer;

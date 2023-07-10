@@ -43,7 +43,7 @@ import org.springframework.web.util.UriUtils;
  * Check and validate Policy in Catalog fetch from EDC providers.
  */
 @Slf4j
-@Service
+@Service("irsEdcClientPolicyCheckerService")
 @RequiredArgsConstructor
 public class PolicyCheckerService {
 

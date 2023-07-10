@@ -117,7 +117,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 /**
  * Public API facade for EDC domain
  */
-@Service
+@Service("irsEdcClientEdcSubmodelClientImpl")
 @Slf4j
 @RequiredArgsConstructor
 @Profile({ "!local && !stubtest" })

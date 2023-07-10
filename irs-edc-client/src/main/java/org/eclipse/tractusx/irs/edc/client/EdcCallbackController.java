@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Endpoint used by the EDC ControlPlane to provide the endpoint data reference.
  */
 @Slf4j
-@RestController
+@RestController("irsEdcClientEdcCallbackController")
 @RequestMapping(ApiConstants.API_PREFIX_INTERNAL)
 @Hidden
 @RequiredArgsConstructor

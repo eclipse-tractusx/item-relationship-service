@@ -52,7 +52,7 @@ import org.springframework.web.client.RestTemplate;
  * Communicates with the EDC ControlPlane
  */
 @Slf4j
-@Service
+@Service("irsEdcClientEdcControlPlaneClient")
 @SuppressWarnings({ "PMD.TooManyMethods" })
 public class EdcControlPlaneClient {
 

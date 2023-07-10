@@ -44,7 +44,7 @@ import org.springframework.stereotype.Component;
  * EDC Catalog facade which handles pagination of the catalog, aggregation of contract offers
  * and transformation into {@link CatalogItem}.
  */
-@Component
+@Component("irsEdcClientEdcCatalogFacade")
 @RequiredArgsConstructor
 @Slf4j
 public class EDCCatalogFacade {

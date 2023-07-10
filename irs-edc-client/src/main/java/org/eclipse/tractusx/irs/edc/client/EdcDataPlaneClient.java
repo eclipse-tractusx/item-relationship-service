@@ -43,7 +43,7 @@ import org.springframework.web.client.RestTemplate;
  * Communicates with the EDC DataPlane.
  */
 @Slf4j
-@Service
+@Service("irsEdcClientEdcDataPlaneClient")
 public class EdcDataPlaneClient {
 
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("\\{\"data\":\"(?<embeddedData>.*)\"\\}");

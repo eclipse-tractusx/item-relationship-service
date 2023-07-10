@@ -26,13 +26,11 @@ import java.time.Duration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * EDC configuration settings. Automatically populated by Spring from application.yml
  * and other configuration sources.
  */
-@Component
 @ConfigurationProperties(prefix = "edc")
 @Data
 public class EdcConfiguration {
