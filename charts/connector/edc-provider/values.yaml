@@ -6,6 +6,10 @@ tractusx-connector:
     id: <path:traceability-irs/data/dev/controlplane#participantId>
 
   controlplane:
+    env:
+      # Enable HTTPS JSON-LD. Remove after EDC 0.5.0-rc6
+      EDC_JSONLD_HTTPS_ENABLED: 'true'
+
     # SSI configuration
     ssi:
       miw:
