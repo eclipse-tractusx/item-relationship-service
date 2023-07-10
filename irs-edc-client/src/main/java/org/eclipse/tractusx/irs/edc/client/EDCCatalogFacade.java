@@ -74,6 +74,33 @@ public class EDCCatalogFacade {
         return builder.build();
     }
 
+    private static List<CatalogItem> mapToCatalogItems(final Catalog catalog) {
+        if (catalog.getDatasets() == null) {
+            return List.of();
+        } else {
+
+            return catalog.getDatasets().stream().map(contractOffer -> {
+                final Map.Entry<String, Policy> offer = contractOffer.getOffers()
+                                                                     .entrySet()
+                                                                     .stream()
+                                                                     .findFirst()
+                                                                     .orElseThrow();
+                final var catalogItem = CatalogItem.builder()
+                                                   .itemId(contractOffer.getId())
+                                                   .assetPropId(contractOffer.getProperty(NAMESPACE_EDC_ID).toString())
+                                                   .connectorId(catalog.getId())
+                                                   .offerId(offer.getKey())
+                                                   .policy(offer.getValue());
+                if (catalog.getProperties().containsKey(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID)) {
+                    catalogItem.connectorId(
+                            catalog.getProperties().get(JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID).toString());
+                }
+
+                return catalogItem.build();
+            }).toList();
+        }
+    }
+
     /**
      * Paginates though the catalog and collects all CatalogItems up to the
      * point where the requests Item is found.
@@ -108,6 +135,15 @@ public class EDCCatalogFacade {
 
         log.info("Search for offer for asset id: {}", target);
         return datasets.stream().map(dataset -> createCatalogItem(pageableCatalog, dataset)).toList();
+    }
+
+    public List<CatalogItem> fetchCatalogById(final String connectorUrl, final String target) {
+        return fetchCatalogByFilter(connectorUrl, NAMESPACE_EDC_ID, target);
+    }
+
+    public List<CatalogItem> fetchCatalogByFilter(final String connectorUrl, final String key, final String value) {
+        final Catalog catalog = controlPlaneClient.getCatalogWithFilter(connectorUrl, key, value);
+        return mapToCatalogItems(catalog);
     }
 
     private Optional<Dataset> findOfferIfExist(final String target, final Catalog catalog) {

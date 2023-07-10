@@ -53,11 +53,11 @@ public class CxTestDataContainer {
     @Data
     public static class CxTestData {
 
-        public static final String SERIAL_PART_ASPECT_TYPE = "urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization";
-        public static final String ASSEMBLY_PART_ASPECT_TYPE = "urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship";
+        public static final String SERIAL_PART_ASPECT_TYPE = "urn:bamm:io.catenax.serial_part:1.1.0#SerialPart";
+        public static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
         public static final String SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt";
         public static final String PART_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned";
-        public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.2#SingleLevelBomAsPlanned";
+        public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned";
         public static final String BATCH_ASPECT_TYPE = "urn:bamm:io.catenax.batch:1.0.0#Batch";
         public static final String MATERIAL_FOR_RECYCLING_ASPECT_TYPE = "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
         public static final String PRODUCT_DESCRIPTION_ASPECT_TYPE = "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription";
@@ -65,9 +65,9 @@ public class CxTestDataContainer {
 
         private String catenaXId;
         @JsonProperty(SERIAL_PART_ASPECT_TYPE)
-        private List<Map<String, Object>> serialPartTypization;
-        @JsonProperty(ASSEMBLY_PART_ASPECT_TYPE)
-        private List<Map<String, Object>> assemblyPartRelationship;
+        private List<Map<String, Object>> serialPart;
+        @JsonProperty(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE)
+        private List<Map<String, Object>> singleLevelBomAsBuilt;
         @JsonProperty(SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE)
         private List<Map<String, Object>> singleLevelUsageAsBuilt;
         @JsonProperty(PART_AS_PLANNED_ASPECT_TYPE)
@@ -83,12 +83,12 @@ public class CxTestDataContainer {
         @JsonProperty(PHYSICAL_DIMENSION_ASPECT_TYPE)
         private List<Map<String, Object>> physicalDimension;
 
-        public Optional<Map<String, Object>> getSerialPartTypization() {
-            return serialPartTypization != null ? serialPartTypization.stream().findFirst() : Optional.empty();
+        public Optional<Map<String, Object>> getSerialPart() {
+            return serialPart != null ? serialPart.stream().findFirst() : Optional.empty();
         }
 
-        public Optional<Map<String, Object>> getAssemblyPartRelationship() {
-            return assemblyPartRelationship != null ? assemblyPartRelationship.stream().findFirst() : Optional.empty();
+        public Optional<Map<String, Object>> getSingleLevelBomAsBuilt() {
+            return singleLevelBomAsBuilt != null ? singleLevelBomAsBuilt.stream().findFirst() : Optional.empty();
         }
 
         public Optional<Map<String, Object>> getSingleLevelUsageAsBuilt() {

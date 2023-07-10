@@ -1,0 +1,148 @@
+{
+  "catenaXId": "urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978",
+  "childItems": [
+    {
+      "quantity": {
+        "quantityNumber": 0.11,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:3d9a60bc-e2ce-4ca4-bcae-6ff898963468"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 0.1204,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#kilogram",
+          "lexicalValue": "kilogram"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:e37454bd-e021-4fbc-b506-a08406b64621"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:4c124b27-8aaa-4465-af6a-1e3cbd2cc4f6"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:904354f9-cd58-4d24-827d-a74929adf1ee"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:81aba9c4-f1b7-4fa8-833a-78ccf3fbcf14"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:2cb15176-c7e8-4b12-a26a-67c948781aaa"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:32f1f75d-ef76-41ee-a466-56e06872943b"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:e2f04725-0462-4f13-a224-c043cab38269"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:bd961cdc-b0fb-462c-b4a2-7a673b6829ef"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:b81f3616-32b6-45f7-b560-53d3a310a7af"
+    },
+    {
+      "quantity": {
+        "quantityNumber": 1,
+        "measurementUnit": {
+          "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
+          "lexicalValue": "piece"
+        }
+      },
+      "lifecycleContext": "AsBuilt",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+      "catenaXId": "urn:uuid:84c6d1b3-89b5-4979-99f2-fbfbf55be601"
+    }
+  ]
+}
