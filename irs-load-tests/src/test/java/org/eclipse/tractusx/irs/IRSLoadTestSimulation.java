@@ -31,7 +31,7 @@ public class IRSLoadTestSimulation extends Simulation {
                                                .acceptHeader("*/*");
 
         Map<CharSequence, String> headers_1 = new HashMap<>();
-        headers_1.put("Authorization", "Bearer {access_token}");
+        headers_1.put("Authorization", "Bearer #{access_token}");
         headers_1.put("Content-Type", "application/json");
 
         ScenarioBuilder scn = scenario("IRS Load Test")
