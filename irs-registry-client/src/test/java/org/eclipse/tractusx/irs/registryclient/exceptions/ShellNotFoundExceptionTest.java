@@ -32,7 +32,7 @@ class ShellNotFoundExceptionTest {
 
     @Test
     void getCalledEndpoints() {
-        final ShellNotFoundException testee = new ShellNotFoundException(List.of("test"));
+        final ShellNotFoundException testee = new ShellNotFoundException("dummyMessage", List.of("test"));
 
         assertThat(testee.getCalledEndpoints()).containsExactly("test");
     }
