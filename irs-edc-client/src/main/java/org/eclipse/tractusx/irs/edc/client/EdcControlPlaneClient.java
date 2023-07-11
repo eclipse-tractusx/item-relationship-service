@@ -94,7 +94,7 @@ public class EdcControlPlaneClient {
         final var url = endpoint.getData() + endpoint.getCatalog();
 
         final String requestJson = edcTransformer.transformCatalogRequestToJson(requestBody).toString();
-
+        log.info("Requesting catalog with payload: {}", requestJson);
         final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.POST,
                 new HttpEntity<>(requestJson, headers()), String.class);
         final String catalog = getResponseBody(response);

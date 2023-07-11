@@ -89,6 +89,8 @@ edc:
 
 Please note that you also need to provide a `RestTemplate` bean for the **Qualifier** `digitalTwinRegistryRestTemplate` (central approach) or `edcClientRestTemplate` (decentral approach).
 
+You also need to tell the EDC client which policies are acceptable. You can either implement a bean with the interface `org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider` or use the fallback `org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider.DefaultAcceptedPoliciesProvider` bean directly and add the accepted policies there.
+
 As a last step, add this annotation to your Application class:
 
 ```
