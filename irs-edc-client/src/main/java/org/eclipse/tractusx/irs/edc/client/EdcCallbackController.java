@@ -22,8 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Objects;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -54,16 +54,21 @@ public class EdcCallbackController {
         log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(dataReference));
         log.debug("Received EndpointDataReference with ID {} and endpoint {}", dataReference.getId(),
                 dataReference.getEndpoint());
-        final var contractAgreementId = extractContractAgreementId(dataReference);
-        storage.put(contractAgreementId, dataReference);
-        log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractAgreementId));
+        final String authCode = dataReference.getAuthCode();
+        if (authCode != null) {
+            final var contractAgreementId = extractContractAgreementId(authCode);
+            storage.put(contractAgreementId, dataReference);
+            log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractAgreementId));
+        } else {
+            log.error("ContractAgreementId could not be extracted from Endpoint Data Reference {}",
+                    StringMapper.mapToString(dataReference));
+        }
     }
 
-    private String extractContractAgreementId(final EndpointDataReference dataReference) {
-        final var token = dataReference.getAuthCode();
-        final var chunks = Objects.requireNonNull(token).split("\\.");
+    private String extractContractAgreementId(final String token) {
+        final var chunks = token.split("\\.");
         final var decoder = Base64.getUrlDecoder();
-        final var payload = new String(decoder.decode(chunks[1]));
+        final var payload = new String(decoder.decode(chunks[1]), StandardCharsets.UTF_8);
         final var authCode = StringMapper.mapFromString(payload, EDRAuthCode.class);
         return authCode.getCid();
     }
