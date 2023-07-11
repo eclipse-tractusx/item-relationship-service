@@ -53,7 +53,6 @@ import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -253,43 +252,6 @@ class EdcTransformerTest {
         assertThat(actualPermission).isEqualTo(expectedPermission);
         assertThat(actualCatalog.getDataServices().get(0)).isEqualTo(expectedDataService);
         assertThat(actualCatalog.getContractOffers()).isNull();
-    }
-
-    @Test
-    void shouldDeserializeNegotiationResponse() {
-        final String negotiationString = createNegotiationResponseAsString();
-        final NegotiationResponse negotiationResponse = edcTransformer.transformJsonToNegotiationResponse(
-                negotiationString, StandardCharsets.UTF_8);
-        assertThat(negotiationResponse.getResponseId()).isNotBlank();
-        assertThat(negotiationResponse.getState()).isNotBlank();
-        assertThat(negotiationResponse.getType()).isNotBlank();
-        assertThat(negotiationResponse.getProtocol()).isNotBlank();
-        assertThat(negotiationResponse.getErrorDetail()).isNull();
-        assertThat(negotiationResponse.getContractAgreementId()).isNotBlank();
-        assertThat(negotiationResponse.getCallbackAddresses()).isEmpty();
-    }
-
-    private String createNegotiationResponseAsString() {
-        return """
-                {
-                    "@type": "edc:ContractNegotiationDto",
-                    "@id": "a2d46fdb-d7a2-4f26-9f70-bccc4b09f563",
-                    "edc:type": "CONSUMER",
-                    "edc:protocol": "dataspace-protocol-http",
-                    "edc:state": "FINALIZED",
-                    "edc:counterPartyAddress": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp",
-                    "edc:callbackAddresses": [],
-                    "edc:contractAgreementId": "b75a7451-5857-49da-8438-c80dcb2cbd1e:10:768accf6-693f-4652-a21e-7412a2ce6254",
-                    "@context": {
-                        "dct": "https://purl.org/dc/terms/",
-                        "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
-                        "edc": "https://w3id.org/edc/v0.0.1/ns/",
-                        "dcat": "https://www.w3.org/ns/dcat/",
-                        "odrl": "http://www.w3.org/ns/odrl/2/",
-                        "dspace": "https://w3id.org/dspace/v0.8/"
-                    }
-                }
-                """;
     }
 
     @Test

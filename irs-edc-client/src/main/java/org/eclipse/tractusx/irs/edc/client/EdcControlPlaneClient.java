@@ -163,10 +163,7 @@ public class EdcControlPlaneClient {
         final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId()
                 + endpoint.getStateSuffix();
 
-        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
-                String.class);
-        final String negotiationStateResponse = getResponseBody(response);
-        return edcTransformer.transformJsonToNegotiationState(negotiationStateResponse, StandardCharsets.UTF_8);
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, NegotiationState.class).getBody();
     }
 
     private NegotiationResponse getContractNegotiationResponse(final Response negotiationId,
@@ -174,10 +171,7 @@ public class EdcControlPlaneClient {
         final var endpoint = config.getControlplane().getEndpoint();
         final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId();
 
-        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
-                String.class);
-        final String negotiationResponse = getResponseBody(response);
-        return edcTransformer.transformJsonToNegotiationResponse(negotiationResponse, StandardCharsets.UTF_8);
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, NegotiationResponse.class).getBody();
     }
 
     /* package */ Response startTransferProcess(final TransferProcessRequest request) {
@@ -226,11 +220,7 @@ public class EdcControlPlaneClient {
         final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getResponseId()
                 + endpoint.getStateSuffix();
 
-        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
-                String.class);
-        final String transferProcessStateResponse = getResponseBody(response);
-
-        return edcTransformer.transformJsonToNegotiationState(transferProcessStateResponse, StandardCharsets.UTF_8);
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, NegotiationState.class).getBody();
     }
 
     private TransferProcessResponse getTransferProcessResponse(final Response transferProcessId,
