@@ -51,7 +51,7 @@ digitalTwinRegistryClient:
   descriptorEndpoint: "" # required if type is "central", must contain the placeholder {aasIdentifier}
   shellLookupEndpoint: "" # required if type is "central", must contain the placeholder {assetIds}
 
-edc:
+irs-edc-client:
   callback-url: "" # The URL where the EDR token callback will be sent to.
   controlplane:
     request-ttl: PT10M # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
@@ -75,9 +75,7 @@ edc:
     request-ttl: PT10M # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
     path: /submodel # The path to append to the submodel data reference endpoint
     urn-prefix: /urn # A prefix used to identify URNs correctly in the submodel endpoint address
-    timeout:
-      read: PT90S # HTTP read timeout for the submodel client
-      connect: PT90S # HTTP connect timeout for the submodel client
+
 
   catalog:
     cache:

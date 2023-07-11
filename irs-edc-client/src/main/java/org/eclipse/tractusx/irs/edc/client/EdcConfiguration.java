@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Configuration;
  * and other configuration sources.
  */
 @Configuration("irsEdcClientEdcConfiguration")
-@ConfigurationProperties(prefix = "edc")
+@ConfigurationProperties(prefix = "irs-edc-client")
 @Data
 public class EdcConfiguration {
 

@@ -45,7 +45,7 @@ public class EndpointDataReferenceStorage {
     private final Duration storageDuration;
 
     public EndpointDataReferenceStorage(
-            @Value("${edc.controlplane.datareference.storage.duration}") final Duration storageDuration) {
+            @Value("${irs-edc-client.controlplane.datareference.storage.duration}") final Duration storageDuration) {
         this.storageDuration = storageDuration;
     }
 

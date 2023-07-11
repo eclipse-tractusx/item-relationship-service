@@ -174,8 +174,8 @@ public class RestTemplateConfig {
     @Bean(EDC_REST_TEMPLATE)
     @Qualifier(EDC_REST_TEMPLATE)
         /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${edc.submodel.timeout.read}") final Duration readTimeout,
-            @Value("${edc.submodel.timeout.connect}") final Duration connectTimeout,
+            @Value("${irs-edc-client.submodel.timeout.read}") final Duration readTimeout,
+            @Value("${irs-edc-client.submodel.timeout.connect}") final Duration connectTimeout,
             final OutboundMeterRegistryService meterRegistryService) {
         final RestTemplate restTemplate = restTemplateBuilder.setReadTimeout(readTimeout)
                                                              .setConnectTimeout(connectTimeout)
