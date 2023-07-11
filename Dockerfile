@@ -29,6 +29,10 @@ COPY .config .config
 COPY .mvn .mvn
 COPY pom.xml .
 
+COPY LICENSE LICENSE
+COPY NOTICE.md NOTICE.md
+COPY DEPENDENCIES DEPENDENCIES
+
 COPY irs-ess irs-ess
 COPY irs-policy-store irs-policy-store
 COPY irs-integration-tests irs-integration-tests
