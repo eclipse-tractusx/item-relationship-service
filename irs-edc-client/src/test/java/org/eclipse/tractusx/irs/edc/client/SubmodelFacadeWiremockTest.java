@@ -103,10 +103,6 @@ class SubmodelFacadeWiremockTest {
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService, config,
                 createEdcTransformer());
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
-        final CatalogCacheConfiguration cacheConfig = new CatalogCacheConfiguration();
-
-        cacheConfig.setTtl(Duration.ofMinutes(10));
-        cacheConfig.setMaxCachedItems(1000L);
 
         final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
 
@@ -134,8 +130,7 @@ class SubmodelFacadeWiremockTest {
         givenThat(get(urlPathEqualTo("/submodel")).willReturn(aResponse().withStatus(200)
                                                                          .withHeader("Content-Type",
                                                                                  "application/json;charset=UTF-8")
-                                                                         .withBodyFile(
-                                                                                 "singleLevelBomAsBuilt.json")));
+                                                                         .withBodyFile("singleLevelBomAsBuilt.json")));
 
         // Act
         final String submodel = edcSubmodelClient.getSubmodelRawPayload(URL).get();
