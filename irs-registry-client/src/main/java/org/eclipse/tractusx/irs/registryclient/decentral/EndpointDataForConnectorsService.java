@@ -44,11 +44,12 @@ public class EndpointDataForConnectorsService {
 
     public EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
         for (final String connector : connectorEndpoints) {
+            log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
             try {
                 return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
                         DT_REGISTRY_ASSET_VALUE);
             } catch (EdcRetrieverException e) {
-                log.warn("Exception occurred when retrieving EndpointDataReference from " + connector, e);
+                log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector, e);
             }
         }
         throw new RestClientException(

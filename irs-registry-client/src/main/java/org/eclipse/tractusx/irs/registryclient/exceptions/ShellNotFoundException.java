@@ -25,14 +25,17 @@ package org.eclipse.tractusx.irs.registryclient.exceptions;
 import java.util.Collection;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
- * Exception to handle missing asset administration shells // TODO (jkreutzfeld): Use in logic
+ * Exception to handle missing asset administration shells
  */
 @Getter
-@RequiredArgsConstructor
 public class ShellNotFoundException extends RegistryServiceException {
     private final Collection<String> calledEndpoints;
+
+    public ShellNotFoundException(final String msg, final Collection<String> calledEndpoints) {
+        super(msg);
+        this.calledEndpoints = calledEndpoints;
+    }
 
 }

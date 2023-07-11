@@ -36,6 +36,7 @@ import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryEndpoint;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderRequest;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryResponse;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -53,7 +54,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             discoveryFinderClient, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
 
     @Test
-    void shouldReturnExpectedShell() {
+    void shouldReturnExpectedShell() throws RegistryServiceException {
         // given
         final DigitalTwinRegistryKey digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                 "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
