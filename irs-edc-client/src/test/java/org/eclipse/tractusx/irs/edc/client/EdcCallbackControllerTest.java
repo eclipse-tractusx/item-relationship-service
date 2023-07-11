@@ -23,7 +23,6 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_CID;
 
 import java.time.Duration;
 import java.util.Map;
@@ -41,7 +40,10 @@ class EdcCallbackControllerTest {
         // arrange
         final var ref = EndpointDataReference.Builder.newInstance()
                                                      .endpoint("test")
-                                                     .properties(Map.of(NAMESPACE_EDC_CID, "testId"))
+                                                     .properties(Map.of())
+                                                     .authKey("Authorization")
+                                                     .authCode(
+                                                             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODkwODA5OTEsImRhZCI6InRlc3QiLCJjaWQiOiJ0ZXN0SWQiLCJpYXQiOjE2ODkwODI2ODF9.62AIg-k8Yz6xLUBPblv2AtA5fuhoBnm9KMxhdCUunhA")
                                                      .build();
 
         // act
