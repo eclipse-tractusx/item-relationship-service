@@ -39,14 +39,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController("irsEdcClientEdcCallbackController")
-@RequestMapping("internal")
+@RequestMapping("${irs-edc-client.callback.mapping:internal/endpoint-data-reference}")
 @Hidden
 @RequiredArgsConstructor
 public class EdcCallbackController {
 
     private final EndpointDataReferenceStorage storage;
 
-    @PostMapping("/endpoint-data-reference")
+    @PostMapping
     public void receiveEdcCallback(final @RequestBody EndpointDataReference dataReference) {
         log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(dataReference));
         log.debug("Received EndpointDataReference with ID {} and endpoint {}", dataReference.getId(),
