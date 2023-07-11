@@ -20,13 +20,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.data;
+package org.eclipse.tractusx.irs.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.Description;
+import org.eclipse.tractusx.irs.data.JsonParseException;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.junit.jupiter.api.Test;
 
 class StringMapperTest {
