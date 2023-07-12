@@ -1,8 +1,8 @@
 {
 	"key":
 	{
-		"globalAssetId": "urn:uuid:b86bfe10-6a4f-41be-8a00-6f11ce38702e",
-		"bpn": "BPNL00000003AXS3"
+		"globalAssetId": "urn:uuid:7940e0cc-7814-41eb-8b04-d984a325deec",
+		"bpn": "BPNL00000003AYRE"
 	},
 	"bomLifecycle": "asBuilt",
 	"aspects": [
