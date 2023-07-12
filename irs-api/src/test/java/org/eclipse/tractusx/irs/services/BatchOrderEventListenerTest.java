@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
@@ -92,7 +93,7 @@ class BatchOrderEventListenerTest {
                                       .batchState(ProcessingState.PARTIAL)
                                       .batchNumber(1)
                                       .batchOrderId(BATCH_ORDER_ID)
-                                      .jobProgressList(createJobProgressList(numberOfJobs))
+                                      .jobProgressList(createJobProgressList())
                                       .build();
         final Batch secondBatch = Batch.builder()
                                        .batchId(SECOND_BATCH_ID)
@@ -139,7 +140,7 @@ class BatchOrderEventListenerTest {
                                        .batchState(ProcessingState.INITIALIZED)
                                        .batchNumber(2)
                                        .batchOrderId(BATCH_ORDER_ID)
-                                       .jobProgressList(createJobProgressList(numberOfJobs))
+                                       .jobProgressList(createJobProgressList())
                                        .build();
 
         given(irsItemGraphQueryService.registerItemJob(any(), any())).willReturn(
@@ -182,7 +183,7 @@ class BatchOrderEventListenerTest {
                                        .batchNumber(2)
                                        .batchState(ProcessingState.COMPLETED)
                                        .batchOrderId(BATCH_ORDER_ID)
-                                       .jobProgressList(createJobProgressList(numberOfJobs))
+                                       .jobProgressList(createJobProgressList())
                                        .build();
 
         batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
@@ -194,10 +195,15 @@ class BatchOrderEventListenerTest {
         verify(applicationEventPublisher, times(1)).publishEvent(any(BatchOrderProcessingFinishedEvent.class));
     }
 
-    private List<JobProgress> createJobProgressList(Integer size) {
-        return IntStream.range(0, size)
+    private List<JobProgress> createJobProgressList() {
+        return IntStream.range(0, 10)
                         .boxed()
-                        .map(i -> JobProgress.builder().globalAssetId(i.toString()).build())
+                        .map(i -> JobProgress.builder()
+                                             .identificationKey(PartChainIdentificationKey.builder()
+                                                                                          .globalAssetId(i.toString())
+                                                                                          .bpn("BPN" + i)
+                                                                                          .build())
+                                             .build())
                         .collect(Collectors.toList());
     }
 

@@ -108,14 +108,15 @@ public class BatchOrderEventListener {
     }
 
     private void startBatch(final BatchOrder batchOrder, final Batch batch) {
+        // here we use only globalAssetId
         final List<JobProgress> createdJobIds = batch.getJobProgressList()
                                                      .stream()
-                                                     .map(JobProgress::getGlobalAssetId)
-                                                     .map(globalAssetId -> createRegisterJob(batchOrder, globalAssetId))
+                                                     .map(JobProgress::getIdentificationKey)
+                                                     .map(identificationKey -> createRegisterJob(batchOrder, identificationKey))
                                                      .map(registerJob -> createJobProgress(
                                                              irsItemGraphQueryService.registerItemJob(registerJob,
                                                                      batch.getBatchId()),
-                                                             registerJob.getKey().getGlobalAssetId()))
+                                                             registerJob.getKey()))
                                                      .toList();
         batch.setJobProgressList(createdJobIds);
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
@@ -125,17 +126,17 @@ public class BatchOrderEventListener {
                 batchOrder.getJobTimeout());
     }
 
-    private JobProgress createJobProgress(final JobHandle jobHandle, final String globalAssetId) {
+    private JobProgress createJobProgress(final JobHandle jobHandle, final PartChainIdentificationKey identificationKey) {
         return JobProgress.builder()
                           .jobId(jobHandle.getId())
                           .jobState(JobState.INITIAL)
-                          .globalAssetId(globalAssetId)
+                          .identificationKey(identificationKey)
                           .build();
     }
 
-    private RegisterJob createRegisterJob(final BatchOrder batchOrder, final String globalAssetId) {
+    private RegisterJob createRegisterJob(final BatchOrder batchOrder, final PartChainIdentificationKey identificationKey) {
         return RegisterJob.builder()
-                          .key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build())
+                          .key(identificationKey)
                           .bomLifecycle(batchOrder.getBomLifecycle())
                           .aspects(batchOrder.getAspects())
                           .depth(batchOrder.getDepth())
