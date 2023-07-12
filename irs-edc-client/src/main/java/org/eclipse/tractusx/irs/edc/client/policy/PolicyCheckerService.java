@@ -34,7 +34,7 @@ import org.eclipse.edc.policy.model.Operator;
 import org.eclipse.edc.policy.model.OrConstraint;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.tractusx.irs.edc.client.StringMapper;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
@@ -43,7 +43,7 @@ import org.springframework.web.util.UriUtils;
  * Check and validate Policy in Catalog fetch from EDC providers.
  */
 @Slf4j
-@Service
+@Service("irsEdcClientPolicyCheckerService")
 @RequiredArgsConstructor
 public class PolicyCheckerService {
 

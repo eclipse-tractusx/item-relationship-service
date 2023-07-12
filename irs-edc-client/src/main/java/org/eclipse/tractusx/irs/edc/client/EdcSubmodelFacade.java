@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 /**
  * Public API Facade for submodel domain
  */
-@Service
+@Service("irsEdcClientEdcSubmodelFacade")
 @Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

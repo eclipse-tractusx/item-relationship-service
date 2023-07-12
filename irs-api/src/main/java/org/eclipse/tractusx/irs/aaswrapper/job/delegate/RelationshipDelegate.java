@@ -39,7 +39,7 @@ import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.common.JsonParseException;
+import org.eclipse.tractusx.irs.data.JsonParseException;
 
 /**
  * Builds relationship array for AAShell from previous step.

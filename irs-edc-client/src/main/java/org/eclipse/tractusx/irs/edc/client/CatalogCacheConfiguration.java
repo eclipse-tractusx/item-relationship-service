@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
  * EDC catalog cache configuration. Automatically populated by Spring from application.yml
  * and other configuration sources.
  */
-@Component
+@Component("irsEdcClientCatalogCacheConfig")
 @ConfigurationProperties(prefix = "edc.catalog.cache")
 @Data
 public class CatalogCacheConfiguration {
