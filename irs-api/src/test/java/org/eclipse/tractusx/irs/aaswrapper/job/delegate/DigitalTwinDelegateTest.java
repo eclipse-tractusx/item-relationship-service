@@ -53,7 +53,7 @@ class DigitalTwinDelegateTest {
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();
@@ -68,7 +68,7 @@ class DigitalTwinDelegateTest {
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), "itemId");
 
         // then
         assertThat(result).isNotNull();

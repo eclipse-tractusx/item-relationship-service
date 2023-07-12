@@ -39,7 +39,6 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings("PMD.ShortMethodName")
 public enum AspectType {
     ADDRESS_ASPECT(AspectTypesConstants.ADDRESS_ASPECT),
-    ASSEMBLY_PART_RELATIONSHIP(AspectTypesConstants.ASSEMBLY_PART_RELATIONSHIP),
     BATCH(AspectTypesConstants.BATCH),
     BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
     CERTIFICATE_OF_DESTRUCTION(AspectTypesConstants.CERTIFICATE_OF_DESTRUCTION),
@@ -58,7 +57,8 @@ public enum AspectType {
     PHYSICAL_DIMENSION(AspectTypesConstants.PHYSICAL_DIMENSION),
     PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
     RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST),
-    SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
+    SERIAL_PART(AspectTypesConstants.SERIAL_PART),
+    SINGLE_LEVEL_BOM_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT),
     SINGLE_LEVEL_BOM_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_PLANNED),
     SINGLE_LEVEL_USAGE_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_USAGE_AS_BUILT);
 
@@ -105,7 +105,6 @@ public enum AspectType {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class AspectTypesConstants {
         public static final String ADDRESS_ASPECT = "AddressAspect";
-        public static final String ASSEMBLY_PART_RELATIONSHIP = "AssemblyPartRelationship";
         public static final String BATCH = "Batch";
         public static final String BATTERY_PASS = "BatteryPass";
         public static final String CERTIFICATE_OF_DESTRUCTION = "CertificateOfDestruction";
@@ -124,7 +123,8 @@ public enum AspectType {
         public static final String PHYSICAL_DIMENSION = "PhysicalDimension";
         public static final String PRODUCT_DESCRIPTION = "ProductDescription";
         public static final String RETURN_REQUEST = "ReturnRequest";
-        public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
+        public static final String SERIAL_PART = "SerialPart";
+        public static final String SINGLE_LEVEL_BOM_AS_BUILT = "SingleLevelBomAsBuilt";
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
         public static final String SINGLE_LEVEL_USAGE_AS_BUILT = "SingleLevelUsageAsBuilt";
     }

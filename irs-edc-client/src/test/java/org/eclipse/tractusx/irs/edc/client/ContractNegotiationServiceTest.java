@@ -33,6 +33,7 @@ import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
@@ -72,7 +73,8 @@ class ContractNegotiationServiceTest {
     }
 
     @Test
-    void shouldNegotiateSuccessfully() throws ContractNegotiationException, UsagePolicyException {
+    void shouldNegotiateSuccessfully()
+            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
         // arrange
         final var assetId = "testTarget";
         final String offerId = "offerId";
@@ -108,6 +110,30 @@ class ContractNegotiationServiceTest {
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
                 new RuntimeException("Test exception"));
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
+
+        // act & assert
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem)).isInstanceOf(EdcClientException.class);
+    }
+
+    @Test
+    void shouldThrowErrorWhenRetrievingTransferResult() {
+        // arrange
+        final var assetId = "testTarget";
+        final String offerId = "offerId";
+        final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
+
+        when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
+                Response.builder().responseId("negotiationId").build());
+        CompletableFuture<NegotiationResponse> negotiationResponse = CompletableFuture.completedFuture(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(negotiationResponse);
+
+        when(edcControlPlaneClient.startTransferProcess(any())).thenReturn(
+                Response.builder().responseId("transferProcessId").build());
+        CompletableFuture<TransferProcessResponse> transferError = CompletableFuture.failedFuture(
+                new RuntimeException("Test exception"));
+        when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(transferError);
 
         // act & assert
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem)).isInstanceOf(EdcClientException.class);

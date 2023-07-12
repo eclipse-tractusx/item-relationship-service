@@ -44,7 +44,7 @@ class RelationshipAspectTest {
 
     private static Stream<Arguments> data() {
         return Stream.of(
-                Arguments.of(BomLifecycle.AS_BUILT, Direction.DOWNWARD, RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP),
+                Arguments.of(BomLifecycle.AS_BUILT, Direction.DOWNWARD, RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT),
                 Arguments.of(BomLifecycle.AS_PLANNED, Direction.DOWNWARD, RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED),
                 Arguments.of(BomLifecycle.AS_BUILT, Direction.UPWARD, RelationshipAspect.SINGLE_LEVEL_USAGE_AS_BUILT)
         );

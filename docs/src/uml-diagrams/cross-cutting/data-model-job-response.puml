@@ -66,8 +66,8 @@ enum BomLifecycle {
 
 enum AspectType {
     ---
-    SerialPartTypization
-	AssemblyPartRelationship
+    SerialPart
+	SingleLevelBomAsBuilt
 	PartDimension
 	SupplyRelationData
 	PCFCoreData

@@ -26,18 +26,18 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 /**
  * EDC negotiation response.
  */
-@Value
+@Data
 @Builder(toBuilder = true)
 @Jacksonized
 public class NegotiationResponse {
 
-    @JsonProperty("id")
+    @JsonProperty("@id")
     private String responseId;
     private String contractAgreementId;
     private String counterPartyAddress;

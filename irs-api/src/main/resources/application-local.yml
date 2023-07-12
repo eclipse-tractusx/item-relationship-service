@@ -9,6 +9,7 @@ policystore:
     accessKey: minioadmin
     secretKey: minioadmin
 
+digitalTwinRegistry.type: central
 
 irs:
   job:
