@@ -1,4 +1,4 @@
-name: Upload to GitHub Maven Registry
+name: Upload to Central Maven Registry
 
 on:
   workflow_dispatch:

@@ -118,7 +118,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final var connectorEndpoints = getConnectorEndpoints(bpn);
         final var endpointDataReference = getEndpointDataReference(connectorEndpoints);
         final var shellIds = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                endpointDataReference, List.of());
+                endpointDataReference,
+                List.of(IdentifierKeyValuePair.builder().key("manufacturerId").value(bpn).build()));
         log.info("Found {} shells in total", shellIds.size());
         return shellIds.stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
     }
