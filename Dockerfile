@@ -29,10 +29,6 @@ COPY .config .config
 COPY .mvn .mvn
 COPY pom.xml .
 
-COPY LICENSE LICENSE
-COPY NOTICE.md NOTICE.md
-COPY DEPENDENCIES DEPENDENCIES
-
 COPY irs-ess irs-ess
 COPY irs-policy-store irs-policy-store
 COPY irs-integration-tests irs-integration-tests
@@ -62,6 +58,10 @@ ARG GID=3000
 WORKDIR /app
 
 COPY --chmod=755 --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
+
+COPY LICENSE LICENSE
+COPY NOTICE.md NOTICE.md
+COPY DEPENDENCIES DEPENDENCIES
 
 USER ${UID}:${GID}
 
