@@ -94,7 +94,7 @@ class CreationBatchServiceTest {
     @Test
     void shouldSplitIdentificationKeysIdIntoBatches() throws MalformedURLException {
         // given
-        final List<PartChainIdentificationKey> globalAssetIds = IntStream.range(0, 20)
+        final List<PartChainIdentificationKey> globalAssetIds = IntStream.range(1, 21)
                                                                          .mapToObj(i -> PartChainIdentificationKey.builder()
                                                                                                                   .globalAssetId(String.valueOf(i))
                                                                                  .bpn("BPN" + i).build()
