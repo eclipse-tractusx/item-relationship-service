@@ -77,7 +77,6 @@ jobs:
             </servers>
           </settings>" > $HOME/.m2/settings.xml
 
-      - uses: ./.github/actions/setup-java
       # publish snapshots or releases
       - name: Publish version
         env:
