@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Digital Twin Registry load problem - after few subsequent requests DTR starts answering with 500 Http status
 - ESS Notifications not working with Decentral Digital Twin Registry Service - bpn is not passed
 - Unpredictable 500 Http status returned by EDC during submodel retrievals when full test data is uploaded (EDC version: 0.4.1)
-- High EDC resource demands - each EDC provider postgres uses > 2 CPU-Cores. The database storage gets filled after few days, until then, resource consumption increases. (EDC version: 0.4.1)
 - Lack of rate limiting of requests - IRS allows sending API requests in a massive, automated manner
 - Potential denial-of-service (DoS) attack - IRS allows to enter a large number of characters, which are reflected in the response of the server
 - Software related information disclosure - IRS returns redundant information about the type and version of used software
