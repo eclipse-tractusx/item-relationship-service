@@ -22,7 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -30,17 +29,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
-import org.eclipse.tractusx.irs.common.Masker;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
@@ -50,11 +50,11 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationRes
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
-import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Public API facade for EDC domain
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 public interface EdcSubmodelClient {
     CompletableFuture<List<Relationship>> getRelationships(String submodelEndpointAddress,
             RelationshipAspect traversalAspectType) throws EdcClientException;
@@ -118,22 +118,21 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 /**
  * Public API facade for EDC domain
  */
-@Service
+@Service("irsEdcClientEdcSubmodelClientImpl")
 @Slf4j
 @RequiredArgsConstructor
 @Profile({ "!local && !stubtest" })
 @SuppressWarnings("PMD.TooManyMethods")
 class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
+    public static final String UUID_REGEX = "\\p{XDigit}{8}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{12}";
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
     private final AsyncPollingService pollingService;
-    private final OutboundMeterRegistryService meterRegistryService;
     private final RetryRegistry retryRegistry;
-    private final CatalogCache catalogCache;
-    private final EdcControlPlaneClient edcControlPlaneClient;
+    private final EDCCatalogFacade catalogFacade;
     private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
 
     private static void stopWatchOnEdcTask(final StopWatch stopWatch) {
@@ -157,7 +156,15 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
             throws EdcClientException {
-        final int indexOfUrn = findIndexOf(submodelEndpointAddress, config.getSubmodel().getUrnPrefix());
+        final Pattern pairRegex = Pattern.compile(UUID_REGEX + "-" + UUID_REGEX);
+        final Matcher matcher = pairRegex.matcher(submodelEndpointAddress);
+        if (!matcher.find()) {
+            throw new EdcClientException(
+                    "Cannot extract assetId from endpoint address, malformed format: " + submodelEndpointAddress);
+        }
+        final String assetId = matcher.group(0);
+
+        final int indexOfUrn = findIndexOf(submodelEndpointAddress, assetId);
         final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodel().getPath());
 
         if (indexOfUrn == -1 || indexOfSubModel == -1) {
@@ -166,13 +173,15 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         }
 
         final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String target = submodelEndpointAddress.substring(indexOfUrn + 1, indexOfSubModel);
-        final String decodedTarget = URLDecoder.decode(target, StandardCharsets.UTF_8);
+        final String decodedTarget = URLDecoder.decode(assetId, StandardCharsets.UTF_8);
         final String providerWithSuffix = appendSuffix(providerConnectorUrl,
                 config.getControlplane().getProviderSuffix());
         log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerWithSuffix,
                 decodedTarget);
-        final CatalogItem catalogItem = catalogCache.getCatalogItem(providerWithSuffix, decodedTarget).orElseThrow();
+        final CatalogItem catalogItem = catalogFacade.fetchCatalogById(providerWithSuffix, decodedTarget)
+                                                     .stream()
+                                                     .findFirst()
+                                                     .orElseThrow();
         return contractNegotiationService.negotiate(providerWithSuffix, catalogItem);
     }
 
@@ -318,21 +327,12 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return execute(endpointAddress, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
-            final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
+            final String providerWithSuffix = appendSuffix(endpointAddress,
+                    config.getControlplane().getProviderSuffix());
 
-            final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(providerWithSuffix, filterKey, filterValue);
+            final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey,
+                    filterValue);
 
-            final List<CatalogItem> items = catalog.getContractOffers()
-                                                   .stream()
-                                                   .map(contractOffer -> CatalogItem.builder()
-                                                                                    .itemId(contractOffer.getId())
-                                                                                    .assetPropId(
-                                                                                            contractOffer.getAsset()
-                                                                                                         .getId())
-                                                                                    .connectorId(catalog.getId())
-                                                                                    .policy(contractOffer.getPolicy())
-                                                                                    .build())
-                                                   .toList();
             final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
                     items.stream().findFirst().orElseThrow());
 
@@ -371,16 +371,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final String host = URI.create(endpointAddress).getHost();
         final Retry retry = retryRegistry.retry(host, "default");
         try {
-            return Retry.decorateCallable(retry, () -> {
-                try {
-                    return supplier.get();
-                } catch (ResourceAccessException e) {
-                    if (e.getCause() instanceof SocketTimeoutException) {
-                        meterRegistryService.incrementSubmodelTimeoutCounter(endpointAddress);
-                    }
-                    throw e;
-                }
-            }).call();
+            return Retry.decorateCallable(retry, supplier::get).call();
         } catch (EdcClientException e) {
             throw e;
         } catch (Exception e) {

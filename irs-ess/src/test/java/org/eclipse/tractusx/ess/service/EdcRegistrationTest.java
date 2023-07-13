@@ -46,38 +46,49 @@ class EdcRegistrationTest {
 
     @Mock
     private RestTemplate restTemplate;
+    private String edcUrl;
+    private String managementPath;
 
     @BeforeEach
     void setUp() {
-        testee = new EdcRegistration(restTemplate, "http://localhost", "", "", "");
+        edcUrl = "http://localhost";
+        managementPath = "/path";
+        testee = new EdcRegistration(restTemplate, edcUrl, "", "", "", managementPath);
     }
 
     @Test
     void shouldRegisterAssets_whenGetRequestReturnsNoResults() {
-        when(restTemplate.exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
-                Mockito.eq(String.class))).thenReturn(ResponseEntity.ok().body("[]"));
         when(restTemplate.exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
-                Mockito.eq(String.class))).thenReturn(ResponseEntity.ok().build());
+                Mockito.eq(String.class))).thenReturn(ResponseEntity.ok().body("[]"));
 
         testee.registerEdcAsset();
 
-        verify(restTemplate, times(3)).exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
-                Mockito.eq(String.class));
-        verify(restTemplate, times(9)).exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
-                Mockito.eq(String.class));
+        verify(restTemplate, times(3)).exchange(Mockito.eq(edcUrl + managementPath + "/assets/request"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class));
+        verify(restTemplate, times(3)).exchange(Mockito.eq(edcUrl + managementPath + "/assets"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class));
+        verify(restTemplate, times(3)).exchange(Mockito.eq(edcUrl + managementPath + "/policydefinitions"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class));
+        verify(restTemplate, times(3)).exchange(Mockito.eq(edcUrl + managementPath + "/contractdefinitions"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class));
     }
 
     @Test
     void shouldNotRegisterAssets_whenGetRequestReturnsResults() {
-        when(restTemplate.exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
-                Mockito.eq(String.class))).thenReturn(ResponseEntity.ok().body("[{}]"));
+        when(restTemplate.exchange(Mockito.eq(edcUrl + managementPath + "/assets/request"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class))).thenReturn(
+                ResponseEntity.ok().body("[{}]"));
 
         testee.registerEdcAsset();
 
-        verify(restTemplate, times(3)).exchange(anyString(), Mockito.eq(HttpMethod.GET), any(),
-                Mockito.eq(String.class));
-        verify(restTemplate, never()).exchange(anyString(), Mockito.eq(HttpMethod.POST), any(),
-                Mockito.eq(String.class));
+        verify(restTemplate, times(3)).exchange(Mockito.eq(edcUrl + managementPath + "/assets/request"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class));
+        verify(restTemplate, never()).exchange(Mockito.eq(edcUrl + managementPath + "/assets"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class));
+        verify(restTemplate, never()).exchange(Mockito.eq(edcUrl + managementPath + "/policydefinitions"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class));
+        verify(restTemplate, never()).exchange(Mockito.eq(edcUrl + managementPath + "/contractdefinitions"),
+                Mockito.eq(HttpMethod.POST), any(), Mockito.eq(String.class));
     }
 
 }

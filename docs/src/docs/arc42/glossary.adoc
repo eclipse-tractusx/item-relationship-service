@@ -14,5 +14,5 @@
 |PRS |Formerly known Service Name: Parts Relationship Service
 |Traversal Aspect |aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship.
 
-Samples: SingleLevelBomAsPlanned, AssemblyPartRelationship and SingleLevelUsageAsBuilt
+Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt
 |===

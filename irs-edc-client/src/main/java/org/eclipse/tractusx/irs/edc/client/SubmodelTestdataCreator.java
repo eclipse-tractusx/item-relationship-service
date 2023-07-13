@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 
 /**
  * Class to create Submodel Testdata
@@ -54,12 +54,12 @@ class SubmodelTestdataCreator {
     @SuppressWarnings({ "PMD.CyclomaticComplexity" })
     public Map<String, Object> createSubmodelForId(final String endpointAddress) {
         final String catenaXId = StringUtils.substringBefore(endpointAddress, "_");
-        if (endpointAddress.contains("assemblyPartRelationship")) {
-            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship).orElse(Map.of());
+        if (endpointAddress.contains("singleLevelBomAsBuilt")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt).orElse(Map.of());
         } else if (endpointAddress.contains("singleLevelUsageAsBuilt")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelUsageAsBuilt).orElse(Map.of());
-        } else if (endpointAddress.contains("serialPartTypization")) {
-            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization).orElse(Map.of());
+        } else if (endpointAddress.contains("serialPart")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSerialPart).orElse(Map.of());
         } else if (endpointAddress.contains("singleLevelBomAsPlanned")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned).orElse(Map.of());
         } else if (endpointAddress.contains("partAsPlanned")) {

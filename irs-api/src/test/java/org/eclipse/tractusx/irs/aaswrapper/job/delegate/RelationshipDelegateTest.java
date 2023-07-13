@@ -47,14 +47,14 @@ class RelationshipDelegateTest {
     final EdcSubmodelFacade submodelFacade = mock(EdcSubmodelFacade.class);
     final RelationshipDelegate relationshipDelegate = new RelationshipDelegate(null, submodelFacade);
 
-    final String assemblyPartRelationshipAspectName = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship";
+    final String singleLevelBomAsBuiltAspectName = "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
 
     @Test
     void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess() throws EdcClientException {
         // given
         when(submodelFacade.getRelationships(anyString(), any())).thenReturn(Collections.singletonList(relationship()));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor(assemblyPartRelationshipAspectName, "address"))));
+                List.of(submodelDescriptor(singleLevelBomAsBuiltAspectName, "address"))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -73,7 +73,7 @@ class RelationshipDelegateTest {
         when(submodelFacade.getRelationships(anyString(), any())).thenThrow(
                 new EdcClientException("Unable to call endpoint"));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor(assemblyPartRelationshipAspectName, "address"))));
+                List.of(submodelDescriptor(singleLevelBomAsBuiltAspectName, "address"))));
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
@@ -93,7 +93,7 @@ class RelationshipDelegateTest {
         when(submodelFacade.getRelationships(anyString(), any())).thenThrow(
                 new EdcClientException(new Exception("Payload did not match expected submodel")));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor(assemblyPartRelationshipAspectName, "address"))));
+                List.of(submodelDescriptor(singleLevelBomAsBuiltAspectName, "address"))));
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),

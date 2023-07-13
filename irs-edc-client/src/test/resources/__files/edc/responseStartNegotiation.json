@@ -1,3 +1,13 @@
 {
-  "id": "1cbaec6e-c316-4e3e-8258-c07a648cc44a"
+  "@type": "edc:IdResponseDto",
+  "@id": "1bbaec6e-c316-4e1e-8258-c07a648cc43c",
+  "edc:createdAt": 1686830151573,
+  "@context": {
+    "dct": "https://purl.org/dc/terms/",
+    "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+    "edc": "https://w3id.org/edc/v0.0.1/ns/",
+    "dcat": "https://www.w3.org/ns/dcat/",
+    "odrl": "http://www.w3.org/ns/odrl/2/",
+    "dspace": "https://w3id.org/dspace/v0.8/"
+  }
 }

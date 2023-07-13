@@ -30,8 +30,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -51,6 +49,7 @@ import org.eclipse.tractusx.irs.connector.job.JobTTL;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
+import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
@@ -125,20 +124,20 @@ public class JobConfiguration {
     }
 
     @Bean
-    public DigitalTwinDelegate digitalTwinDelegate(final BpdmDelegate bpdmDelegate,
+    public DigitalTwinDelegate digitalTwinDelegate(final RelationshipDelegate relationshipDelegate,
             final DigitalTwinRegistryService digitalTwinRegistryService) {
-        return new DigitalTwinDelegate(bpdmDelegate, digitalTwinRegistryService);
+        return new DigitalTwinDelegate(relationshipDelegate, digitalTwinRegistryService);
     }
 
     @Bean
-    public BpdmDelegate bpdmDelegate(final RelationshipDelegate relationshipDelegate, final BpdmFacade bpdmFacade) {
-        return new BpdmDelegate(relationshipDelegate, bpdmFacade);
-    }
-
-    @Bean
-    public RelationshipDelegate relationshipDelegate(final SubmodelDelegate submodelDelegate,
+    public RelationshipDelegate relationshipDelegate(final BpdmDelegate bpdmDelegate,
             final EdcSubmodelFacade submodelFacade) {
-        return new RelationshipDelegate(submodelDelegate, submodelFacade);
+        return new RelationshipDelegate(bpdmDelegate, submodelFacade);
+    }
+
+    @Bean
+    public BpdmDelegate bpdmDelegate(final SubmodelDelegate submodelDelegate, final BpdmFacade bpdmFacade) {
+        return new BpdmDelegate(submodelDelegate, bpdmFacade);
     }
 
     @Bean

@@ -22,6 +22,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -35,9 +36,7 @@ import java.util.concurrent.Executors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.retry.internal.InMemoryRetryRegistry;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,13 +51,12 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(MockitoExtension.class)
 class SubmodelExponentialRetryTest {
 
+    public static final String ASSET_ID = "d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4";
+    private final RetryRegistry retryRegistry = new InMemoryRetryRegistry();
     @Mock
     private RestTemplate restTemplate;
-
     @Mock
     private PolicyCheckerService policyCheckerService;
-
-    private final RetryRegistry retryRegistry = new InMemoryRetryRegistry();
     private EdcSubmodelFacade testee;
 
     @BeforeEach
@@ -68,58 +66,53 @@ class SubmodelExponentialRetryTest {
         final EdcConfiguration config = new EdcConfiguration();
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setPath("/submodel");
+        config.getControlplane().setProviderSuffix("/ids");
 
-        final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService, config);
+        final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService, config,
+                createEdcTransformer());
 
-        final EDCCatalogFacade edcCatalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
-        final CatalogCacheConfiguration cacheConfiguration = mock(CatalogCacheConfiguration.class);
-        final CatalogCache catalogCache = new InMemoryCatalogCache(edcCatalogFacade, cacheConfiguration);
+        final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
 
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
-                policyCheckerService);
+                policyCheckerService, config);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
         final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
 
-        final OutboundMeterRegistryService meterRegistry = mock(OutboundMeterRegistryService.class);
-
         final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient, storage,
-                pollingService, meterRegistry, retryRegistry, catalogCache, controlPlaneClient);
+                pollingService, retryRegistry, catalogFacade);
         testee = new EdcSubmodelFacade(client);
     }
 
     @Test
     void shouldRetryExecutionOfGetSubmodelOnClientMaxAttemptTimes() {
         // Arrange
-        given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class))).willThrow(
-                new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "AASWrapper remote exception"));
+        given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(String.class))).willThrow(
+                new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "EDC remote exception"));
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "https://connector.endpoint.com",
-                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(
+                "http://test.com/" + ASSET_ID + "/submodel?content=value")).hasCauseInstanceOf(
                 HttpServerErrorException.class);
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class), eq(
-                HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class));
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),
+                eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class));
     }
 
     @Test
     void shouldRetryOnAnyRuntimeException() {
         // Arrange
-        given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class))).willThrow(
-                new RuntimeException("AASWrapper remote exception"));
+        given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
+                eq(String.class))).willThrow(new RuntimeException("EDC remote exception"));
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "https://connector.endpoint.com",
-                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(RuntimeException.class);
+                "http://test.com/" + ASSET_ID + "/submodel?content=value")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class), eq(
-                        HttpMethod.POST), any(HttpEntity.class), eq(Catalog.class));
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),
+                eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class));
     }
 
 }

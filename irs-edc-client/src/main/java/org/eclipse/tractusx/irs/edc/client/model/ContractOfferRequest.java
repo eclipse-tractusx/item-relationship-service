@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.edc.client.model;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
+import org.eclipse.edc.policy.model.Policy;
 
 /**
  * EDC contract offer request.

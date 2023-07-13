@@ -18,7 +18,7 @@ note right
     IRS API endpoint
     POST /isr/jobs with
     {globalAssetId: urn:uuid:<uuid4>,
-    aspects [SerialPartTypization, SupplyRelationData]]}
+    aspects [SerialPart, SupplyRelationData]]}
 end note
 AASTransferProcessManager -> AASTransferProcessManager : initiateRequest
 note left

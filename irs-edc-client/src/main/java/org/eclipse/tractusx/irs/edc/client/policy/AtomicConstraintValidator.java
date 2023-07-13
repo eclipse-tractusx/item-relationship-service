@@ -23,10 +23,10 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import lombok.Builder;
-import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
-import org.eclipse.dataspaceconnector.policy.model.Expression;
-import org.eclipse.dataspaceconnector.policy.model.LiteralExpression;
-import org.eclipse.dataspaceconnector.policy.model.Operator;
+import org.eclipse.edc.policy.model.AtomicConstraint;
+import org.eclipse.edc.policy.model.Expression;
+import org.eclipse.edc.policy.model.LiteralExpression;
+import org.eclipse.edc.policy.model.Operator;
 
 /**
  * Check and validate AtomicConstraint as a part of Policy in Catalog fetch from EDC providers.

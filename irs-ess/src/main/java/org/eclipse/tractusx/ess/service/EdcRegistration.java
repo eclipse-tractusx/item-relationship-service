@@ -28,7 +28,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.edc.client.StringMapper;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -55,17 +55,20 @@ public class EdcRegistration {
     private final String essBaseUrl;
     private final String apiKeyHeader;
     private final String apiKeySecret;
+    private final String managementPath;
 
     public EdcRegistration(@Qualifier("noErrorRestTemplate") final RestTemplate restTemplate,
             @Value("${ess.localEdcEndpoint}") final String edcProviderUrl,
             @Value("${ess.irs.url}") final String essBaseUrl,
-            @Value("${edc.controlplane.api-key.header}") final String apiKeyHeader,
-            @Value("${edc.controlplane.api-key.secret}") final String apiKeySecret) {
+            @Value("${irs-edc-client.controlplane.api-key.header}") final String apiKeyHeader,
+            @Value("${irs-edc-client.controlplane.api-key.secret}") final String apiKeySecret,
+            @Value("${ess.managementPath}") final String managementPath) {
         this.restTemplate = restTemplate;
         this.edcProviderUrl = edcProviderUrl;
         this.essBaseUrl = essBaseUrl;
         this.apiKeyHeader = apiKeyHeader;
         this.apiKeySecret = apiKeySecret;
+        this.managementPath = managementPath;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -75,7 +78,7 @@ public class EdcRegistration {
         if (assetIsNotRegisteredYet(ASSET_ID_RESPONSE)) {
             log.info("Notification response receiver asset is not registered yet, starting registration.");
             registerAsset(ASSET_ID_RESPONSE, "ess-supplier-response", "/ess/notification/receive");
-            registerPolicy("1000", ASSET_ID_RESPONSE);
+            registerPolicy("1000");
             registerContractDefinition("1000", ASSET_ID_RESPONSE);
             log.info(REGISTRATION_FINISHED);
         }
@@ -83,7 +86,7 @@ public class EdcRegistration {
         if (assetIsNotRegisteredYet(ASSET_ID_REQUEST)) {
             log.info("Mock notification request receiver asset is not registered yet, starting registration.");
             registerAsset(ASSET_ID_REQUEST, "ess-supplier-request", "/ess/mock/notification/receive");
-            registerPolicy("1001", ASSET_ID_REQUEST);
+            registerPolicy("1001");
             registerContractDefinition("1001", ASSET_ID_REQUEST);
             log.info(REGISTRATION_FINISHED);
         }
@@ -91,7 +94,7 @@ public class EdcRegistration {
         if (assetIsNotRegisteredYet(ASSET_ID_REQUEST_RECURSIVE)) {
             log.info("Recursive notification request receiver asset is not registered yet, starting registration.");
             registerAsset(ASSET_ID_REQUEST_RECURSIVE, "ess-supplier-request", "/ess/notification/receive-recursive");
-            registerPolicy("1002", ASSET_ID_REQUEST_RECURSIVE);
+            registerPolicy("1002");
             registerContractDefinition("1002", ASSET_ID_REQUEST_RECURSIVE);
             log.info(REGISTRATION_FINISHED);
         }
@@ -102,28 +105,26 @@ public class EdcRegistration {
     private void registerAsset(final String assetId, final String notificationType, final String path) {
         final var body = """
                 {
-                  "asset": {
-                    "properties": {
-                      "asset:prop:id": "%s",
-                      "asset:prop:description": "ESS notification endpoint",
-                      "asset:prop:contenttype": "application/json",
-                      "asset:prop:policy-id": "use-eu",
-                      "asset:prop:notificationtype":"%s",
-                      "asset:prop:notificationmethod": "receive"
+                    "@context": {},
+                    "asset": {
+                        "@id": "%s",
+                        "properties": {
+                            "description": "ESS notification endpoint",
+                            "contenttype": "application/json",
+                            "notificationtype":"%s",
+                            "notificationmethod": "receive"
+                        }
+                    },
+                    "dataAddress": {
+                        "baseUrl": "%s",
+                        "type": "HttpData",
+                        "proxyBody": "true",
+                        "proxyMethod": "true"
                     }
-                  },
-                  "dataAddress": {
-                    "properties": {
-                      "baseUrl": "%s",
-                      "type": "HttpData",
-                      "proxyBody": true,
-                      "proxyMethod": true
-                    }
-                  }
                 }
                 """.formatted(assetId, notificationType, essBaseUrl + path);
-        final var entity = restTemplate.exchange(edcProviderUrl + "/api/v1/management/assets", HttpMethod.POST, toEntity(body),
-                String.class);
+        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/assets", HttpMethod.POST,
+                toEntity(body), String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification asset registered successfully.");
@@ -134,27 +135,35 @@ public class EdcRegistration {
 
     }
 
-    private void registerPolicy(final String policyId, final String assetId) {
+    private void registerPolicy(final String policyId) {
         final var body = """
-                {
-                   "id": %s,
-                   "policy": {
-                     "prohibitions": [],
-                     "obligations": [],
-                     "permissions": [
-                       {
-                         "edctype": "dataspaceconnector:permission",
-                         "action": {
-                           "type": "USE"
-                         },
-                         "target": "%s"
-                       }
-                     ]
-                   }
-                 }
-                """.formatted(policyId, assetId);
-        final var entity = restTemplate.exchange(edcProviderUrl + "/api/v1/management/policydefinitions", HttpMethod.POST,
-                toEntity(body), String.class);
+                  {
+                      "@context": {
+                        "odrl": "http://www.w3.org/ns/odrl/2/"
+                      },
+                      "@id": "%s",
+                      "policy": {
+                        "odrl:permission": [
+                          {
+                            "odrl:action": "USE",
+                            "odrl:constraint": {
+                              "@type": "AtomicConstraint",
+                              "odrl:or": [
+                                {
+                                  "@type": "Constraint",
+                                  "odrl:leftOperand": "idsc:PURPOSE",
+                                  "odrl:operator": "EQ",
+                                  "odrl:rightOperand": "ID 3.0 Trace"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                  }
+                """.formatted(policyId);
+        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/policydefinitions",
+                HttpMethod.POST, toEntity(body), String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification policy registered successfully.");
@@ -167,21 +176,19 @@ public class EdcRegistration {
     private void registerContractDefinition(final String contractId, final String assetId) {
         final var body = """
                 {
-                    "id": %s,
-                    "criteria": [
-                      {
-                        "operandLeft": "asset:prop:id",
+                    "@context": {},
+                    "accessPolicyId": "%s",
+                    "contractPolicyId": "%s",
+                    "assetsSelector": {
+                        "operandLeft": "https://w3id.org/edc/v0.0.1/ns/id",
                         "operator": "=",
                         "operandRight": "%s"
-                      }
-                    ],
-                    "accessPolicyId": %s,
-                    "contractPolicyId": %s
-                  }
-                """.formatted(contractId, assetId, contractId, contractId);
+                    }
+                }
+                """.formatted(contractId, contractId, assetId);
 
-        final var entity = restTemplate.exchange(edcProviderUrl + "/api/v1/management/contractdefinitions", HttpMethod.POST,
-                toEntity(body), String.class);
+        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/contractdefinitions",
+                HttpMethod.POST, toEntity(body), String.class);
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification contract definition registered successfully.");
         } else {
@@ -205,9 +212,21 @@ public class EdcRegistration {
 
     private boolean assetIsNotRegisteredYet(final String assetId) {
         if (restTemplate != null && StringUtils.isNotBlank(edcProviderUrl)) {
-            final var url = edcProviderUrl + "/api/v1/management/assets?filter=asset:prop:id=" + assetId;
+            final var url = edcProviderUrl + managementPath + "/assets/request";
             log.info("Requesting asset from EDC provider with url {}", url);
-            final var entity = restTemplate.exchange(url, HttpMethod.GET, toEntity(null), String.class);
+            final String filter = """
+                    {
+                        "@context": {},
+                        "filterExpression": [
+                                {
+                                    "operandLeft": "https://w3id.org/edc/v0.0.1/ns/id",
+                                    "operandRight": "%s",
+                                    "operator": "="
+                                }
+                            ]
+                    }
+                    """.formatted(assetId);
+            final var entity = restTemplate.exchange(url, HttpMethod.POST, toEntity(filter), String.class);
             if (entity.getStatusCode().is2xxSuccessful()) {
                 final List<?> array = StringMapper.mapFromString(entity.getBody(), List.class);
                 return array.isEmpty();

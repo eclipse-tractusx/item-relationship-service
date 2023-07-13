@@ -40,7 +40,7 @@ import lombok.Getter;
 @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
 @Getter
 public enum BomLifecycle {
-    AS_BUILT("asBuilt", AspectType.SERIAL_PART_TYPIZATION),
+    AS_BUILT("asBuilt", AspectType.SERIAL_PART),
     AS_PLANNED("asPlanned", AspectType.PART_AS_PLANNED);
 
     private final String name;

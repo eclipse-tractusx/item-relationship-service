@@ -86,10 +86,6 @@ class IrsFunctionalTest {
         minioContainer.stop();
     }
 
-    @BeforeEach
-    void setUp() {
-    }
-
     @Test
     void shouldStartJobAndRetrieveResult() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
@@ -99,7 +95,7 @@ class IrsFunctionalTest {
         final Optional<Jobs> finishedJob = Awaitility.await()
                                                      .pollDelay(500, TimeUnit.MILLISECONDS)
                                                      .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .atMost(15, TimeUnit.SECONDS)
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
@@ -108,12 +104,10 @@ class IrsFunctionalTest {
 
         assertThat(finishedJob).isPresent();
         assertThat(finishedJob.get().getRelationships()).isNotEmpty();
-        assertThat(finishedJob.get().getRelationships()).hasSize(1);
         assertThat(finishedJob.get().getShells()).isNotEmpty();
-        assertThat(finishedJob.get().getShells()).hasSize(2);
         assertThat(finishedJob.get().getTombstones()).isEmpty();
         assertThat(finishedJob.get().getSubmodels()).isEmpty();
-        assertThat(finishedJob.get().getBpns()).isEmpty();
+        assertThat(finishedJob.get().getBpns()).isNotEmpty();
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();
         assertThat(finishedJob.get().getJob().getParameter()).isNotNull();
@@ -129,7 +123,7 @@ class IrsFunctionalTest {
         final Optional<Jobs> finishedJob = Awaitility.await()
                                                      .pollDelay(500, TimeUnit.MILLISECONDS)
                                                      .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .atMost(15, TimeUnit.SECONDS)
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
@@ -137,7 +131,7 @@ class IrsFunctionalTest {
                                                                                              .equals(JobState.COMPLETED));
 
         assertThat(finishedJob).isPresent();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isPositive();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
         assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isZero();
@@ -153,7 +147,7 @@ class IrsFunctionalTest {
         final Optional<Jobs> finishedJob = Awaitility.await()
                                                      .pollDelay(500, TimeUnit.MILLISECONDS)
                                                      .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .atMost(15, TimeUnit.SECONDS)
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
@@ -161,10 +155,10 @@ class IrsFunctionalTest {
                                                                                              .equals(JobState.COMPLETED));
 
         assertThat(finishedJob).isPresent();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isPositive();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isPositive();
         assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
     }
 

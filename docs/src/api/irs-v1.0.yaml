@@ -182,12 +182,14 @@ paths:
         - description: Zero-based page index (0..N)
           in: query
           name: page
+          required: false
           schema:
             type: integer
             default: 0
         - description: The size of the page to be returned
           in: query
           name: size
+          required: false
           schema:
             type: integer
             default: 20
@@ -195,6 +197,7 @@ paths:
           \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
+          required: false
           schema:
             type: array
             items:
@@ -903,7 +906,7 @@ components:
           owner: ""
           parameter:
             aspects:
-              - SerialPartTypization
+              - SerialPart
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
@@ -965,7 +968,7 @@ components:
           owner: ""
           parameter:
             aspects:
-              - SerialPartTypization
+              - SerialPart
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1035,13 +1038,13 @@ components:
                     - type: Submodel
                       value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         submodels:
-          - aspectType: urn:bamm:io.catenax.assembly_part_relationship:1.0.0
+          - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
             payload:
               catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-              childParts:
+              childItems:
                 - createdOn: 2022-02-03T14:48:54.709Z
-                  childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+                  catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
                   lastModifiedOn: 2022-02-03T14:48:54.709Z
                   lifecycleContext: AsBuilt
                   quantity:
@@ -1107,7 +1110,7 @@ components:
           owner: ""
           parameter:
             aspects:
-              - SerialPartTypization
+              - SerialPart
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1145,7 +1148,7 @@ components:
           owner: ""
           parameter:
             aspects:
-              - SerialPartTypization
+              - SerialPart
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1215,13 +1218,13 @@ components:
                     - type: Submodel
                       value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         submodels:
-          - aspectType: urn:bamm:io.catenax.assembly_part_relationship:1.0.0
+          - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
             payload:
               catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
-              childParts:
+              childItems:
                 - createdOn: 2022-02-03T14:48:54.709Z
-                  childCatenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+                  catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
                   lastModifiedOn: 2022-02-03T14:48:54.709Z
                   lifecycleContext: AsBuilt
                   quantity:
@@ -1253,7 +1256,7 @@ components:
           owner: ""
           parameter:
             aspects:
-              - SerialPartTypization
+              - SerialPart
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1274,16 +1277,16 @@ components:
       value:
         lastUpdated: 2023-02-13T08:18:11.990659500Z
         models:
-          - urn: urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship
-            name: AssemblyPartRelationship
+          - urn: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt
+            name: SingleLevelBomAsBuilt
             status: RELEASED
             type: BAMM
-            version: 1.1.1
-          - urn: urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization
-            name: SerialPartTypization
+            version: 1.0.0
+          - urn: urn:bamm:io.catenax.serial_part:1.0.0#SerialPart
+            name: SerialPart
             status: RELEASED
             type: BAMM
-            version: 1.1.0
+            version: 1.0.0
   schemas:
     AdministrativeInformation:
       type: object
@@ -1348,6 +1351,7 @@ components:
           minimum: 0
     BatchOrderCreated:
       type: object
+      description: Id of the created Batch order.
       additionalProperties: false
       properties:
         id:
@@ -1685,6 +1689,7 @@ components:
     JobHandle:
       type: object
       additionalProperties: false
+      description: The unique jobId handle of the just processed job.
       properties:
         id:
           type: string

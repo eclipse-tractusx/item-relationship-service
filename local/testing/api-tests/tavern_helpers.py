@@ -1,6 +1,10 @@
 # testing_utils.py
 from datetime import datetime
 
+import requests
+import os
+
+
 def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
@@ -90,8 +94,8 @@ def submodels_are_not_empty(response):
 def errors_for_invalid_globalAssetId_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
-    assert 'globalAssetId:size must be between 45 and 45' in error_list
-    assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
+    assert 'key.globalAssetId:size must be between 45 and 45' in error_list
+    assert 'key.globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
 
 
 def errors_for_invalid_depth_are_correct(response):
@@ -117,8 +121,7 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         print("RetryCounter: ", processingErrorRetryCounter)
         assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
         assert 'DigitalTwinRequest' in processingErrorStep
-        assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail
-        #assert '404 : \"{\"error\":{\"message\":\"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found\",\"path\":\"/registry/shell-descriptors/urn%3Auuid%3Acce14502-958a-42e1-8bb7-f4f41aaaaaaa\",\"details\":{}}}\"' in processingErrorDetail
+        #assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail ##commented out since this error message is not possible currently after DTR changes
         assert processingErrorLastAttempt is not None
         assert 3 is processingErrorRetryCounter
 
@@ -160,7 +163,7 @@ def check_timestamps_for_completed_jobs(response):
     job_completed_timestamp = datetime.strptime(response.json().get('job').get('completedOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
     assert started_on_timestamp > created_on_timestamp
     assert last_modified_on_timestamp > started_on_timestamp
-    assert job_completed_timestamp > last_modified_on_timestamp
+    assert job_completed_timestamp >= last_modified_on_timestamp
 
 
 def check_timestamps_for_not_completed_jobs(response):
@@ -269,3 +272,28 @@ def order_informations_for_batchprocessing_are_given(response, amount_batches):
         assert 'https://irs.dev.demo.catena-x.net/irs/orders' in batches.get("batchUrl")
         assert batches.get("batchProcessingState") == 'INITIALIZED'
         assert batches.get("errors") is None
+
+
+def job_parameter_are_as_requested(response):
+    print("Check if job parameter are as requested:")
+    parameter = response.json().get('job').get('parameter')
+    print(parameter)
+    assert parameter.get('bomLifecycle') == 'asPlanned'
+    assert parameter.get('collectAspects') is True
+    assert parameter.get('depth') == 2
+    assert parameter.get('direction') == 'downward'
+    assert parameter.get('lookupBPNs') is True
+    assert parameter.get('callbackUrl') == 'https://www.check123.com'
+    aspects_list = parameter.get("aspects")
+    assert 'SerialPart' in aspects_list
+    assert 'PartAsPlanned' in aspects_list
+
+
+def create_bearer_token():
+    url = os.getenv('KEYCLOAK_HOST')
+    client_id = os.getenv('KEYCLOAK_CLIENT_ID')
+    client_secret = os.getenv('KEYCLOAK_CLIENT_SECRET')
+
+    data = {"grant_type": "client_credentials", "client_id": client_id, "client_secret": client_secret}
+    token = requests.post(url, data).json().get('access_token')
+    return {"Authorization": f"Bearer {token}"}

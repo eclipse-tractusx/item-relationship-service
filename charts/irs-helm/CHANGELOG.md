@@ -5,12 +5,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [6.1.0]
+### Changed
+- Remove EDC Catalog cache configuration
+
+### Added
+- New configuration for ess asset creation EDC management API path `ess.managementPath`
+
+## [6.0.1] - 2023-06-26
+### Changed
+- Update IRS to version 3.0.1
+- Disable EDC Catalog caching by default. You can enable it again by setting `edc.catalog.cache.enabled` to true
+
+## [6.0.0] - 2023-06-26
 ### Added
 - Add parameter for `digitalTwinRegistry.type` and `digitalTwinRegistry.discoveryFinderUrl`
 - Added new configmap values for policy store blobstore connection
+- Callback url parameter so set the EDC EDR callback for IRS `edc.callbackurl`
+- EDC endpoints for catalog, contractnegotiation, transferprocess and state are now configurable via edc.controlplane.endpoint 
 
 ### Changed
 - Minio is deployed by default with non-root rights
+- Update to IRS 3.0.0
 
 ## [5.3.1] - 2023-05-15
 ### Fixed

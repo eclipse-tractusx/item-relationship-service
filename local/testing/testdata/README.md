@@ -51,33 +51,30 @@ An example policy can look like this:
 {
   "policies": {
     "ID 3.0 Trace": {
-      "id": "id-3.0-trace",
-      "policy": {
-        "prohibitions": [],
-        "obligations": [],
-        "permissions": [
-          {
-            "edctype": "dataspaceconnector:permission",
-            "action": {
-              "type": "USE"
-            },
-            "constraints": [
-              {
-                "edctype": "AtomicConstraint",
-                "leftExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "idsc:PURPOSE"
-                },
-                "rightExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "ID 3.0 Trace"
-                },
-                "operator": "EQ"
-              }
-            ]
-          }
-        ]
-      }
+       "@context": {
+          "odrl": "http://www.w3.org/ns/odrl/2/"
+       },
+       "@type": "PolicyDefinitionRequestDto",
+       "@id": "id-3.0-trace",
+       "policy": {
+          "@type": "Policy",
+          "odrl:permission": [
+             {
+                "odrl:action": "USE",
+                "odrl:constraint": {
+                   "@type": "AtomicConstraint",
+                   "odrl:or": [
+                      {
+                         "@type": "Constraint",
+                         "odrl:leftOperand": "idsc:PURPOSE",
+                         "odrl:operator": "EQ",
+                         "odrl:rightOperand": "ID 3.0 Trace"
+                      }
+                   ]
+                }
+             }
+          ]
+       }
     }
   },
   "https://catenax.io/schema/TestDataContainer/1.0.0": [

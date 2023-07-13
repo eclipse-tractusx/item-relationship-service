@@ -102,8 +102,8 @@ public class AssetAdministrationShellDescriptor {
     public AssetAdministrationShellDescriptor withFilteredSubmodelDescriptors(final List<String> aspectTypes) {
         final List<String> filterAspectTypes = new ArrayList<>(aspectTypes);
 
-        if (notContainsAssemblyPartRelationship(filterAspectTypes)) {
-            filterAspectTypes.add(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
+        if (notContainsSingleLevelBomAsBuilt(filterAspectTypes)) {
+            filterAspectTypes.add(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
             log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
         }
 
@@ -156,7 +156,7 @@ public class AssetAdministrationShellDescriptor {
         return semanticId.contains(join);
     }
 
-    private boolean notContainsAssemblyPartRelationship(final List<String> filterAspectTypes) {
-        return !filterAspectTypes.contains(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
+    private boolean notContainsSingleLevelBomAsBuilt(final List<String> filterAspectTypes) {
+        return !filterAspectTypes.contains(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
     }
 }

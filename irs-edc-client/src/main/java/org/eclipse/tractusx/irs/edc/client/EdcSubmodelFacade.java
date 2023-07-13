@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 /**
  * Public API Facade for submodel domain
  */
-@Service
+@Service("irsEdcClientEdcSubmodelFacade")
 @Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

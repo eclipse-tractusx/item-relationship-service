@@ -26,19 +26,20 @@ import java.time.Duration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * EDC configuration settings. Automatically populated by Spring from application.yml
  * and other configuration sources.
  */
-@Component
-@ConfigurationProperties(prefix = "edc")
+@Configuration("irsEdcClientEdcConfiguration")
+@ConfigurationProperties(prefix = "irs-edc-client")
 @Data
 public class EdcConfiguration {
 
     private ControlplaneConfig controlplane = new ControlplaneConfig();
     private SubmodelConfig submodel = new SubmodelConfig();
+    private String callbackUrl;
 
     /**
      * Container for controlplane config
@@ -63,6 +64,10 @@ public class EdcConfiguration {
         @Data
         public static class EndpointConfig {
             private String data;
+            private String catalog;
+            private String contractNegotiation;
+            private String transferProcess;
+            private String stateSuffix;
 
         }
 

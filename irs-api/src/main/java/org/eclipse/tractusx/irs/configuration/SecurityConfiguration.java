@@ -38,6 +38,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -67,6 +68,7 @@ public class SecurityConfiguration {
         "/ess/notification/receive-recursive"
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
+    private static final String ONLY_SELF_SCRIPT_SRC = "script-src 'self'";
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
@@ -86,6 +88,8 @@ public class SecurityConfiguration {
 
         httpSecurity.headers(headers -> headers.xssProtection(xXssConfig ->
                 xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
+
+        httpSecurity.headers(headers -> headers.addHeaderWriter(new ContentSecurityPolicyHeaderWriter(ONLY_SELF_SCRIPT_SRC)));
 
         httpSecurity.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 

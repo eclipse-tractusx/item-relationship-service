@@ -42,23 +42,23 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipWithoutChildrenWhenRequestingWithTestId() {
-        final AssemblyPartRelationship dummyAssemblyPartRelationshipForId = submodelTestdataCreator.createSubmodelForId(
-                "test", AssemblyPartRelationship.class);
-        assertThat(dummyAssemblyPartRelationshipForId.getCatenaXId()).isNull();
-        assertThat(dummyAssemblyPartRelationshipForId.getChildParts()).isNull();
+    void shouldReturnSingleLevelBomAsBuiltWithoutChildrenWhenRequestingWithTestId() {
+        final SingleLevelBomAsBuilt dummySingleLevelBomAsBuiltForId = submodelTestdataCreator.createSubmodelForId(
+                "test", SingleLevelBomAsBuilt.class);
+        assertThat(dummySingleLevelBomAsBuiltForId.getCatenaXId()).isNull();
+        assertThat(dummySingleLevelBomAsBuiltForId.getChildItems()).isNull();
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
-        final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.createSubmodelForId(
-                catenaXId + "_assemblyPartRelationship", AssemblyPartRelationship.class);
+    void shouldReturnSingleLevelBomAsBuiltWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
+        final String catenaXId = "urn:uuid:94e8a73b-006e-420e-9d46-45e8d0e83d1f";
+        final SingleLevelBomAsBuilt singleLevelBomAsBuilt = submodelTestdataCreator.createSubmodelForId(
+                catenaXId + "_singleLevelBomAsBuilt", SingleLevelBomAsBuilt.class);
 
-        final Set<AssemblyPartRelationship.ChildData> childParts = assemblyPartRelationship.getChildParts();
-        assertThat(childParts).hasSize(1);
-        final List<String> childIDs = List.of("urn:uuid:10bba299-87d1-4335-90d5-a48015de7a32");
-        childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
+        final Set<SingleLevelBomAsBuilt.ChildData> childItems = singleLevelBomAsBuilt.getChildItems();
+        assertThat(childItems).isNotEmpty();
+        final List<String> childIDs = List.of("urn:uuid:c7e388e6-c4be-4d52-beb2-c21d94e4762b");
+        childItems.forEach(childData -> assertThat(childIDs).contains(childData.getCatenaXId()));
     }
 
 }

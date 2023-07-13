@@ -22,26 +22,29 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.spi.query.Criterion;
-import org.eclipse.dataspaceconnector.spi.query.QuerySpec;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
-import org.eclipse.tractusx.irs.edc.client.model.CatalogRequest;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationId;
+import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
+import org.eclipse.edc.spi.query.Criterion;
+import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.edc.client.model.TransferProcessId;
+import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
+import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
+import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,26 +52,53 @@ import org.springframework.web.client.RestTemplate;
  * Communicates with the EDC ControlPlane
  */
 @Slf4j
-@Service
-@RequiredArgsConstructor
+@Service("irsEdcClientEdcControlPlaneClient")
+@SuppressWarnings({ "PMD.TooManyMethods" })
 public class EdcControlPlaneClient {
 
-    public static final String STATUS_CONFIRMED = "CONFIRMED";
+    public static final String STATUS_FINALIZED = "FINALIZED";
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_ERROR = "ERROR";
+    public static final String DATASPACE_PROTOCOL_HTTP = "dataspace-protocol-http";
 
     private final RestTemplate edcRestTemplate;
     private final AsyncPollingService pollingService;
-
     private final EdcConfiguration config;
+    private final EdcTransformer edcTransformer;
+
+    public EdcControlPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate, final AsyncPollingService pollingService,
+            final EdcConfiguration config, final EdcTransformer edcTransformer) {
+        this.edcRestTemplate = edcRestTemplate;
+        this.pollingService = pollingService;
+        this.config = config;
+        this.edcTransformer = edcTransformer;
+    }
+
+    private static String getResponseBody(final ResponseEntity<String> response) {
+        String responseBody = "";
+        if (response.hasBody() && response.getBody() != null) {
+            responseBody = response.getBody();
+        }
+        return responseBody;
+    }
 
     /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
-        final var catalogUrl = config.getControlplane().getEndpoint().getData() + "/catalog/request";
         final var limit = config.getControlplane().getCatalogPageSize();
 
         final CatalogRequest request = buildCatalogRequest(offset, providerConnectorUrl, limit);
-        return edcRestTemplate.exchange(catalogUrl, HttpMethod.POST, new HttpEntity<>(request, headers()),
-                Catalog.class).getBody();
+        return getCatalog(request);
+    }
+
+    /* package */ Catalog getCatalog(final CatalogRequest requestBody) {
+        final var endpoint = config.getControlplane().getEndpoint();
+        final var url = endpoint.getData() + endpoint.getCatalog();
+
+        final String requestJson = edcTransformer.transformCatalogRequestToJson(requestBody).toString();
+        log.info("Requesting catalog with payload: {}", requestJson);
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<>(requestJson, headers()), String.class);
+        final String catalog = getResponseBody(response);
+        return edcTransformer.transformCatalog(catalog, StandardCharsets.UTF_8);
     }
 
     private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit) {
@@ -76,46 +106,51 @@ public class EdcControlPlaneClient {
         if (config.getControlplane().getCatalogPageSize() > 0) {
             querySpec.limit(limit);
         }
-        return CatalogRequest.builder().providerUrl(providerUrl).querySpec(querySpec.build()).build();
+        return CatalogRequest.Builder.newInstance()
+                                     .providerUrl(providerUrl)
+                                     .protocol(DATASPACE_PROTOCOL_HTTP)
+                                     .querySpec(querySpec.build())
+                                     .build();
     }
 
-    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key, final String value) {
-        final var catalogUrl = config.getControlplane().getEndpoint().getData() + "/catalog/request";
-
-        final var querySpec = QuerySpec.Builder.newInstance().filter(List.of(new Criterion(key, "=", value)));
-        final var catalogRequest = CatalogRequest.builder()
-                                                 .providerUrl(providerConnectorUrl)
-                                                 .querySpec(querySpec.build())
-                                                 .build();
-        return edcRestTemplate.exchange(catalogUrl, HttpMethod.POST, new HttpEntity<>(catalogRequest, headers()),
-                Catalog.class).getBody();
+    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key,
+            final String value) {
+        final QuerySpec querySpec = QuerySpec.Builder.newInstance().filter(new Criterion(key, "=", value)).build();
+        final var catalogRequest = CatalogRequest.Builder.newInstance()
+                                                         .providerUrl(providerConnectorUrl)
+                                                         .protocol(DATASPACE_PROTOCOL_HTTP)
+                                                         .querySpec(querySpec)
+                                                         .build();
+        return getCatalog(catalogRequest);
     }
 
-    /* package */ NegotiationId startNegotiations(final NegotiationRequest request) {
-        return edcRestTemplate.exchange(config.getControlplane().getEndpoint().getData() + "/contractnegotiations",
-                HttpMethod.POST, new HttpEntity<>(request, headers()), NegotiationId.class).getBody();
+    /* package */ Response startNegotiations(final NegotiationRequest request) {
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getContractNegotiation();
+
+        final String jsonObject = edcTransformer.transformNegotiationRequestToJson(request).toString();
+
+        return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
+                              .getBody();
     }
 
-    /* package */ CompletableFuture<NegotiationResponse> getNegotiationResult(final NegotiationId negotiationId) {
+    /* package */ CompletableFuture<NegotiationResponse> getNegotiationResult(final Response negotiationId) {
         final HttpEntity<Object> objectHttpEntity = new HttpEntity<>(null, headers());
 
         return pollingService.<NegotiationResponse>createJob()
                              .action(() -> {
                                  log.info("Check negotiations status");
+                                 final NegotiationState negotiationState = getContractNegotiationState(negotiationId,
+                                         objectHttpEntity);
+                                 log.info("Response status of negotiation: {}", negotiationState);
 
-                                 final NegotiationResponse response = edcRestTemplate.exchange(
-                                                                                             config.getControlplane().getEndpoint().getData() + "/contractnegotiations/"
-                                                                                                     + negotiationId.getValue(), HttpMethod.GET, objectHttpEntity,
-                                                                                             NegotiationResponse.class)
-                                                                                     .getBody();
-
-                                 log.info("Response status of negotiation: {}", response);
-
-                                 if (response != null) {
-                                     return switch (response.getState()) {
-                                         case STATUS_CONFIRMED -> Optional.of(response);
+                                 if (negotiationState != null) {
+                                     return switch (negotiationState.getState()) {
+                                         case STATUS_FINALIZED -> Optional.of(
+                                                 getContractNegotiationResponse(negotiationId, objectHttpEntity));
                                          case STATUS_ERROR -> throw new IllegalStateException(
-                                                 "NegotiationResponse with id " + response.getResponseId()
+                                                 "NegotiationResponse with id " + getContractNegotiationResponse(
+                                                         negotiationId, objectHttpEntity).getResponseId()
                                                          + " is in state ERROR");
                                          default -> Optional.empty();
                                      };
@@ -129,32 +164,55 @@ public class EdcControlPlaneClient {
 
     }
 
-    /* package */ TransferProcessId startTransferProcess(final TransferProcessRequest request) {
-        return edcRestTemplate.exchange(config.getControlplane().getEndpoint().getData() + "/transferprocess",
-                HttpMethod.POST, new HttpEntity<>(request, headers()), TransferProcessId.class).getBody();
+    private NegotiationState getContractNegotiationState(final Response negotiationId,
+            final HttpEntity<Object> objectHttpEntity) {
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId()
+                + endpoint.getStateSuffix();
+
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                String.class);
+        final String negotiationStateResponse = getResponseBody(response);
+        return edcTransformer.transformJsonToNegotiationState(negotiationStateResponse, StandardCharsets.UTF_8);
     }
 
-    /* package */ CompletableFuture<TransferProcessResponse> getTransferProcess(
-            final TransferProcessId transferProcessId) {
+    private NegotiationResponse getContractNegotiationResponse(final Response negotiationId,
+            final HttpEntity<Object> objectHttpEntity) {
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId();
+
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                String.class);
+        final String negotiationResponse = getResponseBody(response);
+        return edcTransformer.transformJsonToNegotiationResponse(negotiationResponse, StandardCharsets.UTF_8);
+    }
+
+    /* package */ Response startTransferProcess(final TransferProcessRequest request) {
+        final String jsonObject = edcTransformer.transformTransferProcessRequestToJson(request).toString();
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getTransferProcess();
+        return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
+                              .getBody();
+    }
+
+    /* package */ CompletableFuture<TransferProcessResponse> getTransferProcess(final Response transferProcessId) {
 
         final HttpEntity<Object> objectHttpEntity = new HttpEntity<>(null, headers());
 
         return pollingService.<TransferProcessResponse>createJob()
                              .action(() -> {
                                  log.info("Check Transfer Process status");
+                                 final NegotiationState transferProcessState = getTransferProcessState(
+                                         transferProcessId, objectHttpEntity);
+                                 log.info("Response status of Transfer Process: {}", transferProcessState);
 
-                                 final TransferProcessResponse response = edcRestTemplate.exchange(
-                                         config.getControlplane().getEndpoint().getData() + "/transferprocess/"
-                                                 + transferProcessId.getValue(), HttpMethod.GET, objectHttpEntity,
-                                         TransferProcessResponse.class).getBody();
-
-                                 log.info("Response status of Transfer Process: {}", response);
-
-                                 if (response != null) {
-                                     return switch (response.getState()) {
-                                         case STATUS_COMPLETED -> Optional.of(response);
+                                 if (transferProcessState != null) {
+                                     return switch (transferProcessState.getState()) {
+                                         case STATUS_COMPLETED -> Optional.of(
+                                                 getTransferProcessResponse(transferProcessId, objectHttpEntity));
                                          case STATUS_ERROR -> throw new IllegalStateException(
-                                                 "TransferProcessResponse with id " + response.getResponseId()
+                                                 "TransferProcessResponse with id " + getTransferProcessResponse(
+                                                         transferProcessId, objectHttpEntity).getResponseId()
                                                          + " is in state ERROR");
                                          default -> Optional.empty();
                                      };
@@ -169,9 +227,30 @@ public class EdcControlPlaneClient {
 
     }
 
+    private NegotiationState getTransferProcessState(final Response transferProcessId,
+            final HttpEntity<Object> objectHttpEntity) {
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getResponseId()
+                + endpoint.getStateSuffix();
+
+        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                String.class);
+        final String transferProcessStateResponse = getResponseBody(response);
+
+        return edcTransformer.transformJsonToNegotiationState(transferProcessStateResponse, StandardCharsets.UTF_8);
+    }
+
+    private TransferProcessResponse getTransferProcessResponse(final Response transferProcessId,
+            final HttpEntity<Object> objectHttpEntity) {
+        final var endpoint = config.getControlplane().getEndpoint();
+        final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getResponseId();
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, TransferProcessResponse.class).getBody();
+    }
+
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
         final String apiKeyHeader = config.getControlplane().getApiKey().getHeader();
         if (apiKeyHeader != null) {
             headers.add(apiKeyHeader, config.getControlplane().getApiKey().getSecret());

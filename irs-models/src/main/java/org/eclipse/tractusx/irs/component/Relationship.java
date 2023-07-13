@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -49,5 +50,8 @@ public class Relationship {
     private LinkedItem linkedItem;
 
     private String  aspectType;
+
+    @JsonIgnore
+    private String bpn;
 
 }

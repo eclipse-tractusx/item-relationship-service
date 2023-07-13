@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.edc.client;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,11 +50,11 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 class SingleLevelBomAsPlanned implements RelationshipSubmodel {
 
     private String catenaXId;
-    private Set<ChildData> childParts;
+    private Set<ChildData> childItems;
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.childParts).stream().flatMap(Collection::stream)
+        return Optional.ofNullable(this.childItems).stream().flatMap(Collection::stream)
                        .map(childData -> childData.toRelationship(this.catenaXId))
                        .toList();
     }
@@ -69,37 +70,42 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
         private ZonedDateTime createdOn;
         private Quantity quantity;
         private ZonedDateTime lastModifiedOn;
-        private String childCatenaXId;
+        private String catenaXId;
+        private String businessPartner;
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
-                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
+                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_PLANNED)
                                                                       .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
             if (thereIsQuantity()) {
-                final String datatypeURI = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getDatatypeURI() : null;
-                final String lexicalValue = thereIsMeasurementUnit() ? this.quantity.getMeasurementUnit().getLexicalValue() : null;
+                MeasurementUnit measurementUnit = MeasurementUnit.builder().build();
+                if (this.quantity.getMeasurementUnit() instanceof String str) {
+                    measurementUnit = MeasurementUnit.builder()
+                                                     .lexicalValue(str)
+                                                     .build();
+                } else if (this.quantity.getMeasurementUnit() instanceof Map<?, ?> map) {
+                    measurementUnit = MeasurementUnit.builder()
+                                                     .lexicalValue(String.valueOf(map.get("lexicalValue")))
+                                                     .datatypeURI(String.valueOf(map.get("datatypeURI")))
+                                                     .build();
+                }
+
 
                 linkedItem.quantity(org.eclipse.tractusx.irs.component.Quantity.builder()
                                                                                .quantityNumber(this.quantity.getQuantityNumber())
-                                                                               .measurementUnit(MeasurementUnit.builder()
-                                                                                                               .datatypeURI(datatypeURI)
-                                                                                                               .lexicalValue(lexicalValue)
-                                                                                                               .build())
+                                                                               .measurementUnit(measurementUnit)
                                                                                .build());
             }
 
             return Relationship.builder()
                                .catenaXId(GlobalAssetIdentification.of(catenaXId))
                                .linkedItem(linkedItem.build())
+                               .bpn(this.businessPartner)
                                .aspectType(AspectType.SINGLE_LEVEL_BOM_AS_PLANNED.toString())
                                .build();
-        }
-
-        private boolean thereIsMeasurementUnit() {
-            return this.quantity != null && this.quantity.getMeasurementUnit() != null;
         }
 
         private boolean thereIsQuantity() {
@@ -114,7 +120,7 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
         /* package */ static class Quantity {
 
             private Double quantityNumber;
-            private MeasurementUnit measurementUnit;
+            private Object measurementUnit;
 
             /**
              * MeasurementUnit

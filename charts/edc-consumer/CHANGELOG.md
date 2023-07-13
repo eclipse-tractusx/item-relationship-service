@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- Update to EDC 0.4.1
+- Switch to EDC helm chart dependencies
 - Moved vault token and api key to secret for control- and data-plane.
 - Moved vault token configuration from `configuration.properties` to `edc.vault.hashicorp.token`
 

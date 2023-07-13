@@ -91,8 +91,8 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
         return List.of(
                 new AspectModel("urn:bamm:com.catenax.esr_certificates.esr_certificate:1.0.0#EsrCertificate", "1.0.0",
                         "EsrCertificate", MODEL_TYPE, MODEL_STATUS),
-                new AspectModel("urn:bamm:io.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
-                        "1.0.0", "AssemblyPartRelationship", MODEL_TYPE, MODEL_STATUS),
+                new AspectModel("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                        "1.0.0", "SingleLevelBomAsBuilt", MODEL_TYPE, MODEL_STATUS),
                 new AspectModel("urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
                         "1.0.1", "PartAsPlanned", MODEL_TYPE, MODEL_STATUS));
     }

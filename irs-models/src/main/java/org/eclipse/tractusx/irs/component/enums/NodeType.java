@@ -30,8 +30,8 @@ import lombok.Getter;
 @Getter
 public enum NodeType {
     ROOT("Root Node of the tree - the initial C-X ID"),
-    NODE("Node of the tree with children - further AssemblyPartRelationShip aspects"),
-    LEAF("Leaf node of the tree - No further AssemblyPartRelationShip aspects"),
+    NODE("Node of the tree with children - further SingleLevelBomAsBuilt aspects"),
+    LEAF("Leaf node of the tree - No further SingleLevelBomAsBuilt aspects"),
     TOMBSTONE("Exceptional state - transient exception");
 
     private final String description;

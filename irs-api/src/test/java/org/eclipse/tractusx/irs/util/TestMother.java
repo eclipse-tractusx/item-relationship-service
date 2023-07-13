@@ -78,11 +78,11 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithoutDepth() {
-        return registerJobWithDepthAndAspect(null, List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()));
+        return registerJobWithDepthAndAspect(null, List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
-        return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
+        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes,
                 false, false, Direction.DOWNWARD);
     }
 
@@ -91,20 +91,20 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithUrl(final String callbackUrl) {
-        final RegisterJob registerJob = registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", 100, List.of(), false, false, Direction.DOWNWARD);
+        final RegisterJob registerJob = registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", 100, List.of(), false, false, Direction.DOWNWARD);
         registerJob.setCallbackUrl(callbackUrl);
         return registerJob;
     }
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
-        return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", depth, aspectTypes,
+        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes,
                 true, false, Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJobWithLookupBPNs() {
-        return registerJob("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", null,
-                List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()), false, true, Direction.DOWNWARD);
+        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", null,
+                List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), false, true, Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
@@ -134,8 +134,8 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
                            .build();
     }
 
@@ -143,8 +143,8 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
                            .collectAspects(true)
                            .build();
     }
@@ -162,8 +162,8 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                   AspectType.ASSEMBLY_PART_RELATIONSHIP.toString()))
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
                            .lookupBPNs(true)
                            .build();
     }
@@ -230,7 +230,7 @@ public class TestMother {
                                                 .build();
 
         return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
-                RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.name());
+                RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT.name(), "BPN");
     }
 
     public static Endpoint endpoint(String endpointAddress) {

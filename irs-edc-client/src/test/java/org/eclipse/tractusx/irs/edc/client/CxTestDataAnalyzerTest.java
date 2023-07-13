@@ -23,7 +23,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.common.CxTestDataContainer.CxTestData.*;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -61,8 +61,8 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
                                                                     "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b")
                                                             .bomLifecycle(BomLifecycle.AS_BUILT)
                                                             .direction(Direction.DOWNWARD)
-                                                            .shouldCountAssemblyPartRelationship(Boolean.TRUE)
-                                                            .shouldCountSerialPartTypization(Boolean.TRUE)
+                                                            .shouldCountSingleLevelBomAsBuilt(Boolean.TRUE)
+                                                            .shouldCountSerialPart(Boolean.TRUE)
                                                             .shouldCountBatch(Boolean.TRUE)
                                                             .shouldCountMaterialForRecycling(Boolean.TRUE)
                                                             .shouldCountProductDescription(Boolean.TRUE)
@@ -174,8 +174,8 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
 
         Optional<Map<String, Object>> relationshipSubmodelData = Optional.empty();
 
-        if (relationshipAspect.equals(RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)) {
-            relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
+        if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)) {
+            relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt);
         } else if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
         }
@@ -204,8 +204,8 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
 
         Optional<Map<String, Object>> relationshipSubmodelData = Optional.empty();
 
-        if (relationshipAspect.equals(RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)) {
-            relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
+        if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)) {
+            relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt);
         } else if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
         }
@@ -237,13 +237,13 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
 
         final AtomicLong counter = new AtomicLong();
 
-        if (relationshipAspect.equals(RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)) {
-            relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
-            checkAndIncrementCounter(testParameters.shouldCountAssemblyPartRelationship, relationshipSubmodelData,
+        if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)) {
+            relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt);
+            checkAndIncrementCounter(testParameters.shouldCountSingleLevelBomAsBuilt, relationshipSubmodelData,
                     counter);
 
-            checkAndIncrementCounter(testParameters.shouldCountSerialPartTypization,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization), counter);
+            checkAndIncrementCounter(testParameters.shouldCountSerialPart,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPart), counter);
             checkAndIncrementCounter(testParameters.shouldCountSingleLevelUsageAsBuilt,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelUsageAsBuilt), counter);
             checkAndIncrementCounter(testParameters.shouldCountBatch,
@@ -285,13 +285,13 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
 
         final List<Submodel> submodels = new ArrayList<>();
 
-        if (relationshipAspect.equals(RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)) {
-            relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship);
-            checkAndAddSubmodel(testParameters.shouldCountAssemblyPartRelationship, relationshipSubmodelData, submodels,
-                    ASSEMBLY_PART_ASPECT_TYPE);
+        if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)) {
+            relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt);
+            checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsBuilt, relationshipSubmodelData, submodels,
+                    SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE);
 
-            checkAndAddSubmodel(testParameters.shouldCountSerialPartTypization,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization), submodels,
+            checkAndAddSubmodel(testParameters.shouldCountSerialPart,
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPart), submodels,
                     SERIAL_PART_ASPECT_TYPE);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelUsageAsBuilt,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned), submodels,
@@ -350,8 +350,8 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
         final BomLifecycle bomLifecycle;
         final Direction direction;
 
-        final boolean shouldCountAssemblyPartRelationship;
-        final boolean shouldCountSerialPartTypization;
+        final boolean shouldCountSingleLevelBomAsBuilt;
+        final boolean shouldCountSerialPart;
         final boolean shouldCountBatch;
         final boolean shouldCountMaterialForRecycling;
         final boolean shouldCountProductDescription;

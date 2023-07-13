@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.ess.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
@@ -43,34 +44,38 @@ public class EdcNotificationSender {
     private final EdcSubmodelFacade edcSubmodelFacade;
     private final String localBpn;
     private final String essLocalEdcEndpoint;
+    private final ConnectorEndpointsService connectorEndpointsService;
 
     public EdcNotificationSender(final EdcSubmodelFacade edcSubmodelFacade,
-            @Value("${ess.localBpn}") final String localBpn, @Value("${ess.localEdcEndpoint}") final String essLocalEdcEndpoint) {
+            @Value("${ess.localBpn}") final String localBpn, @Value("${ess.localEdcEndpoint}") final String essLocalEdcEndpoint,
+            final ConnectorEndpointsService connectorEndpointsService) {
         this.edcSubmodelFacade = edcSubmodelFacade;
         this.localBpn = localBpn;
         this.essLocalEdcEndpoint = essLocalEdcEndpoint;
+        this.connectorEndpointsService = connectorEndpointsService;
     }
 
     public void sendEdcNotification(final EdcNotification originalEdcNotification, final SupplyChainImpacted supplyChainImpacted) {
-        try {
-            final String notificationId = UUID.randomUUID().toString();
-            final String originalNotificationId = originalEdcNotification.getHeader().getNotificationId();
-            final String recipientBpn = originalEdcNotification.getHeader().getSenderBpn();
-            final String recipientUrl = originalEdcNotification.getHeader().getSenderEdc();
-            final Map<String, Object> notificationContent = Map.of("result", supplyChainImpacted.getDescription());
+        final String notificationId = UUID.randomUUID().toString();
+        final String originalNotificationId = originalEdcNotification.getHeader().getNotificationId();
+        final String recipientBpn = originalEdcNotification.getHeader().getSenderBpn();
+        connectorEndpointsService.fetchConnectorEndpoints(recipientBpn).forEach(connectorEndpoint -> {
+            try {
+                log.info("Edc Notification will be send to connector endpoint: {}", connectorEndpoint);
+                final Map<String, Object> notificationContent = Map.of("result", supplyChainImpacted.getDescription());
+                final EdcNotification edcRequest = edcRequest(notificationId, originalNotificationId,
+                        essLocalEdcEndpoint, localBpn, recipientBpn, notificationContent);
 
-            final EdcNotification edcRequest = edcRequest(notificationId, originalNotificationId, essLocalEdcEndpoint, localBpn,
-                    recipientBpn, notificationContent);
-
-            final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
-            if (!response.deliveredSuccessfully()) {
-                throw new EdcClientException(
-                        "EDC Provider did not accept message with notificationId " + notificationId);
+                final var response = edcSubmodelFacade.sendNotification(connectorEndpoint, "ess-response-asset", edcRequest);
+                if (!response.deliveredSuccessfully()) {
+                    throw new EdcClientException("EDC Provider did not accept message with notificationId " + notificationId);
+                }
+                log.info("Successfully sent response notification.");
+            } catch (EdcClientException exception) {
+                log.error("Cannot send edc notification", exception);
             }
-            log.info("Successfully sent response notification.");
-        } catch (EdcClientException exception) {
-            log.error("Cannot send edc notification", exception);
-        }
+        });
+
     }
 
     private EdcNotification edcRequest(final String notificationId, final String originalId, final String senderEdc,

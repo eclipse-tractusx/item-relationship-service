@@ -67,7 +67,7 @@ class ItemGraphSmokeTest {
 
     private static final String GLOBAL_ASSET_ID = "urn:uuid:5e3e9060-ba73-4d5d-a6c8-dfd5123f4d99";
     private static final int TREE_DEPTH = 2;
-    private static final List<String> ASPECTS = List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
+    private static final List<String> ASPECTS = List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
     private static RequestSpecification authenticationRequest;
 
     private static RegisterJob registerJob() {

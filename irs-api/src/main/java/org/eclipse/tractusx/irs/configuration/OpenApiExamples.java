@@ -123,23 +123,23 @@ public class OpenApiExamples {
 
     private Example createAspectModelsResult() {
         final AspectModel assemblyPartRelationship = AspectModel.builder()
-                                                                .name("AssemblyPartRelationship")
-                                                                .urn("urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship")
-                                                                .version("1.1.1")
+                                                                .name("SingleLevelBomAsBuilt")
+                                                                .urn("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt")
+                                                                .version("1.0.0")
                                                                 .status("RELEASED")
                                                                 .type("BAMM")
                                                                 .build();
-        final AspectModel serialPartTypization = AspectModel.builder()
-                                                            .name("SerialPartTypization")
-                                                            .urn("urn:bamm:io.catenax.serial_part_typization:1.1.0#SerialPartTypization")
-                                                            .version("1.1.0")
+        final AspectModel serialPart = AspectModel.builder()
+                                                            .name("SerialPart")
+                                                            .urn("urn:bamm:io.catenax.serial_part:1.0.0#SerialPart")
+                                                            .version("1.0.0")
                                                             .status("RELEASED")
                                                             .type("BAMM")
                                                             .build();
 
         return toExample(AspectModels.builder()
                                      .lastUpdated("2023-02-13T08:18:11.990659500Z")
-                                     .models(List.of(assemblyPartRelationship, serialPartTypization))
+                                     .models(List.of(assemblyPartRelationship, serialPart))
                                      .build());
     }
 
@@ -197,8 +197,7 @@ public class OpenApiExamples {
         return JobParameter.builder()
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .depth(1)
-                           .aspects(List.of(AspectType.SERIAL_PART_TYPIZATION.toString(),
-                                   AspectType.ADDRESS_ASPECT.toString()))
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(), AspectType.ADDRESS_ASPECT.toString()))
                            .direction(Direction.DOWNWARD)
                            .collectAspects(false)
                            .build();
@@ -239,7 +238,7 @@ public class OpenApiExamples {
                              .shells(List.of(createShell()))
                              .tombstone(createTombstone())
                              .submodel(createSubmodel())
-                             .bpn(Bpn.of("BPNL00000003AYRE", "OEM A"))
+                             .bpn(Bpn.withManufacturerId("BPNL00000003AYRE").updateManufacturerName("OEM A"))
                              .build());
     }
 
@@ -296,7 +295,7 @@ public class OpenApiExamples {
 
     private Submodel createSubmodel() {
         return Submodel.builder()
-                       .aspectType("urn:bamm:io.catenax.assembly_part_relationship:1.0.0")
+                       .aspectType("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0")
                        .identification(SUBMODEL_IDENTIFICATION)
                        .payload(createAssemblyPartRelationshipPayloadMap())
                        .build();
@@ -305,7 +304,7 @@ public class OpenApiExamples {
     private Map<String, Object> createAssemblyPartRelationshipPayloadMap() {
         final String assemblyPartRelationshipPayload =
                 "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                        + "\"childParts\": [ { \"createdOn\": \"2022-02-03T14:48:54.709Z\", \"childCatenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
+                        + "\"childItems\": [ { \"createdOn\": \"2022-02-03T14:48:54.709Z\", \"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
                         + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
                         + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
 

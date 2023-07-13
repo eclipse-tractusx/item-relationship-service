@@ -39,7 +39,7 @@ import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.common.JsonParseException;
+import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
@@ -81,10 +81,10 @@ class SubmodelDelegateTest {
     void shouldCatchJsonParseExceptionAndPutTombstone() throws SchemaNotFoundException {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
-                                "testSerialPartTypizationEndpoint"),
-                        submodelDescriptor("urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
-                                "testAssemblyPartRelationshipEndpoint"))));
+                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                "testSerialPartEndpoint"),
+                        submodelDescriptor("urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                "testSingleLevelBomAsBuiltEndpoint"))));
 
         // when
         when(semanticsHubFacade.getModelJsonSchema(any())).thenThrow(
@@ -104,10 +104,10 @@ class SubmodelDelegateTest {
     void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
-                                "testSerialPartTypizationEndpoint"),
-                        submodelDescriptor("urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
-                                "testAssemblyPartRelationshipEndpoint"))));
+                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                "testSerialPartEndpoint"),
+                        submodelDescriptor("urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                "testSingleLevelBomAsBuiltEndpoint"))));
 
         // when
         when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId"));
@@ -127,10 +127,10 @@ class SubmodelDelegateTest {
     void shouldCatchRestClientExceptionAndPutTombstone() throws SchemaNotFoundException {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
-                                "testSerialPartTypizationEndpoint"),
-                        submodelDescriptor("urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
-                                "testAssemblyPartRelationshipEndpoint"))));
+                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                "testSerialPartEndpoint"),
+                        submodelDescriptor("urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                "testSingleLevelBomAsBuiltEndpoint"))));
 
         // when
         when(semanticsHubFacade.getModelJsonSchema(any())).thenThrow(
