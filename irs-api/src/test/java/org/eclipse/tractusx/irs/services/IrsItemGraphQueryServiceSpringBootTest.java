@@ -41,7 +41,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.tractusx.irs.TestConfig;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -54,6 +53,7 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
@@ -71,7 +71,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = { "digitalTwinRegistry.type=central" })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = { "digitalTwinRegistry.type=central" })
 @ActiveProfiles(profiles = { "test",
                              "stubtest"
 })
@@ -104,8 +105,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
     @BeforeEach
     void setUp() throws SchemaNotFoundException {
-        final List<AspectModel> models = List.of(getAspectModel(AspectType.SERIAL_PART.toString(),
-                        "urn:bamm:io.catenax.serial_part:1.0.0#SerialPart"),
+        final List<AspectModel> models = List.of(
+                getAspectModel(AspectType.SERIAL_PART.toString(), "urn:bamm:io.catenax.serial_part:1.0.0#SerialPart"),
                 getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(),
                         "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription"),
                 getAspectModel(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString(),
@@ -134,6 +135,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("https://connector.endpoint.nl"));
         final RegisterJob registerJob = registerJob("urn:uuid:0a4cc16b-5f00-4ee2-833c-a3a46a1992c6", 100,
                 List.of(AspectType.SERIAL_PART.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
                         AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), true, false, Direction.DOWNWARD);
@@ -153,7 +156,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobShouldCreateTombstonesWhenNotPassingJsonSchemaValidation() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
-        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("https://connector.endpoint.nl"));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("https://connector.endpoint.nl"));
 
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));

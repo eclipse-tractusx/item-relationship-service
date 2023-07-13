@@ -34,10 +34,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
-import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryEndpoint;
-import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
-import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderRequest;
-import org.eclipse.tractusx.irs.registryclient.discovery.EdcDiscoveryResult;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +46,7 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
 
-    private final DiscoveryFinderClient discoveryFinderClient;
+    private final ConnectorEndpointsService connectorEndpointsService;
     private final EndpointDataForConnectorsService endpointDataForConnectorsService;
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
 
@@ -60,11 +57,11 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         final var shells = keys.stream().map(key -> {
             log.info("Retrieved AAS Identification for DigitalTwinRegistryKey: {}", key);
-            final List<String> connectorEndpoints = getConnectorEndpoints(key.bpn());
+            final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(key.bpn());
             calledEndpoints.addAll(connectorEndpoints);
             final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoints);
             final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
-                                                                                        .key("globalAssetId")
+                                                                                        .name("globalAssetId")
                                                                                         .value(key.globalAssetId())
                                                                                         .build();
             final String aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
@@ -91,35 +88,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         return endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints);
     }
 
-    @NotNull
-    private List<String> getConnectorEndpoints(final String bpn) {
-        log.info("Requesting connector endpoints for BPN {}", bpn);
-        final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
-        final List<String> providedBpn = List.of(bpn);
-        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
-                                                                                .endpoints();
-        final var endpoints = discoveryEndpoints.stream()
-                                                .flatMap(
-                                                        discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
-                                                                                                          discoveryEndpoint.endpointAddress(), providedBpn)
-                                                                                                  .stream()
-                                                                                                  .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
-                                                                                                                                                  .equals(bpn))
-                                                                                                  .map(EdcDiscoveryResult::connectorEndpoint))
-                                                .flatMap(List::stream)
-                                                .toList();
-        log.info("Discovered the following endpoints for BPN {}: {}", bpn, String.join(", ", endpoints));
-        return endpoints;
-    }
-
     @Override
     public Collection<DigitalTwinRegistryKey> lookupShells(final String bpn) throws RegistryServiceException {
         log.info("Looking up shells for bpn {}", bpn);
-        final var connectorEndpoints = getConnectorEndpoints(bpn);
+        final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
         final var endpointDataReference = getEndpointDataReference(connectorEndpoints);
         final var shellIds = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                 endpointDataReference,
-                List.of(IdentifierKeyValuePair.builder().key("manufacturerId").value(bpn).build()));
+                List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build()));
         log.info("Found {} shells in total", shellIds.size());
         return shellIds.stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
     }

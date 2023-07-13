@@ -30,7 +30,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASRecursiveJobHandler;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcessManager;
@@ -43,13 +42,15 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
-import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
-import org.eclipse.tractusx.irs.connector.job.JobStore;
-import org.eclipse.tractusx.irs.connector.job.JobTTL;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
+import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
+import org.eclipse.tractusx.irs.connector.job.JobStore;
+import org.eclipse.tractusx.irs.connector.job.JobTTL;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
@@ -81,9 +82,9 @@ public class JobConfiguration {
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinDelegate digitalTwinDelegate, @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
-            final JobStore jobStore, final MeterRegistryService meterService,
-            final ApplicationEventPublisher applicationEventPublisher,
+            final DigitalTwinDelegate digitalTwinDelegate,
+            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JobStore jobStore,
+            final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
             @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs) {
 
@@ -144,7 +145,8 @@ public class JobConfiguration {
     public SubmodelDelegate submodelDelegate(final EdcSubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
             final ConnectorEndpointsService connectorEndpointsService) {
-        return new SubmodelDelegate(submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil(), connectorEndpointsService);
+        return new SubmodelDelegate(submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil(),
+                connectorEndpointsService);
     }
 
 }

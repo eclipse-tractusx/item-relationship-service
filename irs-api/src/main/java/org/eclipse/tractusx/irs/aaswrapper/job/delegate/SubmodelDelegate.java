@@ -32,7 +32,6 @@ import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
@@ -45,6 +44,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescr
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;

@@ -191,21 +191,10 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final String filterKey = "asset:prop:id";
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + connectorEndpoint);
 
-        final Catalog catalog = edcControlPlaneClient.getCatalogWithFilter(connectorEndpoint, filterKey, assetId);
+        final List<CatalogItem> catalog = catalogFacade.fetchCatalogByFilter(connectorEndpoint, filterKey, assetId);
 
-        final List<CatalogItem> items = catalog.getContractOffers()
-                                               .stream()
-                                               .map(contractOffer -> CatalogItem.builder()
-                                                                                .itemId(contractOffer.getId())
-                                                                                .assetPropId(
-                                                                                        contractOffer.getAsset()
-                                                                                                     .getId())
-                                                                                .connectorId(catalog.getId())
-                                                                                .policy(contractOffer.getPolicy())
-                                                                                .build())
-                                               .toList();
         return contractNegotiationService.negotiate(connectorEndpoint,
-                items.stream().findFirst().orElseThrow());
+                catalog.stream().findFirst().orElseThrow());
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(

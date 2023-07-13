@@ -31,6 +31,7 @@ import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinReg
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,10 +67,9 @@ public class RegistryConfiguration {
     @ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "decentral")
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
             @Qualifier(RestTemplateConfig.EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate,
-            @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
-            final EdcSubmodelFacade facade,
-            @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String finderUrl) {
-        return new DecentralDigitalTwinRegistryService(new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate),
+            final ConnectorEndpointsService connectorEndpointsService,
+            final EdcSubmodelFacade facade) {
+        return new DecentralDigitalTwinRegistryService(connectorEndpointsService,
                 new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
                     try {
                         return facade.getEndpointReferenceForAsset(edcConnectorEndpoint, assetType, assetValue);
@@ -79,4 +79,10 @@ public class RegistryConfiguration {
                 }), new DecentralDigitalTwinRegistryClient(edcRestTemplate));
     }
 
+    @Bean
+    public ConnectorEndpointsService connectorEndpointsService(
+            @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
+            @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String finderUrl) {
+        return new ConnectorEndpointsService(new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate));
+    }
 }
