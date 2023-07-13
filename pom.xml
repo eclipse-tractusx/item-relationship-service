@@ -161,8 +161,8 @@
                     <version>3.1.0</version>
                     <configuration>
                         <gpgArguments>
-                            <argument>--pinentry-mode</argument>
-                            <argument>loopback</argument>
+                            <arg>--pinentry-mode</arg>
+                            <arg>loopback</arg>
                         </gpgArguments>
                     </configuration>
                 </plugin>
