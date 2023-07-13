@@ -7,7 +7,6 @@ maven/mavencentral/com.fasterxml.jackson.core/jackson-core/2.15.2, MIT AND Apach
 maven/mavencentral/com.fasterxml.jackson.core/jackson-databind/2.14.2, Apache-2.0, approved, #4105
 maven/mavencentral/com.fasterxml.jackson.core/jackson-databind/2.15.2, Apache-2.0, approved, #7934
 maven/mavencentral/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.14.2, Apache-2.0, approved, #5933
-maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jakarta-jsonp/2.15.1, Apache-2.0, approved, #9179
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jakarta-jsonp/2.15.2, Apache-2.0, approved, #9179
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.15.2, Apache-2.0, approved, #8808
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.15.2, Apache-2.0, approved, #7930
