@@ -5,6 +5,19 @@ on:
     paths:
       - 'charts/**'
   workflow_dispatch:
+    inputs:
+      node_image:
+        description: 'kindest/node image for k8s kind cluster'
+        default: 'kindest/node:v1.27.3'
+        required: false
+        type: string
+  workflow_call: # Trigger by another workflow
+    inputs:
+      node_image:
+        description: 'kindest/node image for k8s kind cluster'
+        default: 'kindest/node:v1.27.3'
+        required: false
+        type: string
 
 jobs:
   lint-test:
@@ -17,6 +30,9 @@ jobs:
 
       - name: Kubernetes KinD Cluster
         uses: container-tools/kind-action@v2
+        with:
+          node_image: ${{ github.event.inputs.node_image || 'kindest/node:v1.27.3' }}
+          version: v0.20.0
 
       - name: Build image
         uses: docker/build-push-action@v4

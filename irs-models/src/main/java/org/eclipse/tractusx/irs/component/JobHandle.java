@@ -25,7 +25,6 @@ package org.eclipse.tractusx.irs.component;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import io.swagger.annotations.ApiModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
@@ -34,7 +33,7 @@ import lombok.extern.jackson.Jacksonized;
 /**
  * The unique jobId handle of the just processed job.
  */
-@ApiModel(description = "The unique jobId handle of the just processed job.")
+@Schema(description = "The unique jobId handle of the just processed job.")
 @Value
 @Jacksonized
 @Builder(toBuilder = true)

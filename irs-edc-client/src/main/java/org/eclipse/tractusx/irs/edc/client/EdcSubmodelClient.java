@@ -22,7 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -39,9 +38,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
-import org.eclipse.tractusx.irs.common.Masker;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
@@ -51,7 +50,6 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationRes
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
-import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Public API facade for EDC domain
@@ -120,7 +118,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 /**
  * Public API facade for EDC domain
  */
-@Service
+@Service("irsEdcClientEdcSubmodelClientImpl")
 @Slf4j
 @RequiredArgsConstructor
 @Profile({ "!local && !stubtest" })
@@ -133,7 +131,6 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
     private final AsyncPollingService pollingService;
-    private final OutboundMeterRegistryService meterRegistryService;
     private final RetryRegistry retryRegistry;
     private final EDCCatalogFacade catalogFacade;
     private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
@@ -351,16 +348,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final String host = URI.create(endpointAddress).getHost();
         final Retry retry = retryRegistry.retry(host, "default");
         try {
-            return Retry.decorateCallable(retry, () -> {
-                try {
-                    return supplier.get();
-                } catch (ResourceAccessException e) {
-                    if (e.getCause() instanceof SocketTimeoutException) {
-                        meterRegistryService.incrementSubmodelTimeoutCounter(endpointAddress);
-                    }
-                    throw e;
-                }
-            }).call();
+            return Retry.decorateCallable(retry, supplier::get).call();
         } catch (EdcClientException e) {
             throw e;
         } catch (Exception e) {

@@ -15,6 +15,7 @@
         <module>irs-testing</module>
         <module>irs-common</module>
         <module>irs-edc-client</module>
+        <module>irs-registry-client</module>
         <module>irs-ess</module>
         <module>irs-policy-store</module>
         <module>irs-api</module>
@@ -38,7 +39,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- Dependencies -->
-        <springboot.version>3.1.0</springboot.version>
+        <springboot.version>3.1.1</springboot.version>
         <springcloud-feign.version>3.1.5</springcloud-feign.version>
         <springdoc.version>1.6.7</springdoc.version>
         <micrometer.version>1.10.4</micrometer.version>

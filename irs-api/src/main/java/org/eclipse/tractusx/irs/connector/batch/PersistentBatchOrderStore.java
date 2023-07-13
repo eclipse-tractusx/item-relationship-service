@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.common.JsonParseException;
+import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
