@@ -76,13 +76,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     config = vars(args)
     edc_api_key = config.get("apikey")
-    registry_url = config.get("aas") + "/shell-descriptors"
     edc_urls = config.get("edc")
     is_aas3 = config.get("aas3")
 
-    registry_path = "/registry/shell-descriptors"
     if is_aas3:
-        registry_path = "/shell-descriptors"
+        registry_url = config.get("aas") + "/shell-descriptors"
+    else:
+        registry_url = config.get("aas") + "/registry/shell-descriptors"
 
     headers = {
         'X-Api-Key': edc_api_key,
