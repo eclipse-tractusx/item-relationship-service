@@ -61,6 +61,14 @@
         <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
     </Match>
     <Match>
+        <Class name="org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl"/>
+        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+    </Match>
+    <Match>
+        <Class name="org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryClient"/>
+        <Bug pattern="SIC_INNER_SHOULD_BE_STATIC_ANON"/>
+    </Match>
+    <Match>
         <!-- The folder path is not provided by a user, the file name is normalized heavily, and we use a recent JRE -->
         <Class name="org.eclipse.tractusx.irs.semanticshub.SemanticsHubClientImpl"/>
         <Bug pattern="PATH_TRAVERSAL_IN,WEAK_FILENAMEUTILS"/>

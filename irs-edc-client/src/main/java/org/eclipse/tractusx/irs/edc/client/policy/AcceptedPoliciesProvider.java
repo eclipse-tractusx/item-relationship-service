@@ -22,11 +22,40 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.stereotype.Service;
 
 /**
  * Provides policies to be accepted during EDC negotiation
  */
 public interface AcceptedPoliciesProvider {
     List<AcceptedPolicy> getAcceptedPolicies();
+
+    /**
+     * Default provider if no other beans are loaded.
+     * Can be filled with accepted policies programmatically.
+     */
+    @Service
+    @ConditionalOnMissingBean(value = AcceptedPoliciesProvider.class, ignored = DefaultAcceptedPoliciesProvider.class)
+    class DefaultAcceptedPoliciesProvider implements AcceptedPoliciesProvider {
+
+        private final List<AcceptedPolicy> acceptedPolicies = new ArrayList<>();
+
+        @Override
+        public List<AcceptedPolicy> getAcceptedPolicies() {
+            return List.copyOf(acceptedPolicies);
+        }
+
+        public void addAcceptedPolicies(final List<AcceptedPolicy> policies) {
+            acceptedPolicies.addAll(policies);
+        }
+
+        public void removeAcceptedPolicies(final List<AcceptedPolicy> policies) {
+            acceptedPolicies.removeAll(policies);
+        }
+    }
 }
+

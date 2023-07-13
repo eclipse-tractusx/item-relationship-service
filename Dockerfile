@@ -35,6 +35,7 @@ COPY irs-integration-tests irs-integration-tests
 COPY irs-api irs-api
 COPY irs-common irs-common
 COPY irs-edc-client irs-edc-client
+COPY irs-registry-client irs-registry-client
 COPY irs-models irs-models
 COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing

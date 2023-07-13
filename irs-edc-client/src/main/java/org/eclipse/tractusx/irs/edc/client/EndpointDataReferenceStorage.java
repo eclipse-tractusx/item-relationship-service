@@ -38,14 +38,14 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 /**
  * InMemory storage for endpoint data references.
  */
-@Service
+@Service("irsEdcClientEndpointDataReferenceStorage")
 public class EndpointDataReferenceStorage {
 
     private final Map<String, ExpiringContainer> storageMap = new ConcurrentHashMap<>();
     private final Duration storageDuration;
 
     public EndpointDataReferenceStorage(
-            @Value("${edc.controlplane.datareference.storage.duration}") final Duration storageDuration) {
+            @Value("${irs-edc-client.controlplane.datareference.storage.duration}") final Duration storageDuration) {
         this.storageDuration = storageDuration;
     }
 

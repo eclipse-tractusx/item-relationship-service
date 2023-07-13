@@ -66,12 +66,13 @@ import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
  * Transformer to convert between EDC models and JSON-LD.
  */
-@Component
+@Component("irsEdcClientEdcTransformer")
 @SuppressWarnings("PMD.ExcessiveImports")
 public class EdcTransformer {
     private final JsonObjectToCatalogTransformer jsonObjectToCatalogTransformer;
@@ -82,7 +83,7 @@ public class EdcTransformer {
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
 
-    public EdcTransformer(final ObjectMapper objectMapper, final TitaniumJsonLd titaniumJsonLd) {
+    public EdcTransformer(@Qualifier("jsonLdObjectMapper") final ObjectMapper objectMapper, final TitaniumJsonLd titaniumJsonLd) {
         this.titaniumJsonLd = titaniumJsonLd;
         final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 

@@ -182,12 +182,14 @@ paths:
         - description: Zero-based page index (0..N)
           in: query
           name: page
+          required: false
           schema:
             type: integer
             default: 0
         - description: The size of the page to be returned
           in: query
           name: size
+          required: false
           schema:
             type: integer
             default: 20
@@ -195,6 +197,7 @@ paths:
           \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
+          required: false
           schema:
             type: array
             items:
@@ -1342,6 +1345,7 @@ components:
           minimum: 0
     BatchOrderCreated:
       type: object
+      description: Id of the created Batch order.
       additionalProperties: false
       properties:
         id:
@@ -1679,6 +1683,7 @@ components:
     JobHandle:
       type: object
       additionalProperties: false
+      description: The unique jobId handle of the just processed job.
       properties:
         id:
           type: string

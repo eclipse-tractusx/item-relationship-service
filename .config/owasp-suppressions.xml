@@ -28,4 +28,18 @@
         <gav regex="true">com\.fasterxml\.jackson\.core:jackson\-databind.*</gav>
         <vulnerabilityName>CVE-2023-35116</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Pulled in by EDC client - needs to be accepted for now.
+        ]]></notes>
+        <gav regex="true">org\.eclipse\.edc:jetty\-core.*</gav>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Pulled in by EDC client - needs to be accepted for now.
+        ]]></notes>
+        <gav regex="true">org\.eclipse\.jetty\.toolchain:jetty\-jakarta\-websocket\-api.*</gav>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
 </suppressions>
