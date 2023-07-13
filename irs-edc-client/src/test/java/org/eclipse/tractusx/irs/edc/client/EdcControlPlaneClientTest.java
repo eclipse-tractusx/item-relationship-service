@@ -158,13 +158,10 @@ class EdcControlPlaneClientTest {
                                                          .build();
         final var finalized = NegotiationState.builder().state(STATUS_FINALIZED).build();
 
-        doReturn(negotiationResult).when(edcTransformer)
-                                   .transformJsonToNegotiationResponse(anyString(), eq(StandardCharsets.UTF_8));
-        doReturn(finalized).when(edcTransformer)
-                           .transformJsonToNegotiationState(anyString(), eq(StandardCharsets.UTF_8));
-
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(String.class))).thenReturn(
-                ResponseEntity.of(Optional.of(STATUS_FINALIZED)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationResponse.class))).thenReturn(
+                ResponseEntity.of(Optional.of(negotiationResult)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationState.class))).thenReturn(
+                ResponseEntity.of(Optional.of(finalized)));
 
         // act
         final var result = testee.getNegotiationResult(negotiationId);
@@ -199,12 +196,10 @@ class EdcControlPlaneClientTest {
                                                     .state(STATUS_COMPLETED)
                                                     .build();
         final var finalized = NegotiationState.builder().state(STATUS_COMPLETED).build();
-        doReturn(finalized).when(edcTransformer)
-                           .transformJsonToNegotiationState(anyString(), eq(StandardCharsets.UTF_8));
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(),
                 eq(TransferProcessResponse.class))).thenReturn(ResponseEntity.of(Optional.of(response)));
-        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(String.class))).thenReturn(
-                ResponseEntity.of(Optional.of(STATUS_COMPLETED)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationState.class))).thenReturn(
+                ResponseEntity.of(Optional.of(finalized)));
 
         // act
         final var result = testee.getTransferProcess(processId);

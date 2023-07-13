@@ -20,24 +20,20 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client;
+package org.eclipse.tractusx.irs.edc.client.model;
 
-import java.time.Duration;
-
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * EDC catalog cache configuration. Automatically populated by Spring from application.yml
- * and other configuration sources.
+ * The decoded Auth code JWT.
  */
-@Component("irsEdcClientCatalogCacheConfig")
-@ConfigurationProperties(prefix = "edc.catalog.cache")
+@Builder
 @Data
-public class CatalogCacheConfiguration {
-    private boolean enabled;
-    private Duration ttl;
-    private long maxCachedItems;
-
+@Jacksonized
+public class EDRAuthCode {
+    private final long exp;
+    private final String dad;
+    private final String cid;
 }

@@ -54,6 +54,7 @@ import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDataServiceTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDatasetTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDistributionTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDutyTransformer;
+import org.eclipse.edc.jsonld.transformer.to.JsonObjectToOperatorTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToPermissionTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToPolicyTransformer;
 import org.eclipse.edc.jsonld.transformer.to.JsonObjectToProhibitionTransformer;
@@ -64,8 +65,6 @@ import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -83,8 +82,6 @@ public class EdcTransformer {
     private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
-    private final JsonObjectToNegotiationResponseTransformer jsonObjectToNegotiationResponseTransformer;
-    private final JsonObjectToNegotiationStateTransformer jsonObjectToNegotiationStateTransformer;
 
     public EdcTransformer(@Qualifier("jsonLdObjectMapper") final ObjectMapper objectMapper, final TitaniumJsonLd titaniumJsonLd) {
         this.titaniumJsonLd = titaniumJsonLd;
@@ -98,8 +95,6 @@ public class EdcTransformer {
         jsonObjectFromContractOfferDescriptionTransformer = new JsonObjectFromContractOfferDescriptionTransformer(
                 jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
-        jsonObjectToNegotiationResponseTransformer = new JsonObjectToNegotiationResponseTransformer();
-        jsonObjectToNegotiationStateTransformer = new JsonObjectToNegotiationStateTransformer();
 
         final TypeTransformerRegistry typeTransformerRegistry = new TypeTransformerRegistryImpl();
         transformerContext = new TransformerContextImpl(typeTransformerRegistry);
@@ -119,7 +114,7 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectToAssetTransformer());
         typeTransformerRegistry.register(new JsonObjectToQuerySpecTransformer());
         typeTransformerRegistry.register(new JsonObjectToCriterionTransformer());
-        typeTransformerRegistry.register(jsonObjectToNegotiationResponseTransformer);
+        typeTransformerRegistry.register(new JsonObjectToOperatorTransformer());
         // JSON from Object
         typeTransformerRegistry.register(jsonObjectFromNegotiationInitiateDtoTransformer);
         typeTransformerRegistry.register(jsonObjectFromCatalogRequestTransformer);
@@ -144,24 +139,6 @@ public class EdcTransformer {
                     JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
         }
         return jsonObjectToCatalogTransformer.transform(expand.getContent(), transformerContext);
-    }
-
-    public NegotiationResponse transformJsonToNegotiationResponse(final String jsonString, final Charset charset) {
-        final Result<JsonObject> expand;
-        try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)))) {
-            expand = titaniumJsonLd.expand(
-                    JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
-        }
-        return jsonObjectToNegotiationResponseTransformer.transform(expand.getContent(), transformerContext);
-    }
-
-    public NegotiationState transformJsonToNegotiationState(final String jsonString, final Charset charset) {
-        final Result<JsonObject> expand;
-        try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)))) {
-            expand = titaniumJsonLd.expand(
-                    JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
-        }
-        return jsonObjectToNegotiationStateTransformer.transform(expand.getContent(), transformerContext);
     }
 
     public JsonObject transformNegotiationRequestToJson(final NegotiationRequest negotiationRequest) {
