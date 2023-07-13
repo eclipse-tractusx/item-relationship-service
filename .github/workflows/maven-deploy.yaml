@@ -83,4 +83,4 @@ jobs:
         run: |-
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl irs-registry-client)
           echo "Publishing Version $VERSION to Sonatype"
-          mvn -X -s $HOME/.m2/settings.xml --batch-mode gpg:sign-and-deploy-file -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -Durl=https://s01.oss.sonatype.org/content/repositories/snapshots -DrepositoryId=ossrh -Dfile=irs-registry-client/target/irs-registry-client-$VERSION-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=$VERSION -Dpackaging=jar
+          mvn -s $HOME/.m2/settings.xml --batch-mode gpg:sign-and-deploy-file -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -Durl=https://oss.sonatype.org/content/repositories/snapshots -DrepositoryId=ossrh -Dfile=irs-registry-client/target/irs-registry-client-$VERSION-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=$VERSION -Dpackaging=jar
