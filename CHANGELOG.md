@@ -10,7 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The client code for accessing the Digital Twin Registry (central and decentral) is now available as a spring boot maven library. See the README in the irs-registry-client module for more information.
 
 ### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+- Digital Twin Registry load problem - after few subsequent requests DTR starts answering with 500 Http status
+- ESS Notifications not working with Decentral Digital Twin Registry Service - bpn is not passed
+- Unpredictable 500 Http status returned by EDC during submodel retrievals when full test data is uploaded (EDC version: 0.4.1)
+- High EDC resource demands - each EDC provider postgres uses > 2 CPU-Cores. The database storage gets filled after few days, until then, resource consumption increases. (EDC version: 0.4.1)
+- Lack of rate limiting of requests in IRS - IRS allows sending API requests in a massive, automated manner
+- Potential denial-of-service (DoS) attack - IRS allows to enter a large number of characters, which are reflected in the response of the server
+- Software related information disclosure - IRS returns redundant information about the type and version of used software
+- Misconfigured Access-Control-Allow- Origin Header - by intercepting network traffic it could be possible to read and modify any messages that are exchanged with server
+- HTTP security headers configuration could be improved and allow for additional protection against some web application attacks
+- Synchronous communication with external services without circuit breaker pattern - potentially could affect IRS resilience when other services becomes non-responsive
+- Cascading effects of failure when Digital Twin Registry becomes non-responsive - potentially bulkhead pattern could improve IRS resilience
+- Retry mechanism used by IRS could potentially affect IRS resilience - DDOS other services on which IRS is dependent, exhaustion of resources and available threads, etc.
+- IRS was not scaled to multiple instances, and was not tested in such environment
 
 ## [3.1.0] - 2023-06-28
 ### Changed
