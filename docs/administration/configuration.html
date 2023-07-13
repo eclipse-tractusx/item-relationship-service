@@ -831,7 +831,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">registry</span><span class="pi">:</span>
         <span class="na">baseConfig</span><span class="pi">:</span> <span class="s">default</span>
 
-<span class="na">edc</span><span class="pi">:</span>
+<span class="na">irs-edc-client</span><span class="pi">:</span>
   <span class="na">callback-url</span><span class="pi">:</span> <span class="s">${EDC_TRANSFER_CALLBACK_URL:}</span> <span class="c1"># The URL where the EDR token callback will be sent to.</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration</span>
@@ -864,6 +864,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># Set to false to disable caching</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span> <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
       <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span> <span class="c1"># Maximum amount of cached catalog items</span>
+<span class="na">edc</span><span class="pi">:</span>
+  <span class="na">catalog</span><span class="pi">:</span>
     <span class="na">policies</span><span class="pi">:</span>
       <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.</span>
       <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
@@ -1541,7 +1543,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-07 14:35:10 UTC
+Last updated 2023-07-13 08:10:49 UTC
 </div>
 </div>
 </body>
