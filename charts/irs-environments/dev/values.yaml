@@ -76,16 +76,24 @@ irs-helm:
     enabled: true
 
 
-
 tractusx-connector:
   install:
     postgresql: false
-    daps: false
     vault: false
   participant:
-    id: BPNL00000003CRHK
+    id: <path:traceability-irs/data/dev/controlplane#participantId>
 
   controlplane:
+    # SSI configuration
+    ssi:
+      miw:
+        url: <path:traceability-irs/data/dev/controlplane#ssi.miw.url>
+        authorityId: <path:traceability-irs/data/dev/controlplane#ssi.miw.authorityId>
+      oauth:
+        tokenurl: <path:traceability-irs/data/dev/controlplane#ssi.oauth.tokenurl>
+        client:
+          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id>
+          secretAlias: edc-test-miw-keycloak-secret
     ingresses:
       - enabled: true
         hostname: "irs-consumer-controlplane.dev.demo.catena-x.net"
@@ -105,7 +113,7 @@ tractusx-connector:
       management:
         port: 8081
         path: /management
-        authKey: "123456"  # -- authentication key, must be attached to each 'X-Api-Key' request header
+        authKey: <path:traceability-irs/data/dev/controlplane#apiKey>  # -- authentication key, must be attached to each 'X-Api-Key' request header
       # -- protocol api, used for inter connector communication and must be internet facing
       protocol:
         port: 8084
@@ -124,17 +132,17 @@ tractusx-connector:
       curator: ""
       catalogId: TXDC-Catalog
 
-    # Explicitly declared url for reaching the ids api (e.g. if ingresses not used)
-    url:
-      ids: ""
-
     resources:
       limits:
-        cpu: 500m
+        cpu: 1.5
         memory: 2Gi
       requests:
         cpu: 500m
         memory: 2Gi
+
+    # Files system has to be set to writeable for now since controlplane relies on temporary files to write SSI related things to
+    securityContext:
+      readOnlyRootFilesystem: false
 
   dataplane:
     ingresses:
@@ -163,10 +171,10 @@ tractusx-connector:
     resources:
       limits:
         cpu: 500m
-        memory: 1Gi
+        memory: 512Mi
       requests:
         cpu: 500m
-        memory: 1Gi
+        memory: 512Mi
 
   # URL where the EndpointDataReference callback will be sent to
   backendService:
@@ -190,15 +198,6 @@ tractusx-connector:
       transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-consumer-key
       transferProxyTokenSignerPublicKey: irs-dev-daps-cert-consumer
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
-      dapsPrivateKey: irs-dev-daps-cert-consumer-key
-      dapsPublicKey: irs-dev-daps-cert-consumer
-
-  daps:
-    url: "https://daps-irs.dev.demo.catena-x.net"
-    clientId: <path:traceability-irs/data/dev/controlplane#edc.oauth.client.id>
-    paths:
-      jwks: /.well-known/jwks.json
-      token: /token
 
   ##################################
   # EDC Postgres Configuration #

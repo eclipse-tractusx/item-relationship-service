@@ -1,12 +1,21 @@
 tractusx-connector:
   install:
     postgresql: false
-    daps: false
     vault: false
   participant:
-    id: BPNL00000003CRHK
+    id: <path:traceability-irs/data/dev/controlplane#participantId>
 
   controlplane:
+    # SSI configuration
+    ssi:
+      miw:
+        url: <path:traceability-irs/data/dev/controlplane#ssi.miw.url>
+        authorityId: <path:traceability-irs/data/dev/controlplane#ssi.miw.authorityId>
+      oauth:
+        tokenurl: <path:traceability-irs/data/dev/controlplane#ssi.oauth.tokenurl>
+        client:
+          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id>
+          secretAlias: edc-test-miw-keycloak-secret
     ingresses:
       - enabled: false
 
@@ -20,7 +29,7 @@ tractusx-connector:
         port: 8081
         path: /management
         # -- authentication key, must be attached to each 'X-Api-Key' request header
-        authKey: "123456"
+        authKey: <path:traceability-irs/data/dev/controlplane#apiKey>
       # -- control api, used for internal control calls. can be added to the internal ingress, but should probably not
       control:
         port: 8083
@@ -52,6 +61,10 @@ tractusx-connector:
     # Explicitly declared url for reaching the ids api (e.g. if ingresses not used)
     url:
       ids: ""
+
+    # Files system has to be set to writeable for now since controlplane relies on temporary files to write SSI related things to
+    securityContext:
+      readOnlyRootFilesystem: false
 
     resources:
       limits:
@@ -90,10 +103,10 @@ tractusx-connector:
     resources:
       limits:
         cpu: 500m
-        memory: 1Gi
+        memory: 512Mi
       requests:
         cpu: 500m
-        memory: 1Gi
+        memory: 512Mi
 
   # URL where the EndpointDataReference callback will be sent to
   backendService:
@@ -117,15 +130,6 @@ tractusx-connector:
       transferProxyTokenSignerPrivateKey:
       transferProxyTokenSignerPublicKey:
       transferProxyTokenEncryptionAesKey:
-      dapsPrivateKey:
-      dapsPublicKey:
-
-  daps:
-    url: "https://daps-irs.dev.demo.catena-x.net"
-    clientId: ""
-    paths:
-      jwks: /.well-known/jwks.json
-      token: /token
 
   ##################################
   # EDC Postgres Configuration #

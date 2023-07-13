@@ -1,9 +1,11 @@
 tractusx-connector:
+  participant:
+    id: <path:traceability-irs/data/dev/controlplane#participantId>
 
   controlplane:
     ingresses:
       - enabled: true
-        hostname: "irs-provider-controlplane.dev.demo.catena-x.net"
+        hostname: "irs-consumer-controlplane-test.dev.demo.catena-x.net"
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -18,7 +20,7 @@ tractusx-connector:
   dataplane:
     ingresses:
       - enabled: true
-        hostname: "irs-provider-dataplane.dev.demo.catena-x.net"
+        hostname: "irs-consumer-dataplane-test.dev.demo.catena-x.net"
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -31,13 +33,17 @@ tractusx-connector:
           secretName: tls-secret
 
   backendService:
-    httpProxyTokenReceiverUrl: "https://irs-submodel-server.dev.demo.catena-x.net/data/endpoint-data-reference-provider1"
+    httpProxyTokenReceiverUrl: "https://irs-submodel-server.dev.demo.catena-x.net/data/endpoint-data-reference-consumer-test"
 
   vault:
+    hashicorp:
+      healthCheck:
+        enabled: false
+        standbyOk: false
     secretNames:
-      transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-provider-key
-      transferProxyTokenSignerPublicKey: irs-dev-daps-cert-provider
+      transferProxyTokenSignerPrivateKey: dev-provider3-key
+      transferProxyTokenSignerPublicKey: dev-provider3-cert
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
 
   postgresql:
-    jdbcUrl: "jdbc:postgresql://irs-provider-edc-postgresql-hl:5432/edc"
+    jdbcUrl: "jdbc:postgresql://irs-consumer-test-edc-postgresql-hl:5432/edc"

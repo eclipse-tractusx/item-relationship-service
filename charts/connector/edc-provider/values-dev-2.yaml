@@ -1,6 +1,4 @@
 tractusx-connector:
-  participant:
-    id: BPNL00000003CRHK
 
   controlplane:
     ingresses:
@@ -40,11 +38,6 @@ tractusx-connector:
       transferProxyTokenSignerPrivateKey: dev-provider2-key
       transferProxyTokenSignerPublicKey: dev-provider2-cert
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
-      dapsPrivateKey: dev-provider2-key
-      dapsPublicKey: dev-provider2-cert
-
-  daps:
-    clientId: <path:traceability-irs/data/dev/controlplane#edc.oauth.client.id-provider2>
 
   postgresql:
     jdbcUrl: "jdbc:postgresql://irs-provider2-edc-postgresql-hl:5432/edc"
