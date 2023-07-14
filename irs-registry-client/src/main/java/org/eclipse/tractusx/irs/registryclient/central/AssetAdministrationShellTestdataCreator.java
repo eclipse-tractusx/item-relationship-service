@@ -60,12 +60,14 @@ class AssetAdministrationShellTestdataCreator {
         cxTestData.get().getSingleLevelBomAsBuilt().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsBuiltSubmodelDescriptor(catenaXId)));
         cxTestData.get().getSerialPart().ifPresent(submodel -> submodelDescriptors.add(createSerialPartSubmodelDescriptor(catenaXId)));
         cxTestData.get().getSingleLevelUsageAsBuilt().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelUsageAsBuiltSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getSingleLevelBomAsSpecified().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsSpecifiedSubmodelDescriptor(catenaXId)));
         cxTestData.get().getSingleLevelBomAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get().getPartAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get().getBatch().ifPresent(submodel -> submodelDescriptors.add(createBatchSubmodelDescriptor(catenaXId)));
         cxTestData.get().getMaterialForRecycling().ifPresent(submodel -> submodelDescriptors.add(createMaterialForRecyclingSubmodelDescriptor(catenaXId)));
         cxTestData.get().getProductDescription().ifPresent(submodel -> submodelDescriptors.add(createProductDescriptionSubmodelDescriptor(catenaXId)));
         cxTestData.get().getPhysicalDimension().ifPresent(submodel -> submodelDescriptors.add(createPhysicalDimensionSubmodelDescriptor(catenaXId)));
+        cxTestData.get().getPartAsSpecified().ifPresent(submodel -> submodelDescriptors.add(createPartAsSpecifiedSubmodelDescriptor(catenaXId)));
 
         final Reference globalAssetId = Reference.builder().value(List.of(catenaXId)).build();
         return AssetAdministrationShellDescriptor.builder()
@@ -86,6 +88,11 @@ class AssetAdministrationShellTestdataCreator {
     private SubmodelDescriptor createSingleLevelUsageAsBuiltSubmodelDescriptor(final String catenaXId) {
         return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_usage_as_built:1.0.0",
                 "singleLevelUsageAsBuilt");
+    }
+
+    private SubmodelDescriptor createSingleLevelBomAsSpecifiedSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_specified:1.0.0",
+                "singleLevelBomAsSpecified");
     }
 
     private SubmodelDescriptor createSerialPartSubmodelDescriptor(final String catenaXId) {
@@ -121,6 +128,11 @@ class AssetAdministrationShellTestdataCreator {
     private SubmodelDescriptor createPhysicalDimensionSubmodelDescriptor(final String catenaXId) {
         return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.physical_dimension:1.0.0",
                 "physicalDimension");
+    }
+
+    private SubmodelDescriptor createPartAsSpecifiedSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_specified:1.0.0",
+                "partAsSpecified");
     }
 
     private SubmodelDescriptor createSubmodelDescriptor(final String catenaXId, final String submodelUrn,

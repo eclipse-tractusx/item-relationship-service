@@ -170,10 +170,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId) {
         final var params = buildJobParameter(request);
-        if (params.getBomLifecycle().equals(BomLifecycle.AS_PLANNED) && params.getDirection()
-                                                                              .equals(Direction.UPWARD)) {
+        if (params.getDirection().equals(Direction.UPWARD) && !params.getBomLifecycle().equals(BomLifecycle.AS_BUILT)) {
             // Currently not supported variant
-            throw new IllegalArgumentException("BomLifecycle asPlanned with direction upward is not supported yet!");
+            throw new IllegalArgumentException("Upward direction is supported only for asBuilt bomLifecycle parameter!");
         }
         if (params.isLookupBPNs() && StringUtils.isBlank(bpdmUrl)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,

@@ -41,7 +41,8 @@ import lombok.Getter;
 @Getter
 public enum BomLifecycle {
     AS_BUILT("asBuilt", AspectType.SERIAL_PART),
-    AS_PLANNED("asPlanned", AspectType.PART_AS_PLANNED);
+    AS_PLANNED("asPlanned", AspectType.PART_AS_PLANNED),
+    AS_SPECIFIED("asSpecified", AspectType.PART_AS_SPECIFIED);
 
     private final String name;
     private final String defaultAspect;

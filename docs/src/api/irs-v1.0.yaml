@@ -1706,6 +1706,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         bpn:
           type: string
         callbackUrl:
@@ -1823,6 +1824,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         quantity:
           $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
@@ -1980,6 +1982,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
@@ -2042,6 +2045,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
@@ -2080,6 +2084,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\

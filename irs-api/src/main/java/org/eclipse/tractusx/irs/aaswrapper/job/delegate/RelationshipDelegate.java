@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
@@ -88,7 +89,7 @@ public class RelationshipDelegate extends AbstractDelegate {
     }
 
     private static List<Bpn> getBpnsFrom(final List<Relationship> relationships) {
-        return relationships.stream().map(Relationship::getBpn).map(Bpn::withManufacturerId).toList();
+        return relationships.stream().map(Relationship::getBpn).filter(StringUtils::isNotBlank).map(Bpn::withManufacturerId).toList();
     }
 
     private List<String> getIdsToProcess(final List<Relationship> relationships, final Direction direction) {
