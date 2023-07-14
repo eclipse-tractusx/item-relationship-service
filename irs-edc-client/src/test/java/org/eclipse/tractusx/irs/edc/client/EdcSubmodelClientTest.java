@@ -268,14 +268,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldReturnRawSerialPartWhenExisting() throws Exception {
         final String existingCatenaXId = "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e";
-        when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com", "asset:prop:id",
+        when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX, "asset:prop:id",
                 ASSET_ID)).thenReturn(createCatalog(ASSET_ID, 3));
         prepareTestdata(existingCatenaXId, "_serialPart");
 
-        final String submodelResponse = testee.getSubmodelRawPayload( "https://connector.endpoint.com",
-                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                                                      ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
@@ -286,13 +284,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String existingCatenaXId = "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e";
         prepareTestdata(existingCatenaXId, "_serialPart");
         final String target = URLEncoder.encode(ASSET_ID, StandardCharsets.UTF_8);
-        when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com", "asset:prop:id",
+        when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX, "asset:prop:id",
                 ASSET_ID)).thenReturn(createCatalog(target, 3));
 
-        final String submodelResponse = testee.getSubmodelRawPayload(    "https://connector.endpoint.com",
-                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                                                      ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
@@ -364,13 +360,13 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final Policy policy = mock(Policy.class);
 
         return IntStream.range(0, numberOfOffers)
-                                                            .boxed()
-                                                            .map(i -> CatalogItem.builder()
-                                                                                           .offerId("offer" + i)
-                                                                                           .assetPropId(assetId)
-                                                                                           .policy(policy)
-                                                                                           .build())
-                                                            .toList();
+                        .boxed()
+                        .map(i -> CatalogItem.builder()
+                                             .offerId("offer" + i)
+                                             .assetPropId(assetId)
+                                             .policy(policy)
+                                             .build())
+                        .toList();
     }
 }
 
