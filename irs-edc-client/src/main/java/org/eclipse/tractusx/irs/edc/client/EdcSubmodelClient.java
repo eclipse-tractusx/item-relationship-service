@@ -287,7 +287,8 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
 
-            final var negotiationEndpoint = connectorEndpoint + config.getControlplane().getProviderSuffix();
+            final var negotiationEndpoint = appendSuffix(connectorEndpoint,
+                    config.getControlplane().getProviderSuffix());
             final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint,
                     assetId);
             return pollingService.<String>createJob()
