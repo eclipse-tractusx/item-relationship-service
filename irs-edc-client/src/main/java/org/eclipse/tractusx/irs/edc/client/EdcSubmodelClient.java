@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
+
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -190,10 +192,9 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private NegotiationResponse fetchNegotiationResponseWithFilter(final String connectorEndpoint, final String assetId)
             throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
-        final String filterKey = "asset:prop:id";
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + connectorEndpoint);
 
-        final List<CatalogItem> catalog = catalogFacade.fetchCatalogByFilter(connectorEndpoint, filterKey, assetId);
+        final List<CatalogItem> catalog = catalogFacade.fetchCatalogByFilter(connectorEndpoint, NAMESPACE_EDC_ID, assetId);
 
         return contractNegotiationService.negotiate(connectorEndpoint, catalog.stream().findFirst().orElseThrow());
     }
