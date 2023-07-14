@@ -194,9 +194,14 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + connectorEndpoint);
 
-        final List<CatalogItem> catalog = catalogFacade.fetchCatalogByFilter(connectorEndpoint, NAMESPACE_EDC_ID, assetId);
+        final List<CatalogItem> catalog = catalogFacade.fetchCatalogByFilter(connectorEndpoint, NAMESPACE_EDC_ID,
+                assetId);
 
-        return contractNegotiationService.negotiate(connectorEndpoint, catalog.stream().findFirst().orElseThrow());
+        final CatalogItem catalogItem = catalog.stream()
+                                               .findFirst()
+                                               .orElseThrow(() -> new ItemNotFoundInCatalogException(connectorEndpoint,
+                                                       assetId));
+        return contractNegotiationService.negotiate(connectorEndpoint, catalogItem);
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(

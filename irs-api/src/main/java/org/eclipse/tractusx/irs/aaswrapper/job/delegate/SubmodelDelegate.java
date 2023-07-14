@@ -32,8 +32,6 @@ import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
@@ -43,6 +41,9 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
@@ -120,44 +121,50 @@ public class SubmodelDelegate extends AbstractDelegate {
                     submodels.add(submodel);
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
-                    itemContainerBuilder.tombstone(
-                            Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
-                                    new IllegalArgumentException("Submodel payload validation failed. " + errors), 0,
-                                    ProcessStep.SCHEMA_VALIDATION));
+                    itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
+                            new IllegalArgumentException("Submodel payload validation failed. " + errors), 0,
+                            ProcessStep.SCHEMA_VALIDATION));
                 }
             } catch (final JsonParseException e) {
-                itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e,
-                                RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(),
-                                ProcessStep.SCHEMA_VALIDATION));
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e,
+                        RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(), ProcessStep.SCHEMA_VALIDATION));
                 log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             } catch (final SchemaNotFoundException | InvalidSchemaException | RestClientException e) {
-                itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                                ProcessStep.SCHEMA_REQUEST));
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
+                        ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
             } catch (final UsagePolicyException e) {
                 log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
-                itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                                ProcessStep.USAGE_POLICY_VALIDATION));
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
+                        ProcessStep.USAGE_POLICY_VALIDATION));
             } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-                itemContainerBuilder.tombstone(
-                        Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                                ProcessStep.SUBMODEL_REQUEST));
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
+                        ProcessStep.SUBMODEL_REQUEST));
             }
         });
         return submodels;
     }
 
     private String requestSubmodelAsString(final Endpoint endpoint, final String bpn) throws EdcClientException {
-        final String connectorEndpoint = connectorEndpointsService.fetchConnectorEndpoints(bpn).stream().findFirst().orElseThrow();
+        final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+        final ArrayList<String> submodelPayload = new ArrayList<>();
         try {
-            return submodelFacade.getSubmodelRawPayload(
-                    connectorEndpoint,
+            for (final String connectorEndpoint : connectorEndpoints) {
+                getSubmodelRaw(endpoint, submodelPayload, connectorEndpoint);
+            }
+        } catch (ItemNotFoundInCatalogException e) {
+                log.info("Could not find asset in catalog. Requesting next endpoint.", e);
+        }
+        return submodelPayload.stream().findFirst().orElseThrow();
+    }
+
+    private void getSubmodelRaw(final Endpoint endpoint, final ArrayList<String> submodelPayload,
+            final String connectorEndpoint) throws EdcClientException {
+        try {
+            submodelPayload.add(submodelFacade.getSubmodelRawPayload(connectorEndpoint,
                     extractSuffix(endpoint.getProtocolInformation().getHref()),
-                    extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
+                    extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
         } catch (URISyntaxException e) {
             throw new EdcClientException(e);
         }
