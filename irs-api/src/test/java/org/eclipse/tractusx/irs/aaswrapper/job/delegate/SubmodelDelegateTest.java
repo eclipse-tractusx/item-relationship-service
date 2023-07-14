@@ -38,12 +38,15 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
+import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
+import org.eclipse.tractusx.irs.services.validation.ValidationResult;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -128,6 +131,33 @@ class SubmodelDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.USAGE_POLICY_VALIDATION);
+    }
+
+    @Test
+    void shouldRequestForAllEndpoints() throws EdcClientException, InvalidSchemaException {
+        // given
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithOneSubmodel = ItemContainer.builder()
+                                                                                                  .shell(shellDescriptor(
+                                                                                                          List.of(submodelDescriptor(
+                                                                                                                  "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                  "testSerialPartEndpoint"))));
+
+        // when
+        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(
+                new ItemNotFoundInCatalogException("test", "itemId")).thenReturn("""
+                {"test": "test"}
+                """);
+        when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("connector.endpoint.n1", "connector.endpoint.n2"));
+        final ItemContainer result = submodelDelegate.process(itemContainerShellWithOneSubmodel,
+                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getSubmodels()).hasSize(1);
+        assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart");
+        assertThat(result.getTombstones()).isEmpty();
     }
 
     @Test
