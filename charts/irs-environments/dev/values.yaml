@@ -41,9 +41,15 @@ irs-helm:
     controlplane:
       apikey:
         secret: "123456"
-    catalog:
-      cache:
-        enabled: false
+
+  resources:
+    limits:
+      cpu: 1.5
+      memory: 1.5Gi
+    requests:
+      cpu: 200m
+      memory: 1.5Gi
+
 
   #######################
   # Minio Configuration #
@@ -58,6 +64,13 @@ irs-helm:
   # Grafana Configuration #
   #########################
   grafana:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
     enabled: true
     ingress:
       enabled: true
@@ -137,14 +150,10 @@ tractusx-connector:
     resources:
       limits:
         cpu: 1.5
-        memory: 2Gi
+        memory: 3Gi
       requests:
-        cpu: 500m
-        memory: 2Gi
-
-    # Files system has to be set to writeable for now since controlplane relies on temporary files to write SSI related things to
-    securityContext:
-      readOnlyRootFilesystem: false
+        cpu: 250m
+        memory: 3Gi
 
   dataplane:
     ingresses:
@@ -175,7 +184,7 @@ tractusx-connector:
         cpu: 500m
         memory: 512Mi
       requests:
-        cpu: 500m
+        cpu: 200m
         memory: 512Mi
 
   # URL where the EndpointDataReference callback will be sent to
