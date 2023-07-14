@@ -33,16 +33,20 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
+import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
+import org.eclipse.tractusx.irs.services.validation.ValidationResult;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -52,17 +56,21 @@ class SubmodelDelegateTest {
     final EdcSubmodelFacade submodelFacade = mock(EdcSubmodelFacade.class);
     final SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
     final JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
-    final SubmodelDelegate submodelDelegate = new SubmodelDelegate(submodelFacade,
-            semanticsHubFacade, jsonValidatorService, new JsonUtil());
+    final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
+    final SubmodelDelegate submodelDelegate = new SubmodelDelegate(submodelFacade, semanticsHubFacade,
+            jsonValidatorService, new JsonUtil(), connectorEndpointsService);
 
     @Test
     void shouldFilterSubmodelDescriptorsByAspectTypeFilter() {
         // given
-        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
-                                "testSerialPartTypizationEndpoint"),
-                        submodelDescriptor("urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
-                                "testAssemblyPartRelationshipEndpoint"))));
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
+                                                                                                   .shell(shellDescriptor(
+                                                                                                           List.of(submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
+                                                                                                                           "testSerialPartTypizationEndpoint"),
+                                                                                                                   submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
+                                                                                                                           "testAssemblyPartRelationshipEndpoint"))));
 
         // when
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels, jobParameterFilter(),
@@ -76,17 +84,20 @@ class SubmodelDelegateTest {
     @Test
     void shouldCatchJsonParseExceptionAndPutTombstone() throws SchemaNotFoundException {
         // given
-        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
-                                "testSerialPartEndpoint"),
-                        submodelDescriptor("urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-                                "testSingleLevelBomAsBuiltEndpoint"))));
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
+                                                                                                   .shell(shellDescriptor(
+                                                                                                           List.of(submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           "testSerialPartEndpoint"),
+                                                                                                                   submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
 
         // when
         when(semanticsHubFacade.getModelJsonSchema(any())).thenThrow(
                 new JsonParseException(new Exception("Payload did not match expected submodel")));
-        final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels, jobParameterCollectAspects(),
-                new AASTransferProcess(), "itemId");
+        final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
+                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
 
         // then
         assertThat(result).isNotNull();
@@ -99,14 +110,18 @@ class SubmodelDelegateTest {
     @Test
     void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
         // given
-        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
-                                "testSerialPartEndpoint"),
-                        submodelDescriptor("urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-                                "testSingleLevelBomAsBuiltEndpoint"))));
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
+                                                                                                   .shell(shellDescriptor(
+                                                                                                           List.of(submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           "testSerialPartEndpoint"),
+                                                                                                                   submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
 
         // when
-        when(submodelFacade.getSubmodelRawPayload(any())).thenThrow(new UsagePolicyException("itemId"));
+        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId"));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
                 jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
 
@@ -119,19 +134,49 @@ class SubmodelDelegateTest {
     }
 
     @Test
+    void shouldRequestForAllEndpoints() throws EdcClientException, InvalidSchemaException {
+        // given
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithOneSubmodel = ItemContainer.builder()
+                                                                                                  .shell(shellDescriptor(
+                                                                                                          List.of(submodelDescriptor(
+                                                                                                                  "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                  "testSerialPartEndpoint"))));
+
+        // when
+        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(
+                new ItemNotFoundInCatalogException("test", "itemId")).thenReturn("""
+                {"test": "test"}
+                """);
+        when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("connector.endpoint.n1", "connector.endpoint.n2"));
+        final ItemContainer result = submodelDelegate.process(itemContainerShellWithOneSubmodel,
+                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getSubmodels()).hasSize(1);
+        assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart");
+        assertThat(result.getTombstones()).isEmpty();
+    }
+
+    @Test
     void shouldCatchRestClientExceptionAndPutTombstone() throws SchemaNotFoundException {
         // given
-        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder().shell(shellDescriptor(
-                List.of(submodelDescriptor("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
-                                "testSerialPartEndpoint"),
-                        submodelDescriptor("urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-                                "testSingleLevelBomAsBuiltEndpoint"))));
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
+                                                                                                   .shell(shellDescriptor(
+                                                                                                           List.of(submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           "testSerialPartEndpoint"),
+                                                                                                                   submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
 
         // when
         when(semanticsHubFacade.getModelJsonSchema(any())).thenThrow(
                 new RestClientException("Payload did not match expected submodel"));
-        final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels, jobParameterCollectAspects(),
-                new AASTransferProcess(), "itemId");
+        final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
+                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
 
         // then
         assertThat(result).isNotNull();

@@ -23,10 +23,10 @@
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -62,15 +62,18 @@ public class AssetAdministrationShellDescriptor {
     /**
      * globalAssetId
      */
-    private Reference globalAssetId;
+    @Schema(description = "Id of global asset.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+            implementation = String.class)
+    private String globalAssetId;
     /**
      * idShort
      */
     private String idShort;
     /**
-     * identification
+     * id
      */
-    private String identification;
+    @SuppressWarnings("PMD.ShortVariable")
+    private String id;
     /**
      * specificAssetIds
      */
@@ -87,7 +90,7 @@ public class AssetAdministrationShellDescriptor {
      */
     public Optional<String> findManufacturerId() {
         return this.specificAssetIds.stream()
-                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getKey()))
+                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getName()))
                                     .map(IdentifierKeyValuePair::getValue)
                                     .findFirst();
     }
@@ -112,15 +115,13 @@ public class AssetAdministrationShellDescriptor {
      * @param relationshipAspect filter for aspect type
      * @return The filtered list of submodel addresses
      */
-    public List<String> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
+    public List<Endpoint> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
         final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(
                 List.of(relationshipAspect.toString()));
         return filteredSubmodelDescriptors.stream()
                                           .map(SubmodelDescriptor::getEndpoints)
-                                          .flatMap(endpoints -> endpoints.stream()
-                                                                         .map(Endpoint::getProtocolInformation)
-                                                                         .map(ProtocolInformation::getEndpointAddress))
-                                          .collect(Collectors.toList());
+                                          .flatMap(Collection::stream)
+                                          .toList();
     }
 
     /**
@@ -138,7 +139,9 @@ public class AssetAdministrationShellDescriptor {
     }
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {
-        final Optional<String> submodelAspectType = submodelDescriptor.getSemanticId().getValue().stream().findFirst();
+        final Optional<String> submodelAspectType = Optional.ofNullable(submodelDescriptor.getSemanticId().getKeys())
+                                                            .flatMap(key -> key.stream().findFirst())
+                                                            .map(SemanticId::getValue);
         return submodelAspectType.map(
                 semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter)
                         || semanticId.equals(aspectTypeFilter)).orElse(false);

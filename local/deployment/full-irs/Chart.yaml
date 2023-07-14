@@ -79,8 +79,8 @@ dependencies:
   # Digital Twin Registry
   - name: registry
     alias: digital-twin-registry
-    version: 0.2.14
-    repository: https://eclipse-tractusx.github.io/charts/dev
+    version: 0.3.6
+    repository: https://eclipse-tractusx.github.io/sldt-digital-twin-registry
     condition: install.digitalTwin
 
   # KeyCloak Service

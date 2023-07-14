@@ -35,6 +35,7 @@ import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinReg
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -77,10 +78,10 @@ public class DefaultConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
-            final DiscoveryFinderClient discoveryFinderClient,
+            final ConnectorEndpointsService connectorEndpointsService,
             final EndpointDataForConnectorsService endpointDataForConnectorsService,
             final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient) {
-        return new DecentralDigitalTwinRegistryService(discoveryFinderClient, endpointDataForConnectorsService,
+        return new DecentralDigitalTwinRegistryService(connectorEndpointsService, endpointDataForConnectorsService,
                 decentralDigitalTwinRegistryClient);
     }
 
@@ -90,6 +91,12 @@ public class DefaultConfiguration {
             @Qualifier(DIGITAL_TWIN_REGISTRY_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
             @Value("${digitalTwinRegistryClient.discoveryFinderUrl:}") final String finderUrl) {
         return new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
+    public ConnectorEndpointsService connectorEndpointsService(final DiscoveryFinderClient discoveryFinderClient) {
+        return new ConnectorEndpointsService(discoveryFinderClient);
     }
 
     @Bean

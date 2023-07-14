@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,10 +34,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
-import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryEndpoint;
-import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
-import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderRequest;
-import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryResponse;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -43,7 +42,7 @@ import org.mockito.Mockito;
 
 class DecentralDigitalTwinRegistryServiceTest {
 
-    private final DiscoveryFinderClient discoveryFinderClient = Mockito.mock(DiscoveryFinderClient.class);
+    private final ConnectorEndpointsService connectorEndpointsService = Mockito.mock(ConnectorEndpointsService.class);
     private final EndpointDataForConnectorsService endpointDataForConnectorsService = Mockito.mock(
             EndpointDataForConnectorsService.class);
 
@@ -51,7 +50,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             DecentralDigitalTwinRegistryClient.class);
 
     private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(
-            discoveryFinderClient, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
+            connectorEndpointsService, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
 
     @Test
     void shouldReturnExpectedShell() throws RegistryServiceException {
@@ -62,17 +61,13 @@ class DecentralDigitalTwinRegistryServiceTest {
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
                                                                                    .build();
-        final List<DiscoveryEndpoint> discoveryEndpoints = List.of(
-                new DiscoveryEndpoint("type", "desc", "address", "doc", "resId"));
-        Mockito.when(discoveryFinderClient.findDiscoveryEndpoints(ArgumentMatchers.any(DiscoveryFinderRequest.class)))
-               .thenReturn(new DiscoveryResponse(discoveryEndpoints));
+        Mockito.when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
         Mockito.when(endpointDataForConnectorsService.findEndpointDataForConnectors(ArgumentMatchers.anyList()))
                .thenReturn(endpointDataReference);
-        Mockito.when(
-                decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(ArgumentMatchers.any(),
-                        ArgumentMatchers.anyList())).thenReturn(Collections.emptyList());
-        Mockito.when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(ArgumentMatchers.any(),
-                ArgumentMatchers.any())).thenReturn(expectedShell);
+        Mockito.when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
+                ArgumentMatchers.anyList())).thenReturn(Collections.emptyList());
+        Mockito.when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any()))
+               .thenReturn(expectedShell);
 
         // when
         final Collection<AssetAdministrationShellDescriptor> actualShell = decentralDigitalTwinRegistryService.fetchShells(
@@ -86,7 +81,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             final List<SubmodelDescriptor> submodelDescriptors) {
         return AssetAdministrationShellDescriptor.builder()
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .key("ManufacturerId")
+                                                                                                 .name("ManufacturerId")
                                                                                                  .value("BPNL00000003AYRE")
                                                                                                  .build()))
                                                  .submodelDescriptors(submodelDescriptors)

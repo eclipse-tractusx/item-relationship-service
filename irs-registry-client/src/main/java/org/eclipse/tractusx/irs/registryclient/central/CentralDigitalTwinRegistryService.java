@@ -64,9 +64,9 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
 
     private String getAAShellIdentificationOrGlobalAssetId(final String globalAssetId) {
         final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
-                                                                                    .key("globalAssetId")
-                                                                                    .value(globalAssetId)
-                                                                                    .build();
+                                                                           .name("globalAssetId")
+                                                                           .value(globalAssetId)
+                                                                           .build();
 
         final List<String> allAssetAdministrationShellIdsByAssetLink = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                 Collections.singletonList(identifierKeyValuePair));

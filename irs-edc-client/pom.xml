@@ -91,7 +91,7 @@
         <dependency>
             <groupId>org.eclipse.edc</groupId>
             <artifactId>connector-core</artifactId>
-            <version>0.1.0</version>
+            <version>0.1.3</version>
             <exclusions>
                 <exclusion>
                     <artifactId>runtime-metamodel</artifactId>
@@ -120,7 +120,7 @@
         <dependency>
             <groupId>org.eclipse.edc</groupId>
             <artifactId>dsp</artifactId>
-            <version>0.1.0</version>
+            <version>0.1.3</version>
             <exclusions>
                 <exclusion>
                     <artifactId>runtime-metamodel</artifactId>
@@ -131,7 +131,7 @@
         <dependency>
             <groupId>org.eclipse.edc</groupId>
             <artifactId>json-ld</artifactId>
-            <version>0.1.0</version>
+            <version>0.1.3</version>
             <exclusions>
                 <exclusion>
                     <artifactId>runtime-metamodel</artifactId>
@@ -142,7 +142,7 @@
         <dependency>
             <artifactId>runtime-metamodel</artifactId>
             <groupId>org.eclipse.edc</groupId>
-            <version>0.1.0</version>
+            <version>0.1.3</version>
         </dependency>
 
         <dependency>

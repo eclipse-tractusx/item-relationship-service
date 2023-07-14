@@ -53,6 +53,7 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
@@ -70,7 +71,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = { "digitalTwinRegistry.type=central" })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = { "digitalTwinRegistry.type=central" })
 @ActiveProfiles(profiles = { "test",
                              "stubtest"
 })
@@ -94,14 +96,17 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @MockBean
     private SemanticsHubFacade semanticsHubFacade;
 
+    @MockBean
+    private ConnectorEndpointsService connectorEndpointsService;
+
     private static AspectModel getAspectModel(final String aspect, final String urn) {
         return AspectModel.builder().name(aspect).urn(urn).build();
     }
 
     @BeforeEach
     void setUp() throws SchemaNotFoundException {
-        final List<AspectModel> models = List.of(getAspectModel(AspectType.SERIAL_PART.toString(),
-                        "urn:bamm:io.catenax.serial_part:1.0.0#SerialPart"),
+        final List<AspectModel> models = List.of(
+                getAspectModel(AspectType.SERIAL_PART.toString(), "urn:bamm:io.catenax.serial_part:1.0.0#SerialPart"),
                 getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(),
                         "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription"),
                 getAspectModel(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString(),
@@ -115,6 +120,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
         final int expectedRelationshipsSizeFullTree = 44; // stub
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
+
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -130,9 +138,14 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithCollectAspectsShouldIncludeSubmodels() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("https://connector.endpoint.nl"));
         final RegisterJob registerJob = registerJob("urn:uuid:0a4cc16b-5f00-4ee2-833c-a3a46a1992c6", 100,
                 List.of(AspectType.SERIAL_PART.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
                         AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), true, false, Direction.DOWNWARD);
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
+
         final int expectedSubmodelsSizeFullTree = 5; // stub
 
         // when
@@ -149,8 +162,14 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobShouldCreateTombstonesWhenNotPassingJsonSchemaValidation() throws InvalidSchemaException {
         // given
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(false).build());
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("https://connector.endpoint.nl"));
+
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
+
         final int expectedTombstonesSizeFullTree = 8; // stub
 
         // when
@@ -167,6 +186,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(1, null);
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
+
         final int expectedRelationshipsSizeFirstDepth = 34; // stub
 
         // when
@@ -184,6 +206,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         final RegisterJob registerJob = registerJobWithDirection("urn:uuid:0b45c63b-0e5e-4232-9074-a05607783c33",
                 Direction.UPWARD);
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelUsageAsBuilt"));
+
         final int expectedRelationshipsSizeFirstDepth = 1; // stub
 
         // when
@@ -236,6 +261,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final String defaultAspectType = AspectType.SERIAL_PART.toString();
         final List<String> emptyAspectTypeFilterList = List.of();
         final RegisterJob registerJob = registerJobWithDepthAndAspect(null, emptyAspectTypeFilterList);
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
 
         // when
         final JobHandle jobHandle = service.registerItemJob(registerJob);
