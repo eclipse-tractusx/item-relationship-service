@@ -132,8 +132,9 @@ public class JobConfiguration {
 
     @Bean
     public RelationshipDelegate relationshipDelegate(final BpdmDelegate bpdmDelegate,
-            final EdcSubmodelFacade submodelFacade) {
-        return new RelationshipDelegate(bpdmDelegate, submodelFacade);
+            final EdcSubmodelFacade submodelFacade, final ConnectorEndpointsService connectorEndpointsService,
+            final JsonUtil jsonUtil) {
+        return new RelationshipDelegate(bpdmDelegate, submodelFacade, connectorEndpointsService, jsonUtil);
     }
 
     @Bean

@@ -60,7 +60,8 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
 
         assertThat(aasDescriptor.getSubmodelDescriptors()).isNotEmpty();
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints()).isNotNull();
-        assertThat(endpointAddress).isEqualTo(catenaXId + "_singleLevelBomAsBuilt");
+        assertThat(endpointAddress).isEqualTo("singleLevelBomAsBuilt");
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints().get(0).getProtocolInformation().getSubprotocolBody()).contains(catenaXId);
 
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0");
         assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo("urn:bamm:io.catenax.serial_part:1.0.0");

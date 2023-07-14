@@ -120,6 +120,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
         final int expectedRelationshipsSizeFullTree = 44; // stub
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
+
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -140,6 +143,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final RegisterJob registerJob = registerJob("urn:uuid:0a4cc16b-5f00-4ee2-833c-a3a46a1992c6", 100,
                 List.of(AspectType.SERIAL_PART.toString(), AspectType.PRODUCT_DESCRIPTION.toString(),
                         AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), true, false, Direction.DOWNWARD);
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
+
         final int expectedSubmodelsSizeFullTree = 5; // stub
 
         // when
@@ -161,6 +167,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
                 List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
+
         final int expectedTombstonesSizeFullTree = 8; // stub
 
         // when
@@ -177,6 +186,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(1, null);
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
+
         final int expectedRelationshipsSizeFirstDepth = 34; // stub
 
         // when
@@ -194,6 +206,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         final RegisterJob registerJob = registerJobWithDirection("urn:uuid:0b45c63b-0e5e-4232-9074-a05607783c33",
                 Direction.UPWARD);
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelUsageAsBuilt"));
+
         final int expectedRelationshipsSizeFirstDepth = 1; // stub
 
         // when
@@ -246,6 +261,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final String defaultAspectType = AspectType.SERIAL_PART.toString();
         final List<String> emptyAspectTypeFilterList = List.of();
         final RegisterJob registerJob = registerJobWithDepthAndAspect(null, emptyAspectTypeFilterList);
+        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
+                List.of("singleLevelBomAsBuilt"));
 
         // when
         final JobHandle jobHandle = service.registerItemJob(registerJob);

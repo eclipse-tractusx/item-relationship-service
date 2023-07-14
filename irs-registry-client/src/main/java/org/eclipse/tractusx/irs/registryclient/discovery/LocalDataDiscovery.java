@@ -51,4 +51,8 @@ public class LocalDataDiscovery implements DiscoveryFinderClient {
     private EdcDiscoveryResult toDiscoveryResult(final String bpn, final String endpoint) {
         return new EdcDiscoveryResult(bpn, List.of(endpoint));
     }
+
+    public void registerMapping(final String bpn, final String endpoint) {
+        bpnToEdcMapping.put(bpn, endpoint);
+    }
 }

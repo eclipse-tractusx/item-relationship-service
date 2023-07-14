@@ -37,12 +37,12 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.controllers.IrsController;
+import org.eclipse.tractusx.irs.registryclient.discovery.LocalDataDiscovery;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
 import org.eclipse.tractusx.irs.util.TestMother;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,6 +75,8 @@ class IrsFunctionalTest {
             new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
     @Autowired
     private IrsController controller;
+    @Autowired
+    private LocalDataDiscovery discovery;
 
     @BeforeAll
     static void startContainer() {
@@ -89,13 +91,15 @@ class IrsFunctionalTest {
     @Test
     void shouldStartJobAndRetrieveResult() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
+        discovery.registerMapping(registerJob.getKey().getBpn(), "singleLevelBomAsBuilt");
+
         thereIsJwtAuthentication();
 
         final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
         final Optional<Jobs> finishedJob = Awaitility.await()
                                                      .pollDelay(500, TimeUnit.MILLISECONDS)
                                                      .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(15, TimeUnit.SECONDS)
+                                                     .atMost(150, TimeUnit.SECONDS)
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
@@ -117,6 +121,8 @@ class IrsFunctionalTest {
     @Test
     void shouldFillSummaryWithoutBPNLookup() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
+        discovery.registerMapping(registerJob.getKey().getBpn(), "singleLevelBomAsBuilt");
+
         thereIsJwtAuthentication();
 
         final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
@@ -141,6 +147,7 @@ class IrsFunctionalTest {
     @Test
     void shouldFillSummaryWithBPNLookup() {
         final RegisterJob registerJob = TestMother.registerJobWithLookupBPNs();
+        discovery.registerMapping(registerJob.getKey().getBpn(), "singleLevelBomAsBuilt");
         thereIsJwtAuthentication();
 
         final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);

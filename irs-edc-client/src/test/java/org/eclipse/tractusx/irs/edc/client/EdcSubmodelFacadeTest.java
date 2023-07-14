@@ -28,7 +28,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -36,7 +35,6 @@ import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
-import org.eclipse.tractusx.irs.component.Relationship;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,48 +54,6 @@ class EdcSubmodelFacadeTest {
     @Mock
     private EdcSubmodelClient client;
 
-    @Test
-    void shouldThrowExecutionExceptionForRelationships() throws EdcClientException {
-        // arrange
-        final ExecutionException e = new ExecutionException(new EdcClientException("test"));
-        final CompletableFuture<List<Relationship>> future = CompletableFuture.failedFuture(e);
-        when(client.getRelationships(any(), any())).thenReturn(future);
-
-        // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getRelationships("", null);
-
-        // assert
-        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
-    }
-
-    @Test
-    void shouldThrowEdcClientExceptionForRelationships() throws EdcClientException {
-        // arrange
-        final EdcClientException e = new EdcClientException("test");
-        when(client.getRelationships(any(), any())).thenThrow(e);
-
-        // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getRelationships("", null);
-
-        // assert
-        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
-    }
-
-    @Test
-    void shouldRestoreInterruptOnInterruptExceptionForRelationships()
-            throws EdcClientException, ExecutionException, InterruptedException {
-        // arrange
-        final CompletableFuture<List<Relationship>> future = mock(CompletableFuture.class);
-        final InterruptedException e = new InterruptedException();
-        when(future.get()).thenThrow(e);
-        when(client.getRelationships(any(), any())).thenReturn(future);
-
-        // act
-        testee.getRelationships("", null);
-
-        // assert
-        assertThat(Thread.currentThread().isInterrupted()).isTrue();
-    }
 
     @Test
     void shouldThrowExecutionExceptionForSubmodel() throws EdcClientException {

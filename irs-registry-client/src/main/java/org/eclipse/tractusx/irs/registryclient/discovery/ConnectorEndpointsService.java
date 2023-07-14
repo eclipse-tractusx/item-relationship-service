@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.registryclient.discovery;
 
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ConnectorEndpointsService {
 
+    @Getter
     private final DiscoveryFinderClient discoveryFinderClient;
 
     public List<String> fetchConnectorEndpoints(final String bpn) {

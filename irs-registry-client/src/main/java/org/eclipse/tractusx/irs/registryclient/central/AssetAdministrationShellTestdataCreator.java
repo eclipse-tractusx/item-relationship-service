@@ -58,22 +58,48 @@ class AssetAdministrationShellTestdataCreator {
         }
 
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
-        cxTestData.get().getSingleLevelBomAsBuilt().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsBuiltSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getSerialPart().ifPresent(submodel -> submodelDescriptors.add(createSerialPartSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getSingleLevelUsageAsBuilt().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelUsageAsBuiltSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getSingleLevelBomAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getPartAsPlanned().ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getBatch().ifPresent(submodel -> submodelDescriptors.add(createBatchSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getMaterialForRecycling().ifPresent(submodel -> submodelDescriptors.add(createMaterialForRecyclingSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getProductDescription().ifPresent(submodel -> submodelDescriptors.add(createProductDescriptionSubmodelDescriptor(catenaXId)));
-        cxTestData.get().getPhysicalDimension().ifPresent(submodel -> submodelDescriptors.add(createPhysicalDimensionSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getSingleLevelBomAsBuilt()
+                  .ifPresent(submodel -> submodelDescriptors.add(
+                          createSingleLevelBomAsBuiltSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getSerialPart()
+                  .ifPresent(submodel -> submodelDescriptors.add(createSerialPartSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getSingleLevelUsageAsBuilt()
+                  .ifPresent(submodel -> submodelDescriptors.add(
+                          createSingleLevelUsageAsBuiltSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getSingleLevelBomAsPlanned()
+                  .ifPresent(submodel -> submodelDescriptors.add(
+                          createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getPartAsPlanned()
+                  .ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getBatch()
+                  .ifPresent(submodel -> submodelDescriptors.add(createBatchSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getMaterialForRecycling()
+                  .ifPresent(
+                          submodel -> submodelDescriptors.add(createMaterialForRecyclingSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getProductDescription()
+                  .ifPresent(
+                          submodel -> submodelDescriptors.add(createProductDescriptionSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getPhysicalDimension()
+                  .ifPresent(submodel -> submodelDescriptors.add(createPhysicalDimensionSubmodelDescriptor(catenaXId)));
 
         return AssetAdministrationShellDescriptor.builder()
                                                  .description(List.of(LangString.builder().build()))
                                                  .globalAssetId(catenaXId)
                                                  .idShort("idShort")
                                                  .id(catenaXId)
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder().name("ManufacturerId").value("BPNL00000003AYRE").build()))
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                                                                 .name("ManufacturerId")
+                                                                                                 .value("BPNL00000003AYRE")
+                                                                                                 .build()))
                                                  .submodelDescriptors(submodelDescriptors)
                                                  .build();
     }
@@ -89,8 +115,7 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createSerialPartSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.serial_part:1.0.0",
-                "serialPart");
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.serial_part:1.0.0", "serialPart");
     }
 
     private SubmodelDescriptor createSingleLevelBomAsPlannedSubmodelDescriptor(final String catenaXId) {
@@ -99,13 +124,11 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createPartAsPlannedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_planned:1.0.0",
-                "partAsPlanned");
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_planned:1.0.0", "partAsPlanned");
     }
 
     private SubmodelDescriptor createBatchSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.batch:1.0.0",
-                "batch");
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.batch:1.0.0", "batch");
     }
 
     private SubmodelDescriptor createMaterialForRecyclingSubmodelDescriptor(final String catenaXId) {
@@ -119,17 +142,17 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createPhysicalDimensionSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.physical_dimension:1.0.0",
-                "physicalDimension");
+        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.physical_dimension:1.0.0", "physicalDimension");
     }
 
     private SubmodelDescriptor createSubmodelDescriptor(final String catenaXId, final String submodelUrn,
             final String submodelName) {
         final ProtocolInformation protocolInformation = ProtocolInformation.builder()
-                                                                           .href(catenaXId.concat("_").concat(submodelName))
+                                                                           .href(submodelName)
                                                                            .endpointProtocol("AAS/SUBMODEL")
                                                                            .endpointProtocolVersion(List.of("1.0RC02"))
-                                                                           .subprotocolBody("id=9300395e-c0a5-4e88-bc57-a3973fec4c26;idsEndpoint=http://edc.control.plane/")
+                                                                           .subprotocolBody("id=" + catenaXId
+                                                                                   + ";idsEndpoint=http://edc.control.plane/")
                                                                            .build();
 
         final Endpoint endpoint = Endpoint.builder()
@@ -137,7 +160,9 @@ class AssetAdministrationShellTestdataCreator {
                                           .protocolInformation(protocolInformation)
                                           .build();
 
-        final Reference reference = Reference.builder().keys(List.of(SemanticId.builder().value(submodelUrn).build())).build();
+        final Reference reference = Reference.builder()
+                                             .keys(List.of(SemanticId.builder().value(submodelUrn).build()))
+                                             .build();
 
         return SubmodelDescriptor.builder()
                                  .id(catenaXId)

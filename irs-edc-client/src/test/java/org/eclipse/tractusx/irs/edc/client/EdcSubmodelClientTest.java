@@ -46,7 +46,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import io.github.resilience4j.retry.RetryRegistry;
@@ -125,7 +124,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldRetrieveValidRelationship() throws Exception {
         // arrange
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
@@ -135,13 +134,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(singleLevelBomAsBuiltJson);
 
         // act
-        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT);
-        final List<Relationship> resultingRelationships = result.get(5, TimeUnit.SECONDS);
+        final var result = testee.getSubmodelRawPayload(ENDPOINT_ADDRESS, "suffix", "assetId");
+        final String resultingRelationships = result.get(5, TimeUnit.SECONDS);
 
         // assert
-        final List<Relationship> expectedRelationships = StringMapper.mapFromString(singleLevelBomAsBuiltJson,
-                RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT.getSubmodelClazz()).asRelationships();
-        assertThat(resultingRelationships).isNotNull().containsAll(expectedRelationships);
+        assertThat(resultingRelationships).isNotNull().isEqualTo(singleLevelBomAsBuiltJson);
     }
 
     @Test
@@ -167,13 +164,13 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldTimeOut() throws Exception {
         // arrange
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
 
         // act
-        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT);
+        final var result = testee.getSubmodelRawPayload(ENDPOINT_ADDRESS, "suffix", "ID");
         clock.travelToFuture(Duration.ofMinutes(20));
 
         // assert
@@ -203,49 +200,38 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsBuilt() throws Exception {
         final String existingCatenaXId = "urn:uuid:61c83b41-def0-4742-a1a8-e4e8a8cb210e";
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(existingCatenaXId).build()));
         prepareTestdata(existingCatenaXId, "_singleLevelBomAsBuilt");
 
-        final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)
-                                                          .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse).isNotEmpty();
-        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(existingCatenaXId);
-        assertThat(submodelResponse).hasSize(1);
+        assertThat(submodelResponse).contains(existingCatenaXId);
     }
 
     @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsPlanned() throws Exception {
         final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelBomAsPlanned");
 
-        final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)
-                                                          .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse).isNotEmpty();
-        final List<String> childIds = submodelResponse.stream()
-                                                      .map(Relationship::getLinkedItem)
-                                                      .map(LinkedItem::getChildCatenaXId)
-                                                      .map(GlobalAssetIdentification::getGlobalAssetId)
-                                                      .collect(Collectors.toList());
-        assertThat(childIds).containsAnyOf("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
+        assertThat(submodelResponse).contains("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
     }
 
     @Test
     void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt() throws Exception {
         final String catenaXId = "urn:uuid:61c83b41-def0-4742-a1a8-e4e8a8cb210e";
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
 
-        final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.SINGLE_LEVEL_USAGE_AS_BUILT)
-                                                          .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
     }
@@ -254,15 +240,14 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndSingleLevelBomAsBuilt()
             throws Exception {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelBomAsBuilt");
 
-        final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)
-                                                          .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse).isEmpty();
+        assertThat(submodelResponse).isEqualTo("{}");
     }
 
     @Test
@@ -298,11 +283,14 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void shouldReturnSameRelationshipsForDifferentDirections() throws Exception {
         final String parentCatenaXId = "urn:uuid:61c83b41-def0-4742-a1a8-e4e8a8cb210e";
         final BomLifecycle asBuilt = BomLifecycle.AS_BUILT;
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(parentCatenaXId).build()));
         prepareTestdata(parentCatenaXId, "_singleLevelBomAsBuilt");
-        final List<Relationship> relationships = testee.getRelationships("http://localhost/" + ASSET_ID + "/submodel",
-                RelationshipAspect.from(asBuilt, Direction.DOWNWARD)).get(5, TimeUnit.SECONDS);
+        final String relationshipsJson = testee.getSubmodelRawPayload("http://localhost/", "_singleLevelBomAsBuilt",
+                ASSET_ID).get(5, TimeUnit.SECONDS);
+
+        final var relationships = StringMapper.mapFromString(relationshipsJson,
+                RelationshipAspect.from(asBuilt, Direction.DOWNWARD).getSubmodelClazz()).asRelationships();
 
         final GlobalAssetIdentification childCatenaXId = relationships.stream()
                                                                       .findAny()
@@ -311,11 +299,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                                                                       .orElseThrow();
 
         prepareTestdata(childCatenaXId.getGlobalAssetId(), "_singleLevelUsageAsBuilt");
-        final List<Relationship> singleLevelUsageRelationships = testee.getRelationships(
-                                                                               "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.from(asBuilt, Direction.UPWARD))
-                                                                       .get(5, TimeUnit.SECONDS);
+        final String singleLevelUsageRelationshipsJson = testee.getSubmodelRawPayload("http://localhost/",
+                "_singleLevelUsageAsBuilt", ASSET_ID).get(5, TimeUnit.SECONDS);
+        final var singleLevelUsageRelationships = StringMapper.mapFromString(singleLevelUsageRelationshipsJson,
+                RelationshipAspect.from(asBuilt, Direction.UPWARD).getSubmodelClazz()).asRelationships();
 
-        assertThat(relationships).isNotEmpty();
+        assertThat(relationships).isNotNull();
         assertThat(singleLevelUsageRelationships).isNotEmpty();
         assertThat(relationships.get(0).getCatenaXId()).isEqualTo(singleLevelUsageRelationships.get(0).getCatenaXId());
         assertThat(relationships.get(0).getLinkedItem().getChildCatenaXId()).isEqualTo(

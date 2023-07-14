@@ -23,10 +23,10 @@
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -115,15 +115,13 @@ public class AssetAdministrationShellDescriptor {
      * @param relationshipAspect filter for aspect type
      * @return The filtered list of submodel addresses
      */
-    public List<String> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
+    public List<Endpoint> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
         final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(
                 List.of(relationshipAspect.toString()));
         return filteredSubmodelDescriptors.stream()
                                           .map(SubmodelDescriptor::getEndpoints)
-                                          .flatMap(endpoints -> endpoints.stream()
-                                                                         .map(Endpoint::getProtocolInformation)
-                                                                         .map(ProtocolInformation::getHref))
-                                          .collect(Collectors.toList());
+                                          .flatMap(Collection::stream)
+                                          .toList();
     }
 
     /**
@@ -142,7 +140,8 @@ public class AssetAdministrationShellDescriptor {
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {
         final Optional<String> submodelAspectType = Optional.ofNullable(submodelDescriptor.getSemanticId().getKeys())
-                                                            .flatMap(key -> key.stream().findFirst()).map(SemanticId::getValue);
+                                                            .flatMap(key -> key.stream().findFirst())
+                                                            .map(SemanticId::getValue);
         return submodelAspectType.map(
                 semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter)
                         || semanticId.equals(aspectTypeFilter)).orElse(false);
