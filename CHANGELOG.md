@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Synchronous communication with external services without circuit breaker pattern - potentially could affect IRS resilience when other services becomes non-responsive
 - Cascading effects of failure when Digital Twin Registry becomes non-responsive - potentially bulkhead pattern could improve IRS resilience
 - Retry mechanism used inside IRS could potentially affect IRS resilience - DDOS other services on which IRS is dependent, exhaustion of resources and available threads, etc.
+- Lack of resources management - max threads, heap limitation, etc.
 - IRS was not scaled to multiple instances, and was not tested in such environment
 
 ## [3.1.0] - 2023-06-28
