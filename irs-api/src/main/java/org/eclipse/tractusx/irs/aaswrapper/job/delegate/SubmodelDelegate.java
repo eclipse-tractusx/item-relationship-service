@@ -154,7 +154,7 @@ public class SubmodelDelegate extends AbstractDelegate {
                 getSubmodelRaw(endpoint, submodelPayload, connectorEndpoint);
             }
         } catch (ItemNotFoundInCatalogException e) {
-                log.info("Could not find asset in catalog. Requesting next endpoint.", e);
+            log.info("Could not find asset in catalog. Requesting next endpoint.", e);
         }
         return submodelPayload.stream().findFirst().orElseThrow();
     }
