@@ -22,10 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractAssetId;
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractSuffix;
-
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +33,10 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -111,7 +105,8 @@ public class SubmodelDelegate extends AbstractDelegate {
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
             try {
                 final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
-                final String submodelRawPayload = requestSubmodelAsString(endpoint, bpn);
+                final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
+                        endpoint, bpn);
 
                 final ValidationResult validationResult = jsonValidatorService.validate(jsonSchema, submodelRawPayload);
 
@@ -146,25 +141,4 @@ public class SubmodelDelegate extends AbstractDelegate {
         return submodels;
     }
 
-    private String requestSubmodelAsString(final Endpoint endpoint, final String bpn) throws EdcClientException {
-        final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        final ArrayList<String> submodelPayload = new ArrayList<>();
-        for (final String connectorEndpoint : connectorEndpoints) {
-            addSubmodelToList(endpoint, submodelPayload, connectorEndpoint);
-        }
-        return submodelPayload.stream().findFirst().orElseThrow();
-    }
-
-    private void addSubmodelToList(final Endpoint endpoint, final List<String> submodelPayload,
-            final String connectorEndpoint) throws EdcClientException {
-        try {
-            submodelPayload.add(submodelFacade.getSubmodelRawPayload(connectorEndpoint,
-                    extractSuffix(endpoint.getProtocolInformation().getHref()),
-                    extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
-        } catch (URISyntaxException e) {
-            throw new EdcClientException(e);
-        } catch (ItemNotFoundInCatalogException e) {
-            log.info("Could not find asset in catalog. Requesting next endpoint.", e);
-        }
-    }
 }

@@ -22,10 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractAssetId;
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractSuffix;
-
-import java.net.URISyntaxException;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -91,14 +87,8 @@ public class RelationshipDelegate extends AbstractDelegate {
             final RelationshipAspect relationshipAspect, final AASTransferProcess aasTransferProcess,
             final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId) {
         try {
-            log.info("Requesting bpn {} from bean {}", jobData.getBpn(), connectorEndpointsService);
-            final String connectorEndpoint = connectorEndpointsService.fetchConnectorEndpoints(jobData.getBpn())
-                                                                      .stream()
-                                                                      .findFirst()
-                                                                      .orElseThrow();
-            final var submodelRawPayload = submodelFacade.getSubmodelRawPayload(connectorEndpoint,
-                    extractSuffix(endpoint.getProtocolInformation().getHref()),
-                    extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
+            final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
+                    endpoint, jobData.getBpn());
 
             final var relationships = jsonUtil.fromString(submodelRawPayload, relationshipAspect.getSubmodelClazz())
                                               .asRelationships();
@@ -110,7 +100,7 @@ public class RelationshipDelegate extends AbstractDelegate {
             aasTransferProcess.addIdsToProcess(idsToProcess);
             itemContainerBuilder.relationships(relationships);
             itemContainerBuilder.bpns(getBpnsFrom(relationships));
-        } catch (final EdcClientException | URISyntaxException e) {
+        } catch (final EdcClientException e) {
             log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                     endpoint.getProtocolInformation().getHref());
             itemContainerBuilder.tombstone(
