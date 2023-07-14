@@ -6,10 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.0] - 2023-07-14
 ### Changed
 - The client code for accessing the Digital Twin Registry (central and decentral) is now available as a spring boot maven library. See the README in the irs-registry-client module for more information.
 - Update EDC dependencies to 0.1.3
 - Add Transformer to support new EDC constraint operator format
+- IRS now supports the AAS API 3.0 and its updated models. **Note**: this also reflects in the Job response shells, please check the new schema.
 
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
