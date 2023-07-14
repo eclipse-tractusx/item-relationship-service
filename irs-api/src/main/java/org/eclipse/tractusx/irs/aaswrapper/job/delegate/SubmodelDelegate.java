@@ -151,7 +151,7 @@ public class SubmodelDelegate extends AbstractDelegate {
         final ArrayList<String> submodelPayload = new ArrayList<>();
         try {
             for (final String connectorEndpoint : connectorEndpoints) {
-                getSubmodelRaw(endpoint, submodelPayload, connectorEndpoint);
+                addSubmodelToList(endpoint, submodelPayload, connectorEndpoint);
             }
         } catch (ItemNotFoundInCatalogException e) {
             log.info("Could not find asset in catalog. Requesting next endpoint.", e);
@@ -159,7 +159,7 @@ public class SubmodelDelegate extends AbstractDelegate {
         return submodelPayload.stream().findFirst().orElseThrow();
     }
 
-    private void getSubmodelRaw(final Endpoint endpoint, final ArrayList<String> submodelPayload,
+    private void addSubmodelToList(final Endpoint endpoint, final List<String> submodelPayload,
             final String connectorEndpoint) throws EdcClientException {
         try {
             submodelPayload.add(submodelFacade.getSubmodelRawPayload(connectorEndpoint,
