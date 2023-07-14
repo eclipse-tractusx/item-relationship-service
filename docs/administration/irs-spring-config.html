@@ -782,6 +782,7 @@ pre.rouge {
         <span class="na">exponentialBackoffMultiplier</span><span class="pi">:</span> <span class="m">2</span> <span class="c1"># Multiplier for the exponential delay</span>
         <span class="na">ignore-exceptions</span><span class="pi">:</span> <span class="c1"># Do not retry on the listed exceptions</span>
           <span class="pi">-</span> <span class="s">org.springframework.web.client.HttpClientErrorException.NotFound</span>
+          <span class="pi">-</span> <span class="s">org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException</span>
     <span class="na">instances</span><span class="pi">:</span>
       <span class="na">registry</span><span class="pi">:</span>
         <span class="na">baseConfig</span><span class="pi">:</span> <span class="s">default</span>
@@ -891,7 +892,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-13 08:10:49 UTC
+Last updated 2023-07-14 15:14:06 UTC
 </div>
 </div>
 </body>
