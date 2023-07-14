@@ -339,7 +339,7 @@ if __name__ == "__main__":
 
     registry_path = "/registry/shell-descriptors"
     if is_aas3:
-        registry_path = "/api/v3.0/shell-descriptors"
+        registry_path = "/shell-descriptors"
 
     check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls)
 

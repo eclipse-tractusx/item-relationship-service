@@ -47,7 +47,7 @@ public class DecentralDigitalTwinRegistryClient {
 
     private static final String PLACEHOLDER_AAS_IDENTIFIER = "aasIdentifier";
     private static final String PLACEHOLDER_ASSET_IDS = "assetIds";
-    private static final String SHELL_DESCRIPTOR_TEMPLATE = "/registry/shell-descriptors/{aasIdentifier}";
+    private static final String SHELL_DESCRIPTOR_TEMPLATE = "/shell-descriptors/{aasIdentifier}";
     private static final String LOOKUP_SHELLS_TEMPLATE = "/lookup/shells?assetIds={assetIds}";
     private final RestTemplate edcRestTemplate;
 
