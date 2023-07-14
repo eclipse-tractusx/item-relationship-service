@@ -38,15 +38,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.data.StringMapper;
-import org.eclipse.tractusx.irs.edc.client.util.Masker;
-import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -59,7 +59,8 @@ public interface EdcSubmodelClient {
     CompletableFuture<List<Relationship>> getRelationships(String submodelEndpointAddress,
             RelationshipAspect traversalAspectType) throws EdcClientException;
 
-    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelSufix, String assetId) throws EdcClientException;
+    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelSufix, String assetId)
+            throws EdcClientException;
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
             EdcNotification notification) throws EdcClientException;
@@ -96,7 +97,8 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSufix, final String assetId) {
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSufix,
+            final String assetId) {
         final Map<String, Object> submodel = testdataCreator.createSubmodelForId(connectorEndpoint);
         return CompletableFuture.completedFuture(StringMapper.mapToString(submodel));
     }
@@ -193,8 +195,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         final List<CatalogItem> catalog = catalogFacade.fetchCatalogByFilter(connectorEndpoint, filterKey, assetId);
 
-        return contractNegotiationService.negotiate(connectorEndpoint,
-                catalog.stream().findFirst().orElseThrow());
+        return contractNegotiationService.negotiate(connectorEndpoint, catalog.stream().findFirst().orElseThrow());
     }
 
     private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
@@ -280,13 +281,15 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSufix, final String assetId)
-            throws EdcClientException {
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSufix,
+            final String assetId) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
 
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(connectorEndpoint, assetId);
+            final var negotiationEndpoint = connectorEndpoint + config.getControlplane().getProviderSuffix();
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint,
+                    assetId);
             return pollingService.<String>createJob()
                                  .action(() -> retrieveSubmodelData(submodelSufix,
                                          negotiationResponse.getContractAgreementId(), stopWatch))
