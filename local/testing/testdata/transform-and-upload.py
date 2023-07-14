@@ -417,18 +417,24 @@ if __name__ == "__main__":
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
+                    if is_aas3:
+                        for specific_asset in specific_asset_ids_temp:
+                            specific_asset["name"] = specific_asset.pop("key")
+
+
+
                 if "PartAsPlanned" in tmp_key:
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
                     specific_asset_ids_temp.append({
                         "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
-                        "key": "manufacturerPartId"
+                        "name": "manufacturerPartId"
                     })
             print(name_at_manufacturer)
 
-            specific_asset_ids_temp.append({
-                "key": "manufacturerId",
+            specific_asset_ids.append({
+                "name": "manufacturerId",
                 "value": tmp_data["bpnl"]
             })
             if is_aas3:

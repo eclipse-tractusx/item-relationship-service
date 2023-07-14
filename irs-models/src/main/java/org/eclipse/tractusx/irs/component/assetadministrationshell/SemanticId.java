@@ -20,12 +20,29 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.discovery;
+package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
-import java.util.List;
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Result of EDC Discovery call
+ * Reference
  */
-public record EdcDiscoveryResult(String bpn, List<String> connectorEndpoint) {
+@Data
+@Builder
+@Jacksonized
+public class SemanticId {
+
+    /**
+     * value
+     */
+    private String value;
+
+
+    /**
+     * type
+     */
+    private String type;
+
 }

@@ -50,7 +50,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
     }
 
     @Test
@@ -64,7 +64,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(singleLevelBomAsBuiltId);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltId);
     }
 
     @Test
@@ -79,7 +79,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
     }
 
     @Test
@@ -94,7 +94,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartId);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartId);
     }
 
     @Test
@@ -111,7 +111,7 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartIdWithAspectName);
     }
 
     @Test
@@ -129,8 +129,8 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartIdWithAspectName);
-        assertThat(result.get(1).getSemanticId().getValue().get(0)).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartIdWithAspectName);
+        assertThat(result.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
     }
 
 }

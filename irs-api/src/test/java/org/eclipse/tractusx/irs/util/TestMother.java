@@ -48,6 +48,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -109,7 +110,7 @@ public class TestMother {
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
             final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs, final Direction direction) {
         final RegisterJob registerJob = new RegisterJob();
-        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build());
+        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn("bpn123").build());
         registerJob.setDepth(depth);
         registerJob.setAspects(aspectTypes);
         registerJob.setCollectAspects(collectAspects);
@@ -234,12 +235,15 @@ public class TestMother {
 
     public static Endpoint endpoint(String endpointAddress) {
         return Endpoint.builder()
-                       .protocolInformation(ProtocolInformation.builder().endpointAddress(endpointAddress).build())
+                       .protocolInformation(ProtocolInformation.builder()
+                                                               .href(endpointAddress)
+                                                               .subprotocolBody("other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/")
+                                                               .build())
                        .build();
     }
 
     public static SubmodelDescriptor submodelDescriptor(final String semanticId, final String endpointAddress) {
-        final Reference semanticIdSerial = Reference.builder().value(List.of(semanticId)).build();
+        final Reference semanticIdSerial = Reference.builder().keys(List.of(SemanticId.builder().value(semanticId).build())).build();
         final List<Endpoint> endpointSerial = List.of(endpoint(endpointAddress));
         return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
     }
@@ -252,7 +256,7 @@ public class TestMother {
             final List<SubmodelDescriptor> submodelDescriptors) {
         return AssetAdministrationShellDescriptor.builder()
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .key("ManufacturerId")
+                                                                                                 .name("ManufacturerId")
                                                                                                  .value("BPNL00000003AYRE")
                                                                                                  .build()))
                                                  .submodelDescriptors(submodelDescriptors)

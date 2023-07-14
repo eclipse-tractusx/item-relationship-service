@@ -20,11 +20,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.discovery;
+package org.eclipse.tractusx.irs.edc.client;
+
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 
 /**
- * A single Discovery Endpoint.
+ * Exception, if an asset could not be found in the EDC Catalog.
  */
-public record DiscoveryEndpoint(String type, String description, String endpointAddress, String documentation,
-                                String resourceId) {
+public class ItemNotFoundInCatalogException extends EdcClientException {
+    public ItemNotFoundInCatalogException(final String endpoint, final String itemId) {
+        super("Catalog for endpoint '" + endpoint + "' did not contain asset with id '" + itemId + "'");
+    }
 }

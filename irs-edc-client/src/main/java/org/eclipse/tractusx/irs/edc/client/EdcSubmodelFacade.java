@@ -22,17 +22,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
-import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,26 +44,10 @@ public class EdcSubmodelFacade {
     private final EdcSubmodelClient client;
 
     @SuppressWarnings("PMD.PreserveStackTrace")
-    public List<Relationship> getRelationships(final String submodelEndpointAddress,
-            final RelationshipAspect traversalAspectType) throws EdcClientException {
+    public String getSubmodelRawPayload(final String connectorEndpoint, final String submodelSufix,
+            final String assetId) throws EdcClientException {
         try {
-            return client.getRelationships(submodelEndpointAddress, traversalAspectType).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return Collections.emptyList();
-        } catch (ExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof EdcClientException exceptionCause) {
-                throw exceptionCause;
-            }
-            throw new EdcClientException(cause);
-        }
-    }
-
-    @SuppressWarnings("PMD.PreserveStackTrace")
-    public String getSubmodelRawPayload(final String submodelEndpointAddress) throws EdcClientException {
-        try {
-            return client.getSubmodelRawPayload(submodelEndpointAddress).get();
+            return client.getSubmodelRawPayload(connectorEndpoint, submodelSufix, assetId).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;

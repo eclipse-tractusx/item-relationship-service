@@ -54,7 +54,7 @@ class DefaultConfigurationTest {
     void decentralDigitalTwinRegistryService() {
         final EdcSubmodelFacade facadeMock = mock(EdcSubmodelFacade.class);
         final var service = testee.decentralDigitalTwinRegistryService(
-                testee.discoveryFinderClient(new RestTemplate(), "finder"),
+                testee.connectorEndpointsService(testee.discoveryFinderClient(new RestTemplate(), "finder")),
                 testee.endpointDataForConnectorsService(facadeMock),
                 testee.decentralDigitalTwinRegistryClient(new RestTemplate()));
 

@@ -139,9 +139,9 @@ class InvestigationJobProcessingEventListenerTest {
 
     private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
         return AssetAdministrationShellDescriptor.builder()
-                                                 .globalAssetId(Reference.builder().value(List.of(catenaXId)).build())
+                                                 .globalAssetId(catenaXId)
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .key("manufacturerId")
+                                                                                                 .name("manufacturerId")
                                                                                                  .value(bpn)
                                                                                                  .build()))
                                                  .build();
