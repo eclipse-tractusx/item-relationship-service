@@ -149,12 +149,8 @@ public class SubmodelDelegate extends AbstractDelegate {
     private String requestSubmodelAsString(final Endpoint endpoint, final String bpn) throws EdcClientException {
         final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
         final ArrayList<String> submodelPayload = new ArrayList<>();
-        try {
-            for (final String connectorEndpoint : connectorEndpoints) {
-                addSubmodelToList(endpoint, submodelPayload, connectorEndpoint);
-            }
-        } catch (ItemNotFoundInCatalogException e) {
-            log.info("Could not find asset in catalog. Requesting next endpoint.", e);
+        for (final String connectorEndpoint : connectorEndpoints) {
+            addSubmodelToList(endpoint, submodelPayload, connectorEndpoint);
         }
         return submodelPayload.stream().findFirst().orElseThrow();
     }
@@ -167,6 +163,8 @@ public class SubmodelDelegate extends AbstractDelegate {
                     extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
         } catch (URISyntaxException e) {
             throw new EdcClientException(e);
+        } catch (ItemNotFoundInCatalogException e) {
+            log.info("Could not find asset in catalog. Requesting next endpoint.", e);
         }
     }
 }
