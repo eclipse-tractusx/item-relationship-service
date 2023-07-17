@@ -705,7 +705,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:858951f5-fb9c-4ec2-93be-e49fcc2c9361-urn:uuid:3b9fd040-5eb1-42f7-b35c-fc1fe48899ff/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -762,7 +762,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:21527461-ab6d-4e52-b703-39c656f92d75-urn:uuid:594bf514-ec44-479d-90d6-d1544450a759/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -819,7 +819,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:73ed3cf8-c124-444b-9524-95d1e17185e3-urn:uuid:a025a127-82e2-4361-84da-b94305e7191f/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -876,7 +876,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:66e8a142-dcf6-47d7-8a9a-03c45187b0ee-urn:uuid:39960158-4d7c-4361-b043-e833c6dc1629/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -933,7 +933,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:5d403d5d-adc8-4acd-8393-78473eaa8138-urn:uuid:7d83fe06-34cd-4cb3-b354-1cc16965c95e/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -990,7 +990,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:aec68fca-ff25-433e-8816-dc2a74a3d0e2-urn:uuid:56922085-f377-46c0-88d3-4410431dbfd4/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1047,7 +1047,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:030d6ff6-1410-4600-a072-ba10e658e067-urn:uuid:ee9c7192-5a31-4e37-9e21-9e10e689c833/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1104,7 +1104,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:c0fecc9b-0d9e-4482-b873-fa4205b5a51b-urn:uuid:7f7112ca-74b8-46ef-9950-08f1b42de144/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1161,7 +1161,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:2dfce279-eebe-4ccb-aad1-18df9e5e73ef-urn:uuid:bbc75609-9643-4b3b-bf17-1757afdf83fd/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1218,7 +1218,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:4db46718-42cc-4e5d-a801-ce4409a50933-urn:uuid:61f0f858-42a9-4f97-9d47-6e498042ec40/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1275,7 +1275,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:c9cc717e-89f1-4f31-9626-0c633e93e3b0-urn:uuid:593c2438-7023-4ab3-bcee-0499612f6afa/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1332,7 +1332,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:d7b8d6d5-b564-44e6-bc31-4b70f734362d-urn:uuid:0d99f1f4-be57-40df-83ca-5dc294410fa1/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1389,7 +1389,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:6efe2455-8927-4bab-9fe6-f71b911a04e4-urn:uuid:c9dd6460-c83e-453c-821e-3e95f1f50837/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1446,7 +1446,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:5e2e6ae0-bcb1-487e-9133-937010263c77-urn:uuid:62d03e40-dfa0-411e-a230-3fac6ed8786e/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1503,7 +1503,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:d2400778-0674-4b8a-a855-c5e54cb21643-urn:uuid:6c40e92d-0598-469b-b281-565cfbe462d8/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1560,7 +1560,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f806d532-2446-4717-a087-cd77037ce638-urn:uuid:57e14eba-eac3-4266-b38a-38bf9bde35de/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1617,7 +1617,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:7d8e404a-5fec-4942-884e-32d5883218a4-urn:uuid:cefc374b-ebeb-4238-89e3-2f3b18bae8f8/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1674,7 +1674,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:85c0a681-278c-4653-8e31-a7c1c4c874d0-urn:uuid:133dd88f-31be-4cbb-a8b8-ec19654fe95b/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1731,7 +1731,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:ba5dacdf-5f43-4ea6-a901-ade29e7371eb-urn:uuid:a017f0cf-7e81-4977-ad0c-1c18afb7611c/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1788,7 +1788,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:70ab8baf-eb87-47df-818b-e8f68fbf3ca9-urn:uuid:0a3bc1cc-eb6b-4715-9212-45a2791b938e/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1845,7 +1845,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f2af6d36-a18f-4361-82dd-2574d0060911-urn:uuid:3702e0dc-908d-4a5a-92bb-9578d849eee5/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1902,7 +1902,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:b2e7eef0-0114-4fe8-bbdf-31a93a70f46b-urn:uuid:092c6537-0e92-4ad4-b79b-c3c4f3f3bdc7/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -1959,7 +1959,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:7b6f3b9d-1c43-4faa-985c-541231e4f4c2-urn:uuid:f3a5401b-db30-46ec-a3c8-ca676a0df69a/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2016,7 +2016,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:99887bc8-7e62-4b22-b01f-c7ec4a6242bc-urn:uuid:95347a8d-6541-4b83-99a0-119499e84c41/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2073,7 +2073,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:900ed7b7-1f3b-4051-83c1-f778cbf9ed9e-urn:uuid:72719cdf-5def-41f4-8f2e-b69435c423df/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2130,7 +2130,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:396d4426-0982-49be-a0eb-efbd0fec2722-urn:uuid:eb18c41a-1548-4c3d-a12a-eb1f9fff1262/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2193,7 +2193,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:b8d4f010-ab02-4e98-9ca6-b760846ac837-urn:uuid:71b71999-092d-4938-9eee-ada6085cea89/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2250,7 +2250,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:8b50909d-91ef-4797-ac19-fa27bd53bde3-urn:uuid:ae249a4e-e14a-470b-bb87-0667aa729ebd/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2307,7 +2307,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:f50b671f-2dfa-4145-af1e-36eec69b46f2-urn:uuid:6835125a-6575-4f46-b1e0-1e0eb4a91ce6/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2364,7 +2364,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:65be17f0-3ef1-4ae8-b8e4-a00cf728c6d2-urn:uuid:6fd2cb7f-9350-48b8-b91e-c74b8d024f5f/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2421,7 +2421,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://connector.cx-rel.edc.aws.bmw.cloud/BPNL00000003AYRE/urn:uuid:ac449c62-f160-42e6-b22e-054a3d9bb84f-urn:uuid:53814187-0f3d-40b0-8499-73cb99136086/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1-SNAPSHOT",
+								"endpointProtocolVersion": ["0.0.1-SNAPSHOT"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2478,7 +2478,7 @@
 							"protocolInformation": {
 								"endpointAddress": "http://cxdev.germanywestcentral.cloudapp.azure.com:8185/BPNL00000003B5MJ/urn:uuid:58a1b78a-e3cb-4bc9-b3a6-e5bdb3caba3b-urn:uuid:3dd5a4eb-ba85-499b-8f3a-1de84014d82e/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.0",
+								"endpointProtocolVersion": ["0.0.0"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2567,7 +2567,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://subtier-a-edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B3NX/urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4-urn:uuid:18910f3e-f051-48e7-bd7a-b61d2e9c420e/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1",
+								"endpointProtocolVersion": ["0.0.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2618,7 +2618,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://catenax.apps.demonstrator.dps.oncite.cloud/BPNL00000003CSGV/urn:uuid:50edf0fc-95a7-40b3-ad43-9156f3b81768-urn:uuid:ea2193b6-72e4-439b-9e7f-f582eb20f56d/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.1.1",
+								"endpointProtocolVersion": ["0.1.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2669,7 +2669,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://catenax.apps.demonstrator.dps.oncite.cloud/BPNL00000003CSGV/urn:uuid:f2e6d0cd-5a9a-451d-a583-510c5209f64c-urn:uuid:618b1b64-72e4-439b-9e7f-f582eb20f56d/submodel?content=value&extent=WithBLOBValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.1.1",
+								"endpointProtocolVersion": ["0.1.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null
@@ -2726,7 +2726,7 @@
 							"protocolInformation": {
 								"endpointAddress": "https://edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B2OM/urn:uuid:57ced45e-4f98-4aa4-bb67-6f7c51b90a4b-urn:uuid:9926c5c1-81e4-44bb-b2c1-7fed197777de/submodel?content=value&extent=withBlobValue",
 								"endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
-								"endpointProtocolVersion": "0.0.1",
+								"endpointProtocolVersion": ["0.0.1"],
 								"subprotocol": null,
 								"subprotocolBody": null,
 								"subprotocolBodyEncoding": null

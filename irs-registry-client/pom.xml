@@ -12,7 +12,7 @@
 
     <artifactId>irs-registry-client</artifactId>
     <name>Digital Twin Registry Client</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <description>Client library to easily talk to the DTR</description>
 
     <dependencies>

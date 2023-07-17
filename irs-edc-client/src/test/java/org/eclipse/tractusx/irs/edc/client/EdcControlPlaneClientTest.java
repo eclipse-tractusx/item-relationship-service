@@ -23,8 +23,10 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_COMPLETED;
 import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_FINALIZED;
+import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_TERMINATED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -36,6 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -169,6 +172,28 @@ class EdcControlPlaneClientTest {
 
         // assert
         assertThat(response).isEqualTo(negotiationResult);
+    }
+
+    @Test
+    void shouldReturnCancelWhenStateTerminated() {
+        // arrange
+        final var negotiationId = Response.builder().responseId("negotiationId").build();
+        final var negotiationResult = NegotiationResponse.builder()
+                                                         .contractAgreementId("testContractId")
+                                                         .state(STATUS_TERMINATED)
+                                                         .build();
+        final var finalized = NegotiationState.builder().state(STATUS_TERMINATED).build();
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationResponse.class))).thenReturn(
+                ResponseEntity.of(Optional.of(negotiationResult)));
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(NegotiationState.class))).thenReturn(
+                ResponseEntity.of(Optional.of(finalized)));
+
+        // act
+        final var result = testee.getNegotiationResult(negotiationId);
+
+        // assert
+        assertThatThrownBy(result::get).isInstanceOf(ExecutionException.class);
     }
 
     @Test

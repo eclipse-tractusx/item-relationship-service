@@ -26,7 +26,6 @@ import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcT
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -51,7 +50,6 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(MockitoExtension.class)
 class SubmodelExponentialRetryTest {
 
-    public static final String ASSET_ID = "d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4";
     private final RetryRegistry retryRegistry = new InMemoryRetryRegistry();
     @Mock
     private RestTemplate restTemplate;
@@ -92,7 +90,9 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "http://test.com/" + ASSET_ID + "/submodel?content=value")).hasCauseInstanceOf(
+                "https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(
                 HttpServerErrorException.class);
 
         // Assert
@@ -108,7 +108,9 @@ class SubmodelExponentialRetryTest {
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
-                "http://test.com/" + ASSET_ID + "/submodel?content=value")).hasCauseInstanceOf(RuntimeException.class);
+                "https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),

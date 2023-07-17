@@ -118,6 +118,7 @@ resilience4j:
         exponentialBackoffMultiplier: 2 # Multiplier for the exponential delay
         ignore-exceptions: # Do not retry on the listed exceptions
           - org.springframework.web.client.HttpClientErrorException.NotFound
+          - org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException
     instances:
       registry:
         baseConfig: default

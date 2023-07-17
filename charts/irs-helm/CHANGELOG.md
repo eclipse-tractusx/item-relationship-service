@@ -6,7 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [6.1.0]
+## [6.2.0] - 2023-07-14
+### Changed
+- Update IRS version to 3.2.0
+
+## [6.1.0] - 2023-07-07
 ### Changed
 - Remove EDC Catalog cache configuration
 

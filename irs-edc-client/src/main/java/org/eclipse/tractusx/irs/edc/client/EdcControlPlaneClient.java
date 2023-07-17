@@ -60,14 +60,16 @@ public class EdcControlPlaneClient {
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_ERROR = "ERROR";
     public static final String DATASPACE_PROTOCOL_HTTP = "dataspace-protocol-http";
+    public static final String STATUS_TERMINATED = "TERMINATED";
 
     private final RestTemplate edcRestTemplate;
     private final AsyncPollingService pollingService;
     private final EdcConfiguration config;
     private final EdcTransformer edcTransformer;
 
-    public EdcControlPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate, final AsyncPollingService pollingService,
-            final EdcConfiguration config, final EdcTransformer edcTransformer) {
+    public EdcControlPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate,
+            final AsyncPollingService pollingService, final EdcConfiguration config,
+            final EdcTransformer edcTransformer) {
         this.edcRestTemplate = edcRestTemplate;
         this.pollingService = pollingService;
         this.config = config;
@@ -152,6 +154,10 @@ public class EdcControlPlaneClient {
                                                  "NegotiationResponse with id " + getContractNegotiationResponse(
                                                          negotiationId, objectHttpEntity).getResponseId()
                                                          + " is in state ERROR");
+                                         case STATUS_TERMINATED -> throw new IllegalStateException(
+                                                 "NegotiationResponse with id " + getContractNegotiationResponse(
+                                                         negotiationId, objectHttpEntity).getResponseId()
+                                                         + " is in state TERMINATED");
                                          default -> Optional.empty();
                                      };
                                  }
@@ -208,6 +214,10 @@ public class EdcControlPlaneClient {
                                                  "TransferProcessResponse with id " + getTransferProcessResponse(
                                                          transferProcessId, objectHttpEntity).getResponseId()
                                                          + " is in state ERROR");
+                                         case STATUS_TERMINATED -> throw new IllegalStateException(
+                                                 "TransferProcessResponse with id " + getTransferProcessResponse(
+                                                         transferProcessId, objectHttpEntity).getResponseId()
+                                                         + " is in state TERMINATED");
                                          default -> Optional.empty();
                                      };
                                  }

@@ -417,18 +417,24 @@ if __name__ == "__main__":
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
+                    if is_aas3:
+                        for specific_asset in specific_asset_ids_temp:
+                            specific_asset["name"] = specific_asset.pop("key")
+
+
+
                 if "PartAsPlanned" in tmp_key:
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
                     specific_asset_ids_temp.append({
                         "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
-                        "key": "manufacturerPartId"
+                        "name": "manufacturerPartId"
                     })
             print(name_at_manufacturer)
 
-            specific_asset_ids_temp.append({
-                "key": "manufacturerId",
+            specific_asset_ids.append({
+                "name": "manufacturerId",
                 "value": tmp_data["bpnl"]
             })
             if is_aas3:
@@ -459,20 +465,18 @@ if __name__ == "__main__":
                     submodel_name = tmp_key[tmp_key.index("#") + 1: len(tmp_key)]
                     submodel_identification = uuid.uuid4().urn
                     semantic_id = tmp_key
-                    catenax_id_urn = catenax_id.replace('urn:uuid:', '')
-                    submodel_identification_urn = submodel_identification.replace('urn:uuid:', '')
                     if is_ess and tmp_data["bpnl"] in bpnl_fail:
-                        endpoint_address = f"http://idonotexist/{catenax_id_urn}-{submodel_identification_urn}/submodel?content=value&extent=withBlobValue"
+                        endpoint_address = f"http://idonotexist/{catenax_id}-{submodel_identification}/submodel?content=value&extent=withBlobValue"
                     elif submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
-                        endpoint_address = f"{esr_url}/{catenax_id_urn}/asBuilt/ISO14001/submodel"
+                        endpoint_address = f"{esr_url}/{catenax_id}/asBuilt/ISO14001/submodel"
                     else:
-                        endpoint_address = f"{edc_url}/{catenax_id_urn}-{submodel_identification_urn}/submodel?content=value&extent=withBlobValue"
+                        endpoint_address = f"{edc_url}/{catenax_id}-{submodel_identification}/submodel?content=value&extent=withBlobValue"
 
                     if is_aas3:
-                        endpoint_address = f"{edc_url}/shells/{catenax_id_urn}/submodels/{submodel_identification_urn}/submodel"
+                        endpoint_address = f"{edc_url}/shells/{catenax_id}/submodels/{submodel_identification}/submodel"
                         descriptor = create_submodel_descriptor_3_0(submodel_name, submodel_identification, semantic_id,
                                                                     endpoint_address,
-                                                                    f"{catenax_id_urn}-{submodel_identification_urn}",
+                                                                    f"{catenax_id}-{submodel_identification}",
                                                                     edc_url)
                         submodel_descriptors.append(json.loads(descriptor))
                     else:
@@ -480,13 +484,13 @@ if __name__ == "__main__":
                                                                 endpoint_address)
                         submodel_descriptors.append(json.loads(descriptor))
 
-                    asset_prop_id = f"{catenax_id_urn}-{submodel_identification_urn}"
+                    asset_prop_id = f"{catenax_id}-{submodel_identification}"
 
                     print("Create submodel on submodel server")
                     if tmp_data[tmp_key] != "":
                         payload = create_submodel_payload(tmp_data[tmp_key][0])
                         response = session.request(method="POST",
-                                                   url=f"{submodel_upload_url}/data/{submodel_identification_urn}",
+                                                   url=f"{submodel_upload_url}/data/{submodel_identification}",
                                                    headers=headers, data=payload)
                         print_response(response)
 
@@ -495,7 +499,7 @@ if __name__ == "__main__":
                     if submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
                         payload = create_esr_edc_asset_payload(esr_url, asset_prop_id, catenax_id)
                     else:
-                        payload = create_edc_asset_payload(submodel_url, asset_prop_id, submodel_identification_urn)
+                        payload = create_edc_asset_payload(submodel_url, asset_prop_id, submodel_identification)
                     response = session.request(method="POST", url=asset_path, headers=headers_with_api_key,
                                                data=payload)
                     print_response(response)

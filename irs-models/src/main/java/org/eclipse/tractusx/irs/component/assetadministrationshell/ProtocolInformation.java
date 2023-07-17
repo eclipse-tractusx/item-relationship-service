@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -37,7 +39,7 @@ public class ProtocolInformation {
     /**
      * endpointAddress
      */
-    private String endpointAddress;
+    private String href;
     /**
      * endpointProtocol
      */
@@ -45,7 +47,7 @@ public class ProtocolInformation {
     /**
      * endpointProtocolVersion
      */
-    private String endpointProtocolVersion;
+    private List<String> endpointProtocolVersion;
     /**
      * subprotocol
      */
