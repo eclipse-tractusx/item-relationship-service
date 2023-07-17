@@ -72,18 +72,18 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
         private String childCatenaXId;
 
         public Relationship toRelationship(final String catenaXId) {
-            final Part part = this.part.stream().findFirst().orElse(new Part());
+            final Part childPart = this.part.stream().findFirst().orElse(new Part());
 
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_SPECIFIED)
-                                                                      .assembledOn(part.getCreatedOn())
-                                                                      .lastModifiedOn(part.getLastModifiedOn());
+                                                                      .assembledOn(childPart.getCreatedOn())
+                                                                      .lastModifiedOn(childPart.getLastModifiedOn());
 
-            if (part.getPartQuantity() != null) {
+            if (childPart.getPartQuantity() != null) {
                 linkedItem.quantity(Quantity.builder()
-                                            .quantityNumber(part.getPartQuantity().getQuantityNumber())
-                                            .measurementUnit(MeasurementUnit.builder().lexicalValue(part.getPartQuantity().getMeasurementUnit()).build())
+                                            .quantityNumber(childPart.getPartQuantity().getQuantityNumber())
+                                            .measurementUnit(MeasurementUnit.builder().lexicalValue(childPart.getPartQuantity().getMeasurementUnit()).build())
                                             .build());
             }
 
