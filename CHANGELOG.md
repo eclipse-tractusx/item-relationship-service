@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Known knowns
 - Digital Twin Registry load problem - after few subsequent requests DTR starts answering with 500 Http status
 - ESS Notifications not working with Decentral Digital Twin Registry Service - bpn is not passed
-- Unpredictable 500 Http status returned by EDC during submodel retrievals when full test data is uploaded (EDC version: 0.4.1)
+- [TRI-1455] Random 500 http status code returned by EDC during submodel retrievals. (EDC version: 0.4.1)
 - [TRI-1441] - No limiting of requests in paralle - IRS allows sending API requests unlimited
 - Potential denial-of-service (DoS) attack - IRS allows to enter a large number of characters, which are reflected in the response of the server
 - Software related information disclosure - IRS returns redundant information about the type and version of used software
