@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The client code for accessing the Digital Twin Registry (central and decentral) is now available as a spring boot maven library. See the README in the irs-registry-client module for more information.
 
 ### Known knowns
-- Digital Twin Registry load problem - after few subsequent requests DTR starts answering with 500 Http status
+- [TRI-1346] Digital Twin Registry(DTR) - performance issues - after subsequent requests DTR starts responding 500 http status code
 - [TRI-1460] ESS Notifications endpoints are not working in the decentral Digital Twin Registry scenario because endpoints does not provide bpn as a parameter. 
 - [TRI-1455] Random 500 http status code returned by EDC during submodel retrievals. (EDC version: 0.4.1)
 - [TRI-1441] - No limiting of requests in paralle - IRS allows sending API requests unlimited
