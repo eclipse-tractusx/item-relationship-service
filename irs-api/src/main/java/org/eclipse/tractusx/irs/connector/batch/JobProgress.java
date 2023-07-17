@@ -28,6 +28,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
@@ -40,9 +41,9 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 public class JobProgress {
 
     /**
-     * Global Asset Id that was requested by Batch Order
+     * Key object contains required attributes for identify part chain entry node
      */
-    private String globalAssetId;
+    private PartChainIdentificationKey identificationKey;
 
     /**
      * Job Id that was registered by Batch Order process
