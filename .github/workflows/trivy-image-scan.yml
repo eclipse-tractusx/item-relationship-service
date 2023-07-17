@@ -33,21 +33,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Determine image version
-        id: version
-        run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.head_ref || github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.head_ref || github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Support PR ref versions
-          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
-          # Use input parameter 'image-tag' if present
-          [[ "${{ github.event.inputs.image-tag }}" != '' ]] && VERSION=$(echo "${{ github.event.inputs.image-tag }}")
-          echo VERSION=$VERSION
-          echo "::set-output name=image_tag::$VERSION"
+      - name: Build image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: irs-api:testing
 
       # It's also possible to scan your private registry with Trivy's built-in image scan.
       # All you have to do is set ENV vars.
@@ -59,7 +50,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           # Path to Docker image
-          image-ref: "ghcr.io/catenax-ng/irs-api:${{ steps.version.outputs.image_tag }} "
+          image-ref: "irs-api:testing"
           format: "sarif"
           output: "trivy-results2.sarif"
           exit-code: "1"
