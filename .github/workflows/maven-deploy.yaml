@@ -82,7 +82,7 @@ jobs:
         run: |-
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl irs-registry-client)
           REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-          if [[ $string == *"-SNAPSHOT"* ]]; then
+          if [[ $VERSION == *"-SNAPSHOT"* ]]; then
             echo "Using snapshot repository"
             REPOSITORY_URL="https://oss.sonatype.org/content/repositories/snapshots"
           fi
