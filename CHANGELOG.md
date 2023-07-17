@@ -13,11 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [TRI-1346] Digital Twin Registry(DTR) - performance issues - after subsequent requests DTR starts responding 500 http status code
 - [TRI-1460] ESS Notifications endpoints are not working in the decentral Digital Twin Registry scenario because endpoints does not provide bpn as a parameter. 
 - [TRI-1455] Random 500 http status code returned by EDC during submodel retrievals. (EDC version: 0.4.1)
-- [TRI-1441] - No limiting of requests in paralle - IRS allows sending API requests unlimited
-- Potential denial-of-service (DoS) attack - IRS allows to enter a large number of characters, which are reflected in the response of the server
-- Software related information disclosure - IRS returns redundant information about the type and version of used software
-- Misconfigured Access-Control-Allow- Origin Header - by intercepting network traffic it could be possible to read and modify any messages that are exchanged with server
-- HTTP security headers configuration could be improved and allow for additional protection against some web application attacks
+- [TRI-1096] No limiting of requests in parallel - IRS allows sending API requests unlimited
+- [TRI-1100] Potential denial-of-service (DoS) attack - IRS allows to enter a large number of characters, which are reflected in the response of the server
+- [TRI-1098] Software related information disclosure - IRS returns redundant information about the type and version of used software
+- [TRI-793] Misconfigured Access-Control-Allow- Origin Header - by intercepting network traffic it could be possible to read and modify any messages that are exchanged with server
+- [TRI-1095] HTTP security headers configuration could be improved and allow for additional protection against some web application attacks
 - Synchronous communication with external services without circuit breaker pattern - potentially could affect IRS resilience when other services becomes non-responsive
 - Cascading effects of failure when Digital Twin Registry becomes non-responsive - potentially bulkhead pattern could improve IRS resilience
 - Retry mechanism used inside IRS could potentially affect IRS resilience - DDOS other services on which IRS is dependent, exhaustion of resources and available threads, etc.
