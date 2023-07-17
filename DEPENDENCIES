@@ -161,7 +161,7 @@ maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, clear
 maven/mavencentral/org.hamcrest/hamcrest/2.2, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/org.hibernate.validator/hibernate-validator/8.0.0.Final, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jboss.logging/jboss-logging/3.4.1.Final, Apache-2.0, approved, CQ21255
-maven/mavencentral/org.jboss.logging/jboss-logging/3.5.1.Final, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.jboss.logging/jboss-logging/3.5.1.Final, Apache-2.0, approved, #9471
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-common/1.8.22, Apache-2.0, approved, #8910
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31, Apache-2.0, approved, clearlydefined
