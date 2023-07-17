@@ -58,7 +58,7 @@ class AssetAdministrationShellTestdataCreator {
         }
 
         final List<SubmodelDescriptor> submodelDescriptors = new ArrayList<>();
-        
+
         cxTestData.get()
                   .getSingleLevelBomAsBuilt()
                   .ifPresent(submodel -> submodelDescriptors.add(
@@ -70,6 +70,10 @@ class AssetAdministrationShellTestdataCreator {
                   .getSingleLevelUsageAsBuilt()
                   .ifPresent(submodel -> submodelDescriptors.add(
                           createSingleLevelUsageAsBuiltSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
+                  .getSingleLevelBomAsSpecified()
+                  .ifPresent(submodel -> submodelDescriptors.add(
+                          createSingleLevelBomAsSpecifiedSubmodelDescriptor(catenaXId)));
         cxTestData.get()
                   .getSingleLevelBomAsPlanned()
                   .ifPresent(submodel -> submodelDescriptors.add(
