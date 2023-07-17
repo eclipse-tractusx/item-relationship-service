@@ -173,16 +173,3 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
           repository: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
-
-  trigger-trivy-image-scan:
-    if: >-
-      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
-      github.actor != 'dependabot[bot]'
-    needs:
-      - build_images
-    uses: ./.github/workflows/trivy-image-scan.yml
-    with:
-      image-tag: ${{ needs.build_images.outputs.image_tag }}
-      ref: ${{ github.ref }}
-      sha: ${{ github.sha }}
-
