@@ -37,11 +37,18 @@ irs-helm:
       clientTokenUri: <path:traceability-irs/data/pen/keycloak/oauth2#tokenUri>
       jwkSetUri: <path:traceability-irs/data/pen/keycloak/oauth2#jwkSetUri>
   edc:
-    provider:
-      host:
     controlplane:
       apikey:
         secret: <path:traceability-irs/data/pen/controlplane#apiKey>
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 1Gi
+
 
   #######################
   # Minio Configuration #
@@ -59,9 +66,19 @@ tractusx-connector:
     daps: false
     vault: false
   participant:
-    id: BPNL00000003CRHK
+    id: BPNL00000001CRHK
 
   controlplane:
+    # SSI configuration
+    ssi:
+      miw:
+        url: <path:traceability-irs/data/dev/controlplane#ssi.miw.url>
+        authorityId: <path:traceability-irs/data/dev/controlplane#ssi.miw.authorityId>
+      oauth:
+        tokenurl: <path:traceability-irs/data/dev/controlplane#ssi.oauth.tokenurl>
+        client:
+          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id>
+          secretAlias: edc-test-miw-keycloak-secret
     ingresses:
       - enabled: true
         hostname: "irs-consumer-controlplane-pen.int.demo.catena-x.net"
@@ -95,41 +112,30 @@ tractusx-connector:
     internationalDataSpaces:
       id: TXDC
       description: Tractus-X Eclipse IDS Data Space Connector
-      title: "IRS INT Consumer EDC"
+      title: "IRS PEN Consumer EDC"
       maintainer: ""
       curator: ""
       catalogId: TXDC-Catalog
 
-    # Explicitly declared url for reaching the ids api (e.g. if ingresses not used)
-    url:
-      ids: ""
-
     resources:
       limits:
         cpu: 500m
-        memory: 2Gi
+        memory: 1Gi
       requests:
-        cpu: 500m
-        memory: 2Gi
+        cpu: 100m
+        memory: 1Gi
 
   dataplane:
-    ## Ingress declaration to expose the network service.
     ingresses:
-      ## Public / Internet facing Ingress
       - enabled: true
-        # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
         hostname: "irs-consumer-dataplane-pen.int.demo.catena-x.net"
-        # -- Additional ingress annotations to add
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        # -- EDC endpoints exposed by this ingress resource
         endpoints:
           - public
-        # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
         className: "nginx"
-        # -- Enables TLS on the ingress resource
         tls:
           enabled: true
           secretName: tls-secret
@@ -146,10 +152,10 @@ tractusx-connector:
     resources:
       limits:
         cpu: 500m
-        memory: 1Gi
+        memory: 512Mi
       requests:
-        cpu: 500m
-        memory: 1Gi
+        cpu: 200m
+        memory: 512Mi
 
   # URL where the EndpointDataReference callback will be sent to
   backendService:
@@ -173,15 +179,6 @@ tractusx-connector:
       transferProxyTokenSignerPrivateKey: irs-int-daps-key
       transferProxyTokenSignerPublicKey: irs-int-daps-cert
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
-      dapsPrivateKey: irs-int-daps-key
-      dapsPublicKey: irs-int-daps-cert
-
-  daps:
-    url: "https://daps1.int.demo.catena-x.net"
-    clientId: <path:traceability-irs/data/int/controlplane#edc.oauth.client.id>
-    paths:
-      jwks: /.well-known/jwks.json
-      token: /token
 
   ##################################
   # EDC Postgres Configuration #
