@@ -41,14 +41,17 @@ irs-helm:
       clientId: <path:traceability-irs/data/int/keycloak/dataspacediscovery#clientId>
       clientSecret: <path:traceability-irs/data/int/keycloak/dataspacediscovery#clientSecret>
   edc:
-    provider:
-      host:
     controlplane:
       apikey:
         secret: <path:traceability-irs/data/int/controlplane#apiKey>
-    catalog:
-      cache:
-        enabled: false
+
+  resources:
+    limits:
+      cpu: 1.5
+      memory: 1.5Gi
+    requests:
+      cpu: 200m
+      memory: 1.5Gi
 
 
   #######################
@@ -64,6 +67,13 @@ irs-helm:
   # Grafana Configuration #
   #########################
   grafana:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: 400m
+        memory: 256Mi
     enabled: true
     ingress:
       enabled: true
@@ -84,16 +94,25 @@ irs-helm:
     enabled: true
 
 
-
 tractusx-connector:
   install:
     postgresql: false
     daps: false
     vault: false
   participant:
-    id: BPNL00000003CRHK
+    id: <path:traceability-irs/data/int/controlplane#participantId>
 
   controlplane:
+    # SSI configuration
+    ssi:
+      miw:
+        url: <path:traceability-irs/data/int/controlplane#ssi.miw.url>
+        authorityId: <path:traceability-irs/data/int/controlplane#ssi.miw.authorityId>
+      oauth:
+        tokenurl: <path:traceability-irs/data/int/controlplane#ssi.oauth.tokenurl>
+        client:
+          id: <path:traceability-irs/data/int/controlplane#ssi.oauth.client.id>
+          secretAlias: miw-int-keycloak-secret
     ingresses:
       - enabled: true
         hostname: "irs-consumer-controlplane.int.demo.catena-x.net"
@@ -118,11 +137,6 @@ tractusx-connector:
       protocol:
         port: 8084
         path: /api/v1/dsp
-      # -- observability api with unsecured access, must not be internet facing
-      observability:
-        port: 8085
-        path: /observability  # -- observability api, provides /health /readiness and /liveness endpoints
-        insecure: true  # -- allow or disallow insecure access, i.e. access without authentication
 
     internationalDataSpaces:
       id: TXDC
@@ -132,17 +146,13 @@ tractusx-connector:
       curator: ""
       catalogId: TXDC-Catalog
 
-    # Explicitly declared url for reaching the ids api (e.g. if ingresses not used)
-    url:
-      ids: ""
-
     resources:
       limits:
-        cpu: 500m
-        memory: 2Gi
+        cpu: 1.5
+        memory: 3Gi
       requests:
-        cpu: 500m
-        memory: 2Gi
+        cpu: 250m
+        memory: 3Gi
 
   dataplane:
     ## Ingress declaration to expose the network service.
@@ -170,18 +180,14 @@ tractusx-connector:
       public:
         port: 8081
         path: /api/public
-      observability:
-        port: 8085
-        path: /observability
-        insecure: true
 
     resources:
       limits:
         cpu: 500m
-        memory: 1Gi
+        memory: 512Mi
       requests:
-        cpu: 500m
-        memory: 1Gi
+        cpu: 200m
+        memory: 512Mi
 
   # URL where the EndpointDataReference callback will be sent to
   backendService:
@@ -205,15 +211,6 @@ tractusx-connector:
       transferProxyTokenSignerPrivateKey: irs-int-daps-key
       transferProxyTokenSignerPublicKey: irs-int-daps-cert
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
-      dapsPrivateKey: irs-int-daps-key
-      dapsPublicKey: irs-int-daps-cert
-
-  daps:
-    url: "https://daps1.int.demo.catena-x.net"
-    clientId: <path:traceability-irs/data/int/controlplane#edc.oauth.client.id>
-    paths:
-      jwks: /.well-known/jwks.json
-      token: /token
 
   ##################################
   # EDC Postgres Configuration #
