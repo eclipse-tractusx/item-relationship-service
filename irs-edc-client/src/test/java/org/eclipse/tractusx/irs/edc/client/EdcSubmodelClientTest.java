@@ -230,6 +230,24 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsSpecified() throws Exception {
+        final String catenaXId = "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e";
+        prepareTestdata(catenaXId, "_singleLevelBomAsSpecified");
+
+        final List<Relationship> submodelResponse = testee.getRelationships(
+                                                                  "http://localhost/" + ASSET_ID + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_SPECIFIED)
+                                                          .get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse).isNotEmpty();
+        final List<String> childIds = submodelResponse.stream()
+                                                      .map(Relationship::getLinkedItem)
+                                                      .map(LinkedItem::getChildCatenaXId)
+                                                      .map(GlobalAssetIdentification::getGlobalAssetId)
+                                                      .collect(Collectors.toList());
+        assertThat(childIds).containsAnyOf("urn:uuid:7eeeac86-7b69-444d-81e6-655d0f1513bd");
+    }
+
+    @Test
     void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt() throws Exception {
         final String catenaXId = "urn:uuid:61c83b41-def0-4742-a1a8-e4e8a8cb210e";
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");

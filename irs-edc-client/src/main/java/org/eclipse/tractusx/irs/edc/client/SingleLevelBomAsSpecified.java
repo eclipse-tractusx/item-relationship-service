@@ -99,6 +99,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
          */
         @Data
         @Jacksonized
+        @SuppressWarnings("PMD.ShortClassName")
         /* package */ static class Part {
 
             private String ownerPartId;
