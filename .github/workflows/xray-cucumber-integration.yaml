@@ -63,7 +63,7 @@ jobs:
           ISSUE_FILTER: ${{ inputs.executionFilter }}
         run: |
           unzip -o features.zip -d irs-cucumber-tests/src/test/resources/features
-          mvn --batch-mode clean install -pl irs-cucumber-tests,irs-models -D"cucumber.filter.tags"=$ISSUE_FILTER
+          mvn --batch-mode clean install -pl irs-cucumber-tests,irs-models -D"cucumber.filter.tags"="$ISSUE_FILTER"
 
       - name: Submit results to Xray
         if: ${{ always() && steps.download.outputs.http_response == '200' }}
