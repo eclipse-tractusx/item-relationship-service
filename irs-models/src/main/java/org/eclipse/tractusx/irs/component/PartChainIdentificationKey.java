@@ -58,7 +58,8 @@ public class PartChainIdentificationKey {
     // The BPN validation can be activated once all partners follow the pattern correctly
     //@Pattern(regexp = BPN_REGEX)
     //@Size(min = BPN_SIZE, max = BPN_SIZE)
-    @Schema(description = "BPN for part chain identification needed in decentral registry approach", example = "BPNL0123456789XX",
+    @NotBlank
+    @Schema(description = "BPN of partner providing the initial asset", example = "BPNL0123456789XX",
             implementation = String.class, minLength = BPN_SIZE, maxLength = BPN_SIZE)
     private String bpn;
 }

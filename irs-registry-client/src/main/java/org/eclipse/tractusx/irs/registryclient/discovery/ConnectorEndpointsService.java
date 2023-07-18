@@ -27,6 +27,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Connector Endpoints service to find connectors in Discovery Finder
@@ -39,6 +40,11 @@ public class ConnectorEndpointsService {
     private final DiscoveryFinderClient discoveryFinderClient;
 
     public List<String> fetchConnectorEndpoints(final String bpn) {
+        if (StringUtils.isBlank(bpn)) {
+            log.warn("BPN was null, cannot search for any connector endpoints. Returning empty list.");
+            return List.of();
+        }
+
         log.info("Requesting connector endpoints for BPN {}", bpn);
         final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
         final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)

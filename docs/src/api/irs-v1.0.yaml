@@ -1867,8 +1867,7 @@ components:
       properties:
         bpn:
           type: string
-          description: BPN for part chain identification needed in decentral registry
-            approach
+          description: BPN of partner providing the initial asset
           example: BPNL0123456789XX
           maxLength: 16
           minLength: 16
@@ -1881,6 +1880,7 @@ components:
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       required:
+        - bpn
         - globalAssetId
     Policy:
       type: object
