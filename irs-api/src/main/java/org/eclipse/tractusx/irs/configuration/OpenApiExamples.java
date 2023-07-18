@@ -29,10 +29,12 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
+import org.eclipse.tractusx.ess.service.NotificationSummary;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.Bpn;
+import org.eclipse.tractusx.irs.component.FetchedItems;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
@@ -110,6 +112,7 @@ public class OpenApiExamples {
                                                                             .withStatusCode(HttpStatus.NOT_FOUND)
                                                                             .build()));
         components.addExamples("complete-job-result", createCompleteJobResult());
+        components.addExamples("complete-ess-job-result", createCompleteEssJobResult());
         components.addExamples("complete-order-result", createCompleteOrderResult());
         components.addExamples("complete-batch-result", createCompleteBatchResult());
         components.addExamples("job-result-without-uncompleted-result-tree", createJobResultWithoutTree());
@@ -240,6 +243,43 @@ public class OpenApiExamples {
                              .submodel(createSubmodel())
                              .bpn(Bpn.withManufacturerId("BPNL00000003AYRE").updateManufacturerName("OEM A"))
                              .build());
+    }
+
+    private Example createCompleteEssJobResult() {
+        final Jobs essJobsJobs = Jobs.builder()
+                                     .job(Job.builder()
+                                             .id(UUID.fromString(JOB_ID))
+                                             .globalAssetId(createGAID(GLOBAL_ASSET_ID))
+                                             .state(JobState.COMPLETED)
+                                             .owner("")
+                                             .createdOn(EXAMPLE_ZONED_DATETIME)
+                                             .startedOn(EXAMPLE_ZONED_DATETIME)
+                                             .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                                             .completedOn(EXAMPLE_ZONED_DATETIME)
+                                             .owner("")
+                                             .summary(createSummary())
+                                             .parameter(createJobParameter())
+                                             .exception(createJobException())
+                                             .build())
+                                     .relationships(List.of(createRelationship()))
+                                     .shells(List.of(createShell()))
+                                     .tombstone(createTombstone())
+                                     .submodel(createEssSubmodel())
+                                     .bpn(Bpn.withManufacturerId("BPNL00000003AYRE").updateManufacturerName("OEM A"))
+                                     .build();
+        final NotificationSummary newSummary = new NotificationSummary(
+                AsyncFetchedItems.builder().running(0).completed(3).failed(0).build(),
+                FetchedItems.builder().completed(3).failed(0).build(), 6, 6);
+        final Job job = essJobsJobs.getJob().toBuilder().summary(newSummary).build();
+        return toExample(essJobsJobs.toBuilder().job(job).build());
+    }
+
+    private Submodel createEssSubmodel() {
+        return Submodel.builder()
+                       .aspectType("supply_chain_impacted")
+                       .identification(SUBMODEL_IDENTIFICATION)
+                       .payload(Map.of("supplyChainImpacted", "YES"))
+                       .build();
     }
 
     private Example createCompleteOrderResult() {
