@@ -22,7 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import java.net.SocketTimeoutException;
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
+
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -39,29 +40,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
-import org.eclipse.tractusx.irs.common.Masker;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
-import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
-import org.springframework.web.client.ResourceAccessException;
 
 /**
  * Public API facade for EDC domain
  */
 @SuppressWarnings("PMD.ExcessiveImports")
 public interface EdcSubmodelClient {
-    CompletableFuture<List<Relationship>> getRelationships(String submodelEndpointAddress,
-            RelationshipAspect traversalAspectType) throws EdcClientException;
 
-    CompletableFuture<String> getSubmodelRawPayload(String submodelEndpointAddress) throws EdcClientException;
+    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelSufix, String assetId)
+            throws EdcClientException;
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
             EdcNotification notification) throws EdcClientException;
@@ -86,20 +84,12 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
-            final RelationshipAspect traversalAspectType) throws EdcClientException {
-        if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(submodelEndpointAddress)) {
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSuffix,
+            final String assetId) throws EdcClientException {
+        if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(assetId)) {
             throw new EdcClientException("Dummy Exception");
         }
-
-        return CompletableFuture.completedFuture(
-                testdataCreator.createSubmodelForId(submodelEndpointAddress, traversalAspectType.getSubmodelClazz())
-                               .asRelationships());
-    }
-
-    @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress) {
-        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(submodelEndpointAddress);
+        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(assetId + "_" + connectorEndpoint);
         return CompletableFuture.completedFuture(StringMapper.mapToString(submodel));
     }
 
@@ -120,7 +110,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 /**
  * Public API facade for EDC domain
  */
-@Service
+@Service("irsEdcClientEdcSubmodelClientImpl")
 @Slf4j
 @RequiredArgsConstructor
 @Profile({ "!local && !stubtest" })
@@ -133,7 +123,6 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final EdcDataPlaneClient edcDataPlaneClient;
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
     private final AsyncPollingService pollingService;
-    private final OutboundMeterRegistryService meterRegistryService;
     private final RetryRegistry retryRegistry;
     private final EDCCatalogFacade catalogFacade;
     private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
@@ -141,20 +130,6 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private static void stopWatchOnEdcTask(final StopWatch stopWatch) {
         stopWatch.stop();
         log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
-    }
-
-    @Override
-    public CompletableFuture<List<Relationship>> getRelationships(final String submodelEndpointAddress,
-            final RelationshipAspect traversalAspectType) throws EdcClientException {
-        return execute(submodelEndpointAddress, () -> {
-            final StopWatch stopWatch = new StopWatch();
-            stopWatch.start("Get EDC Submodel task for relationships, endpoint " + submodelEndpointAddress);
-
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
-
-            return startSubmodelDataRetrieval(traversalAspectType, negotiationResponse.getContractAgreementId(),
-                    stopWatch);
-        });
     }
 
     private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
@@ -188,26 +163,19 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return contractNegotiationService.negotiate(providerWithSuffix, catalogItem);
     }
 
-    private CompletableFuture<List<Relationship>> startSubmodelDataRetrieval(
-            final RelationshipAspect traversalAspectType, final String contractAgreementId, final StopWatch stopWatch) {
+    private NegotiationResponse fetchNegotiationResponseWithFilter(final String connectorEndpoint, final String assetId)
+            throws EdcClientException {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + connectorEndpoint);
 
-        return pollingService.<List<Relationship>>createJob()
-                             .action(() -> {
-                                 final Optional<String> data = retrieveSubmodelData(config.getSubmodel().getPath(),
-                                         contractAgreementId, stopWatch);
-                                 if (data.isPresent()) {
-                                     final RelationshipSubmodel relationshipSubmodel = StringMapper.mapFromString(
-                                             data.get(), traversalAspectType.getSubmodelClazz());
+        final List<CatalogItem> catalog = catalogFacade.fetchCatalogByFilter(connectorEndpoint, NAMESPACE_EDC_ID,
+                assetId);
 
-                                     return Optional.of(relationshipSubmodel.asRelationships());
-                                 }
-                                 return Optional.empty();
-                             })
-                             .timeToLive(config.getSubmodel().getRequestTtl())
-                             .description("waiting for submodel retrieval")
-                             .build()
-                             .schedule();
-
+        final CatalogItem catalogItem = catalog.stream()
+                                               .findFirst()
+                                               .orElseThrow(() -> new ItemNotFoundInCatalogException(connectorEndpoint,
+                                                       assetId));
+        return contractNegotiationService.negotiate(connectorEndpoint, catalogItem);
     }
 
     private CompletableFuture<EdcNotificationResponse> sendNotificationAsync(final String contractAgreementId,
@@ -271,15 +239,18 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String submodelEndpointAddress)
-            throws EdcClientException {
-        return execute(submodelEndpointAddress, () -> {
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSuffix,
+            final String assetId) throws EdcClientException {
+        return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
-            stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + submodelEndpointAddress);
+            stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
 
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            final var negotiationEndpoint = appendSuffix(connectorEndpoint,
+                    config.getControlplane().getProviderSuffix());
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint,
+                    assetId);
             return pollingService.<String>createJob()
-                                 .action(() -> retrieveSubmodelData(config.getSubmodel().getPath(),
+                                 .action(() -> retrieveSubmodelData(submodelSuffix,
                                          negotiationResponse.getContractAgreementId(), stopWatch))
                                  .timeToLive(config.getSubmodel().getRequestTtl())
                                  .description("waiting for submodel retrieval")
@@ -351,16 +322,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final String host = URI.create(endpointAddress).getHost();
         final Retry retry = retryRegistry.retry(host, "default");
         try {
-            return Retry.decorateCallable(retry, () -> {
-                try {
-                    return supplier.get();
-                } catch (ResourceAccessException e) {
-                    if (e.getCause() instanceof SocketTimeoutException) {
-                        meterRegistryService.incrementSubmodelTimeoutCounter(endpointAddress);
-                    }
-                    throw e;
-                }
-            }).call();
+            return Retry.decorateCallable(retry, supplier::get).call();
         } catch (EdcClientException e) {
             throw e;
         } catch (Exception e) {

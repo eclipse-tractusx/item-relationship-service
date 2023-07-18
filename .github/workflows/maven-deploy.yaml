@@ -1,0 +1,90 @@
+name: Upload to Central Maven Registry
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - release/**
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  secret-presence:
+    runs-on: ubuntu-latest
+    outputs:
+      DOCKER_HUB_TOKEN: ${{ steps.secret-presence.outputs.DOCKER_HUB_TOKEN }}
+      HAS_OSSRH: ${{ steps.secret-presence.outputs.HAS_OSSRH }}
+    steps:
+      - name: Check whether secrets exist
+        id: secret-presence
+        run: |
+          [ ! -z "${{ secrets.DOCKER_HUB_TOKEN }}" ] && echo "DOCKER_HUB_TOKEN=true" >> $GITHUB_OUTPUT
+          [ ! -z "${{ secrets.ORG_GPG_PASSPHRASE }}" ] && 
+          [ ! -z "${{ secrets.ORG_GPG_PRIVATE_KEY }}" ] && 
+          [ ! -z "${{ secrets.ORG_OSSRH_USERNAME }}" ] && 
+          [ ! -z "${{ secrets.ORG_OSSRH_PASSWORD }}" ]  && 
+          echo "HAS_OSSRH=true" >> $GITHUB_OUTPUT
+          exit 0
+
+  publish-to-sonatype:
+    name: "Publish artifacts to OSSRH Snapshots / MavenCentral"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: [ secret-presence ]
+
+    # do not run on PR branches, do not run on releases
+    if: |
+      needs.secret-presence.outputs.HAS_OSSRH && github.event_name != 'pull_request' && github.ref != 'refs/heads/releases'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn package -pl irs-testing,irs-models,irs-common,irs-edc-client,irs-registry-client --batch-mode
+
+      # Import GPG Key
+      - uses: ./.github/actions/import-gpg-key
+        name: "Import GPG Key"
+        with:
+          gpg-private-key: ${{ secrets.ORG_GPG_PRIVATE_KEY }}
+
+      - name: Configure Maven settings
+        run: |
+          mkdir -p $HOME/.m2
+          echo "<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'>
+            <servers>
+              <server>
+                <id>ossrh</id>
+                <username>${{ secrets.ORG_OSSRH_USERNAME }}</username>
+                <password>${{ secrets.ORG_OSSRH_PASSWORD }}</password>
+              </server>
+            </servers>
+          </settings>" > $HOME/.m2/settings.xml
+
+      # publish snapshots or releases
+      - name: Publish version
+        run: |-
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl irs-registry-client)
+          REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+          if [[ $string == *"-SNAPSHOT"* ]]; then
+            echo "Using snapshot repository"
+            REPOSITORY_URL="https://oss.sonatype.org/content/repositories/snapshots"
+          fi
+          echo "Publishing Version $VERSION to Sonatype Repository $REPOSITORY_URL"
+          mvn -s $HOME/.m2/settings.xml --batch-mode gpg:sign-and-deploy-file -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -Durl=$REPOSITORY_URL -DrepositoryId=ossrh -Dfile=irs-registry-client/target/irs-registry-client-$VERSION-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=$VERSION -Dpackaging=jar

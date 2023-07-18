@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [3.2.0] - 2023-07-14
+### Changed
+- The client code for accessing the Digital Twin Registry (central and decentral) is now available as a spring boot maven library. See the README in the irs-registry-client module for more information.
+- Update EDC dependencies to 0.1.3
+- Add Transformer to support new EDC constraint operator format
+- IRS now supports the AAS API 3.0 and its updated models. **Note**: this also reflects in the Job response shells, please check the new schema.
+
 ### Known knowns
 - PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
 
@@ -258,8 +266,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.2...HEAD
-[3.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.1...3.0.2
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.2.0...HEAD
+[3.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.1.0...3.2.0
+[3.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.1...3.0.0
 [2.6.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.0...2.6.1

@@ -55,6 +55,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKey
 import org.eclipse.tractusx.irs.component.assetadministrationshell.LangString;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -246,14 +247,18 @@ public class OpenApiExamples {
                                            .orderId(UUID_ID)
                                            .state(ProcessingState.COMPLETED)
                                            .batchChecksum(1)
-                                           .batches(
-                                                   List.of(BatchOrderResponse.BatchResponse
-                                                           .builder().batchId(UUID_ID)
-                                                           .batchNumber(1)
-                                                           .jobsInBatchChecksum(1)
-                                                           .batchUrl("https://../irs/orders/" + UUID_ID + "/batches/" + UUID_ID)
-                                                           .batchProcessingState(ProcessingState.PARTIAL)
-                                                           .build()))
+                                           .batches(List.of(BatchOrderResponse.BatchResponse.builder()
+                                                                                            .batchId(UUID_ID)
+                                                                                            .batchNumber(1)
+                                                                                            .jobsInBatchChecksum(1)
+                                                                                            .batchUrl(
+                                                                                                    "https://../irs/orders/"
+                                                                                                            + UUID_ID
+                                                                                                            + "/batches/"
+                                                                                                            + UUID_ID)
+                                                                                            .batchProcessingState(
+                                                                                                    ProcessingState.PARTIAL)
+                                                                                            .build()))
                                            .build());
     }
 
@@ -273,17 +278,19 @@ public class OpenApiExamples {
                                                                    .completedOn(EXAMPLE_ZONED_DATETIME)
                                                                    .build()))
                                       .jobsInBatchChecksum(1)
-                                      .batchProcessingState(ProcessingState.COMPLETED).build());
+                                      .batchProcessingState(ProcessingState.COMPLETED)
+                                      .build());
     }
 
     private Example createCanceledJobResponse() {
         return toExample(Job.builder()
-                .id(UUID.fromString(JOB_HANDLE_ID_1))
-                .globalAssetId(createGAID(GLOBAL_ASSET_ID))
-                .state(JobState.CANCELED)
-                .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
-                .startedOn(EXAMPLE_ZONED_DATETIME)
-                .completedOn(EXAMPLE_ZONED_DATETIME).build());
+                            .id(UUID.fromString(JOB_HANDLE_ID_1))
+                            .globalAssetId(createGAID(GLOBAL_ASSET_ID))
+                            .state(JobState.CANCELED)
+                            .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                            .startedOn(EXAMPLE_ZONED_DATETIME)
+                            .completedOn(EXAMPLE_ZONED_DATETIME)
+                            .build());
     }
 
     private Submodel createSubmodel() {
@@ -323,14 +330,11 @@ public class OpenApiExamples {
                                                                                 .language("en")
                                                                                 .text("The shell for a vehicle")
                                                                                 .build()))
-                                                 .globalAssetId(Reference.builder()
-                                                                         .value(List.of(
-                                                                                 "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9"))
-                                                                         .build())
+                                                 .globalAssetId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
                                                  .idShort("future concept x")
-                                                 .identification("882fc530-b69b-4707-95f6-5dbc5e9baaa8")
+                                                 .id("882fc530-b69b-4707-95f6-5dbc5e9baaa8")
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .key("engineserialid")
+                                                                                                 .name("engineserialid")
                                                                                                  .value("12309481209312")
                                                                                                  .build()))
                                                  .submodelDescriptors(List.of(createBaseSubmodelDescriptor(),
@@ -375,9 +379,13 @@ public class OpenApiExamples {
                                                                 .text("Provides base vehicle information")
                                                                 .build()))
                                  .idShort("vehicle base details")
-                                 .identification("4a738a24-b7d8-4989-9cd6-387772f40565")
+                                 .id("4a738a24-b7d8-4989-9cd6-387772f40565")
                                  .semanticId(Reference.builder()
-                                                      .value(List.of("urn:bamm:com.catenax.vehicle:0.1.1"))
+                                                      .keys(List.of(SemanticId.builder()
+                                                                              .type("Submodel")
+                                                                              .value("urn:bamm:com.catenax.vehicle:0.1.1")
+                                                                              .build()))
+                                                      .type("ModelReference")
                                                       .build())
                                  .endpoints(List.of(createEndpoint("https://catena-x.net/vehicle/basedetails/")))
                                  .build();
@@ -387,9 +395,9 @@ public class OpenApiExamples {
         return Endpoint.builder()
                        .interfaceInformation("HTTP")
                        .protocolInformation(ProtocolInformation.builder()
-                                                               .endpointAddress(endpointAddress)
+                                                               .href(endpointAddress)
                                                                .endpointProtocol("HTTPS")
-                                                               .endpointProtocolVersion("1.0")
+                                                               .endpointProtocolVersion(List.of("1.0"))
                                                                .build())
                        .build();
     }
@@ -401,9 +409,13 @@ public class OpenApiExamples {
                                                                 .text("Provides base vehicle information")
                                                                 .build()))
                                  .idShort("vehicle part details")
-                                 .identification("dae4d249-6d66-4818-b576-bf52f3b9ae90")
+                                 .id("dae4d249-6d66-4818-b576-bf52f3b9ae90")
                                  .semanticId(Reference.builder()
-                                                      .value(List.of("urn:bamm:com.catenax.vehicle:0.1.1#PartDetails"))
+                                                      .keys(List.of(SemanticId.builder()
+                                                                              .type("Submodel")
+                                                                              .value("urn:bamm:com.catenax.vehicle:0.1.1#PartDetails")
+                                                                              .build()))
+                                                      .type("ModelReference")
                                                       .build())
                                  .endpoints(List.of(createEndpoint("https://catena-x.net/vehicle/partdetails/")))
                                  .build();

@@ -35,8 +35,9 @@ import java.util.List;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 
@@ -46,10 +47,10 @@ class DigitalTwinDelegateTest {
     final DigitalTwinDelegate digitalTwinDelegate = new DigitalTwinDelegate(null, digitalTwinRegistryService);
 
     @Test
-    void shouldFillItemContainerWithShell() {
+    void shouldFillItemContainerWithShell() throws RegistryServiceException {
         // given
-        when(digitalTwinRegistryService.getAAShellDescriptor(any())).thenReturn(shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint("any"))));
+        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(List.of(shellDescriptor(
+                List.of(submodelDescriptorWithoutEndpoint("any")))));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
@@ -61,9 +62,9 @@ class DigitalTwinDelegateTest {
     }
 
     @Test
-    void shouldCatchRestClientExceptionAndPutTombstone() {
+    void shouldCatchRestClientExceptionAndPutTombstone() throws RegistryServiceException {
         // given
-        when(digitalTwinRegistryService.getAAShellDescriptor(any())).thenThrow(
+        when(digitalTwinRegistryService.fetchShells(any())).thenThrow(
                 new RestClientException("Unable to call endpoint"));
 
         // when

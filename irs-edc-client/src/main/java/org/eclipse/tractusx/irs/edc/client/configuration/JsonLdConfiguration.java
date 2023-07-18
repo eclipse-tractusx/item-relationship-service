@@ -33,13 +33,14 @@ import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.monitor.Monitor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * JsonLD configuration and namespace constants.
  */
-@Configuration
+@Configuration("irsEdcClientJsonLdConfiguration")
 public class JsonLdConfiguration {
 
     public static final String NAMESPACE_ODRL = "http://www.w3.org/ns/odrl/2/";
@@ -67,7 +68,9 @@ public class JsonLdConfiguration {
         return new ConsoleMonitor();
     }
 
-    @Bean /* package */ ObjectMapper objectMapper() {
+    @Bean
+    @Qualifier("jsonLdObjectMapper")
+        /* package */ ObjectMapper objectMapper() {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.registerModule(new Jdk8Module());

@@ -77,7 +77,7 @@ class JobResponseAnalyzerTest {
 
     private String findBpnOf(final List<AssetAdministrationShellDescriptor> shells, final String globalAssetId) {
         return shells.stream()
-                   .filter(shell -> shell.getGlobalAssetId().getValue().get(0).equals(globalAssetId))
+                   .filter(shell -> shell.getGlobalAssetId().equals(globalAssetId))
                    .findFirst()
                    .flatMap(AssetAdministrationShellDescriptor::findManufacturerId)
                    .orElse("");

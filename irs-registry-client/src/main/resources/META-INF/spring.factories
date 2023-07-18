@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.eclipse.tractusx.irs.registryclient.DefaultConfiguration,\
+org.eclipse.tractusx.irs.edc.client.EdcConfiguration
+

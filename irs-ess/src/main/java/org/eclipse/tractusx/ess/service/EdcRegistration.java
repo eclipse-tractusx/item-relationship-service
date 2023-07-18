@@ -28,7 +28,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.edc.client.StringMapper;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -60,8 +60,8 @@ public class EdcRegistration {
     public EdcRegistration(@Qualifier("noErrorRestTemplate") final RestTemplate restTemplate,
             @Value("${ess.localEdcEndpoint}") final String edcProviderUrl,
             @Value("${ess.irs.url}") final String essBaseUrl,
-            @Value("${edc.controlplane.api-key.header}") final String apiKeyHeader,
-            @Value("${edc.controlplane.api-key.secret}") final String apiKeySecret,
+            @Value("${irs-edc-client.controlplane.api-key.header}") final String apiKeyHeader,
+            @Value("${irs-edc-client.controlplane.api-key.secret}") final String apiKeySecret,
             @Value("${ess.managementPath}") final String managementPath) {
         this.restTemplate = restTemplate;
         this.edcProviderUrl = edcProviderUrl;

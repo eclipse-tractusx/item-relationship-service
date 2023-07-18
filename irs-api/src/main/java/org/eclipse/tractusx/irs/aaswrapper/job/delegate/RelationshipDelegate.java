@@ -25,21 +25,24 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.Bpn;
-import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
-import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.common.JsonParseException;
+import org.eclipse.tractusx.irs.data.JsonParseException;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 
 /**
  * Builds relationship array for AAShell from previous step.
@@ -50,41 +53,65 @@ import org.eclipse.tractusx.irs.common.JsonParseException;
 public class RelationshipDelegate extends AbstractDelegate {
 
     private final EdcSubmodelFacade submodelFacade;
+    private final ConnectorEndpointsService connectorEndpointsService;
+    private final JsonUtil jsonUtil;
 
-    public RelationshipDelegate(final AbstractDelegate nextStep,
-            final EdcSubmodelFacade submodelFacade) {
+    public RelationshipDelegate(final AbstractDelegate nextStep, final EdcSubmodelFacade submodelFacade,
+            final ConnectorEndpointsService connectorEndpointsService, final JsonUtil jsonUtil) {
         super(nextStep);
         this.submodelFacade = submodelFacade;
+        this.connectorEndpointsService = connectorEndpointsService;
+        this.jsonUtil = jsonUtil;
     }
 
     @Override
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
             final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
 
-        final RelationshipAspect relationshipAspect = RelationshipAspect.from(jobData.getBomLifecycle(), jobData.getDirection());
-        itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(
-            shell -> shell.findRelationshipEndpointAddresses(AspectType.fromValue(relationshipAspect.getName())).forEach(address -> {
-                try {
-                    final List<Relationship> relationships = submodelFacade.getRelationships(address, relationshipAspect);
-                    final List<String> idsToProcess = getIdsToProcess(relationships, relationshipAspect.getDirection());
-
-                    log.info("Processing Relationships with {} items", idsToProcess.size());
-
-                    aasTransferProcess.addIdsToProcess(idsToProcess);
-                    itemContainerBuilder.relationships(relationships);
-                    itemContainerBuilder.bpns(getBpnsFrom(relationships));
-                } catch (final EdcClientException e) {
-                    log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
-                            address);
-                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
-                } catch (final JsonParseException e) {
-                    log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
-                    itemContainerBuilder.tombstone(Tombstone.from(itemId, address, e, retryCount, ProcessStep.SUBMODEL_REQUEST));
-                }
-            })
-        );
+        final RelationshipAspect relationshipAspect = RelationshipAspect.from(jobData.getBomLifecycle(),
+                jobData.getDirection());
+        itemContainerBuilder.build()
+                            .getShells()
+                            .stream()
+                            .findFirst()
+                            .ifPresent(shell -> shell.findRelationshipEndpointAddresses(
+                                                             AspectType.fromValue(relationshipAspect.getName()))
+                                                     .forEach(endpoint -> processEndpoint(endpoint, jobData,
+                                                             relationshipAspect, aasTransferProcess,
+                                                             itemContainerBuilder, itemId)));
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
+    }
+
+    private void processEndpoint(final Endpoint endpoint, final JobParameter jobData,
+            final RelationshipAspect relationshipAspect, final AASTransferProcess aasTransferProcess,
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId) {
+        try {
+            final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
+                    endpoint, jobData.getBpn());
+
+            final var relationships = jsonUtil.fromString(submodelRawPayload, relationshipAspect.getSubmodelClazz())
+                                              .asRelationships();
+
+            final List<String> idsToProcess = getIdsToProcess(relationships, relationshipAspect.getDirection());
+
+            log.info("Processing Relationships with {} items", idsToProcess.size());
+
+            aasTransferProcess.addIdsToProcess(idsToProcess);
+            itemContainerBuilder.relationships(relationships);
+            itemContainerBuilder.bpns(getBpnsFrom(relationships));
+        } catch (final EdcClientException e) {
+            log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
+                    endpoint.getProtocolInformation().getHref());
+            itemContainerBuilder.tombstone(
+                    Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, retryCount,
+                            ProcessStep.SUBMODEL_REQUEST));
+        } catch (final JsonParseException e) {
+            log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+            itemContainerBuilder.tombstone(
+                    Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, retryCount,
+                            ProcessStep.SUBMODEL_REQUEST));
+        }
     }
 
     private static List<Bpn> getBpnsFrom(final List<Relationship> relationships) {

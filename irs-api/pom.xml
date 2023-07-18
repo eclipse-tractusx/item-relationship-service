@@ -35,6 +35,11 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-registry-client</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-policy-store</artifactId>
             <version>${revision}</version>
         </dependency>
@@ -43,7 +48,6 @@
             <artifactId>irs-common</artifactId>
             <version>${revision}</version>
         </dependency>
-
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>

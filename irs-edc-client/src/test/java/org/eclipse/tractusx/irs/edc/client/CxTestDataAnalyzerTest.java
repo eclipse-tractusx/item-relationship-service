@@ -23,7 +23,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.common.CxTestDataContainer.CxTestData.*;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;

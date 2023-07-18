@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
@@ -40,6 +39,7 @@ import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -52,8 +52,7 @@ import org.springframework.web.client.RestTemplate;
  * Communicates with the EDC ControlPlane
  */
 @Slf4j
-@Service
-@RequiredArgsConstructor
+@Service("irsEdcClientEdcControlPlaneClient")
 @SuppressWarnings({ "PMD.TooManyMethods" })
 public class EdcControlPlaneClient {
 
@@ -61,11 +60,21 @@ public class EdcControlPlaneClient {
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_ERROR = "ERROR";
     public static final String DATASPACE_PROTOCOL_HTTP = "dataspace-protocol-http";
+    public static final String STATUS_TERMINATED = "TERMINATED";
 
     private final RestTemplate edcRestTemplate;
     private final AsyncPollingService pollingService;
     private final EdcConfiguration config;
     private final EdcTransformer edcTransformer;
+
+    public EdcControlPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate,
+            final AsyncPollingService pollingService, final EdcConfiguration config,
+            final EdcTransformer edcTransformer) {
+        this.edcRestTemplate = edcRestTemplate;
+        this.pollingService = pollingService;
+        this.config = config;
+        this.edcTransformer = edcTransformer;
+    }
 
     private static String getResponseBody(final ResponseEntity<String> response) {
         String responseBody = "";
@@ -87,7 +96,7 @@ public class EdcControlPlaneClient {
         final var url = endpoint.getData() + endpoint.getCatalog();
 
         final String requestJson = edcTransformer.transformCatalogRequestToJson(requestBody).toString();
-
+        log.info("Requesting catalog with payload: {}", requestJson);
         final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.POST,
                 new HttpEntity<>(requestJson, headers()), String.class);
         final String catalog = getResponseBody(response);
@@ -145,6 +154,10 @@ public class EdcControlPlaneClient {
                                                  "NegotiationResponse with id " + getContractNegotiationResponse(
                                                          negotiationId, objectHttpEntity).getResponseId()
                                                          + " is in state ERROR");
+                                         case STATUS_TERMINATED -> throw new IllegalStateException(
+                                                 "NegotiationResponse with id " + getContractNegotiationResponse(
+                                                         negotiationId, objectHttpEntity).getResponseId()
+                                                         + " is in state TERMINATED");
                                          default -> Optional.empty();
                                      };
                                  }
@@ -163,10 +176,7 @@ public class EdcControlPlaneClient {
         final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId()
                 + endpoint.getStateSuffix();
 
-        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
-                String.class);
-        final String negotiationStateResponse = getResponseBody(response);
-        return edcTransformer.transformJsonToNegotiationState(negotiationStateResponse, StandardCharsets.UTF_8);
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, NegotiationState.class).getBody();
     }
 
     private NegotiationResponse getContractNegotiationResponse(final Response negotiationId,
@@ -174,10 +184,7 @@ public class EdcControlPlaneClient {
         final var endpoint = config.getControlplane().getEndpoint();
         final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId();
 
-        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
-                String.class);
-        final String negotiationResponse = getResponseBody(response);
-        return edcTransformer.transformJsonToNegotiationResponse(negotiationResponse, StandardCharsets.UTF_8);
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, NegotiationResponse.class).getBody();
     }
 
     /* package */ Response startTransferProcess(final TransferProcessRequest request) {
@@ -207,6 +214,10 @@ public class EdcControlPlaneClient {
                                                  "TransferProcessResponse with id " + getTransferProcessResponse(
                                                          transferProcessId, objectHttpEntity).getResponseId()
                                                          + " is in state ERROR");
+                                         case STATUS_TERMINATED -> throw new IllegalStateException(
+                                                 "TransferProcessResponse with id " + getTransferProcessResponse(
+                                                         transferProcessId, objectHttpEntity).getResponseId()
+                                                         + " is in state TERMINATED");
                                          default -> Optional.empty();
                                      };
                                  }
@@ -226,11 +237,7 @@ public class EdcControlPlaneClient {
         final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getResponseId()
                 + endpoint.getStateSuffix();
 
-        final ResponseEntity<String> response = edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
-                String.class);
-        final String transferProcessStateResponse = getResponseBody(response);
-
-        return edcTransformer.transformJsonToNegotiationState(transferProcessStateResponse, StandardCharsets.UTF_8);
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, NegotiationState.class).getBody();
     }
 
     private TransferProcessResponse getTransferProcessResponse(final Response transferProcessId,

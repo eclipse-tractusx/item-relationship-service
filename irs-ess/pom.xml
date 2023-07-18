@@ -32,6 +32,22 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-registry-client</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
             <exclusions>

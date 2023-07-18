@@ -53,7 +53,6 @@ import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
-import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,65 +66,67 @@ class EdcTransformerTest {
     private static @NotNull String getCatalogAsString() {
         return """
                 {
-                	"@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
-                	"@type": "dcat:Catalog",
-                	"dcat:dataset": {
-                		"@id": "58505404-4da1-427a-82aa-b79482bcd1f0",
-                		"@type": "dcat:Dataset",
-                		"odrl:hasPolicy": {
-                			"@id": "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1",
-                			"@type": "odrl:Set",
-                			"odrl:permission": {
-                				"odrl:target": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a",
-                				"odrl:action": {
-                					"odrl:type": "USE"
-                				},
-                				"odrl:constraint": {
-                					"odrl:or": {
-                						"odrl:leftOperand": "idsc:PURPOSE",
-                						"odrl:operator": "EQ",
-                						"odrl:rightOperand": "ID 3.0 Trace"
-                					}
-                				}
-                			},
-                			"odrl:prohibition": [],
-                			"odrl:obligation": [],
-                			"odrl:target": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a"
-                		},
-                		"dcat:distribution": [
-                			{
-                				"@type": "dcat:Distribution",
-                				"dct:format": {
-                					"@id": "HttpProxy"
-                				},
-                				"dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
-                			},
-                			{
-                				"@type": "dcat:Distribution",
-                				"dct:format": {
-                					"@id": "AmazonS3"
-                				},
-                				"dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
-                			}
-                		],
-                		"edc:description": "IRS EDC Demo Asset",
-                		"edc:id": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a"
-                	},
-                	"dcat:service": {
-                		"@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
-                		"@type": "dcat:DataService",
-                		"dct:terms": "connector",
-                		"dct:endpointUrl": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp"
-                	},
-                	"edc:participantId": "BPNL00000003CRHK",
-                	"@context": {
-                		"dct": "https://purl.org/dc/terms/",
-                		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
-                		"edc": "https://w3id.org/edc/v0.0.1/ns/",
-                		"dcat": "https://www.w3.org/ns/dcat/",
-                		"odrl": "http://www.w3.org/ns/odrl/2/",
-                		"dspace": "https://w3id.org/dspace/v0.8/"
-                	}
+                    "@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
+                    "@type": "dcat:Catalog",
+                    "dcat:dataset": {
+                        "@id": "58505404-4da1-427a-82aa-b79482bcd1f0",
+                        "@type": "dcat:Dataset",
+                        "odrl:hasPolicy": {
+                            "@id": "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1",
+                            "@type": "odrl:Set",
+                            "odrl:permission": {
+                                "odrl:target": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a",
+                                "odrl:action": {
+                                    "odrl:type": "USE"
+                                },
+                                "odrl:constraint": {
+                                    "odrl:or": {
+                                        "odrl:leftOperand": "idsc:PURPOSE",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
+                                        },
+                                        "odrl:rightOperand": "ID 3.0 Trace"
+                                    }
+                                }
+                            },
+                            "odrl:prohibition": [],
+                            "odrl:obligation": [],
+                            "odrl:target": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a"
+                        },
+                        "dcat:distribution": [
+                            {
+                                "@type": "dcat:Distribution",
+                                "dct:format": {
+                                    "@id": "HttpProxy"
+                                },
+                                "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
+                            },
+                            {
+                                "@type": "dcat:Distribution",
+                                "dct:format": {
+                                    "@id": "AmazonS3"
+                                },
+                                "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
+                            }
+                        ],
+                        "edc:description": "IRS EDC Demo Asset",
+                        "edc:id": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a"
+                    },
+                    "dcat:service": {
+                        "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
+                        "@type": "dcat:DataService",
+                        "dct:terms": "connector",
+                        "dct:endpointUrl": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp"
+                    },
+                    "edc:participantId": "BPNL00000003CRHK",
+                    "@context": {
+                        "dct": "https://purl.org/dc/terms/",
+                        "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                        "edc": "https://w3id.org/edc/v0.0.1/ns/",
+                        "dcat": "https://www.w3.org/ns/dcat/",
+                        "odrl": "http://www.w3.org/ns/odrl/2/",
+                        "dspace": "https://w3id.org/dspace/v0.8/"
+                    }
                 }
                 """;
     }
@@ -251,43 +252,6 @@ class EdcTransformerTest {
         assertThat(actualPermission).isEqualTo(expectedPermission);
         assertThat(actualCatalog.getDataServices().get(0)).isEqualTo(expectedDataService);
         assertThat(actualCatalog.getContractOffers()).isNull();
-    }
-
-    @Test
-    void shouldDeserializeNegotiationResponse() {
-        final String negotiationString = createNegotiationResponseAsString();
-        final NegotiationResponse negotiationResponse = edcTransformer.transformJsonToNegotiationResponse(
-                negotiationString, StandardCharsets.UTF_8);
-        assertThat(negotiationResponse.getResponseId()).isNotBlank();
-        assertThat(negotiationResponse.getState()).isNotBlank();
-        assertThat(negotiationResponse.getType()).isNotBlank();
-        assertThat(negotiationResponse.getProtocol()).isNotBlank();
-        assertThat(negotiationResponse.getErrorDetail()).isNull();
-        assertThat(negotiationResponse.getContractAgreementId()).isNotBlank();
-        assertThat(negotiationResponse.getCallbackAddresses()).isEmpty();
-    }
-
-    private String createNegotiationResponseAsString() {
-        return """
-                {
-                	"@type": "edc:ContractNegotiationDto",
-                	"@id": "a2d46fdb-d7a2-4f26-9f70-bccc4b09f563",
-                	"edc:type": "CONSUMER",
-                	"edc:protocol": "dataspace-protocol-http",
-                	"edc:state": "FINALIZED",
-                	"edc:counterPartyAddress": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp",
-                	"edc:callbackAddresses": [],
-                	"edc:contractAgreementId": "b75a7451-5857-49da-8438-c80dcb2cbd1e:10:768accf6-693f-4652-a21e-7412a2ce6254",
-                	"@context": {
-                		"dct": "https://purl.org/dc/terms/",
-                		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
-                		"edc": "https://w3id.org/edc/v0.0.1/ns/",
-                		"dcat": "https://www.w3.org/ns/dcat/",
-                		"odrl": "http://www.w3.org/ns/odrl/2/",
-                		"dspace": "https://w3id.org/dspace/v0.8/"
-                	}
-                }
-                """;
     }
 
     @Test

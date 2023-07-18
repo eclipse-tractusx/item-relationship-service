@@ -182,12 +182,14 @@ paths:
         - description: Zero-based page index (0..N)
           in: query
           name: page
+          required: false
           schema:
             type: integer
             default: 0
         - description: The size of the page to be returned
           in: query
           name: size
+          required: false
           schema:
             type: integer
             default: 20
@@ -195,6 +197,7 @@ paths:
           \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
+          required: false
           schema:
             type: array
             items:
@@ -995,13 +998,11 @@ components:
           - description:
               - language: en
                 text: The shell for a vehicle
-            globalAssetId:
-              value:
-                - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
             idShort: future concept x
-            identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
             specificAssetIds:
-              - key: engineserialid
+              - name: engineserialid
                 value: "12309481209312"
             submodelDescriptors:
               - description:
@@ -1010,28 +1011,32 @@ components:
                 endpoints:
                   - interface: HTTP
                     protocolInformation:
-                      endpointAddress: https://catena-x.net/vehicle/basedetails/
+                      href: https://catena-x.net/vehicle/basedetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: "1.0"
+                      endpointProtocolVersion: ["1.0"]
                 idShort: vehicle base details
-                identification: 4a738a24-b7d8-4989-9cd6-387772f40565
+                id: 4a738a24-b7d8-4989-9cd6-387772f40565
                 semanticId:
-                  value:
-                    - urn:bamm:com.catenax.vehicle:0.1.1
+                  type: ModelReference
+                  keys:
+                    - type: Submodel
+                      value: urn:bamm:com.catenax.vehicle:0.1.1
               - description:
                   - language: en
                     text: Provides base vehicle information
                 endpoints:
                   - interface: HTTP
                     protocolInformation:
-                      endpointAddress: https://catena-x.net/vehicle/partdetails/
+                      href: https://catena-x.net/vehicle/partdetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: "1.0"
+                      endpointProtocolVersion: ["1.0"]
                 idShort: vehicle part details
-                identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                id: dae4d249-6d66-4818-b576-bf52f3b9ae90
                 semanticId:
-                  value:
-                    - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+                  type: ModelReference
+                  keys:
+                    - type: Submodel
+                      value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         submodels:
           - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
@@ -1173,13 +1178,11 @@ components:
           - description:
               - language: en
                 text: The shell for a vehicle
-            globalAssetId:
-              value:
-                - urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
             idShort: future concept x
-            identification: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
             specificAssetIds:
-              - key: engineserialid
+              - name: engineserialid
                 value: "12309481209312"
             submodelDescriptors:
               - description:
@@ -1188,28 +1191,32 @@ components:
                 endpoints:
                   - interface: HTTP
                     protocolInformation:
-                      endpointAddress: https://catena-x.net/vehicle/basedetails/
+                      href: https://catena-x.net/vehicle/basedetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: "1.0"
+                      endpointProtocolVersion: ["1.0"]
                 idShort: vehicle base details
-                identification: 4a738a24-b7d8-4989-9cd6-387772f40565
+                id: 4a738a24-b7d8-4989-9cd6-387772f40565
                 semanticId:
-                  value:
-                    - urn:bamm:com.catenax.vehicle:0.1.1
+                  type: ModelReference
+                  keys:
+                    - type: Submodel
+                      value: urn:bamm:com.catenax.vehicle:0.1.1
               - description:
                   - language: en
                     text: Provides base vehicle information
                 endpoints:
                   - interface: HTTP
                     protocolInformation:
-                      endpointAddress: https://catena-x.net/vehicle/partdetails/
+                      href: https://catena-x.net/vehicle/partdetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: "1.0"
+                      endpointProtocolVersion: ["1.0"]
                 idShort: vehicle part details
-                identification: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                id: dae4d249-6d66-4818-b576-bf52f3b9ae90
                 semanticId:
-                  value:
-                    - urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+                  type: ModelReference
+                  keys:
+                    - type: Submodel
+                      value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         submodels:
           - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
@@ -1302,10 +1309,12 @@ components:
             $ref: '#/components/schemas/LangString'
           maxItems: 2147483647
         globalAssetId:
-          $ref: '#/components/schemas/Reference'
+          type: string
+          description: Id of global asset.
+          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
         idShort:
           type: string
-        identification:
+        id:
           type: string
         specificAssetIds:
           type: array
@@ -1342,6 +1351,7 @@ components:
           minimum: 0
     BatchOrderCreated:
       type: object
+      description: Id of the created Batch order.
       additionalProperties: false
       properties:
         id:
@@ -1597,7 +1607,7 @@ components:
       type: object
       additionalProperties: false
       properties:
-        key:
+        name:
           type: string
         semanticId:
           $ref: '#/components/schemas/Reference'
@@ -1679,6 +1689,7 @@ components:
     JobHandle:
       type: object
       additionalProperties: false
+      description: The unique jobId handle of the just processed job.
       properties:
         id:
           type: string
@@ -1856,8 +1867,7 @@ components:
       properties:
         bpn:
           type: string
-          description: BPN for part chain identification needed in decentral registry
-            approach
+          description: BPN of partner providing the initial asset
           example: BPNL0123456789XX
           maxLength: 16
           minLength: 16
@@ -1870,6 +1880,7 @@ components:
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
       required:
+        - bpn
         - globalAssetId
     Policy:
       type: object
@@ -1911,12 +1922,14 @@ components:
       type: object
       additionalProperties: false
       properties:
-        endpointAddress:
+        href:
           type: string
         endpointProtocol:
           type: string
         endpointProtocolVersion:
-          type: string
+          type: array
+          items:
+            type: string
         subprotocol:
           type: string
         subprotocolBody:
@@ -1939,10 +1952,12 @@ components:
       type: object
       additionalProperties: false
       properties:
-        value:
+        type:
+          type: string
+        keys:
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SemanticId'
           maxItems: 2147483647
     RegisterBatchOrder:
       type: object
@@ -2122,6 +2137,14 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
+    SemanticId:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        value:
+          type: string
     Submodel:
       type: object
       additionalProperties: false
@@ -2154,7 +2177,7 @@ components:
           maxItems: 2147483647
         idShort:
           type: string
-        identification:
+        id:
           type: string
         semanticId:
           $ref: '#/components/schemas/Reference'

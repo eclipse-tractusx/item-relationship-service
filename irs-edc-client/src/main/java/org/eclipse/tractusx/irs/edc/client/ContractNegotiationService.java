@@ -49,7 +49,7 @@ import org.springframework.stereotype.Service;
  * Negotiates contracts using the EDC resulting in a data transfer endpoint being sent to the IRS.
  */
 @Slf4j
-@Service
+@Service("irsEdcClientContractNegotiationService")
 @RequiredArgsConstructor
 public class ContractNegotiationService {
 

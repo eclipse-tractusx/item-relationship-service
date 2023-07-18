@@ -35,6 +35,7 @@ COPY irs-integration-tests irs-integration-tests
 COPY irs-api irs-api
 COPY irs-common irs-common
 COPY irs-edc-client irs-edc-client
+COPY irs-registry-client irs-registry-client
 COPY irs-models irs-models
 COPY irs-parent-spring-boot irs-parent-spring-boot
 COPY irs-testing irs-testing
@@ -58,6 +59,10 @@ ARG GID=3000
 WORKDIR /app
 
 COPY --chmod=755 --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
+
+COPY LICENSE LICENSE
+COPY NOTICE.md NOTICE.md
+COPY DEPENDENCIES DEPENDENCIES
 
 USER ${UID}:${GID}
 
