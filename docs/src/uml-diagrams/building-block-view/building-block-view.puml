@@ -7,12 +7,7 @@ skinparam shadowing false
     component [**IrsController**] <<Component>> as IrsController
     component [**JobOrchestrator**] <<Component>> as JobOrchestrator
     component [**TransferProcessManagment**] <<Component>> as TransferProcessManagement
-
-
-    'component [**AASClient**] <<Subsystem>> as AASClient
-    'component [**AASFacade**] <<Subsystem>> as AASFacade
-    'component [**SubmodelClient**] <<Subsystem>> as SubmodelClient
-    'component [**SubmodelFacade**] <<Subsystem>> as SubmodelFacade ' --> Level2 View
+    component [**Policy Store**] <<Component>> as PolicyStore
 
     port "IRS API" as API_PORT
     port "Digital Twin Client" as AAS_PORT
@@ -25,6 +20,9 @@ skinparam shadowing false
     JobOrchestrator <..> TransferProcessManagement
     JobOrchestrator <..> RecursiveJobHandler
     TransferProcessManagement --( StoreInterface
+    PolicyStore --( StoreInterface
+    PolicyStore <..> TransferProcessManagement
+    IrsController <..> PolicyStore
 
 
 }
@@ -32,6 +30,7 @@ component [**Digital Twin Registry**] <<System>> as DTR
 component [**EDC**] <<System>> as EDC
 actor IrsApiConsumer
 IrsController -up- API_PORT
+PolicyStoreController -up- API_PORT
 IrsApiConsumer -(0- API_PORT
 
 

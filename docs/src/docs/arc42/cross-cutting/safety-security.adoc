@@ -15,9 +15,9 @@ The IRS acts as a client for the Digital Twin Registry (DTR), which is also secu
 In a decentralized network, IRS uses the EDC client to access the provider DTR. This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.
 
 === IRS as EDC client
-The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a DAPS certificate, which was provided to the IRS via the network authority.
+The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a Verifiable Credential (VC), which is provided to the EDC via the Managed Identity Wallet.
 
-The DAPS certificate identifies the IRS and is used to acquire access permissions for the data transferred via EDC.
+The VC identifies and authenticates the EDC and is used to acquire access permissions for the data transferred via EDC.
 
 == Credentials
 Credentials must never be stored in Git!
