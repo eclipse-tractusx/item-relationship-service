@@ -29,6 +29,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.eclipse.edc.policy.model.Action;
+import org.eclipse.edc.policy.model.AndConstraint;
 import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.policy.model.Operator;
@@ -50,16 +51,37 @@ class PolicyCheckerServiceTest {
     private AcceptedPoliciesProvider policyStore;
 
     private static Policy createPolicy(final String leftExpr, final String rightExpr) {
-        final AtomicConstraint atomicConstraint = AtomicConstraint.Builder.newInstance()
-                                                                          .leftExpression(
-                                                                                  new LiteralExpression(leftExpr))
-                                                                          .rightExpression(
-                                                                                  new LiteralExpression(rightExpr))
-                                                                          .operator(Operator.EQ)
-                                                                          .build();
+        final AtomicConstraint constraint = AtomicConstraint.Builder.newInstance()
+                                                                    .leftExpression(new LiteralExpression(leftExpr))
+                                                                    .rightExpression(new LiteralExpression(rightExpr))
+                                                                    .operator(Operator.EQ)
+                                                                    .build();
         final Permission permission = Permission.Builder.newInstance()
                                                         .action(Action.Builder.newInstance().type("USE").build())
-                                                        .constraint(atomicConstraint)
+                                                        .constraint(constraint)
+                                                        .build();
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    private static Policy createAndPolicy(final String leftExpr, final String rightExpr) {
+        final AtomicConstraint constraint1 = AtomicConstraint.Builder.newInstance()
+                                                                     .leftExpression(new LiteralExpression(leftExpr))
+                                                                     .rightExpression(new LiteralExpression(rightExpr))
+                                                                     .operator(Operator.EQ)
+                                                                     .build();
+        final AtomicConstraint constraint2 = AtomicConstraint.Builder.newInstance()
+                                                                     .leftExpression(
+                                                                             new LiteralExpression("leftExpression"))
+                                                                     .rightExpression(
+                                                                             new LiteralExpression("rightExpression"))
+                                                                     .operator(Operator.EQ)
+                                                                     .build();
+        final AndConstraint build = AndConstraint.Builder.newInstance()
+                                                         .constraints(List.of(constraint1, constraint2))
+                                                         .build();
+        final Permission permission = Permission.Builder.newInstance()
+                                                        .action(Action.Builder.newInstance().type("USE").build())
+                                                        .constraint(build)
                                                         .build();
         return Policy.Builder.newInstance().permission(permission).build();
     }
@@ -135,6 +157,17 @@ class PolicyCheckerServiceTest {
 
         // then
         assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldValidateDifferentTypesOfConstraints() {
+        // given
+        Policy policy = createAndPolicy("FrameworkAgreement.traceability", "active");
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isTrue();
     }
 
 }

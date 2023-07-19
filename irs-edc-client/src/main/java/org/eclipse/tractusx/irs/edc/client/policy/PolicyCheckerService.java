@@ -31,8 +31,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.Constraint;
+import org.eclipse.edc.policy.model.MultiplicityConstraint;
 import org.eclipse.edc.policy.model.Operator;
-import org.eclipse.edc.policy.model.OrConstraint;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.data.StringMapper;
@@ -98,10 +98,10 @@ public class PolicyCheckerService {
                                                     Operator.valueOf(policyDefinition.getConstraintOperator()))
                                             .build()
                                             .isValid();
-        } else if (constraint instanceof OrConstraint orConstraint) {
-            return orConstraint.getConstraints()
-                               .stream()
-                               .anyMatch(constraint1 -> isValid(constraint1, policyDefinition));
+        } else if (constraint instanceof MultiplicityConstraint multiplicityConstraint) {
+            return multiplicityConstraint.getConstraints()
+                                         .stream()
+                                         .anyMatch(constraint1 -> isValid(constraint1, policyDefinition));
         }
         return false;
     }
