@@ -6,7 +6,7 @@
 Take the following template and adjust the configuration parameters (<placeholders> mark the relevant spots).
 You can define the URLs as well as most of the secrets yourself.
 
-The Keycloak, DAPS and Vault configuration / secrets depend on your setup and might need to be provided externally.
+The Keycloak, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
 include::irs-spring-config.adoc[leveloffset=+1]
 
@@ -63,64 +63,12 @@ The *key* of each entry is the `Base64` encoded URN of the model. The *value* is
 
 
 == EDC consumer configuration
-If you want to provide your own EDC consumer, add the following entries to your values.yaml:
-
-[source,yaml]
-----
-include::../../../../charts/edc-consumer/values.yaml[]
-----
-
-=== Values explained
-EDC requires a DAPS instance to function correctly. For more information on this, please refer to the https://github.com/catenax-ng/product-DAPS[DAPS] or the https://github.com/catenax-ng/product-edc[EDC] documentation.
-
-==== <controlplane-url>
-The hostname where the EDC consumer controlplane will be made available.
-
-==== <dataplane-url>
-The hostname where the EDC consumer dataplane will be made available.
-
-==== <vault-url>
-The base URL of the Vault instance.
-EDC requires a running instance of HashiCorp Vault to store the DAPS certificate and private key.
-
-==== <vault-secret-store-path>
-The path to the secret store in Vault where the DAPS certificate and key can be found.
-
-_Example: /v1/team-name_
-
-==== <daps-certificate-name>
-The name of the DAPS certificate in the Vault.
-
-_Example: irs-daps-certificate_
-
-==== <daps-privatekey-name>
-The name of the DAPS private key in the Vault.
-
-_Example: irs-daps-private-key_
-
-==== <daps-client-id>
-The DAPS client ID.
-
-==== <daps-jwks-url>
-The URL of the DAPS JWK Set.
-
-_Example: https://daps-hostname/.well-known/jwks.json_
-
-==== <daps-token-url>
-The URL of the DAPS token API.
-
-_Example: https://daps-hostname/token_
+If you want to provide your own EDC consumer, add the EDC Helm Chart as dependency to your Chart.yaml. The helm chart and documentation can be found here: https://github.com/eclipse-tractusx/tractusx-edc/tree/main/charts/tractusx-connector[tractusx-connector]
 
 == Secrets
 This is a list of all secrets used in the deployment.
 
 WARNING: Keep the values for these settings safe and do not publish them!
-
-=== <postgres-admin-password>
-Database password for the *postgres* user. To be defined by you.
-
-=== <postgres-password>
-Database password for the application user (default username: *edc*). To be defined by you.
 
 === <keycloak-client-id>
 Client ID for Keycloak. Request this from your Keycloak operator.
