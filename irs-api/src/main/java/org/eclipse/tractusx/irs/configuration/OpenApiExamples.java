@@ -86,6 +86,10 @@ public class OpenApiExamples {
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
+    private static final String EXAMPLE_BPN = "BPNL00000003AAXX";
+    private static final String SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE = "supply_chain_impacted";
+    private static final String SUPPLY_CHAIN_IMPACTED_KEY = "supplyChainImpacted";
+    private static final String SUPPLY_CHAIN_IMPACTER_RESULT = "YES";
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
@@ -265,7 +269,7 @@ public class OpenApiExamples {
                                      .shells(List.of(createShell()))
                                      .tombstone(createTombstone())
                                      .submodel(createEssSubmodel())
-                                     .bpn(Bpn.withManufacturerId("BPNL00000003AAXX").updateManufacturerName("AB CD"))
+                                     .bpn(Bpn.withManufacturerId(EXAMPLE_BPN).updateManufacturerName("AB CD"))
                                      .build();
         final NotificationSummary newSummary = new NotificationSummary(
                 AsyncFetchedItems.builder().running(0).completed(3).failed(0).build(),
@@ -276,9 +280,9 @@ public class OpenApiExamples {
 
     private Submodel createEssSubmodel() {
         return Submodel.builder()
-                       .aspectType("supply_chain_impacted")
+                       .aspectType(SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE)
                        .identification(SUBMODEL_IDENTIFICATION)
-                       .payload(Map.of("supplyChainImpacted", "YES"))
+                       .payload(Map.of(SUPPLY_CHAIN_IMPACTED_KEY, SUPPLY_CHAIN_IMPACTER_RESULT))
                        .build();
     }
 
