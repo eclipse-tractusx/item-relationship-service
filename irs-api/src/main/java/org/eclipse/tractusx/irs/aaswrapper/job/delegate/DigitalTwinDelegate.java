@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
@@ -52,15 +53,15 @@ public class DigitalTwinDelegate extends AbstractDelegate {
 
     @Override
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
-            final AASTransferProcess aasTransferProcess, final String itemId) {
+            final AASTransferProcess aasTransferProcess, final PartChainIdentificationKey itemId) {
 
         try {
             itemContainerBuilder.shell(digitalTwinRegistryService.fetchShells(
-                    List.of(new DigitalTwinRegistryKey(itemId, jobData.getBpn()))
+                    List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()))
             ).stream().findFirst().orElseThrow());
         } catch (final RestClientException | RegistryServiceException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-            itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
+            itemContainerBuilder.tombstone(Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
         }
 
         if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {

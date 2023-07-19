@@ -39,6 +39,7 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -73,7 +74,7 @@ class RelationshipDelegateTest {
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                aasTransferProcess, "itemId");
+                aasTransferProcess, createKey());
 
         // then
         assertThat(result).isNotNull();
@@ -96,7 +97,7 @@ class RelationshipDelegateTest {
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();
@@ -120,7 +121,7 @@ class RelationshipDelegateTest {
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();
@@ -128,6 +129,10 @@ class RelationshipDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.SUBMODEL_REQUEST);
+    }
+
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
     }
 
 }
