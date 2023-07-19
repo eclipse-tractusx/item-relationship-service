@@ -5,19 +5,19 @@ name: "Trivy vulnerability scanner for image"
 
 on:
   workflow_dispatch: # Trigger manually
-    inputs:
-      image-tag:
-        required: false
-        type: string
-  workflow_call: # Trigger by another workflow
-    inputs:
-      image-tag:
-        required: true
-        type: string
-      ref:
-        type: string
-      sha:
-        type: string
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - 'charts/**'
+      - 'docs/**'
+      - 'local/**'
+      - 'CHANGELOG.md'
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
   schedule:
     - cron: '0 0 * * *' # Once a day
 
@@ -28,26 +28,22 @@ jobs:
       actions: read
       contents: read
       security-events: write
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Determine image version
-        id: version
-        run: |
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.head_ref || github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.head_ref || github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Support PR ref versions
-          [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "main" ] && VERSION=latest
-          # Use input parameter 'image-tag' if present
-          [[ "${{ github.event.inputs.image-tag }}" != '' ]] && VERSION=$(echo "${{ github.event.inputs.image-tag }}")
-          echo VERSION=$VERSION
-          echo "::set-output name=image_tag::$VERSION"
+      - name: Build image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: localhost:5000/irs-api:testing
 
       # It's also possible to scan your private registry with Trivy's built-in image scan.
       # All you have to do is set ENV vars.
@@ -59,7 +55,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           # Path to Docker image
-          image-ref: "ghcr.io/catenax-ng/irs-api:${{ steps.version.outputs.image_tag }} "
+          image-ref: "localhost:5000/irs-api:testing"
           format: "sarif"
           output: "trivy-results2.sarif"
           exit-code: "1"

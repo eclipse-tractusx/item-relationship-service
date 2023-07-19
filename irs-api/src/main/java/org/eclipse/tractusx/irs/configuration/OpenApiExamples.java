@@ -29,10 +29,12 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
+import org.eclipse.tractusx.ess.service.NotificationSummary;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.Bpn;
+import org.eclipse.tractusx.irs.component.FetchedItems;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
@@ -84,6 +86,13 @@ public class OpenApiExamples {
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
+    private static final String EXAMPLE_BPN = "BPNL00000003AAXX";
+    private static final String SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE = "supply_chain_impacted";
+    private static final String SUPPLY_CHAIN_IMPACTED_KEY = "supplyChainImpacted";
+    private static final String SUPPLY_CHAIN_IMPACTER_RESULT = "YES";
+    private static final int FETCHED_ITEMS_SIZE = 3;
+    private static final int NO_RUNNING_OR_FAILED_ITEMS = 0;
+    private static final int SENT_NOTIFICATIONS_SIZE = 6;
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
@@ -110,6 +119,7 @@ public class OpenApiExamples {
                                                                             .withStatusCode(HttpStatus.NOT_FOUND)
                                                                             .build()));
         components.addExamples("complete-job-result", createCompleteJobResult());
+        components.addExamples("complete-ess-job-result", createCompleteEssJobResult());
         components.addExamples("complete-order-result", createCompleteOrderResult());
         components.addExamples("complete-batch-result", createCompleteBatchResult());
         components.addExamples("job-result-without-uncompleted-result-tree", createJobResultWithoutTree());
@@ -242,6 +252,44 @@ public class OpenApiExamples {
                              .build());
     }
 
+    private Example createCompleteEssJobResult() {
+        final Jobs essJobsJobs = Jobs.builder()
+                                     .job(Job.builder()
+                                             .id(UUID.fromString(JOB_ID))
+                                             .globalAssetId(createGAID(GLOBAL_ASSET_ID))
+                                             .state(JobState.COMPLETED)
+                                             .owner("")
+                                             .createdOn(EXAMPLE_ZONED_DATETIME)
+                                             .startedOn(EXAMPLE_ZONED_DATETIME)
+                                             .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
+                                             .completedOn(EXAMPLE_ZONED_DATETIME)
+                                             .owner("")
+                                             .summary(createSummary())
+                                             .parameter(createJobParameter())
+                                             .exception(createJobException())
+                                             .build())
+                                     .relationships(List.of(createRelationship()))
+                                     .shells(List.of(createShell()))
+                                     .tombstone(createTombstone())
+                                     .submodel(createEssSubmodel())
+                                     .bpn(Bpn.withManufacturerId(EXAMPLE_BPN).updateManufacturerName("AB CD"))
+                                     .build();
+        final NotificationSummary newSummary = new NotificationSummary(
+                AsyncFetchedItems.builder().running(NO_RUNNING_OR_FAILED_ITEMS).completed(FETCHED_ITEMS_SIZE).failed(NO_RUNNING_OR_FAILED_ITEMS).build(),
+                FetchedItems.builder().completed(FETCHED_ITEMS_SIZE).failed(NO_RUNNING_OR_FAILED_ITEMS).build(),
+                SENT_NOTIFICATIONS_SIZE, SENT_NOTIFICATIONS_SIZE);
+        final Job job = essJobsJobs.getJob().toBuilder().summary(newSummary).build();
+        return toExample(essJobsJobs.toBuilder().job(job).build());
+    }
+
+    private Submodel createEssSubmodel() {
+        return Submodel.builder()
+                       .aspectType(SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE)
+                       .identification(SUBMODEL_IDENTIFICATION)
+                       .payload(Map.of(SUPPLY_CHAIN_IMPACTED_KEY, SUPPLY_CHAIN_IMPACTER_RESULT))
+                       .build();
+    }
+
     private Example createCompleteOrderResult() {
         return toExample(BatchOrderResponse.builder()
                                            .orderId(UUID_ID)
@@ -317,7 +365,7 @@ public class OpenApiExamples {
                         .endpointURL("https://catena-x.net/vehicle/partdetails/")
                         .processingError(ProcessingError.builder()
                                                         .withProcessStep(ProcessStep.SCHEMA_VALIDATION)
-                                                        .withErrorDetail("Details to reason of Failure")
+                                                        .withErrorDetail("Details to reason of failure")
                                                         .withLastAttempt(EXAMPLE_ZONED_DATETIME)
                                                         .withRetryCounter(0)
                                                         .build())

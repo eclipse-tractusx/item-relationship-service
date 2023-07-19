@@ -55,6 +55,15 @@ class ConnectorEndpointsServiceTest {
         assertThat(actualConnectors).containsExactly("connector1", "connector2", "connector3", "connector4");
     }
 
+    @Test
+    void shouldReturnEmptyListOnMissingBpn() {
+        // when
+        final List<String> actualConnectors = service.fetchConnectorEndpoints(null);
+
+        // then
+        assertThat(actualConnectors).isNotNull().isEmpty();
+    }
+
     private DiscoveryEndpoint createEndpoint(final String endpointAddress) {
         return new DiscoveryEndpoint("test-endpoint", "desc", endpointAddress, "docs", "resId");
     }

@@ -12,7 +12,7 @@ component [**IRSApplication**] <<System>> {
 
 component [**CatenaX-Network**] <<CX-Environment>> {
     component [**IAM/KeyCloak**] <<System>> as IAM_IRS
-    component [**IAM/DAPS**] <<System>> as IAM_DAPS
+    component [**MIW**] <<System>> as IAM_DAPS
 }
 
 component [**Tier/OEM**] <<Tier/OEM-Environment>> {

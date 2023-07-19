@@ -119,7 +119,7 @@ class EssController {
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = Jobs.class),
                                                               examples = @ExampleObject(name = "complete",
-                                                                                        ref = "#/components/examples/complete-job-result"))
+                                                                                        ref = "#/components/examples/complete-ess-job-result"))
                                          }),
                             @ApiResponse(responseCode = "400", description = "Return job failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,

@@ -29,6 +29,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.eclipse.edc.policy.model.Action;
+import org.eclipse.edc.policy.model.AndConstraint;
 import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.policy.model.Operator;
@@ -37,6 +38,8 @@ import org.eclipse.edc.policy.model.Policy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -47,34 +50,58 @@ class PolicyCheckerServiceTest {
     @Mock
     private AcceptedPoliciesProvider policyStore;
 
+    private static Policy createPolicy(final String leftExpr, final String rightExpr) {
+        final AtomicConstraint constraint = AtomicConstraint.Builder.newInstance()
+                                                                    .leftExpression(new LiteralExpression(leftExpr))
+                                                                    .rightExpression(new LiteralExpression(rightExpr))
+                                                                    .operator(Operator.EQ)
+                                                                    .build();
+        final Permission permission = Permission.Builder.newInstance()
+                                                        .action(Action.Builder.newInstance().type("USE").build())
+                                                        .constraint(constraint)
+                                                        .build();
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    private static Policy createAndPolicy(final String leftExpr, final String rightExpr) {
+        final AtomicConstraint constraint1 = AtomicConstraint.Builder.newInstance()
+                                                                     .leftExpression(new LiteralExpression(leftExpr))
+                                                                     .rightExpression(new LiteralExpression(rightExpr))
+                                                                     .operator(Operator.EQ)
+                                                                     .build();
+        final AtomicConstraint constraint2 = AtomicConstraint.Builder.newInstance()
+                                                                     .leftExpression(
+                                                                             new LiteralExpression("leftExpression"))
+                                                                     .rightExpression(
+                                                                             new LiteralExpression("rightExpression"))
+                                                                     .operator(Operator.EQ)
+                                                                     .build();
+        final AndConstraint build = AndConstraint.Builder.newInstance()
+                                                         .constraints(List.of(constraint1, constraint2))
+                                                         .build();
+        final Permission permission = Permission.Builder.newInstance()
+                                                        .action(Action.Builder.newInstance().type("USE").build())
+                                                        .constraint(build)
+                                                        .build();
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
     @BeforeEach
     void setUp() {
-        final var policyList = List.of(new AcceptedPolicy("ID 3.0 Trace", OffsetDateTime.now().plusYears(1)));
+        final var policyList = List.of(new AcceptedPolicy("ID 3.0 Trace", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)));
         when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
         policyCheckerService = new PolicyCheckerService(policyStore);
     }
 
-    @Test
-    void shouldConfirmValidPolicy() {
+    @ParameterizedTest
+    @CsvSource(value = { "idsc:PURPOSE,ID 3.0 Trace",
+                         "idsc:PURPOSE,ID%203.0%20Trace",
+                         "FrameworkAgreement.traceability,active"
+    }, delimiter = ',')
+    void shouldConfirmValidPolicy(final String leftExpr, final String rightExpr) {
         // given
-        Policy policy = Policy.Builder.newInstance()
-                                      .permission(Permission.Builder.newInstance()
-                                                                    .action(Action.Builder.newInstance()
-                                                                                          .type("USE")
-                                                                                          .build())
-                                                                    .constraint(AtomicConstraint.Builder.newInstance()
-                                                                                                        .leftExpression(
-                                                                                                                new LiteralExpression(
-                                                                                                                        "idsc:PURPOSE"))
-                                                                                                        .rightExpression(
-                                                                                                                new LiteralExpression(
-                                                                                                                        "ID 3.0 Trace"))
-
-                                                                                                        .operator(
-                                                                                                                Operator.EQ)
-                                                                                                        .build())
-                                                                    .build())
-                                      .build();
+        Policy policy = createPolicy(leftExpr, rightExpr);
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -85,24 +112,7 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldRejectWrongPolicy() {
         // given
-        Policy policy = Policy.Builder.newInstance()
-                                      .permission(Permission.Builder.newInstance()
-                                                                    .action(Action.Builder.newInstance()
-                                                                                          .type("USE")
-                                                                                          .build())
-                                                                    .constraint(AtomicConstraint.Builder.newInstance()
-                                                                                                        .leftExpression(
-                                                                                                                new LiteralExpression(
-                                                                                                                        "idsc:PURPOSE"))
-                                                                                                        .rightExpression(
-                                                                                                                new LiteralExpression(
-                                                                                                                        "Wrong_Trace"))
-
-                                                                                                        .operator(
-                                                                                                                Operator.EQ)
-                                                                                                        .build())
-                                                                    .build())
-                                      .build();
+        Policy policy = createPolicy("idsc:PURPOSE", "Wrong_Trace");
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -111,26 +121,48 @@ class PolicyCheckerServiceTest {
     }
 
     @Test
-    void shouldConfirmValidPolicyEvenEncodingVersion() {
+    void shouldRejectWhenPolicyStoreIsEmpty() {
         // given
-        Policy policy = Policy.Builder.newInstance()
-                                      .permission(Permission.Builder.newInstance()
-                                                                    .action(Action.Builder.newInstance()
-                                                                                          .type("USE")
-                                                                                          .build())
-                                                                    .constraint(AtomicConstraint.Builder.newInstance()
-                                                                                                        .leftExpression(
-                                                                                                                new LiteralExpression(
-                                                                                                                        "idsc:PURPOSE"))
-                                                                                                        .rightExpression(
-                                                                                                                new LiteralExpression(
-                                                                                                                        "ID%203.0%20Trace"))
+        Policy policy = createPolicy("idsc:PURPOSE", "ID 3.0 Trace");
+        when(policyStore.getAcceptedPolicies()).thenReturn(List.of());
+        // when
+        boolean result = policyCheckerService.isValid(policy);
 
-                                                                                                        .operator(
-                                                                                                                Operator.EQ)
-                                                                                                        .build())
-                                                                    .build())
-                                      .build();
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldConfirmValidPolicyWhenWildcardIsSet() {
+        // given
+        final var policyList = List.of(new AcceptedPolicy("ID 3.0 Trace", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("*", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createPolicy("FrameworkAgreement.traceability", "active");
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void shouldRejectWhenWildcardIsPartOfPolicy() {
+        // given
+        final var policyList = List.of(new AcceptedPolicy("Policy*", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createPolicy("FrameworkAgreement.traceability", "active");
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldValidateDifferentTypesOfConstraints() {
+        // given
+        Policy policy = createAndPolicy("FrameworkAgreement.traceability", "active");
         // when
         boolean result = policyCheckerService.isValid(policy);
 

@@ -82,8 +82,8 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
-        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes,
-                false, false, Direction.DOWNWARD);
+        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes, false, false,
+                Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJobWithDirection(final String globalAssetId, final Direction direction) {
@@ -91,15 +91,16 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithUrl(final String callbackUrl) {
-        final RegisterJob registerJob = registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", 100, List.of(), false, false, Direction.DOWNWARD);
+        final RegisterJob registerJob = registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", 100, List.of(),
+                false, false, Direction.DOWNWARD);
         registerJob.setCallbackUrl(callbackUrl);
         return registerJob;
     }
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
-        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes,
-                true, false, Direction.DOWNWARD);
+        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes, true, false,
+                Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJobWithLookupBPNs() {
@@ -108,7 +109,8 @@ public class TestMother {
     }
 
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
-            final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs, final Direction direction) {
+            final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs,
+            final Direction direction) {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn("bpn123").build());
         registerJob.setDepth(depth);
@@ -123,7 +125,10 @@ public class TestMother {
     public static RegisterBatchOrder registerBatchOrder(final String... globalAssetId) {
         final RegisterBatchOrder registerBatchOrder = new RegisterBatchOrder();
         registerBatchOrder.setKeys(Arrays.stream(globalAssetId)
-                                         .map(x -> PartChainIdentificationKey.builder().globalAssetId(x).build())
+                                         .map(x -> PartChainIdentificationKey.builder()
+                                                                             .globalAssetId(x)
+                                                                             .bpn("bpn123")
+                                                                             .build())
                                          .collect(Collectors.toSet()));
 
         return registerBatchOrder;
@@ -195,9 +200,7 @@ public class TestMother {
     }
 
     public MultiTransferJob job(JobState jobState) {
-        return MultiTransferJob.builder()
-                               .job(fakeJob(jobState))
-                               .build();
+        return MultiTransferJob.builder().job(fakeJob(jobState)).build();
     }
 
     public DataRequest dataRequest() {
@@ -237,13 +240,16 @@ public class TestMother {
         return Endpoint.builder()
                        .protocolInformation(ProtocolInformation.builder()
                                                                .href(endpointAddress)
-                                                               .subprotocolBody("other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/")
+                                                               .subprotocolBody(
+                                                                       "other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/")
                                                                .build())
                        .build();
     }
 
     public static SubmodelDescriptor submodelDescriptor(final String semanticId, final String endpointAddress) {
-        final Reference semanticIdSerial = Reference.builder().keys(List.of(SemanticId.builder().value(semanticId).build())).build();
+        final Reference semanticIdSerial = Reference.builder()
+                                                    .keys(List.of(SemanticId.builder().value(semanticId).build()))
+                                                    .build();
         final List<Endpoint> endpointSerial = List.of(endpoint(endpointAddress));
         return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
     }

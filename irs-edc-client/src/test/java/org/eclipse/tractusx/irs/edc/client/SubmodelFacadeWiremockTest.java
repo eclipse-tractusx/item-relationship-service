@@ -33,12 +33,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_CID;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -52,6 +52,8 @@ import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
+import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,8 +108,10 @@ class SubmodelFacadeWiremockTest {
 
         final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
 
-        final PolicyCheckerService policyCheckerService = mock(PolicyCheckerService.class);
-        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
+        final AcceptedPoliciesProvider acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
+        when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(
+                List.of(new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1))));
+        final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
 

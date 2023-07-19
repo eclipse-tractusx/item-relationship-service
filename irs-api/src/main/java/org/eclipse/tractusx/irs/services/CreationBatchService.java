@@ -74,7 +74,8 @@ public class CreationBatchService {
                                                 .callbackUrl(request.getCallbackUrl())
                                                 .build();
 
-        final List<Batch> batches = createBatches(List.copyOf(request.getKeys().stream().map(PartChainIdentificationKey::getGlobalAssetId).toList()),
+        // need to use whole key
+        final List<Batch> batches = createBatches(request.getKeys().stream().toList(),
                 request.getBatchSize(), batchOrderId);
         batchOrderStore.save(batchOrderId, batchOrder);
         batches.forEach(batch -> {
@@ -85,8 +86,8 @@ public class CreationBatchService {
         return batchOrderId;
     }
 
-    public List<Batch> createBatches(final List<String> globalAssetIds, final int batchSize, final UUID batchOrderId) {
-        final List<List<String>> globalAssetIdsBatches = Lists.partition(globalAssetIds, batchSize);
+    public List<Batch> createBatches(final List<PartChainIdentificationKey> keys, final int batchSize, final UUID batchOrderId) {
+        final List<List<PartChainIdentificationKey>> globalAssetIdsBatches = Lists.partition(keys, batchSize);
 
         final AtomicInteger batchNumber = new AtomicInteger(1);
 
@@ -100,8 +101,8 @@ public class CreationBatchService {
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
                         .jobProgressList(batch.stream()
-                                              .map(globalAssetId -> JobProgress.builder()
-                                                                               .globalAssetId(globalAssetId)
+                                              .map(identificationKey -> JobProgress.builder()
+                                                                               .identificationKey(identificationKey)
                                                                                .jobState(JobState.UNSAVED)
                                                                                .build())
                                               .toList())
