@@ -265,7 +265,7 @@ public class OpenApiExamples {
                                      .shells(List.of(createShell()))
                                      .tombstone(createTombstone())
                                      .submodel(createEssSubmodel())
-                                     .bpn(Bpn.withManufacturerId("BPNL00000003AYRE").updateManufacturerName("OEM A"))
+                                     .bpn(Bpn.withManufacturerId("BPNL00000003AAXX").updateManufacturerName("AB CD"))
                                      .build();
         final NotificationSummary newSummary = new NotificationSummary(
                 AsyncFetchedItems.builder().running(0).completed(3).failed(0).build(),
