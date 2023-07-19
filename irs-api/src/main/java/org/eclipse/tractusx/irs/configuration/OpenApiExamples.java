@@ -90,6 +90,9 @@ public class OpenApiExamples {
     private static final String SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE = "supply_chain_impacted";
     private static final String SUPPLY_CHAIN_IMPACTED_KEY = "supplyChainImpacted";
     private static final String SUPPLY_CHAIN_IMPACTER_RESULT = "YES";
+    private static final int FETCHED_ITEMS_SIZE = 3;
+    private static final int NO_RUNNING_OR_FAILED_ITEMS = 0;
+    private static final int SENT_NOTIFICATIONS_SIZE = 6;
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
@@ -272,8 +275,9 @@ public class OpenApiExamples {
                                      .bpn(Bpn.withManufacturerId(EXAMPLE_BPN).updateManufacturerName("AB CD"))
                                      .build();
         final NotificationSummary newSummary = new NotificationSummary(
-                AsyncFetchedItems.builder().running(0).completed(3).failed(0).build(),
-                FetchedItems.builder().completed(3).failed(0).build(), 6, 6);
+                AsyncFetchedItems.builder().running(NO_RUNNING_OR_FAILED_ITEMS).completed(FETCHED_ITEMS_SIZE).failed(NO_RUNNING_OR_FAILED_ITEMS).build(),
+                FetchedItems.builder().completed(FETCHED_ITEMS_SIZE).failed(NO_RUNNING_OR_FAILED_ITEMS).build(),
+                SENT_NOTIFICATIONS_SIZE, SENT_NOTIFICATIONS_SIZE);
         final Job job = essJobsJobs.getJob().toBuilder().summary(newSummary).build();
         return toExample(essJobsJobs.toBuilder().job(job).build());
     }
