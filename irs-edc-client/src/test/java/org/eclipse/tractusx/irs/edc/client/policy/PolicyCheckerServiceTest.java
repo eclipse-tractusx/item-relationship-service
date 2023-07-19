@@ -110,4 +110,31 @@ class PolicyCheckerServiceTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void shouldConfirmValidPolicyWhenWildcardIsSet() {
+        // given
+        final var policyList = List.of(new AcceptedPolicy("ID 3.0 Trace", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("*", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createPolicy("FrameworkAgreement.traceability", "active");
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void shouldRejectWhenWildcardIsPartOfPolicy() {
+        // given
+        final var policyList = List.of(new AcceptedPolicy("Policy*", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createPolicy("FrameworkAgreement.traceability", "active");
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
 }

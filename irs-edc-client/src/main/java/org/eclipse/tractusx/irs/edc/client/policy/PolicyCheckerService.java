@@ -54,6 +54,9 @@ public class PolicyCheckerService {
         final List<PolicyDefinition> policyList = getAllowedPolicies();
         log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policy),
                 String.join(",", policyList.stream().map(PolicyDefinition::getRightExpressionValue).toList()));
+        if (getValidStoredPolicyIds().contains("*")) {
+            return true;
+        }
         return policy.getPermissions()
                      .stream()
                      .anyMatch(permission -> policyList.stream()
