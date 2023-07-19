@@ -14,7 +14,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - IRS now supports the AAS API 3.0 and its updated models. **Note**: this also reflects in the Job response shells, please check the new schema.
 
 ### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+- [TRI-1460] ESS Notifications endpoints are not working in the decentral Digital Twin Registry scenario because endpoints does not provide bpn as a parameter. 
+- [TRI-1096] No limiting of requests in parallel - IRS allows sending API requests unlimited
+- [TRI-1100] Potential denial-of-service (DoS) attack - IRS allows to enter a large number of characters, which are reflected in the response of the server
+- [TRI-1098] Software related information disclosure - IRS returns redundant information about the type and version of used software
+- [TRI-793] Misconfigured Access-Control-Allow- Origin Header - by intercepting network traffic it could be possible to read and modify any messages that are exchanged with server
+- [TRI-1095] HTTP security headers configuration could be improved and allow for additional protection against some web application attacks
+- [TRI-1441] Synchronous communication with shared C-X services without circuit breaker pattern - potentially could affect IRS resilience when other services becomes non-responsive.
+- [TRI-1441] Cascading effects of failure when Digital Twin Registry becomes non-responsive - potentially bulkhead pattern could improve IRS resilience
+- [TRI-1477] Retry mechanism used inside IRS could potentially affect IRS resilience - DDOS other services on which IRS is dependent, exhaustion of resources and available threads, etc.
+- [TRI-1478] Lack of resources management - thread pooling, heap limitation etc.
+- [TRI-1024] IRS does not support scale out on multiple instances
 
 ## [3.1.0] - 2023-06-28
 ### Changed
