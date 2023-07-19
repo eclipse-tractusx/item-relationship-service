@@ -161,7 +161,7 @@ edc:
     policies:
       # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
       # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability # List of comma separated names of the policies to accept.
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability # List of comma separated names of the policies to accept.
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
