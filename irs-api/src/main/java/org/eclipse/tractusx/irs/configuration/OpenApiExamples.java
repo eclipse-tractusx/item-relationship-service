@@ -365,7 +365,7 @@ public class OpenApiExamples {
                         .endpointURL("https://catena-x.net/vehicle/partdetails/")
                         .processingError(ProcessingError.builder()
                                                         .withProcessStep(ProcessStep.SCHEMA_VALIDATION)
-                                                        .withErrorDetail("Details to reason of Failure")
+                                                        .withErrorDetail("Details to reason of failure")
                                                         .withLastAttempt(EXAMPLE_ZONED_DATETIME)
                                                         .withRetryCounter(0)
                                                         .build())
