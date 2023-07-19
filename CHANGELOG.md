@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [TRI-1095] HTTP security headers configuration could be improved and allow for additional protection against some web application attacks
 - [TRI-1441] Synchronous communication with shared C-X services without circuit breaker pattern - potentially could affect IRS resilience when other services becomes non-responsive.
 - [TRI-1441] Cascading effects of failure when Digital Twin Registry becomes non-responsive - potentially bulkhead pattern could improve IRS resilience
-- Retry mechanism used inside IRS could potentially affect IRS resilience - DDOS other services on which IRS is dependent, exhaustion of resources and available threads, etc.
+- [TRI-1477] Retry mechanism used inside IRS could potentially affect IRS resilience - DDOS other services on which IRS is dependent, exhaustion of resources and available threads, etc.
 - Lack of resources management - max threads, heap limitation, etc.
 - IRS was not scaled to multiple instances, and was not tested in such environment
 
