@@ -933,7 +933,7 @@ The following table entries define overall IRS quality goals. The order of the t
 <p>In a decentralized system, the digital twin registry is moved behind an EDC. To access the registry of a data provider, a new set of central services was introduces. These discovery services consist of BPN Discovery, Discovery Finder and EDC Discovery.
 IRS uses the Discovery Finder and EDC Discovery.
 Discovery Finder is used to find the correct EDC Discovery URL for the type BPN. EDC Discovery returns the EDC connector URLs for a specific BPN.
-With these EDC connector URLs, IRS searches the provider catalog for a asset of type <code>asset:prop:type=data.core.digitalTwinRegistry</code>. This asset should be part of every provider EDC catalog. With this asset, IRS can access the decentralized registry and after this step, the flow stays the same as in the paragraph above.</p>
+With these EDC connector URLs, IRS searches the provider catalog for a asset of type <code>data.core.digitalTwinRegistry</code>. This asset should be part of every provider EDC catalog. With this asset, IRS can access the decentralized registry and after this step, the flow stays the same as in the paragraph above.</p>
 </div>
 </div>
 </div>
@@ -1125,8 +1125,8 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Submodel Server offers endpoints for requesting the Submodel aspects.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IAM/DAPS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DAPS as central Identity Provider</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Managed Identity Wallet as Self-Sovereign-Identity Provider for EDC</p></td>
 </tr>
 </tbody>
 </table>
@@ -1138,7 +1138,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <h4 id="_component_diagram_2">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/level-1.svg" alt="level 1" width="1228" height="613">
+<img src="architecture-constraints/level-1.svg" alt="level 1" width="1265" height="746">
 </div>
 </div>
 </div>
@@ -1167,7 +1167,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IrsController</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>IrsController</strong> provides an REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>IrsController</strong> provides a REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IrsItemGraphQueryService</strong></p></td>
@@ -1209,6 +1209,10 @@ A job is processed in this order:</p>
 </li>
 </ol>
 </div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Policy Store</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>Policy Store</strong> provides an Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>BlobStore</strong></p></td>
@@ -1809,10 +1813,10 @@ JWT token should also contain two fields:</p>
 <div class="sect4">
 <h5 id="_irs_as_edc_client">IRS as EDC client</h5>
 <div class="paragraph">
-<p>The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a DAPS certificate, which was provided to the IRS via the network authority.</p>
+<p>The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a Verifiable Credential (VC), which is provided to the EDC via the Managed Identity Wallet.</p>
 </div>
 <div class="paragraph">
-<p>The DAPS certificate identifies the IRS and is used to acquire access permissions for the data transferred via EDC.</p>
+<p>The VC identifies and authenticates the EDC and is used to acquire access permissions for the data transferred via EDC.</p>
 </div>
 </div>
 </div>
@@ -1983,6 +1987,9 @@ In the future, another approach or an additional way to to index the data might 
 <li>
 <p>Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.</p>
 </li>
+<li>
+<p>EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. Only policies which are defined via the PolicyStory will be accepted.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -2007,12 +2014,6 @@ In the future, another approach or an additional way to to index the data might 
 </div>
 <div class="paragraph">
 <p>Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_edc_catalog">EDC Catalog</h5>
-<div class="paragraph">
-<p>Whenever a EDC catalog is requested, IRS stores all returned contract offers inside a cache. This cache will be used for subsequent requests to the same EDC provider. If the requested contract offer could not be found within the cache, the catalog will be requested again and the cache will be updated.</p>
 </div>
 </div>
 </div>
@@ -2267,7 +2268,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-14 15:14:06 UTC
+Last updated 2023-07-19 14:23:12 UTC
 </div>
 </div>
 </body>

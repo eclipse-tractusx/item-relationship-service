@@ -460,7 +460,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_bpdm">BPDM</a></li>
 <li><a href="#_semantics_hub">Semantics Hub</a></li>
-<li><a href="#_edc_catalog">EDC Catalog</a></li>
 </ul>
 </li>
 </ul>
@@ -605,6 +604,9 @@ In the future, another approach or an additional way to to index the data might 
 <li>
 <p>Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.</p>
 </li>
+<li>
+<p>EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. Only policies which are defined via the PolicyStory will be accepted.</p>
+</li>
 </ul>
 </div>
 </div>
@@ -633,18 +635,12 @@ In the future, another approach or an additional way to to index the data might 
 <p>Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_edc_catalog">EDC Catalog</h3>
-<div class="paragraph">
-<p>Whenever a EDC catalog is requested, IRS stores all returned contract offers inside a cache. This cache will be used for subsequent requests to the same EDC provider. If the requested contract offer could not be found within the cache, the catalog will be requested again and the cache will be updated.</p>
-</div>
-</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-14 15:14:06 UTC
+Last updated 2023-07-19 14:23:12 UTC
 </div>
 </div>
 </body>

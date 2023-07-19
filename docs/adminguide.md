@@ -57,7 +57,7 @@ Create a new application in ArgoCD and point it to your repository / Helm chart 
 Take the following template and adjust the configuration parameters (&lt;placeholders> mark the relevant spots).
 You can define the URLs as well as most of the secrets yourself.
 
-The Keycloak, DAPS and Vault configuration / secrets depend on your setup and might need to be provided externally.
+The Keycloak, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
 ## Spring Configuration
 
@@ -227,7 +227,7 @@ edc:
     policies:
       # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
       # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability # List of comma separated names of the policies to accept.
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability # List of comma separated names of the policies to accept.
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
@@ -306,7 +306,7 @@ digitalTwinRegistry:
   type: decentral  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
   url:  # "https://<digital-twin-registry-url>"
   descriptorEndpoint: >-
-    {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/registry/shell-descriptors/{aasIdentifier}
+    {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/shell-descriptors/{aasIdentifier}
   shellLookupEndpoint: >-
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}
   discoveryFinderUrl:  # "https://<discovery-finder-url>
@@ -536,215 +536,7 @@ The **key** of each entry is the `Base64` encoded URN of the model. The **value*
 
 ### EDC consumer configuration
 
-If you want to provide your own EDC consumer, add the following entries to your values.yaml:
-
-```yaml
-tractusx-connector:
-  install:
-    daps: false
-    vault: false
-  participant:
-    id:
-  controlplane:
-    ingresses:
-      - enabled: false
-
-    endpoints:
-      # -- default api for health checks, should not be added to any ingress
-      default:
-        port: 8080
-        path: /api
-      # -- data management api, used by internal users, can be added to an ingress and must not be internet facing
-      management:
-        port: 8081
-        path: /management
-        # -- authentication key, must be attached to each 'X-Api-Key' request header
-        authKey: ""
-      # -- control api, used for internal control calls. can be added to the internal ingress, but should probably not
-      control:
-        port: 8083
-        path: /control
-      # -- ids api, used for inter connector communication and must be internet facing
-      protocol:
-        port: 8084
-        path: /api/v1/dsp
-      # -- metrics api, used for application metrics, must not be internet facing
-      metrics:
-        port: 9090
-        path: /metrics
-      # -- observability api with unsecured access, must not be internet facing
-      observability:
-        port: 8085
-        # -- observability api, provides /health /readiness and /liveness endpoints
-        path: /observability
-        # -- allow or disallow insecure access, i.e. access without authentication
-        insecure: true
-
-    internationalDataSpaces:
-      id: TXDC
-      description: Tractus-X Eclipse IDS Data Space Connector
-      title: ""
-      maintainer: ""
-      curator: ""
-      catalogId: TXDC-Catalog
-
-    # Explicitly declared url for reaching the ids api (e.g. if ingresses not used)
-    url:
-      ids: ""
-
-    resources:
-      limits:
-        cpu: 500m
-        memory: 1Gi
-      requests:
-        cpu: 200m
-        memory: 512Mi
-
-  dataplane:
-    ingresses:
-      - enabled: false
-
-    endpoints:
-      default:
-        port: 8080
-        path: /api
-      public:
-        port: 8081
-        path: /api/public
-      control:
-        port: 8083
-        path: /api/dataplane/control
-      observability:
-        port: 8085
-        path: /observability
-        insecure: true
-      metrics:
-        port: 9090
-        path: /metrics
-
-    # Explicitly declared url for reaching the public api (e.g. if ingresses not used)
-    url:
-      public: ""
-
-    resources:
-      limits:
-        cpu: 500m
-        memory: 1Gi
-      requests:
-        cpu: 500m
-        memory: 1Gi
-
-  # URL where the EndpointDataReference callback will be sent to
-  backendService:
-    httpProxyTokenReceiverUrl: ""
-
-  ################################
-  # EDC Vault/DAPS Configuration #
-  ################################
-  vault:
-    hashicorp:
-      url: ""
-      token: ""
-      timeout: 30
-      healthCheck:
-        enabled: true
-        standbyOk: true
-      paths:
-        secret: /v1/
-        health: /v1/sys/health
-    secretNames:
-      transferProxyTokenSignerPrivateKey:
-      transferProxyTokenSignerPublicKey:
-      transferProxyTokenEncryptionAesKey:
-      dapsPrivateKey:
-      dapsPublicKey:
-
-  daps:
-    url: ""
-    clientId: ""
-    paths:
-      jwks: /.well-known/jwks.json
-      token: /token
-
-  ##################################
-  # EDC Postgres Configuration #
-  ##################################
-  postgresql:
-    auth:
-      database: "edc"
-      username: <databaseuser>
-      password: <databasepassword>
-    enabled: true
-    jdbcUrl: ""
-    username: ""
-    password: ""
-
-##############################
-# EDC Postgres Configuration #
-##############################
-# EDC chart do not support multiple postgres instances in the same namespace at the moment.
-# Enable this to use the postgres dependency for when you want to deploy multiple EDC instances in one namespace
-postgresql:
-  enabled:
-
-edc-postgresql:
-  auth:
-    username: <databaseuser>
-    database: edc
-    postgresPassword: <databasepassword>
-    password: <databasepassword>
-```
-
-#### Values explained
-
-EDC requires a DAPS instance to function correctly. For more information on this, please refer to the [DAPS](https://github.com/catenax-ng/product-DAPS) or the [EDC](https://github.com/catenax-ng/product-edc) documentation.
-
-##### controlplane-url
-
-The hostname where the EDC consumer controlplane will be made available.
-
-##### dataplane-url
-
-The hostname where the EDC consumer dataplane will be made available.
-
-##### vault-url
-
-The base URL of the Vault instance.
-EDC requires a running instance of HashiCorp Vault to store the DAPS certificate and private key.
-
-##### vault-secret-store-path
-
-The path to the secret store in Vault where the DAPS certificate and key can be found.
-
-Example: /v1/team-name
-
-##### daps-certificate-name
-
-The name of the DAPS certificate in the Vault.
-
-Example: irs-daps-certificate
-
-##### daps-privatekey-name
-
-The name of the DAPS private key in the Vault.
-
-Example: irs-daps-private-key
-
-##### daps-client-id
-
-The DAPS client ID.
-
-##### daps-jwks-url
-
-The URL of the DAPS JWK Set.
-
-Example: <https://daps-hostname/.well-known/jwks.json>
-
-##### daps-token-url
-
-The URL of the DAPS token API.
-
-Example: <https://daps-hostname/token>
+If you want to provide your own EDC consumer, add the EDC Helm Chart as dependency to your Chart.yaml. The helm chart and documentation can be found here: [tractusx-connector](https://github.com/eclipse-tractusx/tractusx-edc/tree/main/charts/tractusx-connector)
 
 ### Secrets
 
@@ -752,14 +544,6 @@ This is a list of all secrets used in the deployment.
 
 **⚠️ WARNING**\
 Keep the values for these settings safe and do not publish them!
-
-#### postgres-admin-password
-
-Database password for the **postgres** user. To be defined by you.
-
-#### postgres-password
-
-Database password for the application user (default username: **edc**). To be defined by you.
 
 #### keycloak-client-id
 

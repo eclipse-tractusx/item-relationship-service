@@ -132,7 +132,7 @@ The IRS acts as a consumer of the component Asset Administration Shell Registry.
 In a decentralized system, the digital twin registry is moved behind an EDC. To access the registry of a data provider, a new set of central services was introduces. These discovery services consist of BPN Discovery, Discovery Finder and EDC Discovery.
 IRS uses the Discovery Finder and EDC Discovery.
 Discovery Finder is used to find the correct EDC Discovery URL for the type BPN. EDC Discovery returns the EDC connector URLs for a specific BPN.
-With these EDC connector URLs, IRS searches the provider catalog for a asset of type `asset:prop:type=data.core.digitalTwinRegistry`. This asset should be part of every provider EDC catalog. With this asset, IRS can access the decentralized registry and after this step, the flow stays the same as in the paragraph above.
+With these EDC connector URLs, IRS searches the provider catalog for a asset of type `data.core.digitalTwinRegistry`. This asset should be part of every provider EDC catalog. With this asset, IRS can access the decentralized registry and after this step, the flow stays the same as in the paragraph above.
 
 #### EDC API
 
@@ -192,7 +192,7 @@ The interfaces show how the components interact with each other and which interf
 | EDC Consumer | The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane. |
 | EDC Provider | The EDC Provider Component connects with EDC Consumer component and forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications. |
 | Submodel Server | The Submodel Server offers endpoints for requesting the Submodel aspects. |
-| IAM/DAPS | DAPS as central Identity Provider |
+| MIW | Managed Identity Wallet as Self-Sovereign-Identity Provider for EDC |
 
 ## Level 1
 
@@ -206,11 +206,12 @@ The interfaces show how the components interact with each other and which interf
 | --- | --- |
 | **IRS** | The IRS builds a digital representation of a product (digital twin) and the relationships of items the product consists of in a hierarchical structure. The result is an item graph in which each node represents a digital item of the product - this graph is called "Item Graph". |
 | **IRS API** | The **IRS API** is the Interface over which the Data Consumer is communicating. |
-| **IrsController** | The **IrsController** provides an REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process. |
+| **IrsController** | The **IrsController** provides a REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process. |
 | **IrsItemGraphQueryService** | The **IrsItemGraphQueryService** implements the REST Interface of the IrsController. |
 | **JobOrchestrator** | The **JobOrchestrator** is a component which manages (start, end, cancel, resume) the jobs which execute the item graph retrieval process. |
 | **RecursiveJobHandler** | The **RecursiveJobHandler** handles the job execution recursively until a given abort criteria is reached or the complete item graph is build. |
 | **TransferProcessManager** | The TransferProcessManager handles the outgoing requests to the various data services. A job is processed in this order: 1. Initiation of the job and preparation of the stream of **DataRequests** 2. **RecursiveJobHandler** requesting for AAS via the Digital Twin registry. 3. Analyzing the structure of the AAS response by collecting the traversal aspect. 4. Requesting submodel data for given items of next level. 5. Recursively iteration over step 2-4 until an abort criterion is reached. 6. Assembles the complete item graph. |
+| **Policy Store** | The **Policy Store** provides an Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. |
 | **BlobStore** | The BlobStore is the database where the relationships and tombstones are stored for a requested item. |
 | **JobStore** | The JobStore is the database where the jobs with the information about the requested item are stored. |
 | **Digital Twin Client** | The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells. |
@@ -632,9 +633,9 @@ In a decentralized network, IRS uses the EDC client to access the provider DTR. 
 
 #### IRS as EDC client
 
-The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a DAPS certificate, which was provided to the IRS via the network authority.
+The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a Verifiable Credential (VC), which is provided to the EDC via the Managed Identity Wallet.
 
-The DAPS certificate identifies the IRS and is used to acquire access permissions for the data transferred via EDC.
+The VC identifies and authenticates the EDC and is used to acquire access permissions for the data transferred via EDC.
 
 ### Credentials
 
@@ -741,6 +742,7 @@ Data validation happens at two points:
 
 * IRS API: the data sent by the client is validated to match the model defined in the IRS. If the validation fails, the IRS sends a HTTP 400 response and indicates the problem to the caller.
 * Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.
+* EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. Only policies which are defined via the PolicyStory will be accepted.
 
 ### Caching
 
@@ -757,10 +759,6 @@ Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as 
 Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable). The IRS can preload configured schema models on startup to reduce on demand call times.
 
 Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.
-
-#### EDC Catalog
-
-Whenever a EDC catalog is requested, IRS stores all returned contract offers inside a cache. This cache will be used for subsequent requests to the same EDC provider. If the requested contract offer could not be found within the cache, the catalog will be requested again and the cache will be updated.
 
 ## Development concepts
 
