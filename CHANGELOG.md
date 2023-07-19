@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- BPN is now passed on correctly while traversing the item graph
+- Tombstone is created if no BPN is available for a child item
 
 ## [3.2.1] - 2023-07-19
 ### Fixed
