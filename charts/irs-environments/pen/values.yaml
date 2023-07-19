@@ -22,6 +22,7 @@ irs-helm:
         secretName: tls-secret
   digitalTwinRegistry:
     url: https://semantics-pen.dev.demo.catena-x.net/registry
+    discoveryFinderUrl: https://semantics-pen.dev.demo.catena-x.net/discoveryfinder/api/administration/connectors/discovery/search
   semanticshub:
     url: https://semantics-pen.dev.demo.catena-x.net/hub/api/v1/models
     pageSize: "200"
@@ -40,6 +41,15 @@ irs-helm:
       apikey:
         secret: <path:traceability-irs/data/pen/controlplane#apiKey>
 
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 1Gi
+
+
   #######################
   # Minio Configuration #
   #######################
@@ -50,19 +60,25 @@ irs-helm:
       name: "irs-pen-minio-sa"
 
 
-irs-edc-consumer:
-  ##############################
-  # EDC Postgres Configuration #
-  ##############################
-  postgresql:
-    auth:
-      postgresPassword: <path:traceability-irs/data/int/controlplane#databasepassword>
-      password: <path:traceability-irs/data/int/controlplane#databasepassword>
+tractusx-connector:
+  install:
+    postgresql: false
+    daps: false
+    vault: false
+  participant:
+    id: BPNL00000001CRHK
 
-  ##################################
-  # EDC Controlplane Configuration #
-  ##################################
-  edc-controlplane:
+  controlplane:
+    # SSI configuration
+    ssi:
+      miw:
+        url: <path:traceability-irs/data/dev/controlplane#ssi.miw.url>
+        authorityId: <path:traceability-irs/data/dev/controlplane#ssi.miw.authorityId>
+      oauth:
+        tokenurl: <path:traceability-irs/data/dev/controlplane#ssi.oauth.tokenurl>
+        client:
+          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id>
+          secretAlias: edc-test-miw-keycloak-secret
     ingresses:
       - enabled: true
         hostname: "irs-consumer-controlplane-pen.int.demo.catena-x.net"
@@ -73,92 +89,119 @@ irs-edc-consumer:
         endpoints:
           - protocol
           - management
-        className: ""
         tls:
-          - hosts:
-              - "irs-consumer-controlplane-pen.int.demo.catena-x.net"
-            secretName: tls-secret
-        certManager:
-          issuer: ""
-          clusterIssuer: ""
+          enabled: true
+          secretName: tls-secret
 
-    edc:
-      postgresql:
-        password: <path:traceability-irs/data/int/controlplane#databasepassword>
-      transfer:
-        proxy:
-          token:
-            verifier:
-              publickey:
-                alias: irs-int-daps-cert
-            signer:
-              privatekey:
-                alias: irs-int-daps-key
-      api:
-        auth:
-          key: <path:traceability-irs/data/pen/controlplane#apiKey>
-      controlplane:
-        url: "https://irs-consumer-controlplane-pen.int.demo.catena-x.net"
-      dataplane:
-        url: "https://irs-consumer-dataplane-pen.int.demo.catena-x.net"
-    configuration:
-      properties: |-
-        edc.oauth.client.id=<path:traceability-irs/data/int/controlplane#edc.oauth.client.id>
-        edc.oauth.private.key.alias=irs-int-daps-key
-        edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
-        edc.oauth.certificate.alias=irs-int-daps-cert
-        edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
-        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
-        edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
-        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
-        edc.data.encryption.keys.alias=irs-int-daps-key
-        edc.data.encryption.algorithm=NONE
+    endpoints:
+      # -- data management api, used by internal users, can be added to an ingress and must not be internet facing
+      management:
+        port: 8081
+        path: /management
+        authKey: <path:traceability-irs/data/int/controlplane#apiKey>  # -- authentication key, must be attached to each 'X-Api-Key' request header
+      # -- protocol api, used for inter connector communication and must be internet facing
+      protocol:
+        port: 8084
+        path: /api/v1/dsp
+      # -- observability api with unsecured access, must not be internet facing
+      observability:
+        port: 8085
+        path: /observability  # -- observability api, provides /health /readiness and /liveness endpoints
+        insecure: true  # -- allow or disallow insecure access, i.e. access without authentication
 
-  ###############################
-  # EDC Dataplane Configuration #
-  ###############################
-  edc-dataplane:
-    edc:
-      api:
-        auth:
-          key: <path:traceability-irs/data/pen/controlplane#apiKey>
-    ## Ingress declaration to expose the network service.
+    internationalDataSpaces:
+      id: TXDC
+      description: Tractus-X Eclipse IDS Data Space Connector
+      title: "IRS PEN Consumer EDC"
+      maintainer: ""
+      curator: ""
+      catalogId: TXDC-Catalog
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 1Gi
+
+  dataplane:
     ingresses:
-      ## Public / Internet facing Ingress
       - enabled: true
-        # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
         hostname: "irs-consumer-dataplane-pen.int.demo.catena-x.net"
-        # -- Additional ingress annotations to add
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        # -- EDC endpoints exposed by this ingress resource
         endpoints:
           - public
-        # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
         className: "nginx"
-        # -- Enables TLS on the ingress resource
         tls:
-          - hosts:
-              - "irs-consumer-dataplane-pen.int.demo.catena-x.net"
-            # Default secret for certificate creation already provided to your namespace
-            secretName: tls-secret
-        ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
-        certManager:
-          # -- If preset enables certificate generation via cert-manager namespace scoped issuer
-          issuer: ""
-          # -- If preset enables certificate generation via cert-manager cluster-wide issuer
-          clusterIssuer: ""
+          enabled: true
+          secretName: tls-secret
 
-    configuration:
-      properties: |-
-        edc.oauth.client.id=<path:traceability-irs/data/int/controlplane#edc.oauth.client.id>
-        edc.oauth.private.key.alias=irs-int-daps-key
-        edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
-        edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
-        edc.oauth.certificate.alias=irs-int-daps-cert
-        edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
-        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
-        edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
-        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+    endpoints:
+      public:
+        port: 8081
+        path: /api/public
+      observability:
+        port: 8085
+        path: /observability
+        insecure: true
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 512Mi
+
+  # URL where the EndpointDataReference callback will be sent to
+  backendService:
+    httpProxyTokenReceiverUrl: "http://app-irs-pen-irs-helm:8181/internal/endpoint-data-reference"
+
+  ################################
+  # EDC Vault/DAPS Configuration #
+  ################################
+  vault:
+    hashicorp:
+      url: "https://vault.demo.catena-x.net"
+      token: "<path:traceability-irs/data/int/controlplane#vaultToken>"
+      timeout: 30
+      healthCheck:
+        enabled: true
+        standbyOk: true
+      paths:
+        secret: /v1/traceability-irs
+        health: /v1/sys/health
+    secretNames:
+      transferProxyTokenSignerPrivateKey: irs-int-daps-key
+      transferProxyTokenSignerPublicKey: irs-int-daps-cert
+      transferProxyTokenEncryptionAesKey: test-edc-encryption-key
+
+  ##################################
+  # EDC Postgres Configuration #
+  ##################################
+  postgresql:
+    enabled: true
+    auth:
+      username: <path:traceability-irs/data/int/controlplane#databaseuser>
+      password: <path:traceability-irs/data/int/controlplane#databasepassword>
+    username: <path:traceability-irs/data/int/controlplane#databaseuser>
+    password: <path:traceability-irs/data/int/controlplane#databasepassword>
+    jdbcUrl: "jdbc:postgresql://app-irs-pen-edc-postgresql-hl:5432/edc"
+
+##############################
+# EDC Postgres Configuration #
+##############################
+# EDC chart do not support multiple postgres instances in the same namespace at the moment.
+# Enable this to use the postgres dependency for when you want to deploy multiple EDC instances in one namespace
+postgresql:
+  enabled: true
+edc-postgresql:
+  auth:
+    database: edc
+    username: <path:traceability-irs/data/int/controlplane#databaseuser>
+    postgresPassword: <path:traceability-irs/data/int/controlplane#databasepassword>
+    password: <path:traceability-irs/data/int/controlplane#databasepassword>
