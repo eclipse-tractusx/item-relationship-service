@@ -1,7 +1,10 @@
 name: "Quality Checks (Release Guidelines)"
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Trigger manually
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
