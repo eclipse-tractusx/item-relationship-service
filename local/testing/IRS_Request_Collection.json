@@ -1992,7 +1992,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"aspects\": [\n\t\t\"AssemblyPartRelationship\"\n\t],\n\t\"collectAspects\": true,\n\t\"lookupBPNs\": true,\n\t\"direction\": \"downward\",\n\t\"batchSize\": 10,\n  \"batchStrategy\": \"PRESERVE_BATCH_JOB_ORDER\",\n\t\"keys\": [\n\t\t{\"globalAssetId\": \"urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e\", \"bpn\": \"BPNL00000003AVTH\"},{\n\t\t\"globalAssetId\": \"urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743\", \"bpn\": \"BPNL00000003AYRE\"}\n\t]\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"AssemblyPartRelationship\"\n\t],\n\t\"collectAspects\": true,\n\t\"lookupBPNs\": true,\n\t\"direction\": \"downward\",\n\t\"batchSize\": 10,\n  \"batchStrategy\": \"PRESERVE_BATCH_JOB_ORDER\",\n\t\"keys\": [\n\t\t{\"globalAssetId\": \"urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd211122\", \"bpn\": \"BPNL00000003AAXX\"},{\n\t\t\"globalAssetId\": \"urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a32211\", \"bpn\": \"BPNL00000003AAXX\"}\n\t]\n}"
 			},
 			"parameters": [],
 			"headers": [
