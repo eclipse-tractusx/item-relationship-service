@@ -1040,7 +1040,7 @@ components:
           - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
             endpointURL: https://catena-x.net/vehicle/partdetails/
             processingError:
-              errorDetail: Details to reason of Failure
+              errorDetail: Details to reason of failure
               lastAttempt: 2022-02-03T14:48:54.709Z
               processStep: SchemaValidation
               retryCounter: 0
