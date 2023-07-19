@@ -46,6 +46,12 @@ public class NotificationSummary extends Summary {
         super(asyncFetchedItems, bpnLookups);
         this.notifications = notificationItems;
     }
+
+    public NotificationSummary(final AsyncFetchedItems asyncFetchedItems, final FetchedItems bpnLookups,
+            final Integer sentNotification, final Integer receivedNotification) {
+        super(asyncFetchedItems, bpnLookups);
+        this.notifications = new NotificationItems(sentNotification, receivedNotification);
+    }
 }
 
 /**
