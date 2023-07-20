@@ -1,0 +1,12 @@
+= Quality Scenarios
+
+
+|===
+|ID |Scenario |Implementation
+
+|DS01
+|Any data consumption via the IRS checks if data offers are done according to "Use Case Rahmenbedingungen".
+
+IRS provides a configuration capability for the "Rahmenbedingungs ID" to be used in a given scenario / deployment.
+|"PolicyCheckerService is used to check defined Usage Policies according to the "Rahmenbedingungsbedingungen" which is obligatory for data consumption.
+|===
