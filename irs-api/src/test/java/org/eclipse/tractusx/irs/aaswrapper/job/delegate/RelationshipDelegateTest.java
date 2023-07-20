@@ -83,6 +83,25 @@ class RelationshipDelegateTest {
     }
 
     @Test
+    void shouldPutTombstoneForMissingBpn() throws EdcClientException {
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                                       .shell(shellDescriptor(
+                                                                                               List.of(submodelDescriptor(
+                                                                                                       singleLevelBomAsBuiltAspectName,
+                                                                                                       "address"))));
+        // when
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
+                new AASTransferProcess(), PartChainIdentificationKey.builder().globalAssetId("testId").build());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("testId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.SUBMODEL_REQUEST);
+    }
+
+    @Test
     void shouldCatchRestClientExceptionAndPutTombstone() throws EdcClientException {
         // given
         when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenThrow(

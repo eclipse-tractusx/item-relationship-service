@@ -112,6 +112,29 @@ class SubmodelDelegateTest {
                 ProcessStep.SCHEMA_VALIDATION);
     }
 
+
+    @Test
+    void shouldPutTombstoneForMissingBpn() {
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
+                                                                                                   .shell(shellDescriptor(
+                                                                                                           List.of(submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           "testSerialPartEndpoint"),
+                                                                                                                   submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
+
+        // when
+        final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels, jobParameterCollectAspects(),
+                new AASTransferProcess(), PartChainIdentificationKey.builder().globalAssetId("testId").build());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(2);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("testId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.SUBMODEL_REQUEST);
+    }
     @Test
     void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
         // given
