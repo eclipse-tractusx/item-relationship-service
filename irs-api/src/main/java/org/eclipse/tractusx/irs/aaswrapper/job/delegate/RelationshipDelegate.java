@@ -25,12 +25,12 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Bpn;
-import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.JobParameter;
-import org.eclipse.tractusx.irs.component.LinkedItem;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
@@ -66,7 +66,8 @@ public class RelationshipDelegate extends AbstractDelegate {
 
     @Override
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
-            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess,
+            final PartChainIdentificationKey itemId) {
 
         final RelationshipAspect relationshipAspect = RelationshipAspect.from(jobData.getBomLifecycle(),
                 jobData.getDirection());
@@ -76,24 +77,34 @@ public class RelationshipDelegate extends AbstractDelegate {
                             .findFirst()
                             .ifPresent(shell -> shell.findRelationshipEndpointAddresses(
                                                              AspectType.fromValue(relationshipAspect.getName()))
-                                                     .forEach(endpoint -> processEndpoint(endpoint, jobData,
-                                                             relationshipAspect, aasTransferProcess,
-                                                             itemContainerBuilder, itemId)));
+                                                     .forEach(endpoint -> processEndpoint(endpoint, relationshipAspect,
+                                                             aasTransferProcess, itemContainerBuilder, itemId)));
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }
 
-    private void processEndpoint(final Endpoint endpoint, final JobParameter jobData,
-            final RelationshipAspect relationshipAspect, final AASTransferProcess aasTransferProcess,
-            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId) {
+    private void processEndpoint(final Endpoint endpoint, final RelationshipAspect relationshipAspect,
+            final AASTransferProcess aasTransferProcess, final ItemContainer.ItemContainerBuilder itemContainerBuilder,
+            final PartChainIdentificationKey itemId) {
+
+        if (StringUtils.isBlank(itemId.getBpn())) {
+            log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
+                    itemId.getGlobalAssetId());
+            itemContainerBuilder.tombstone(
+                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(),
+                            "Can't get relationship without a BPN", retryCount, ProcessStep.SUBMODEL_REQUEST));
+            return;
+        }
+
         try {
             final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
-                    endpoint, jobData.getBpn());
+                    endpoint, itemId.getBpn());
 
             final var relationships = jsonUtil.fromString(submodelRawPayload, relationshipAspect.getSubmodelClazz())
                                               .asRelationships();
 
-            final List<String> idsToProcess = getIdsToProcess(relationships, relationshipAspect.getDirection());
+            final List<PartChainIdentificationKey> idsToProcess = getIdsToProcess(relationships,
+                    relationshipAspect.getDirection());
 
             log.info("Processing Relationships with {} items", idsToProcess.size());
 
@@ -104,13 +115,13 @@ public class RelationshipDelegate extends AbstractDelegate {
             log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                     endpoint.getProtocolInformation().getHref());
             itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, retryCount,
-                            ProcessStep.SUBMODEL_REQUEST));
+                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
+                            retryCount, ProcessStep.SUBMODEL_REQUEST));
         } catch (final JsonParseException e) {
             log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, retryCount,
-                            ProcessStep.SUBMODEL_REQUEST));
+                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
+                            retryCount, ProcessStep.SUBMODEL_REQUEST));
         }
     }
 
@@ -118,25 +129,32 @@ public class RelationshipDelegate extends AbstractDelegate {
         return relationships.stream().map(Relationship::getBpn).map(Bpn::withManufacturerId).toList();
     }
 
-    private List<String> getIdsToProcess(final List<Relationship> relationships, final Direction direction) {
+    private List<PartChainIdentificationKey> getIdsToProcess(final List<Relationship> relationships,
+            final Direction direction) {
         return switch (direction) {
             case DOWNWARD -> getChildIds(relationships);
             case UPWARD -> getParentIds(relationships);
         };
     }
 
-    private List<String> getParentIds(final List<Relationship> relationships) {
+    private List<PartChainIdentificationKey> getParentIds(final List<Relationship> relationships) {
         return relationships.stream()
-                            .map(Relationship::getCatenaXId)
-                            .map(GlobalAssetIdentification::getGlobalAssetId)
+                            .map(relationship -> PartChainIdentificationKey.builder()
+                                                                           .globalAssetId(relationship.getCatenaXId()
+                                                                                                      .getGlobalAssetId())
+                                                                           .bpn(relationship.getBpn())
+                                                                           .build())
                             .toList();
     }
 
-    private List<String> getChildIds(final List<Relationship> relationships) {
+    private List<PartChainIdentificationKey> getChildIds(final List<Relationship> relationships) {
         return relationships.stream()
-                            .map(Relationship::getLinkedItem)
-                            .map(LinkedItem::getChildCatenaXId)
-                            .map(GlobalAssetIdentification::getGlobalAssetId)
+                            .map(relationship -> PartChainIdentificationKey.builder()
+                                                                           .globalAssetId(relationship.getLinkedItem()
+                                                                                                      .getChildCatenaXId()
+                                                                                                      .getGlobalAssetId())
+                                                                           .bpn(relationship.getBpn())
+                                                                           .build())
                             .toList();
     }
 }

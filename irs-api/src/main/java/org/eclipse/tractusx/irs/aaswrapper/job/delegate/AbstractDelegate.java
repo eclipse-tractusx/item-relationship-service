@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
@@ -62,7 +63,7 @@ public abstract class AbstractDelegate {
      * and Tombstones (if requests fail).
      */
     public abstract ItemContainer process(ItemContainer.ItemContainerBuilder itemContainerBuilder, JobParameter jobData,
-            AASTransferProcess aasTransferProcess, String itemId);
+            AASTransferProcess aasTransferProcess, PartChainIdentificationKey itemId);
 
     /**
      * Delegates processing to next step if exists or returns filled {@link ItemContainer}
@@ -75,7 +76,8 @@ public abstract class AbstractDelegate {
      * @return item container with filled data
      */
     protected ItemContainer next(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
-            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess,
+            final PartChainIdentificationKey itemId) {
         if (this.nextStep != null) {
             return this.nextStep.process(itemContainerBuilder, jobData, aasTransferProcess, itemId);
         }
@@ -91,7 +93,11 @@ public abstract class AbstractDelegate {
         for (final String connectorEndpoint : connectorEndpoints) {
             addSubmodelToList(submodelFacade, endpoint, submodelPayload, connectorEndpoint);
         }
-        return submodelPayload.stream().findFirst().orElseThrow();
+        return submodelPayload.stream()
+                              .findFirst()
+                              .orElseThrow(() -> new EdcClientException(String.format(
+                                      "Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
+                                      connectorEndpoints.size(), String.join(", ", connectorEndpoints))));
     }
 
     private void addSubmodelToList(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,

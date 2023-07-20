@@ -89,7 +89,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
         if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(assetId)) {
             throw new EdcClientException("Dummy Exception");
         }
-        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(assetId + "_" + connectorEndpoint);
+        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(assetId + "_" + submodelSuffix);
         return CompletableFuture.completedFuture(StringMapper.mapToString(submodel));
     }
 
