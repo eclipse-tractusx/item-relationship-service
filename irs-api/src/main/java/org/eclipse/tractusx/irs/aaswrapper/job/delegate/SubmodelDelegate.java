@@ -28,9 +28,11 @@ import java.util.Map;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
@@ -75,7 +77,8 @@ public class SubmodelDelegate extends AbstractDelegate {
 
     @Override
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
-            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess,
+            final PartChainIdentificationKey itemId) {
 
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(shell -> {
             final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.getSubmodelDescriptors();
@@ -87,7 +90,8 @@ public class SubmodelDelegate extends AbstractDelegate {
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
                 filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
-                        getSubmodels(submodelDescriptor, itemContainerBuilder, itemId, jobData.getBpn())));
+                        getSubmodels(submodelDescriptor, itemContainerBuilder, itemId.getGlobalAssetId(),
+                                itemId.getBpn())));
             }
             log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
             log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
@@ -103,6 +107,14 @@ public class SubmodelDelegate extends AbstractDelegate {
             final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId, final String bpn) {
         final List<Submodel> submodels = new ArrayList<>();
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
+
+            if (StringUtils.isBlank(bpn)) {
+                log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.", itemId);
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
+                        "Can't get submodel without a BPN", retryCount, ProcessStep.SUBMODEL_REQUEST));
+                return;
+            }
+
             try {
                 final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
                 final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,

@@ -120,9 +120,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
         final int expectedRelationshipsSizeFullTree = 44; // stub
-        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
-                List.of("singleLevelBomAsBuilt"));
-
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
@@ -186,8 +185,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithDepthShouldBuildTreeUntilGivenDepth() {
         // given
         final RegisterJob registerJob = registerJobWithDepthAndAspect(1, null);
-        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
-                List.of("singleLevelBomAsBuilt"));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
 
         final int expectedRelationshipsSizeFirstDepth = 34; // stub
 
@@ -206,8 +205,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // given
         final RegisterJob registerJob = registerJobWithDirection("urn:uuid:0b45c63b-0e5e-4232-9074-a05607783c33",
                 Direction.UPWARD);
-        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
-                List.of("singleLevelUsageAsBuilt"));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
 
         final int expectedRelationshipsSizeFirstDepth = 1; // stub
 
@@ -261,8 +260,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
         final String defaultAspectType = AspectType.SERIAL_PART.toString();
         final List<String> emptyAspectTypeFilterList = List.of();
         final RegisterJob registerJob = registerJobWithDepthAndAspect(null, emptyAspectTypeFilterList);
-        when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
-                List.of("singleLevelBomAsBuilt"));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
 
         // when
         final JobHandle jobHandle = service.registerItemJob(registerJob);

@@ -22,10 +22,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,6 +35,7 @@ import java.util.List;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
@@ -49,16 +50,20 @@ class DigitalTwinDelegateTest {
     @Test
     void shouldFillItemContainerWithShell() throws RegistryServiceException {
         // given
-        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(List.of(shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint("any")))));
+        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
+                List.of(shellDescriptor(List.of(submodelDescriptorWithoutEndpoint("any")))));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
-                new AASTransferProcess("id", 0), "itemId");
+                new AASTransferProcess("id", 0), createKey());
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
+    }
+
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").build();
     }
 
     @Test
@@ -69,7 +74,7 @@ class DigitalTwinDelegateTest {
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
-                new AASTransferProcess("id", 0), "itemId");
+                new AASTransferProcess("id", 0), createKey());
 
         // then
         assertThat(result).isNotNull();

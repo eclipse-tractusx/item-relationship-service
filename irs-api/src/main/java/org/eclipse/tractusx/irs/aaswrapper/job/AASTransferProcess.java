@@ -29,6 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 
 /**
@@ -40,12 +41,12 @@ import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 @ToString
 public class AASTransferProcess implements TransferProcess {
 
-    private final List<String> idsToProcess = new ArrayList<>();
+    private final List<PartChainIdentificationKey> idsToProcess = new ArrayList<>();
     @SuppressWarnings("PMD.ShortVariable")
     private String id;
     private Integer depth;
 
-    public void addIdsToProcess(final List<String> childIds) {
+    public void addIdsToProcess(final List<PartChainIdentificationKey> childIds) {
         idsToProcess.addAll(childIds);
     }
 

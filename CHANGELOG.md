@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2023-07-20
+### Changed
+- BPN is now taken from the submodel data while traversing the item graph
+- Tombstone is created if no BPN is available for a child item
+
 ## [3.2.1] - 2023-07-19
 ### Fixed
 - EDC Policies now get validated regardless of the type of constraint.
@@ -282,7 +287,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.2.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.0...HEAD
+[3.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.2.1...3.3.0
 [3.2.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.2.0...3.2.1
 [3.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.1...3.1.0

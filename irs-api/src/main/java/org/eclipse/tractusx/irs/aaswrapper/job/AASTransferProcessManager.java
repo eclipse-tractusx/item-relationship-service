@@ -34,6 +34,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.AbstractDelegate;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcessManager;
@@ -80,7 +81,7 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
         return () -> {
             final AASTransferProcess aasTransferProcess = new AASTransferProcess(processId, dataRequest.getDepth());
 
-            final String itemId = dataRequest.getItemId();
+            final PartChainIdentificationKey itemId = dataRequest.getItemId();
 
             log.info("Starting processing Digital Twin Registry with itemId {}", itemId);
             final ItemContainer itemContainer = abstractDelegate.process(ItemContainer.builder(), jobData,

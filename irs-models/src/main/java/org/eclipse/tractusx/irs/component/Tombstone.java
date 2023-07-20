@@ -44,8 +44,8 @@ public class Tombstone {
     public static final int CATENA_X_ID_LENGTH = 45;
 
     @Schema(description = "CATENA-X global asset id in the format urn:uuid:uuid4.",
-            example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = CATENA_X_ID_LENGTH, maxLength = CATENA_X_ID_LENGTH,
+            example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = CATENA_X_ID_LENGTH,
+            maxLength = CATENA_X_ID_LENGTH,
             pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     private final String catenaXId;
     private final String endpointURL;
@@ -53,11 +53,17 @@ public class Tombstone {
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep) {
+        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep);
+    }
+
+    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
+            final int retryCount, final ProcessStep processStep) {
+
         final ProcessingError processingError = ProcessingError.builder()
                                                                .withProcessStep(processStep)
                                                                .withRetryCounter(retryCount)
                                                                .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                                               .withErrorDetail(exception.getMessage())
+                                                               .withErrorDetail(errorDetails)
                                                                .build();
         return Tombstone.builder()
                         .endpointURL(endpointURL)
