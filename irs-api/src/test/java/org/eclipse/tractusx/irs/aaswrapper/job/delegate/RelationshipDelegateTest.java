@@ -118,7 +118,7 @@ class RelationshipDelegateTest {
     }
 
     @Test
-    void shouldPutTombstoneForMissingBpn() throws EdcClientException {
+    void shouldPutTombstoneForMissingBpn() {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
                                                                                                List.of(submodelDescriptor(
