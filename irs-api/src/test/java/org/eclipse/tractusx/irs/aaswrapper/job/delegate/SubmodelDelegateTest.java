@@ -35,6 +35,7 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
@@ -74,11 +75,15 @@ class SubmodelDelegateTest {
 
         // when
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels, jobParameterFilter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells().get(0).getSubmodelDescriptors()).isEmpty();
+    }
+
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
     }
 
     @Test
@@ -97,7 +102,7 @@ class SubmodelDelegateTest {
         when(semanticsHubFacade.getModelJsonSchema(any())).thenThrow(
                 new JsonParseException(new Exception("Payload did not match expected submodel")));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
-                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
+                jobParameterCollectAspects(), new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();
@@ -107,6 +112,29 @@ class SubmodelDelegateTest {
                 ProcessStep.SCHEMA_VALIDATION);
     }
 
+
+    @Test
+    void shouldPutTombstoneForMissingBpn() {
+        final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
+                                                                                                   .shell(shellDescriptor(
+                                                                                                           List.of(submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           "testSerialPartEndpoint"),
+                                                                                                                   submodelDescriptor(
+                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
+
+        // when
+        final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels, jobParameterCollectAspects(),
+                new AASTransferProcess(), PartChainIdentificationKey.builder().globalAssetId("testId").build());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(2);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("testId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.SUBMODEL_REQUEST);
+    }
     @Test
     void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
         // given
@@ -123,7 +151,7 @@ class SubmodelDelegateTest {
         when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId"));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
-                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
+                jobParameterCollectAspects(), new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();
@@ -151,12 +179,13 @@ class SubmodelDelegateTest {
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("connector.endpoint.n1", "connector.endpoint.n2"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithOneSubmodel,
-                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
+                jobParameterCollectAspects(), new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getSubmodels()).hasSize(1);
-        assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo("urn:bamm:com.catenax.serial_part:1.0.0#SerialPart");
+        assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo(
+                "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart");
         assertThat(result.getTombstones()).isEmpty();
     }
 
@@ -176,7 +205,7 @@ class SubmodelDelegateTest {
         when(semanticsHubFacade.getModelJsonSchema(any())).thenThrow(
                 new RestClientException("Payload did not match expected submodel"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
-                jobParameterCollectAspects(), new AASTransferProcess(), "itemId");
+                jobParameterCollectAspects(), new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();

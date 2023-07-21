@@ -23,6 +23,8 @@
 package org.eclipse.tractusx.irs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
 
 import java.time.Instant;
@@ -37,7 +39,8 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.controllers.IrsController;
-import org.eclipse.tractusx.irs.registryclient.discovery.LocalDataDiscovery;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
 import org.eclipse.tractusx.irs.util.TestMother;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +50,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -75,8 +79,6 @@ class IrsFunctionalTest {
             new MinioContainer.CredentialsProvider(ACCESS_KEY, SECRET_KEY)).withReuse(true);
     @Autowired
     private IrsController controller;
-    @Autowired
-    private LocalDataDiscovery discovery;
 
     @BeforeAll
     static void startContainer() {
@@ -88,10 +90,14 @@ class IrsFunctionalTest {
         minioContainer.stop();
     }
 
+    @MockBean
+    private ConnectorEndpointsService connectorEndpointsService;
+
     @Test
     void shouldStartJobAndRetrieveResult() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
-        discovery.registerMapping(registerJob.getKey().getBpn(), "singleLevelBomAsBuilt");
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
 
         thereIsJwtAuthentication();
 
@@ -121,7 +127,8 @@ class IrsFunctionalTest {
     @Test
     void shouldFillSummaryWithoutBPNLookup() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
-        discovery.registerMapping(registerJob.getKey().getBpn(), "singleLevelBomAsBuilt");
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
 
         thereIsJwtAuthentication();
 
@@ -147,7 +154,8 @@ class IrsFunctionalTest {
     @Test
     void shouldFillSummaryWithBPNLookup() {
         final RegisterJob registerJob = TestMother.registerJobWithLookupBPNs();
-        discovery.registerMapping(registerJob.getKey().getBpn(), "singleLevelBomAsBuilt");
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
         thereIsJwtAuthentication();
 
         final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
@@ -174,7 +182,7 @@ class IrsFunctionalTest {
                 List.of(new SimpleGrantedAuthority("view_irs")));
         jwtAuthenticationToken.setAuthenticated(true);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
+        when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
         SecurityContextHolder.setContext(securityContext);
     }
 

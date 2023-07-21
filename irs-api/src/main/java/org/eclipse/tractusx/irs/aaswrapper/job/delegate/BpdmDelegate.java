@@ -31,6 +31,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.RequestMetric;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.springframework.web.client.RestClientException;
@@ -53,7 +54,7 @@ public class BpdmDelegate extends AbstractDelegate {
 
     @Override
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
-            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final String itemId) {
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final PartChainIdentificationKey itemId) {
 
         if (jobData.isLookupBPNs()) {
             log.debug("BPN Lookup enabled, collecting BPN information");
@@ -65,12 +66,12 @@ public class BpdmDelegate extends AbstractDelegate {
             try {
                 itemContainerBuilder.build()
                                     .getBpns()
-                                    .forEach(bpn -> lookupBPN(itemContainerBuilder, itemId, bpn,
+                                    .forEach(bpn -> lookupBPN(itemContainerBuilder, itemId.getGlobalAssetId(), bpn,
                                             requestMetric));
             } catch (final RestClientException e) {
                 log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 requestMetric.incrementFailed();
-                itemContainerBuilder.tombstone(Tombstone.from(itemId, null, e, retryCount, ProcessStep.BPDM_REQUEST));
+                itemContainerBuilder.tombstone(Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.BPDM_REQUEST));
             }
         } else {
             log.debug("BPN lookup disabled, no BPN information will be collected.");

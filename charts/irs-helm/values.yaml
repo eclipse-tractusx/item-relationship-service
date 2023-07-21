@@ -113,7 +113,7 @@ digitalTwinRegistry:
   type: decentral  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
   url:  # "https://<digital-twin-registry-url>"
   descriptorEndpoint: >-
-    {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/registry/shell-descriptors/{aasIdentifier}
+    {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/shell-descriptors/{aasIdentifier}
   shellLookupEndpoint: >-
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}
   discoveryFinderUrl:  # "https://<discovery-finder-url>
