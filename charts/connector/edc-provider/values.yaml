@@ -68,10 +68,10 @@ tractusx-connector:
 
     resources:
       limits:
-        cpu: 1
+        cpu: '1.5'
         memory: 2Gi
       requests:
-        cpu: 500m
+        cpu: 300m
         memory: 2Gi
 
   dataplane:
@@ -105,7 +105,7 @@ tractusx-connector:
         cpu: 500m
         memory: 512Mi
       requests:
-        cpu: 500m
+        cpu: 200m
         memory: 512Mi
 
   # URL where the EndpointDataReference callback will be sent to
@@ -151,6 +151,14 @@ tractusx-connector:
 postgresql:
   enabled: true
 edc-postgresql:
+  primary:
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 250m
+      limits:
+        emory: 1Gi
+        cpu: 1
   auth:
     database: edc
     username: <path:traceability-irs/data/dev/controlplane#databaseuser>
