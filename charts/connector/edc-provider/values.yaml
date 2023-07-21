@@ -157,7 +157,7 @@ edc-postgresql:
         memory: 1Gi
         cpu: 250m
       limits:
-        emory: 1Gi
+        memory: 1Gi
         cpu: 1
   auth:
     database: edc
