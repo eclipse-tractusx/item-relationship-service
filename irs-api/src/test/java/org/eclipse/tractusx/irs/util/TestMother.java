@@ -144,6 +144,16 @@ public class TestMother {
                            .build();
     }
 
+    public static JobParameter jobParameterUpward() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .direction(Direction.UPWARD)
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_USAGE_AS_BUILT.toString()))
+                           .build();
+    }
+
     public static JobParameter jobParameterCollectAspects() {
         return JobParameter.builder()
                            .depth(0)
