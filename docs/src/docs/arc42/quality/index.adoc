@@ -10,6 +10,4 @@ The quality scenarios in this section depict the fundamental quality goals as we
 
 *Source*: IEEE standard 1061 "Standard for a Software Quality Metrics Methodology"
 
-== List of requirements
-
-This section will be filled soon.
+include::quality-scenarios.adoc[leveloffset=+1]
