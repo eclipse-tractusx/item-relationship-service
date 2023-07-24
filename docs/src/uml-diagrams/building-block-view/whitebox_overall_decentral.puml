@@ -12,7 +12,7 @@ component [**IRSApplication**] <<System>> {
 
 component [**CatenaX-Network**] <<CX-Environment>> {
     component [**IAM/KeyCloak**] <<System>> as IAM_IRS
-    component [**MIW**] <<System>> as IAM_DAPS
+    component [**MIW**] <<System>> as identity_wallet
 }
 
 component [**Tier/OEM**] <<Tier/OEM-Environment>> {
@@ -35,13 +35,13 @@ IrsApiConsumer -right(0- IRS
 IrsApiConsumer <.r.> IAM_IRS
 IRS <.d.> EDC
 IRS <.l.> IAM_IRS
-EDC <..> IAM_DAPS
+EDC <..> identity_wallet
 EDC <..> EDCProviderOEM
 EDC <...> EDCProviderTier1
 EDC <....> EDCProviderTier11
-IAM_DAPS <..> EDCProviderOEM
-IAM_DAPS <...> EDCProviderTier1
-IAM_DAPS <....> EDCProviderTier11
+identity_wallet <..> EDCProviderOEM
+identity_wallet <...> EDCProviderTier1
+identity_wallet <....> EDCProviderTier11
 EDCProviderOEM <..> SubmodelServerOEM
 EDCProviderTier1 <..> SubmodelServerTier1
 EDCProviderTier11 <..> SubmodelServerTier11
