@@ -59,10 +59,9 @@ public class DigitalTwinDelegate extends AbstractDelegate {
         if (StringUtils.isBlank(itemId.getBpn())) {
             log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
                     itemId.getGlobalAssetId());
-            itemContainerBuilder.tombstone(
+            return itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), null, "Can't get relationship without a BPN", 0,
-                            ProcessStep.DIGITAL_TWIN_REQUEST));
-            return itemContainerBuilder.build();
+                            ProcessStep.DIGITAL_TWIN_REQUEST)).build();
         }
         try {
             itemContainerBuilder.shell(digitalTwinRegistryService.fetchShells(
