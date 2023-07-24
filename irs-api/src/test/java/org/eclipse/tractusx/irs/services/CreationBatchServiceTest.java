@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
@@ -85,14 +86,19 @@ class CreationBatchServiceTest {
         assertThat(batchStore.findAll()).hasSize(1);
 
         Batch actual = batchStore.findAll().stream().findFirst().orElseThrow();
-        assertThat(actual.getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
+        assertThat(actual.getJobProgressList().stream().map(JobProgress::getIdentificationKey).map(
+                PartChainIdentificationKey::getGlobalAssetId).collect(
                 Collectors.toList())).containsOnly(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID);
     }
 
     @Test
-    void shouldSplitGlobalAssetIdIntoBatches() throws MalformedURLException {
+    void shouldSplitIdentificationKeysIdIntoBatches() throws MalformedURLException {
         // given
-        final List<String> globalAssetIds = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18" , "19" , "20");
+        final List<PartChainIdentificationKey> globalAssetIds = IntStream.range(1, 21)
+                                                                         .mapToObj(i -> PartChainIdentificationKey.builder()
+                                                                                                                  .globalAssetId(String.valueOf(i))
+                                                                                 .bpn("BPN" + i).build()
+                                                                         ).toList();
         final int batchSize = 3;
         given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
 
@@ -101,10 +107,10 @@ class CreationBatchServiceTest {
 
         // then
         assertThat(batches).hasSize(7);
-        assertThat(batches.get(0).getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
-                Collectors.toList())).containsExactly("1", "2", "3");
-        assertThat(batches.get(6).getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
-                Collectors.toList())).containsExactly("19", "20");
+        assertThat(batches.get(0).getJobProgressList().stream().map(JobProgress::getIdentificationKey).map(
+                PartChainIdentificationKey::getGlobalAssetId).toList()).containsExactly("1", "2", "3");
+        assertThat(batches.get(6).getJobProgressList().stream().map(JobProgress::getIdentificationKey).map(
+                PartChainIdentificationKey::getGlobalAssetId).toList()).containsExactly("19", "20");
         assertThat(batches.get(0).getBatchUrl()).isEqualTo(
                 EXAMPLE_URL + "/" + IrsApplication.API_PREFIX +
                         "/orders/" + batches.get(0).getBatchOrderId() + "/batches/" + batches.get(0).getBatchId()

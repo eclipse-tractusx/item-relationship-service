@@ -30,10 +30,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import net.datafaker.Faker;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
@@ -61,7 +60,6 @@ import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
-import net.datafaker.Faker;
 
 /**
  * Base object mother class to create objects for testing.
@@ -82,8 +80,8 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
-        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes,
-                false, false, Direction.DOWNWARD);
+        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes, false, false,
+                Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJobWithDirection(final String globalAssetId, final Direction direction) {
@@ -91,15 +89,16 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithUrl(final String callbackUrl) {
-        final RegisterJob registerJob = registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", 100, List.of(), false, false, Direction.DOWNWARD);
+        final RegisterJob registerJob = registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", 100, List.of(),
+                false, false, Direction.DOWNWARD);
         registerJob.setCallbackUrl(callbackUrl);
         return registerJob;
     }
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
-        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes,
-                true, false, Direction.DOWNWARD);
+        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes, true, false,
+                Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJobWithLookupBPNs() {
@@ -108,7 +107,8 @@ public class TestMother {
     }
 
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
-            final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs, final Direction direction) {
+            final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs,
+            final Direction direction) {
         final RegisterJob registerJob = new RegisterJob();
         registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn("bpn123").build());
         registerJob.setDepth(depth);
@@ -123,7 +123,10 @@ public class TestMother {
     public static RegisterBatchOrder registerBatchOrder(final String... globalAssetId) {
         final RegisterBatchOrder registerBatchOrder = new RegisterBatchOrder();
         registerBatchOrder.setKeys(Arrays.stream(globalAssetId)
-                                         .map(x -> PartChainIdentificationKey.builder().globalAssetId(x).build())
+                                         .map(x -> PartChainIdentificationKey.builder()
+                                                                             .globalAssetId(x)
+                                                                             .bpn("bpn123")
+                                                                             .build())
                                          .collect(Collectors.toSet()));
 
         return registerBatchOrder;
@@ -136,6 +139,16 @@ public class TestMother {
                            .direction(Direction.DOWNWARD)
                            .aspects(List.of(AspectType.SERIAL_PART.toString(),
                                    AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .build();
+    }
+
+    public static JobParameter jobParameterUpward() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .direction(Direction.UPWARD)
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_USAGE_AS_BUILT.toString()))
                            .build();
     }
 
@@ -172,6 +185,50 @@ public class TestMother {
         return new MeterRegistryService(new SimpleMeterRegistry());
     }
 
+    public static Relationship relationship() {
+        final LinkedItem linkedItem = LinkedItem.builder()
+                                                .childCatenaXId(
+                                                        GlobalAssetIdentification.of(UUID.randomUUID().toString()))
+                                                .lifecycleContext(BomLifecycle.AS_BUILT)
+                                                .build();
+
+        return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
+                RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT.name(), "BPN");
+    }
+
+    public static Endpoint endpoint(String endpointAddress) {
+        return Endpoint.builder()
+                       .protocolInformation(ProtocolInformation.builder()
+                                                               .href(endpointAddress)
+                                                               .subprotocolBody(
+                                                                       "other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/")
+                                                               .build())
+                       .build();
+    }
+
+    public static SubmodelDescriptor submodelDescriptor(final String semanticId, final String endpointAddress) {
+        final Reference semanticIdSerial = Reference.builder()
+                                                    .keys(List.of(SemanticId.builder().value(semanticId).build()))
+                                                    .build();
+        final List<Endpoint> endpointSerial = List.of(endpoint(endpointAddress));
+        return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
+    }
+
+    public static SubmodelDescriptor submodelDescriptorWithoutEndpoint(final String semanticId) {
+        return submodelDescriptor(semanticId, null);
+    }
+
+    public static AssetAdministrationShellDescriptor shellDescriptor(
+            final List<SubmodelDescriptor> submodelDescriptors) {
+        return AssetAdministrationShellDescriptor.builder()
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                                                                 .name("ManufacturerId")
+                                                                                                 .value("BPNL00000003AYRE")
+                                                                                                 .build()))
+                                                 .submodelDescriptors(submodelDescriptors)
+                                                 .build();
+    }
+
     public AASTransferProcess aasTransferProcess() {
         return new AASTransferProcess(faker.lorem().characters(UUID_SIZE), faker.number().numberBetween(1, 100));
     }
@@ -195,9 +252,7 @@ public class TestMother {
     }
 
     public MultiTransferJob job(JobState jobState) {
-        return MultiTransferJob.builder()
-                               .job(fakeJob(jobState))
-                               .build();
+        return MultiTransferJob.builder().job(fakeJob(jobState)).build();
     }
 
     public DataRequest dataRequest() {
@@ -216,50 +271,5 @@ public class TestMother {
     public TransferProcess transfer() {
         final String characters = faker.lorem().characters();
         return () -> characters;
-    }
-
-    public Stream<DataRequest> dataRequests(int count) {
-        return IntStream.range(0, count).mapToObj(i -> dataRequest());
-    }
-
-    public static Relationship relationship() {
-        final LinkedItem linkedItem = LinkedItem.builder()
-                                                .childCatenaXId(
-                                                        GlobalAssetIdentification.of(UUID.randomUUID().toString()))
-                                                .lifecycleContext(BomLifecycle.AS_BUILT)
-                                                .build();
-
-        return new Relationship(GlobalAssetIdentification.of(UUID.randomUUID().toString()), linkedItem,
-                RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT.name(), "BPN");
-    }
-
-    public static Endpoint endpoint(String endpointAddress) {
-        return Endpoint.builder()
-                       .protocolInformation(ProtocolInformation.builder()
-                                                               .href(endpointAddress)
-                                                               .subprotocolBody("other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/")
-                                                               .build())
-                       .build();
-    }
-
-    public static SubmodelDescriptor submodelDescriptor(final String semanticId, final String endpointAddress) {
-        final Reference semanticIdSerial = Reference.builder().keys(List.of(SemanticId.builder().value(semanticId).build())).build();
-        final List<Endpoint> endpointSerial = List.of(endpoint(endpointAddress));
-        return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
-    }
-
-    public static SubmodelDescriptor submodelDescriptorWithoutEndpoint(final String semanticId) {
-        return submodelDescriptor(semanticId, null);
-    }
-
-    public static AssetAdministrationShellDescriptor shellDescriptor(
-            final List<SubmodelDescriptor> submodelDescriptors) {
-        return AssetAdministrationShellDescriptor.builder()
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .name("ManufacturerId")
-                                                                                                 .value("BPNL00000003AYRE")
-                                                                                                 .build()))
-                                                 .submodelDescriptors(submodelDescriptors)
-                                                 .build();
     }
 }

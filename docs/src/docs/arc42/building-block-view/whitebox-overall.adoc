@@ -29,6 +29,6 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |Submodel Server
 |The Submodel Server offers endpoints for requesting the Submodel aspects.
 
-|IAM/DAPS
-|DAPS as central Identity Provider
+|MIW
+|Managed Identity Wallet as Self-Sovereign-Identity Provider for EDC
 |===

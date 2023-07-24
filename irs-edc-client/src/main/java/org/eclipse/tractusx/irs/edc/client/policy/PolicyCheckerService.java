@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -30,8 +31,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.Constraint;
+import org.eclipse.edc.policy.model.MultiplicityConstraint;
 import org.eclipse.edc.policy.model.Operator;
-import org.eclipse.edc.policy.model.OrConstraint;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.data.StringMapper;
@@ -53,6 +54,9 @@ public class PolicyCheckerService {
         final List<PolicyDefinition> policyList = getAllowedPolicies();
         log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policy),
                 String.join(",", policyList.stream().map(PolicyDefinition::getRightExpressionValue).toList()));
+        if (getValidStoredPolicyIds().contains("*")) {
+            return true;
+        }
         return policy.getPermissions()
                      .stream()
                      .anyMatch(permission -> policyList.stream()
@@ -61,20 +65,27 @@ public class PolicyCheckerService {
 
     @NotNull
     private List<PolicyDefinition> getAllowedPolicies() {
+        final List<String> policyIds = getValidStoredPolicyIds();
+        final List<PolicyDefinition> allowedPolicies = new ArrayList<>();
+        allowedPolicies.addAll(policyIds.stream().map(policy -> createPolicy("idsc:PURPOSE", policy)).toList());
+        allowedPolicies.addAll(policyIds.stream().map(policy -> createPolicy(policy, "active")).toList());
+
+        return allowedPolicies;
+    }
+
+    @NotNull
+    private List<String> getValidStoredPolicyIds() {
         return policyStore.getAcceptedPolicies()
                           .stream()
                           .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
                           .map(AcceptedPolicy::policyId)
                           .flatMap(this::addEncodedVersion)
-                          .map(this::createPolicy)
                           .toList();
     }
 
     private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {
         return permission.getAction().getType().equals(policyDefinition.getPermissionActionType())
-                && permission.getConstraints()
-                             .stream()
-                .anyMatch(constraint -> isValid(constraint, policyDefinition));
+                && permission.getConstraints().stream().anyMatch(constraint -> isValid(constraint, policyDefinition));
     }
 
     private boolean isValid(final Constraint constraint, final PolicyDefinition policyDefinition) {
@@ -87,20 +98,20 @@ public class PolicyCheckerService {
                                                     Operator.valueOf(policyDefinition.getConstraintOperator()))
                                             .build()
                                             .isValid();
-        } else if (constraint instanceof OrConstraint orConstraint) {
-            return orConstraint.getConstraints()
-                               .stream()
-                               .anyMatch(constraint1 -> isValid(constraint1, policyDefinition));
+        } else if (constraint instanceof MultiplicityConstraint multiplicityConstraint) {
+            return multiplicityConstraint.getConstraints()
+                                         .stream()
+                                         .anyMatch(constraint1 -> isValid(constraint1, policyDefinition));
         }
         return false;
     }
 
-    private PolicyDefinition createPolicy(final String policyName) {
+    private PolicyDefinition createPolicy(final String leftExpression, final String rightExpression) {
         return PolicyDefinition.builder()
                                .permissionActionType("USE")
                                .constraintType("AtomicConstraint")
-                               .leftExpressionValue("idsc:PURPOSE")
-                               .rightExpressionValue(policyName)
+                               .leftExpressionValue(leftExpression)
+                               .rightExpressionValue(rightExpression)
                                .constraintOperator("EQ")
                                .build();
     }

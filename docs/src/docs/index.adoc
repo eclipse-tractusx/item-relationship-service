@@ -9,3 +9,14 @@ xref:api-specification/api-specification.adoc[OpenApi specification]
 == Architecture Documentation (arc42)
 - xref:arc42/index.adoc[Single chapters]
 - xref:arc42/full.adoc[Full document]
+
+== License
+* SPDX-License-Identifier: CC-BY-4.0
+* Licence Path: https://creativecommons.org/licenses/by/4.0/legalcode
+* Copyright (c) 2021,2023 Contributors to the Eclipse Foundation
+* Copyright (c) 2021,2022 ZF Friedrichshafen AG
+* Copyright (c) 2022 ISTOS GmbH
+* Copyright (c) 2021,2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+* Copyright (c) 2022,2023 BOSCH AG
+
+* Source URL: https://github.com/eclipse-tractusx/item-relationship-service

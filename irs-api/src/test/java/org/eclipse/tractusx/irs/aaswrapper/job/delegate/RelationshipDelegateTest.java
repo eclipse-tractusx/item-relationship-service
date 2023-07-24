@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameterUpward;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,9 +37,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -55,13 +58,18 @@ class RelationshipDelegateTest {
             connectorEndpointsService, jsonUtil);
 
     final String singleLevelBomAsBuiltAspectName = "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
+    final String singleLevelUsageAsBuiltAspectName = "urn:bamm:com.catenax.single_level_usage_as_built:1.0.0#SingleLevelUsageAsBuilt";
+
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
+    }
 
     @Test
     void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess()
             throws EdcClientException, URISyntaxException, IOException {
         // given
-        when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenReturn(
-                Files.readString(Paths.get(getClass().getResource("/singleLevelBomAsBuilt.json").toURI())));
+        when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenReturn(Files.readString(
+                Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelBomAsBuilt.json")).toURI())));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
@@ -73,12 +81,59 @@ class RelationshipDelegateTest {
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                aasTransferProcess, "itemId");
+                aasTransferProcess, createKey());
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getRelationships()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
+        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
+    }
+
+    @Test
+    void shouldFillItemContainerWithUpwardRelationshipAndAddChildIdsToProcess()
+            throws EdcClientException, URISyntaxException, IOException {
+        // given
+        when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenReturn(Files.readString(
+                Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelUsageAsBuilt.json")).toURI())));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
+
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                                       .shell(shellDescriptor(
+                                                                                               List.of(submodelDescriptor(
+                                                                                                       singleLevelUsageAsBuiltAspectName,
+                                                                                                       "address"))));
+        final AASTransferProcess aasTransferProcess = new AASTransferProcess();
+
+        // when
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameterUpward(),
+                aasTransferProcess, createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getRelationships()).isNotEmpty();
+        assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
+        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
+        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
+    }
+
+    @Test
+    void shouldPutTombstoneForMissingBpn() {
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                                       .shell(shellDescriptor(
+                                                                                               List.of(submodelDescriptor(
+                                                                                                       singleLevelBomAsBuiltAspectName,
+                                                                                                       "address"))));
+        // when
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
+                new AASTransferProcess(), PartChainIdentificationKey.builder().globalAssetId("testId").build());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("testId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.SUBMODEL_REQUEST);
     }
 
     @Test
@@ -96,7 +151,7 @@ class RelationshipDelegateTest {
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();
@@ -120,7 +175,7 @@ class RelationshipDelegateTest {
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess(), createKey());
 
         // then
         assertThat(result).isNotNull();

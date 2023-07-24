@@ -155,13 +155,13 @@ maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/0.0.2-SNAPSHOT, Apach
 maven/mavencentral/org.eclipse.tractusx.irs/irs-ess/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-models/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-policy-store/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.0.1-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.0.0-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.glassfish/jakarta.json/2.0.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jsonp
 maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/org.hamcrest/hamcrest/2.2, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/org.hibernate.validator/hibernate-validator/8.0.0.Final, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jboss.logging/jboss-logging/3.4.1.Final, Apache-2.0, approved, CQ21255
-maven/mavencentral/org.jboss.logging/jboss-logging/3.5.1.Final, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.jboss.logging/jboss-logging/3.5.1.Final, Apache-2.0, approved, #9471
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-common/1.5.31, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-common/1.8.22, Apache-2.0, approved, #8910
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.5.31, Apache-2.0, approved, clearlydefined

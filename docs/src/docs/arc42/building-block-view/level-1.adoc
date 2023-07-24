@@ -21,7 +21,7 @@ The result is an item graph in which each node represents a digital item of the 
 |The *IRS API* is the Interface over which the Data Consumer is communicating.
 
 |*IrsController*
-|The *IrsController* provides an REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process.
+|The *IrsController* provides a REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process.
 
 |*IrsItemGraphQueryService*
 |The *IrsItemGraphQueryService* implements the REST Interface of the IrsController.
@@ -42,6 +42,9 @@ A job is processed in this order:
 4. Requesting submodel data for given items of next level.
 5. Recursively iteration over step 2-4 until an abort criterion is reached.
 6. Assembles the complete item graph.
+
+|*Policy Store*
+|The *Policy Store* provides an Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.
 
 |*BlobStore*
 |The BlobStore is the database where the relationships and tombstones are stored for a requested item.

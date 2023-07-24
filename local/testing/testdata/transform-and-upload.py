@@ -417,24 +417,18 @@ if __name__ == "__main__":
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
-                    if is_aas3:
-                        for specific_asset in specific_asset_ids_temp:
-                            specific_asset["name"] = specific_asset.pop("key")
-
-
-
                 if "PartAsPlanned" in tmp_key:
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
                     specific_asset_ids_temp.append({
                         "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
-                        "name": "manufacturerPartId"
+                        "key": "manufacturerPartId"
                     })
             print(name_at_manufacturer)
 
-            specific_asset_ids.append({
-                "name": "manufacturerId",
+            specific_asset_ids_temp.append({
+                "key": "manufacturerId",
                 "value": tmp_data["bpnl"]
             })
             if is_aas3:
@@ -455,7 +449,8 @@ if __name__ == "__main__":
             print(f"Policy: {policy_id}")
 
             for tmp_key in tmp_keys:
-                if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key and "policy" not in tmp_key:
+                if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key \
+                        and "policy" not in tmp_key and "urn:bamm:io.catenax.aas:1.0.0#AAS" not in tmp_key:
                     # Prepare submodel endpoint address
                     submodel_url = submodel_server_urls[contract_id % len(submodel_server_urls)]
                     submodel_upload_url = submodel_server_upload_urls[contract_id % len(submodel_server_upload_urls)]
