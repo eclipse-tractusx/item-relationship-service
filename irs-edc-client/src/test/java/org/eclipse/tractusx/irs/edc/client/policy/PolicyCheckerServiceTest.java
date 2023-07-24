@@ -31,10 +31,13 @@ import java.util.List;
 import org.eclipse.edc.policy.model.Action;
 import org.eclipse.edc.policy.model.AndConstraint;
 import org.eclipse.edc.policy.model.AtomicConstraint;
+import org.eclipse.edc.policy.model.Constraint;
 import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.policy.model.Operator;
+import org.eclipse.edc.policy.model.OrConstraint;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.policy.model.XoneConstraint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,39 +53,46 @@ class PolicyCheckerServiceTest {
     @Mock
     private AcceptedPoliciesProvider policyStore;
 
-    private static Policy createPolicy(final String leftExpr, final String rightExpr) {
-        final AtomicConstraint constraint = AtomicConstraint.Builder.newInstance()
-                                                                    .leftExpression(new LiteralExpression(leftExpr))
-                                                                    .rightExpression(new LiteralExpression(rightExpr))
-                                                                    .operator(Operator.EQ)
-                                                                    .build();
-        final Permission permission = Permission.Builder.newInstance()
-                                                        .action(Action.Builder.newInstance().type("USE").build())
-                                                        .constraint(constraint)
-                                                        .build();
+    private static Permission createUsePermission(final Constraint constraint) {
+        return Permission.Builder.newInstance()
+                                 .action(Action.Builder.newInstance().type("USE").build())
+                                 .constraint(constraint)
+                                 .build();
+    }
+
+    private static AtomicConstraint createAtomicConstraint(final String leftExpr, final String rightExpr) {
+        return AtomicConstraint.Builder.newInstance()
+                                       .leftExpression(new LiteralExpression(leftExpr))
+                                       .rightExpression(new LiteralExpression(rightExpr))
+                                       .operator(Operator.EQ)
+                                       .build();
+    }
+
+    private static Policy createAtomicConstraintPolicy(final String leftExpr, final String rightExpr) {
+        final AtomicConstraint constraint = createAtomicConstraint(leftExpr, rightExpr);
+        final Permission permission = createUsePermission(constraint);
         return Policy.Builder.newInstance().permission(permission).build();
     }
 
-    private static Policy createAndPolicy(final String leftExpr, final String rightExpr) {
-        final AtomicConstraint constraint1 = AtomicConstraint.Builder.newInstance()
-                                                                     .leftExpression(new LiteralExpression(leftExpr))
-                                                                     .rightExpression(new LiteralExpression(rightExpr))
-                                                                     .operator(Operator.EQ)
-                                                                     .build();
-        final AtomicConstraint constraint2 = AtomicConstraint.Builder.newInstance()
-                                                                     .leftExpression(
-                                                                             new LiteralExpression("leftExpression"))
-                                                                     .rightExpression(
-                                                                             new LiteralExpression("rightExpression"))
-                                                                     .operator(Operator.EQ)
-                                                                     .build();
-        final AndConstraint build = AndConstraint.Builder.newInstance()
-                                                         .constraints(List.of(constraint1, constraint2))
-                                                         .build();
-        final Permission permission = Permission.Builder.newInstance()
-                                                        .action(Action.Builder.newInstance().type("USE").build())
-                                                        .constraint(build)
-                                                        .build();
+    private static Policy createAndConstraintPolicy(final List<Constraint> constraints) {
+        final AndConstraint andConstraint = AndConstraint.Builder.newInstance()
+                                                                 .constraints(constraints)
+                                                                 .build();
+        final Permission permission = createUsePermission(andConstraint);
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    private static Policy createOrConstraintPolicy(final List<Constraint> constraints) {
+        final OrConstraint orConstraint = OrConstraint.Builder.newInstance()
+                                                              .constraints(constraints)
+                                                              .build();
+        final Permission permission = createUsePermission(orConstraint);
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    private static Policy createXOneConstraintPolicy(final List<Constraint> constraints) {
+        final XoneConstraint orConstraint = XoneConstraint.Builder.newInstance().constraints(constraints).build();
+        final Permission permission = createUsePermission(orConstraint);
         return Policy.Builder.newInstance().permission(permission).build();
     }
 
@@ -95,13 +105,13 @@ class PolicyCheckerServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = { "idsc:PURPOSE,ID 3.0 Trace",
-                         "idsc:PURPOSE,ID%203.0%20Trace",
+    @CsvSource(value = { "PURPOSE,ID 3.0 Trace",
+                         "PURPOSE,ID%203.0%20Trace",
                          "FrameworkAgreement.traceability,active"
     }, delimiter = ',')
     void shouldConfirmValidPolicy(final String leftExpr, final String rightExpr) {
         // given
-        Policy policy = createPolicy(leftExpr, rightExpr);
+        Policy policy = createAtomicConstraintPolicy(leftExpr, rightExpr);
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -112,7 +122,7 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldRejectWrongPolicy() {
         // given
-        Policy policy = createPolicy("idsc:PURPOSE", "Wrong_Trace");
+        Policy policy = createAtomicConstraintPolicy("idsc:PURPOSE", "Wrong_Trace");
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -123,7 +133,7 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldRejectWhenPolicyStoreIsEmpty() {
         // given
-        Policy policy = createPolicy("idsc:PURPOSE", "ID 3.0 Trace");
+        Policy policy = createAtomicConstraintPolicy("idsc:PURPOSE", "ID 3.0 Trace");
         when(policyStore.getAcceptedPolicies()).thenReturn(List.of());
         // when
         boolean result = policyCheckerService.isValid(policy);
@@ -138,7 +148,7 @@ class PolicyCheckerServiceTest {
         final var policyList = List.of(new AcceptedPolicy("ID 3.0 Trace", OffsetDateTime.now().plusYears(1)),
                 new AcceptedPolicy("*", OffsetDateTime.now().plusYears(1)));
         when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createPolicy("FrameworkAgreement.traceability", "active");
+        Policy policy = createAtomicConstraintPolicy("FrameworkAgreement.traceability", "active");
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -151,7 +161,7 @@ class PolicyCheckerServiceTest {
         // given
         final var policyList = List.of(new AcceptedPolicy("Policy*", OffsetDateTime.now().plusYears(1)));
         when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createPolicy("FrameworkAgreement.traceability", "active");
+        Policy policy = createAtomicConstraintPolicy("FrameworkAgreement.traceability", "active");
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -160,9 +170,17 @@ class PolicyCheckerServiceTest {
     }
 
     @Test
-    void shouldValidateDifferentTypesOfConstraints() {
+    void shouldValidateAndConstraints() {
         // given
-        Policy policy = createAndPolicy("FrameworkAgreement.traceability", "active");
+        final var policyList = List.of(
+                new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("Membership", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("ID 3.1 Trace", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createAndConstraintPolicy(
+                List.of(createAtomicConstraint("FrameworkAgreement.traceability", "active"),
+                        createAtomicConstraint("Membership", "active"),
+                        createAtomicConstraint("PURPOSE", "ID 3.1 Trace")));
         // when
         boolean result = policyCheckerService.isValid(policy);
 
@@ -170,4 +188,103 @@ class PolicyCheckerServiceTest {
         assertThat(result).isTrue();
     }
 
+    @Test
+    void shouldRejectAndConstraintsWhenOnlyOneMatch() {
+        // given
+        final var policyList = List.of(
+                new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("FrameworkAgreement.dismantler", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createAndConstraintPolicy(
+                List.of(createAtomicConstraint("FrameworkAgreement.traceability", "active"),
+                        createAtomicConstraint("Membership", "active")));
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldValidateOrConstraints() {
+        // given
+        final var policyList = List.of(
+                new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("FrameworkAgreement.dismantler", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createOrConstraintPolicy(
+                List.of(createAtomicConstraint("FrameworkAgreement.traceability", "active"),
+                        createAtomicConstraint("Membership", "active")));
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void shouldRejectOrConstraintsWhenNoneMatch() {
+        // given
+        final var policyList = List.of(new AcceptedPolicy("FrameworkAgreement.test", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("FrameworkAgreement.dismantler", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createAndConstraintPolicy(
+                List.of(createAtomicConstraint("FrameworkAgreement.traceability", "active"),
+                        createAtomicConstraint("Membership", "active")));
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldValidateXOneConstraints() {
+        // given
+        final var policyList = List.of(
+                new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("FrameworkAgreement.dismantler", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+
+        Policy policy = createXOneConstraintPolicy(
+                List.of(createAtomicConstraint("FrameworkAgreement.traceability", "active"),
+                        createAtomicConstraint("Membership", "active")));
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void shouldRejectXOneConstraintsWhenNoneMatch() {
+        // given
+        final var policyList = List.of(new AcceptedPolicy("FrameworkAgreement.test", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("FrameworkAgreement.dismantler", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createXOneConstraintPolicy(
+                List.of(createAtomicConstraint("FrameworkAgreement.traceability", "active"),
+                        createAtomicConstraint("Membership", "active")));
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldRejectXOneConstraintsWhenMoreThanOneMatch() {
+        // given
+        final var policyList = List.of(new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy("Membership", OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        Policy policy = createXOneConstraintPolicy(
+                List.of(createAtomicConstraint("FrameworkAgreement.traceability", "active"),
+                        createAtomicConstraint("Membership", "active")));
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isFalse();
+    }
 }
