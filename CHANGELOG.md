@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.1] - 2023-07-24
+### Fixed
+- Added missing field `businessPartner` for relationship aspect SingleLevelUsageAsBuilt
+
 ## [3.3.0] - 2023-07-20
 ### Changed
 - BPN is now taken from the submodel data while traversing the item graph
@@ -287,7 +291,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.1...HEAD
+[3.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.0...3.3.1
 [3.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.2.1...3.3.0
 [3.2.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.2.0...3.2.1
 [3.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.1.0...3.2.0
