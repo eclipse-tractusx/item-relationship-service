@@ -19,7 +19,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <asciidoctor.maven.plugin.version>2.2.2</asciidoctor.maven.plugin.version>
         <asciidoctorj.version>2.5.7</asciidoctorj.version>
-        <asciidoctorj.diagram.version>2.2.3</asciidoctorj.diagram.version>
+        <asciidoctorj.diagram.version>2.2.9</asciidoctorj.diagram.version>
         <jruby.version>9.4.2.0</jruby.version>
     </properties>
 
