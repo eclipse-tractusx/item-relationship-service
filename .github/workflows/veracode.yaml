@@ -38,7 +38,7 @@ jobs:
           path: 'irs-api/target/*exec.jar'
 
       - name: Veracode Upload And Scan
-        uses: veracode/veracode-uploadandscan-action@0.2.5
+        uses: veracode/veracode-uploadandscan-action@0.2.6
         with:
           appname: 'IRS'
           version: '${{ github.run_id }}'
