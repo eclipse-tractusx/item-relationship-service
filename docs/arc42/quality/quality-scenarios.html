@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Cross-cutting concepts</title>
+<title>Quality Scenarios</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,31 +439,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
-<h1>Cross-cutting concepts</h1>
+<h1>Quality Scenarios</h1>
 </div>
 <div id="content">
-<div class="ulist">
-<ul>
-<li>
-<p><a href="domain-concepts.html">Domain concepts</a></p>
-</li>
-<li>
-<p><a href="safety-security.html">Safety and security concepts</a></p>
-</li>
-<li>
-<p><a href="architecture-design-patterns.html">Architecture and design patterns</a></p>
-</li>
-<li>
-<p><a href="under-the-hood.html">"Under-the-hood" concepts</a></p>
-</li>
-<li>
-<p><a href="development-concepts.html">Development concepts</a></p>
-</li>
-<li>
-<p><a href="operational-concepts.html">Operational concepts</a></p>
-</li>
-</ul>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">ID</th>
+<th class="tableblock halign-left valign-top">Scenario</th>
+<th class="tableblock halign-left valign-top">Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DS01</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any data consumption via the IRS checks if data offers are done according to "Use Case Rahmenbedingungen".</p>
+<p class="tableblock">IRS provides a configuration capability for the "Rahmenbedingungs ID" to be used in a given scenario / deployment.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"PolicyCheckerService is used to check defined Usage Policies according to the "Rahmenbedingungsbedingungen" which is obligatory for data consumption.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="footer">
 <div id="footer-text">

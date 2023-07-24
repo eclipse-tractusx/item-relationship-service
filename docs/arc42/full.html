@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_quality_requirements">Quality requirements</a>
 <ul class="sectlevel2">
-<li><a href="#_list_of_requirements">List of requirements</a></li>
+<li><a href="#_quality_scenarios">Quality Scenarios</a></li>
 </ul>
 </li>
 <li><a href="#_glossary">Glossary</a></li>
@@ -2202,10 +2202,29 @@ A number of Grafana dashboards are deployed automatically, to display data about
 <p><strong>Source</strong>: IEEE standard 1061 "Standard for a Software Quality Metrics Methodology"</p>
 </div>
 <div class="sect2">
-<h3 id="_list_of_requirements">List of requirements</h3>
-<div class="paragraph">
-<p>This section will be filled soon.</p>
-</div>
+<h3 id="_quality_scenarios">Quality Scenarios</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">ID</th>
+<th class="tableblock halign-left valign-top">Scenario</th>
+<th class="tableblock halign-left valign-top">Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DS01</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any data consumption via the IRS checks if data offers are done according to "Use Case Rahmenbedingungen".</p>
+<p class="tableblock">IRS provides a configuration capability for the "Rahmenbedingungs ID" to be used in a given scenario / deployment.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"PolicyCheckerService is used to check defined Usage Policies according to the "Rahmenbedingungsbedingungen" which is obligatory for data consumption.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -2268,7 +2287,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-19 14:23:12 UTC
+Last updated 2023-07-24 07:20:57 UTC
 </div>
 </div>
 </body>

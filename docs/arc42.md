@@ -867,9 +867,11 @@ The quality scenarios in this section depict the fundamental quality goals as we
 
 **Source**: IEEE standard 1061 "Standard for a Software Quality Metrics Methodology"
 
-### List of requirements
+## Quality Scenarios
 
-This section will be filled soon.
+| ID | Scenario | Implementation |
+| --- | --- | --- |
+| DS01 | Any data consumption via the IRS checks if data offers are done according to "Use Case Rahmenbedingungen". IRS provides a configuration capability for the "Rahmenbedingungs ID" to be used in a given scenario / deployment. | "PolicyCheckerService is used to check defined Usage Policies according to the "Rahmenbedingungsbedingungen" which is obligatory for data consumption. |
 
 ## Glossary
 
