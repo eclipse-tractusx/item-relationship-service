@@ -44,6 +44,8 @@ irs-helm:
     controlplane:
       apikey:
         secret: <path:traceability-irs/data/int/controlplane#apiKey>
+  discovery:
+    endpoint: https://semantics.int.demo.catena-x.net/discoveryfinder/api/administration/connectors/discovery
 
   resources:
     limits:
