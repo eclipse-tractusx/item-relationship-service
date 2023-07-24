@@ -30,10 +30,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import net.datafaker.Faker;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
@@ -61,7 +60,6 @@ import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
-import net.datafaker.Faker;
 
 /**
  * Base object mother class to create objects for testing.
@@ -144,6 +142,16 @@ public class TestMother {
                            .build();
     }
 
+    public static JobParameter jobParameterUpward() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .direction(Direction.UPWARD)
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_USAGE_AS_BUILT.toString()))
+                           .build();
+    }
+
     public static JobParameter jobParameterCollectAspects() {
         return JobParameter.builder()
                            .depth(0)
@@ -175,54 +183,6 @@ public class TestMother {
 
     public static MeterRegistryService simpleMeterRegistryService() {
         return new MeterRegistryService(new SimpleMeterRegistry());
-    }
-
-    public AASTransferProcess aasTransferProcess() {
-        return new AASTransferProcess(faker.lorem().characters(UUID_SIZE), faker.number().numberBetween(1, 100));
-    }
-
-    public Job fakeJob(JobState state) {
-        return Job.builder()
-                  .id(UUID.randomUUID())
-                  .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
-                  .state(state)
-                  .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
-                  .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
-                  .owner(faker.lorem().characters())
-                  .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
-                  .parameter(jobParameter())
-                  .completedOn(ZonedDateTime.now(ZoneId.of("UTC")))
-                  .build();
-    }
-
-    public MultiTransferJob job() {
-        return job(faker.options().option(JobState.class));
-    }
-
-    public MultiTransferJob job(JobState jobState) {
-        return MultiTransferJob.builder().job(fakeJob(jobState)).build();
-    }
-
-    public DataRequest dataRequest() {
-        return new DataRequest() {
-        };
-    }
-
-    public TransferInitiateResponse okResponse() {
-        return response(ResponseStatus.OK);
-    }
-
-    public TransferInitiateResponse response(ResponseStatus status) {
-        return TransferInitiateResponse.builder().transferId(UUID.randomUUID().toString()).status(status).build();
-    }
-
-    public TransferProcess transfer() {
-        final String characters = faker.lorem().characters();
-        return () -> characters;
-    }
-
-    public Stream<DataRequest> dataRequests(int count) {
-        return IntStream.range(0, count).mapToObj(i -> dataRequest());
     }
 
     public static Relationship relationship() {
@@ -267,5 +227,49 @@ public class TestMother {
                                                                                                  .build()))
                                                  .submodelDescriptors(submodelDescriptors)
                                                  .build();
+    }
+
+    public AASTransferProcess aasTransferProcess() {
+        return new AASTransferProcess(faker.lorem().characters(UUID_SIZE), faker.number().numberBetween(1, 100));
+    }
+
+    public Job fakeJob(JobState state) {
+        return Job.builder()
+                  .id(UUID.randomUUID())
+                  .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
+                  .state(state)
+                  .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
+                  .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
+                  .owner(faker.lorem().characters())
+                  .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
+                  .parameter(jobParameter())
+                  .completedOn(ZonedDateTime.now(ZoneId.of("UTC")))
+                  .build();
+    }
+
+    public MultiTransferJob job() {
+        return job(faker.options().option(JobState.class));
+    }
+
+    public MultiTransferJob job(JobState jobState) {
+        return MultiTransferJob.builder().job(fakeJob(jobState)).build();
+    }
+
+    public DataRequest dataRequest() {
+        return new DataRequest() {
+        };
+    }
+
+    public TransferInitiateResponse okResponse() {
+        return response(ResponseStatus.OK);
+    }
+
+    public TransferInitiateResponse response(ResponseStatus status) {
+        return TransferInitiateResponse.builder().transferId(UUID.randomUUID().toString()).status(status).build();
+    }
+
+    public TransferProcess transfer() {
+        final String characters = faker.lorem().characters();
+        return () -> characters;
     }
 }

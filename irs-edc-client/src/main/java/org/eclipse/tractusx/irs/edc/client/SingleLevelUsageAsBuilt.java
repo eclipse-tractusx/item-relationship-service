@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
@@ -43,6 +44,7 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
  * SingleLevelUsageAsBuilt
  */
 @Data
+@Builder
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
@@ -70,6 +72,7 @@ class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
         private Quantity quantity;
         private ZonedDateTime lastModifiedOn;
         private String parentCatenaXId;
+        private String businessPartner;
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
@@ -90,6 +93,7 @@ class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
             return Relationship.builder()
                                .catenaXId(GlobalAssetIdentification.of(this.parentCatenaXId))
                                .linkedItem(linkedItem.build())
+                               .bpn(this.businessPartner)
                                .aspectType(AspectType.SINGLE_LEVEL_USAGE_AS_BUILT.toString())
                                .build();
         }

@@ -64,7 +64,7 @@ jobs:
 
       - name: Run chart-testing (lint)
         run: |
-          ct lint --excluded-charts=edc-consumer --validate-maintainers=false --check-version-increment=false --target-branch ${{ github.event.repository.default_branch }}
+          ct lint --validate-maintainers=false --check-version-increment=false --target-branch ${{ github.event.repository.default_branch }}
 
       - name: Run chart-testing (install)
         run: |
