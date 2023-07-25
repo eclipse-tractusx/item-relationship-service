@@ -14,6 +14,11 @@ on:
       - 'local/**'
       - 'irs-load-tests/**'
 
+# Cancel previous Test executions if a new one is triggered.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   trigger-integration-test:
     uses: ./.github/workflows/xray-cucumber-integration.yaml
