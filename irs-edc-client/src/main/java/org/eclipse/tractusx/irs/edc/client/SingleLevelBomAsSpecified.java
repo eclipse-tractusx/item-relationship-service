@@ -70,6 +70,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
         private String childPartsCategory;
         private Set<Part> part;
         private String childCatenaXId;
+        private String businessPartner;
 
         public Relationship toRelationship(final String catenaXId) {
             final Part childPart = this.part.stream().findFirst().orElse(new Part());
@@ -90,6 +91,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
             return Relationship.builder()
                                .catenaXId(GlobalAssetIdentification.of(catenaXId))
                                .linkedItem(linkedItem.build())
+                               .bpn(this.businessPartner)
                                .aspectType(AspectType.SINGLE_LEVEL_BOM_AS_SPECIFIED.toString())
                                .build();
         }
