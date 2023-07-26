@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
@@ -55,6 +56,13 @@ public class DigitalTwinDelegate extends AbstractDelegate {
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
             final AASTransferProcess aasTransferProcess, final PartChainIdentificationKey itemId) {
 
+        if (StringUtils.isBlank(itemId.getBpn())) {
+            log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
+                    itemId.getGlobalAssetId());
+            return itemContainerBuilder.tombstone(
+                    Tombstone.from(itemId.getGlobalAssetId(), null, "Can't get relationship without a BPN", 0,
+                            ProcessStep.DIGITAL_TWIN_REQUEST)).build();
+        }
         try {
             itemContainerBuilder.shell(digitalTwinRegistryService.fetchShells(
                     List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()))
