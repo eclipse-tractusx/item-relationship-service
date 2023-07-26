@@ -23,21 +23,17 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAndConstraintPolicy;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAtomicConstraint;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAtomicConstraintPolicy;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createOrConstraintPolicy;
+import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createXOneConstraintPolicy;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import org.eclipse.edc.policy.model.Action;
-import org.eclipse.edc.policy.model.AndConstraint;
-import org.eclipse.edc.policy.model.AtomicConstraint;
-import org.eclipse.edc.policy.model.Constraint;
-import org.eclipse.edc.policy.model.LiteralExpression;
-import org.eclipse.edc.policy.model.Operator;
-import org.eclipse.edc.policy.model.OrConstraint;
-import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.edc.policy.model.XoneConstraint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,45 +48,6 @@ class PolicyCheckerServiceTest {
     private PolicyCheckerService policyCheckerService;
     @Mock
     private AcceptedPoliciesProvider policyStore;
-
-    private static Permission createUsePermission(final Constraint constraint) {
-        return Permission.Builder.newInstance()
-                                 .action(Action.Builder.newInstance().type("USE").build())
-                                 .constraint(constraint)
-                                 .build();
-    }
-
-    private static AtomicConstraint createAtomicConstraint(final String leftExpr, final String rightExpr) {
-        return AtomicConstraint.Builder.newInstance()
-                                       .leftExpression(new LiteralExpression(leftExpr))
-                                       .rightExpression(new LiteralExpression(rightExpr))
-                                       .operator(Operator.EQ)
-                                       .build();
-    }
-
-    private static Policy createAtomicConstraintPolicy(final String leftExpr, final String rightExpr) {
-        final AtomicConstraint constraint = createAtomicConstraint(leftExpr, rightExpr);
-        final Permission permission = createUsePermission(constraint);
-        return Policy.Builder.newInstance().permission(permission).build();
-    }
-
-    private static Policy createAndConstraintPolicy(final List<Constraint> constraints) {
-        final AndConstraint andConstraint = AndConstraint.Builder.newInstance().constraints(constraints).build();
-        final Permission permission = createUsePermission(andConstraint);
-        return Policy.Builder.newInstance().permission(permission).build();
-    }
-
-    private static Policy createOrConstraintPolicy(final List<Constraint> constraints) {
-        final OrConstraint orConstraint = OrConstraint.Builder.newInstance().constraints(constraints).build();
-        final Permission permission = createUsePermission(orConstraint);
-        return Policy.Builder.newInstance().permission(permission).build();
-    }
-
-    private static Policy createXOneConstraintPolicy(final List<Constraint> constraints) {
-        final XoneConstraint orConstraint = XoneConstraint.Builder.newInstance().constraints(constraints).build();
-        final Permission permission = createUsePermission(orConstraint);
-        return Policy.Builder.newInstance().permission(permission).build();
-    }
 
     @BeforeEach
     void setUp() {

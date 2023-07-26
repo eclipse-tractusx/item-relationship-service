@@ -51,9 +51,9 @@ import org.springframework.web.util.UriUtils;
 public class PolicyCheckerService {
 
     private final AcceptedPoliciesProvider policyStore;
-    @Value("${edc.catalog.policies.acceptedRightOperands}")
+    @Value("${irs-edc-client.catalog.policies.acceptedRightOperands:active}")
     private final List<String> acceptedRightOperands;
-    @Value("${edc.catalog.policies.acceptedLeftOperands}")
+    @Value("${irs-edc-client.catalog.policies.acceptedLeftOperands:PURPOSE}")
     private final List<String> acceptedLeftOperands;
 
     public boolean isValid(final Policy policy) {
