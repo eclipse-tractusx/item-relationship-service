@@ -38,6 +38,7 @@ import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.policy.model.XoneConstraint;
 import org.eclipse.tractusx.irs.data.StringMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
 
@@ -49,20 +50,11 @@ import org.springframework.web.util.UriUtils;
 @RequiredArgsConstructor
 public class PolicyCheckerService {
 
-    public static final String LEFT_EXPRESSION = "PURPOSE";
-    public static final String RIGHT_EXPRESSION = "active";
     private final AcceptedPoliciesProvider policyStore;
-
-    private static boolean validateAtomicConstraint(final AtomicConstraint atomicConstraint,
-            final PolicyDefinition policyDefinition1) {
-        return AtomicConstraintValidator.builder()
-                                        .atomicConstraint(atomicConstraint)
-                                        .leftExpressionValue(policyDefinition1.getLeftExpressionValue())
-                                        .rightExpressionValue(policyDefinition1.getRightExpressionValue())
-                                        .expectedOperator(Operator.valueOf(policyDefinition1.getConstraintOperator()))
-                                        .build()
-                                        .isValid();
-    }
+    @Value("${edc.catalog.policies.acceptedRightOperands}")
+    private final List<String> acceptedRightOperands;
+    @Value("${edc.catalog.policies.acceptedLeftOperands}")
+    private final List<String> acceptedLeftOperands;
 
     public boolean isValid(final Policy policy) {
         final List<PolicyDefinition> policyList = getAllowedPolicies();
@@ -77,8 +69,10 @@ public class PolicyCheckerService {
     private List<PolicyDefinition> getAllowedPolicies() {
         final List<String> policyIds = getValidStoredPolicyIds();
         final List<PolicyDefinition> allowedPolicies = new ArrayList<>();
-        allowedPolicies.addAll(policyIds.stream().map(policy -> createPolicy(LEFT_EXPRESSION, policy)).toList());
-        allowedPolicies.addAll(policyIds.stream().map(policy -> createPolicy(policy, RIGHT_EXPRESSION)).toList());
+        acceptedRightOperands.forEach(rightOperand -> allowedPolicies.addAll(
+                policyIds.stream().map(policy -> createPolicy(policy, rightOperand)).toList()));
+        acceptedLeftOperands.forEach(leftOperand -> allowedPolicies.addAll(
+                policyIds.stream().map(policy -> createPolicy(leftOperand, policy)).toList()));
 
         return allowedPolicies;
     }
@@ -94,10 +88,10 @@ public class PolicyCheckerService {
 
     private boolean isValid(final Permission permission, final List<PolicyDefinition> policyDefinitions) {
         final boolean permissionTypesMatch = policyDefinitions.stream()
-                                                             .allMatch(
-                                                                     policyDefinition -> policyDefinition.getPermissionActionType()
-                                                                                                         .equals(permission.getAction()
-                                                                                                                           .getType()));
+                                                              .allMatch(
+                                                                      policyDefinition -> policyDefinition.getPermissionActionType()
+                                                                                                          .equals(permission.getAction()
+                                                                                                                            .getType()));
         final boolean constraintsMatch = permission.getConstraints()
                                                    .stream()
                                                    .allMatch(constraint -> isValid(constraint, policyDefinitions));
@@ -116,6 +110,17 @@ public class PolicyCheckerService {
                     == 1;
         }
         return false;
+    }
+
+    private boolean validateAtomicConstraint(final AtomicConstraint atomicConstraint,
+            final PolicyDefinition policyDefinition) {
+        return AtomicConstraintValidator.builder()
+                                        .atomicConstraint(atomicConstraint)
+                                        .leftExpressionValue(policyDefinition.getLeftExpressionValue())
+                                        .rightExpressionValue(policyDefinition.getRightExpressionValue())
+                                        .expectedOperator(Operator.valueOf(policyDefinition.getConstraintOperator()))
+                                        .build()
+                                        .isValid();
     }
 
     private boolean validateAtomicConstraint(final AtomicConstraint atomicConstraint,
