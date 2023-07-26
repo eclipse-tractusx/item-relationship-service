@@ -181,8 +181,8 @@ edc:
       # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
       # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
       allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability, Membership  # List of comma separated names of the policies to accept.
-      acceptedRightOperands: active # List of comma separated names of the rightOperands to accept.
-      acceptedLeftOperands: PURPOSE # List of comma separated names of the leftOperands to accept.
+      acceptedRightOperands: active  # List of comma separated names of the rightOperands to accept.
+      acceptedLeftOperands: PURPOSE  # List of comma separated names of the leftOperands to accept.
 
 discovery:
   endpoint:  # EDC Discovery Service endpoint
