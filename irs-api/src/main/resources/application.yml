@@ -152,10 +152,10 @@ irs-edc-client:
       connect: PT90S # HTTP connect timeout for the submodel client
 
   catalog:
-    cache:
-      enabled: true # Set to false to disable caching
-      ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
-      maxCachedItems: 64000 # Maximum amount of cached catalog items
+    policies:
+      acceptedRightOperands: active # List of comma separated names of the rightOperands to accept.
+      acceptedLeftOperands: PURPOSE # List of comma separated names of the leftOperands to accept.
+
 edc:
   catalog:
     policies:

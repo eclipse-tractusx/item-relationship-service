@@ -15,11 +15,11 @@
         "odrl:constraint": {
           "odrl:and": [
             {
-              "odrl:leftOperand": "BusinessPartnerNumber",
+              "odrl:leftOperand": "Membership",
               "odrl:operator": {
                 "@id": "odrl:eq"
               },
-              "odrl:rightOperand": "{{BPN6789}}"
+              "odrl:rightOperand": "active"
             },
             {
               "odrl:leftOperand": "FrameworkAgreement.traceability",
