@@ -41,7 +41,7 @@ public class EDRAuthCode {
     private final String dad;
     private final String cid;
 
-    public static EDRAuthCode extractContractAgreementId(final String token) {
+    public static EDRAuthCode fromAuthCodeToken(final String token) {
         final var chunks = token.split("\\.");
         final var decoder = Base64.getUrlDecoder();
         final var payload = new String(decoder.decode(chunks[1]), StandardCharsets.UTF_8);

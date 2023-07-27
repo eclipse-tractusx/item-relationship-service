@@ -53,7 +53,7 @@ public class EdcCallbackController {
                 dataReference.getEndpoint());
         final String authCode = dataReference.getAuthCode();
         if (authCode != null) {
-            final var contractAgreementId = EDRAuthCode.extractContractAgreementId(authCode).getCid();
+            final var contractAgreementId = EDRAuthCode.fromAuthCodeToken(authCode).getCid();
             storage.put(contractAgreementId, dataReference);
             log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractAgreementId));
         } else {

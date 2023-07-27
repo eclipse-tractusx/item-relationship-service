@@ -109,7 +109,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private Instant extractTokenExpiration(final String token) {
-        return Instant.ofEpochSecond(EDRAuthCode.extractContractAgreementId(token).getExp());
+        return Instant.ofEpochSecond(EDRAuthCode.fromAuthCodeToken(token).getExp());
     }
 
     private AssetAdministrationShellDescriptor fetchShellDescriptor(final EndpointDataReference endpointDataReference,
