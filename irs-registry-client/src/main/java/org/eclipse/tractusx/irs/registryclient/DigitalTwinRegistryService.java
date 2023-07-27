@@ -33,12 +33,36 @@ import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceExcepti
 public interface DigitalTwinRegistryService {
 
     /**
+     * Retrieves the global asset IDs of all asset administration shells for a given BPN.
+     *
+     * @param bpn the BPN to retrieve the shells for
+     * @return the collection of global asset IDs
+     */
+    default Collection<String> lookupGlobalAssetIds(final String bpn) throws RegistryServiceException {
+        return fetchShells(lookupShellIdentifiers(bpn)).stream()
+                                                       .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
+                                                       .toList();
+    }
+
+    /**
+     * Retrieves all registered shell identifiers for a given BPN.
+     *
+     * @param bpn the BPN to retrieve the shells for
+     * @return the collection of shell identifiers
+     * @deprecated replaced by {@link DigitalTwinRegistryService#lookupShellIdentifiers(String)}
+     */
+    @Deprecated(since = "1.0.0", forRemoval = true)
+    default Collection<DigitalTwinRegistryKey> lookupShells(final String bpn) throws RegistryServiceException {
+        return lookupShellIdentifiers(bpn);
+    }
+
+    /**
      * Retrieves all registered shell identifiers for a given BPN.
      *
      * @param bpn the BPN to retrieve the shells for
      * @return the collection of shell identifiers
      */
-    Collection<DigitalTwinRegistryKey> lookupShells(String bpn) throws RegistryServiceException;
+    Collection<DigitalTwinRegistryKey> lookupShellIdentifiers(String bpn) throws RegistryServiceException;
 
     /**
      * Retrieves the shell details for the given identifiers.

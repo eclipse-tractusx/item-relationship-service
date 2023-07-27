@@ -22,9 +22,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
+import org.eclipse.tractusx.irs.data.StringMapper;
 
 /**
  * The decoded Auth code JWT.
@@ -36,4 +40,11 @@ public class EDRAuthCode {
     private final long exp;
     private final String dad;
     private final String cid;
+
+    public static EDRAuthCode extractContractAgreementId(final String token) {
+        final var chunks = token.split("\\.");
+        final var decoder = Base64.getUrlDecoder();
+        final var payload = new String(decoder.decode(chunks[1]), StandardCharsets.UTF_8);
+        return StringMapper.mapFromString(payload, EDRAuthCode.class);
+    }
 }
