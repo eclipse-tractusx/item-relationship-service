@@ -5,8 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [6.4.0] - 2023-07-31
 ### Added
 - New option to configure accepted operands for policy checks via `edc.catalog.policies.acceptedRightOperands` and `edc.catalog.policies.acceptedLeftOperands`
+
+### Changed
+- Update IRS version to 3.3.2
 
 ## [6.3.1] - 2023-07-24
 ### Changed
