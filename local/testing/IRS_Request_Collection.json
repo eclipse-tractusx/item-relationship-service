@@ -1909,7 +1909,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\r\n    \"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\",\r\n    \"incidentBpns\": [\"BPNL00000003B6LU\"],\r\n    \"bomLifecycle\": \"asPlanned\"\r\n}"
+				"text": "{\r\n  \"key\": { \"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\", \"bpn\": \"BPNL00000003CRHK\" },\r\n    \"incidentBpns\": [\"BPNL00000003B6LU\"],\r\n    \"bomLifecycle\": \"asPlanned\"\r\n}"
 			},
 			"parameters": [],
 			"headers": [
