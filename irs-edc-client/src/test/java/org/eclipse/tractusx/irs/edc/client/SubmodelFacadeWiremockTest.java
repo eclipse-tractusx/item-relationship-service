@@ -110,8 +110,12 @@ class SubmodelFacadeWiremockTest {
 
         final AcceptedPoliciesProvider acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(
-                List.of(new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1))));
-        final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider);
+                List.of(new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)),
+                        new AcceptedPolicy("Membership", OffsetDateTime.now().plusYears(1))));
+        final List<String> leftOperands = List.of("PURPOSE");
+        final List<String> rightOperands = List.of("active");
+        final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider,
+                rightOperands, leftOperands);
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
 

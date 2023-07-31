@@ -160,7 +160,6 @@ class BatchOrderEventListenerTest {
     @Test
     void shouldPublishBatchOrderProcessingFinishedEventWhenAllBatchesCompleted() {
         // given
-        final int numberOfJobs = 10;
         final int timeout = 60;
         final BatchOrder batchOrder = BatchOrder.builder()
                                                 .batchOrderId(BATCH_ORDER_ID)

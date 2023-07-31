@@ -8,6 +8,8 @@ JWT token should also contain two fields:
 - `view_irs` role inside `resource_access` claim,
 - BPN claim which is equal to the configuration value from `API_ALLOWED_BPN` property
 
+*Note: IRS currently does not support any other roles or rights. As long as you provide a valid token with the content listed above, you can access the IRS API to view and control all jobs on the IRS instance.*
+
 === IRS as DTR client
 The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
 

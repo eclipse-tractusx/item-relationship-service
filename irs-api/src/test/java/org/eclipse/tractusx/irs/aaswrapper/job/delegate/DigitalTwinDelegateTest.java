@@ -63,6 +63,9 @@ class DigitalTwinDelegateTest {
     }
 
     private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
+    }
+    private static PartChainIdentificationKey createKeyWithoutBpn() {
         return PartChainIdentificationKey.builder().globalAssetId("itemId").build();
     }
 
@@ -82,6 +85,21 @@ class DigitalTwinDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getRetryCounter()).isEqualTo(
                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.DIGITAL_TWIN_REQUEST);
+    }
+
+    @Test
+    void shouldCreateTombstoneIfBPNEmpty() {
+        // when
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
+                new AASTransferProcess("id", 0), createKeyWithoutBpn());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo("Can't get relationship without a BPN");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.DIGITAL_TWIN_REQUEST);
     }

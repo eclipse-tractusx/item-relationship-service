@@ -106,6 +106,11 @@ data:
         path: {{ tpl (.Values.edc.submodel.path | default "/submodel") . | quote }}
         urn-prefix: {{ tpl (.Values.edc.submodel.urnprefix | default "/urn") . | quote }}
 
+      catalog:
+        policies:
+          acceptedRightOperands: {{ .Values.edc.catalog.policies.acceptedRightOperands | default "" | quote }}
+          acceptedLeftOperands: {{ .Values.edc.catalog.policies.acceptedLeftOperands | default "" | quote }}
+
     edc:
       catalog:
         policies:
