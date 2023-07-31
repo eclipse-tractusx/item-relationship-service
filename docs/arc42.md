@@ -623,6 +623,8 @@ JWT token should also contain two fields:
 * `view_irs` role inside `resource_access` claim,
 * BPN claim which is equal to the configuration value from `API_ALLOWED_BPN` property
 
+**Note: IRS currently does not support any other roles or rights. As long as you provide a valid token with the content listed above, you can access the IRS API to view and control all jobs on the IRS instance.**
+
 #### IRS as DTR client
 
 The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
@@ -742,7 +744,7 @@ Data validation happens at two points:
 
 * IRS API: the data sent by the client is validated to match the model defined in the IRS. If the validation fails, the IRS sends a HTTP 400 response and indicates the problem to the caller.
 * Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.
-* EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. Only policies which are defined via the PolicyStory will be accepted.
+* EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. IDs of so-called "Rahmenverträgen" or Framework-Agreements can be added to the IRS Policy Store to be accepted by the IRS. If a Contract Offer does not match any of the IDs store in Policy Store, the contract offer will be declined and no data will be consumed.
 
 ### Caching
 
@@ -886,3 +888,8 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | MTPDC | Formerly known Service Name: Multi Tier Parts Data Chain |
 | PRS | Formerly known Service Name: Parts Relationship Service |
 | Traversal Aspect | aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship. Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt |
+| Verifiable Credential (VC) | For more information see: [Verifiable Credentials](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2/3.%20Verifiable%20Credentials) |
+| Eclipse Dataspace Connector (EDC) | For more information see: <https://github.com/eclipse-tractusx/tractusx-edc> |
+| Managed Identity Wallet (MIW) | For more information see: <https://github.com/eclipse-tractusx/managed-identity-wallet> |
+| Self-Sovereign Identity (SSI) | For more information see: <https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2> |
+| PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. |

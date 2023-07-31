@@ -59,6 +59,8 @@ You can define the URLs as well as most of the secrets yourself.
 
 The Keycloak, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
+**Note: IRS currently does not support any roles or rights for the API. As long as you provide a valid access token, you can use the IRS API to view and control all jobs on the IRS instance.**
+
 ## Spring Configuration
 
 The IRS application is configured using the Spring configuration mechanism. The main configuration file is the ``application.yaml``.
@@ -218,10 +220,10 @@ irs-edc-client:
       connect: PT90S # HTTP connect timeout for the submodel client
 
   catalog:
-    cache:
-      enabled: true # Set to false to disable caching
-      ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
-      maxCachedItems: 64000 # Maximum amount of cached catalog items
+    policies:
+      acceptedRightOperands: active # List of comma separated names of the rightOperands to accept.
+      acceptedLeftOperands: PURPOSE # List of comma separated names of the leftOperands to accept.
+
 edc:
   catalog:
     policies:
@@ -373,7 +375,9 @@ edc:
     policies:
       # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
       # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability  # List of comma separated names of the policies to accept.
+      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability, Membership  # List of comma separated names of the policies to accept.
+      acceptedRightOperands: active  # List of comma separated names of the rightOperands to accept.
+      acceptedLeftOperands: PURPOSE  # List of comma separated names of the leftOperands to accept.
 
 discovery:
   endpoint:  # EDC Discovery Service endpoint
@@ -476,8 +480,6 @@ grafana:
     existingSecret: "{{ .Release.Name }}-irs-helm"
     userKey: grafanaUser
     passwordKey: grafanaPassword
-
-  datasources:
 ```
 
 1. Use this to enable or disable the monitoring components

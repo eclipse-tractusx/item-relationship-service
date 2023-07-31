@@ -691,6 +691,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <div class="paragraph">
 <p>The Keycloak, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.</p>
 </div>
+<div class="paragraph">
+<p><strong>Note: IRS currently does not support any roles or rights for the API. As long as you provide a valid access token, you can use the IRS API to view and control all jobs on the IRS instance.</strong></p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -855,10 +858,10 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the submodel client</span>
 
   <span class="na">catalog</span><span class="pi">:</span>
-    <span class="na">cache</span><span class="pi">:</span>
-      <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># Set to false to disable caching</span>
-      <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span> <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
-      <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span> <span class="c1"># Maximum amount of cached catalog items</span>
+    <span class="na">policies</span><span class="pi">:</span>
+      <span class="na">acceptedRightOperands</span><span class="pi">:</span> <span class="s">active</span> <span class="c1"># List of comma separated names of the rightOperands to accept.</span>
+      <span class="na">acceptedLeftOperands</span><span class="pi">:</span> <span class="s">PURPOSE</span> <span class="c1"># List of comma separated names of the leftOperands to accept.</span>
+
 <span class="na">edc</span><span class="pi">:</span>
   <span class="na">catalog</span><span class="pi">:</span>
     <span class="na">policies</span><span class="pi">:</span>
@@ -1014,7 +1017,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">policies</span><span class="pi">:</span>
       <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.</span>
       <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
-      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability</span>  <span class="c1"># List of comma separated names of the policies to accept.</span>
+      <span class="na">allowedNames</span><span class="pi">:</span> <span class="s">ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability, Membership</span>  <span class="c1"># List of comma separated names of the policies to accept.</span>
+      <span class="na">acceptedRightOperands</span><span class="pi">:</span> <span class="s">active</span>  <span class="c1"># List of comma separated names of the rightOperands to accept.</span>
+      <span class="na">acceptedLeftOperands</span><span class="pi">:</span> <span class="s">PURPOSE</span>  <span class="c1"># List of comma separated names of the leftOperands to accept.</span>
 
 <span class="na">discovery</span><span class="pi">:</span>
   <span class="na">endpoint</span><span class="pi">:</span>  <span class="c1"># EDC Discovery Service endpoint</span>
@@ -1116,9 +1121,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">admin</span><span class="pi">:</span>
     <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm"</span>
     <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
-    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span>
-
-  <span class="na">datasources</span><span class="pi">:</span></code></pre>
+    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1292,7 +1295,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-24 07:20:57 UTC
+Last updated 2023-07-31 14:20:28 UTC
 </div>
 </div>
 </body>

@@ -816,10 +816,10 @@ pre.rouge {
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the submodel client</span>
 
   <span class="na">catalog</span><span class="pi">:</span>
-    <span class="na">cache</span><span class="pi">:</span>
-      <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span> <span class="c1"># Set to false to disable caching</span>
-      <span class="na">ttl</span><span class="pi">:</span> <span class="s">P1D</span> <span class="c1"># Time after which a cached Item is no longer valid and the real catalog is called instead</span>
-      <span class="na">maxCachedItems</span><span class="pi">:</span> <span class="m">64000</span> <span class="c1"># Maximum amount of cached catalog items</span>
+    <span class="na">policies</span><span class="pi">:</span>
+      <span class="na">acceptedRightOperands</span><span class="pi">:</span> <span class="s">active</span> <span class="c1"># List of comma separated names of the rightOperands to accept.</span>
+      <span class="na">acceptedLeftOperands</span><span class="pi">:</span> <span class="s">PURPOSE</span> <span class="c1"># List of comma separated names of the leftOperands to accept.</span>
+
 <span class="na">edc</span><span class="pi">:</span>
   <span class="na">catalog</span><span class="pi">:</span>
     <span class="na">policies</span><span class="pi">:</span>
@@ -892,7 +892,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-24 07:20:57 UTC
+Last updated 2023-07-31 14:20:28 UTC
 </div>
 </div>
 </body>

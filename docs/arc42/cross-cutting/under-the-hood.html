@@ -605,7 +605,7 @@ In the future, another approach or an additional way to to index the data might 
 <p>Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.</p>
 </li>
 <li>
-<p>EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. Only policies which are defined via the PolicyStory will be accepted.</p>
+<p>EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. IDs of so-called "Rahmenverträgen" or Framework-Agreements can be added to the IRS Policy Store to be accepted by the IRS. If a Contract Offer does not match any of the IDs store in Policy Store, the contract offer will be declined and no data will be consumed.</p>
 </li>
 </ul>
 </div>
@@ -640,7 +640,7 @@ In the future, another approach or an additional way to to index the data might 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-07-24 07:20:57 UTC
+Last updated 2023-07-31 14:20:28 UTC
 </div>
 </div>
 </body>
