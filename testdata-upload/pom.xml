@@ -31,7 +31,6 @@
         <version>0.0.2-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.example</groupId>
     <artifactId>testdata-upload</artifactId>
 
     <properties>
