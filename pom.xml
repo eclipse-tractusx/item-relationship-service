@@ -56,7 +56,7 @@
         <spotbugs-plugin.version>4.7.3.2</spotbugs-plugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <checkstyle-plugin.version>3.2.1</checkstyle-plugin.version>
-        <checkstyle.version>10.8.0</checkstyle.version>
+        <checkstyle.version>10.12.2</checkstyle.version>
         <jacoco.version>0.8.8</jacoco.version>
         <pmd-plugin.version>3.19.0</pmd-plugin.version>
         <owasp-plugin.version>8.2.1</owasp-plugin.version>
