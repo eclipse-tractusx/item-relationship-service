@@ -36,6 +36,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.ess.service.EssService;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,12 +62,13 @@ class EssControllerTest {
     @Test
     @WithMockUser(authorities = "view_irs")
     void shouldRegisterBpnInvestigationForValidRequest() throws Exception {
-        when(essService.startIrsJob(any(RegisterBpnInvestigationJob.class))).thenReturn(JobHandle.builder().id(UUID.randomUUID()).build());
+        when(essService.startIrsJob(any(RegisterBpnInvestigationJob.class))).thenReturn(
+                JobHandle.builder().id(UUID.randomUUID()).build());
 
         this.mockMvc.perform(post(path).with(csrf())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(reqBody(globalAssetId, List.of(bpn)))))
-                    .andExpect(status().isCreated());
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(new ObjectMapper().writeValueAsString(
+                                               reqBody(globalAssetId, List.of(bpn))))).andExpect(status().isCreated());
     }
 
     @Test
@@ -75,8 +77,7 @@ class EssControllerTest {
         final String jobId = UUID.randomUUID().toString();
         when(essService.getIrsJob(jobId)).thenReturn(Jobs.builder().build());
 
-        this.mockMvc.perform(get(path + "/" + jobId))
-                    .andExpect(status().isOk());
+        this.mockMvc.perform(get(path + "/" + jobId)).andExpect(status().isOk());
     }
 
     @Test
@@ -84,7 +85,8 @@ class EssControllerTest {
     void shouldReturnBadRequestForWrongGlobalAssetId() throws Exception {
         this.mockMvc.perform(post(path).with(csrf())
                                        .contentType(MediaType.APPLICATION_JSON)
-                                       .content(new ObjectMapper().writeValueAsString(reqBody("wrongGlobalAssetId", List.of(bpn)))))
+                                       .content(new ObjectMapper().writeValueAsString(
+                                               reqBody("wrongGlobalAssetId", List.of(bpn)))))
                     .andExpect(status().isBadRequest());
     }
 
@@ -92,14 +94,20 @@ class EssControllerTest {
     @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestForWrongBpn() throws Exception {
         this.mockMvc.perform(post(path).with(csrf())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(new ObjectMapper().writeValueAsString(reqBody(globalAssetId, List.of(bpn, "WRONG_BPN")))))
+                                       .contentType(MediaType.APPLICATION_JSON)
+                                       .content(new ObjectMapper().writeValueAsString(
+                                               reqBody(globalAssetId, List.of(bpn, "WRONG_BPN")))))
                     .andExpect(status().isBadRequest());
     }
 
     RegisterBpnInvestigationJob reqBody(final String globalAssetId, final List<String> bpns) {
-        return RegisterBpnInvestigationJob.builder().globalAssetId(globalAssetId).incidentBpns(bpns).build();
+        return RegisterBpnInvestigationJob.builder()
+                                          .key(PartChainIdentificationKey.builder()
+                                                                         .globalAssetId(globalAssetId)
+                                                                         .bpn(bpn)
+                                                                         .build())
+                                          .incidentBpns(bpns)
+                                          .build();
     }
-
 
 }

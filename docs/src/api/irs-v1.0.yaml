@@ -2163,21 +2163,16 @@ components:
             \ There are two uri variable placeholders that can be used: jobId and\
             \ jobState."
           example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
-        globalAssetId:
-          type: string
-          description: Id of global asset.
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-          maxLength: 45
-          minLength: 45
-          pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        key:
+          $ref: '#/components/schemas/PartChainIdentificationKey'
         incidentBpns:
           type: array
           items:
             type: string
           maxItems: 2147483647
       required:
-        - globalAssetId
         - incidentBpns
+        - key
     RegisterJob:
       type: object
       additionalProperties: false
