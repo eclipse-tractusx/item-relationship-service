@@ -227,7 +227,7 @@ def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_
 
 
 def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_definition_path_, catalog_path_, header_,
-                          session_, edc_urls_, policy_, registry_asset_id_, aas_upload_url_):
+                          session_, edc_urls_, policy_, registry_asset_id_, aas_url_):
     for edc_upload_url_ in edc_upload_urls_:
         index = edc_upload_urls_.index(edc_upload_url_)
         edc_url_ = edc_urls_[index]
@@ -265,7 +265,7 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
             print(
                 f"Offer with type {first_offer_['edc:type']} already exists. Skipping creation.")
         else:
-            payload_ = create_edc_registry_asset_payload(aas_upload_url_, registry_asset_id_)
+            payload_ = create_edc_registry_asset_payload(aas_url_, registry_asset_id_)
             response_ = session_.request(method="POST", url=asset_url_,
                                          headers=header_,
                                          data=payload_)
@@ -395,7 +395,7 @@ if __name__ == "__main__":
                 create_policy(policies[policy], url, edc_policy_path, headers_with_api_key, session)
 
     create_registry_asset(edc_upload_urls, edc_asset_path, edc_contract_definition_path, edc_catalog_path,
-                          headers_with_api_key, session, edc_urls, default_policy, registry_asset_id, aas_upload_url)
+                          headers_with_api_key, session, edc_urls, default_policy, registry_asset_id, aas_url)
 
     esr = "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
     apr = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt"
@@ -515,7 +515,7 @@ if __name__ == "__main__":
                 else:
                     payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
                                                submodel_descriptors)
-                response = session.request(method="POST", url=f"{aas_url}{registry_path}",
+                response = session.request(method="POST", url=f"{aas_upload_url}{registry_path}",
                                            headers=headers,
                                            data=payload)
                 print_response(response)
