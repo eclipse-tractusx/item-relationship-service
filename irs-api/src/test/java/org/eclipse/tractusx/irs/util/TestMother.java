@@ -110,7 +110,7 @@ public class TestMother {
             final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs,
             final Direction direction) {
         final RegisterJob registerJob = new RegisterJob();
-        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn("bpn123").build());
+        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn("BPNL0000000001AA").build());
         registerJob.setDepth(depth);
         registerJob.setAspects(aspectTypes);
         registerJob.setCollectAspects(collectAspects);
@@ -125,7 +125,7 @@ public class TestMother {
         registerBatchOrder.setKeys(Arrays.stream(globalAssetId)
                                          .map(x -> PartChainIdentificationKey.builder()
                                                                              .globalAssetId(x)
-                                                                             .bpn("bpn123")
+                                                                             .bpn("BPNL0000000001AA")
                                                                              .build())
                                          .collect(Collectors.toSet()));
 
