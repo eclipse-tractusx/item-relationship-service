@@ -38,9 +38,6 @@ on:
         description: JIRA execution ticket to safe results in.
         default: 'TRI-910'
         required: true
-  push:
-    branches:
-      - 'feature/TRI-1500_change-tavern-user-to-each-DEV-and-INT'
 
 jobs:
   test:
@@ -62,7 +59,7 @@ jobs:
 
       - name: Run tests
         env:
-          IRS_HOST: ${{ github.event.inputs.irs-host || 'https://irs.int.demo.catena-x.net' }}
+          IRS_HOST: ${{ 'https://irs.int.demo.catena-x.net' }}
           IRS_ESS_HOST: ${{ github.event.inputs.irs-ess-host || 'https://irs-ess.int.demo.catena-x.net' }}
           KEYCLOAK_HOST: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
           KEYCLOAK_CLIENT_ID: ${{ secrets.ORG_IRS_OAUTH2_CLIENT_ID_INT }}
