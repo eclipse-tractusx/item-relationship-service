@@ -38,8 +38,9 @@ on:
         description: JIRA execution ticket to safe results in.
         default: 'TRI-910'
         required: true
-  schedule:
-    - cron: '0 1 * * 1-5' # At 01:00 on every day-of-week from Monday through Friday.
+  push:
+    branches:
+      - 'TRI-1500_change-tavern-user-to-each-DEV-and-INT'
 
 jobs:
   test:
