@@ -40,7 +40,7 @@ on:
         required: true
   push:
     branches:
-      - 'TRI-1500_change-tavern-user-to-each-DEV-and-INT'
+      - 'feature/TRI-1500_change-tavern-user-to-each-DEV-and-INT'
 
 jobs:
   test:
