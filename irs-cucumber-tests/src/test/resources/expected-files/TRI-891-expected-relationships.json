@@ -52,40 +52,6 @@
             "aspectType": "SingleLevelBomAsPlanned"
         },
         {
-            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.3301,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asPlanned",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301"
-            },
-            "aspectType": "SingleLevelBomAsPlanned"
-        },
-        {
-            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asPlanned",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc"
-            },
-            "aspectType": "SingleLevelBomAsPlanned"
-        },
-        {
             "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
             "linkedItem": {
                 "quantity": {
@@ -137,6 +103,40 @@
             "aspectType": "SingleLevelBomAsPlanned"
         },
         {
+            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 0.3301,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:kilogram"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301"
+            },
+            "aspectType": "SingleLevelBomAsPlanned"
+        },
+        {
+            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 1.0,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc"
+            },
+            "aspectType": "SingleLevelBomAsPlanned"
+        },
+        {
             "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
             "linkedItem": {
                 "quantity": {
@@ -150,6 +150,23 @@
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
                 "childCatenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e"
+            },
+            "aspectType": "SingleLevelBomAsPlanned"
+        },
+        {
+            "catenaXId": "urn:uuid:94d086c6-0124-4f2c-86b2-1d419e47499d",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 1.0,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:b0926d3c-6a8f-4fc7-81a4-88c50817358a"
             },
             "aspectType": "SingleLevelBomAsPlanned"
         }

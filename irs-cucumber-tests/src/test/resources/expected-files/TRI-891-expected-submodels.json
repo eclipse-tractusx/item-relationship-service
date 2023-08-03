@@ -1,12 +1,12 @@
 {
     "submodels": [
         {
-            "identification": "urn:uuid:f755c45c-4761-4251-872b-f26275d7db23",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:082c0fd7-8ed7-4499-be03-e32f24fda1dc",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2013-09-21T23:24:07.000Z",
-                    "validTo": "2026-11-22T17:35:54.000Z"
+                    "validFrom": "2016-04-09T20:41:14.000Z",
+                    "validTo": "2023-12-09T04:46:33.000Z"
                 },
                 "catenaXId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
                 "partTypeInformation": {
@@ -17,12 +17,12 @@
             }
         },
         {
-            "identification": "urn:uuid:3a50eccd-996c-4842-b3c5-d3318ed659ae",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:a555cc6c-3e22-431a-89bb-8430c2df0c6c",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2013-04-01T00:18:40.000Z",
-                    "validTo": "2025-07-06T08:58:34.000Z"
+                    "validFrom": "2017-07-03T05:23:01.000Z",
+                    "validTo": "2032-09-25T10:26:27.000Z"
                 },
                 "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
                 "partTypeInformation": {
@@ -33,12 +33,28 @@
             }
         },
         {
-            "identification": "urn:uuid:b9d630d0-6694-4664-ada5-2af03bd00794",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:3f6aea82-8e54-4419-9d90-02329b921c9d",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2020-03-28T02:37:02.000Z",
-                    "validTo": "2026-10-10T19:22:52.000Z"
+                    "validFrom": "2019-11-02T11:14:15.000Z",
+                    "validTo": "2024-07-17T02:07:07.000Z"
+                },
+                "catenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
+                "partTypeInformation": {
+                    "manufacturerPartId": "123564887-01",
+                    "classification": "product",
+                    "nameAtManufacturer": "Tire Model A"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:b2f5bb58-bf20-4e82-83be-0692096f1d23",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2016-04-24T08:26:56.000Z",
+                    "validTo": "2031-12-17T23:55:04.000Z"
                 },
                 "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
                 "partTypeInformation": {
@@ -49,12 +65,28 @@
             }
         },
         {
-            "identification": "urn:uuid:a2e15226-c890-4d12-a171-285205d8ab42",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:b1331f10-abd1-4caf-97c8-80890fc0b8f0",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2019-08-05T21:18:41.000Z",
-                    "validTo": "2029-05-20T17:40:33.000Z"
+                    "validFrom": "2013-06-18T03:47:22.000Z",
+                    "validTo": "2030-12-31T23:33:25.000Z"
+                },
+                "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
+                "partTypeInformation": {
+                    "manufacturerPartId": "6740244-02",
+                    "classification": "product",
+                    "nameAtManufacturer": "Sub Tier A Sensor"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:866affae-92e0-45f2-85ba-da63b149c8ed",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2015-01-23T16:24:59.000Z",
+                    "validTo": "2031-05-04T12:01:38.000Z"
                 },
                 "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
                 "partTypeInformation": {
@@ -65,28 +97,28 @@
             }
         },
         {
-            "identification": "urn:uuid:211fa9e1-b62e-406a-94a1-d3e74ed7c387",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:10fd13ea-5e77-49f7-8e9b-d909964c1092",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2015-03-15T17:25:20.000Z",
-                    "validTo": "2027-12-12T17:07:52.000Z"
+                    "validFrom": "2017-04-29T01:48:37.000Z",
+                    "validTo": "2029-08-26T00:42:55.000Z"
                 },
-                "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
+                "catenaXId": "urn:uuid:94d086c6-0124-4f2c-86b2-1d419e47499d",
                 "partTypeInformation": {
-                    "manufacturerPartId": "6740244-02",
+                    "manufacturerPartId": "9953421-03",
                     "classification": "product",
-                    "nameAtManufacturer": "Sub Tier A Sensor"
+                    "nameAtManufacturer": "Natural Rubber Product(40KG blocks)"
                 }
             }
         },
         {
-            "identification": "urn:uuid:c241cc8c-ccd4-4d38-beb6-27f4336a3e01",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:e7a0b342-6b66-4cd7-8da3-facf4de3feab",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2014-07-30T07:17:16.000Z",
-                    "validTo": "2028-03-27T22:34:57.000Z"
+                    "validFrom": "2019-08-17T14:14:30.000Z",
+                    "validTo": "2032-08-30T04:32:28.000Z"
                 },
                 "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
                 "partTypeInformation": {
@@ -97,12 +129,12 @@
             }
         },
         {
-            "identification": "urn:uuid:211fa9e1-b62e-406a-94a1-d3e74ed7c387",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:b1331f10-abd1-4caf-97c8-80890fc0b8f0",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2015-03-15T17:25:20.000Z",
-                    "validTo": "2027-12-12T17:07:52.000Z"
+                    "validFrom": "2013-06-18T03:47:22.000Z",
+                    "validTo": "2030-12-31T23:33:25.000Z"
                 },
                 "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
                 "partTypeInformation": {
@@ -113,12 +145,12 @@
             }
         },
         {
-            "identification": "urn:uuid:abad5802-5071-4e21-97ae-e6f295731a1c",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:04ef1184-b086-4b47-813b-b009886d1e5a",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2019-12-30T09:17:00.000Z",
-                    "validTo": "2025-06-28T12:55:41.000Z"
+                    "validFrom": "2019-01-02T09:42:18.000Z",
+                    "validTo": "2031-05-02T13:45:12.000Z"
                 },
                 "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
                 "partTypeInformation": {
@@ -129,12 +161,28 @@
             }
         },
         {
-            "identification": "urn:uuid:abad5802-5071-4e21-97ae-e6f295731a1c",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:b2302f68-acfb-42e4-ab11-ed8f9181f006",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2019-12-30T09:17:00.000Z",
-                    "validTo": "2025-06-28T12:55:41.000Z"
+                    "validFrom": "2014-02-07T16:56:02.000Z",
+                    "validTo": "2029-08-26T11:05:18.000Z"
+                },
+                "catenaXId": "urn:uuid:b0926d3c-6a8f-4fc7-81a4-88c50817358a",
+                "partTypeInformation": {
+                    "manufacturerPartId": "A26581-11",
+                    "classification": "product",
+                    "nameAtManufacturer": "Natural Rubber"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:04ef1184-b086-4b47-813b-b009886d1e5a",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2019-01-02T09:42:18.000Z",
+                    "validTo": "2031-05-02T13:45:12.000Z"
                 },
                 "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
                 "partTypeInformation": {
