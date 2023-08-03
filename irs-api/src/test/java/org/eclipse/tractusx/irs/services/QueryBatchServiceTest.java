@@ -52,7 +52,7 @@ class QueryBatchServiceTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        jobStore = new InMemoryJobStore();
+        jobStore = new InMemoryJobStore(new DataIntegrityService());
         service = new QueryBatchService(batchOrderStore, batchStore, jobStore);
     }
 

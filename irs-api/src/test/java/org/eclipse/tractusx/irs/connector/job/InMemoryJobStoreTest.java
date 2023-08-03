@@ -44,8 +44,7 @@ import org.junit.jupiter.api.Test;
 
 class InMemoryJobStoreTest {
     final int TTL_IN_HOUR_SECONDS = 3600;
-    InMemoryJobStore sut = new InMemoryJobStore(new DataIntegrityService() {
-    });
+    InMemoryJobStore sut = new InMemoryJobStore(new DataIntegrityService());
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);

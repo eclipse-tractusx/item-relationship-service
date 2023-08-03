@@ -56,13 +56,13 @@ public class DataIntegrityService {
         final IntegrityAspect.ChildData childData = integrities.stream()
                                                                .map(IntegrityAspect::getChildParts)
                                                                .flatMap(Set::stream)
-                                                               .filter(findIntegrityChildPart(submodel))
+                                                               .filter(findIntegrityChildPart(submodel.getCatenaXId()))
                                                                .findFirst()
                                                                .orElseThrow(); // TODO create tombstone?
 
         final IntegrityAspect.Reference reference = childData.getReferences()
                                                              .stream()
-                                                             .filter(findReference(submodel))
+                                                             .filter(findReference(submodel.getAspectType()))
                                                              .findFirst()
                                                              .orElseThrow(); // TODO create tombstone?
 
@@ -79,12 +79,12 @@ public class DataIntegrityService {
         return payload + "X";
     }
 
-    private Predicate<? super IntegrityAspect.Reference> findReference(final Submodel submodel) {
-        return reference -> reference.getSemanticModelUrn().equals(submodel.getAspectType());
+    private Predicate<? super IntegrityAspect.Reference> findReference(final String aspectType) {
+        return reference -> reference.getSemanticModelUrn().equals(aspectType);
     }
 
-    private Predicate<? super IntegrityAspect.ChildData> findIntegrityChildPart(final Submodel submodel) {
-        return integrityChildPart -> integrityChildPart.getCatenaXId().equals(submodel.getIdentification());
+    private Predicate<? super IntegrityAspect.ChildData> findIntegrityChildPart(final String catenaXId) {
+        return integrityChildPart -> integrityChildPart.getCatenaXId().equals(catenaXId);
     }
 
 }
