@@ -1,132 +1,388 @@
 {
-  "submodels" : [ {
-    "identification" : "acfbe375-5ce5-468f-bd3d-8339671ae646",
-    "aspectType" : "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-    "payload" : {
-      "catenaXId" : "urn:uuid:4afdeafb-3837-4b1e-8653-46376dc79bb3",
-      "childItems" : [ {
-        "catenaXId" : "urn:uuid:d0c74546-b586-4657-be64-2b44d2324d13",
-        "quantity" : {
-          "quantityNumber" : 2.5,
-          "measurementUnit" : "unit:litre"
-        },
-        "businessPartner" : "BPNL50096894aNXY",
-        "createdOn" : "2022-02-03T14:48:54.709Z",
-        "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
-      } ]
-    }
-  }, {
-    "identification" : "b3301bb7-e911-4d25-b6c9-42dacf6d57e6",
-    "aspectType" : "urn:bamm:io.catenax.serial_part:1.1.0#SerialPart",
-    "payload" : {
-      "localIdentifiers" : [ {
-        "value" : "BPNL00000003AYRE",
-        "key" : "manufacturerId"
-      }, {
-        "value" : "8840838-04",
-        "key" : "manufacturerPartId"
-      }, {
-        "value" : "NO-659142660789764418271073",
-        "key" : "partInstanceId"
-      } ],
-      "manufacturingInformation" : {
-        "date" : "2022-02-04T14:48:54",
-        "country" : "DEU"
-      },
-      "catenaXId" : "urn:uuid:4afdeafb-3837-4b1e-8653-46376dc79bb3",
-      "partTypeInformation" : {
-        "manufacturerPartId" : "8840374-09",
-        "customerPartId" : "8840374-09",
-        "classification" : "component",
-        "nameAtManufacturer" : "ZB ZELLE",
-        "nameAtCustomer" : "ZB ZELLE"
+  "submodels" : [
+    {
+      "identification": "urn:uuid:86d6036d-c78d-4310-999b-9eb1d963c699",
+      "aspectType": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+      "payload": {
+        "parentParts": [
+          {
+            "parentCatenaXId": "urn:uuid:d70b0211-7f09-4ab6-9ef3-966f49eca90b",
+            "quantity": {
+              "quantityNumber": 1,
+              "measurementUnit": "unit:piece"
+            },
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ],
+        "catenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b"
       }
-    }
-  }, {
-    "identification" : "4c869e84-6687-4e1b-a87f-a072d548542b",
-    "aspectType" : "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription",
-    "payload" : {
-      "minimalStateOfHealth" : {
-        "minimalStateOfHealthValue" : "90.0",
-        "specificatorId" : "OEM",
-        "minimalStateOfHealthPhase" : "as specified by OEM"
-      },
-      "currentStateOfHealth" : [ {
-        "currentStateOfHealthTimestamp" : "2021-06-17T14:23:23.672Z",
-        "currentStateOfHealthPhase" : "as specified by OEM",
-        "currentStateOfHealthValue" : "105"
-      }, {
-        "currentStateOfHealthTimestamp" : "2023-06-22T15:20:31.673Z",
-        "currentStateOfHealthPhase" : "as recieved by dismantling",
-        "currentStateOfHealthValue" : "95"
-      } ],
-      "performanceIndicator" : {
-        "electricCapacityMin" : "0.8",
-        "electricCapacityMax" : "0.88"
-      },
-      "type" : "HVB"
-    }
-  }, {
-    "identification" : "848004d4-cda2-4f43-8eaf-9704bbd58590",
-    "aspectType" : "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
-    "payload" : {
-      "diameter" : 32,
-      "length" : 142,
-      "width" : 26.5,
-      "weight" : 1.4688,
-      "height" : 61
-    }
-  }, {
-    "identification" : "696342c8-f06d-4361-8018-34d6f46b88ba",
-    "aspectType" : "urn:bamm:io.catenax.batch:1.0.0#Batch",
-    "payload" : {
-      "localIdentifiers" : [ {
-        "value" : "BPNL00000003B0Q0",
-        "key" : "manufacturerId"
-      }, {
-        "value" : "7A047C7-01",
-        "key" : "manufacturerPartId"
-      }, {
-        "value" : "NO-317675221284003919238395",
-        "key" : "partInstanceId"
-      } ],
-      "manufacturingInformation" : {
-        "date" : "2022-02-04T14:48:54",
-        "country" : "DEU"
-      },
-      "catenaXId" : "urn:uuid:d0c74546-b586-4657-be64-2b44d2324d13",
-      "partTypeInformation" : {
-        "manufacturerPartId" : "7A047C7-01",
-        "customerPartId" : "7A047C7-01",
-        "classification" : "component",
-        "nameAtManufacturer" : "Cathode Material ",
-        "nameAtCustomer" : "Cathode Material "
-      }
-    }
-  }, {
-    "identification" : "826a9352-bf85-42d1-bbcc-5c3a6a8a4c49",
-    "aspectType" : "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-    "payload" : {
-      "materialName" : "Cathode Material",
-      "materialClass" : "8.1",
-      "component" : [ {
-        "materialName" : "Cobalt lithium manganese nickel oxide",
-        "recycledContent" : 11,
-        "materialClass" : "8.1",
-        "quantiy" : {
-          "unit" : "unit:percent",
-          "value" : 100
-        },
-        "quantity" : {
-          "unit" : {
-            "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-            "lexicalValue" : "unit:percent"
+    },
+    {
+      "identification": "urn:uuid:ccba3440-483c-4666-800f-5146c640cb98",
+      "aspectType": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B2OM",
+            "key": "manufacturerId"
           },
-          "value" : 100
+          {
+            "value": "1O222E8-43",
+            "key": "manufacturerPartId"
+          },
+          {
+            "value": "NO-236938603963731348901239",
+            "key": "partInstanceId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "DEU"
         },
-        "aggregateState" : "solid",
-        "materialAbbreviation" : "NCM"
-      } ]
+        "catenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+        "partTypeInformation": {
+          "manufacturerPartId": "1O222E8-43",
+          "customerPartId": "1O222E8-43",
+          "classification": "component",
+          "nameAtManufacturer": "Transmission",
+          "nameAtCustomer": "Transmission"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:e119c962-393f-4b5b-97bc-d89806bfb9fa",
+      "aspectType": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
+      "payload": {
+        "diameter": 380,
+        "length": 810,
+        "width": 590,
+        "weight": 85,
+        "height": 610
+      }
+    },
+    {
+      "identification": "urn:uuid:a1018f5d-e9a3-4052-8dd3-3cb22f7dd602",
+      "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "payload": {
+        "component": [
+          {
+            "materialName": "Carbon Steel",
+            "recycledContent": 79,
+            "materialClass": "1.1.2",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 72.843
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "CS2"
+          },
+          {
+            "materialName": "Oil",
+            "recycledContent": 21,
+            "materialClass": "9.2",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 6.9
+            },
+            "aggregateState": "liquid",
+            "materialAbbreviation": "SAE40"
+          },
+          {
+            "materialName": "Copper",
+            "recycledContent": 24,
+            "materialClass": "3.1",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 1.2
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "CO7"
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:89ca0bcf-ea56-4e5e-bc97-ce0e8127d265",
+      "aspectType": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+      "payload": {
+        "parentParts": [
+          {
+            "parentCatenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+            "quantity": {
+              "quantityNumber": 1,
+              "measurementUnit": "unit:piece"
+            },
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ],
+        "catenaXId": "urn:uuid:2c74b701-0d31-4977-be94-42aae3b1ccde"
+      }
+    },
+    {
+      "identification": "urn:uuid:80ea1b86-e305-4a60-a027-e164f5a4f801",
+      "aspectType": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B3NX",
+            "key": "manufacturerId"
+          },
+          {
+            "value": "05270T6-25",
+            "key": "manufacturerPartId"
+          },
+          {
+            "value": "NO-901550611834197658852147",
+            "key": "partInstanceId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "DEU"
+        },
+        "catenaXId": "urn:uuid:2c74b701-0d31-4977-be94-42aae3b1ccde",
+        "partTypeInformation": {
+          "manufacturerPartId": "05270T6-25",
+          "customerPartId": "05270T6-25",
+          "classification": "component",
+          "nameAtManufacturer": "Sensor",
+          "nameAtCustomer": "Sensor"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:793ecf52-4ecc-4501-81b6-61db0203f467",
+      "aspectType": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+      "payload": {
+        "parentParts": [
+          {
+            "parentCatenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+            "quantity": {
+              "quantityNumber": 1,
+              "measurementUnit": "unit:piece"
+            },
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ],
+        "catenaXId": "urn:uuid:9a852ada-7d42-4a85-8a19-300503e234ae"
+      }
+    },
+    {
+      "identification": "urn:uuid:83b895a9-fd61-4b69-97ca-681493ec94e4",
+      "aspectType": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "manufacturerId"
+          },
+          {
+            "value": "96486G7-29",
+            "key": "manufacturerPartId"
+          },
+          {
+            "value": "NO-939960567261604307414557",
+            "key": "partInstanceId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "DEU"
+        },
+        "catenaXId": "urn:uuid:9a852ada-7d42-4a85-8a19-300503e234ae",
+        "partTypeInformation": {
+          "manufacturerPartId": "96486G7-29",
+          "customerPartId": "96486G7-29",
+          "classification": "component",
+          "nameAtManufacturer": "Engineering Plastics",
+          "nameAtCustomer": "Engineering Plastics"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:c0e7f5f6-787d-4dab-a0c9-4a37eabeba31",
+      "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "payload": {
+        "materialName": "Engineering Plastics",
+        "materialClass": "5.1",
+        "component": [
+          {
+            "materialName": "PA66",
+            "recycledContent": 31,
+            "materialClass": "5.1",
+            "quantity": {
+              "unit": "unit:percent",
+              "value": 70
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "PA66"
+          },
+          {
+            "materialName": "GF-Faser",
+            "recycledContent": 19,
+            "materialClass": "5.1",
+            "quantity": {
+              "unit": "unit:percent",
+              "value": 30
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "GF30"
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:33175aaf-f31f-4b46-a432-409762e27e8a",
+      "aspectType": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+      "payload": {
+        "parentParts": [
+          {
+            "parentCatenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+            "quantity": {
+              "quantityNumber": 1,
+              "measurementUnit": "unit:piece"
+            },
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ],
+        "catenaXId": "urn:uuid:13931e36-2319-4c18-896d-c99ac9fd5b9f"
+      }
+    },
+    {
+      "identification": "urn:uuid:6be590f7-5ef2-4b4b-b823-f656f1921c3d",
+      "aspectType": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "manufacturerId"
+          },
+          {
+            "value": "79963M5-58",
+            "key": "manufacturerPartId"
+          },
+          {
+            "value": "NO-710890810076765616768884",
+            "key": "partInstanceId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "DEU"
+        },
+        "catenaXId": "urn:uuid:13931e36-2319-4c18-896d-c99ac9fd5b9f",
+        "partTypeInformation": {
+          "manufacturerPartId": "79963M5-58",
+          "customerPartId": "79963M5-58",
+          "classification": "component",
+          "nameAtManufacturer": "Glue",
+          "nameAtCustomer": "Glue"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:ac0b6cdf-33fc-4d76-9b82-573e0a4f3357",
+      "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "payload": {
+        "component": [
+          {
+            "materialName": "Glue",
+            "materialClass": "6.2",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 0
+            },
+            "weight": "0.2341",
+            "materialAbbreviation": "GL338"
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:44e62e7d-89c9-45f8-ae1f-a74c050487e9",
+      "aspectType": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+      "payload": {
+        "parentParts": [
+          {
+            "parentCatenaXId": "urn:uuid:2c74b701-0d31-4977-be94-42aae3b1ccde",
+            "quantity": {
+              "quantityNumber": 1,
+              "measurementUnit": "unit:piece"
+            },
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ],
+        "catenaXId": "urn:uuid:abce35f9-22c7-4a3b-b897-6f866a8039b7"
+      }
+    },
+    {
+      "identification": "urn:uuid:ca612488-875d-46c5-8b5a-9880a7a51850",
+      "aspectType": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "manufacturerId"
+          },
+          {
+            "value": "96587J8-84",
+            "key": "manufacturerPartId"
+          },
+          {
+            "value": "NO-213905443749112213266271",
+            "key": "partInstanceId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "DEU"
+        },
+        "catenaXId": "urn:uuid:abce35f9-22c7-4a3b-b897-6f866a8039b7",
+        "partTypeInformation": {
+          "manufacturerPartId": "96587J8-84",
+          "customerPartId": "96587J8-84",
+          "classification": "component",
+          "nameAtManufacturer": "NTIER Product",
+          "nameAtCustomer": "NTIER Product"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:5bf414b4-5687-47e9-ba28-54415ec6bd58",
+      "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "payload": {
+        "materialName": "NTIER Product",
+        "materialClass": "5.5",
+        "component": [
+          {
+            "materialName": "Aluminium oxide",
+            "recycledContent": 64,
+            "materialClass": "5.5.1",
+            "quantity": {
+              "unit": "unit:percent",
+              "value": 60
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": ""
+          },
+          {
+            "materialName": "Other",
+            "recycledContent": 17,
+            "materialClass": "5.5.2",
+            "quantity": {
+              "unit": "unit:percent",
+              "value": 40
+            },
+            "aggregateState": "",
+            "materialAbbreviation": ""
+          }
+        ]
+      }
     }
-  } ]
+  ]
 }
