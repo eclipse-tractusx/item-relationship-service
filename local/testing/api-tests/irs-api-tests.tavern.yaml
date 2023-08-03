@@ -377,7 +377,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
       method: POST
       headers:
         content-type: application/json
@@ -424,7 +424,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         collectAspects: true
         bomLifecycle: asPlanned
         depth: 2
@@ -498,7 +498,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: 2
         aspects:
@@ -557,7 +557,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         collectAspects: false
         depth: 1
         direction: "downward"
@@ -647,7 +647,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         bomLifecycle: "asPlanned"
         depth: 2
         collectAspects: true
@@ -705,7 +705,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
           - SerialPart
         collectAspects: true
@@ -764,7 +764,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
           - SerialPart
           - ProductDescription
@@ -943,7 +943,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
           - SerialPart
           - CertificateOfDestruction
@@ -1003,7 +1003,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         aspects:
           - UnknownAspect
         collectAspects: true
@@ -1038,7 +1038,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
           - ProductDescription
           - CertificateOfDestruction
@@ -1143,7 +1143,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
           - SerialPart
           - SingleLevelBomAsBuilt
@@ -1234,7 +1234,7 @@ stages:
   #      json:
   #        key:
   #          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-  #          bpn: "BPNL00000003AYRE"
+  #          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
   #        aspects:
   #          - "{deprecated_aspect}"
   #        collectAspects: true
@@ -1353,10 +1353,9 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
           - SerialPart
-          - DiagnosticData
         collectAspects: true
       method: POST
       headers:
@@ -1510,7 +1509,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
       method: POST
       headers:
         content-type: application/json
@@ -1523,7 +1522,6 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 2
 
   - name: cancel the job
     request:
@@ -1655,7 +1653,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: 1
         direction: "downward"
@@ -1690,8 +1688,8 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          bpn: "BPNL00000003AYRE"
           globalAssetId: urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa
+          bpn: "BPNL00000003AYRE"
         collectAspects: true
         depth: 1
         direction: "downward"
@@ -1799,7 +1797,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         collectAspects: true
         depth: 2
         direction: "downward"
@@ -1857,7 +1855,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: false
         depth: 1
         direction: "downward"
@@ -1910,7 +1908,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: false
         lookupBPNs: true
         depth: 1
@@ -1964,7 +1962,7 @@ stages:
       json:
         key:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "BPNL00000003AYRE"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: false
         lookupBPNs: true
         depth: 1
@@ -2021,7 +2019,7 @@ stages:
           - bpn: "BPNL00000003AYRE"
             globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
           - bpn: "BPNL00000003AYRE"
-            globalAssetId: urn:uuid:7940e0cc-7814-41eb-8b04-d984a325deec
+            globalAssetId: urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f
           - bpn: "BPNL00000003AVTH"
             globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
           - bpn: "BPNL00000003AYRE"
