@@ -20,10 +20,10 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing;
+package org.eclipse.tractusx.irs.testing.dataintegrity;
 
-import static org.eclipse.tractusx.irs.testing.KeyUtils.loadPrivateKey;
-import static org.eclipse.tractusx.irs.testing.KeyUtils.loadPublicKey;
+import static org.eclipse.tractusx.irs.testing.dataintegrity.KeyUtils.loadPrivateKey;
+import static org.eclipse.tractusx.irs.testing.dataintegrity.KeyUtils.loadPublicKey;
 
 import java.io.IOException;
 import java.nio.file.Files;

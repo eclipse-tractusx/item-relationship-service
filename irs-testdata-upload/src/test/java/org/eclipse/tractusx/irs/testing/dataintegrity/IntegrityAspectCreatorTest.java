@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing;
+package org.eclipse.tractusx.irs.testing.dataintegrity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,9 +37,9 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.generators.RSAKeyPairGenerator;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.params.RSAKeyGenerationParameters;
-import org.eclipse.tractusx.irs.testing.models.IntegrityAspect;
-import org.eclipse.tractusx.irs.testing.models.IntegrityReference;
-import org.eclipse.tractusx.irs.testing.models.TestdataContainer;
+import org.eclipse.tractusx.irs.testing.dataintegrity.models.IntegrityAspect;
+import org.eclipse.tractusx.irs.testing.dataintegrity.models.IntegrityReference;
+import org.eclipse.tractusx.irs.testing.dataintegrity.models.TestdataContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

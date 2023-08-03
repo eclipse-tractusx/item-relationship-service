@@ -20,13 +20,37 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing.models;
+package org.eclipse.tractusx.irs.testing.dataintegrity.models;
+
+import java.util.Set;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Data reference for a IntegrityAspect
- * @param semanticModelUrn
- * @param hash
- * @param signature
+ * Simple SingleLevelBomAsBuilt class
  */
-public record IntegrityReference(String semanticModelUrn, String hash, String signature) {
+@Data
+@Builder
+@Jacksonized
+public final class SingleLevelBomAsBuiltPayload {
+    private String catenaXId;
+    private Set<ChildData> childItems;
+
+    /**
+     * ChildData for SingleLevelBomAsBuilt
+     */
+    @Data
+    @Builder
+    @Jacksonized
+    public static class ChildData {
+        private String catenaXId;
+        private Object quantity;
+        private String businessPartner;
+        private String createdOn;
+        private String lastModifiedOn;
+
+    }
+
 }

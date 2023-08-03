@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing.models;
+package org.eclipse.tractusx.irs.testing.dataintegrity.models;
 
 import java.util.List;
 import java.util.Map;

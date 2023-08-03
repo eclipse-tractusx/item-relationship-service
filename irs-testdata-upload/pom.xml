@@ -65,7 +65,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.eclipse.tractusx.irs.testing.TestdataTransformer</mainClass>
+                            <mainClass>org.eclipse.tractusx.irs.testing.dataintegrity.TestdataTransformer</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

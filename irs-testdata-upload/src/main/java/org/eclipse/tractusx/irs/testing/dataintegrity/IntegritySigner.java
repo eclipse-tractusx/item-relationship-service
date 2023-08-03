@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing;
+package org.eclipse.tractusx.irs.testing.dataintegrity;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

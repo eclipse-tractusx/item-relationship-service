@@ -20,14 +20,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing.models;
-
-import java.util.List;
+package org.eclipse.tractusx.irs.testing.dataintegrity.models;
 
 /**
- * Data integrity aspect model
- * @param catenaXId
- * @param childParts
+ * Data reference for a IntegrityAspect
+ * @param semanticModelUrn
+ * @param hash
+ * @param signature
  */
-public record IntegrityAspect(String catenaXId, List<IntegrityChildPart> childParts) {
+public record IntegrityReference(String semanticModelUrn, String hash, String signature) {
 }

@@ -20,19 +20,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing;
+package org.eclipse.tractusx.irs.testing.dataintegrity.models;
+
+import java.util.List;
 
 /**
- * Exception for IntegrityAspectCreator
+ * Data integrity aspect model
+ * @param catenaXId
+ * @param childParts
  */
-public class IntegrityAspectException extends RuntimeException {
-    public IntegrityAspectException(final Exception exception) {
-        super(exception);
-    }
-    public IntegrityAspectException(final String message) {
-        super(message);
-    }
-    public IntegrityAspectException(final String message, final Exception exception) {
-        super(message, exception);
-    }
+public record IntegrityAspect(String catenaXId, List<IntegrityChildPart> childParts) {
 }

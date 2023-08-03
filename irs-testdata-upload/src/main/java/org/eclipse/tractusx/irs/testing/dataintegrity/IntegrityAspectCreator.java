@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing;
+package org.eclipse.tractusx.irs.testing.dataintegrity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,11 +33,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.crypto.CryptoException;
 import org.bouncycastle.util.encoders.Hex;
-import org.eclipse.tractusx.irs.testing.models.IntegrityAspect;
-import org.eclipse.tractusx.irs.testing.models.IntegrityChildPart;
-import org.eclipse.tractusx.irs.testing.models.IntegrityReference;
-import org.eclipse.tractusx.irs.testing.models.SingleLevelBomAsBuiltPayload;
-import org.eclipse.tractusx.irs.testing.models.TestdataContainer;
+import org.eclipse.tractusx.irs.testing.dataintegrity.models.IntegrityAspect;
+import org.eclipse.tractusx.irs.testing.dataintegrity.models.IntegrityChildPart;
+import org.eclipse.tractusx.irs.testing.dataintegrity.models.IntegrityReference;
+import org.eclipse.tractusx.irs.testing.dataintegrity.models.SingleLevelBomAsBuiltPayload;
+import org.eclipse.tractusx.irs.testing.dataintegrity.models.TestdataContainer;
 
 /**
  * Create and add a DataIntegrity AspectModels to a testdata set.

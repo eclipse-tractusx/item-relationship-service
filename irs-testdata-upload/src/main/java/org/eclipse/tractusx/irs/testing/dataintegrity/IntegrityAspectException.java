@@ -20,37 +20,19 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.testing.models;
-
-import java.util.Set;
-
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
+package org.eclipse.tractusx.irs.testing.dataintegrity;
 
 /**
- * Simple SingleLevelBomAsBuilt class
+ * Exception for IntegrityAspectCreator
  */
-@Data
-@Builder
-@Jacksonized
-public final class SingleLevelBomAsBuiltPayload {
-    private String catenaXId;
-    private Set<ChildData> childItems;
-
-    /**
-     * ChildData for SingleLevelBomAsBuilt
-     */
-    @Data
-    @Builder
-    @Jacksonized
-    public static class ChildData {
-        private String catenaXId;
-        private Object quantity;
-        private String businessPartner;
-        private String createdOn;
-        private String lastModifiedOn;
-
+public class IntegrityAspectException extends RuntimeException {
+    public IntegrityAspectException(final Exception exception) {
+        super(exception);
     }
-
+    public IntegrityAspectException(final String message) {
+        super(message);
+    }
+    public IntegrityAspectException(final String message, final Exception exception) {
+        super(message, exception);
+    }
 }
