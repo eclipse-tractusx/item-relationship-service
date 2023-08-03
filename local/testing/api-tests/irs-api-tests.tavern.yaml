@@ -485,7 +485,7 @@ stages:
 ---
 
 
-test_name: Make sure job with submodels process with status COMPLETED with asBuild-id
+test_name: Make sure job with submodels process with status COMPLETED with asBuilt-id
 
 strict:
   - headers:off
@@ -497,7 +497,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         collectAspects: true
         depth: 2
@@ -704,7 +704,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         aspects:
           - SerialPart
@@ -763,7 +763,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         aspects:
           - SerialPart
@@ -942,7 +942,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         aspects:
           - SerialPart
@@ -1037,7 +1037,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         aspects:
           - ProductDescription
@@ -1142,7 +1142,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         aspects:
           - SerialPart
@@ -1233,7 +1233,7 @@ stages:
   #      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
   #      json:
   #        key:
-  #          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+  #          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
   #          bpn: "BPNL00000003AYRE"
   #        aspects:
   #          - "{deprecated_aspect}"
@@ -1352,7 +1352,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         aspects:
           - SerialPart
@@ -1509,7 +1509,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
       method: POST
       headers:
@@ -1654,7 +1654,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         collectAspects: true
         depth: 1
@@ -1856,7 +1856,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         collectAspects: false
         depth: 1
@@ -1909,7 +1909,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         collectAspects: false
         lookupBPNs: true
@@ -1963,7 +1963,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILD}"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "BPNL00000003AYRE"
         collectAspects: false
         lookupBPNs: true
