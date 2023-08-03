@@ -135,9 +135,9 @@ public class MultiTransferJob {
         /**
          * Transition the job to the {@link JobState#COMPLETED} state.
          */
-        /* package */ MultiTransferJobBuilder transitionComplete() {
+        /* package */ MultiTransferJobBuilder transitionComplete(final boolean integrityChainValid) {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().completedOn(ZonedDateTime.now(ZoneOffset.UTC)).build());
+                    job.toBuilder().completedOn(ZonedDateTime.now(ZoneOffset.UTC)).integrityChainValid(integrityChainValid).build());
         }
 
         /**

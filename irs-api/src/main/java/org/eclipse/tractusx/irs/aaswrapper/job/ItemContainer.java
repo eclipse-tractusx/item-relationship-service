@@ -59,5 +59,8 @@ public class ItemContainer {
     private Set<Bpn> bpns;
 
     @Singular
+    private Set<IntegrityAspect> integrities;
+
+    @Singular
     private List<RequestMetric> metrics;
 }

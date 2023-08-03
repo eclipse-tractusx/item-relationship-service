@@ -32,9 +32,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.eclipse.tractusx.irs.util.TestMother;
 import net.datafaker.Faker;
 import org.assertj.core.api.SoftAssertions;
@@ -42,7 +44,8 @@ import org.junit.jupiter.api.Test;
 
 class InMemoryJobStoreTest {
     final int TTL_IN_HOUR_SECONDS = 3600;
-    InMemoryJobStore sut = new InMemoryJobStore();
+    InMemoryJobStore sut = new InMemoryJobStore(new DataIntegrityService() {
+    });
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);
@@ -183,7 +186,8 @@ class InMemoryJobStoreTest {
         assertThat(job.getJob().getState()).isEqualTo(JobState.INITIAL);
     }
 
-    private void doNothing(final MultiTransferJob multiTransferJob) {
+    private ItemContainer doNothing(final MultiTransferJob multiTransferJob) {
+        return ItemContainer.builder().build();
     }
 
     @Test

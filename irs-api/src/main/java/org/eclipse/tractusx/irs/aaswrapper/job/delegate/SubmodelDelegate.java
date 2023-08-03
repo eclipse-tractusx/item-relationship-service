@@ -64,10 +64,10 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final JsonUtil jsonUtil;
     private final ConnectorEndpointsService connectorEndpointsService;
 
-    public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
+    public SubmodelDelegate(final AbstractDelegate nextStep, final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
             final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil,
             final ConnectorEndpointsService connectorEndpointsService) {
-        super(null); // no next step
+        super(nextStep);
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;
         this.jsonValidatorService = jsonValidatorService;
@@ -124,7 +124,7 @@ public class SubmodelDelegate extends AbstractDelegate {
 
                 if (validationResult.isValid()) {
                     final Submodel submodel = Submodel.from(submodelDescriptor.getId(),
-                            submodelDescriptor.getAspectType(), jsonUtil.fromString(submodelRawPayload, Map.class));
+                            submodelDescriptor.getAspectType(), jsonUtil.fromString(submodelRawPayload, Map.class), itemId);
                     submodels.add(submodel);
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());

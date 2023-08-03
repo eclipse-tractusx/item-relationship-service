@@ -38,6 +38,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemTreesAssembler;
 import org.eclipse.tractusx.irs.aaswrapper.job.TreeRecursiveLogic;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.BpdmDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
+import org.eclipse.tractusx.irs.aaswrapper.job.delegate.IntegrityDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
@@ -143,11 +144,17 @@ public class JobConfiguration {
     }
 
     @Bean
-    public SubmodelDelegate submodelDelegate(final EdcSubmodelFacade submodelFacade,
+    public SubmodelDelegate submodelDelegate(final IntegrityDelegate integrityDelegate, final EdcSubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
-            final ConnectorEndpointsService connectorEndpointsService) {
-        return new SubmodelDelegate(submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil(),
+            final ConnectorEndpointsService connectorEndpointsService, final JsonUtil jsonUtil) {
+        return new SubmodelDelegate(integrityDelegate, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil,
                 connectorEndpointsService);
+    }
+
+    @Bean
+    public IntegrityDelegate integrityDelegate(final EdcSubmodelFacade submodelFacade,
+            final ConnectorEndpointsService connectorEndpointsService, final JsonUtil jsonUtil) {
+        return new IntegrityDelegate(submodelFacade, connectorEndpointsService, jsonUtil);
     }
 
 }

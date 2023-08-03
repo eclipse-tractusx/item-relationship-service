@@ -887,6 +887,7 @@ components:
         completedOn: 2022-02-03T14:48:54.709Z
         globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
         id: 6c311d29-5753-46d4-b32c-19b918ea93b0
+        integrityChainValid: false
         lastModifiedOn: 2022-02-03T14:48:54.709Z
         startedOn: 2022-02-03T14:48:54.709Z
         state: CANCELED
@@ -902,6 +903,7 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
+          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -953,6 +955,7 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
+          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1069,6 +1072,7 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
+          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1211,6 +1215,7 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
+          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1249,6 +1254,7 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
+          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1357,6 +1363,7 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
+          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1747,6 +1754,8 @@ components:
           maxLength: 36
           minLength: 36
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        integrityChainValid:
+          $ref: '#/components/schemas/JobParameter'
         lastModifiedOn:
           type: string
           format: date-time
@@ -2018,6 +2027,7 @@ components:
             - BpdmRequest
             - BpdmValidation
             - UsagePolicyValidation
+            - DataIntegrityCheck
         retryCounter:
           type: integer
           format: int32

@@ -29,19 +29,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class for all JobStores, implementing the Job transition logic and handling locking.
  */
 @Slf4j
+@RequiredArgsConstructor
 @SuppressWarnings("PMD.TooManyMethods")
 public abstract class BaseJobStore implements JobStore {
 
@@ -54,6 +58,8 @@ public abstract class BaseJobStore implements JobStore {
      * A lock to synchronize access to the collection of stored jobs.
      */
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+    private final DataIntegrityService dataIntegrityService;
 
     protected abstract Optional<MultiTransferJob> get(String jobId);
 
@@ -138,13 +144,13 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     @Override
-    public void completeJob(final String jobId, final Consumer<MultiTransferJob> completionAction) {
+    public void completeJob(final String jobId, final Function<MultiTransferJob, ItemContainer> completionAction) {
         log.info("Completing job {}", jobId);
         modifyJob(jobId, job -> {
             final JobState jobState = job.getJob().getState();
             if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
-                completionAction.accept(job);
-                return job.toBuilder().transitionComplete().build();
+                final ItemContainer itemContainer = completionAction.apply(job);
+                return job.toBuilder().transitionComplete(dataIntegrityService.chainDataIntegrityIsValid(itemContainer)).build();
             } else {
                 log.info("Job is in state {}, cannot complete it.", jobState);
                 return job;

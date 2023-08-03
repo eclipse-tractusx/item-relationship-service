@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
@@ -251,13 +252,14 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         publishJobProcessingFinishedEventIfFinished(jobId);
     }
 
-    private void completeJob(final MultiTransferJob job) {
+    private ItemContainer completeJob(final MultiTransferJob job) {
         try {
-            handler.complete(job);
+            return handler.complete(job);
         } catch (RuntimeException e) {
             meterService.incrementJobFailed();
             markJobInError(job, e, JOB_EXECUTION_FAILED);
         }
+        return null;
     }
 
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {

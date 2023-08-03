@@ -50,8 +50,8 @@ public class TreeRecursiveLogic {
     /**
      * Blob store API.
      */
-
     private final BlobPersistence blobStoreApi;
+    
     /**
      * Json Converter.
      */
@@ -75,8 +75,9 @@ public class TreeRecursiveLogic {
      * @param completedTransfers the completed transfer processes, containing the location of the
      *                           blobs with partial item graph.
      * @param targetBlobName     Storage blob name to store overall item graph.
+     * @return
      */
-    /* package */ void assemblePartialItemGraphBlobs(final List<TransferProcess> completedTransfers,
+    /* package */ ItemContainer assemblePartialItemGraphBlobs(final List<TransferProcess> completedTransfers,
             final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
                                                    .map(this::downloadPartialItemGraphBlobs)
@@ -93,6 +94,7 @@ public class TreeRecursiveLogic {
         } catch (BlobPersistenceException e) {
             log.error("Could not store blob", e);
         }
+        return assembledTree;
     }
 
     private byte[] downloadPartialItemGraphBlobs(final TransferProcess transfer) {

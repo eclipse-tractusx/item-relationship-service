@@ -29,16 +29,15 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.services.DataIntegrityService;
 
 /**
  * Manages storage of {@link MultiTransferJob} state in memory with no persistence.
  */
 @Slf4j
-@RequiredArgsConstructor
 @SuppressWarnings({ "PMD.TooManyMethods",
                     "PMD.PreserveStackTrace"
 })
-
 public class InMemoryJobStore extends BaseJobStore {
 
     /**
@@ -46,6 +45,10 @@ public class InMemoryJobStore extends BaseJobStore {
      */
     @SuppressWarnings("PMD.UseConcurrentHashMap") // externally synchronized
     private final Map<String, MultiTransferJob> jobsById = new HashMap<>();
+
+    public InMemoryJobStore(final DataIntegrityService dataIntegrityService) {
+        super(dataIntegrityService);
+    }
 
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {

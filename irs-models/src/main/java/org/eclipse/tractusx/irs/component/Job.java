@@ -112,4 +112,7 @@ public class Job {
     @JsonAlias("jobParameter")
     private JobParameter parameter;
 
+    @Schema(description = "Flag to determine if data chain integrity is valid", implementation = JobParameter.class)
+    private boolean integrityChainValid;
+
 }

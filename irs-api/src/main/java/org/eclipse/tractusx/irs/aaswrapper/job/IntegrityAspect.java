@@ -20,27 +20,49 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.enums;
+package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Process step information
+ * IntegrityAspect
  */
-@Getter
+@Data
+@Jacksonized
 @AllArgsConstructor
-public enum ProcessStep {
-    SUBMODEL_REQUEST("SubmodelRequest"),
-    DIGITAL_TWIN_REQUEST("DigitalTwinRequest"),
-    SCHEMA_VALIDATION("SchemaValidation"),
-    SCHEMA_REQUEST("SchemaRequest"),
-    BPDM_REQUEST("BpdmRequest"),
-    BPDM_VALIDATION("BpdmValidation"),
-    USAGE_POLICY_VALIDATION("UsagePolicyValidation"),
-    DATA_INTEGRITY_CHECK("DataIntegrityCheck");
+@NoArgsConstructor
+public class IntegrityAspect {
 
-    @JsonValue
-    private final String value;
+    private String catenaXId;
+    private Set<ChildData> childParts;
+
+    /**
+     * ChildData
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ChildData {
+        private String catenaXId;
+        private Set<Reference> references;
+
+    }
+
+    /**
+     * Reference
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Reference {
+        private String semanticModelUrn;
+        private String hash;
+        private String signature;
+
+    }
 }

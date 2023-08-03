@@ -112,12 +112,12 @@ public class AssetAdministrationShellDescriptor {
     }
 
     /**
-     * @param relationshipAspect filter for aspect type
+     * @param aspectType filter for aspect type
      * @return The filtered list of submodel addresses
      */
-    public List<Endpoint> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
+    public List<Endpoint> findEndpointAddressesByAspectType(final AspectType aspectType) {
         final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(
-                List.of(relationshipAspect.toString()));
+                List.of(aspectType.toString()));
         return filteredSubmodelDescriptors.stream()
                                           .map(SubmodelDescriptor::getEndpoints)
                                           .flatMap(Collection::stream)

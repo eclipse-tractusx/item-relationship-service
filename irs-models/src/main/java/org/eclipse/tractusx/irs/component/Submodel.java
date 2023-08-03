@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.component;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
@@ -40,12 +41,15 @@ public class Submodel {
     private String identification;
     private String aspectType;
     private Map<String, Object> payload;
+    @JsonIgnore
+    private String catenaXId;
 
-    public static Submodel from(final String identification, final String aspectType, final Map<String, Object> payload) {
+    public static Submodel from(final String identification, final String aspectType, final Map<String, Object> payload, final String catenaXId) {
         return Submodel.builder()
                        .identification(identification)
                        .aspectType(aspectType)
                        .payload(payload)
+                       .catenaXId(catenaXId)
                        .build();
     }
 }
