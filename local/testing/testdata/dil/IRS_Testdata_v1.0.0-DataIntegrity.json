@@ -34,7 +34,7 @@
       "urn:bamm:io.catenax.vehicle.product_description:1.0.0#ProductDescription": [
         {
           "bodyVariant": "Sedan",
-          "catenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+          "catenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
           "engine": {
             "size": 2998,
             "power": 154
@@ -77,10 +77,10 @@
       ],
       "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt": [
         {
-          "catenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+          "catenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
           "childItems": [
             {
-              "catenaXId": "urn:uuid:b98b10d1-ea70-47f9-b30c-520f12594519",
+              "catenaXId": "urn:uuid:50c2235e-5707-4926-b2e3-6d5ea87616c9",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -90,7 +90,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:3402b29d-07a6-42ad-80ff-272b50fbe24a",
+              "catenaXId": "urn:uuid:f7a5885a-05f0-4418-bff9-f904847ef6cd",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -100,7 +100,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:8ebaba35-4210-4ae8-aaef-8967610ccbc5",
+              "catenaXId": "urn:uuid:11f57d46-d1e0-4e3a-a3dd-5c23452c407a",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -110,7 +110,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:2fa58d7b-ec4b-4647-96d6-932cc62c596d",
+              "catenaXId": "urn:uuid:d5518740-16b5-41c9-b733-370d2afaaff8",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -120,7 +120,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:5e8910cc-cd76-4863-9fd4-4ddaadd32c89",
+              "catenaXId": "urn:uuid:5db2baed-af5e-485a-8d1a-1e7e8d42638d",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -130,7 +130,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:ff5fd6a2-8e9a-4bd2-a67c-bab927597b5a",
+              "catenaXId": "urn:uuid:e0a71a80-162a-433e-9c30-e81204bb483a",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -140,7 +140,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:9e3287f0-0449-4cec-bf92-1c8ddafd1dce",
+              "catenaXId": "urn:uuid:6d2c7106-7193-4fdd-a49f-d7bac5da211e",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -150,7 +150,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:7697dd1a-a013-4daa-a266-b63e8b295a9d",
+              "catenaXId": "urn:uuid:2b564bdf-05dd-4ea5-a3c5-2fd5049ec268",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -160,7 +160,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:978aa1e7-89e9-4f4a-a07d-945bff5c9ac8",
+              "catenaXId": "urn:uuid:23bd619a-fd9a-4ee7-9c8f-0de9e8141124",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -170,7 +170,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:ff194113-c981-4ff1-bd3e-39bdef41f010",
+              "catenaXId": "urn:uuid:01f5360d-d060-41bb-840c-6122952cd0ea",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -180,7 +180,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:ba7b2ab8-707c-4fb6-af6a-2a1ef1d75337",
+              "catenaXId": "urn:uuid:f81eca82-629c-45cc-8af6-3951d220e238",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -190,7 +190,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:258cb46c-f178-462a-9e6b-da58be4ac64b",
+              "catenaXId": "urn:uuid:ab1e0c8b-c526-4a60-bc8b-b3a2db7f3a8b",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -200,7 +200,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:b9e520b1-8828-4252-9497-c5702af7d91a",
+              "catenaXId": "urn:uuid:6dd2ea45-10f5-40c7-acdd-3087a2dd4ac2",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -210,7 +210,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:230ff3d7-155e-478f-a05e-b3b21cb443ba",
+              "catenaXId": "urn:uuid:154db9df-481c-4e45-8425-e70f25026fa4",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -220,7 +220,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:38578eb7-3dd5-4b8c-bdfb-a9c0bb725e09",
+              "catenaXId": "urn:uuid:617e3aeb-8a68-4238-b752-aaccadd16ca0",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -230,7 +230,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:67a51fd6-fec4-4101-abee-20d4014f5945",
+              "catenaXId": "urn:uuid:14bc5f7c-241f-4f69-a12a-2be5c551cf8d",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -240,7 +240,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:e39c0c6e-bd76-4a2e-8187-e5357ba0b00e",
+              "catenaXId": "urn:uuid:2ef77c81-e307-41fe-8615-061167a265b2",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -250,7 +250,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:f7c175ce-00a2-4650-bbae-b6db2669113c",
+              "catenaXId": "urn:uuid:8fbff8d2-ddac-4a9b-bb97-71f6e4694863",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -260,7 +260,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:7d59adfd-589e-4a97-9348-6ec48fd6aabf",
+              "catenaXId": "urn:uuid:f58a4152-54cf-4293-adf8-14850d769212",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -270,7 +270,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:6789d12f-44fb-4616-bda4-343499e3aee6",
+              "catenaXId": "urn:uuid:7947bcf0-695e-4362-9815-46f402739d8d",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -280,7 +280,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:62a1673c-ec20-40bf-9c63-59e5853832a4",
+              "catenaXId": "urn:uuid:a5421268-eed3-4bdd-a6bd-c0531a7a5704",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -290,7 +290,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:0d50b9c8-a354-4155-ab02-d58b22852512",
+              "catenaXId": "urn:uuid:c989b2c8-06bf-4a56-850c-aa63c2dd32f9",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -300,7 +300,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:8fd95749-ee76-450b-b737-1d699d1f29d4",
+              "catenaXId": "urn:uuid:0236d5bb-dd71-45b5-9993-208e97136452",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -310,7 +310,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:0f19d6ea-7042-4cf3-9b52-2e532ff96089",
+              "catenaXId": "urn:uuid:be45d7ac-88cb-479a-9793-e4f6940dd87a",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -320,7 +320,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:e444388d-76ea-446a-8da3-96c7fd711bb7",
+              "catenaXId": "urn:uuid:66416ec1-f0ce-46cd-bb57-60d051d362ba",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -330,7 +330,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:c903f029-860e-4cd5-ad3d-ea3ec4ab587b",
+              "catenaXId": "urn:uuid:66c75b30-c29d-43a7-bb24-1ebf82cc3900",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -340,7 +340,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:47b5f5ed-1bf6-46ba-899e-c19f7f62e682",
+              "catenaXId": "urn:uuid:2487227f-ad27-487e-92c7-01d6b21ece34",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -350,7 +350,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:48299545-a673-467a-a341-f4337dd1ae00",
+              "catenaXId": "urn:uuid:bb42b4e5-c14a-4c33-8371-44556d178452",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -360,7 +360,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:075f1457-728a-4fc0-b7d9-6fc088d5ba00",
+              "catenaXId": "urn:uuid:6bcaeed6-7ccf-430b-a35e-8de446af473f",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -370,7 +370,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:5a66c091-5082-4047-b775-3d712a52c632",
+              "catenaXId": "urn:uuid:d3fbffd0-ab24-43a5-9e20-2b512d5b587f",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -380,7 +380,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:4123cd33-ab15-421d-a950-a7519bbaf37b",
+              "catenaXId": "urn:uuid:d6c1959a-f7a8-4262-bea7-c5d3a3507b18",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -390,7 +390,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:7c548fd4-6428-42e5-88cb-2088bccf5c84",
+              "catenaXId": "urn:uuid:09655609-da1f-46d8-bc0f-ea6bb2ff34f8",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -400,7 +400,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd",
+              "catenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -410,7 +410,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:e93577b0-9f9c-4e98-b7e9-25f71f17fc6b",
+              "catenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -422,10 +422,10 @@
           ]
         }
       ],
-      "catenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+      "catenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
       "urn:bamm:io.catenax.certificate_of_destruction:1.0.0#CertificateOfDestruction": [
         {
-          "catenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+          "catenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
           "dismantlerProperties": {
             "expiryDate": "2022-07-11T08:38:46.743Z",
             "dismantlerAuditorContact": {
@@ -545,7 +545,7 @@
             "date": "2020-01-03T13:51:32.000Z",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+          "catenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
           "partTypeInformation": {
             "manufacturerPartId": "CV-87",
             "classification": "product",
@@ -671,13 +671,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:b98b10d1-ea70-47f9-b30c-520f12594519",
+      "catenaXId": "urn:uuid:50c2235e-5707-4926-b2e3-6d5ea87616c9",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -686,7 +686,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:b98b10d1-ea70-47f9-b30c-520f12594519"
+          "catenaXId": "urn:uuid:50c2235e-5707-4926-b2e3-6d5ea87616c9"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -709,7 +709,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:b98b10d1-ea70-47f9-b30c-520f12594519",
+          "catenaXId": "urn:uuid:50c2235e-5707-4926-b2e3-6d5ea87616c9",
           "partTypeInformation": {
             "manufacturerPartId": "10030939-59",
             "customerPartId": "10030939-59",
@@ -730,13 +730,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:3402b29d-07a6-42ad-80ff-272b50fbe24a",
+      "catenaXId": "urn:uuid:f7a5885a-05f0-4418-bff9-f904847ef6cd",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -745,7 +745,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:3402b29d-07a6-42ad-80ff-272b50fbe24a"
+          "catenaXId": "urn:uuid:f7a5885a-05f0-4418-bff9-f904847ef6cd"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -768,7 +768,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:3402b29d-07a6-42ad-80ff-272b50fbe24a",
+          "catenaXId": "urn:uuid:f7a5885a-05f0-4418-bff9-f904847ef6cd",
           "partTypeInformation": {
             "manufacturerPartId": "32494586-73",
             "customerPartId": "32494586-73",
@@ -780,13 +780,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:8ebaba35-4210-4ae8-aaef-8967610ccbc5",
+      "catenaXId": "urn:uuid:11f57d46-d1e0-4e3a-a3dd-5c23452c407a",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -795,7 +795,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:8ebaba35-4210-4ae8-aaef-8967610ccbc5"
+          "catenaXId": "urn:uuid:11f57d46-d1e0-4e3a-a3dd-5c23452c407a"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -818,7 +818,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:8ebaba35-4210-4ae8-aaef-8967610ccbc5",
+          "catenaXId": "urn:uuid:11f57d46-d1e0-4e3a-a3dd-5c23452c407a",
           "partTypeInformation": {
             "manufacturerPartId": "67034319-44",
             "customerPartId": "67034319-44",
@@ -830,13 +830,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:2fa58d7b-ec4b-4647-96d6-932cc62c596d",
+      "catenaXId": "urn:uuid:d5518740-16b5-41c9-b733-370d2afaaff8",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -845,7 +845,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:2fa58d7b-ec4b-4647-96d6-932cc62c596d"
+          "catenaXId": "urn:uuid:d5518740-16b5-41c9-b733-370d2afaaff8"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -868,7 +868,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:2fa58d7b-ec4b-4647-96d6-932cc62c596d",
+          "catenaXId": "urn:uuid:d5518740-16b5-41c9-b733-370d2afaaff8",
           "partTypeInformation": {
             "manufacturerPartId": "73849201-61",
             "customerPartId": "73849201-61",
@@ -882,10 +882,10 @@
     {
       "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt": [
         {
-          "catenaXId": "urn:uuid:5e8910cc-cd76-4863-9fd4-4ddaadd32c89",
+          "catenaXId": "urn:uuid:5db2baed-af5e-485a-8d1a-1e7e8d42638d",
           "childItems": [
             {
-              "catenaXId": "urn:uuid:f41dae33-1eab-48c5-89d7-f36f71bb4e5a",
+              "catenaXId": "urn:uuid:b21d4c4b-3c7f-4919-a365-bc286446472f",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -897,13 +897,13 @@
           ]
         }
       ],
-      "catenaXId": "urn:uuid:5e8910cc-cd76-4863-9fd4-4ddaadd32c89",
+      "catenaXId": "urn:uuid:5db2baed-af5e-485a-8d1a-1e7e8d42638d",
       "bpnl": "BPNL00000003CSGV",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -912,7 +912,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:5e8910cc-cd76-4863-9fd4-4ddaadd32c89"
+          "catenaXId": "urn:uuid:5db2baed-af5e-485a-8d1a-1e7e8d42638d"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -935,7 +935,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:5e8910cc-cd76-4863-9fd4-4ddaadd32c89",
+          "catenaXId": "urn:uuid:5db2baed-af5e-485a-8d1a-1e7e8d42638d",
           "partTypeInformation": {
             "manufacturerPartId": "22782277-50",
             "customerPartId": "22782277-50",
@@ -947,13 +947,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:f41dae33-1eab-48c5-89d7-f36f71bb4e5a",
+      "catenaXId": "urn:uuid:b21d4c4b-3c7f-4919-a365-bc286446472f",
       "bpnl": "BPNL00000000BJTL",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:5e8910cc-cd76-4863-9fd4-4ddaadd32c89",
+              "parentCatenaXId": "urn:uuid:5db2baed-af5e-485a-8d1a-1e7e8d42638d",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -962,7 +962,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:f41dae33-1eab-48c5-89d7-f36f71bb4e5a"
+          "catenaXId": "urn:uuid:b21d4c4b-3c7f-4919-a365-bc286446472f"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -985,7 +985,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:f41dae33-1eab-48c5-89d7-f36f71bb4e5a",
+          "catenaXId": "urn:uuid:b21d4c4b-3c7f-4919-a365-bc286446472f",
           "partTypeInformation": {
             "manufacturerPartId": "95657762-59",
             "customerPartId": "95657762-59",
@@ -999,10 +999,10 @@
     {
       "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt": [
         {
-          "catenaXId": "urn:uuid:ff5fd6a2-8e9a-4bd2-a67c-bab927597b5a",
+          "catenaXId": "urn:uuid:e0a71a80-162a-433e-9c30-e81204bb483a",
           "childItems": [
             {
-              "catenaXId": "urn:uuid:b40cdaac-bbb9-47a0-8f95-385689f631d2",
+              "catenaXId": "urn:uuid:73d5674b-6759-47ef-bb83-fa97dd49a70b",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -1014,13 +1014,13 @@
           ]
         }
       ],
-      "catenaXId": "urn:uuid:ff5fd6a2-8e9a-4bd2-a67c-bab927597b5a",
+      "catenaXId": "urn:uuid:e0a71a80-162a-433e-9c30-e81204bb483a",
       "bpnl": "BPNL00000003CSGV",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1029,7 +1029,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:ff5fd6a2-8e9a-4bd2-a67c-bab927597b5a"
+          "catenaXId": "urn:uuid:e0a71a80-162a-433e-9c30-e81204bb483a"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1052,7 +1052,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:ff5fd6a2-8e9a-4bd2-a67c-bab927597b5a",
+          "catenaXId": "urn:uuid:e0a71a80-162a-433e-9c30-e81204bb483a",
           "partTypeInformation": {
             "manufacturerPartId": "33740332-54",
             "customerPartId": "33740332-54",
@@ -1064,13 +1064,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:b40cdaac-bbb9-47a0-8f95-385689f631d2",
+      "catenaXId": "urn:uuid:73d5674b-6759-47ef-bb83-fa97dd49a70b",
       "bpnl": "BPNL00000000BJTL",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:ff5fd6a2-8e9a-4bd2-a67c-bab927597b5a",
+              "parentCatenaXId": "urn:uuid:e0a71a80-162a-433e-9c30-e81204bb483a",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1079,7 +1079,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:b40cdaac-bbb9-47a0-8f95-385689f631d2"
+          "catenaXId": "urn:uuid:73d5674b-6759-47ef-bb83-fa97dd49a70b"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1102,7 +1102,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:b40cdaac-bbb9-47a0-8f95-385689f631d2",
+          "catenaXId": "urn:uuid:73d5674b-6759-47ef-bb83-fa97dd49a70b",
           "partTypeInformation": {
             "manufacturerPartId": "95657762-59",
             "customerPartId": "95657762-59",
@@ -1114,13 +1114,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:9e3287f0-0449-4cec-bf92-1c8ddafd1dce",
+      "catenaXId": "urn:uuid:6d2c7106-7193-4fdd-a49f-d7bac5da211e",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1129,7 +1129,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:9e3287f0-0449-4cec-bf92-1c8ddafd1dce"
+          "catenaXId": "urn:uuid:6d2c7106-7193-4fdd-a49f-d7bac5da211e"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1152,7 +1152,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:9e3287f0-0449-4cec-bf92-1c8ddafd1dce",
+          "catenaXId": "urn:uuid:6d2c7106-7193-4fdd-a49f-d7bac5da211e",
           "partTypeInformation": {
             "manufacturerPartId": "15635759-16",
             "customerPartId": "15635759-16",
@@ -1164,13 +1164,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:7697dd1a-a013-4daa-a266-b63e8b295a9d",
+      "catenaXId": "urn:uuid:2b564bdf-05dd-4ea5-a3c5-2fd5049ec268",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1179,7 +1179,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:7697dd1a-a013-4daa-a266-b63e8b295a9d"
+          "catenaXId": "urn:uuid:2b564bdf-05dd-4ea5-a3c5-2fd5049ec268"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1202,7 +1202,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:7697dd1a-a013-4daa-a266-b63e8b295a9d",
+          "catenaXId": "urn:uuid:2b564bdf-05dd-4ea5-a3c5-2fd5049ec268",
           "partTypeInformation": {
             "manufacturerPartId": "28673126-98",
             "customerPartId": "28673126-98",
@@ -1214,13 +1214,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:978aa1e7-89e9-4f4a-a07d-945bff5c9ac8",
+      "catenaXId": "urn:uuid:23bd619a-fd9a-4ee7-9c8f-0de9e8141124",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1229,7 +1229,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:978aa1e7-89e9-4f4a-a07d-945bff5c9ac8"
+          "catenaXId": "urn:uuid:23bd619a-fd9a-4ee7-9c8f-0de9e8141124"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1252,7 +1252,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:978aa1e7-89e9-4f4a-a07d-945bff5c9ac8",
+          "catenaXId": "urn:uuid:23bd619a-fd9a-4ee7-9c8f-0de9e8141124",
           "partTypeInformation": {
             "manufacturerPartId": "94421589-82",
             "customerPartId": "94421589-82",
@@ -1264,13 +1264,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:ff194113-c981-4ff1-bd3e-39bdef41f010",
+      "catenaXId": "urn:uuid:01f5360d-d060-41bb-840c-6122952cd0ea",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1279,7 +1279,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:ff194113-c981-4ff1-bd3e-39bdef41f010"
+          "catenaXId": "urn:uuid:01f5360d-d060-41bb-840c-6122952cd0ea"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1302,7 +1302,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:ff194113-c981-4ff1-bd3e-39bdef41f010",
+          "catenaXId": "urn:uuid:01f5360d-d060-41bb-840c-6122952cd0ea",
           "partTypeInformation": {
             "manufacturerPartId": "85023955-75",
             "customerPartId": "85023955-75",
@@ -1314,13 +1314,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:ba7b2ab8-707c-4fb6-af6a-2a1ef1d75337",
+      "catenaXId": "urn:uuid:f81eca82-629c-45cc-8af6-3951d220e238",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1329,7 +1329,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:ba7b2ab8-707c-4fb6-af6a-2a1ef1d75337"
+          "catenaXId": "urn:uuid:f81eca82-629c-45cc-8af6-3951d220e238"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1352,7 +1352,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:ba7b2ab8-707c-4fb6-af6a-2a1ef1d75337",
+          "catenaXId": "urn:uuid:f81eca82-629c-45cc-8af6-3951d220e238",
           "partTypeInformation": {
             "manufacturerPartId": "13769860-47",
             "customerPartId": "13769860-47",
@@ -1364,13 +1364,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:258cb46c-f178-462a-9e6b-da58be4ac64b",
+      "catenaXId": "urn:uuid:ab1e0c8b-c526-4a60-bc8b-b3a2db7f3a8b",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1379,7 +1379,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:258cb46c-f178-462a-9e6b-da58be4ac64b"
+          "catenaXId": "urn:uuid:ab1e0c8b-c526-4a60-bc8b-b3a2db7f3a8b"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1402,7 +1402,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:258cb46c-f178-462a-9e6b-da58be4ac64b",
+          "catenaXId": "urn:uuid:ab1e0c8b-c526-4a60-bc8b-b3a2db7f3a8b",
           "partTypeInformation": {
             "manufacturerPartId": "36643162-35",
             "customerPartId": "36643162-35",
@@ -1414,13 +1414,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:b9e520b1-8828-4252-9497-c5702af7d91a",
+      "catenaXId": "urn:uuid:6dd2ea45-10f5-40c7-acdd-3087a2dd4ac2",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1429,7 +1429,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:b9e520b1-8828-4252-9497-c5702af7d91a"
+          "catenaXId": "urn:uuid:6dd2ea45-10f5-40c7-acdd-3087a2dd4ac2"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1452,7 +1452,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:b9e520b1-8828-4252-9497-c5702af7d91a",
+          "catenaXId": "urn:uuid:6dd2ea45-10f5-40c7-acdd-3087a2dd4ac2",
           "partTypeInformation": {
             "manufacturerPartId": "54165444-59",
             "customerPartId": "54165444-59",
@@ -1464,13 +1464,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:230ff3d7-155e-478f-a05e-b3b21cb443ba",
+      "catenaXId": "urn:uuid:154db9df-481c-4e45-8425-e70f25026fa4",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1479,7 +1479,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:230ff3d7-155e-478f-a05e-b3b21cb443ba"
+          "catenaXId": "urn:uuid:154db9df-481c-4e45-8425-e70f25026fa4"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1502,7 +1502,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:230ff3d7-155e-478f-a05e-b3b21cb443ba",
+          "catenaXId": "urn:uuid:154db9df-481c-4e45-8425-e70f25026fa4",
           "partTypeInformation": {
             "manufacturerPartId": "22768257-25",
             "customerPartId": "22768257-25",
@@ -1514,13 +1514,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:38578eb7-3dd5-4b8c-bdfb-a9c0bb725e09",
+      "catenaXId": "urn:uuid:617e3aeb-8a68-4238-b752-aaccadd16ca0",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1529,7 +1529,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:38578eb7-3dd5-4b8c-bdfb-a9c0bb725e09"
+          "catenaXId": "urn:uuid:617e3aeb-8a68-4238-b752-aaccadd16ca0"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1552,7 +1552,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:38578eb7-3dd5-4b8c-bdfb-a9c0bb725e09",
+          "catenaXId": "urn:uuid:617e3aeb-8a68-4238-b752-aaccadd16ca0",
           "partTypeInformation": {
             "manufacturerPartId": "65529521-37",
             "customerPartId": "65529521-37",
@@ -1564,13 +1564,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:67a51fd6-fec4-4101-abee-20d4014f5945",
+      "catenaXId": "urn:uuid:14bc5f7c-241f-4f69-a12a-2be5c551cf8d",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1579,7 +1579,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:67a51fd6-fec4-4101-abee-20d4014f5945"
+          "catenaXId": "urn:uuid:14bc5f7c-241f-4f69-a12a-2be5c551cf8d"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1602,7 +1602,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:67a51fd6-fec4-4101-abee-20d4014f5945",
+          "catenaXId": "urn:uuid:14bc5f7c-241f-4f69-a12a-2be5c551cf8d",
           "partTypeInformation": {
             "manufacturerPartId": "58471477-24",
             "customerPartId": "58471477-24",
@@ -1614,13 +1614,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:e39c0c6e-bd76-4a2e-8187-e5357ba0b00e",
+      "catenaXId": "urn:uuid:2ef77c81-e307-41fe-8615-061167a265b2",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1629,7 +1629,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:e39c0c6e-bd76-4a2e-8187-e5357ba0b00e"
+          "catenaXId": "urn:uuid:2ef77c81-e307-41fe-8615-061167a265b2"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1652,7 +1652,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:e39c0c6e-bd76-4a2e-8187-e5357ba0b00e",
+          "catenaXId": "urn:uuid:2ef77c81-e307-41fe-8615-061167a265b2",
           "partTypeInformation": {
             "manufacturerPartId": "09002013-68",
             "customerPartId": "09002013-68",
@@ -1664,13 +1664,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:f7c175ce-00a2-4650-bbae-b6db2669113c",
+      "catenaXId": "urn:uuid:8fbff8d2-ddac-4a9b-bb97-71f6e4694863",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1679,7 +1679,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:f7c175ce-00a2-4650-bbae-b6db2669113c"
+          "catenaXId": "urn:uuid:8fbff8d2-ddac-4a9b-bb97-71f6e4694863"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1702,7 +1702,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:f7c175ce-00a2-4650-bbae-b6db2669113c",
+          "catenaXId": "urn:uuid:8fbff8d2-ddac-4a9b-bb97-71f6e4694863",
           "partTypeInformation": {
             "manufacturerPartId": "43501996-98",
             "customerPartId": "43501996-98",
@@ -1714,13 +1714,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:7d59adfd-589e-4a97-9348-6ec48fd6aabf",
+      "catenaXId": "urn:uuid:f58a4152-54cf-4293-adf8-14850d769212",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1729,7 +1729,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:7d59adfd-589e-4a97-9348-6ec48fd6aabf"
+          "catenaXId": "urn:uuid:f58a4152-54cf-4293-adf8-14850d769212"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1752,7 +1752,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:7d59adfd-589e-4a97-9348-6ec48fd6aabf",
+          "catenaXId": "urn:uuid:f58a4152-54cf-4293-adf8-14850d769212",
           "partTypeInformation": {
             "manufacturerPartId": "77795937-13",
             "customerPartId": "77795937-13",
@@ -1764,13 +1764,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:6789d12f-44fb-4616-bda4-343499e3aee6",
+      "catenaXId": "urn:uuid:7947bcf0-695e-4362-9815-46f402739d8d",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1779,7 +1779,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:6789d12f-44fb-4616-bda4-343499e3aee6"
+          "catenaXId": "urn:uuid:7947bcf0-695e-4362-9815-46f402739d8d"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1802,7 +1802,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:6789d12f-44fb-4616-bda4-343499e3aee6",
+          "catenaXId": "urn:uuid:7947bcf0-695e-4362-9815-46f402739d8d",
           "partTypeInformation": {
             "manufacturerPartId": "20125432-59",
             "customerPartId": "20125432-59",
@@ -1814,13 +1814,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:62a1673c-ec20-40bf-9c63-59e5853832a4",
+      "catenaXId": "urn:uuid:a5421268-eed3-4bdd-a6bd-c0531a7a5704",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1829,7 +1829,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:62a1673c-ec20-40bf-9c63-59e5853832a4"
+          "catenaXId": "urn:uuid:a5421268-eed3-4bdd-a6bd-c0531a7a5704"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1852,7 +1852,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:62a1673c-ec20-40bf-9c63-59e5853832a4",
+          "catenaXId": "urn:uuid:a5421268-eed3-4bdd-a6bd-c0531a7a5704",
           "partTypeInformation": {
             "manufacturerPartId": "19073706-76",
             "customerPartId": "19073706-76",
@@ -1864,13 +1864,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:0d50b9c8-a354-4155-ab02-d58b22852512",
+      "catenaXId": "urn:uuid:c989b2c8-06bf-4a56-850c-aa63c2dd32f9",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1879,7 +1879,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:0d50b9c8-a354-4155-ab02-d58b22852512"
+          "catenaXId": "urn:uuid:c989b2c8-06bf-4a56-850c-aa63c2dd32f9"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1902,7 +1902,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:0d50b9c8-a354-4155-ab02-d58b22852512",
+          "catenaXId": "urn:uuid:c989b2c8-06bf-4a56-850c-aa63c2dd32f9",
           "partTypeInformation": {
             "manufacturerPartId": "45415162-57",
             "customerPartId": "45415162-57",
@@ -1914,13 +1914,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:8fd95749-ee76-450b-b737-1d699d1f29d4",
+      "catenaXId": "urn:uuid:0236d5bb-dd71-45b5-9993-208e97136452",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1929,7 +1929,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:8fd95749-ee76-450b-b737-1d699d1f29d4"
+          "catenaXId": "urn:uuid:0236d5bb-dd71-45b5-9993-208e97136452"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -1952,7 +1952,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:8fd95749-ee76-450b-b737-1d699d1f29d4",
+          "catenaXId": "urn:uuid:0236d5bb-dd71-45b5-9993-208e97136452",
           "partTypeInformation": {
             "manufacturerPartId": "78141846-87",
             "customerPartId": "78141846-87",
@@ -1964,13 +1964,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:0f19d6ea-7042-4cf3-9b52-2e532ff96089",
+      "catenaXId": "urn:uuid:be45d7ac-88cb-479a-9793-e4f6940dd87a",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -1979,7 +1979,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:0f19d6ea-7042-4cf3-9b52-2e532ff96089"
+          "catenaXId": "urn:uuid:be45d7ac-88cb-479a-9793-e4f6940dd87a"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2002,7 +2002,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:0f19d6ea-7042-4cf3-9b52-2e532ff96089",
+          "catenaXId": "urn:uuid:be45d7ac-88cb-479a-9793-e4f6940dd87a",
           "partTypeInformation": {
             "manufacturerPartId": "81324139-23",
             "customerPartId": "81324139-23",
@@ -2014,13 +2014,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:e444388d-76ea-446a-8da3-96c7fd711bb7",
+      "catenaXId": "urn:uuid:66416ec1-f0ce-46cd-bb57-60d051d362ba",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2029,7 +2029,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:e444388d-76ea-446a-8da3-96c7fd711bb7"
+          "catenaXId": "urn:uuid:66416ec1-f0ce-46cd-bb57-60d051d362ba"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2052,7 +2052,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:e444388d-76ea-446a-8da3-96c7fd711bb7",
+          "catenaXId": "urn:uuid:66416ec1-f0ce-46cd-bb57-60d051d362ba",
           "partTypeInformation": {
             "manufacturerPartId": "57929013-09",
             "customerPartId": "57929013-09",
@@ -2064,13 +2064,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:c903f029-860e-4cd5-ad3d-ea3ec4ab587b",
+      "catenaXId": "urn:uuid:66c75b30-c29d-43a7-bb24-1ebf82cc3900",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2079,7 +2079,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:c903f029-860e-4cd5-ad3d-ea3ec4ab587b"
+          "catenaXId": "urn:uuid:66c75b30-c29d-43a7-bb24-1ebf82cc3900"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2102,7 +2102,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:c903f029-860e-4cd5-ad3d-ea3ec4ab587b",
+          "catenaXId": "urn:uuid:66c75b30-c29d-43a7-bb24-1ebf82cc3900",
           "partTypeInformation": {
             "manufacturerPartId": "61184040-23",
             "customerPartId": "61184040-23",
@@ -2114,13 +2114,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:47b5f5ed-1bf6-46ba-899e-c19f7f62e682",
+      "catenaXId": "urn:uuid:2487227f-ad27-487e-92c7-01d6b21ece34",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2129,7 +2129,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:47b5f5ed-1bf6-46ba-899e-c19f7f62e682"
+          "catenaXId": "urn:uuid:2487227f-ad27-487e-92c7-01d6b21ece34"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2152,7 +2152,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:47b5f5ed-1bf6-46ba-899e-c19f7f62e682",
+          "catenaXId": "urn:uuid:2487227f-ad27-487e-92c7-01d6b21ece34",
           "partTypeInformation": {
             "manufacturerPartId": "78744126-74",
             "customerPartId": "78744126-74",
@@ -2164,13 +2164,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:48299545-a673-467a-a341-f4337dd1ae00",
+      "catenaXId": "urn:uuid:bb42b4e5-c14a-4c33-8371-44556d178452",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2179,7 +2179,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:48299545-a673-467a-a341-f4337dd1ae00"
+          "catenaXId": "urn:uuid:bb42b4e5-c14a-4c33-8371-44556d178452"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2202,7 +2202,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:48299545-a673-467a-a341-f4337dd1ae00",
+          "catenaXId": "urn:uuid:bb42b4e5-c14a-4c33-8371-44556d178452",
           "partTypeInformation": {
             "manufacturerPartId": "12093297-03",
             "customerPartId": "12093297-03",
@@ -2214,13 +2214,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:075f1457-728a-4fc0-b7d9-6fc088d5ba00",
+      "catenaXId": "urn:uuid:6bcaeed6-7ccf-430b-a35e-8de446af473f",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2229,7 +2229,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:075f1457-728a-4fc0-b7d9-6fc088d5ba00"
+          "catenaXId": "urn:uuid:6bcaeed6-7ccf-430b-a35e-8de446af473f"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2252,7 +2252,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:075f1457-728a-4fc0-b7d9-6fc088d5ba00",
+          "catenaXId": "urn:uuid:6bcaeed6-7ccf-430b-a35e-8de446af473f",
           "partTypeInformation": {
             "manufacturerPartId": "88111709-49",
             "customerPartId": "88111709-49",
@@ -2264,13 +2264,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:5a66c091-5082-4047-b775-3d712a52c632",
+      "catenaXId": "urn:uuid:d3fbffd0-ab24-43a5-9e20-2b512d5b587f",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2279,7 +2279,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:5a66c091-5082-4047-b775-3d712a52c632"
+          "catenaXId": "urn:uuid:d3fbffd0-ab24-43a5-9e20-2b512d5b587f"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2302,7 +2302,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:5a66c091-5082-4047-b775-3d712a52c632",
+          "catenaXId": "urn:uuid:d3fbffd0-ab24-43a5-9e20-2b512d5b587f",
           "partTypeInformation": {
             "manufacturerPartId": "00871379-44",
             "customerPartId": "00871379-44",
@@ -2314,13 +2314,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:4123cd33-ab15-421d-a950-a7519bbaf37b",
+      "catenaXId": "urn:uuid:d6c1959a-f7a8-4262-bea7-c5d3a3507b18",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2329,7 +2329,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:4123cd33-ab15-421d-a950-a7519bbaf37b"
+          "catenaXId": "urn:uuid:d6c1959a-f7a8-4262-bea7-c5d3a3507b18"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2352,7 +2352,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:4123cd33-ab15-421d-a950-a7519bbaf37b",
+          "catenaXId": "urn:uuid:d6c1959a-f7a8-4262-bea7-c5d3a3507b18",
           "partTypeInformation": {
             "manufacturerPartId": "08901347-87",
             "customerPartId": "08901347-87",
@@ -2364,13 +2364,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:7c548fd4-6428-42e5-88cb-2088bccf5c84",
+      "catenaXId": "urn:uuid:09655609-da1f-46d8-bc0f-ea6bb2ff34f8",
       "bpnl": "BPNL00000003AZQP",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2379,7 +2379,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:7c548fd4-6428-42e5-88cb-2088bccf5c84"
+          "catenaXId": "urn:uuid:09655609-da1f-46d8-bc0f-ea6bb2ff34f8"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2402,7 +2402,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:7c548fd4-6428-42e5-88cb-2088bccf5c84",
+          "catenaXId": "urn:uuid:09655609-da1f-46d8-bc0f-ea6bb2ff34f8",
           "partTypeInformation": {
             "manufacturerPartId": "45863316-60",
             "customerPartId": "45863316-60",
@@ -2416,10 +2416,10 @@
     {
       "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt": [
         {
-          "catenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd",
+          "catenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
           "childItems": [
             {
-              "catenaXId": "urn:uuid:93f2009f-f928-47b8-982e-3232a0ad0727",
+              "catenaXId": "urn:uuid:96df5d17-4f1c-4ce6-9192-4e9b118bcd87",
               "quantity": {
                 "quantityNumber": 0.2014,
                 "measurementUnit": "unit:kilogram"
@@ -2429,7 +2429,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:d587f32d-9de1-47f4-a8ff-5a9c2a5e67f4",
+              "catenaXId": "urn:uuid:e25b8ff1-57e7-4e8a-acee-afc641b35558",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -2439,7 +2439,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:06b1358f-a90f-4ac0-9ff7-377acaae3f34",
+              "catenaXId": "urn:uuid:bda9b594-6fff-424f-95be-b1516bbf16da",
               "quantity": {
                 "quantityNumber": 0.2341,
                 "measurementUnit": "unit:kilogram"
@@ -2451,13 +2451,13 @@
           ]
         }
       ],
-      "catenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd",
+      "catenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
       "bpnl": "BPNL00000003B2OM",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2466,7 +2466,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd"
+          "catenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2489,7 +2489,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd",
+          "catenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
           "partTypeInformation": {
             "manufacturerPartId": "1O222E8-43",
             "customerPartId": "1O222E8-43",
@@ -2555,7 +2555,7 @@
               }
             ]
           },
-          "catenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd",
+          "catenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
           "identification": {
             "localIdentifiers": [
               {
@@ -2693,13 +2693,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:93f2009f-f928-47b8-982e-3232a0ad0727",
+      "catenaXId": "urn:uuid:96df5d17-4f1c-4ce6-9192-4e9b118bcd87",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd",
+              "parentCatenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2708,7 +2708,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:93f2009f-f928-47b8-982e-3232a0ad0727"
+          "catenaXId": "urn:uuid:96df5d17-4f1c-4ce6-9192-4e9b118bcd87"
         }
       ],
       "urn:bamm:io.catenax.batch:1.0.2#Batch": [
@@ -2731,7 +2731,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:93f2009f-f928-47b8-982e-3232a0ad0727",
+          "catenaXId": "urn:uuid:96df5d17-4f1c-4ce6-9192-4e9b118bcd87",
           "partTypeInformation": {
             "manufacturerPartId": "14627J4-22",
             "customerPartId": "14627J4-22",
@@ -2775,10 +2775,10 @@
     {
       "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt": [
         {
-          "catenaXId": "urn:uuid:d587f32d-9de1-47f4-a8ff-5a9c2a5e67f4",
+          "catenaXId": "urn:uuid:e25b8ff1-57e7-4e8a-acee-afc641b35558",
           "childItems": [
             {
-              "catenaXId": "urn:uuid:d15ae90b-725f-4bbe-b8d0-ff49a56f9b3e",
+              "catenaXId": "urn:uuid:292f78a2-aaad-4275-80ad-859c9bb9f865",
               "quantity": {
                 "quantityNumber": 0.1908,
                 "measurementUnit": "unit:kilogram"
@@ -2790,13 +2790,13 @@
           ]
         }
       ],
-      "catenaXId": "urn:uuid:d587f32d-9de1-47f4-a8ff-5a9c2a5e67f4",
+      "catenaXId": "urn:uuid:e25b8ff1-57e7-4e8a-acee-afc641b35558",
       "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd",
+              "parentCatenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2805,7 +2805,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:d587f32d-9de1-47f4-a8ff-5a9c2a5e67f4"
+          "catenaXId": "urn:uuid:e25b8ff1-57e7-4e8a-acee-afc641b35558"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -2828,7 +2828,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:d587f32d-9de1-47f4-a8ff-5a9c2a5e67f4",
+          "catenaXId": "urn:uuid:e25b8ff1-57e7-4e8a-acee-afc641b35558",
           "partTypeInformation": {
             "manufacturerPartId": "54186M9-14",
             "customerPartId": "54186M9-14",
@@ -2840,13 +2840,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:d15ae90b-725f-4bbe-b8d0-ff49a56f9b3e",
+      "catenaXId": "urn:uuid:292f78a2-aaad-4275-80ad-859c9bb9f865",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:d587f32d-9de1-47f4-a8ff-5a9c2a5e67f4",
+              "parentCatenaXId": "urn:uuid:e25b8ff1-57e7-4e8a-acee-afc641b35558",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2855,7 +2855,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:d15ae90b-725f-4bbe-b8d0-ff49a56f9b3e"
+          "catenaXId": "urn:uuid:292f78a2-aaad-4275-80ad-859c9bb9f865"
         }
       ],
       "urn:bamm:io.catenax.batch:1.0.2#Batch": [
@@ -2878,7 +2878,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:d15ae90b-725f-4bbe-b8d0-ff49a56f9b3e",
+          "catenaXId": "urn:uuid:292f78a2-aaad-4275-80ad-859c9bb9f865",
           "partTypeInformation": {
             "manufacturerPartId": "69007K6-66",
             "customerPartId": "69007K6-66",
@@ -2922,17 +2922,17 @@
     {
       "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt": [
         {
-          "catenaXId": "urn:uuid:06b1358f-a90f-4ac0-9ff7-377acaae3f34",
+          "catenaXId": "urn:uuid:bda9b594-6fff-424f-95be-b1516bbf16da",
           "childItems": []
         }
       ],
-      "catenaXId": "urn:uuid:06b1358f-a90f-4ac0-9ff7-377acaae3f34",
+      "catenaXId": "urn:uuid:bda9b594-6fff-424f-95be-b1516bbf16da",
       "bpnl": "BPNL00000003AXS3",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd",
+              "parentCatenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -2941,7 +2941,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:06b1358f-a90f-4ac0-9ff7-377acaae3f34"
+          "catenaXId": "urn:uuid:bda9b594-6fff-424f-95be-b1516bbf16da"
         }
       ],
       "urn:bamm:io.catenax.batch:1.0.2#Batch": [
@@ -2964,7 +2964,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:06b1358f-a90f-4ac0-9ff7-377acaae3f34",
+          "catenaXId": "urn:uuid:bda9b594-6fff-424f-95be-b1516bbf16da",
           "partTypeInformation": {
             "manufacturerPartId": "58079I0-28",
             "customerPartId": "58079I0-28",
@@ -2994,10 +2994,10 @@
     {
       "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt": [
         {
-          "catenaXId": "urn:uuid:e93577b0-9f9c-4e98-b7e9-25f71f17fc6b",
+          "catenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
           "childItems": [
             {
-              "catenaXId": "urn:uuid:4d1fae8a-173a-40bb-ade9-642f43771477",
+              "catenaXId": "urn:uuid:016ba013-67d7-4138-99c6-274571e2fdcc",
               "quantity": {
                 "quantityNumber": 0.3301,
                 "measurementUnit": "unit:kilogram"
@@ -3007,7 +3007,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:8ae3b3b8-ca84-4115-adf3-54b179603366",
+              "catenaXId": "urn:uuid:b56f9d16-f9b0-4b71-9c8c-cb229ab55a01",
               "quantity": {
                 "quantityNumber": 2.5,
                 "measurementUnit": "unit:litre"
@@ -3017,7 +3017,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:51f25dea-fcf6-4a4c-869e-c0d8ab411267",
+              "catenaXId": "urn:uuid:3234dcf6-692b-416b-8f1b-cb4bf6c0d75f",
               "quantity": {
                 "quantityNumber": 0.2001,
                 "measurementUnit": "unit:kilogram"
@@ -3029,13 +3029,13 @@
           ]
         }
       ],
-      "catenaXId": "urn:uuid:e93577b0-9f9c-4e98-b7e9-25f71f17fc6b",
+      "catenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
       "bpnl": "BPNL00000003B5MJ",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+              "parentCatenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -3044,7 +3044,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:e93577b0-9f9c-4e98-b7e9-25f71f17fc6b"
+          "catenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -3067,7 +3067,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:e93577b0-9f9c-4e98-b7e9-25f71f17fc6b",
+          "catenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
           "partTypeInformation": {
             "manufacturerPartId": "81587R5-74",
             "customerPartId": "81587R5-74",
@@ -3096,13 +3096,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:4d1fae8a-173a-40bb-ade9-642f43771477",
+      "catenaXId": "urn:uuid:016ba013-67d7-4138-99c6-274571e2fdcc",
       "bpnl": "BPNL00000003AXS3",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:e93577b0-9f9c-4e98-b7e9-25f71f17fc6b",
+              "parentCatenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -3111,7 +3111,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:4d1fae8a-173a-40bb-ade9-642f43771477"
+          "catenaXId": "urn:uuid:016ba013-67d7-4138-99c6-274571e2fdcc"
         }
       ],
       "urn:bamm:io.catenax.batch:1.0.2#Batch": [
@@ -3134,7 +3134,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:4d1fae8a-173a-40bb-ade9-642f43771477",
+          "catenaXId": "urn:uuid:016ba013-67d7-4138-99c6-274571e2fdcc",
           "partTypeInformation": {
             "manufacturerPartId": "17914L5-51",
             "customerPartId": "17914L5-51",
@@ -3178,10 +3178,10 @@
     {
       "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt": [
         {
-          "catenaXId": "urn:uuid:8ae3b3b8-ca84-4115-adf3-54b179603366",
+          "catenaXId": "urn:uuid:b56f9d16-f9b0-4b71-9c8c-cb229ab55a01",
           "childItems": [
             {
-              "catenaXId": "urn:uuid:1308c46a-fa0d-4b23-8419-75afb8b49fdc",
+              "catenaXId": "urn:uuid:ba663e15-478c-410a-9fed-eba2049ac84b",
               "quantity": {
                 "quantityNumber": "0.1908",
                 "measurementUnit": "unit:kilogram"
@@ -3193,13 +3193,13 @@
           ]
         }
       ],
-      "catenaXId": "urn:uuid:8ae3b3b8-ca84-4115-adf3-54b179603366",
+      "catenaXId": "urn:uuid:b56f9d16-f9b0-4b71-9c8c-cb229ab55a01",
       "bpnl": "BPNL00000003B3NX",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:e93577b0-9f9c-4e98-b7e9-25f71f17fc6b",
+              "parentCatenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -3208,7 +3208,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:8ae3b3b8-ca84-4115-adf3-54b179603366"
+          "catenaXId": "urn:uuid:b56f9d16-f9b0-4b71-9c8c-cb229ab55a01"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -3231,7 +3231,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:8ae3b3b8-ca84-4115-adf3-54b179603366",
+          "catenaXId": "urn:uuid:b56f9d16-f9b0-4b71-9c8c-cb229ab55a01",
           "partTypeInformation": {
             "manufacturerPartId": "59307W6-43",
             "customerPartId": "59307W6-43",
@@ -3243,13 +3243,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:1308c46a-fa0d-4b23-8419-75afb8b49fdc",
+      "catenaXId": "urn:uuid:ba663e15-478c-410a-9fed-eba2049ac84b",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:8ae3b3b8-ca84-4115-adf3-54b179603366",
+              "parentCatenaXId": "urn:uuid:b56f9d16-f9b0-4b71-9c8c-cb229ab55a01",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -3258,7 +3258,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:1308c46a-fa0d-4b23-8419-75afb8b49fdc"
+          "catenaXId": "urn:uuid:ba663e15-478c-410a-9fed-eba2049ac84b"
         }
       ],
       "urn:bamm:io.catenax.batch:1.0.2#Batch": [
@@ -3281,7 +3281,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:1308c46a-fa0d-4b23-8419-75afb8b49fdc",
+          "catenaXId": "urn:uuid:ba663e15-478c-410a-9fed-eba2049ac84b",
           "partTypeInformation": {
             "manufacturerPartId": "37952Z9-36",
             "customerPartId": "37952Z9-36",
@@ -3323,13 +3323,13 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:51f25dea-fcf6-4a4c-869e-c0d8ab411267",
+      "catenaXId": "urn:uuid:3234dcf6-692b-416b-8f1b-cb4bf6c0d75f",
       "bpnl": "BPNL00000003B0Q0",
       "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt": [
         {
           "parentParts": [
             {
-              "parentCatenaXId": "urn:uuid:e93577b0-9f9c-4e98-b7e9-25f71f17fc6b",
+              "parentCatenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
               "quantity": {
                 "quantityNumber": 1,
                 "measurementUnit": "unit:piece"
@@ -3338,7 +3338,7 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             }
           ],
-          "catenaXId": "urn:uuid:51f25dea-fcf6-4a4c-869e-c0d8ab411267"
+          "catenaXId": "urn:uuid:3234dcf6-692b-416b-8f1b-cb4bf6c0d75f"
         }
       ],
       "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart": [
@@ -3361,7 +3361,7 @@
             "date": "2022-02-04T14:48:54",
             "country": "DEU"
           },
-          "catenaXId": "urn:uuid:51f25dea-fcf6-4a4c-869e-c0d8ab411267",
+          "catenaXId": "urn:uuid:3234dcf6-692b-416b-8f1b-cb4bf6c0d75f",
           "partTypeInformation": {
             "manufacturerPartId": "87758Y0-31",
             "customerPartId": "87758Y0-31",
