@@ -25,7 +25,6 @@ package org.eclipse.tractusx.irs.testing;
 import static org.eclipse.tractusx.irs.testing.KeyUtils.loadPrivateKey;
 import static org.eclipse.tractusx.irs.testing.KeyUtils.loadPublicKey;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,19 +38,24 @@ import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
  */
 @Slf4j
 public final class TestdataTransformer {
+
+    public static final int INDEX_INPUT_PATH = 0;
+    public static final int INDEX_OUTPUT_PATH = 1;
+    public static final int INDEX_PRIVATE_KEY_PATH = 2;
+    public static final int INDEX_PUBLIC_KEY_PATH = 3;
+
     private TestdataTransformer() {
     }
 
     public static void main(final String[] args) throws IOException {
-        final String inputFilePath = args[0];
-        final String outputFilePath = args[1];
-        final String keyFilePath = args[2];
-        final String certFilePath = args[3];
+        final String inputFilePath = args[INDEX_INPUT_PATH];
+        final String outputFilePath = args[INDEX_OUTPUT_PATH];
+        final String keyFilePath = args[INDEX_PRIVATE_KEY_PATH];
+        final String certFilePath = args[INDEX_PUBLIC_KEY_PATH];
 
         final String testdata = Files.readString(Paths.get(inputFilePath));
-
-        final AsymmetricKeyParameter privateKey = loadPrivateKey(new FileInputStream(Paths.get(keyFilePath).toFile()));
-        final AsymmetricKeyParameter publicKey = loadPublicKey(new FileInputStream(Paths.get(certFilePath).toFile()));
+        final AsymmetricKeyParameter privateKey = loadPrivateKey(Files.newInputStream(Paths.get(keyFilePath)));
+        final AsymmetricKeyParameter publicKey = loadPublicKey(Files.newInputStream(Paths.get(certFilePath)));
 
         final IntegritySigner integritySigner = new IntegritySigner(privateKey, publicKey);
         final IntegrityAspectCreator integrityAspectCreator = new IntegrityAspectCreator(integritySigner);
@@ -67,4 +71,3 @@ public final class TestdataTransformer {
         Files.writeString(path, enrichedTestdata);
     }
 }
-

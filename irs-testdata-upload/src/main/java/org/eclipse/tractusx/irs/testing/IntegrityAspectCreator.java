@@ -139,7 +139,7 @@ public class IntegrityAspectCreator {
         return new IntegrityChildPart(cxId, references);
     }
 
-    IntegrityReference createIntegrityReference(final Map.Entry<String, Object> aspectModelEntry) {
+    protected IntegrityReference createIntegrityReference(final Map.Entry<String, Object> aspectModelEntry) {
         final String aspectModel = mapToString(aspectModelEntry.getValue());
         final Object[] strings = readValue(aspectModel, Object[].class);
         try {

@@ -25,7 +25,7 @@
         <module>irs-cucumber-tests</module>
         <module>docs</module>
         <module>irs-load-tests</module>
-        <module>testdata-upload</module>
+        <module>irs-testdata-upload</module>
     </modules>
 
     <properties>

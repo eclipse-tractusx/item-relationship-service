@@ -34,6 +34,9 @@ import org.bouncycastle.crypto.signers.RSADigestSigner;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 
+/**
+ * Utilities to hash, sign and verify data.
+ */
 public class IntegritySigner {
     private final AsymmetricKeyParameter privKey;
     private final AsymmetricKeyParameter publicKey;
@@ -63,7 +66,7 @@ public class IntegritySigner {
     }
 
     public boolean verify(final byte[] signature, final byte[] hashedMessage) {
-        RSADigestSigner verifier = new RSADigestSigner(new SHA256Digest());
+        final RSADigestSigner verifier = new RSADigestSigner(new SHA256Digest());
         verifier.init(false, publicKey);
         verifier.update(hashedMessage, 0, hashedMessage.length);
         return verifier.verifySignature(signature);

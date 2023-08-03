@@ -35,12 +35,15 @@ import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 
-public class KeyUtils {
+/**
+ * Utilities to read public and private keys from .pem files.
+ */
+public final class KeyUtils {
     private KeyUtils() {
     }
 
-    public static AsymmetricKeyParameter loadPublicKey(InputStream is) {
-        SubjectPublicKeyInfo publicKeyInfo = (SubjectPublicKeyInfo) readPemObject(is);
+    public static AsymmetricKeyParameter loadPublicKey(final InputStream inputStream) {
+        final SubjectPublicKeyInfo publicKeyInfo = (SubjectPublicKeyInfo) readPemObject(inputStream);
         try {
             return PublicKeyFactory.createKey(publicKeyInfo);
         } catch (IOException e) {
@@ -48,26 +51,25 @@ public class KeyUtils {
         }
     }
 
-    public static AsymmetricKeyParameter loadPrivateKey(InputStream is) {
-        PEMKeyPair keyPair = (PEMKeyPair) readPemObject(is);
-        PrivateKeyInfo privateKeyInfo = keyPair.getPrivateKeyInfo();
+    public static AsymmetricKeyParameter loadPrivateKey(final InputStream inputStream) {
+        final PEMKeyPair keyPair = (PEMKeyPair) readPemObject(inputStream);
+        final PrivateKeyInfo privateKeyInfo = keyPair.getPrivateKeyInfo();
         try {
             return PrivateKeyFactory.createKey(privateKeyInfo);
         } catch (IOException e) {
             throw new IntegrityAspectException("Cannot create private key object based on input data", e);
         }
     }
-    private static Object readPemObject(InputStream is) {
-        try {
-            InputStreamReader inputStreamReader = new InputStreamReader(is, StandardCharsets.UTF_8);
-            PEMParser pemParser = new PEMParser(inputStreamReader);
 
-            Object object = pemParser.readObject();
+    private static Object readPemObject(final InputStream inputStream) {
+        try (InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+                PEMParser pemParser = new PEMParser(inputStreamReader)) {
+            final Object object = pemParser.readObject();
             if (object == null) {
                 throw new IntegrityAspectException("No PEM object found");
             }
             return object;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IntegrityAspectException("Cannot read PEM object from input data", e);
         }
     }
