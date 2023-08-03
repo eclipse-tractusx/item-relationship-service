@@ -25,6 +25,15 @@ All described specifications in the KIT are based on Catena-X standards and refe
 
 ### Customer Journey
 
+With the Data Chain KIT, we support the Catena-X customer journey for our adopters and solutions providers.
+
+There are few steps for your Customer Journey:
+* Step 1: Inform yourself & take the decision to become part
+* Step 2: Connect your company & teams to Catena-X
+* Step 3: Boost data readiness and governance
+* Step 4: Adopt a data driven business process and create instant value
+* Step 5: Utilize the full power of collaboration in your business team
+
 ## Business Value
 
 * Application and Service provider can reduce integrate or migrate due to one API specification
