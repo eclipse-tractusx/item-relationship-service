@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.services;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -30,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.IntegrityAspect;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Submodel;
+import org.eclipse.tractusx.irs.component.Tombstone;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.springframework.stereotype.Service;
 
 /**
@@ -46,7 +49,14 @@ public class DataIntegrityService {
     public boolean chainDataIntegrityIsValid(final ItemContainer itemContainer) {
         final long numberOfValidSubmodels = itemContainer.getSubmodels()
                                         .stream()
-                                        .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities()))
+                                        .takeWhile(submodel -> {
+                                            try {
+                                                return submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities());
+                                            } catch (NoSuchElementException exc) {
+                                                log.error("Validation of data integrity not possible - DataIntegrity aspect is missing");
+                                                return false;
+                                            }
+                                        })
                                         .count();
 
         return numberOfValidSubmodels == totalNumberOfSubmodels(itemContainer);
