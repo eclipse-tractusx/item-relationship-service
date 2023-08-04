@@ -81,7 +81,7 @@ public class DataIntegrityService {
 
         final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
         log.debug("Comparing hashes data integrity of Submodel {}", submodel.getIdentification());
-        return reference.getHash().equals(calculatedHash);
+        return MessageDigest.isEqual(reference.getHash().getBytes(StandardCharsets.UTF_8), calculatedHash.getBytes(StandardCharsets.UTF_8));
     }
 
     private int totalNumberOfSubmodels(final ItemContainer itemContainer) {
