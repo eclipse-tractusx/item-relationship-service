@@ -368,6 +368,133 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:e0a71a80-162a-433e-9c30-e81204bb483a",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "884830fd70bb8d4f1710b472c807c2fec46549a30567a38f9fb622748071526b",
+                  "signature": "27c88bc975fa5906f3a609dc67a30d04b085d5ba03c4b9f0b2cad8f610c9d08a245e66c51c9343a6d5c95cff1ebfa7ab4ece5e3b0431340adb465fe684667735bf7263cf91fe7a4b6e6a6bcdfdffb11952809f901a22fda5b1cfa614c39cb4ebca96bdeb50f5f3636f5b73b8670cd0383684447bec5fcc5bbb02cfd87628d04a913e1cec2a393d0a38c9a85477e82924015677d7b59deca8f1ce66f846785675bc1a5807c0e4d9a2772a1278919dc6223a98fdeb6976c0739f1c36ad257cfab7a7c97faa84e703ac2c3ad64ff6c5352a7b0b2c78b8fb26a21e81e1d7d43b74426c5fd908b64527d182fa8070376ad8fa27b2349deb7a0d4b475b435cb2abe721"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "75bc491881d3c8b402338ea9cbf4ba3bba1f33f75e4b295b02831b45912b8ea6",
+                  "signature": "8fdb51fa8ad6129bdccb240e5554460d7ed6340c55f9da8c2cb4b2ad538cbbf12c2f44d96b4f5323315be55446ad855c260181a139d25c47308b515002d3e09883706e042052f0293b899ee323df4b007bf1d0ead14a5e3510f3cb9bb1eaee6144a60b2a461f9df2f4451328df1e5d00780b846088565c63b9dc446ab5eaebed3a0fb6527c042f73673ca80e81e5d7ab3ed4e06fcf5aa144b912e16c7e5eb73d57a09d476c436f2c4872fcffe6c6fb6bed4e5eb30ce5539b6d327527e16e04c5692088cf2c3847fb0b686984fcee38909a47baa1dd0d68b90b73b41d14c0e077657e62e952f2e51388fa0269f1921ee97d451f08b58dc4f828534a4118c3f14e"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "c280edcc4be04381965d899c9483fa37945959bcb616f1e964ec974f12146e59",
+                  "signature": "3c386544acb894c0076a7f3db76c95f0d4527ad16f408bbff2da25012949232bb7b42ce5a082daddbb0700eb055f6f86425e151fd80380b2a4330496d72e4627e734722279497e10017ca4cb147f8ed24d11dc8d2947ea79f52ac4c0c370e64b6d46e37c04c93af82549dafefedb176fb9f4db6afe64eb7a0792ff1cf87ee5bcb9dc1f247040dcb6f595c0ad5c2276728364d8584d46d1b74127073cca40a760523b45a12e4ca2a04bf22c3c349cc65539703a2c69a5fd8fb22fa47b2804298d7c3eed57aee767bacf35333bad4d968d4449e3e129becb09586ed99295d6f69cdff05574735dea1a200664f9e1b2fd095b5dce1cad915fb79cb2acd17a4f6528"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "90ac5c6cfef6bfdc8c1ff4ed15a8d8a69abab4b3b194b475b1ca6198e305adae",
+                  "signature": "4c3a69a2c05a9cc57845d66da64bf82a2679d7a3f8f556d981d736938b4feb9b636de66437d9f84f88b581983cd780b08c3c884924e27f11507a24f0118aff563cb21b5018f532f7ca16a962a1c0150f50820fef4be65ea9817fd1557df7be8e4b0b2d0c83473e87c0e634794d62cdb0a706808086886dbd0b02d44c01e132b91d713e3a249c0a67d7a0929d20ad8751d61a2fed72481d16c14170271a3040c453dbf81bed8cf1a88d8c20a54e11987253bd713f007fe357ea0c1e3c7a01d8567678c6c81c74bab0ad8a6ae3e3e98e0702c9c919551f513d421f9068acbd179f657feb0c2ae3a4b3b43373582d3b7ece4296229d5e95adf0ef229c13bb51673b"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "cc26c06f7947a839c67d1243ec5669d11d45031a1c40f3aeb7f3f743b547880c",
+                  "signature": "7fb750744a95ab7de3d22368d47c0421d61187562b1f952c17df93c71e1f87fe5a0d5ddd9de6ae7b31aa735794402c2003e6d1f6f0abce3bee6d4f4e82049985624939d9c82773f28450534f6ccc6d218ffce1733bad4f30069ccbf2caff99b27ea307d31868167cf8ab0ec7ca34aae32d48b0fa60a2087655744e4d73f68b6adf36275a22491d4e411853d85203e596123302d04439355feac1b1caa2c8c8c9d8aa0f9426b3ff19fb4c9fa123dd06f456789321741b26a9d846b1dc48320c6fa3baefa6193ac890fb4cbba29cec3243a9c5582abbc74885e968ca7e1d6f54f189d1f222d9e20f113c1c44b07d2c563d0ff5aaf4b39d7ccf982202c53242056b"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "fd5db6467d94a64d7d995cabcc51d1782ef2f560a06668729ec141c8eec12a94",
+                  "signature": "bda6f704357e7835299df913e14c2930d00fa473a9e70577106e650045ab19bc6ef521292064c38071ebc1b59bcd315198ec917a85d392fab3d5d8c5b70e5e8739402b1bf5e31a563a44b5cf5992c65fd94638f1f7931502e518a51a7da504dac0446687afd2f30934d7b7cda0ed063c64925b8c18ea89bf7065a923cdc78eb9aa7505cf40bb85c7322ed4f333cb538ba2dd1a6dcedd6ddf87d859a2ec1da5db09593e130af8803f5b3cfc2e5686fe44e0668f3d8f6f7e6cfd46286043c49e658a550dd7381ff32068c14ae8e7e05c6f85ba0fea6eea6f8c6e047207eeb32d53c636da7f99f48f2b70b02f34b83a04a51174700b444c277b5ab4ecc3fb0b083f"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "bbb3747ed6a3485980273feb07096661c0d632bea8a3e4a67090787a40e2bb13",
+                  "signature": "5572900f115c1aa8f7011af1b5d0b7e4b77e0257d5836cf3b52fbcd4a559db26d1eda193f5e9a88f6ecd85ef3a92b92ce165482021f96f153b048f41403d85a732062ba73275a4fc07ecd4691ff9a2b24cc5c5af1ecae694ab81d2da9e431907ba83b141600a0b04e7e438f0f154d8ea648c2bccff4ce9dd6a3337c4a6fe9c264da605411f8c906f1cd6c50daeda4a3f8d6244814b1fd4dbaf32cffd7fa926b1d2274e094258a3ec849b59bd44dc88a95d1a522d603968dc28c5bd3a42f78e1d58770afdc3712030e4e4533930e721e8ab60bfd63250bafa725a232ff0e2d0adc725245b886e3b163020a98356c7a34eeeb411eb27662540ddef2bb92d897131"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.transmission_pass:1.0.0#TransmissionPass",
+                  "hash": "8f6a2d6b2f34f48e5d2758d964fd05a2570e3d4aa9ff5a3c044126628dd4f351",
+                  "signature": "b043a9a0a685b24a623605d618949a5deca38d792a0bbd3edcd18214297caac86800a6dd96516a5e0ab2442a4e0fed94faa3d9728d961215637f26eccc12806906f96b666c5042af7cde38528eaea1b24ffda8d41478935baa24fa2fa7b41efa4600f8778ec1329864cc869990fab864325e099bb9c935b98691913e67d3d37be84e8833e87204f68636edb6537306b3e4a57e7bf577ae485701c4510d3a897f0bd38412a25d89aaa9129125cf8cbd3b17c9f3de7297578629a5b01ecaa80cf4505c8c1557037aa66ce568508874a44eb5b1aba7470446bbdcf9438dd77f9cda354f4f58aa0220f04bc1a53d9905d2d5e244725f5fe5f7edf5ce227b7ef783fc"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
+                  "hash": "5fc7e89d297ea6b4ed124b592d3797fe1d3a1eaceaf754b9dbd34fa668b4fc3d",
+                  "signature": "e8a93bdd88352f541026c2f8f32c529ae308ee7fd95feba334026d06f5339ef93beafdc9795f908152b965c030d539eb0fbe572d35cd0e81212ea4cfc0c43ed22afbddc750b319bcdf1ecc82effcdaca6bd1724bc4935584ca87192a2e0cedd3b2fcc0d12bebce78e5b8628be1cb05b4ac4587d4da50abc5b6f44223b524792e3126a5ddb5aacc7c474b4f7df928ca3b025e0d4e776dd899dd9dfa57f21029c9dd9db7f8f502dc78f2f70ae6ff2bcfe11c7b3df1d1c95e7246d8f2426a534949af434d52647cb589a15f28600dc16903c383cd8caaab68dad5ee00858b611ffc7fce33e83a55aec34d446a3f4293f8ae81c60bf6440ac1232f64c93197e7de89"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "187b6e35695747681ca77f72028cc46769a22658019388b16a205501de33b29f",
+                  "signature": "102d9d556ea56c9bef347e23e0f8db47a850f7c4ae8a87ddefc788125bc2ae51c08c2d5511ff098a259dd628bd8b7848bd9652174f374991610a82207817edeb63d4c4604eb73e0396bae8f98ea3303f8d0d6ad4f5677c0c5603d29f1a69c9048fc7e4bef8fe7a74ddc1b0f258fc18c7fa2bdae9f677817b58c551b49fe8a179ccbfb1c244acf26ba295da64fc207cfac0371aa23ca6f16230658394cdd0307d6dce0cf0f5ec3035bd6c3d9e6585cfe7890446cc1ea44a6f2af1c480d28ff712e677bf59d7a28f8bac7c1c6a8e723e959b52862135d686e457e4339850fbd095f24585afb8f5b4a869ec523dbfbf7fcbdb96a2f0ceba2118871464b78501bee9"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "77231e216cfa04f87cc4208b563803ee765924daca6576433e357d4f26198236",
+                  "signature": "921b104ebe8643eafaf361bd875f492789509d89ba0abaf2d91c9a5c4dc6483722d10442d1c27faec7ae95436f1154a9c27dec6c1309838ed719db14861750d1a2b6504f92baff40b07720f0231b204329f4671e4c81949e40a50aa0007690f5a852731a15b514dfae9277b634853ab7faf19631bc27048a1a644716b77047794701862508b94366e88fdc39a23bc97243cb4510328540e1d607333db101b1b39d7b12997fa73f168d71ab4ba2659b55404766a303cf643faae5a53ce3fef7438e23b8aaf91caac3e2649af2a08f3c70f1bac64a43d87e006317c7fd8f487586d8f14853ce6063e770a5a49f4875f80699a053eda1b09ed664871b5967d7429e"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:5db2baed-af5e-485a-8d1a-1e7e8d42638d",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "e2efea25b47bec2b5ce2a65b4785172240d97acfbd7f223ae009f9686a155e16",
+                  "signature": "a0b344cd9fc3c5d51738a5f1b76ba079319ea9d270f181b0e691ff7a6bbc6eaab3955c324d9b7b8db679473408961cb06826532bb4bd54321d9e04539f6bd520def9b648e3a06a4ee035f4d961212a46404ac512ea64d72224af474ebe004ae87ec121078db994e7750324e7a2de66667512b3b2c0e60ba8c1391dcfcfe57f21b51256fc1a794cdace47a70561136328a7b8fce8539533c971d6ef29ea57c04fb6f87e873c0b66ca21c70f8689696b42bec47c718d9145f2de8bea38d9dc1718322ddc6014b6d781db846446c0dcb4ce3c6dda8e018be2732b32f414fd074dfadf87fa605ca57598095df7d139432015a0ba6a125089f835ee0af4db8a733074"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "18b786b02e6a75ef2bf566abce4f590095c8f447ea42d87f39f4c9a80168e763",
+                  "signature": "02e1a196fd494b09ba34c2240dc02508321ce5d71c2ce0616026c6d1003ed3a864de8b4d07ebb27600f8bc30ea4bdd4884feda902eb57bf3967986f109efedd6043ace8e1424a68c71db6cc0a5e4d68491fd45c8fb3939e1365433201fdf17ac1c578687c82ed22f005391964469658a5772664c5816b63dd38a36ba1f6175f1d0e362d8137a28158b9180143f639ee80614b5460ffb03fe97b125a5fbfc08dc6022ef0d7fb8eff8e55459e30552a3b12195630c73a0268d4cc7314639ecb372cb2a4e0045be35c527b3c264922648382dd325c594b9b8a566f13fc8f8ee86f87dc5831e213b215bd5b281b1a07c36e9761f5e39c4a475190dd5161352ac0dcb"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "823dd4d758f2aafd5cf63de1144b178118cfe97388678d9b42eabe65a7e66e55",
+                  "signature": "4ac7a5feb1724bbf5e6f9ba8ed55f09133185b9f9c49b627f6bc7f36b49e42f4dcfecd19bb64ad0bdc93742bab5add7a45f67ff7a2603f93e62f2b2bd4ed606b0d637f075df73b5aef91e8f20128dd55e62cce2f059beb59723927835e6e108c84170d7ca03a11fc65a9d57d618156c69fde6112955e53dca04bd0f860b75477eb7b58ee10ab8e5d3bcaacdfa1b6ba0f86e6d2518154642c1da8a42397221a556cfc536614298afeeaf5098c18f5aaf260bf78bfea30e066316819d0f442491fdf4cdc10929605ebefef05c5a503b62b8788d6bb9c76b8a9108987beca19cb5eae50bd83a5f29e241689f1450d4c06a7524955f4fbf6c4d773ef3a94e4a3a1a8"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "5a4cc1c6817b0045b26d3e842482753b5ad1cf20fbedebed2ee3c09936800821",
+                  "signature": "e71196ddd321cc0f87cca372c304d74b9e741d8a5a3ddd5b953877b1f65a5206815d20f53bb51cf3d7725ed14fb5e18bd7b65e0ba9ef0e2f0cb44b5d5fc42e4197ce004ce4d0369e15c0429c7097099d46ce8640ff7197ac57f8045d3db996df1deaf8e7f01b447118d62876d2cd44484d2e2c49fac4a47c8a6ea9177142d8efdc032fd5638968dcd8982349b65cc6f75409dccc2386aa5e76c397d77e54e0fe4add1c870af5eab754c911595e8dc4b6e33643d15b95c2f8b62524702e30bf49736063e71761f6382aca8b46fffbd529495bba075e29fc540cd0a9b11c349512ddd97c371b9eb7e56196b5236f31290912f2f282786042a6a81017030a6d82eb"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "e28f959cec2dab4e8c96706b5c241582f45060d9bb20fd953bf16cbd5e5a6130",
+                  "signature": "3bc0928c2b0ea09ba367b18eaf96970e0cfae9f67c89533b6787f3945eeb478fc05961266bee91164c1540eab4de4e52ade3798cc8c61395bc4f6ff15da02df8e42fd900a24ad14088fc2144afcd638c2e072e2399fb639db5964cb387bff9ee49b81d1551cd3923aafd547ac00691ae52adaeb30766d33478355dad07088521395cf410571a34d32ac4f71b42604d7a0b414ca5d4befec8ad0707e3142175fcbc61c894b1047e5e92b413e5d6157037e7e1ed2082846eda0780d874b15af4df00efa4e2ffbf446497d99feb7819bec982074f7d3e1b46af536b9cfd80b6f22670dd403de2057ff291320297b27466a11a88f399010ed566e0b453cc880cc068"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "851d7b2410748149730353c8d71533ddf2b17e52f0ec1cfa690525df1cac3c62",
+                  "signature": "1d71a783fca0bf7d22e8db2455c005353f79adec709942ffa80fe24b6e34278638e907ccf765fdac72bcb2df25e7899704325a304f3547305043eb1d63eb48992f7e4aea1c56fe97af89c9ec54c101e52a9bd7ccd54afbb03488a93700d4ac67ba715256d8bc16f553eda7a7147f910b9a85b93c7b71eedb1211980f99826276bb78b862673746c0c36294ce6fefaf86f7e9e5be77a690e7cea4550aba037f77d31371d8f1de619a65104dd7da583549597e9100bac575f92fa2ad033dae7bc959aafb02f4aa476cb18149fd18032206ed3f0f65d85b015a8b002c5e41b4c4b25070e77d11107ebff8a28d9b30bb487b2e4be7fb31a658b111bddca5c2adf77a"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "ab0c886ec26507f72740ce5a554eea6b04f898f37142f879f413052109c7debb",
+                  "signature": "9ecb4e55be4a312bf4d7239a560e35ba498a6304b6fe3ed0f96fbe143676ffbbc4cc3084c65289d199dd579e9d44c3ad3a8061a6fe8f555980b30a860e16f286d6d9f69c01acf89f33eb99c5f500ddc1216bb86b247906411a5b5377ad1d3d1de7ec3d72552a34d722785cec027addc9b007b3e56681556c80ae7af911a9ebe11aeb0091cc28df30640aa157b52b18164cb9bc3c58586d76bc083b37b8fa215a9f2eb09a875aa69ae9d4d231d8167b693f7a7e3315977546ca51387981a0fb6f9447897f9c45864ea4f6bcd25cc3c2c6b96c47c09a02376bf3a805662fc35cb2e48a775c96a7e1fa70de3647b6657dda738f17404ec824657b3186d627298c2b"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "2aa2f83753e7cead3d828b536afaa0cf8f7d77865a4a3ed8c96c373bf512e6e8",
+                  "signature": "c5bce23024d0db271e05145230d604151e465e6c4270978643e95dec13837a662a1fa0fd617b484f52eb35ff3dda6f2e9871900a3efac44ed604c0352944dafb61cd97c188c89dbb2eecec82e50f8035a74ac8bf987f570e8b4977f43194d2955e21a9b4961e2079500d0133e96b816860d126a191a1274563a468e48108dacbe20a5b870f612958352f830f9525cb12f6e4148e735bfd63a08b91efc1ce2ad020d9338948aa2a4a757b54d36b81490074b7ade863cc0ea0da90cfee5876bccacc3646677c221672ea93f64d940feb084e6e9dcb53769115306a2f3b6fef42111e13a906019c2a0bb1a9b163e8256dc05447fc92df86509455628374ab11d72a"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "8f969ec68432e873076a8f98961147c4b51028cb8c75ad30d82b4482cfed2da8",
+                  "signature": "47c252eeb6648b8444bc3a8d5aced4d45349e97320abfce4cffe2b0f85e2e3b1fa226d4c8c2571373afa65de3e7f6972c897c6cea4718f0a3542968c4911db3c9c37ed82c54cffe52d8b0b7c6ba807d8d3462dbb3e7a730e1924ebc905ad541300695f43edef7e44add787ba711c576440dfac02975733edb322329b68f8329709969da4b742722bffe5ed86cbe86b5ecc53a601ee90f1890a25f8d34714de7505e5f3dd3fad16e83e5653f9915c2088349c5449be31d25f37120c1877cd46a4590696f8f3fe09a3ff3346b449951de72964c97b957beb52642b43d8b098441a1a3f0fc9a3e86c2806592cc8a3ecc88e369fe2f9afea6dcb4c0f1afa163853b0"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -434,6 +561,28 @@
             "nameAtManufacturer": "Door f-l",
             "nameAtCustomer": "Door front-left"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:5db2baed-af5e-485a-8d1a-1e7e8d42638d",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:b21d4c4b-3c7f-4919-a365-bc286446472f",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "6fcdd6a8f3c11c00dccdb6abe3e2db8981413ba999b716749f80543411a90059",
+                  "signature": "350d7f8dfddddb818bd2721667fd078bd38b9a09b4ca530f669e6424ecae3b367f5afd2add9f26aee3ecd0069319235f05796b3ab93ee052df3e41c58ecd6cc669f736e0eb83e36690ac67d1cc33592d83eceee54e8953401000b5048fc2c98de0962f2edaa2e15ed683a4eccde5f9d1f5439c7aeeb5fda19dabb40894a89131f78b23549206e48129c798c665eacaa0fbcbeea9ff69e35778c631a2204321f1d12a4942fd7959cfcb0f607d9bba03c4e39a6cc8a4a74807523a4aa87e434a36d55a162ec00b7b55b7e9909bddded90842ecafa41181a523a0203437278a08dc1941d0ef7b0b71873c91669849385b38f36a6c9727e08dc34657a448618fa541"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "7766d730d96da18ac52af655580b80e08623a1a37d58e46480ed94a1f828b1f8",
+                  "signature": "19777969a665cfe1d7d9130bcf1909fa2fce32fc37dd3dec02046edf29fbe7e9140c194d416aa357a76674b59b0013d170428d7ae24c9d5adc18dc3ab58a421dbc5e2ab39c42f23dd6935772a326032842ea04f7d9326b78e2c5b21d5d1c9a4d1e6c7ebeae1af3887959b3a2a200c79d2d3656efbc593e6b10b7d15c25df0f747fdc177b32cec74d123e12f512c2646d3900ceab8954807bd4f3f774140203b02bbe67ef6c51e1d227bf974965bfb4d3a0e1f52c2a6d2c991ff2cf9958fa230755d5237d92257efb4ecf51610dbe3ad6ff85e82a109a4a2aae8506bb10cca9fcc8bf7edaea7b2c9502956028549282c145a15e6272ba72c7a2ba64b04db0af59"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -551,6 +700,28 @@
             "nameAtManufacturer": "Door f-r",
             "nameAtCustomer": "Door front-right"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:e0a71a80-162a-433e-9c30-e81204bb483a",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:73d5674b-6759-47ef-bb83-fa97dd49a70b",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "d84386130fa49ceaa2135160024a52829ea0fec1eed676feafa01d9615ef2700",
+                  "signature": "541f587960fb5e140f21a973d37937fc58510ec509873ed00684ebb738eee158d75de5c99b46cc859e67b2df056e148fba3ba79850e6f638431b3dac0168e8fa332d07df00d5d33b986a5980d8434e52537dd94155f6becb4d819bd21c896a03245ea39c4365796c63f3ef0e79a869b68369b1dac1852e400066e0ee0b7ad70767df2404a8fb98b8c31f7eb3cdca353a58eef9e6d303c9833a068654e43f8b3ccfc18f3075ee71a8997ca4095296c39311f8f3beb8e2e020fc901a434bd10ee1ff2580e64d185eed45ea1f3ee350fc8a7062a32b4d7f8f46120f88f2fca14f8a240bfe93298146267d4ef24f9aed68dcf63bc1a8417d927488b8b42441d0af2c"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "caa0de6344e1b74bbbb71249ab87a096a6e9af1c30cfd64e407d40dec3b0e9f5",
+                  "signature": "73412800925533acba9c6f57801614920e54b0169311e806549136b2fe2fa04067cdfc19ca3066fe9f61745c5e40b1c8a811548a9de2d2cd7b7b2421b6a8209f2917b1d57931527f0e41be223563e2d7654f90eaa05643e764bcf8a61ba3fee84132d9c707eecd555ce20719e36a7b100e9ce3424397f880a9c5b23c5767d05634c97113da7f7cc91ef8df71ad7ce43657e6d2610e5e95d736fe9c95e20f10a5c96a900b6385ca616a07112426ddfb900462535bffb12e78ec8aa04ba62a18e65162c2984a4a3d73fc581a48aa9f3a568d4c64cfbb87c2790dd0bf35e82068fe581a4b258173192018ddbb7146e4acb5df85cf9240f7f6b0ba6576d6259c6a74"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -881,6 +1052,88 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:20688682-8fd5-4fc6-8af9-0697b48fa70f",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:e25b8ff1-57e7-4e8a-acee-afc641b35558",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "d91d0690b1bdc13dfeeb80295351fd7c961f1c0466bc3f8f10f14e1b3edb0b5e",
+                  "signature": "bd27f76ca0a15e500f87253e34cc5a13bd13a8b3915ce94b254ea07ec89156791e343d23a6704bc54bf80e527c551ac1ac3c894bfcc07fe826f1c41b64520a6d66c68a03f27eeef18c04c06f3323c0359f3ea17cb851dd93c7dec7bf90bf87476c93c57e7ca7eb6a33575cc230a276c04682c3a7b6e3e9161101337038a39d1f1715ada958a95e1db1c673110c7344a43860f5ef38aa5f1214083dd97ae976351eb1fd97670838cd82192f1f074a39d3f1148a2dfaac93e7e607b2e8759776962e87f8999e982a844f8f267d78b84d68c351c03f42c881e52012378e75037b2f620b0995198284f1393beb0617d037bec25d8b3d8e830a1c3424bc939d332f97"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "d3f9a04c254c9b8aeab6a082cf0ef2c6ed2c7df399ed188f4e6300a03b6455bd",
+                  "signature": "1b68bf46acb80a6b55af70390adbd9bce05646af9ff848075cfccf9292620e990844b0756fdc9803544f134d05968f73b0e28476c926c8cc36786444f10373888d25498cf593ef1a41fa332afac22921229822f0262906a6bb27acab10596ef6d6b9fd575af0abe425d766c005fd1602a84b4420f54e179e6ae4585fa41c95f27f5be1dbee86e9cc0d0d59ebff1ea6cf71a9278f260332b40bf0ee2f9891cdf0cde5077ceb51263b8ef85281fac99a4e52a13715168d463d6cbc643010a4bdecea24ece64840a219b4a5e2b63ca0f704be35130368d4899bcac8dc3191ffeeb901b19edbebfe24f89cfcb21be93f8f9662631e1b710d1e099a6a006bacb6c792"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "ffa588e9fa837f12f878b94d50669b923892868cc911dce161fc78a77e930de2",
+                  "signature": "58bf26f22a5d96583a324d9b0348a474ac794ecc71ad170aeac69d0f47874b753b8d84cb4d0fee447e6cbc9a15c57597ba504d9ceb40f4d6cca0662611073b53b6cc4f41a01d85f6dc5da241f2708dd0c231ae14204e611791b8c5068a2e6169ebdb80ded24c616b26e1021f20039c14e5b1ad00b51df7b9bbc79dd0a99e6e98460e1631479a243fd7a17771a07af979da61b11988764d786a4b32addbccbe7ad3428cc03d28cd412bea57f35cf975ddf0d2c916ef9fb631532bad034fbd502aa1452f2231f89bfa4dd93e7b05bafa62953239cfd7f4330647d18bbd6e7f5e06a81b8d7ed0c720b67b09658c40b6bac4cdfb869ada19fe8f775f1fba72861227"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "1c61de0837fdc09ccd7043e16b9f39639e23765ca372d7ab443a2fe384a4d7fc",
+                  "signature": "e60ecb5fb60756e7e858df79f2ea6b89d7915992b329bd9b03cc65c35c62910e6ef08093a83a4204ad3a9ab8e6e0cb0a7020e6e9e5df30f9abc6c7b533be75d4683407018c37797ff31955a097d26f57bb15578dfd2878747603563be3352813996bea68e789aede87db87f2de5347f4c3cffd9c577469b928ae6324857ea9648318cc62742508c7d651c3340ac5dd83edf5122ad67c1584c26b91e6dfe5f2bea29783f796bd3256f498892a66046ba16b89fdf9e1a775f4a6fb798e1d19792ac96860419e977c7c71fe4873aa9d357795efda684402c9fd6a7e729984c50dfd0451bc429b559f753256c6f1e47393ff47e77badca722e65ed94bdb195827ed9"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:96df5d17-4f1c-4ce6-9192-4e9b118bcd87",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "1480df380368d5fd6dadc6608593c52d29a39f1cade84298c29b6306a9a54fdc",
+                  "signature": "3e05ce7dc81f2241a30b726e74e88e57c3eae26395e10023449dcb85ac2d60ec74350df3e93fe9ad02b2406d432972b35c8d7918fdf4bd89e9f1976d2e7f138c47600065ad6937a76a3efbd4deb9e0dd98978404e6962270880c2ab3c634f311b8b8a60759cee3039c693de9ff4be8d5731666a3383464ea5786130be501716aab7a9f866791e5549ea15f5d7cae5c50d1670892ea7cd317195a9b347165fe86554aba5e2ecf8a4c0d7ad3f10644cffdd90f963c434876487543b968d868f68f70c1874cf7a6b82a4d953aa8875e954bf62c9a1950d418f7b92c1be7a5a5b6eb3210de6c05c4e982cf3b5adbe0171fda2b474192316affa2026ed634f72d99df"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "beb713fba66c5b2213934b42fe855a9646fcf3f96664966d5a8300258a343369",
+                  "signature": "760c087abc164d75712350205e956fd0fedf782d3e1f347840c86fbe867cc48856e6b062ba1445e74af2f5faf8bec2ed0803aec159adfc8fccb74eead1b9fe1ae40f8a12f0540aef9128a8e9faeb2943bc158daa10be4c110456ba285a53566a7b1c0f988a1ad56462d865341ac1eb0e43904b5dba1adb6c60dbe3e03ffa454312af97fac6bc662f31a26c0a1f02e5dcbcc04562a3e8b3e5e6e330d23ec105934f377d669977d4efcf5a9f1a91048410cdd42232dbdfb0144d878496b8922153c4fbda64dcd7bd2f1f6f8e82e9d90c7bb59042c3a3f189d1ad772429e65bcdf15c15e2cb9f35c4d46aa3bbcbadbd1abb682d12c3477bf852778a94eef1670cec"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "52bfe1b8377a4fce4617593ff66d166e6ad8e7ecab2b16ebc6266aab1b21f81c",
+                  "signature": "2e202c264f13fe08ae590e54266418f3c9ae3893c693d1cb8a57aff65036f5d87e91bcd924885620f3e5ee1e26767d0155c0dcef1bb8b23dc4844c42d0f1eb61371d6ae6171c22653037ee381b2a8f963a45c423816677b3f73a46fe028526ae12c632fd821025013e601da2cd3c1fbfed537ac9681d806cabcbf5770e9e864851de535ebaaf00d7e9f7015b72fe16030263e49be00441a20f92f697a9707d36005a638eda150ab44b857e7ea7b4652db50b98cb27b456ce8c7f3372be542fc29cf22a6021504ba481344db6fb6f7936664ceab8a7dcbe7b0a280bba2404c2c6f5c3277bc46e09feccfd456cee145dbcb7e1640df5a20a0964d3a6fdefbec721"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:bda9b594-6fff-424f-95be-b1516bbf16da",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "28ecd027e77c5f01e1f2c9ec63d5e83a4747d55f22029d5b95576531911c11ed",
+                  "signature": "0a370d4de821c90c056a8ef658a21bafc0f70fbf65ecc059f6519831d78989d3ab7db4ad7a371c97d2b06cff1cc471f6092c65129f0eb0bf24dd971fbee4483de8061a7b00fc180704b20e260d5e4071a88a97f73fc48e60c4199a8f8157a99e380441e1c0633457116d31d42c984791e74b7a5411fd9f26bcf92124857f718759cb00d48c0bf9cb62b2dfbf0f01dde1d7a6c4e9ebcea4a7077c961b3f655e3f2f262eb2a8dd7162f7e60c3d3bde0e1e9dae0b5fdb03beb9140931909682d1f4ff453db64be7cd0671be8a3674feb0a4f506d972b398a92b31626b027650068a623b91cc4b49267c7b6e2a5583fa61f37352388430fc4f00e5e82f40cade113b"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "ce893856fcfcd96c7cd95a245c1f9225498eaf2e7efb07a793d910926278b7ce",
+                  "signature": "67d37614de386e5b23e7909415f101e5cb49b94bfe0026ce05472839c231d4902be724200449aa7ab30f659e0a30050e82b042db7077a9652b5ea626f5b4fed400164fd1798c41bd4c1d01ee02fff9e235fde38e6615f6a2fea93243e4ae25bda24db5b607bcea5c6e31725f0b6fbb2a56e13d322034729c73709abd8b2bee366fa108665a80851b4351982dbe6fa7d0db4d07a2fe111257c82e9b622c52cbd750830eba34abfc83d84ede00955a78e4a3943ac4953d9a65a8e98cf67409b886002c03a5381b37ebae9258519a297ff2cacebcc525efe01d38df663f1676ac0eb080bdc5535c392c8d9323a65da11f5cf1437619851dfdb7430ce5be578d2f0f"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "67a59d22c31ab06c5bc1a0889ed7cf063305931fd5817ea2dad7f14bbd367601",
+                  "signature": "052bf98ba1e3ab38abe77833d11245a2a7424902aae0795775f6c6f127c341c75768aa6ac774f3dd9743c163a268663183dc3a6b76ac2a9149e02fee9040b017a714804c81cda086925168a146bda96cd092d2802fcfa5653a45f45fae0f418b3a644b7127d7f92f10a2513c10b4e61e23756897c577f825c10a99d4efe0a62958d45005dc567a0ad8fc86a605e3ac7c2955307fdcc64c97a95bd1a1f152de44ddd493dcc98075c255858a30d405a76b72f685d709b8ab016e6c485ba6ec166d5d160e3a660f2f699c7e36504edad618b18a3833eff74daa441776151ca16503eb49500af310c43f649cc8a12d43484a0bd8ebf3612e00d06da30de3310785e0"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "983b92f36c57e656d1ef92a7d32f0e662d42dec17a9fd91d68345d19102edbc2",
+                  "signature": "91e80b8756e234f1ea80b10c99178c3c63f693000645c946213d118d4b7c6050df10c14fc65d4776a88df1b2c687e73925664c65fb963a9990d4e74eb3ac9516dea8b5059a18879d53487808602ad69c7be13d732fc5a663139a592c0ccbb32e4d2e27e1a0057376ded022285435ad1feda6c555b370cbbe9218aa25faa1f580ad333cdd312059c127adb0a6a46a5867d4135c484603ef1f1e3cdfa909a2a760edf2c2f6636dc253bfae0e291f2f60142b5237d1e3e5dfd722881f8128d78e92906d5f67e01b7ba8258814573fab8d743c707ee766399d2b87e984f34195b1c53310395775f98d01edca1ecf2168b9af1a42eb5f992ae8b447731f14a230b4bd"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "daefe6a0928d31ecaf3dd3ca9f52b16b218c19e1f19b9f8a1db456104a0ad8bb",
+                  "signature": "43242ffb9856c3887c7b95eeae41dfb832eb50422a4e934474ef59ce05273cd00c48b7fd98e6848b9da656981c3698b34549cc226c80c825d3de50e75fa5eaca5ecac155707ae82c3abb6201bbedcaea625d51356a16ffa851e4e9fa39462b38b6d2e113cba98417dbc9d27f006571386d4d35708ccf5128e7f9e4926da9e787ae44e47f7eb9a96898a4ab487db354badf34e5c0176d5daab33eb83e3db23676b352231c280ecca502495664f560faf99e52edcbd6929c7f4505bb9621b15b64a67ad0e24cdf6cf0168f58ccc06089d347106c2499084bf4a8e42e8e6c762332895c18e6ba08a737da8b31cc02262ba473320968b246e53dc0736a4522c61ddc"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -1027,6 +1280,33 @@
             "nameAtManufacturer": "Sensor",
             "nameAtCustomer": "Sensor"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:e25b8ff1-57e7-4e8a-acee-afc641b35558",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:292f78a2-aaad-4275-80ad-859c9bb9f865",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "71bc34fd057eba8c63e3b812b0269d039c1561b538ee7daf77bb213a12f45bfe",
+                  "signature": "388c83d21e6fd36ad02f8b985a8c3733dfda3d8ea66437c40fddd01b81f1a5472e8fdbe8c3bb9b3fa607136da1ae5b1822f3b125644f8581bdd393af7eedf38b5151caf45900fd9442b90cdb4740f0b031e8a46645e7c06f3643a60bbd49c303bb1dbc1683b0bde8e01932063dcf42f3e5c3581d38b7bf2edf486699e2e218806982fbfe72b71f9d6fdfca6cc9a4e137e4bb74db70b8ebd4ab56d5fea74494f8816b5b93748aa4601ba953ce4416665066e9faf18e17f66acc31ba8301ab5e61e1cfe7c5d432a962d4be4f25311da430fec3c94b991cc9cdf38d77c644922b33d0f43c598e35ff02c4848d748fe2db42cb0dd7e6e6bbe2343858c28b987638e8"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "0971f2717262305fd19d913882a66451171cc6a22de002ec6ea7fb1727567971",
+                  "signature": "a132cb8dae872de9376846765dd9f70e74f34097f030df5e8fddc64f30bd89f23bf13413799a148b875508b021c74c9cfde2b55536b90c45bf83ed8c4c39581217bc3dc588b3cd4d2f0ea990ca03881fc68ba1a5b37c1c0b8406f90f65e458cf0da0f5cefbab9d16459f91bd6292669e78b8fa518937f0dbc356a96dfb1536c334df2f15cb569c5386ea255ee63f1c50208d1526410bd005981cc81c134086505b2c52b788ffb4793a06b6ab772208d4c5df96b26fd42db43c2a0886d320e7c5d7dd40c8f6015b961da6753c9754b011e1dccbaa013d4c406ac3e012ab735f232ddcbc07c6996be42271514bdffaf27e507e7e7c1000ca5026ce72298e5793ac"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "10141dc53b1519b642512bad155e6d4429edd6cd2f6e7c356850d27b3362178d",
+                  "signature": "b0cd2e4f837a5be9b358fa4f5f977b89a48cb5a27b391eda5467c8b1be9134bfcffd524d1497cd4ed0a995e23402116e78c8bc5912ecaa274a8facd592f073b7692be8a42ecd064c901c452370f20a0d0d8fa9f5d39607bf98defe1d93e39e7493ba6fe58d7ee656b23920ec5c256b3f052f3f858875ba6ba8bf7101f7965ff9792b7b800288c0f1f140cf3997892f095913a87a9e6981865dd8677ac30f580a488a4d48a7a2641330f54b258e8b2b2ddd1b8ca25b9a13bfafaf976b7fcb43a43ada6403bd6b1baf8f42eca7b55bef403f6b1b7e384124bd592e2f0cb34f9cfe08799de11c889005e18fd96baf23109de0e5b207b3e5dbf31bd7456040aed801"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1180,6 +1460,12 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:bda9b594-6fff-424f-95be-b1516bbf16da",
+          "childParts": []
+        }
       ]
     },
     {
@@ -1281,6 +1567,78 @@
               },
               "aggregateState": "solid",
               "materialAbbreviation": "GL338"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:a81576c1-d1d6-4d0e-be18-aa77da87e11e",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:b56f9d16-f9b0-4b71-9c8c-cb229ab55a01",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "480b381c4a22cfa4d07d8fc3d3bcaf608f169905b1e1da232746f220f6dfcae6",
+                  "signature": "d5e42aa32ddec2bebc561d8cd897fb99a6e8a3c8075b782e1ca6dd374ecbb15033f5c7731fe5c575e5195cbf70f4ddfe90d45f74ed1ea166cc6f73b30cdd9187e13a8805584591519252190422c927c2453950849d63e1c0a58f6f01e952311244927d40139f3a594bed7f87bde4499d5570b50242acfe0e0dfeaffcac3e52b323556f0eefbd2fd9f2bd9937b888b49b8b6f3bb73c3abb788f4959c73f79177532c9e69fcc5ece45b4d65792f62e65a84b202185c0e4ea603697afd0beeed99f6f396ce1db5e70811293f71ca582ba9b3b0c1bea29dd054548ca0dd86f31c878726c4c8b27ae6bb0472b5b381b05437469b80a6d27316e00abc26c9a08bdafc6"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "2ba2fa33f7aeac07fc762c1786abcac58c36652c97bd92e2d12a3ce4aff31fad",
+                  "signature": "c271750a4e574465a6cc4396dfa5de67e10f04cf2971610c7f412989815959f4d5c55e8d8aa2b82d6ef6c4143585ab57b28905c0882e75c2d98e3d262c67b741236ce51cb99b0c70f2e379eeac9a576e10c94c3bab5405aa5abfdac7e57665864354fd00200e99246f63f8db76992eb470fa0eca4af8cef39861e9ec8b5e04763c29cf1ba5e7dee3799fa001052d274abd918ccd2acd1380f3540c29b612d7e79bf00e3f082ebbe8530d999716964c9d09c114eaa23df6906c6855a5ff8f16a339dd759554f6d26dae538af1b4e217afefa9cf022549248544d7025cbdc21ec7ff422bd7bdd7034a1ff2e44c1bb6a144f28f938fd4b0260a6b054728c18abcf2"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "34d4ea164e47fa13415b7e1dd99304c2f2d7ad920dd0202c9586f067244d6244",
+                  "signature": "00d71b3cc2c29d085dfee537a29008588937eedf413021b0e8415bb5ac2b08db516fba7f8f7f775487c9fd8412b10151ed786c583232ef4abf9f50acbae78ab246bcdfa83a7da1b42f8be40427081f6d12bfcf8fb89daf2d8f92dfe8bff5a015c05f83d5fb334db8b2ff87e215adaa11af3c8e22a89e564b58a8f617bee9902a28254f2282adbbbe07cf6d47f0949b8be27c5ad9641def02e156e29976d85131077bb003dbfacfa5daf86732222f00f88403a4541664d63d9070f3003eabe96310830069eda96923dbb04e213fffe846655f51444c67e90e96880acfdb612997d2266cf38cebeb164b83a1dad052256ca80b268ff2e85bfdd5fc66ce3c0d45ce"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "1bd02c3b01320ce6559ec71b1ea652179162a6bbe36df18461c15e9fa8086fac",
+                  "signature": "e73a57aee981fa1f9c2d3f115e3e803f191e1b2b373053759184f7da62ddd7a80c2f53514b6d3a83a8eafee95d2820547c942e9d5b9d2be4cc1cfefaa22d90e3e4825d608089d1375e2810234a46ea200b54867a2297c03dddf891e1f225d01a9b41950e15119954ed302cd7b80952bc73a00029053bd03d4e81f73cd0923f158bc4d13e628e2de948fa8a1f5fb5ef234ab0970c3d5980c8a4d87296bae6b6aca8b9b6e9868bc550af998b3e377560d6374cfbac2e14559f925e1e794fd3a66193dec77721e2991da1d7de81fb1d54888da5798b2b7415b65ae85cf99d3faa63e5c2a76b4264d97cd2d8f59d09d5f33c066e94963d2f46e788732fe764797b09"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:016ba013-67d7-4138-99c6-274571e2fdcc",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "a7075cda142b643e4d008ee2a2aeb35e8c9af9dbfc51cae9f5124aaaa6b357fa",
+                  "signature": "761f17495ad1f641820793b966cbd55ce7cd23d891ff98ce399ca6082c60dd423bffb59fd1d22ae780889a0c9358985605c82b17bcbfb6e79f48a12a249f57a6943d33cc5c272cd1eb9ab3868d1be1faec6e8f377c8a77c9bed3f8f58e5aed3a86c7e69bed7eb3c79e20a7e4f31c81d6d5d52afb04d76f4b1b5d2eca1d5e950ee3dd0a1c5166cba9acc1fff4c0ce5848d414665d0ddd18e751bbf21b0c0ffe6fb69e64b43a58dcc1ee042631d970578a90e779a79d6517a7c6ff04a56e4f15b226b7836c82c213ae12891411dca071c1fec2c7bc62951c95d13c7a60d14fea646a8179088d236f011d6cc88048016ad722f9ec57a95da090fee1ba350c5feb64"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "335957f50ceefcbe85318fec3c01f8d937ecf28d3c43d4cf643f6081f1b77bfc",
+                  "signature": "ad050993f568c4c231fc8dd070690585b6c131989728aa988160380e01974fccae7f4041c1955dbfd21fffb562272c6fb1471a9985acd006c2aa0953d6087558818b9a0acb15e63e4786a1d521ba981adb7561b5580c6060a45a407bcaad4a52459b32f16e6039a350311bfe26933d618052833ff0f7ba57da6c4c9ef0201475edce41dcdab44214cbe75961718f5cb165fe4d6d289dc48468f2f1afa88a5b704088ce161a3b79d33178c8a4abd7d1f533c8891f97383fa7bbac324c9e7de1f864a15f58525f0979847cba779508e5b0b62b3a37fd915e220036a66d3bda50084b206f86d43dc9c714944cfa18a4d3d5d74ea877cf8df963605b544ac0483cbb"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "a00c0392460c717032930001b68c7646a703fec7fdd5b465a390efb4b8cdf40d",
+                  "signature": "8bdf5e3e1ee45520161b702e59d829c76d7a82c7250bbe2e0805ea6c7592b9e2b8b9603bb3cdd0e414514ed852e06da11ef33b3a31c4ed56a1c6afbb1b18d1607799e4fc8f1bbba82ff5105022794dd00d852c5a596a39d7c9aa5c03f5fd362206e63de5618703418e2b4243facf60cbd21bb313213880c608e4dc51ea0e5fb70929a9b5a59a69b393793f72468773171404bfa04bfc8ac94da10c22cf78eee34320378c4117de4e5ac1ce80ef51d191ea5a91916bbab677fbc98c07c82b8fb8566669a16ea709c0b00b609dde369935ad4976988d26f76093e7860f2a9cb2a809244eff9f2c58c6e0b1369908b8c2ee938cc9e73b6528d9610bc41c6ed96df2"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:3234dcf6-692b-416b-8f1b-cb4bf6c0d75f",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "c0defda9ce12c048f262d924c89268c40c61ce3d78f6826f2b4dff5c25459250",
+                  "signature": "c7165ef66c6d1f76e871ae739c59e2b94c194d92592a1a408ff68a22bdedc42b03e62425404bb10899dab2691a39d04c040af293db4ef813129fd4b65bac73610c1188591e8ab49f1d83493f43d8b2b4fd8961d5cce99439b04aa637e8602d427088e27bb3b7ba900caf93a58457dad510dc0af731851e6a012bf3ee9ab62233a7af6686e490b13dbc705630c17762b192bc0906fd7bbcd87f39c5463ced70d3d045e51b4c7ef7c063d665f9f803608ee750a5ef9634665ab58947b3dcc6afc78bd15aa317203497499a2609744e24d9594e22c6067dd4630677e67c1b858302b19912576f8bc1069ab83903367b2c61a5356164b1c982237b5a0722a9552c00"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "9b4d40f37a75ae2f0d373a8743c62a2016fd786d581806b358ef6be2e0ce0476",
+                  "signature": "a857bfd207e42628f515b7f8518b8bcb8d0f30abaf5f513689882bc311e467676b3ae237cd6cbf8001bf35d8369d89240af7b49b97e8f4a337da9a583bb9c9360aa13ee908635f77dc7470b0ed55bac8c0c9874b4fbf4b5b497d8dd502df2638e253bd2775b10c3f2c5c410d3e2c04c54f78c3e0201bf714a2d18fabcf50a369cd7e8e56f48aeddfd16e38f764c3a8fc1f23198feaa6b01a5f0939efa9dabb7ef82e94b1078068185989eab004f71ad4101ccfa13b7f7263a55dd3c7c00f95f0fd75a42a3fb68d7b9caf9209bce77097cf5eaca1eb2ea99573f32f8db38115fa4df497bad8d016957bf33f2a1e3e450d43196c68e997d24133105313680309f7"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "cf235b0488bcdd78d1903d45cc3f516e0e11f2723eafbc028cbd8f893df2441b",
+                  "signature": "1f8ad58db479cf47ab3a82724544a029a38012e9a01d1d196995ba94b1157564e70729f8b20c24315765c737057e8f9208e2ad470469165ed285a261cd8f1feec86fe43299c94cc0557be437245a69aaf7280c68b64bdca2977f4316ed28f944a1ddeae2a47f065a86dd1981a2b21bf381885867a7d9a05a11eb66ca0832efc3a256ae155d1f59b08699337b09e1bfc8de7aaf886ea5844387ef02c31a960452ad23f69bec1dbb75149437831a8865a4c129edc80d0d8abf0a68c4ce35ce32d1ad2f10511e3d3cb4c724b55dd2f92c34717f64ea72123d88b1ca6663bd04060ec87e6204beefc8574167ff6080203d58cc9e95a4f0a9e9a98236f8795f6d3c7c"
+                }
+              ]
             }
           ]
         }
@@ -1430,6 +1788,33 @@
             "nameAtManufacturer": "Sensor",
             "nameAtCustomer": "Sensor"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:b56f9d16-f9b0-4b71-9c8c-cb229ab55a01",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:ba663e15-478c-410a-9fed-eba2049ac84b",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "671049edf16de83fe79bebb0fddd13a8d5613571586535a1ca74d04d588a67ad",
+                  "signature": "6c26ff21bffa51d0918c3133230656925ff2e6a55250410d22764ecca4bfe2bfe6a5f2c4c3e19593c172163b8f1012e3fceb9576ba5d08fcc8f5455e9de686ae2104c1fc483d645d5c3a892625dda1a4e7b7e674bed5815d433a197fe3492c1ad0f25a8c925ee31e8e896730d4170c73437ad40f2642afcd59710e081b3c6ad8dd3ed099d79a835066f399389192a7e7171d4b6084146b889fafc4d3b9507f8ee0787d2222e785ca895a261d11a08ce569e4b3528a822f85e6eb0de46dbc4c5a988aaed95698fef3999ac1a094596da5cdee5c4aaea403597173406ac992bda0cefc770f9fb685fdadf414226f0ca0a5b13b9535ab9d844e9f5948cf76fda22a"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "9753dc8aaf02cb160a4ba87b413452250e7eb17b6824a6faebd7f0bbc7102613",
+                  "signature": "e804b6a45bf1a8b49f1f9ebddf897350dd99c120198d8955b2a71a39c66ee2269e427c7aed62461fbdd41684f89d5263efb0ac0f709141c603f2fdc6f63ae53deb71f0b15506efd00422458c2dcefc2aa2139b000ea4eefd7b28663d7513594753d3ebc58b903216f1a5cadcf03ee89fa803ebbdace5c50916bb420381e03b884db79703cba93fbd490a281a31e9d268e67ec31c9273c1c2c55123edf04bf335fefbbb6b00d59aa36f17c0de4190463962df04fb0d2d6c55bb48fdbc519a198b645acfbd8caf9bab70aa65c7b32c9f01687961783876448d68d2b3c69a0f28a9283806a675e8e233dd4353f263571496a0b77de304d86d9847a6925f18981b14"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "2e589bac93bad7213caa9ee4b6e25990ce8f0e39ee9773a7bad729d14365fbdb",
+                  "signature": "0ec5d0911e3a0fdc873fd7227419057f4feed087a6b250e6bf21efd505725598dcbddbe85cfc2bb185330a066aef2c1ec4fdeaa0ead09ad4e652bd8dca38fb381224cfb983255ed0795d2ce87b4082c87f2d82d9843a3dc9830738c6dcde37d9dfb91e9a10c9ed417cf68e996b9089f7bb46f40b6357acb25312ba432fda4c351d5b2d9d535b97759505945b3772d1bd86c3676d96c64a8e180f253f0d3d1e814131c6fc14d12fc6177d69f89686cf7775ab0339372f3b7ffac8efd986dc177fa80cedd619f1aad275bc9562509091c42d3a0f74cdac95db7303be173e3bbd6a27bf7df36d63d6fe477794adf1bc76af6266a42d0ca17b1988803e93adc7fc4e"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1921,6 +2306,103 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:05abf6ff-8c78-4b72-948b-40e08e9b83f3",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:af17f072-fdb8-43a1-8cca-b61b3d6b37be",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "f4db854c9b0c7ff50aec895f793ea509e27d74370ed5d1d3ad53c4b7f820fdd0",
+                  "signature": "c6136801da430d2d2a8b4b99aa3cc0b5498cf32be4c1657f3b5511baac488df26182417888bf942e1ec217c6f5d862c1f57e5e8ff6a18cd79e7c9cd4813160ef5eb56c1c6e985f2aa27722aa312f2ae6636140b28360176e15688bfa294d915098c59e37e14a421d0a4949fcc20fbd09212c7edf2899cbdd1317167c450482dbb95b8873490f144d00e5539619da2d684514927450e00d3397a8a9f79bb46191a1c8ef3dd27f5b601f9cffae0c91d8ebadbb71ca04910a073f3549e73972d5b741da2a336b13c713aa9db04774e30eb34323cab471a2b7f97b7766ddba1c1286f3ed671a3f9403fe026656c9615e07cceb3a162c2d5b425dca781f4c4b50c2ba"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "92af376cef5f51fb7261f99d2cfeb6d5ce93660fe8fbef3dc8ec315f7eaf2091",
+                  "signature": "e51c4227d02c5567e69e9886546387241a71041e17c9403cb0e3e04cedbcf274c15874686a318750ad9bcfd44c07e76f3f05351a2e6b653ecd55e41a348413d5695b40db1cf139026decd96d1b3c84382ab5181892211cd9e2b93e2b0818cbc21519c580ef1233753cd6254dbebd6bec1f93602fdf2516dd178d11c0efaf690a0cd48e99363994a92203204010d01c45341ec51aad985f734ca0c4622ebece1339e82368da6d27184792b12a884070bd9c484f68f9774275789f0ab4f3e6438ef5d78ec22e551a130455f15a65aea7a1c8fa049c01691222c9e10c92bc37f211e00d3771368e7b081ee6d6e51717f62ab80e4c3762f8c8bde53441c91fe0fae2"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "24ae4c6015567ac929820a91463e0290740b3603a13e9773b253cf5a1a42c872",
+                  "signature": "e6985204aa8561f8464c90df7c48d4a51a6639521453af17b402efbe61d98d5150e664a30625464c8f1a71820e5ba5fade64c2c03dd29a038ced9b84177c1b86d9770413b3b4830487b70ccfb53752a88095acc302e75b7c6f3e511650315b313f58280b3d0cdda27040716e4bc1ad4169488d48a8ffe453b2d8f23f78506a0fd6134ee175ac2e03d04d270409b30b2831bace729cd804be7ee761433afea590648512781e755e9c5df96f26d95f8b335580513bbe68ccc2e8753d2220d49825784022c50ee449316512ea0e7f529beb2e0140d4f881c868957f0d7d120c6b58ec97a39dff65cdf7a2400fdf5cb2a1ea8573736a51f24859675ccf0f3d0900fa"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "b81454e0bc4d24ff33f2b54b241cb1fea979df209ffd88bac84a5dd3f93e1ded",
+                  "signature": "477af1aac0826cc5f6f41b288c03dabd3720b47285702de881c5be2083e86d796037d7d38a09d84b5eb7dc2a49bc93af413d300f250a2a5776628851bd94c2fe2a67417fbe7e495739906d342d13fb1cadb8c191a816f47a5b55eb462c55a854a8c4e75d0d9f55cf566822cb56c5e16dd7313e04444caf99b4a8444bc8a50ff43a6df1cca8b7d37f2e247bdada270f2ab84cc75675e700a8eed286a25299c3bc6af35a8e86513a44b3f677d587af07f098d42e07c22db3b9fc4917f3a1cf48e92e8bd215cbc80cfd68bb1533d38a41d5dabb8b2c0ca744f4f2844ea16f5ad7b2bb14ec2a8bd857e38f7b28b3a61153a139afe6b79b020ac841aa6fe9b8145bca"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:99ba549b-48f9-4c62-b761-3f7b338c4d80",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "642cfd090502a4463f51f97e52e4ed693c748b8565a5bf89289922c97824831c",
+                  "signature": "9be0cbe61d28d1a9d6804c9e04f2da67f1d940cd0d58400763d956b14ed21b13ab9b4a760b63fe77f549c6457d4c6b096b8737bbd35ea59cb82fd56da5aa35025f2b906237cfd04695c0fc2638571b28a4cf8ffe8b1f719b36baf24d50a6ee40889b6014deb2a0af8fcf7e8abbc611283f042020f3ef945c10fbd3e5d845d7f5738d5e6885f3043462128bcb5870a5a9aa6a86e16444acc64c0c5f9497f2bf6a7920b2271fd383529364ee46fcf9e068fd7a80f1ae5ec9337d0c6e8ddc3a30e66503ae7177b8b68f16e5d418898b7634e7bb21dca1e9e855f6ea311c18e773f93aa83e2088c36ff8c0794cd945e58c2bbca35b98f88cbd0f6f540034ace14171"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "c27718117a8df08e9ceac12205e292eaad0cada88ced2b15e36cf5db7067756d",
+                  "signature": "b2167d76ea335cabae0eadd0a1a8072af1219bf9c51afda7a05cf4180d5bdf0e17d12e59f467bc485d8fb729b8cb9387cc104d0397b3834bef98c2f471e961cda24268824099841c1462319ef894c27b1da414cd9928916f6d2440c283056d0dd85cae02febfac890c5f69586090a1521eeb14d736fc7753bca99a6c4098960244f1543846dbb73c41e5656e8ce7c56b7edf858a68ffc238d715d614e5acc5a1b1101bfeb076804182640b27661a38ee0691f5a5255e4c3bcd24ce815a2d48274b99065e0ec4ff82f367f29f3e16556ea36adc824a9860edf4f4ed725b9fabcfb09b6a40413afbef044b4fd3bf8b3e8ce5725e26339f080cbb3b5141b01a67d4"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "4216f703f2128d79637784d9979e258c490bef6800597424607b3a0779ecec01",
+                  "signature": "5fed0e7a9bb3538e2352c7e7b3ac6c1bea83ec288edbf7ed73e1c7502b1b6d1cf558739fae0eba9ca91a57a6eae804a793ef444065b56b4f468580a8bc264e62734883effebc0661511ff91c897fd235721d69691e42731fe186057f394385e5ea36a0c4d2a3b0b7024d074ff2bf56e8c48a399e765b4f4274c9cc443d1604efc45786cf16a7b2d22f2e8eec4e383c168a801009ead9ff781f966d5166187e148b6ed8c78f3025eeac99fd9ab5350682b5f7fa5c7f37e7f9f0c071e75ab862ff8cd205a1e4f031be374adb07de36e0a3b7df500e5a2a2c5ee6255339725e6db6ba7b2a4f65ec0e77eae860a8d20d88489743273bc7873785de5891d11856ebed"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.transmission_pass:1.0.0#TransmissionPass",
+                  "hash": "9a64b2d52d90f3f1efb5cb5716c20f4cab9e44d8ec92bbc9e097ca616ea57e9a",
+                  "signature": "af07bf74204ff3a5f915f6e6710f5d4dd926b4c9237d755e318840b4e34834c279d9a21f8f84b3af0db99c2e0edd415298e5dcae9a15f4b65daf1a509003d1659f3f96a1f6ffc9c478e127b2f8ef762945ef7788d7c2887eb19e91a82846a5ca50e375f81bb96b5d41be7e7e742dc53d153987b5157097d30c201e295d09f104a91ad19646804030140040046104e86da47f6b0b38cf0d1b0f9244b8c7b4d877897c37decc695283d8bc25502b252d216aa6544df8c4a1fc1e635195217a9a4bc4244802a43101e6ef2ee5e810008d36c7190d42120224d9c6f7b598725f2e9d7f4f32f3112cadd19d3db88a937bbfc4d1c12cfc6f570280a37074692a310947"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
+                  "hash": "5fc7e89d297ea6b4ed124b592d3797fe1d3a1eaceaf754b9dbd34fa668b4fc3d",
+                  "signature": "e8a93bdd88352f541026c2f8f32c529ae308ee7fd95feba334026d06f5339ef93beafdc9795f908152b965c030d539eb0fbe572d35cd0e81212ea4cfc0c43ed22afbddc750b319bcdf1ecc82effcdaca6bd1724bc4935584ca87192a2e0cedd3b2fcc0d12bebce78e5b8628be1cb05b4ac4587d4da50abc5b6f44223b524792e3126a5ddb5aacc7c474b4f7df928ca3b025e0d4e776dd899dd9dfa57f21029c9dd9db7f8f502dc78f2f70ae6ff2bcfe11c7b3df1d1c95e7246d8f2426a534949af434d52647cb589a15f28600dc16903c383cd8caaab68dad5ee00858b611ffc7fce33e83a55aec34d446a3f4293f8ae81c60bf6440ac1232f64c93197e7de89"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "187b6e35695747681ca77f72028cc46769a22658019388b16a205501de33b29f",
+                  "signature": "102d9d556ea56c9bef347e23e0f8db47a850f7c4ae8a87ddefc788125bc2ae51c08c2d5511ff098a259dd628bd8b7848bd9652174f374991610a82207817edeb63d4c4604eb73e0396bae8f98ea3303f8d0d6ad4f5677c0c5603d29f1a69c9048fc7e4bef8fe7a74ddc1b0f258fc18c7fa2bdae9f677817b58c551b49fe8a179ccbfb1c244acf26ba295da64fc207cfac0371aa23ca6f16230658394cdd0307d6dce0cf0f5ec3035bd6c3d9e6585cfe7890446cc1ea44a6f2af1c480d28ff712e677bf59d7a28f8bac7c1c6a8e723e959b52862135d686e457e4339850fbd095f24585afb8f5b4a869ec523dbfbf7fcbdb96a2f0ceba2118871464b78501bee9"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "f45b6bea38d7555ed29d902ce829f05f1691e4af15e034a73983a4cb10aae2f7",
+                  "signature": "25806b8b64665b89d2b91f7ab7ab3a6121c859d89126e5b120f598b968b30e543cbd19fd227fa732934d1556797068a7723a76254ed2fcfca44f4ab9ae9a6e3dcd7c7b8111a6cee76a107593741e41f2f4ff24c008656dc2eeed5854b9e295f71ea3af4337b087835e322d42784a4413b6f7a2d7e66485b095f9d3cea6809412da15ff40aed1d0a1bb94d3d04df3b9da8985451433b7144f163ee46024587c94eaef3934aeaa7cbfdb6283abed7e7f60fc9177883fa31f22ecc7944fbfcb8955652ce0f260d6a29e3281ab38419e70439699403e6120fbd91b2664b0ba295669e28561b78c4002af2e3649c0ac414f2148f2776ff08ef7ddb881bb0091379611"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:90848ea8-1d3f-4c83-80b5-666de7ae07ea",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "4c1155ca98931dd0ce21a7ad3e29f9bd68bcb9de1191010726464a0925b0438a",
+                  "signature": "9ad02fa4150c92f02a4ea45149e852be0cee354fdba4342428f6c347c91149de470fe592dc5deed30f1c293502a0559a0bc581984879400bc013d963d22e6a3fbfb8f357823949d626178d4bb175c1c0361a17da15ebbc4498decf93dfc9e5b3a19d9b62766e3442422d5effdc8879dc2818570cc8aa86e673f45ab2f9676da66239929d92b1a2fcc745a8929b973ae4a5b3cc6065613f51a06f0eccf9bd24fd7ffc8662198539d458b863cf9676f63c7ac62283d29c5eb0192f35480b25922309bdb44b86e284f18e740f527a8185a4b1bf8d072ddbb9ec6f83a095f05b149c244ee665bba03086a4357a6674250edc4337fcbeaf8833f09ef60875ca17f7b4"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "00fac058554fa1b073aaf53c4d3fded52ea9f983db12f1dd696233928d0600a0",
+                  "signature": "7d970655b562030bb4459f32cb22b8ef2c3fc496edd678ebdb4001443e03a3ff805ead31b66e408b4db0ca02512f67cc8b8838f74e85b369bf979e7eaf061671e0633819c422368471d87891b507670ad1d7aaf66ac8c7b6d588b1c256e9d765cb6591ebbb1a9037f21a1cf111f0229d00608a78844adc502cefabed30384481980abe372afb38885d90be122527472489c5c196190fd950c203e27cac2f583b70b7a11547ff619f3b5fb1b5fbfb437144d62e8fa8adc9b32def471c7f64b4f56feaaff7db1513581101d321c02591fa16a96f09ef844dcab3b6e22fbb7d978e379757b52da660d1372f60e3b14b1639cf779f88b5e3c8e2fb7c2d2365e411f8"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "20846c2a143a45080568c5c8fb8d0d8f3abd38d31df03e4600d1bb42e8ef015a",
+                  "signature": "67f2ab94b43c775aa332aa33e4bf1186200dd072fcc8eb2bf218609d040a75cd620f46a4a0b21bd9ffa6848e3153848375b79e2b73552575d68d6ccc478fa2e0d93cb8142e8c9c20b84403fbcb2ca8c4ef81013de97ede02aa5ea0422699d45d238e05772a28f0a834d7c79f192a665f7fecbb0766bd9603b68e78a2f14e526f6bf7c26b68d47bbdf70192f20076795c6a892f099bf9b138ce0138454327a1a6d3744856f4f421d0d93d105c3ba688c9f6a99f65d6eaba75c139ebc525f151331c41788b0603ff4f5677a8fa34245e43cc335f88ecb1f64f1c659c1f2dc361f75dcd1c78875928fbd264bca709cc03a808bf358a5cd33dd6e0249b5b9f5c5e74"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "f2db1ffc7472871c297d7606d7c6a929022600cc1d5afd91b964123a4d0b1253",
+                  "signature": "6d0177def4e1efd50f5f4e63b6f12a774d7453e9638ad010949d7a904ba7c59c55c489aa48e774a63a95b26f61a66a86613c9ed3919c84fb40451c1fb92112ff4b6d41742286ec0b78a0e50826d5eebfdb2629dbf72dbdb47cfe08b24e0e3b092ea6070ecaee51f6f1f004241154eb2be7db1ac067ef8a4d00cc0b3124293793b9b17f3522414b2777455fb4820d118c804330b7dd412fde3bd24b236324c7c627267d6469580ead65664b187f20ac463511f9196721bfb1b03d432e7fc3ea6e85daf3dcf37721069aa0f6e410cae305952535cfd4f2a3659b2e52a0884c70222340f4794be61c8b10027779cce7ea7ea9daa87648dacbbcc7bcd082d480bc48"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -1988,6 +2470,28 @@
             "nameAtCustomer": "Door front-left"
           }
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:90848ea8-1d3f-4c83-80b5-666de7ae07ea",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:dc60fc50-c875-4ce6-a1b9-d59c4c1e0b17",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "a51aada55cd8b2e306c05931ced12003a36268f127b27d6cccf993c8277a1551",
+                  "signature": "5c99c187c7c85dd520a1b456212e93da8cf93784b568bb5815ffedb02fb22440c39717dc66e0d5e07fa4b5d6d2bc9fe0eb32d45067a8a90c3eac6f4bb0c71fd8feb71e1d7d5a97e854a5ed7832aa8fce9ae5d1416807587c916d97309dd51392f88f1c08025c1664c4ff7127af6ec8e22194addd4fc988fcb9f335e84bd17f17e2d70fdfb4e281bf4518afa810ca58cfd2e8482a7b6f3fc1813f2d8ae7040dac3c97e1bea570fb3168de9271c20cd78b8bbcb1b8a61a84dca0280a16fc7b2166679feb80e0bcc777829c45a2de3f4eceb21b2c5c2cb3b6c84d62335d332097f8d942cc8c96bb326b760ea9a0f6caa586b2a96c65b4bb61cb581e24649f87b2fc"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "2e60de63c4ec490006a14250a309f60c14672f5e76660875e7e464952f2677d4",
+                  "signature": "564db50ace14d56089f69c6691649c40a2a721e7a2d00aea5168f115f44e379b61c000d1f0b58a39ab1afa36540553d816eb89f2e0f035d5d9e1853d688d1f479ebedaf04eb1be656341e957330df11e99addeca4d86de056f8b8fdc345a3e194b6a73be914f066be9cc818c3e34ccc428dbe9e0e2e34a3066b6b4e867c2538d87d241eb5e3ca92bdca7f89b1a0abac56f8dff7e34f3bfe8591e072da914484746d629e77ba087bacffe4ed0085d652f5276aaaf0bd5aa586f9f4399a9cce79f106279d4c7925b738d91fda9a577fdd7896ae56a5216d0ed80c8b61d2e5bb737ee845c1f27e329df8d54cdac14a3cee636bb50c4b17865e61608d28a0a1e53d5"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -2021,7 +2525,7 @@
               "key": "manufacturerPartId"
             },
             {
-              "value": "NO-880046363577943820281666",
+              "value": "NO-this-was-changed-after-hash",
               "key": "partInstanceId"
             }
           ],
@@ -2104,6 +2608,28 @@
             "nameAtManufacturer": "Door f-r",
             "nameAtCustomer": "Door front-right"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:af17f072-fdb8-43a1-8cca-b61b3d6b37be",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:3e19c72f-ba00-4fa2-9d1d-534a2efb2e78",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "0909d9d187fdbcff1a609318ec53242e1e3e5378b275bff902966a35d0a2fcc7",
+                  "signature": "998a8c8bd8bf12b2e1aed8e189810a9ae649edaf13a3abdc973594eb5370c6aa2ef1cc873b9ff85280d6a7d6fffea80f236ae55d3c52a5294c24e3967256a99b54cac7f420032bd3f61e9521bb28e55c3cc57c98cae727dcc8cc5fed19c5b1ccec88b95af93487794fe830495c388e9131145c6ff63f08b9c00221265bfe26108752baa976cf5bfdb15ba5dfbdc276df9f2efb373a269c7d530e457fdbb1268603df1004bcc33870b347badf4b26a128911b525d6ba5c55a97a44051a0edcbea373bd444da73db7da5991ccbb9754b1af9ace02b54ea0d550cbaa96654e90db9910b8ff0c88e9d903c30835873108cdf1db35092e5367a29eeccef7c23f276c8"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "ae3a049db01fb6fea00bf4810a7e70fcb38ed0c8ff204fe93f38fe6b0599dbde",
+                  "signature": "abe93690973571d50a9907536aee8bf1f0c3ac80ab9b66894a3c3d57ec35a2fac87982158925188234b7a4941f01b1e70921abe875e00d7a5120febc81d139f760d453a7ec3fe3208c3c9e719378c630b5df8bda0dba4d181a7af79d10186dae87aa36c51ec4427f51fb1a2b9b8669dfb93d1541ad88077bca3964360478bf8aa6efeb8dabd7d3f05a4b674d724294aafe8dd54cd01d57619f587e9a603596cbef46feb6b11b9a440ac2f73611982cb60e04d17ddea7db4672cc32cc3352d75bfda4f870de40c7d408b1c95da9e6b7bcc523e5aab8462697e6dc5bcd45635fd941e887baffb97f80f3fbaef9f73e472ef367b5e42d72e91496756899f34d5422"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -2434,6 +2960,88 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:99ba549b-48f9-4c62-b761-3f7b338c4d80",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:b3803182-1cbd-4dd3-b088-f2c2dab73e84",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "6884be999b307efa775587876fcce5bf88259309bda92f50c079fd2ec74000fe",
+                  "signature": "a239034e0b4702a8b3fd34dff4b0383c7a132569393f71ccb1c5c177ab36b0747150c8081073014017b788e6941a6a637bb6ac264926f04f90b90c5f04f2633a9eee31a5ad598dc7f88e1b1c588d769e1a3441aeed0e32aacadd98c9bf93b989424d36b6db9b86b47b182f33cda65a02020603bf9c3772dad1dc9fd585cbe482ee774385618fffa6a3b6081b86303243ed9a792c6771692f0360d82db7d408ed22712084cc9471a4369127c857b7bc10f27178499195e632e886d1453cce346d2dd67cf956da06314e3f4c34b686773308e57adbedf62f51eea4f2e7cdaeb4e7fa41c8b455e9cca7962ec7261edab2078c7fe8a9b39df8f00e817c0e8d8fb1a1"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "582ad9ed9e1d732c394dd7e6ed8e7d5e9aca5ea44bb6d17e365801ab00e297c6",
+                  "signature": "3678af24728a5a1cb36c641d7c318cdda896bfe523ba09bf931215036e9b8a33a368feb560887d44c2884fb12f20957b13b1eb03c757d6aa1aff737811e5f11fac514602a6d87c3b9c59e785874832041465360a6fa610a6d8777319c267b0cacb1e6f94b33a8e2bbe14d504f9afe32537a2443041219d50b8b32afa3d3ce45e4b3215904b0941b8c12a2252a8ee1b2a29787ffe1167d2c930f0201d0f8479b58f49f99561973f49b0fe57c96a424432a27470a3b776f89732839a4dfc4550812dc9f2e05e43a17ac31510513744d66ff58a944e7363863b6f29a44d8c0b202cee0a15e4d33de553eed2fae52ec0e25b71cf61a320822f88de62e1e0d72c778c"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "e25a6450b4342235ca25c36eb64c1d677090456c891f1cc95e59545faf39b720",
+                  "signature": "91344fa047193a6b3e0db219eb4267e882a0561ed90ab6367093f877ec9b7c714ac15d5e32106843693cec468e185e15334cfe6ecc6f08f01816c076351f67ebdc95bb2721c3fdee7e6cd56cd43c61fb2a39b216042840e35e5a80bc1c5b44e9636498ddc62044ff7f3ad16e69ba40898926e1138a3193afe06ca79c8e8ad9ba086e968fc650427e8802e9b5c027c76edea4d49cb58af3a9e0ebfb9f0731b22008ec57f8ae64d61a84bcbf85f6e42f2541058486177a94892051dbd6c31fd24c673b7bea778e827effeede58f2c2893ab8cb41bf16e7050b73143b3dfa5fd1ad154b2484511f268eeab3ad41c0eda0793610b2adf638265a415a817631786256"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "983b92f36c57e656d1ef92a7d32f0e662d42dec17a9fd91d68345d19102edbc2",
+                  "signature": "91e80b8756e234f1ea80b10c99178c3c63f693000645c946213d118d4b7c6050df10c14fc65d4776a88df1b2c687e73925664c65fb963a9990d4e74eb3ac9516dea8b5059a18879d53487808602ad69c7be13d732fc5a663139a592c0ccbb32e4d2e27e1a0057376ded022285435ad1feda6c555b370cbbe9218aa25faa1f580ad333cdd312059c127adb0a6a46a5867d4135c484603ef1f1e3cdfa909a2a760edf2c2f6636dc253bfae0e291f2f60142b5237d1e3e5dfd722881f8128d78e92906d5f67e01b7ba8258814573fab8d743c707ee766399d2b87e984f34195b1c53310395775f98d01edca1ecf2168b9af1a42eb5f992ae8b447731f14a230b4bd"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "bba9d8e58d7630d99f839eee66f7475c163c7540d92cc87a77514d84047b412d",
+                  "signature": "df154e8ea68473bc2a1b439409139564d5da1e5e6443064d28b29fe5c2cf8156d380d5f3b47fc673a26410f07efacea2c8e1a38f279a8077f0a68214edf87679a872dfca14aabfe35d222777c0dfce75ea21a283904eb6365b587472ff315b77f547759a7d6a86b9d9b3d3da07228fa665a4dcf79af0c12490c57c94a7675151d5be62b8ad4e527877be7b187467bb7cd4a80280583cde4618b3ab8f612025e13929ea46a1babe9cd77fd59b5ca854af9d4dc66ed01550006b9bd4b276003f2e2d291a51522bf6fb868d0faf99477156423c697adb34249ac437e8d9e46cb17174878ee0fc6909918413e0a3242a50bbf7a6402306db254e4107e2ac50881626"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:a646ae1d-9f6d-472d-8f57-8e180883e362",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "6967f84bebe37c9fab41a6be927d577043f7bcea1f037064b54e90baad55fdf8",
+                  "signature": "b26ff9faaae8ca8a9121b8b7bdff4fcb7ce318318907a79ba9f91f719bb078ad5638c6e885185c2de9b5e03b677e609526c0a1d3a6ce0d8f639376f1c79acc007158073094f77b255ea06ba988ddad2f44b3ba33a9932dc734b892238fdb0a0fc0efd5185159b24889bdc13c62af95a68820b7295f04cf8f5e757c6e6f231fc06de736f9fe82e47512520d696e1401be341476368cf52f0df583abca1dc740735992a39d8536030c8b82d50b69c8d7e0f7fe79074d5d8a3ebe1766c536b6587cf7a847b55dd4ddb6ea123b8db60c6f531469d5b799bb0b785d5387ee74f85ae09fac3ea410170ea6c9aacd1490ba7ce6b223e9c78f9671383b761f423ce9be6f"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "da4926adaea5373d32ba5d21df0032206c168c719f7cbbe8d1f308b006255194",
+                  "signature": "adf1c72f650afd934f66b27f569eaf16652e860485cac2283cb3df3f51507da84fca7bc3550681a266f702d5e96e1facb5617463ba79bc6d96b2ac235c4f1109cc972a54f1621cd0c924793414ed0d3abeb55b81071517b278d05e70a710cef2dbe2201f14b747ab0ccbdac2e2e3dd03f78c1ca7624985afe29ee557e9f4c72e1fc2db6cacec5d8653643f8ab90567a97b6a9ad244e6dc034073b53d47d4fd703b89be19056ff87b753222bc13234a5226b0f7169bfb679ce2301f70fc778663da34bdda08f38b94174bffb47461bcf6a851dce72230b22b940e7f97c613d8248ec82595ab1332993de7c9c70c225e2e78b7127210a63ecf4ec36e3b40aa8820"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "b00958fc0ae6f33ed76ec3ad1fd81146bc2ada60e18d83185178a60647994537",
+                  "signature": "dcd1d7fb8e8b9d75ffc62589b67e4c90ae2828ee16cc378af379f78978a141b0f766abb35c862eaefe238314957e9260028e9d17fd1050b35f03aa0bafd04cdee4bcdad81cabd93c6accf69e7758cee6a5716e1ce4a2cccbd79661261b0139812b95780226f55ffd67cdc11c7fb0d08bf9c2c7c79d368ab95234a8280f6e6e67c91ad8cad1f017ed95f1156123cf185f6a530d18ad2ef27d1b10fe89bfe255c10a1ee71f83e36ca538bd907051e63e55ec18f27478b1363a22121402594a10e197cf62c7be1ecb58cd866ddbdf4e8de25e0ae4cf694b7d6742c3813760fce175c990b5b46af98d1f40c063587f92f97d5d1964a68a021406d7c4e0712533ccfc"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "b43622785b757ec70f8746f4c830e954ddefdc804edb8a1267a5b3b7d41b5046",
+                  "signature": "c09810da432e2e1a7846af457a231206684ec96c7d4e219a77c39f56be2d0471de762a7f9278c0f4d279249bb84bee9c31f4c48d8da77607319c129d7a32c6960eee90955226d1cbcea66aa93578b108553da066f4d1274f95657042f0c2aea0bc4b555d9a119d6f928d7de3c477cb07e3d3bd1739c872bea5593d9ad565d3b44dad92b231475948b04c806d293d3f246cc45cba17d1abb4b0dcfa9daa249fc890325be094555271e17cb59df3af26f04561cf3b5730f3fabbbc2613a1cb770c7d9d5b419117ab903f884c0b8a22de6a259891f0ef67f22f8d643106c9e6fb80ac6a42f25614e16d13f79a29d33d787a1e387922412b32009ddf81cf145ea574"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:0f2f0c72-d541-4df4-a04d-98a5099b491c",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "7d5c6b0dec565d372565d8fb9989a90fa75fd65cac5a19bb64d812d5b2fe4635",
+                  "signature": "6c9418364dfb34a6b2a7d90bfe19814e31ef671ae86aa159cb800585de5a49ddbf0f2b2d70a1fcf76a7d2d592698fbb78d7af2edc21aaa062a51d98b080bdfb17bd397778cf0df45586c64498fb8a5be4494e4502d9c53a7c85a3566c1e49304729c18ba6597e3cac36cbbe5f4f20b2af6a92d20dcc6f88b9b45b39188a0414888845e73cee8233bd0521e152a7bc4258dae48078fbb10856b659a16ceeae79fbc8ebae0cdef17c339e7775cd9884b2f70391a7fd7d12033bd0a55cc5702ccbe274ddb9ca1675cbd93bf2e38ca2860dffc87300aa4d9b1c8c00bee9e6c30fe41b8d1f55de01d7d895384bc3f886c145622967f3704e7fc2c2dc12498977639e6"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "ac4eb65c98840b60b112b7423d9e8ea38d3cd96558a5c37e6e331f985a6f3d1b",
+                  "signature": "9ce204269fe9edab50a3d60812c2c07a2e0a5751395f3670efd5a92accda01e93ac3f235910c3610721b17bfa7e89840271cd67f0ca26c9240402eb3d730fd341e3e27e54cae1d7ce7513cfcf29b0e04e8b87c7b8452df8f6f9313904774f0b0afd6e88568572357c0cd98dc17bcf28081bb61d219c53e318fba5187381034fc6e897ae69dcc0308eb0e7c8cdf95f5ae772f5f28c6671b49a4ccccc0cae0b524491265d8c23c7ae1ed56b4dfe73f4f88cd40dbd0e53aded89f4d4e5496e8f14f96ca85cbfef1da0b9c9be958a81130be12c4abe391fbcc9cccdf9b70931e0dc22fa5bfb48a552d32524e069b5cfe5125d78e4f8468777f30f48980a769132855"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "52bfe1b8377a4fce4617593ff66d166e6ad8e7ecab2b16ebc6266aab1b21f81c",
+                  "signature": "2e202c264f13fe08ae590e54266418f3c9ae3893c693d1cb8a57aff65036f5d87e91bcd924885620f3e5ee1e26767d0155c0dcef1bb8b23dc4844c42d0f1eb61371d6ae6171c22653037ee381b2a8f963a45c423816677b3f73a46fe028526ae12c632fd821025013e601da2cd3c1fbfed537ac9681d806cabcbf5770e9e864851de535ebaaf00d7e9f7015b72fe16030263e49be00441a20f92f697a9707d36005a638eda150ab44b857e7ea7b4652db50b98cb27b456ce8c7f3372be542fc29cf22a6021504ba481344db6fb6f7936664ceab8a7dcbe7b0a280bba2404c2c6f5c3277bc46e09feccfd456cee145dbcb7e1640df5a20a0964d3a6fdefbec721"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -2580,6 +3188,33 @@
             "nameAtManufacturer": "Sensor",
             "nameAtCustomer": "Sensor"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:a646ae1d-9f6d-472d-8f57-8e180883e362",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:c8667ad3-04ee-4654-a8a8-73bab4827ea6",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "de192ed6ad0bb653c612be8380396ea0d84fb24d36953883862a381f38f6f32f",
+                  "signature": "aaf8f8691d5244180dd6a9d3a647dd6abeec088ed1fd1fcb8e2325a57e77d81f2e739720d966ccafcf68c1cca630fe032b497209a90d269e340cdcbc7e1c5043af785a2396bad618b06b24e93a9e61a1b79ae1ec04e1518f9497041d3cf08dab6b3c6d45c2cc352119b33dc0c6ff224b8fb5b8e262573182f784ff81f1e59e94101d6333f7a29db713fdea62e472127263dbb4b63f8fbef9c4a100e83c162c5211ae9bf8572a1160ec02dcef923f26f78156c52b9d0985f29a257a78c5885a08aa7619ecc0a5fd5d277c6c572f14808bf599aba457e0e4a33489b8bb6ce37d204e717468d7e589b4614a5aef28db7f84ecec65629f91a47e7fb849391eb49b11"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "ef73d43b6003f21b8474cb30e45e0a6859fbeda90845656d1e382f401e61480f",
+                  "signature": "d57d4abb6cdb66f04387fb3d53d36708d94feea796b3144c0b251cbcdfb394659aa5a97d2760e3b1ef1ade3697d1fb25633b91422de5c50643ca36d26308952e0f0e538ebf3c84a2e3030b1f547f3edd41176a67a82bbda69af7a3dfd3b61ec33a1feb89864c278df39f3f03c7ab8c8565432b4f90ed795b8d0392f355095ab3d8484d687f65cf6886cbd810d3e5675347043a2c79229e1a0bccc484b42c49f40226cde22f4d185202c0ce2d173f3369b0564c6ad8882f4b4f98adc9e17f264fa94464a91525963e7596ee62de03b0912a071456407c736bc454a01b2125156b4030362c1b09df092b732b64bdf93f46882e259d77cf1e123d0537b6c691524f"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "10141dc53b1519b642512bad155e6d4429edd6cd2f6e7c356850d27b3362178d",
+                  "signature": "b0cd2e4f837a5be9b358fa4f5f977b89a48cb5a27b391eda5467c8b1be9134bfcffd524d1497cd4ed0a995e23402116e78c8bc5912ecaa274a8facd592f073b7692be8a42ecd064c901c452370f20a0d0d8fa9f5d39607bf98defe1d93e39e7493ba6fe58d7ee656b23920ec5c256b3f052f3f858875ba6ba8bf7101f7965ff9792b7b800288c0f1f140cf3997892f095913a87a9e6981865dd8677ac30f580a488a4d48a7a2641330f54b258e8b2b2ddd1b8ca25b9a13bfafaf976b7fcb43a43ada6403bd6b1baf8f42eca7b55bef403f6b1b7e384124bd592e2f0cb34f9cfe08799de11c889005e18fd96baf23109de0e5b207b3e5dbf31bd7456040aed801"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -2732,6 +3367,12 @@
               "materialAbbreviation": "GL338"
             }
           ]
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:b3803182-1cbd-4dd3-b088-f2c2dab73e84",
+          "childParts": []
         }
       ]
     },
@@ -3063,6 +3704,103 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:17e11d67-0315-4504-82cd-8e70a8c33a6a",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:8c437b9d-f1b8-4397-b030-c3637eaf9b53",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "60765a1e5046321b6de6d8e7bfcb0263679f3ea492e758d8bea8b19cddc195eb",
+                  "signature": "08a7ebd07fe73bba558b2afadaff1ca2d080b961a5a3406d8fd40aae5d26652b3ba35e9c62f2888531ec6d60c02400bae66f5c6ca30a90cad8d348bf05a71bd1aaae98751976da1ad65c9109e2f5dbdfbb3ce70aa8bf8a243b28831ec3320dcec8a0ffffa1405773c162910d8fd950f3345f8d91c70fed92c1552a756a6ac5d49d66ab7adbdad6369fca06a329410c961e370fe9444930160ef55ea3b3d40a1d80acf5de26df7cf1f6776fdfad85fdafb2557673ac79c5e1408e5595e0e3adff38f964a9501f3260c7dc73eb3125223c7f5b27ec981ed03d2fef94d194d02e5666189760520a7b94bb111e427f8c0df3edc8c5d6006166b29150be3d6dead8ae"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "a79b8174c3d063d645df3b3b1a3ebac4bf0f24204af76af89fb1e1c160be2d70",
+                  "signature": "0ac458d70d6d29a66f6070077e21ed4548131e578b8eec83f0d260d91453c07621e68906bb494f7535390fdefb673e92e820fee6287a3e3c781caad9a3c484fae7c91e964788c98c14698412d162cdf082861ffc8525d52520aad06dc77b21c55ea03284d51c186bb7376b9dbd31be2a7d9e157b9e87956750e4323b554e97ba915f09061e5b6bfa1bd20199f4cb5b1f9497f82cc284d39275e2357150c34eb6e7f5f9ffbe4722685b70d97c9e7496d79b5be225a54a52c00f4246a388a8ebb7609e22c6a0cb6ad38a006be9338b0cafac0bda985e8e889dc097d1f8458467124f258935dc600d1098b3fbecdd47e5cab5f79e1b293f11c5a59acd472573637d"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "04804312ceb48bc6111a8ae7a9d2396bec575b3c140de20a362d68b4922b60f5",
+                  "signature": "094210f47a9f139b5b21b416a5f795451083d49227fbc868ad944bf1ae6d28f55d7c7a0fbbf336345f9512605b924faa6d9ba5e4f72fc07479a922116d5616c9b7cf32b4ac3bc35b86dd8d68d282fc53627c019e6cb389908008d9c900ced04db67b5bbc44823d41b24c384e69a446d655b08a6bb7db6cb83212590715e80df5dc282b2efebf0b42d4ff013314916c323c782719c99ee3b501c18dbc1ca81a6784f1655502f4f99fa22fe98a618539d0cdc2033f0be85e9e7e824ddb74c4c0a5c9d7632ae410d79f440b3ab135af8942e0fd79b3cdcbe60a679a40eaac02d2c4aa639c61ee8448e51c5b0e2aa568ed68f550e28e0b01b49f980e2eac52e704cb"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "d9d43cc0403ce7e2137d5c60a3557b7c6411a638ffa9e1dd988378e4d028b28f",
+                  "signature": "8201580b77aae0bb847cd8b50f98e796c4f5debf27555b53653fe569057826bfeec9f02ce8d40c7468da6325f033b3c35be865d5c5821fd4456d6cfffb794a0cbd59d41fffc944e5ab265288dbeeca16ad2f465258e17ce8ff77236067e2041bd152eb5a9f0ddc9cc5fd616060f9dd7fba13396b9bd8766d272dfb733309808a6570ca6a1744a1d30738d1f3597e1b13c4625a7a4ed9a3ca4e947cbc7b296955aff89e504c3cbcba7577a27c8c6b31b187551d01733c3a3c09f0aeca7d1c0ec1dd5f9fa6b1fad421942ba9ffedb4604d7c0ea8ac435a1a4fa77e79ae3ce7210eeb0fd7b0e3f0c79e546af74eea14eccebe24965c6fcfcba7566aae8ce4321c7f"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:3d560991-9d24-4f83-958e-a93a288016c9",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "18b3119df02b6e972a85c4bb9e50ca28f07210488ae0dfe99285f35bbd7564c6",
+                  "signature": "2443b3ea429249bac1434537a43f0a6ea8417a653cf19a33d1f50e8329c33c2559beecf6200250f2ed68a706c5bd99f80f02cb4068b09f2e93e2eb91064c920f8a425954738cb98a68fe2785624b5e369bcb01523993fe07688294bacbe4cd1de245f8ce92a793f800ea7476b0bac2ecb48972b3bc81e5c2be399326eef9000edea24a6abb18a1ee523091c1259d5a3630af26a0ed36ac9170fb6359e4f7c5960dc7779747f9a61e6e452416d1312b0a332fe96eabba1986471a9a49a970e101eb275654f6580a28016d92e5cb3c2aed0a26b2a80ee42b2b492787e1b961503852b902d08146825ff5053ab6d1579e403cee6d3666c58d14a9808dadaaf6c268"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "290245d031896df6bd27014e87a4fdc6a7d69bfe93e28e9a673e4cfeb2f23ab2",
+                  "signature": "e4ddb1a1aab34edeedcd7b7b035fb961f394a3b44f6039a127e853e4315ec00c445f7d27f9446bda3a1453d6412086fbc3adf074cbf920f3477634cad06242cc9194e30aee83e5c82346616a7e89c6b8cd3912cc76e1af8c8f35f0aa72ab6e1a0a5e69aeaccfaeba314b04468f9a8de537ba27c5d1f682f4e88824bd7406d242de9a577b23357a9a7f0b6ce9c3b6ba03a4906ceefad81e2f534ccddbd57c3d73b684b2ee850f59cee87cfe485a68337e4518265e797549a25899ea819c731e693a30067f5fdfa0b02dbb6b3ad2bfd87c97c0f35f6a4953827e625c6aa91ab346b34690183dbac4a77f6be7ffbb3c0485d896c7afd2e53f6943f25c01a1692fa8"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "64c0238dbea5ce53cc8fd458b2f14b689993797e155bd252a91d759e928c2a53",
+                  "signature": "083c00b5bda61f764511b0ae9cec91021322f4fbefa009456854921a4f18db779b2554e51b3c616d07d193fb6f16c6b97697773dcc377e08e56fc7da9d01b9e7c7cd06fc26d44502b49fbae06bc5a808fe71f4adcfae67d7fc17438a9a950c6c4e9ac8e5dd419e164ca6544f85e3250603a18954b338ecc676c2a7e5c8f5b0e387c1ef2f68559e815351fe625dc03fbf1589d9bc2aa5e35223dfa32df702e0d7d86afc9e76d208506bec3372a1e381e608c28783d121da60e2149ba6668794ac116e9b7d943ed49c3615b5b753ddd43ce53cd86eeb70f788ef9cdc96d4016ba836d0aa537423da5bdfdc6c8ff591505564f6e2a622dea5a29a3717ff5957b394"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.transmission_pass:1.0.0#TransmissionPass",
+                  "hash": "9ebdc5cfa6330942ea457a999da00eaf46955e718777c84b37447c4712855676",
+                  "signature": "960c4c565349ae97d6b4bef1cca691eb8cb97055642452380e8927a57e6fc3499c14cec7ccc56462ad4112aa60b4f9abb2794944739b512703f5d35ab5a6b72f3744e08517b8832bf9cd37ac733c27e5a4d2d6c1ad1fda78dca1dfbcead5bdd0ed4e22d3269fa6b3dc6b060294f33d67dd4e7c3c4a80b74dab2cfdf614e67a929b7b0358f0365ef89721c472613e136504fe78516f5d01c87377997d320807bd54dc94c45a47fd41cacacef012824d76fbc96ecbd47e280b2ed3cafca671ba26600c929136a05bfb4e9153c1b3bf4ccd12dceccd12d53f05e0d80985867016af7f88475f797e16b8e3ccc0459e138e9babfd07aae5955156a12f441a72bd8af6"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
+                  "hash": "5fc7e89d297ea6b4ed124b592d3797fe1d3a1eaceaf754b9dbd34fa668b4fc3d",
+                  "signature": "e8a93bdd88352f541026c2f8f32c529ae308ee7fd95feba334026d06f5339ef93beafdc9795f908152b965c030d539eb0fbe572d35cd0e81212ea4cfc0c43ed22afbddc750b319bcdf1ecc82effcdaca6bd1724bc4935584ca87192a2e0cedd3b2fcc0d12bebce78e5b8628be1cb05b4ac4587d4da50abc5b6f44223b524792e3126a5ddb5aacc7c474b4f7df928ca3b025e0d4e776dd899dd9dfa57f21029c9dd9db7f8f502dc78f2f70ae6ff2bcfe11c7b3df1d1c95e7246d8f2426a534949af434d52647cb589a15f28600dc16903c383cd8caaab68dad5ee00858b611ffc7fce33e83a55aec34d446a3f4293f8ae81c60bf6440ac1232f64c93197e7de89"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "187b6e35695747681ca77f72028cc46769a22658019388b16a205501de33b29f",
+                  "signature": "102d9d556ea56c9bef347e23e0f8db47a850f7c4ae8a87ddefc788125bc2ae51c08c2d5511ff098a259dd628bd8b7848bd9652174f374991610a82207817edeb63d4c4604eb73e0396bae8f98ea3303f8d0d6ad4f5677c0c5603d29f1a69c9048fc7e4bef8fe7a74ddc1b0f258fc18c7fa2bdae9f677817b58c551b49fe8a179ccbfb1c244acf26ba295da64fc207cfac0371aa23ca6f16230658394cdd0307d6dce0cf0f5ec3035bd6c3d9e6585cfe7890446cc1ea44a6f2af1c480d28ff712e677bf59d7a28f8bac7c1c6a8e723e959b52862135d686e457e4339850fbd095f24585afb8f5b4a869ec523dbfbf7fcbdb96a2f0ceba2118871464b78501bee9"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "7fa55a9a83c8d41dace7f4abcd09efe3602fa03dcff588f624dfb78b08a9f026",
+                  "signature": "2ded5b5fc94689ff6d3d7df4a8c755f4b9ab9e2a01f48119405a4ab9843ca1170762f7b540081e76562e35a6191be7e9cdce73e9808d84b0f0f04445a050baff13abf71aea804b1de6cc5cbf070a2211b120c2cd7dd885d10921cf7f62b635922a8f52aba879b1f2f1f248caaea10941448b18403f976bb71aac030e7274994750cbffb0550207ad22e459694984c0225df847eb9ea3400fede7b2ca88e0e549a0f52a837b1a6d4c37d199b64a125ccf0fb45996ed380afca560e77d338af58c597cc99ceec608d1a36f026788d449908c72920b2702646a0ddff2b293c99484e978b793ca33cd29721a1867738f8357f716712c2ed1db862761c25d9869283b"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:95f04358-534d-4d58-bd04-29d6ae0a59da",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "47a06b399c6b6f8735f12d2078c0659a214e290e28d778621fc52df696c72bab",
+                  "signature": "a1c585b62a8ce5b14de91e133579e3eae9632bef7d489635efefdbefd7d0ca707a7c96d55417f50590aaf4796c56fde07183be1ac8b8a6c4117cb0cccb69582bfde56cf8a71718b19c8642ac8c67a4010cbbda311178baf45a7e8415782b66102e1ffade90f053d581c3e340dd8252b091132f1bfaca88a630b3a6b09a964e25f98208606ccd95176d4ae4d66a349c4894adf15f0d9ca2e0c88be6ae67a7361613905a14be25cdc3b9865e57c203f07fe0c8af860468c4696d0f23b0762c6601f4804a3c9ed7b0c8a3ec10f91e48564238a673de11ea638f899bc7b5abfb648c1f97de73d4651d35b80bc04489afb5f1eb90140b2d5b40bb21b6a34b28c88c7e"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "f597b6b86107acb684fa06ee7507b94bd9a3ad4545aede80816d5f5bc7f6d936",
+                  "signature": "0a8b15f7287d623d96cbb7ba74302a968d731e428ca73e6ec74d3e02a650d072aa23368fdc12aa6758520872fac6eb52e0965f43b884e5392358b9e84914b6e9330242f17bcd2401c28d1768878b817f511b414280c40f443d3af7ed1d850bdc631868eca616ded903a27eb349f4e230ed30dd5f85c3d27303b3d32da296a945fb214362739f35041f17fb6388368ccb7d443a255c5ecf2ca7e6fc8eab07be374218139d8d9e06dce0d8e6131c6da5d2326159f6bde9c25e7ee09d353650e390bb420e08b12bf6d29a82ecb69568288d3384a1abf1c1c6f48dd95f1ede3950d8eefcac4ec1e76d8296b2f6fd874ba6c099f6099fae87e8fdba935a2450cc9df0"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "fd79a21f1c87eaac699d08b348aea8a1c8ddebf5e85e8a25b19f0be3787fdeb0",
+                  "signature": "be4408bc21912ef82670298d5c750e60213e0759bdb5b4a7017f382ac30223b94929b6b3bee6266ae21f972e27542ca7eb2fe298c5d9197c6134b432e60855dd9dc729d033cd0a25c7769b2426a54885c4cc0deb53f29bda3fb36030f91c2d0a7e16e2c91087a4c0ce1c98bcf065528263a7b5af606372df9100d4a4c12b8ce1678bc7dae1566e5ccfc5a965c6d41c6c76ddcde9a0c32e14802c10c80b031ead54d014202744b8c387c0a28738b99e05fc4ddfc03896016e9ff475a5c1f7d3c6d709fe02d88d995836d8b60c1e79ef5cade75e67570d8af6e3cf9ab1d29943f20fe8bb133e01eb8c2028182d486dfef97ed21fa260199da9867a496813629048"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "ad5a6af47ea11eb3d317d75c6aefb6452f49572274d7287d4e80c03589c482a4",
+                  "signature": "2db0e88f86eb26561ddee5b25e68d6c343c00b4db5df2527151d02670f4ace2e8ec2f6e81e4c6e9b1d1a3768aeb90234b2a4aea9af6e6309a416b82c413f194c86b80e03f2fada681373a454cdab9d1440b0513c41717481505d7cdbd0cad8ad343af4a5c829995d42bd83a1b02fc7bef03e7637936a29bfc6f6e1c7518ff1130befe2fc510d0c4857039aca23f0e4dcbfbac78619aee1d371a05b624798a9065c5695bdf246c090107a9bc0e9d0535c4c25fc09fdde1ef3f52f840e9b43b42183a2085d0eeae7da1dbf42f5788003a043c9e18136d1a370d606c646235ec525a08286a06b6ede8f454db442365e9d7d33bec9ac3baadffde7c2f82e04bce958"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -3129,6 +3867,28 @@
             "nameAtManufacturer": "Door f-l",
             "nameAtCustomer": "Door front-left"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:8c437b9d-f1b8-4397-b030-c3637eaf9b53",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:12def7dc-8660-4ba6-be15-a4efa0894af6",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "2c1bed84c58b196ee677dbd708c31fc2426cab4f76a14345e685b0df35fa075a",
+                  "signature": "069b69c65ab0ad0c767e8f34430cb75058a6182f34cbcbfc00f29150c504d9d02ace836526d7994427c56dfb481f8c1ba442f8f6cd1f0a169d4bd8ef353ab63db7e30bcac605af4c089f66a68bed8c5fc08dfdfb09d2c86ae44504a9dcc1b55d70a1204915f0cfddcb012726fd94c669cf33fff665878965807d041ad133ad7b7b5ca3d15c5cbf5a25374a7c2abea11162e6ac1d0087ce7d0d34125dea690cdc15e364db4535f695ad053b4c6d263c9e0d1260116cf9929c0558dd6dc35ca5e1153376b98705520f403cc37561684390c0ed9c971385ff163b17c7a2d3b9bbc386abeae9e23a41e97742cb4847beceacd3cbeffdf99e7234e60ec43a44db6699"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "f30ca869fa911843068660b760b29c693a62236ea79d9994517131ba0db202c6",
+                  "signature": "7f9dc861034965cbab52618197247a587c947f9d28440a8b49010b6420baecdb01ae604a7be126f16482a36b82ed7355c13c59044d3f252d0f167d44253bc7a3f3a4ae47aa4456ab2d97749d90105cf738da40df9921c7465526136d79215fccba475928fb01291fe2abeadc3d9b1b614b05e69505bc35e9bd5893f13a2c5b311079cf414629ab2a4e7df363db5f12baac3c983aa4560316dc7b77a40622f0fca7db9703b92763a7e8b26b4f79423e5330e5ebfa6119b8df14ae2a554ad8839e5ef35ccec41675edbb0873b7ab92c23a87ea38b1ce10a52936b5df041c7059b5f94f543c38ecac3fc2d042077fe46ff0e569a5eb4bb77ab4cef548256c8a38d6"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -3246,6 +4006,28 @@
             "nameAtManufacturer": "Door f-r",
             "nameAtCustomer": "Door front-right"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:95f04358-534d-4d58-bd04-29d6ae0a59da",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:60493519-9397-49c7-b69f-76111171d761",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "d2f49cd55db7e34ef55ae0fdcfb6cbe77983d8d5e61ccdf5a071baee5b1ce039",
+                  "signature": "bca4767c1d6f308c2d3089434d4646d27f50194e8039730b98b6aa36c5cecff28018a91968c930717e7414ad9f4c3f3aa0e06712251e0f4bede4384c9e22dbf4b65a00843376cf0ebc66ae318af2b35a2c603c019b20ccd2b7d8732821b0bab5e717b9d70eb2b00677a7df9bbaa9eb28e739ebdad199b87746f9aee1dc5b22d38f673ccd59cdd7c4340aa9acafbd0388215e5f24ad689d0da9a0c67cef777a7e2c7d8706453733d53723a20f0bc6bb9962b11e883943921ae1ce201a0d76a2d38ee7320f1c9a172c8b5d69e871f37eb42ff705d95a4eb30759cdb4497b706e661fe9b414e6fa10524a08924abb10ffe4612255c5e4b8d0126107a3c82ceae5d8"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "9b69d53926a30e07b17f9a6c7c06671a2e74b8565325d24b7244ece97fe73ee7",
+                  "signature": "8e68a29e2b4acbf054eebf1b4b8ccd0c8620f3ae544832d9011d9e86c2c3201e33e893925200ed11dc988b75526d38954858d195f9dd348890de45c3f8c39433623c954e71ebc963a90efc9d6b92ee943eca48802f665df2a7d50e961ca65f742ee82c38782a4b8af106db2fe84c46222bd71bb26442cb2e0b6e6b1646fbbff8b8673928cdc65524ab152ba2db7dd93ac5871ea9a8f375c9e85e7e40b5682fbccb4411fe605f82aa788db649ee4295ac5f75a95bc5ab81bbfccc308a1981ef024cc8a09f149f5ff69543698fe1f3f780e611764da0a2723a0405e37433cdc2c8ba9be28af549f0d92d7b6c180f58b8b84daf92693f05defa694a6a3ebc2bfc5e"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -3576,6 +4358,88 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:3d560991-9d24-4f83-958e-a93a288016c9",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:d913df2d-364a-461e-8490-176349107197",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "ea3cb38ffa12ac536d5f2795c51c9c38348a761364844a27b95ce6255d7c722d",
+                  "signature": "a4e5116adf2eacc5af1f5847eeaa8ace4ff5acb7cf97db19d1b35e34a45397f5e49ec1d7da7ddd1a85ec28bb809a520547d43a11a5a34cb44553c5d8c1fdd4df0bf23be3ca9aed8c0163770a7dedff933edee307eac90d08e01f09963f1f82e083ae6c5a6ed8ddbdc651d1bfc61b9b0b23bf30f5936903e0ca13a57f80f670cbcfe6e02ff5b195860fc9beff55763884791dcd0f62de65867fcbe30d6a16af8dc1d38f5eec1930e1abbfe56ff79d63c38e6aa7461c4c3cfe5818a1c0f1f3845ee66af70b4734616dca0115cfb65db5e6139a93a1b4439234e06df152e0c5d9de1aa5cbf81aac634fdcb823064b3b000b6fef20c3c9559ddb8bd04f06c7df2c81"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "6947f8afba3e78c970af5235a4f19e5501d9a76af863e75e0b5f8a090f25edab",
+                  "signature": "4914eb67c87ae750b4a6b4f73165020beae1724844eb0e29d2c1950b2db073e0361d96cddd64278e24b4e721e7cde53905624e693d610501bfc341143926d8287eecafd5f5902c1ac63b8e652b905bb5b807b82d9b7a08fd5559a918a2b917c27a75096a9c27e38b05208aa95ad04ae61eafa3f6b25c05ed50ca27200fef82e0e4265ecc5b5cd7fdde0dd0c8a60ad1fe826012484ec4ad13b4b0c29a082e06d7562ffc7c7b2847b2891adb45933482fdab86666c8bf4f546d733596f10f5e585024524f215298c7ecc9dc57a6401a29efcd9a3b8198be09a532a33fbeb8dc5fdfd4b30213e20d559dc965f66b03f9c8f0e115759b979b0fe3f0f092337032796"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "52bfe1b8377a4fce4617593ff66d166e6ad8e7ecab2b16ebc6266aab1b21f81c",
+                  "signature": "2e202c264f13fe08ae590e54266418f3c9ae3893c693d1cb8a57aff65036f5d87e91bcd924885620f3e5ee1e26767d0155c0dcef1bb8b23dc4844c42d0f1eb61371d6ae6171c22653037ee381b2a8f963a45c423816677b3f73a46fe028526ae12c632fd821025013e601da2cd3c1fbfed537ac9681d806cabcbf5770e9e864851de535ebaaf00d7e9f7015b72fe16030263e49be00441a20f92f697a9707d36005a638eda150ab44b857e7ea7b4652db50b98cb27b456ce8c7f3372be542fc29cf22a6021504ba481344db6fb6f7936664ceab8a7dcbe7b0a280bba2404c2c6f5c3277bc46e09feccfd456cee145dbcb7e1640df5a20a0964d3a6fdefbec721"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:3d73f092-1f12-46cd-a6a0-5edba356a373",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "ab3704b914273479b45966923e7cd1ac60f13fef8c67f36644b46fa72f9d01d8",
+                  "signature": "1169bdc624a81e7f4bd91209aec60f782b2102db7ae152b16a4092864220e41e416e0925a8021fb3650fe428967ab21fbaef591cee4dbeabf8993ab31b978cdc2d6a846a7ffa17c3c8d78e4428703953ea7e9e68d5fd5fa2654a0351b6fd1bae7f2f8f376847853b9a6512e41ca324f94f3fb9fb847ebfb2064afab2e8a021c16d8b30636e3c49341ea99f5e901711372475e3f96ec65495e6674ca9d4e1f68d6ac38c4f561be93a8ea25d823f65ec8d409cffb6c0f4426126e253e66b94b9d8d834da6148d1e20803ee47cb67e5e3cf88858e8188be618c039ec453c851a763918e4edc752d00c52c4ec722e587799c7ebf7077969a68f6db9e45e471e8fe7d"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "62f51e4f9612ca6db0ba81e655d52bfd94485621355ff16867415d70e756130b",
+                  "signature": "abbbceae6e37869ff03860fe013b8f4ba8c4ee3cec40c05ecaa999bc9adb66b682e60676c21f400755c2066a9fe88864076309cfda818cdfcb9db4fd42c96fe10721b4dfdd52ced1b28ff14af5998c47bce3d57dff3cadb426573f86ee0d3da403fd2698660219c5b3f3e4ee337de167ea60ddf8c085b1300f680d554aee9bf617fb81b9a0b73724a26a4d5489633eee3ba0bf4a69c47903d5fb0ebf38fc6540070cd42c921692a5afd860fd49b7c8c19118f4150adac776fd9684e2a492cf5ea55c35ae117abd3892769707c2956945515639e1647b6684ecd7598914011fffb80d7aa814e88b866ad0db6ae5c5781073ca73e593438d16983824b74349d948"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "bc1a4aeccf6a726d089f946dfa210a779a72f29b3781cc4f56ad2e62c0cd2fd6",
+                  "signature": "a8f27a1708b3e8c14454cfec08d27a5c5b1ae55eaf5c0153e853c69a83810c273fc4742a0a6a36a6b69aceeb783a9880e21b6a69d6d1ed117eb379bdb02835089741c4d1420326b7cbf4583d660549a1a4cbcecd1277cdc4dc4fdc985c35dd6f01c8e987258e29f48a822b2d5e392b75c0d2057c83d03c6b25407d6a623f9689f92124245888e32c5a9ff332d02f19b827e441cc57cac7990b7709b694917f052acdee2a0d8993d5059c0cbcaeae7f79d7d944c2f95f4bb96f7437338418e11b74d1b8b6cfb668f8a90e9e27032575514510dd7425ccfb568c86e3210fc96e5352f4b0f562770c34bdddb06c1ea1afa144c90ff2a04bc9173323916dc1eeac23"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "9a612e49fabc19f29167a9ecbc013e92c5ff95c1432dc27d6e0e0d18b5f9e158",
+                  "signature": "0475e4c31c7ecb36738c1032841d26b07c6aba2e63facba652d0dd766689efc294c7a16f7f1011e9afd172e1783314947db102bba31f1d5a95d445e16a98d9e9623e7db56bf0dadbe45a85829a42cea7e59a6faa4255eb2e43b21bae001504d35c5a0fe71314e3141f4be1ea5b25652693579ed60f31f8c7b219a47b8223c805d6fb1d79a33d7afc1b161d2fa13bc011148609e0c1ecf64b4e7e593c807e43a30405844f3e53aaff6dc9e3402159310091ce1ffe2121ccbc4978226cf8ff8d3e3751fa89aa28d8ca96bc459140413f3554ae96d2fd64b8c39a5bb76d9e06f848ffa4dd4da62e08b03d349708498cfd6e416d8b6f1654c7b26aa56b1ce42d5cee"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:fcf45ec3-f269-4e86-8414-0007d833bf46",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "a2be6036de16273e93e2321111371327ccd3141bfc6db09268c0e95550118cb9",
+                  "signature": "701aa0c1b9c55ab34c1f636c55dabdbf6978627902e9554520c8f37fb5d317bf623fe021f89d1de81c400307ab266f0a3df2c8bbae3b2e27d0a3a003ad86f0836246f3f4fc836a505c93bfd807e7c0d81bacf32b525b4101d8c7353e45cf3e0ca3e44af6cfb024f296de39d99cdad6c89becc2cd179b1a9a2cf9ee68e3de690b4eb80bdc65afb18c9794568e862bfa55e6b3364984cf75d6f85ab421ea153eef977f60a0deeba5a10129fe42a171dfbeb75af092d618c6b06b0cc0978e305330265ac396b743f4b85bc4364a8ceb794c2f346a80177432b6d891f25b11059aec5c9607421695e3b026f1af8bb7816941f198e34f05d40e5f016d049e978ff905"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "ce700efd940df770ed8fdc647acd6101ee0d944688afb37372e92abf5ab16eec",
+                  "signature": "e41c4311926079d736c04af9fb12fd50e34de20bf396f2afee4692957ff0522b85bcf3f4ede99b2dec92edc6e3ccb9b23cc9c5e4f22414eebceaea798f01c649a52b4f0750cf73cdd8e8ae3018eb27339e150d1dd00a0e6a267b91cc9e643ccc503f34614eef41698ee3e496b5b1e5dbe8ebbe0914809de08940c04151d3c2507755a72eaa28d93c1778c6016feea1c5ec23d3c5c269578b7e4719b58681cc3bc69290176857d726833cd4a411adc3da85fa6d77d82ddbd8d59b817d02b8d60b40822d3146db21f6b83431cced537ff2555fd11b4df714cc430f35d12e4d276ec81c36a882f28e74388d583cc8f73c8e48f8eb0a6d9e8024eae59904331a6a7a"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "6566582ef217877079a3a7426832251e98d6456fe03fd9001953cc6bf34b35c8",
+                  "signature": "2808d1a27d502e66878c930adb44239b6bdba0192548f8b5d98587a16e3a3828c46cf107b1d5603134c4f30cabc5398bbd3b668fd718460c147bd5c253f1c5729b93ccc39c1db010d3472875ba8192f5e0629302f4a55a8ab15df9dffd6ed5b63956048f1448c5d5593928feb36297f5aac712f54db5c764da928956dd465a229cd27212e24299d9b45721f35c45625daece4ae2e349102201e2cb9826c929666b61112f280beb481a3377ffee8daaf6f13e9fe14b8fc818910a179697a4f3a287a46a189db1794ca46bf09eb97ae414a166f1d3c0ea67ae63ca7204c51479f44cf3d5713fd2a1cb0ba04b32c7d5b3cd1ee65ae361759155408cfe1b454d58b7"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "983b92f36c57e656d1ef92a7d32f0e662d42dec17a9fd91d68345d19102edbc2",
+                  "signature": "91e80b8756e234f1ea80b10c99178c3c63f693000645c946213d118d4b7c6050df10c14fc65d4776a88df1b2c687e73925664c65fb963a9990d4e74eb3ac9516dea8b5059a18879d53487808602ad69c7be13d732fc5a663139a592c0ccbb32e4d2e27e1a0057376ded022285435ad1feda6c555b370cbbe9218aa25faa1f580ad333cdd312059c127adb0a6a46a5867d4135c484603ef1f1e3cdfa909a2a760edf2c2f6636dc253bfae0e291f2f60142b5237d1e3e5dfd722881f8128d78e92906d5f67e01b7ba8258814573fab8d743c707ee766399d2b87e984f34195b1c53310395775f98d01edca1ecf2168b9af1a42eb5f992ae8b447731f14a230b4bd"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "3eb7c592a3c87c6dfdffb2a6053fae57014a4e17160410f3cd67bbe6fc52c99a",
+                  "signature": "e6c6634c797ce85c71ebb9797890a3dd75de807acd37f11107f39fd7503016778675a0145579b02a03780b6f573d6f9ba0f0b682e517501b03bdc8daa8dda31bb30711c6d264f445b9054947bdd70fc6e5cba5cf4d5303eaee8615e3ca379ae22b958f080c8e1ef57a04e1fb3e96ad7a61f66e1696f13345ae9d55fd19e82e5e10ab2fc5d37b6242484507afb988b86819e19ead9317c239c5b00351491efb6973d7b77b94ba01b26157ea38ff629376d3c20a89d6c0e414c50afd70451b86e77bba0cb9aba4324108df207e3f0167ccd72e829a9651e1e969f1af74d529a4785dfda94629f0ef40cb754538f34e483e260e486187ff90dc6a414aa2d64a378e"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -3722,6 +4586,33 @@
             "nameAtManufacturer": "Sensor",
             "nameAtCustomer": "Sensor"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:3d73f092-1f12-46cd-a6a0-5edba356a373",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:a120ead0-969c-43b8-91f9-b49fd618f697",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "d1bfb6e12ecd388192eb2799da6d594cb1feef64c3f7e2302e870ec6e4ad866d",
+                  "signature": "8c1b6972cdd2a13a1e4494cbbd3bc0c12556df0650b9e6e7ed61e4e580752ef2e3aa8c7ee506130eda64cab04bc157bac96cbb3663733cd74ecd07cc1e940e1522527ed0f08f66658bd89dc0ba966c4fc3d23af7c62b1dd4e1c70226534de49e400438625ec5a67aad511e21b9f8221d13e093d498f6f21c92f64794b0e65faef7094605a466cc3fda2b47d6ca71901c2715e2bb2bcaba0de81108b85b9e8e8e13fb2934fc7fc2a0fceabe175680110af60351270faf692178cd518c073c4a223824ffa38ab43af2b9513600148e8ce5430fe6860c09e863a6edd52ae1f05018d1bf3caef74631e0ab106b8ff5ad35ba1a4dd93a327486b9652e2443add076e7"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "e7d0be76c6c0652c0912a04f564ce57839b7febde4c4ff3e05e1fbffb1cc8aab",
+                  "signature": "781dec98e3ea88968d374447f7bb1871e2950d7b0ab2bc7a68769e90e4d1f1fd78978849f5d897fbae4473f47b1b68a0083e4a7d8518f7c4a4b71f3547f4a0e0018edd8cc50c37019377240fd6000f0d2063e2425612e1058bd45b84ae92243ead5b4db7a9be57ca51d21300622c178573edb7fcae589cf97d6f28d2966eda3b1e99bf43032e6e2582ab76948ef3770a9bf5b963c908aaa3855a5451f7ee2f58a500c22636a0de03145deca71468003cdc85fde3f10d5414146f34b34c35f0df74ab11315e361c9d3b10e172cdc0b36230f7e5b417105f9a5e25723d8d265396358370d2d37e593f0cb4b8282a4db0e7a57cd760ce760fe494f2820f48d4133f"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "10141dc53b1519b642512bad155e6d4429edd6cd2f6e7c356850d27b3362178d",
+                  "signature": "b0cd2e4f837a5be9b358fa4f5f977b89a48cb5a27b391eda5467c8b1be9134bfcffd524d1497cd4ed0a995e23402116e78c8bc5912ecaa274a8facd592f073b7692be8a42ecd064c901c452370f20a0d0d8fa9f5d39607bf98defe1d93e39e7493ba6fe58d7ee656b23920ec5c256b3f052f3f858875ba6ba8bf7101f7965ff9792b7b800288c0f1f140cf3997892f095913a87a9e6981865dd8677ac30f580a488a4d48a7a2641330f54b258e8b2b2ddd1b8ca25b9a13bfafaf976b7fcb43a43ada6403bd6b1baf8f42eca7b55bef403f6b1b7e384124bd592e2f0cb34f9cfe08799de11c889005e18fd96baf23109de0e5b207b3e5dbf31bd7456040aed801"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -3874,6 +4765,12 @@
               "materialAbbreviation": "GL338"
             }
           ]
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:fcf45ec3-f269-4e86-8414-0007d833bf46",
+          "childParts": []
         }
       ]
     },
@@ -4205,6 +5102,103 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:5672e8ff-8a73-425e-b2a5-5561b5b21d7a",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:f54e330e-9810-4f55-9749-43b44f3b97e3",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "b05c7417318698fad13de30546ec0d22c89982ada4575c3de8ad2eab07f38a7f",
+                  "signature": "cef44a321b2a078483a7d10c94b55d65f8066c12102f67cceff8438975ebb5b8e9e39c4b273b76694e060da2d1b493be9501c30e37e3b8cd5540ff5ae5e1e00a7a31480e02127a131469846c3340ee9c0200d656e14d7fe8e01d132a245309978b469e23864593a4dd7f38989047c16ef5e82f1829c9f3005d675bc09ba0e21e7c14a1968af77ca50dc3819d392a89a1c4d3e529836b7138941a552a9e80e7e7a67a433bbe3b34c1ffc0c2c104d9c46df6df72076bfe416816952b85d897373ad4672a514f252ff95f33e20c73da5c1134dde6748951355e85d46f58a8fb5a34be7a464f2598e89d3f4e583e1734460ef1884f1996059885c95a43b1054c987b"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "076167062d2e8c66ff1491fc813a69cacaf7e86f187f894d6ec27e1a2d9f54f9",
+                  "signature": "68cd1af50da6be6b8db0642a4e14006ef06d2adb97dc02215c33fccc2adc8a6eda53eb02bf001e05aa7bd2af9162460eef989ee5d3ff477112201ee4119c6b664120f5564fce7d6f21bf66825dff7e3b42afd965fa521eef61ad33ec78f7a1a3769582e99b8f763d38621051dee9f41f781666cc1e0c92f9b269b319163753b7facd85e0c1f46397cdd6a4cdac45675594990f35c0dd9b97bf9263d9fff2df470ff51ea64e1654d3015391ec564c065e15a3e41ff16af12d41b6885595a11aafd46af3878f691ccc74f1a1900f0d90f0d5e7352826079644b5ed306ace0617ef654a165b970892af90341754c964b85224a7f070b119518b1576b5743fafdc88"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "43f33200a3a57c08b70f4dc1e2679cb6b3e38d545e44d554aeeda098a398f758",
+                  "signature": "9b1b7143508d81f4b75fbd0a67b5d98b92e8dd3aaa0e421807d16965774dcefa602fd385859add01fe90164c0d5d58db5eccc266d321a836c0d9ae4a14129960030e60553167070d181338e94da22283e32f9e8cef75fb199178f357f0aa8f53efa4d3bb7c979832c47aa3fc3f01dcfca0bd9e5cc5905cd3d7ac3287f522e4a7abe83d28e5164d0ff67ca60da4e71090bb3579340e37df24182784ce50601d6483b0763ee2896a6fe9988e9cdb1a8e33ce44653ad03b965bea5f15313e77495405da6cc674e792774e59e5a14f8ae8dc54197f87f0a3ed0fee70890fd4c514c7e41796933a8d6734bc1c1347a4b5c35a37254d8d8560442fd16d5d03b2bc78f2"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "2989c95fd129ccae607a56a8a88a623b9f1c1c296bb1851ca0b8d061c09aa37b",
+                  "signature": "1459f86fca64bdf4819ea61e7a0b88b31f9271e62aa976da8143983f373b3d65d4d7d0a4626d4aad41cf0ab5fd0d74242fef244b47d993b5c8d8fb98241b99a36e8318a67fccee054c2cc0b95a6a9c9cf8bd8cb9959c723a9146a9da8394c3def6ed6878bb035a0a1ce4e7cb271b5b7df1e5505a5e9525b94ff927d6f5ce1a89444b27c8b2382f16897702f742e0691e4b9929488a0ca05d87b22f2d3df73ac2404cf0113fc8012ecb32ee34c2b5953c2af9e69f73df3443edc51abee6d422d7e15163beb95d72cf737c317ecb2f39b0e844e53432eaad37cfcd6794fd1b770e95b8f2fb2e05d391de7f0c5acd2713da39d22bbd63df49d848c59f9c0bf02b12"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:ef3865b8-6811-4659-a1b5-e186f8e42258",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "7aead290955ce7295422867979d1cda610ee137867182a8ee03c77f4ba4f0f5d",
+                  "signature": "83b819117005ae9627ec2e07f2aa1dc57638812ee55d65448fde58c682b3b34ea3a910a4e8961933716be3a235bf80edd0978d634a29c68ed97dd127a04598ab3dfba13cd8a714ac23212d154176f6f1c81237ff83da26e7528148ed22864eb3a83d7da0050594f498affffc65cba2aacda4476b7d24e9f0fac5d4c151eb84608daeff19c997b537f104c6de4f0b4ad0e0c7dd71d25dc2900614e3afee1948463fd630d69ffc66b7c55e111c2768797da2325634f89ceba1186e339998476ffdff54efb57fef4a6822587a836c220334f4cb7f4ed6dad1b7a1e41de981e5d585bd53292767a8c57663170c2861475b95ac84034c28c5ea23bfb0d2cb739d8803"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "50dc20ba73f8da94ccc408e43ed740a722ece86a892d3b7ce9bbf3ebab9640bf",
+                  "signature": "47451bae2d428a39aa2e085edb08924b7b44fa64df55d5367d3abbc70e0c6c55bee8bbf67409507168eb41dca056661e4b73beb84799954bad0e2217cf231fc03a9f0cf2810c9d1c4723bc00179a217c1e711c8690527ca2de5f72b4555411caf4956d3ee71c9aff60275cf0d7c271263055d8489d42bd7bd36d54ef3f7e3adb2f60fbe0450760241a7c13b385ab94c83f55f5885342c73f80bf62adeefb7ee9ea8ba5be4fad4fa4cfc445f1e68973de57e5be4a4edccd64c18b38b90b6080297057132ee3db9e686e7e0423638154c697e957803aad22ba7c1f59062a7bdf40f1316db5b2c23586eb55b635c5cff1e9b31a9bf2a0c1b56f057d0a9dca57d530"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "022c09004273084cf6c46fa4fffd8d6edc28661117136c5f1dcdc85bb653a68d",
+                  "signature": "445ae9da9236b879f1730db79de97aec92949bb42c3646888564fdc73cb49c74a9456249b6d7ce73b1f3da73ff8d0729237ee1008c1897803ee2501fc764612daf445941019d0235f6cfd4a7c1f7c23b03da0038ff9a73dea47400c499662e60f0a81c911e087b6dce32025e94e42cabbd9c4f49a7108ee35721b35970052aacd714606132e8a6f61a2c9943d1a879d6b433ff864a8678e7475c3b7a5d857b95b18375bcec86ab608571a69d18f239192910cb11de584d638bfbb37b2cde00cf54b254f6dbb150e4ee94aa18ffac91142d8ce9fddbac15a010a1303f6e7eddadd8ae72c14305293a3cd7e3eda05f4438e162591797bb9307bea642f37b8d13c7"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "27430a0dadf0bc0b6af10163ed8cf56dd90aa1506e8c52db031c6048fbc5c3c3",
+                  "signature": "c8df04b5746b200b1be0b92cfa9019c8b750518c580c4d77b3c0c3fcf216545ea51e7c7be71413863af8ec5e9e6ccfda7c5fa345384cf67040cda1e94626062102911d842a39327ad709bbb4f0cd09f577585db2ad5d7351277551d9e41d3236ba860c75bbdf40a1b2c7b21c9022c8b1c9d03b248d71ce4a2ba8c4f3f245442093d5e01b0a2a54735b48314e877085378819710f7d9661a5580b3e6e19ffbcc585c2589603f89d6709b0fa9b3c732b728ea6c829b918299c0f39ab793f323b756765960dbd9d4a17ac8615899e9811e135adf9d3731cd57e04ff648979cd6bba3809e22f0e5f231f1e21bbe145054c5e4630d9ca78cc906adf343504e92009ba"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:65c56fc4-49bd-4053-bfec-bf1c12003de8",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "3e0bb9797ba5bc13ea2f2d054b62459e4aeb82053878b495260e061017fcaf14",
+                  "signature": "d4917ead1d961f49193fc5ba138922c8de1931b49a37d92577064090abcf54c26885aa4ddab0807abbf03874451ce25e66d69af202d77d9ea7d260bebd989d04213d4184e7e32ef4e4aae48b21a2f475d90deeafc35e072d77a2d420ea06be080d9331248d1c09d3e03d1c20badeb1ad824cada0b7e6a7839c55e9de00bdff274971080920f0e3ef9337ed58f6e06faa3fb6f9701d7b27b6c8203ee69ed15417e939e7c51e8410c966517c620d3a034527e026e55b4ddd040076d1e186b51aeaaad7e57014c884f08ef0f0c64233c032853d895560510d8165b60eb23fb3e04305b21072bdffbfe9097abb0c1f0df7c561838053911d75a3710a06f61143d90d"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "0fa3b7754c74b6a3865992b970b99640c076633e7ebc57acee43ce8c6e302d44",
+                  "signature": "3edd65187e305d34d5f4d0f04061a6a86380003d8d2995d78ad20c4bd4f73319eb80d642052a8993032f546dbbf291a772746f09b3750db929e21ab90ce67075e141b821502ddd88edf647b8e5618b2b45f19a707f23eab05317077ded8352ed4de598c6f69da12106966996d2f5235fcf6308dd95fab9c09ded38433c267761568903a27d311051e546f05cb1b05a7674f2370a3c1146804ecb7972154356eee1ee7348428fa943ac4c246898840a28e42a7d0ec74650faadb728a498d3af55ee95bf0dc32044189f64fe711762d76a739060cf19a0360251a45d4fd4ae899e1a5eb1eabc7b262be591d3a156e0ab9e75e50d43a705042f5cb0eb4d07af029f"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "9fb9cf9a2fe62ebace3d325a2b09694febde724e37d90693300e11ee35e323d3",
+                  "signature": "5d691802437410dc403a0ca3cfbbbbc33086d6a9fa34bff92caf9db413fa5fecb3523fdb8f4f3906266e71367f102b6f2704f8bcccc476703805cd46111ef67dbea84ff7423f602676ce5cda911941c32a0909ca80b1c14c6c83a9873c5596cd5b32cc1fd18bc9e44512bbdb2f22906e888a5ac06e1906e0afa72f645e930fe8d87bebc529d8a7f10979516db080af6f8890b55267540828d88cee5cfccb59dfe9aa1470e8e5e05b760b3063f7c8f4a42d268b009be608b1bd503779cbe13a7be7e5d5a09ca1890918a6f5ae5c5f98bda85c51c4540b1e531272daa87a4978b38f6214faf46e97ecc747dba3b800b91f5e3cbff8253a7cdb3b01c0f44355f36a"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.transmission_pass:1.0.0#TransmissionPass",
+                  "hash": "2cfba20fe2c8cacee98adff67d688ddad0d11e541605f925c39a87eaf1100d47",
+                  "signature": "c2fc12e65c46e42f65ca32d59f230f516565be0cccb9e0613606362e76494a2e05a052be9e25c940eec65d1fba3482fd802239e2400e9bbf9e0c520a7a92b9c206cab4fe7ff22956411a0f2a3b5ffbad230e72b395511712cad1e5b9efe770047979ddd8aaf1fc30043be6474bc49173121fcbaec50355e0c4fd157316cea9493aba7d04e2d72e39d7936b87fca3ed5b6cf7a72b0ebd5908235d079f0eef03f4ab65e33064c2704bec6e14e849ee715c5ee8212f5850a8e19870801495672b147684517abf51515b6adc9af0b75f67583fa89543f6fea055ab115b8cc3faef29bb7cbb2706fe60d8c90012a5e0cc8f9eefd11be60bcead0d91ee47a12cebfda6"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
+                  "hash": "5fc7e89d297ea6b4ed124b592d3797fe1d3a1eaceaf754b9dbd34fa668b4fc3d",
+                  "signature": "e8a93bdd88352f541026c2f8f32c529ae308ee7fd95feba334026d06f5339ef93beafdc9795f908152b965c030d539eb0fbe572d35cd0e81212ea4cfc0c43ed22afbddc750b319bcdf1ecc82effcdaca6bd1724bc4935584ca87192a2e0cedd3b2fcc0d12bebce78e5b8628be1cb05b4ac4587d4da50abc5b6f44223b524792e3126a5ddb5aacc7c474b4f7df928ca3b025e0d4e776dd899dd9dfa57f21029c9dd9db7f8f502dc78f2f70ae6ff2bcfe11c7b3df1d1c95e7246d8f2426a534949af434d52647cb589a15f28600dc16903c383cd8caaab68dad5ee00858b611ffc7fce33e83a55aec34d446a3f4293f8ae81c60bf6440ac1232f64c93197e7de89"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "187b6e35695747681ca77f72028cc46769a22658019388b16a205501de33b29f",
+                  "signature": "102d9d556ea56c9bef347e23e0f8db47a850f7c4ae8a87ddefc788125bc2ae51c08c2d5511ff098a259dd628bd8b7848bd9652174f374991610a82207817edeb63d4c4604eb73e0396bae8f98ea3303f8d0d6ad4f5677c0c5603d29f1a69c9048fc7e4bef8fe7a74ddc1b0f258fc18c7fa2bdae9f677817b58c551b49fe8a179ccbfb1c244acf26ba295da64fc207cfac0371aa23ca6f16230658394cdd0307d6dce0cf0f5ec3035bd6c3d9e6585cfe7890446cc1ea44a6f2af1c480d28ff712e677bf59d7a28f8bac7c1c6a8e723e959b52862135d686e457e4339850fbd095f24585afb8f5b4a869ec523dbfbf7fcbdb96a2f0ceba2118871464b78501bee9"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "d34eaf02bf038fd246c945ebda2a265162b522d7261c5c9287a9e0ea926479b7",
+                  "signature": "33570a4b2f0dcef61d78e4c49587bdcbe578a4ceab0edc7f4bcfcb828eb819e43d3699d3780573eb609a5b6d6da4db1804598df01f4a3315970ed43cdd67d9302a18ff3d65d3d81d0a68cb0e0944854abdf01c170d6e9fdfeb0676ed357936cb6a8f3c0812f1e87055b805cbbc217c8bfd09a2fc4c17c6ea2bbce333f2b38c7913d6a6645ff9d7a2f7cd5d0117d30e39397752b47c85f83966ea161e222cb8015105561e35350f36d3188e541bbb68755fef667d13121cf3615f9c30fd32d41b2b20a37a81ba02f3af9c11c68b10446d41dd7d47e8a9719455c55053ff8f12b4015986853388627d5064d3f09ba8e2604b2ef560963549b5137a620b0fd685ec"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -4388,6 +5382,28 @@
             "nameAtManufacturer": "Door f-r",
             "nameAtCustomer": "Door front-right"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:f54e330e-9810-4f55-9749-43b44f3b97e3",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:068d48b4-8bd4-4929-a388-392bcf3b149b",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "1b52ebe73db5aa632fd7e4f488a7047c83fb4b87b6cd9777ad7b1d569a3f3f92",
+                  "signature": "81600bed925fff4ed403f9633750c4f8eb74cd1b177c7c75db695f87b1dacb25f8ea075cbabac2f5d86e0f3f67aba75663c6941ba487eeda9290d7d278e9d2dbfd01dc76441ffee5bf9eb1144cdc11f3c7f2d01b20830e9360482ec7ea6514487c54845bc0366b9474072ab3cac1a4c3465182d1531625a217ca908d5dd86c9330e2fa24ccd45e50d42db9de742dd60b07d1fa4eb74bebf65a340cc8997a9ebe529b166d568d45be9f07cffc769e98c0af36fb9ebd9654544839299518335b56583dedc992ba4b36710b2c2ca242afbe6af2910f57322b4a7dcb1ffd76384300ebee501a5d2022b925e2845802d6ba2218fcabd8128015169aa6e28df373bc9b"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "5c77b76451ccfe7e67bc900514bc3b98565ead35755d88289c15d3729d5f0df6",
+                  "signature": "a846721ff9a23c953bafc4073b37f300c8d1532a6d5bf1d6647108bcfacb5349540e0fee0d5b76695940878669a6f714a0263551713eab2ee529b91f3c6f2904ccc4bcbadbbc548ccec9f69ee2dbde5a562cdf7aa7af08a4077ed0970bdb16ec57350e655b362330aea065f5f3cc7c8f94ff25175bce8ca27a4f7178eb21a00c5348e9ff4aeca01184bf694981bdf009408e5a415fb99c3b12f9b070141ffd1d164ac99d813c8401f518258faf6fc0c451cc8d0209d1de758b9958d446cbadbb241a7b171cb331a76e16b586590077be98642ef266501a7abe8bf8abe9e031ff8eda8fb524b02293466e2da5aed22e5d86b8bc8d2f4e163cb279f88af3ece117"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -4718,6 +5734,88 @@
             }
           ]
         }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:65c56fc4-49bd-4053-bfec-bf1c12003de8",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:54f70a60-ab38-4d48-915b-e46f0ec00741",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "ddac8fe829b1fc450fa15451badd14df1003b811271421fe981047d4c9e6f664",
+                  "signature": "d79bb56ad720fce21fbed460606b25cdceeae8b2d5258d2c6dee7aa0dcf10795dafc721a782c6d093deb9e0c6928f952a23003ca8368a4e154adb05daa17ea55fcf4a6b6d56b663b44ba065d8566bd36b8fa3bce9611c4748bd62c12668d9d7dc2540407a1814fbd9eeb0d688b5a71e6e952c01c9daa4706577873c6261662db9324105d2ce34f4fd804be35bca73d38dc82bdc40b76b89040ae6a702d2a44a8d0125a3a6cf23b3b9dfced9dab2913e9ad19490717958e90e72de8a3479089382eab25eaa3f4cb74ea991d4b75eb5858cbaa36d86aa7f3af2155dc4a295fbafd9714f3502735970db150b8a2c3f21c8c8235779ee0c190012f0ccc7a3f73514d"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "efeaf76f829a168658c805318c47c4701eee51cb53d2d01da7951ac7d01d68b5",
+                  "signature": "caf588ae40e9bd29574415c977866fec00570f153e2532d7b517efc0db61972b7321f88590fa0605fdd6b2d24f8fe9364922b3dec589497ae46707707ad9d1abbfa4364204558662f34a139eb9b4d876424828bf2fc79a300b6891443df6b3e9f7d2772a0657994444eb822624d784b53679e2f1f3e06ab8cc47e7b09eb405a160df59e0d4d698d62fcb3151efcd6ba0684d719683af4be71fec7245827569ba19451cdb73a4326045d6e2e69dc32fee4bf40e5b9bf85fe4e8bad35f77703d94c7e290d0124cffa0cdbc2096e352ad93f64b54407ad4fc45b111a8b02dae18a55fb66949779184bdae358b6f59b460d3cb0a66a22f184ea62c9cb24022bc6f39"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "52bfe1b8377a4fce4617593ff66d166e6ad8e7ecab2b16ebc6266aab1b21f81c",
+                  "signature": "2e202c264f13fe08ae590e54266418f3c9ae3893c693d1cb8a57aff65036f5d87e91bcd924885620f3e5ee1e26767d0155c0dcef1bb8b23dc4844c42d0f1eb61371d6ae6171c22653037ee381b2a8f963a45c423816677b3f73a46fe028526ae12c632fd821025013e601da2cd3c1fbfed537ac9681d806cabcbf5770e9e864851de535ebaaf00d7e9f7015b72fe16030263e49be00441a20f92f697a9707d36005a638eda150ab44b857e7ea7b4652db50b98cb27b456ce8c7f3372be542fc29cf22a6021504ba481344db6fb6f7936664ceab8a7dcbe7b0a280bba2404c2c6f5c3277bc46e09feccfd456cee145dbcb7e1640df5a20a0964d3a6fdefbec721"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:0374868d-8c69-48a4-a50c-2b9db3bd8526",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "782dab9503967bc784e3cf5fcbb2a9a79925739b9ee19745f40004e526a3953d",
+                  "signature": "9b0a47e35a0f99005aef58fbc62b632caea9bd6666c134928e1b60882e2dee4b130fc49849298e8c58d8bd0b12bf3abb42b6bcf9dfd38d633598f432cef43c49e9a9a6a2153b76f496bff3778796056f08802b0a8ad7e8fdcd983cf83f03de69997e92860e04ba1f95cef639d94ce1423f04382a85be12aef643ab4af8cd99d7f1d7ade2ed3f179a978605e2e3e26030f694e4c5fda951c4808a6465a2530c4df4f9516322a21c9f48e8c5565e28423282aa849ba6c518dceebe8322ffd2137b51a19e9ed2e56b10c322be91839a3bdc2686ac88a24402fa4b888283a3491e0e2cdeb64ab6104e62bb0b27fb93788174a9643ea0031a494119b8e0afcec7128d"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "f4f3ff140d1dda70689f4629b54730e2715c0082533914c09289537a37855dc4",
+                  "signature": "0e595cb00af98519db16e432939f28a9c884713ebe4e99de7aa960385ae1caf88fd008f84004b5c0ac111d26c7ab5deba1b73acff1ae0a88e2c0dfffec74f0b4bd24764f25fc5f077f7491cf9248ef068737e9bb63a285b84542e29d08ac83d1b9fbcadb0501404443bfe74e4b8d6a9bbac5379c2963966d491e9af6e18073537d7cc7cc152c6be0b0d76596bd1a177e02ad510e243ce7244f1a6a37f5cda9a72c0c6d60ae2bbc06234071797859933425c6776102917d4a9ae042b0a5cb34ca88544c81bb69ee598a87da6980e64d2e9b162b27085b00f47c53f72f0bb88587573fda388c89a9f7ef63f8d2a4c57a7ac1296330ab561e14fff5363b7a5f970c"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "f0e6bbd5b60c82085d424aa4a3bfc72a93faf2c8ecf3bba7984e8eec60172c30",
+                  "signature": "6bb16685086af0faf38208011b7c2777a75913567f6cdd9bde990d7c5ed26cc2b44b37a8c1261401653a8c705d96bb9fc56ec75bd2bb2908a2f20f73adca6aaecc736934ab9481fa749da9e88c50b2ff5d8a6d8a5ebb6a9f456763a4080d5ff68a5726b95a99fa346bd9770631429cd9a4e5e07a49043a56a6908a3c35eaa30b31a409cd1fc646c7146f689f11e92ec9f1c3b23d0e45473b65298976f75b4b2886d03a556c948d91d1ff78625f3974d47fa5b1f8b4656cfdaea635129301205bcb9ff690493c2b4d23c6541398323aa96e5bfc47f5cc6816eeecbfbda51e36b724c18af1d3fc68317618691951ca047be87b06b29c3e3a676ec9de719aec586c"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "983b92f36c57e656d1ef92a7d32f0e662d42dec17a9fd91d68345d19102edbc2",
+                  "signature": "91e80b8756e234f1ea80b10c99178c3c63f693000645c946213d118d4b7c6050df10c14fc65d4776a88df1b2c687e73925664c65fb963a9990d4e74eb3ac9516dea8b5059a18879d53487808602ad69c7be13d732fc5a663139a592c0ccbb32e4d2e27e1a0057376ded022285435ad1feda6c555b370cbbe9218aa25faa1f580ad333cdd312059c127adb0a6a46a5867d4135c484603ef1f1e3cdfa909a2a760edf2c2f6636dc253bfae0e291f2f60142b5237d1e3e5dfd722881f8128d78e92906d5f67e01b7ba8258814573fab8d743c707ee766399d2b87e984f34195b1c53310395775f98d01edca1ecf2168b9af1a42eb5f992ae8b447731f14a230b4bd"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "4b81b135f119d82ac233d2db3810eaeba6abd0322a327ecc5e11be6851b2d868",
+                  "signature": "80b9595246d4dbfffc239df91b6ffaaa0876c9b94d2de4dd5360fab6c6cdfa2fbc0286fc3dcdb82c7b2be1197562ba1c27f67de5ec0fcfe8bfa7f122dcaeb3cc9f1b919aa4f286e3ebf1c3fe54cf7ee9b299a287b8b5cc10f86476b6efce9e2889e0f4b1cf4dd4542f753113a159e880e04e60a633fb66fb8f469275b55a03f5706aa0066d5cedf57745cf006244dc49c83eadaa05b5148676398c4c645120c1d3b54a59f350ed1270185faca04d36bcc589029856375f10b394324db55fe699e0c43dc402946183967541353dd6fe1006af1ca0ff492ab8d6205069a283ee8d94af63fd7b104b840bf7ae90371b5c3369ed8f2a5cf0dfc3818fd8b17a4da898"
+                }
+              ]
+            },
+            {
+              "catenaXId": "urn:uuid:a4a18501-8a13-4955-9802-faa5c36a2c43",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                  "hash": "3c6d158237af1440d60ec2a278dbafd7fbefa5995d541a1a5886e1232345810f",
+                  "signature": "933abcb9afad972eef97eb1451d3c6c9ca09a463273ec43b5d3aa80d27fe0c45e8fd433bd77e076791a9d47dbb797db43039d51b2c0fcb86495fddf1b65fae6086c897a879ec4e6aa115def4f09bbef9457fa3281b3850029f1464a4b920be60df9a4d92d762e3efc6b4f35fca058dd12bffdefece22840ec9daa011228418345df2538d4ca5ac50bb5f05af6aca7830461baa972e6180e92d77c4ca51cb1eb1e20277cdaa1d838e5191ba0c1b04b6479cdc462b7ca9f1f7df4ba6b26ef5d2913f16cb31bd075b7a0accb4489b2c177554dc2d6cb349785dbe34a41a75972b3a887c405242ee6263ef9777abb78d32890f21533b3c0d3bb1e2b69850bc4444a1"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "1812a01a47a2d130f14a97f0a958fb8734e6a19a8ab6adc3fc3f794e4536569d",
+                  "signature": "4e4648312c6f53b3425fccfc773177fae049e9b4e00521d020071103b2425ffaa7175e7a9a5745e8703022cb42f0ff5882ccc74d6c2a99d5707a43f0b7e5a416284e114091fe5dac07d43621658bdf1847fa128d08102f9af764452342d05420c898241d5e66b8533fde03f0bea7e559fe06e947d20b6ebe9f7b2c519f5cfeae354a7269b8d3e02ab53ef3b30523382865266810c87aa68a2943220c03aefd216feb15ba418147a7ab5f6078e32af694b8177425a233592a0749fcc293bee876892ec37f12de4ab1b8dc301ea6ba6875f30e077e0578a5486fa049571d1171742062825fcf4beef4a208bbfd2783564a1393de5cb772dc8bbc9f168bce0fa1c6"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+                  "hash": "b36a9ec6ab65ef1e59c24a95cccd0b3fe4b05bd1f13bdb3f9ce896ade16b2db0",
+                  "signature": "c2a72a0e6cd383278c1df2c1fb37a57dd5e33696832e5291392d24a68c7ff9abd25069c4dc31d12559d3b2cfa33cef4e5c08b331025159c41468d7cd0e1710af41334c843e057c7fa8bacac88b2ac763e3c212fd509e2eec90da41b7e2ebbcfc64b86eba8f04d436209e8085fa22389aabfbb00eb9cada245e23044fb294e05203e7864bd509b174365745f269e46bdfe2d1a9c6a9e3c13f65e2c994ede05a3c159258fa51bc0dbe316a89536eacd715503a17e3cbf2517957c148885511ada360f8dfbc418bce4b2c7c5bf5e828b2c961d4a43de4594aee8e80e7d3d3b35180abb776c4001f75af60162c273f85023f4012731fa511f2368edb9d7751998fba"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity",
+                  "hash": "49958a0a076ea5f86adbe4e1c06beaaae519c49cf960b84a9ed56c9dcec116cf",
+                  "signature": "7b9e05fbfbf080549c2fa222b60d218544bb9279297892529e354195d9b390fe3f4eaaead9ddf4f9d8238d6aaafb1045788c275eb64197e30304f5235d2a3d8752fe0aae835033331a25900450ea36ab296deba453ab91ae4c962b246ffbd687e8dc37b01de2930914364320f3b34d6f7ae94dfa2e7d4b94966a03c3dd08a74c1ec14a1e9cb6021170e38665ad7acde9d32a5f151d12fb2b79848cbdf73128378b933932083ed43abf1c4bd407dbfe26a3dcb061c973722e73419a9a0193aa3ffe8b92eea942901bcb35306ff4eb1cff0e61e2626791f525cc9cf760998f51af6c4ff34e531366110882b3f523f7c54af100d5da7d465c484ee4e3b25775a0de"
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -4864,6 +5962,33 @@
             "nameAtManufacturer": "Sensor",
             "nameAtCustomer": "Sensor"
           }
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:a4a18501-8a13-4955-9802-faa5c36a2c43",
+          "childParts": [
+            {
+              "catenaXId": "urn:uuid:aa5cf3f3-deae-43d6-bc84-c03e33f5a40c",
+              "references": [
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
+                  "hash": "116f6b7dee2326c56fe02ca35fac52820ff750d85a9b441419b4673ac9b9fec7",
+                  "signature": "2b1153dcacb99cb606c146a5cdceacc1b0f2ceffc386aa2a4d6f218a2a3bb80d8d07a1573ab27f2ea2f6374c9fe5b901422e62b0584d0ae926bd76756ace8efe63cf72faeebf155c9e7d27c5614b5555e0e0c32874d4b7998837591a475c965be824243fba6cc5aabc6f6cb9684db50639f44cad67a57bdebb2a17e2bfedc507f2f534e29917c2caaf4b1984e83b09db613778d195d25188ff0e0e1f8d4d0fcaa9cc80813985220614ccc416b31787c580027239a5d1ec6e29740d9ffc92a1b6898f5be1ae6f6466393bbb165546b916c4e2c423e0154126aa709602f0a2cb6e6bdece8710b9386f7007e9e7b1f9f07dab2d2cac1945b6b63571cb5d68731b54"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+                  "hash": "9a16f411387b9361cfcce7d9d63f63588bd8230efc8e62fadf5782898dc751d7",
+                  "signature": "11a5aa914cb7500e72568b8eaacf2ba3ecb53605226f141d972551fc5e1a80a37aab81ef01f95b19b02bc944724c34d561a731d82e84cfb3c59cf1b6a85df642cb5eb75e82d58e16ac66555bc07103e003ae6304db6ecff44a7e356dff52c039b8cb2dfeab77432dae502364656a3ed64f370f7f11b9732b4e8d36654fc53dc7bdeb2eb843d92b8e6b75dd64982362750cbc6cd16b7dc31463374facc65eb37144723417b7622103639f95334efc68871d85b7a7bc2d1cd378b20ecf6a06334b70f14aee811a4efefe4ac40d7564ef766f09072cc9583247edcc710d87a3522034c674127909c87353cfc4a1c2200d984ef82f055dcd0c8cf646b1a704998fb3"
+                },
+                {
+                  "semanticModelUrn": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+                  "hash": "10141dc53b1519b642512bad155e6d4429edd6cd2f6e7c356850d27b3362178d",
+                  "signature": "b0cd2e4f837a5be9b358fa4f5f977b89a48cb5a27b391eda5467c8b1be9134bfcffd524d1497cd4ed0a995e23402116e78c8bc5912ecaa274a8facd592f073b7692be8a42ecd064c901c452370f20a0d0d8fa9f5d39607bf98defe1d93e39e7493ba6fe58d7ee656b23920ec5c256b3f052f3f858875ba6ba8bf7101f7965ff9792b7b800288c0f1f140cf3997892f095913a87a9e6981865dd8677ac30f580a488a4d48a7a2641330f54b258e8b2b2ddd1b8ca25b9a13bfafaf976b7fcb43a43ada6403bd6b1baf8f42eca7b55bef403f6b1b7e384124bd592e2f0cb34f9cfe08799de11c889005e18fd96baf23109de0e5b207b3e5dbf31bd7456040aed801"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -5016,6 +6141,12 @@
               "materialAbbreviation": "GL338"
             }
           ]
+        }
+      ],
+      "urn:bamm:io.catenax.data_integrity:1.0.0#DataIntegrity": [
+        {
+          "catenaXId": "urn:uuid:0374868d-8c69-48a4-a50c-2b9db3bd8526",
+          "childParts": []
         }
       ]
     }
