@@ -70,13 +70,13 @@ public class DataIntegrityService {
                                                                .flatMap(Set::stream)
                                                                .filter(findIntegrityChildPart(submodel.getCatenaXId()))
                                                                .findFirst()
-                                                               .orElseThrow(); // TODO create tombstone?
+                                                               .orElseThrow();
 
         final IntegrityAspect.Reference reference = childData.getReferences()
                                                              .stream()
                                                              .filter(findReference(submodel.getAspectType()))
                                                              .findFirst()
-                                                             .orElseThrow(); // TODO create tombstone?
+                                                             .orElseThrow();
 
         final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
         log.debug("Comparing hashes data integrity of Submodel {}", submodel.getIdentification());
@@ -96,7 +96,7 @@ public class DataIntegrityService {
             return Hex.toHexString(digest);
         } catch (NoSuchAlgorithmException e) {
             log.error("Error creating MessageDigest", e);
-            return null; // TODO create tombstone?
+            return null;
         }
     }
 

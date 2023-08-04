@@ -259,7 +259,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
             meterService.incrementJobFailed();
             markJobInError(job, e, JOB_EXECUTION_FAILED);
         }
-        return null;
+        return ItemContainer.builder().build();
     }
 
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {
