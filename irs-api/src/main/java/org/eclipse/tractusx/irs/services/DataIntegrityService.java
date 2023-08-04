@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.eclipse.tractusx.irs.data.StringMapper.mapToString;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class DataIntegrityService {
         try {
             log.debug("Calculating hash for payload '{}", payload);
             final MessageDigest messageDigest = MessageDigest.getInstance(SHA3_256);
-            final byte[] digest = messageDigest.digest(mapToString(payload).getBytes());
+            final byte[] digest = messageDigest.digest(mapToString(payload).getBytes(StandardCharsets.UTF_8));
             log.debug("Returning hash '{}'", Hex.toHexString(digest));
             return Hex.toHexString(digest);
         } catch (NoSuchAlgorithmException e) {
