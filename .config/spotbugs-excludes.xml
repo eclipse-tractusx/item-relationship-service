@@ -75,7 +75,7 @@
     </Match>
     <Match>
         <!-- The application is intended to access all files -->
-        <Class name="org.eclipse.tractusx.irs.testing.TestdataTransformer"/>
+        <Class name="org.eclipse.tractusx.irs.testing.dataintegrity.TestdataTransformer"/>
         <Bug pattern="PATH_TRAVERSAL_IN"/>
     </Match>
 </FindBugsFilter>
