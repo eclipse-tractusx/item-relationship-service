@@ -65,7 +65,7 @@ class IntegrityDelegateTest {
             throws EdcClientException, URISyntaxException, IOException {
         // given
         when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenReturn(Files.readString(
-                Paths.get(Objects.requireNonNull(getClass().getResource("/dataIntegrity.json")).toURI())));
+                Paths.get(Objects.requireNonNull(IntegrityDelegateTest.class.getResource("/dataIntegrity.json")).toURI())));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()

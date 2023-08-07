@@ -69,7 +69,7 @@ class RelationshipDelegateTest {
             throws EdcClientException, URISyntaxException, IOException {
         // given
         when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenReturn(Files.readString(
-                Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelBomAsBuilt.json")).toURI())));
+                Paths.get(Objects.requireNonNull(RelationshipDelegateTest.class.getResource("/singleLevelBomAsBuilt.json")).toURI())));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
