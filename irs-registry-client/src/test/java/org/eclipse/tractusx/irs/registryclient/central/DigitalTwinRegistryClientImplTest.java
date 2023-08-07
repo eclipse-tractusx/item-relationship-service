@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.registryclient.central;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.net.SocketTimeoutException;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,39 +57,40 @@ class DigitalTwinRegistryClientImplTest {
     void shouldCallExternalServiceOnceAndGetAssetAdministrationShellDescriptor() {
         final String aasIdentifier = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         doReturn(new AssetAdministrationShellDescriptor()).when(restTemplate)
-                                                          .getForObject(any(),
+                                                          .getForObject(any(URI.class),
                                                                   eq(AssetAdministrationShellDescriptor.class));
 
         final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor = digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(
                 aasIdentifier);
 
         assertNotNull(assetAdministrationShellDescriptor);
-        verify(this.restTemplate, times(1)).getForObject(any(), eq(AssetAdministrationShellDescriptor.class));
+        final URI expectedURI = URI.create("url/dXJuOnV1aWQ6OGE2MWM4ZGItNTYxZS00ZGIwLTg0ZWMtYTY5M2ZjNWZmZGY2");
+        verify(this.restTemplate, times(1)).getForObject(expectedURI, AssetAdministrationShellDescriptor.class);
     }
 
     @Test
     void shouldCallExternalServiceOnceAndGetAssetAdministrationShellIds() {
         doReturn(ResponseEntity.ok(List.of("testId"))).when(restTemplate)
-                                                      .exchange(any(), any(), any(),
+                                                      .exchange(anyString(), any(), any(),
                                                               any(ParameterizedTypeReference.class));
 
         final List<String> empty = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                 Collections.emptyList());
 
         assertNotNull(empty);
-        verify(this.restTemplate, times(1)).exchange(any(), any(), any(), any(ParameterizedTypeReference.class));
+        verify(this.restTemplate, times(1)).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class));
     }
 
     @Test
     void shouldCallExternalServiceOnceAndRunIntoTimeout() {
         final SocketTimeoutException timeoutException = new SocketTimeoutException("UnitTestTimeout");
         Throwable ex = new ResourceAccessException("UnitTest", timeoutException);
-        doThrow(ex).when(restTemplate).exchange(any(), any(), any(), any(ParameterizedTypeReference.class));
+        doThrow(ex).when(restTemplate).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class));
 
         final List<IdentifierKeyValuePair> emptyList = Collections.emptyList();
         assertThrows(ResourceAccessException.class,
                 () -> digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(emptyList));
 
-        verify(this.restTemplate, times(1)).exchange(any(), any(), any(), any(ParameterizedTypeReference.class));
+        verify(this.restTemplate, times(1)).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class));
     }
 }
