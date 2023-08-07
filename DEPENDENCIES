@@ -155,7 +155,7 @@ maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/0.0.2-SNAPSHOT, Apach
 maven/mavencentral/org.eclipse.tractusx.irs/irs-ess/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-models/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-policy-store/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.0.0-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.1.0-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.glassfish/jakarta.json/2.0.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jsonp
 maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/org.hamcrest/hamcrest/2.2, BSD-3-Clause, approved, clearlydefined
@@ -211,14 +211,14 @@ maven/mavencentral/org.springframework.boot/spring-boot-test-autoconfigure/3.1.1
 maven/mavencentral/org.springframework.boot/spring-boot-test/3.1.1, Apache-2.0, approved, #9346
 maven/mavencentral/org.springframework.boot/spring-boot/3.1.1, Apache-2.0, approved, #9352
 maven/mavencentral/org.springframework.data/spring-data-commons/3.1.1, Apache-2.0, approved, #8805
-maven/mavencentral/org.springframework.security/spring-security-config/6.1.1, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-core/6.1.1, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-crypto/6.1.1, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-oauth2-client/6.1.1, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.security/spring-security-oauth2-core/6.1.1, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-config/6.1.1, Apache-2.0, approved, #9736
+maven/mavencentral/org.springframework.security/spring-security-core/6.1.1, Apache-2.0, approved, #9801
+maven/mavencentral/org.springframework.security/spring-security-crypto/6.1.1, Apache-2.0 AND ISC, approved, #9735
+maven/mavencentral/org.springframework.security/spring-security-oauth2-client/6.1.1, Apache-2.0, approved, #9740
+maven/mavencentral/org.springframework.security/spring-security-oauth2-core/6.1.1, Apache-2.0, approved, #9741
 maven/mavencentral/org.springframework.security/spring-security-oauth2-jose/6.1.1, Apache-2.0, approved, #9345
 maven/mavencentral/org.springframework.security/spring-security-oauth2-resource-server/6.1.1, Apache-2.0, approved, #8798
-maven/mavencentral/org.springframework.security/spring-security-web/6.1.1, Apache-2.0, approved, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-web/6.1.1, Apache-2.0, approved, #9800
 maven/mavencentral/org.springframework/spring-aop/6.0.10, Apache-2.0, approved, #5940
 maven/mavencentral/org.springframework/spring-beans/6.0.10, Apache-2.0, approved, #5937
 maven/mavencentral/org.springframework/spring-context/6.0.10, Apache-2.0, approved, #5936
