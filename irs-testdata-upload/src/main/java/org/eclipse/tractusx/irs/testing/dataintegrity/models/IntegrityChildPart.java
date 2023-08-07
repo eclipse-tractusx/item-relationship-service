@@ -26,8 +26,6 @@ import java.util.List;
 
 /**
  * Integrity item for one child part
- * @param catenaXId
- * @param references
  */
 public record IntegrityChildPart(String catenaXId, List<IntegrityReference> references) {
 }

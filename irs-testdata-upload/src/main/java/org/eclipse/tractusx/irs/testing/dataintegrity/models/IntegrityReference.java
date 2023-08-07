@@ -24,9 +24,6 @@ package org.eclipse.tractusx.irs.testing.dataintegrity.models;
 
 /**
  * Data reference for a IntegrityAspect
- * @param semanticModelUrn
- * @param hash
- * @param signature
  */
 public record IntegrityReference(String semanticModelUrn, String hash, String signature) {
 }

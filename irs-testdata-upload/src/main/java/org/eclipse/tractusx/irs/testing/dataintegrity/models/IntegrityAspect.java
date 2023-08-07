@@ -26,8 +26,6 @@ import java.util.List;
 
 /**
  * Data integrity aspect model
- * @param catenaXId
- * @param childParts
  */
 public record IntegrityAspect(String catenaXId, List<IntegrityChildPart> childParts) {
 }
