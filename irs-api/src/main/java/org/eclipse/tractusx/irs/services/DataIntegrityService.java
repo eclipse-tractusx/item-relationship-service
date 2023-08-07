@@ -73,7 +73,7 @@ public class DataIntegrityService {
                                                                .findFirst()
                                                                .orElseThrow();
 
-        final IntegrityAspect.Reference reference = childData.getReferences()
+        final IntegrityAspect.Reference reference = childData.getReference()
                                                              .stream()
                                                              .filter(findReference(submodel.getAspectType()))
                                                              .findFirst()
@@ -106,7 +106,7 @@ public class DataIntegrityService {
     }
 
     private Predicate<? super IntegrityAspect.ChildData> findIntegrityChildPart(final String catenaXId) {
-        return integrityChildPart -> integrityChildPart.getCatenaXId().equals(catenaXId);
+        return integrityChildPart -> integrityChildPart.getChildCatenaXId().equals(catenaXId);
     }
 
 }

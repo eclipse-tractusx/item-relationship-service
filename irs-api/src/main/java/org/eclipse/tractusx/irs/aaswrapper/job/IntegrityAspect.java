@@ -48,8 +48,8 @@ public class IntegrityAspect {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class ChildData {
-        private String catenaXId;
-        private Set<Reference> references;
+        private String childCatenaXId;
+        private Set<Reference> reference;
 
     }
 

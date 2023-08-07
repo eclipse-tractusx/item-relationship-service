@@ -1,0 +1,25 @@
+{
+  "catenaXId" : "urn:uuid:d261e0fa-36f5-4128-875e-0f5735f5a535",
+  "childParts" : [
+    {
+      "childCatenaXId" : "urn:uuid:9dc1b6fb-94e7-4911-9e39-abf06c4941d2",
+      "reference": [
+        {
+          "semanticModelUrn": "urn:bamm:io.catenax.integrity_aspect:1.0.0#IntegrityAspect",
+          "hash": "033b8d149850ae5f1841207abf03dd9ec89e995530e359222862095223a84a30",
+          "signature": "123"
+        },
+        {
+          "semanticModelUrn": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
+          "hash": "033b8d149850ae5f1841207abf03dd9ec89e995530e359222862095223a84a30",
+          "signature": "345"
+        },
+        {
+          "semanticModelUrn": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBoMAsBuilt",
+          "hash": "033b8d149850ae5f1841207abf03dd9ec89e995530e359222862095223a84a30",
+          "signature": "567"
+        }
+      ]
+    }
+  ]
+}

@@ -186,6 +186,8 @@ class SubmodelDelegateTest {
         assertThat(result.getSubmodels()).hasSize(1);
         assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo(
                 "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart");
+        assertThat(result.getSubmodels().get(0).getCatenaXId()).isEqualTo(
+                "itemId");
         assertThat(result.getTombstones()).isEmpty();
     }
 
