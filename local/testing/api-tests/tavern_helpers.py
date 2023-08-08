@@ -269,7 +269,7 @@ def order_informations_for_batchprocessing_are_given(response, amount_batches):
         assert batches.get("batchId") is not None
         assert batches.get("batchNumber") is not None
         assert batches.get("jobsInBatchChecksum") is not None
-        assert any(['https://irs.dev.demo.catena-x.net/irs/orders', 'https://irs.int.demo.catena-x.net/irs/orders']) in batches.get("batchUrl")
+        assert (('https://irs.dev.demo.catena-x.net/irs/orders') or ('https://irs.int.demo.catena-x.net/irs/orders')) in batches.get("batchUrl")
         assert batches.get("batchProcessingState") == 'INITIALIZED'
         assert batches.get("errors") is None
 
