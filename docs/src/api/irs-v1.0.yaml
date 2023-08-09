@@ -912,6 +912,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
+            collectIntegrities: false
             depth: 1
             direction: downward
             lookupBPNs: false
@@ -964,6 +965,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
+            collectIntegrities: false
             depth: 1
             direction: downward
             lookupBPNs: false
@@ -1081,6 +1083,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
+            collectIntegrities: false
             depth: 1
             direction: downward
             lookupBPNs: false
@@ -1224,6 +1227,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
+            collectIntegrities: false
             depth: 1
             direction: downward
             lookupBPNs: false
@@ -1263,6 +1267,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
+            collectIntegrities: false
             depth: 1
             direction: downward
             lookupBPNs: false
@@ -1372,6 +1377,7 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
+            collectIntegrities: false
             depth: 1
             direction: downward
             lookupBPNs: false
@@ -1833,6 +1839,8 @@ components:
           type: string
         collectAspects:
           type: boolean
+        collectIntegrities:
+          type: boolean
         depth:
           type: integer
           format: int32
@@ -2215,6 +2223,10 @@ components:
           type: boolean
           description: Flag to specify whether aspects should be requested and collected.
             Default is false.
+        collectIntegrities:
+          type: boolean
+          description: Flag to enable or disable the integrity validation of a part
+            chain. Default is true.
         depth:
           type: integer
           format: int32

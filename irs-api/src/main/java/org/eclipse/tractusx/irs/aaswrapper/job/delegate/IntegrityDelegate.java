@@ -68,17 +68,21 @@ public class IntegrityDelegate extends AbstractDelegate {
             final JobParameter jobData, final AASTransferProcess aasTransferProcess,
             final PartChainIdentificationKey itemId) {
 
-        itemContainerBuilder.build()
-                            .getShells()
-                            .stream()
-                            .findFirst()
-                            .ifPresent(shell -> shell.filterDescriptorsByAspectTypes(List.of(DATA_INTEGRITY_ASPECT)).stream()
-                                                     .map(SubmodelDescriptor::getEndpoints)
-                                                     .flatMap(Collection::stream)
-                                                     .forEach(endpoint -> getIntegrityAspect(endpoint,
-                                                             itemContainerBuilder, itemId).ifPresent(
-                                                             itemContainerBuilder::integrity)
-                                                             ));
+        if (jobData.isCollectIntegrities()) {
+            itemContainerBuilder.build()
+                                .getShells()
+                                .stream()
+                                .findFirst()
+                                .ifPresent(shell -> shell.filterDescriptorsByAspectTypes(List.of(DATA_INTEGRITY_ASPECT))
+                                                         .stream()
+                                                         .map(SubmodelDescriptor::getEndpoints)
+                                                         .flatMap(Collection::stream)
+                                                         .forEach(endpoint -> getIntegrityAspect(endpoint,
+                                                                 itemContainerBuilder, itemId).ifPresent(
+                                                                 itemContainerBuilder::integrity)));
+        } else {
+            log.debug("Integrity chain validation disabled.");
+        }
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }

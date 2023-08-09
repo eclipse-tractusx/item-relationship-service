@@ -28,6 +28,7 @@ import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,10 +38,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.Bpn;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -126,5 +133,20 @@ class IntegrityDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("testId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.DATA_INTEGRITY_CHECK);
+    }
+
+    @Test
+    void shouldNotValidateIntegrityChainWhenFlagIsDisabled() {
+        // given
+        final JobParameter notValidateIntegrityParam = JobParameter.builder().collectIntegrities(false).build();
+        final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder().bpn(Bpn.withManufacturerId("BPNL00000003AYRE"));
+
+        // when
+        final ItemContainer result = integrityDelegate.process(itemContainer, notValidateIntegrityParam,
+                new AASTransferProcess("id", 0), createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getIntegrities()).isEmpty();
     }
 }

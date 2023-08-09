@@ -68,6 +68,9 @@ public class JobParameter {
     private boolean collectAspects;
 
     @Schema(implementation = Boolean.class)
+    private boolean collectIntegrities;
+
+    @Schema(implementation = Boolean.class)
     private boolean lookupBPNs;
 
     private String callbackUrl;

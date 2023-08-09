@@ -139,6 +139,7 @@ public class TestMother {
                            .direction(Direction.DOWNWARD)
                            .aspects(List.of(AspectType.SERIAL_PART.toString(),
                                    AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .collectIntegrities(true)
                            .build();
     }
 
