@@ -1,10 +1,14 @@
 {
 	"IRS_HOST": "https://irs-pen.int.demo.catena-x.net",
-	"KEYCLOAK_TOKEN_URL": "https://centralidp-pen.dev.demo.catena-x.net",
+	"KEYCLOAK_TOKEN_URL": "https://centralidp-pen.dev.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token",
 	"CLIENT_ID": "",
 	"CLIENT_SECRET": "",
 	"DIGITAL_TWIN_REGISTRY": "https://semantics-pen.dev.demo.catena-x.net/registry",
-	"GLOBAL_ASSET_ID": "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf",
+	"GLOBAL_ASSET_ID": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+	"BPN": "BPNL00000003AZQP",
 	"SEMANTIC_HUB_URL": "https://semantics-pen.dev.demo.catena-x.net",
-	"BPDM_URL": "https://partners-pool-pen.dev.demo.catena-x.net"
+	"BPDM_URL": "https://partners-pool-pen.dev.demo.catena-x.net",
+	"DISCOVERY_FINDER": "https://semantics-pen.dev.demo.catena-x.net/discoveryfinder",
+	"BPN_DISCOVERY": "https://semantics-pen.dev.demo.catena-x.net/bpndiscovery",
+	"EDC_DISCOVERY": "https://semantics-pen.dev.demo.catena-x.net"
 }
