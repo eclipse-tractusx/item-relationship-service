@@ -1,10 +1,11 @@
 {
 	"IRS_HOST": "http://localhost:8080",
 	"KEYCLOAK_TOKEN_URL": "http://localhost:4011/connect/token",
-	"CLIENT_ID": "sa-cl6-cx-9",
+	"CLIENT_ID": "",
 	"CLIENT_SECRET": "",
 	"DIGITAL_TWIN_REGISTRY": "http://localhost:10200",
-	"GLOBAL_ASSET_ID": "urn:uuid:cce14502-958a-42e1-8bb7-f4f41a9457d0",
+	"GLOBAL_ASSET_ID": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+	"BPN": "BPNL00000003AZQP",
 	"SEMANTIC_HUB_URL": "http://localhost:8088",
 	"BPDM_URL": "",
 	"CONSUMER_CONTROLPLANE": "http://localhost:7181",

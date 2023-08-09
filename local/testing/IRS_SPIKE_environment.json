@@ -4,7 +4,8 @@
 	"CLIENT_ID": "",
 	"CLIENT_SECRET": "",
 	"DIGITAL_TWIN_REGISTRY": "https://irs-aas-registry-esr.dev.demo.catena-x.net",
-	"GLOBAL_ASSET_ID": "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf",
+	"GLOBAL_ASSET_ID": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+	"BPN": "BPNL00000003AZQP",
 	"SEMANTIC_HUB_URL": "https://semantics.int.demo.catena-x.net",
 	"BPDM_URL": "https://partners-pool.int.demo.catena-x.net"
 }

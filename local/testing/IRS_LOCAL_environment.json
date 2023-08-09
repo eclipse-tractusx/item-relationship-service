@@ -1,9 +1,10 @@
 {
 	"IRS_HOST": "http://localhost:8080",
 	"KEYCLOAK_TOKEN_URL": "https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token",
-	"CLIENT_ID": "sa-cl6-cx-9",
+	"CLIENT_ID": "",
 	"CLIENT_SECRET": "",
-	"GLOBAL_ASSET_ID": "urn:uuid:4ad4a1ce-beb2-42d2-bfe7-d5d9c68d6daf",
+	"GLOBAL_ASSET_ID": "urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f",
+	"BPN": "BPNL00000003AZQP",
 	"DIGITAL_TWIN_REGISTRY": "http://localhost:4243",
 	"SEMANTIC_HUB_URL": "https://semantics.int.demo.catena-x.net",
 	"BPDM_URL": "https://catenax-bpdm-int.demo.catena-x.net"
