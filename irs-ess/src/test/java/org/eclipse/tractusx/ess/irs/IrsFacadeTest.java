@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.junit.jupiter.api.Test;
@@ -54,10 +55,10 @@ class IrsFacadeTest {
         // given
         final UUID jobId = UUID.randomUUID();
         final Jobs expectedResponse = Jobs.builder()
-                                      .job(Job.builder().state(JobState.COMPLETED).id(jobId).build())
-                                      .relationships(new ArrayList<>())
-                                      .shells(new ArrayList<>())
-                                      .build();
+                                          .job(Job.builder().state(JobState.COMPLETED).id(jobId).build())
+                                          .relationships(new ArrayList<>())
+                                          .shells(new ArrayList<>())
+                                          .build();
 
         given(irsClient.getJobDetails(jobId.toString())).willReturn(expectedResponse);
 
@@ -77,7 +78,13 @@ class IrsFacadeTest {
         given(irsClient.startJob(any())).willReturn(JobHandle.builder().id(jobId).build());
 
         // when
-        final JobHandle actualResponse = irsFacade.startIrsJob(UUID.randomUUID().toString(), BomLifecycle.AS_PLANNED);
+        final JobHandle actualResponse = irsFacade.startIrsJob(PartChainIdentificationKey.builder()
+                                                                                         .globalAssetId(
+                                                                                                 UUID.randomUUID()
+                                                                                                     .toString())
+                                                                                         .bpn("BPNL000000000DD")
+                                                                                         .build(),
+                BomLifecycle.AS_PLANNED);
 
         // then
         assertThat(actualResponse).isEqualTo(expectedResponse);
