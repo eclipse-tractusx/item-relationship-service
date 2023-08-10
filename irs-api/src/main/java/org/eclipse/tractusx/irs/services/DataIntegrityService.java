@@ -24,9 +24,11 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.eclipse.tractusx.irs.data.StringMapper.mapToString;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -67,8 +69,8 @@ public class DataIntegrityService {
             final SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) reader.readObject();
 
             publicKey = PublicKeyFactory.createKey(subjectPublicKeyInfo);
-        } catch (final Exception e) {
-            log.error("Cannot create public key object based on injected publicKeyCert data");
+        } catch (final IOException | NoSuchAlgorithmException e) {
+            log.error("Cannot create public key object based on injected publicKeyCert data", e);
         }
     }
 
