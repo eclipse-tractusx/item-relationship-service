@@ -54,11 +54,9 @@ public class EdcDataPlaneClient {
         this.edcRestTemplate = edcRestTemplate;
     }
 
-    public String getData(final EndpointDataReference dataReference, final String subUrl) {
+    public String getData(final EndpointDataReference dataReference, final String submodelDataplaneUrl) {
 
-        final String url = getUrl(dataReference.getEndpoint(), subUrl);
-
-        final String response = edcRestTemplate.exchange(url, HttpMethod.GET,
+        final String response = edcRestTemplate.exchange(submodelDataplaneUrl, HttpMethod.GET,
                 new HttpEntity<>(null, headers(dataReference)), String.class).getBody();
 
         log.info("Extracting raw embeddedData from EDC data plane response");
