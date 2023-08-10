@@ -24,26 +24,19 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.eclipse.tractusx.irs.data.StringMapper.mapToString;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import java.util.Base64;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import jakarta.xml.bind.DatatypeConverter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
-import org.bouncycastle.crypto.params.RSAKeyParameters;
 import org.bouncycastle.crypto.signers.RSADigestSigner;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -70,8 +63,8 @@ public class DataIntegrityService {
             messageDigest = MessageDigest.getInstance("SHA3-256");
 
             Security.addProvider(new BouncyCastleProvider());
-            PEMParser reader = new PEMParser(new StringReader(publicKeyCert));
-            SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) reader.readObject();
+            final PEMParser reader = new PEMParser(new StringReader(publicKeyCert));
+            final SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) reader.readObject();
 
             publicKey = PublicKeyFactory.createKey(subjectPublicKeyInfo);
         } catch (final Exception e) {
@@ -113,8 +106,8 @@ public class DataIntegrityService {
         final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
         log.debug("Comparing hashes and signatures Data integrity of Submodel {}", submodel.getIdentification());
 
-        return hashesAreEqual(reference.getHash(), calculatedHash) &&
-                signaturesAreEqual(reference.getSignature(), bytesOf(submodel.getPayload()));
+        return hashesAreEqual(reference.getHash(), calculatedHash)
+                && signaturesAreEqual(reference.getSignature(), bytesOf(submodel.getPayload()));
     }
 
     private static boolean hashesAreEqual(final String hashReference, final String calculatedHash) {
@@ -122,11 +115,11 @@ public class DataIntegrityService {
                 calculatedHash.getBytes(StandardCharsets.UTF_8));
     }
 
-    public boolean signaturesAreEqual(final String signatureReference, final byte[] hashedMessage) {
+    private boolean signaturesAreEqual(final String signatureReference, final byte[] hashedMessage) {
         final RSADigestSigner verifier = new RSADigestSigner(new SHA256Digest());
         verifier.init(false, publicKey);
         verifier.update(hashedMessage, 0, hashedMessage.length);
-        return verifier.verifySignature(signatureReference.getBytes(StandardCharsets.UTF_8));
+        return verifier.verifySignature(Hex.decode(signatureReference));
     }
 
     private int totalNumberOfSubmodels(final ItemContainer itemContainer) {
