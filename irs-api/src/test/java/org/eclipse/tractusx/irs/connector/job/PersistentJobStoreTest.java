@@ -33,7 +33,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -98,7 +100,7 @@ class PersistentJobStoreTest {
         final MinioBlobPersistence blobStore = new MinioBlobPersistence("http://" + minioContainer.getHostAddress(),
                 ACCESS_KEY, SECRET_KEY, "testbucket", 1);
         blobStoreSpy = Mockito.spy(blobStore);
-        sut = new PersistentJobStore(blobStoreSpy, meterRegistryService, new DataIntegrityService());
+        sut = new PersistentJobStore(blobStoreSpy, meterRegistryService, new DataIntegrityService(""));
     }
 
     @Test

@@ -24,6 +24,8 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +54,7 @@ class QueryBatchServiceTest {
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
-        jobStore = new InMemoryJobStore(new DataIntegrityService());
+        jobStore = new InMemoryJobStore(new DataIntegrityService(""));
         service = new QueryBatchService(batchOrderStore, batchStore, jobStore);
     }
 

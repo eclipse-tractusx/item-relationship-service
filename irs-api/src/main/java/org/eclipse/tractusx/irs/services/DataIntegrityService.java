@@ -24,19 +24,35 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.eclipse.tractusx.irs.data.StringMapper.mapToString;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.Base64;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import jakarta.xml.bind.DatatypeConverter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
+import org.bouncycastle.crypto.params.RSAKeyParameters;
+import org.bouncycastle.crypto.signers.RSADigestSigner;
+import org.bouncycastle.crypto.util.PublicKeyFactory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.util.encoders.Hex;
 import org.eclipse.tractusx.irs.aaswrapper.job.IntegrityAspect;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Submodel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -46,7 +62,22 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DataIntegrityService {
 
-    public static final String SHA3_256 = "SHA3-256";
+    private MessageDigest messageDigest;
+    private AsymmetricKeyParameter publicKey;
+
+    public DataIntegrityService(@Value("${integrity.publicKeyCert:}") final String publicKeyCert) {
+        try {
+            messageDigest = MessageDigest.getInstance("SHA3-256");
+
+            Security.addProvider(new BouncyCastleProvider());
+            PEMParser reader = new PEMParser(new StringReader(publicKeyCert));
+            SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) reader.readObject();
+
+            publicKey = PublicKeyFactory.createKey(subjectPublicKeyInfo);
+        } catch (final Exception e) {
+            log.error("Cannot create public key object based on injected publicKeyCert data");
+        }
+    }
 
     /**
      * @param itemContainer data
@@ -80,8 +111,22 @@ public class DataIntegrityService {
                                                              .orElseThrow();
 
         final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
-        log.debug("Comparing hashes data integrity of Submodel {}", submodel.getIdentification());
-        return MessageDigest.isEqual(reference.getHash().getBytes(StandardCharsets.UTF_8), calculatedHash.getBytes(StandardCharsets.UTF_8));
+        log.debug("Comparing hashes and signatures Data integrity of Submodel {}", submodel.getIdentification());
+
+        return hashesAreEqual(reference.getHash(), calculatedHash) &&
+                signaturesAreEqual(reference.getSignature(), bytesOf(submodel.getPayload()));
+    }
+
+    private static boolean hashesAreEqual(final String hashReference, final String calculatedHash) {
+        return MessageDigest.isEqual(hashReference.getBytes(StandardCharsets.UTF_8),
+                calculatedHash.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public boolean signaturesAreEqual(final String signatureReference, final byte[] hashedMessage) {
+        final RSADigestSigner verifier = new RSADigestSigner(new SHA256Digest());
+        verifier.init(false, publicKey);
+        verifier.update(hashedMessage, 0, hashedMessage.length);
+        return verifier.verifySignature(signatureReference.getBytes(StandardCharsets.UTF_8));
     }
 
     private int totalNumberOfSubmodels(final ItemContainer itemContainer) {
@@ -89,16 +134,14 @@ public class DataIntegrityService {
     }
 
     private String calculateHashForRawSubmodelPayload(final Map<String, Object> payload) {
-        try {
-            log.debug("Calculating hash for payload '{}", payload);
-            final MessageDigest messageDigest = MessageDigest.getInstance(SHA3_256);
-            final byte[] digest = messageDigest.digest(mapToString(payload).getBytes(StandardCharsets.UTF_8));
-            log.debug("Returning hash '{}'", Hex.toHexString(digest));
-            return Hex.toHexString(digest);
-        } catch (NoSuchAlgorithmException e) {
-            log.error("Error creating MessageDigest", e);
-            return null;
-        }
+        log.debug("Calculating hash for payload '{}", payload);
+        final byte[] digest = bytesOf(payload);
+        log.debug("Returning hash '{}'", Hex.toHexString(digest));
+        return Hex.toHexString(digest);
+    }
+
+    private byte[] bytesOf(final Map<String, Object> payload) {
+        return messageDigest.digest(mapToString(payload).getBytes(StandardCharsets.UTF_8));
     }
 
     private Predicate<? super IntegrityAspect.Reference> findReference(final String aspectType) {

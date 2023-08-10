@@ -27,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +46,7 @@ import org.junit.jupiter.api.Test;
 
 class InMemoryJobStoreTest {
     final int TTL_IN_HOUR_SECONDS = 3600;
-    InMemoryJobStore sut = new InMemoryJobStore(new DataIntegrityService());
+    InMemoryJobStore sut = new InMemoryJobStore(new DataIntegrityService(""));
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);
