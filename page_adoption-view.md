@@ -93,13 +93,14 @@ The DataChainKit acts as a middleware between consumers and manufacturers. This 
 
 ### Consumer
 
-The DataChainKit by IRS API is being consumed by the dismantler dashboard and other parties which are part of the Catena-X network. They need to provide valid credentials issued by the Catena-X IAM. Additionally, they must provide a base global asset identifier to retrieve information for as well as configuration details for the view on that information.
+The DataChainKit by IRS API is the essential component of the business app Trace-X FOSS to be able to build data chains in upwards and downwards direction for BOM lifecycles asBuilt and asPlanned. 
+The DataChainKit by IRS API is being consumed by the dismantler dashboard and other parties which are part of the Catena-X network. They need to provide valid credentials issued by the Catena-X Portal/IdP. Additionally, they must provide a base global asset identifier to retrieve information for as well as configuration details for the view on that information.
 
 ### Catena-X network
 
 The IRS retrieves data from the Catena-X network (using the necessary infrastructure, see Technical Context), aggregates it and provides it back to the consumers. This connection is mandatory. If the Catena-X services are unavailable, the IRS cannot perform any work.
 
-As of now, the IRS uses its own IAM credentials to gather the required data. This might be changed to use the consumer credentials in the future.
+As of now, the IRS uses it technical user credentials provided by the portal to gather the required data. This might be changed to use the consumer credentials in the future.
 
 ## Standards
 
