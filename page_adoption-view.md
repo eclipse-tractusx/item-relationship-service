@@ -36,11 +36,20 @@ There are few steps for your Customer Journey:
 
 ## Business Value
 
+### IRS Iterative
+
 * Application and Service provider can reduce integrate or migrate due to one API specification
 * The IRS Iterative API enables an easy interface for complex network tasks
 * Potential to scale and optimize network traffic
 * The IRS Iterative API is providing one Endpoint to access and collect widely distributed data
 * The Data Chain Kit enables interoperability for Data Chains along the value chain to extend
+
+### IRS Recursive
+* Application and Service provider can reduce integrate or migrate due to one API specification
+* The IRS Recursive API enables an easy interface for complex network tasks
+* The IRS Recursive API enables different use cases which collects insights over distributed data by not disclose the supply chain
+* The solution enables interoperability with other solution along the value chain to extend 
+
 
 ## Use Case
 
@@ -72,10 +81,11 @@ There are few steps for your Customer Journey:
 
 | Subsystem                          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 |:-----------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Digital Twin Registry              | The Digital Twin Registry acts as an address book for Digital Twins. Data Providers register their Digital Twins in the Digital Twin Registry. Data consumers query the Digital Twin Registry to find Digital Twins and interact with them further. A Digital Twin contains endpoint references to Submodel endpoints. Calling a Submodel endpoint returns data compliant to a semantic model. A semantic model describes the data that a Submodel endpoint returns. [Repository of the Digital Twin Registry](https://github.com/eclipse-tractusx/sldt-digital-twin-registry). |
+| Digital Twin Registry              | The Digital Twin Registry acts as an address book for Digital Twins. Data Providers register their Digital Twins in the Digital Twin Registry. Data consumers query the Digital Twin Registry to find Digital Twins and interact with them further. A Digital Twin contains endpoint references to submodel endpoints. Calling a submodel endpoint returns data compliant to a semantic model. A semantic model describes the data that a Submodel endpoint returns. [Repository of the Digital Twin Registry](https://github.com/eclipse-tractusx/sldt-digital-twin-registry). |
 | Eclipse Dataspace Components (EDC) | The Connector of the Eclipse Dataspace Components provides a framework for sovereign, inter-organizational data exchange. It will implement the International Data Spaces standard (IDS) as well as relevant protocols associated with GAIA-X. The connector is designed in an extensible way in order to support alternative protocols and integrate in various ecosystems. [Repository of the Catena-X specific EDC](https://github.com/eclipse-tractusx/tractusx-edc).                                                                                                       |
 | Discovery Service                  | The EDC / dataspace discovery interface is a CX network public available endpoint which can get used to retrieve EDC endpoints and the related BPNs, as well as search for endpoints via the BPN.                                                                                                                                                                                                                                                                                                                                                                               |
-
+| Portal                             | The Catena-X Portal and Marketplace is the heart of Catena-X and the entry point for all activities in the automotive network/value chain. Every user of the automotive value chain, no matter if it is a consumer, app provider, IT administrator or IT support will connect via the portal to the value bringing services. The whole eco-system on the automotive value chain is connected at one place.                                                                                                                                                                      |                                                                                                                                                                                                        |
+| EDC Discovery Finder               | The EDC / dataspace discovery interface is a CX network public available endpoint which can get used to retrieve edc endpoints and the related BPNs, as well as search for endpoints via the BPN                                                                                                                                                                                                                                                                                                                                                                                |                                         
 
 ## Business Process
 
@@ -119,7 +129,7 @@ The following general conditions apply:
 
 ## IRS Recursive
 
-The IRS recursive works different than the IRS iterative. It does not consume  the digital twins of the partners in the supply chain in a direct way, it triggers the IRS of a partner to start a IRS job to retrieve data of the sub-partners. This is done to keep the structure below  intransparent to the value chain above, even though it is still possible to aggregate results; pass information along the value chain.![img.png](img.png)
+The IRS recursive works different as the IRS iterative. It does not consume  the digital twins of the partners in the supply chain in a direct way, it triggers the IRS of a partner to start a IRS job to retrieve data of the sub-partners. This is done to keep the structure below  intransparent to the value chain above, even though it is still possible to aggregate results; pass information along the value chain.![img.png](img.png)
 
 The following general conditions apply:
 
