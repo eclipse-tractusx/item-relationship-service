@@ -9,9 +9,10 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
       json:
-        key:
-          globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-          bpn: BPNL00000003CRHK
+        globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+#        key:
+#          globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+#          bpn: BPNL00000003CRHK
         incidentBpns11:
           - BPNL00000003B6LU
       method: POST
@@ -44,9 +45,10 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        key:
-          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-          bpn: BPNL00000003CRHK
+#        key:
+#          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+#          bpn: BPNL00000003CRHK
+        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
         bomLifecycle: asPlanned
         callbackUrl: http://testikus.com
         incidentBpns:
@@ -115,9 +117,10 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        key:
-          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-          bpn: BPNL00000003CRHK
+#        key:
+#          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+#          bpn: BPNL00000003CRHK
+        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
         bomLifecycle: asPlanned
         callbackUrl: http://testikus.com
         incidentBpns:
@@ -169,9 +172,10 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        key:
-          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
-          bpn: BPNL00000003CRHK
+#        key:
+#          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
+#          bpn: BPNL00000003CRHK
+        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
         incidentBpns:
           - BPNL00000003B6LU
       method: POST
@@ -221,9 +225,10 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        key:
-          globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c
-          bpn: BPNL00000003CRHK
+#        key:
+#          globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c
+#          bpn: BPNL00000003CRHK
+        globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c
         incidentBpns:
           - BPNL00ARBITRARY1
       method: POST
