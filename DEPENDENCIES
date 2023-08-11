@@ -155,7 +155,7 @@ maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/0.0.2-SNAPSHOT, Apach
 maven/mavencentral/org.eclipse.tractusx.irs/irs-ess/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-models/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-policy-store/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.0.0-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.1.0-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.glassfish/jakarta.json/2.0.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jsonp
 maven/mavencentral/org.graalvm.sdk/graal-sdk/23.0.1, UPL-1.0, approved, #9850
 maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, clearlydefined
