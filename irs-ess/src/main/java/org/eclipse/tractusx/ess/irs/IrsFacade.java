@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +40,8 @@ public class IrsFacade {
 
     private final IrsClient irsClient;
 
-    public JobHandle startIrsJob(final String globalAssetId, final BomLifecycle bomLifecycle) {
-        final JobHandle response = irsClient.startJob(IrsRequest.bpnInvestigations(globalAssetId, bomLifecycle));
+    public JobHandle startIrsJob(final PartChainIdentificationKey key, final BomLifecycle bomLifecycle) {
+        final JobHandle response = irsClient.startJob(IrsRequest.bpnInvestigations(key, bomLifecycle));
         log.info("Registered IRS job with jobId: {}", response.getId());
         return response;
     }

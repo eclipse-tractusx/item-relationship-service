@@ -31,6 +31,7 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -48,7 +49,8 @@ class IrsClientTest {
     void shouldStartJob() {
         // given
         IrsClient irsClient = new IrsClient(restTemplate, URL);
-        IrsRequest irsRequest = IrsRequest.builder().key(IrsRequest.IdentificationKey.builder().globalAssetId("global-id").build()).bomLifecycle("asBuilt").build();
+        IrsRequest irsRequest = IrsRequest.builder().key(
+                PartChainIdentificationKey.builder().globalAssetId("global-id").bpn("BPNL0000000000DD").build()).bomLifecycle("asBuilt").build();
         JobHandle expectedResponse = JobHandle.builder().id(UUID.fromString(JOB_ID)).build();
 
         given(restTemplate.postForObject(URL + "/irs/jobs",

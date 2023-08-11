@@ -2,8 +2,6 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.URISyntaxException;
-
 import org.junit.jupiter.api.Test;
 
 class ExtractDataFromProtocolInformationTest {
@@ -11,7 +9,7 @@ class ExtractDataFromProtocolInformationTest {
     @Test
     void shouldExtractIdFromSubprotocol() {
         // given
-        final String exampleSubprotocol = "other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/";
+        final String exampleSubprotocol = "other_id=fake-id;id=12345;dspEndpoint=http://edc.control.plane/";
 
         // when
         final String actual = ExtractDataFromProtocolInformation.extractAssetId(exampleSubprotocol);
@@ -21,15 +19,15 @@ class ExtractDataFromProtocolInformationTest {
     }
 
     @Test
-    void shouldExtractSufixPathFromHref() throws URISyntaxException {
+    void shouldExtractDspEndpointFromSubprotocol() {
         // given
-        final String href = "https://edc.data.plane/shells/123/submodels/456/submodel";
+        final String exampleSubprotocol = "other_id=fake-id;id=12345;dspEndpoint=http://edc.control.plane/";
 
         // when
-        final String actual = ExtractDataFromProtocolInformation.extractSuffix(href);
+        final String actual = ExtractDataFromProtocolInformation.extractDspEndpoint(exampleSubprotocol);
 
         // then
-        assertThat(actual).isEqualTo("/shells/123/submodels/456/submodel");
+        assertThat(actual).isEqualTo("http://edc.control.plane/");
     }
 
 }

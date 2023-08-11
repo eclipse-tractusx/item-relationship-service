@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-registry-client</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${irs-registry-client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
@@ -202,6 +202,11 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.15.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>23.0.1</version>
         </dependency>
 
 
