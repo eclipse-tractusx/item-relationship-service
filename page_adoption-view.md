@@ -29,7 +29,7 @@ With the Data Chain KIT, we support the Catena-X customer journey for our adopte
 
 There are few steps for your Customer Journey:
 * Step 1: Inform yourself & take the decision to become part
-* Step 2: Connect your company & teams to Catena-X
+* Step 2: Connect your company & teams to Catena-X. 
 * Step 3: Boost data readiness and governance
 * Step 4: Adopt a data driven business process and create instant value
 * Step 5: Utilize the full power of collaboration in your business team
@@ -97,6 +97,8 @@ Our relevant standards can be downloaded from the official [Catena-X Standard Li
 
 - [CX - 0005 Item Relationship Service API](https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Archiv/Update_Juli_23_R_3.2/CX-0005-ItemRelationshipServiceApi-v1.1.1.pdf)
 - [CX - 0045 Aspect Model Template Data Chain](https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Archiv/Update_Juli_23_R_3.2/CX-0045-AspectModelDataChainTemplate-v1.1.1.pdf)
+- [CX - 0045 Aspect Model Template Data Chain](https://catena-x.net/fileadmin/user_upload/Standard-Bibliothek/Archiv/Update_Juli_23_R_3.2/CX-0045-AspectModelDataChainTemplate-v1.1.1.pdf)
+
 
 ## Why Data Chain Kit
 
@@ -106,7 +108,7 @@ What is in for you to use the Data Chain Kit. On what is it built on.
 
 ## IRS Iterative
 
-The IRS iterative iterates through the different digital twin aspects, which are representing a relationship. For Release 1 this is the AssemblyPartRelationship aspect, which connects serialized parts. This service can access the digital twins for which a EDC policy and and data contract exists. In this case the consumer needs a contract which each participant of the data chain.
+The IRS iterative iterates through the different digital twin aspects, which are representing a relationship. For Release 3.2 this is the SingleLevelBOMasBuilt aspect, which connects serialized parts. This service can access the digital twins for which an EDC policy and a data contract exists. In this case the consumer needs a contract which each participant of the data chain.
 
 ![IRS iterative diagram](@site/static/img/irs-minified.svg)
 
@@ -114,3 +116,15 @@ The following general conditions apply:
 -access control through policies and contracts is done by the EDC
 -direct data exchange between supply-chain partners
 -Catena-X partners of the accessible value chain are known to the data-consumer
+
+## IRS Recursive
+
+The IRS recursive works different than the IRS iterative. It does not consume  the digital twins of the partners in the supply chain in a direct way, it triggers the IRS of a partner to start a IRS job to retrieve data of the sub-partners. This is done to keep the structure below  intransparent to the value chain above, even though it is still possible to aggregate results; pass information along the value chain.![img.png](img.png)
+
+The following general conditions apply:
+
+- The IRS recursive is for use-cases, which want to apply business logic with data along the value chain. For example, to summarize, or check for existence of values or certificates.
+- Each participant has the possibility to check their values, before passing them to next in line 
+- access control through policies and contracts is done by the EDC 
+- direct data exchange between supply-chain partners 
+- business logic is being applied with an extension concept
