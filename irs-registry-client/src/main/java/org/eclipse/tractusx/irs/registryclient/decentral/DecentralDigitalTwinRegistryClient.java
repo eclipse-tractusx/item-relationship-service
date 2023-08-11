@@ -22,6 +22,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +32,6 @@ import lombok.RequiredArgsConstructor;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.data.StringMapper;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -46,17 +47,20 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class DecentralDigitalTwinRegistryClient {
 
     private static final String PLACEHOLDER_AAS_IDENTIFIER = "aasIdentifier";
-    private static final String PLACEHOLDER_ASSET_IDS = "assetIds";
     private static final String SHELL_DESCRIPTOR_TEMPLATE = "/shell-descriptors/{aasIdentifier}";
-    private static final String LOOKUP_SHELLS_TEMPLATE = "/lookup/shells?assetIds={assetIds}";
+    private static final String QUERY_SHELLS_PATH = "/lookup/shells/query";
     private final RestTemplate edcRestTemplate;
+
+    private static String encodeWithBase64(final String aasIdentifier) {
+        return Base64.getEncoder().encodeToString(aasIdentifier.getBytes(StandardCharsets.UTF_8));
+    }
 
     @Retry(name = "registry")
     public AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(
             final EndpointDataReference endpointDataReference, final String aasIdentifier) {
         final String descriptorEndpoint = endpointDataReference.getEndpoint() + SHELL_DESCRIPTOR_TEMPLATE;
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(descriptorEndpoint);
-        final Map<String, String> values = Map.of(PLACEHOLDER_AAS_IDENTIFIER, aasIdentifier);
+        final Map<String, String> values = Map.of(PLACEHOLDER_AAS_IDENTIFIER, encodeWithBase64(aasIdentifier));
         return edcRestTemplate.exchange(uriBuilder.build(values), HttpMethod.GET,
                                       new HttpEntity<>(null, headers(endpointDataReference)), AssetAdministrationShellDescriptor.class)
                               .getBody();
@@ -65,11 +69,15 @@ public class DecentralDigitalTwinRegistryClient {
     @Retry(name = "registry")
     public List<String> getAllAssetAdministrationShellIdsByAssetLink(final EndpointDataReference endpointDataReference,
             final List<IdentifierKeyValuePair> assetIds) {
-        final String shellLookupEndpoint = endpointDataReference.getEndpoint() + LOOKUP_SHELLS_TEMPLATE;
-        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
-        final var values = Map.of(PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds));
-        return edcRestTemplate.exchange(uriBuilder.build(values), HttpMethod.GET,
-                new HttpEntity<>(null, headers(endpointDataReference)), new ParameterizedTypeReference<List<String>>() {
+        final String shellLookupEndpoint = endpointDataReference.getEndpoint() + QUERY_SHELLS_PATH;
+        final ShellQueryBody queryBody = ShellQueryBody.builder()
+                                                       .query(ShellQueryBody.ShellQuery.builder()
+                                                                                       .assetIds(assetIds)
+                                                                                       .build())
+                                                       .build();
+        return edcRestTemplate.exchange(shellLookupEndpoint, HttpMethod.POST,
+                new HttpEntity<>(queryBody, headers(endpointDataReference)),
+                new ParameterizedTypeReference<List<String>>() {
                 }).getBody();
     }
 
