@@ -22,8 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,14 +38,16 @@ public class ExtractDataFromProtocolInformation {
 
     public static String extractAssetId(final String subprotocolBody) {
         final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
-                                                  .map(str -> str.split("="))
-                                                  .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+                                                             .map(str -> str.split("="))
+                                                             .collect(Collectors.toMap(e -> e[0], e -> e[1]));
         return parametersFromPath.get("id");
     }
 
-    public static String extractSuffix(final String href) throws URISyntaxException {
-        final URI uri = new URI(href);
-        return uri.getPath();
+    public static String extractDspEndpoint(final String subprotocolBody) {
+        final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
+                                                             .map(str -> str.split("="))
+                                                             .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+        return parametersFromPath.get("dspEndpoint");
     }
 
 }

@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- IRS now calls the entire dataplane URL retrieved from the registry href instead of building it from the URL of the EDC token and the path
+
 ### Fixed
 - Switched to POST for DTR lookup request
 - Added Base64 encoding to identifier for DTR shell-descriptor request 

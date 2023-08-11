@@ -58,7 +58,7 @@ import org.springframework.util.StopWatch;
 @SuppressWarnings("PMD.ExcessiveImports")
 public interface EdcSubmodelClient {
 
-    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelSufix, String assetId)
+    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelDataplaneUrl, String assetId)
             throws EdcClientException;
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
@@ -84,12 +84,12 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSuffix,
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId) throws EdcClientException {
         if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(assetId)) {
             throw new EdcClientException("Dummy Exception");
         }
-        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(assetId + "_" + submodelSuffix);
+        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(assetId + "_" + submodelDataplaneUrl);
         return CompletableFuture.completedFuture(StringMapper.mapToString(submodel));
     }
 
@@ -191,14 +191,14 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     }
 
-    private Optional<String> retrieveSubmodelData(final String submodel, final String contractAgreementId,
+    private Optional<String> retrieveSubmodelData(final String submodelDataplaneUrl, final String contractAgreementId,
             final StopWatch stopWatch) {
         final Optional<EndpointDataReference> dataReference = retrieveEndpointDataReference(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
             log.info("Retrieving data from EDC data plane for dataReference with id {}", ref.getId());
-            final String data = edcDataPlaneClient.getData(ref, submodel);
+            final String data = edcDataPlaneClient.getData(ref, submodelDataplaneUrl);
             stopWatchOnEdcTask(stopWatch);
 
             return Optional.of(data);
@@ -239,7 +239,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelSuffix,
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
@@ -250,7 +250,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint,
                     assetId);
             return pollingService.<String>createJob()
-                                 .action(() -> retrieveSubmodelData(submodelSuffix,
+                                 .action(() -> retrieveSubmodelData(submodelDataplaneUrl,
                                          negotiationResponse.getContractAgreementId(), stopWatch))
                                  .timeToLive(config.getSubmodel().getRequestTtl())
                                  .description("waiting for submodel retrieval")
