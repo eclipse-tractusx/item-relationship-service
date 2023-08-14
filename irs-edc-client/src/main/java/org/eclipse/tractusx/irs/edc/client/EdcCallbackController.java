@@ -22,9 +22,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +53,7 @@ public class EdcCallbackController {
                 dataReference.getEndpoint());
         final String authCode = dataReference.getAuthCode();
         if (authCode != null) {
-            final var contractAgreementId = extractContractAgreementId(authCode);
+            final var contractAgreementId = EDRAuthCode.fromAuthCodeToken(authCode).getCid();
             storage.put(contractAgreementId, dataReference);
             log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractAgreementId));
         } else {
@@ -65,11 +62,4 @@ public class EdcCallbackController {
         }
     }
 
-    private String extractContractAgreementId(final String token) {
-        final var chunks = token.split("\\.");
-        final var decoder = Base64.getUrlDecoder();
-        final var payload = new String(decoder.decode(chunks[1]), StandardCharsets.UTF_8);
-        final var authCode = StringMapper.mapFromString(payload, EDRAuthCode.class);
-        return authCode.getCid();
-    }
 }

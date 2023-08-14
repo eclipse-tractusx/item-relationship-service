@@ -26,19 +26,18 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.Value;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
 /**
- *  Irs Request for IRS API
+ * Irs Request for IRS API
  */
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
 class IrsRequest {
-    private IdentificationKey key;
+    private PartChainIdentificationKey key;
     private String bomLifecycle;
     private List<String> aspects;
     private boolean collectAspects;
@@ -46,29 +45,19 @@ class IrsRequest {
 
     /**
      * Predefined request body for SupplyChain processing
-     * @param globalAssetId id
+     *
+     * @param key          the key to identify the asset
      * @param bomLifecycle lifecycle - default is asPlanned
      * @return request body
      */
-    /* package */ static IrsRequest bpnInvestigations(final String globalAssetId, final BomLifecycle bomLifecycle) {
+    /* package */ static IrsRequest bpnInvestigations(final PartChainIdentificationKey key, final BomLifecycle bomLifecycle) {
         return IrsRequest.builder()
-                         .key(IdentificationKey.builder().globalAssetId(globalAssetId).build())
-                         .bomLifecycle(bomLifecycle != null
-                                 ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
+                         .key(key)
+                         .bomLifecycle(
+                                 bomLifecycle != null ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
                          .depth(1)
                          .collectAspects(false)
                          .build();
     }
 
-    /**
-     * Key object contains required attributes for identify part chain entry node
-     */
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    /* package */ static class IdentificationKey {
-        private String globalAssetId;
-        private String bpn;
-    }
 }

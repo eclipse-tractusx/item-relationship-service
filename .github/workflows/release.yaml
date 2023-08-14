@@ -16,12 +16,12 @@ jobs:
         run: echo HELM_VERSION=$(cat charts/irs-helm/CHANGELOG.md | sed -n 's/.*\[\([0-9]\+\.[0-9]\+\.[0-9]\+\)\].*/\1/p' | head -n 1) >> $GITHUB_ENV
 
       - name: Update Chart.yaml appVersion
-        uses: mikefarah/yq@v4.33.3
+        uses: mikefarah/yq@v4.34.2
         with:
           cmd: yq -i eval '.appVersion = "${{ github.ref_name }}"' charts/irs-helm/Chart.yaml
 
       - name: Update Chart.yaml version
-        uses: mikefarah/yq@v4.33.3
+        uses: mikefarah/yq@v4.34.2
         with:
           cmd: yq -i eval '.version = "${{ env.HELM_VERSION }}"' charts/irs-helm/Chart.yaml
 

@@ -1,12 +1,12 @@
 {
 	"_type": "export",
 	"__export_format": 4,
-	"__export_date": "2023-06-19T08:24:41.922Z",
-	"__export_source": "insomnia.desktop.app:v2023.2.2",
+	"__export_date": "2023-08-09T10:52:30.218Z",
+	"__export_source": "insomnia.desktop.app:v2023.4.0",
 	"resources": [
 		{
-			"_id": "req_89d9d2e9c0af46a8af26336017a65a47",
-			"parentId": "fld_a9dafef964074fb2bc3ad8ee8b934392",
+			"_id": "req_513410e0c845489ba3d2e1544a3a3d1f",
+			"parentId": "fld_917e1ffd657f41e8b32592b1aab95649",
 			"modified": 1687243172179,
 			"created": 1687243056648,
 			"url": "{{IRS_HOST}}/irs/policies",
@@ -34,8 +34,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_a9dafef964074fb2bc3ad8ee8b934392",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_917e1ffd657f41e8b32592b1aab95649",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1687243055015,
 			"created": 1687243055015,
 			"name": "Policy Store",
@@ -46,8 +46,30 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_ca7bd38207974cdbadd3001a02a6ba30",
-			"parentId": "fld_a9dafef964074fb2bc3ad8ee8b934392",
+			"_id": "fld_594b246aac764c3eb981cf3b3ed37355",
+			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+			"modified": 1691572726194,
+			"created": 1680682418636,
+			"name": "IRS DEMO Collection",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1680682418636,
+			"_type": "request_group"
+		},
+		{
+			"_id": "wrk_565df8abe30f4da29d8bffcde97927d7",
+			"parentId": null,
+			"modified": 1680682438221,
+			"created": 1680682419747,
+			"name": "IRS",
+			"description": "",
+			"scope": "collection",
+			"_type": "workspace"
+		},
+		{
+			"_id": "req_c4613df1464943e59d65845be02eb7cb",
+			"parentId": "fld_917e1ffd657f41e8b32592b1aab95649",
 			"modified": 1687243241313,
 			"created": 1687243204155,
 			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'policyId', '', '', '', false, true %}",
@@ -75,8 +97,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_c2a6ea1764ba4738b52f13b8dfcace24",
-			"parentId": "fld_a9dafef964074fb2bc3ad8ee8b934392",
+			"_id": "req_7068b5269fc04fbaae88a98e952aa005",
+			"parentId": "fld_917e1ffd657f41e8b32592b1aab95649",
 			"modified": 1687243190523,
 			"created": 1687243182397,
 			"url": "{{IRS_HOST}}/irs/policies",
@@ -112,11 +134,11 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_f8313cc8e9604c67a7b3c1049fd30669",
-			"parentId": "fld_0a976d33962f49ef8a6756811b096a1d",
-			"modified": 1681716476162,
+			"_id": "req_dbc915b520ea4eef8cff175b8f8d1b1c",
+			"parentId": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"modified": 1691502818583,
 			"created": 1680682418619,
-			"url": "{{DIGITAL_TWIN_REGISTRY}}/registry/shell-descriptors/{% prompt 'aasIdentifier', '', '', '', false, true %}",
+			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors/{% prompt 'aasIdentifier', '', _.GLOBAL_ASSET_ID, '', false, true %}",
 			"name": "Get Shell by aasIdentifier",
 			"description": "",
 			"method": "GET",
@@ -150,11 +172,11 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_0a976d33962f49ef8a6756811b096a1d",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
-			"modified": 1680682418630,
+			"_id": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
+			"modified": 1691504187689,
 			"created": 1680682418630,
-			"name": "DigitalTwinRegistry/Wrapper",
+			"name": "Digital Twin Registry",
 			"description": "",
 			"environment": {},
 			"environmentPropertyOrder": null,
@@ -162,33 +184,49 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "fld_86d2b3cc317140938409b97480e84293",
-			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-			"modified": 1680682418636,
-			"created": 1680682418636,
-			"name": "IRS DEMO Collection",
+			"_id": "req_627cfb763a9644aeb90deb6aea9dd565",
+			"parentId": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"modified": 1690529037286,
+			"created": 1690529035794,
+			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors",
+			"name": "Get Shells",
 			"description": "",
-			"environment": {},
-			"environmentPropertyOrder": null,
-			"metaSortKey": -1680682418636,
-			"_type": "request_group"
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [
+				{
+					"id": "pair_7877c58fd3ae46758cabf9f6cb397818",
+					"name": "",
+					"value": "",
+					"description": "",
+					"disabled": true
+				}
+			],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}",
+				"credentialsInBody": false
+			},
+			"metaSortKey": -1680682418614,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
 		},
 		{
-			"_id": "wrk_565df8abe30f4da29d8bffcde97927d7",
-			"parentId": null,
-			"modified": 1680682438221,
-			"created": 1680682419747,
-			"name": "IRS",
-			"description": "",
-			"scope": "collection",
-			"_type": "workspace"
-		},
-		{
-			"_id": "req_4127e7adf43a4f38841b68b954134d3e",
-			"parentId": "fld_0a976d33962f49ef8a6756811b096a1d",
-			"modified": 1680685041977,
+			"_id": "req_44ab4655daa44ef0832a7ba88c79b8e2",
+			"parentId": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"modified": 1690366224607,
 			"created": 1680682418609,
-			"url": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells",
+			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
 			"name": "Query Registry By BPN",
 			"description": "",
 			"method": "GET",
@@ -197,42 +235,50 @@
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AYRE\"}],",
-					"disabled": true
+					"disabled": false,
+					"id": "pair_c8a20aa6fd7647a98da9b91abfe0cfa8"
 				},
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AVTH\"}],",
-					"disabled": true
+					"disabled": true,
+					"id": "pair_cc48c08e3b834497a2d88bd4201c3867"
 				},
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AZQP\"}]",
-					"disabled": true
+					"disabled": true,
+					"id": "pair_4187c8b0b8894410a17eb0ff2cf1523a"
 				},
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003B2OM\"}],",
-					"disabled": true
+					"disabled": true,
+					"id": "pair_706e6930cc874343941b744a054ef388"
 				},
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003B3NX\"}],",
-					"disabled": true
+					"disabled": true,
+					"id": "pair_45c6bcf3266a475891ebbbba6cde0798"
 				},
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003B5MJ\"}],",
-					"disabled": true
+					"disabled": true,
+					"id": "pair_89445c9795e54bbfa1e26dae0fe4756a"
 				},
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003B0Q0\"}],",
-					"disabled": true
+					"disabled": true,
+					"id": "pair_d72f55c7bf714c7c9aae58456c778443"
 				},
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AXS3\"}],",
-					"disabled": true
+					"disabled": true,
+					"id": "pair_406c9da4dc014fb297f70bb3da7128c1"
 				}
 			],
 			"headers": [],
@@ -255,11 +301,11 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_a784c716d4444f9181ecf04a358453d4",
-			"parentId": "fld_0a976d33962f49ef8a6756811b096a1d",
-			"modified": 1680685153071,
+			"_id": "req_cd89c548e56d402a814ba5daed4d8204",
+			"parentId": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"modified": 1690366542261,
 			"created": 1680682418595,
-			"url": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells",
+			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
 			"name": "Query Registry By VAN",
 			"description": "",
 			"method": "GET",
@@ -267,8 +313,9 @@
 			"parameters": [
 				{
 					"name": "assetIds",
-					"value": "[{\"name\":\"VAN\",\"value\": \"OMA-TGFAYUHXFLHHUQQMPLTE\"}]",
-					"disabled": false
+					"value": "[{\"name\":\"van\",\"value\": \"OMBSWNHVABEWMQTAV\"}]",
+					"disabled": false,
+					"id": "pair_50d86e928e9f448d97da8ada0390e12f"
 				}
 			],
 			"headers": [],
@@ -290,11 +337,11 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_ed231d46fda74e7e84cdef680dec5979",
-			"parentId": "fld_0a976d33962f49ef8a6756811b096a1d",
-			"modified": 1680685168642,
+			"_id": "req_48092f4b0e754e098a50ebeef28f35e3",
+			"parentId": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"modified": 1691061418395,
 			"created": 1680682418581,
-			"url": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells",
+			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
 			"name": "Query Registry By globalAssetId",
 			"description": "",
 			"method": "GET",
@@ -302,8 +349,9 @@
 			"parameters": [
 				{
 					"name": "assetIds",
-					"value": "[{\"name\":\"globalAssetId\",\"value\":\"{{GLOBAL_ASSET_ID}}\"}]",
-					"disabled": false
+					"value": "[{\"name\":\"globalAssetId\",\"value\":\"{% prompt 'id', '', '', '', false, true %}\"}]",
+					"disabled": false,
+					"id": "pair_f5f3d12fb2224c1d9e577c42128aa3d9"
 				}
 			],
 			"headers": [],
@@ -325,17 +373,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_ba9d0c799d824bdeb67f6951f2ccf19c",
-			"parentId": "fld_0a976d33962f49ef8a6756811b096a1d",
-			"modified": 1680685105382,
+			"_id": "req_a82202c18769490f8f5d66d9d0b72223",
+			"parentId": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"modified": 1691500553894,
 			"created": 1680682418570,
-			"url": "{{DIGITAL_TWIN_REGISTRY}}/lookup/shells/query",
-			"name": "Query Registry",
+			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells/query",
+			"name": "Query Registry By VAN",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "",
-				"text": "{\r\n  \"query\": {\r\n    \"assetIds\": [\r\n        {\r\n            \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TGETGMWPZFMNWOSFSUTB\",\r\n            \"key\" : \"VAN\"\r\n        }\r\n        ,\r\n        {\r\n            \"value\" : \"OMA-LFVTNWIDZPPRXGZEFEMN\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TYFEAJPWMOXNDYYJTHOB\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-NRWQMZQXSKSZCRWDMWHF\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-FUQTIGXCVPVLRJAZXXYZ\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-DDGCCSBNEIVZDMXEMMTH\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-VXXHAGYPPYCLXANZCZXX\",\r\n            \"key\" : \"VAN\"\r\n        },\r\n        {\r\n            \"value\" : \"OMA-TGFAYUHXFLHHUQQMPLTE\",\r\n            \"key\" : \"VAN\"\r\n        }\r\n    ]\r\n  }\r\n}"
+				"text": "{\n  \"query\": {\n    \"assetIds\": [\n        {\n            \"value\" : \"OMCOFCRMXMBASAFZY\",\n            \"name\" : \"van\"\n        },\n        {\n            \"value\" : \"OMCNAXRMATEMEDENV\",\n            \"name\" : \"van\"\n        }\n        ,\n        {\n            \"value\" : \"OMCODXGPGLPLKEAIQ\",\n            \"name\" : \"van\"\n        },\n        {\n            \"value\" : \"OMBGHXHATHICIEYOU\",\n            \"name\" : \"van\"\n        },\n        {\n            \"value\" : \"OMAGCJCBDQGPYRQCS\",\n            \"name\" : \"van\"\n        },\n        {\n            \"value\" : \"OMBIBCLBMGCJNUKUW\",\n            \"name\" : \"van\"\n        },\n        {\n            \"value\" : \"OMCRHSMILXFLDSPTT\",\n            \"name\" : \"van\"\n        },\n        {\n            \"value\" : \"OMCLNVPYKUQCNIBOW\",\n            \"name\" : \"van\"\n        },\n        {\n            \"value\" : \"OMCXYXGFMJIBYQLBL\",\n            \"name\" : \"van\"\n        }\n    ]\n  }\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -362,17 +410,100 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_43cb51ebf1d641d280af78c710e7804d",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686308227272,
+			"_id": "req_87f4f21fea6240c3a414078f03d285eb",
+			"parentId": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"modified": 1691571903257,
+			"created": 1691408320970,
+			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells/query",
+			"name": "Query Registry By globalAssetId",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "",
+				"text": "{\n\t\"query\": {\n\t\t\"assetIds\": [\n\t\t\t{\n\t\t\t\t\"value\": \"urn:uuid:da53d429-5770-410e-a13e-424e77952d8a\",\n\t\t\t\t\"name\": \"globalAssetId\"\n\t\t\t}\n\t\t]\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}"
+			},
+			"metaSortKey": -1680682418560.5,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_2f64c4c3846547d2ba6d961ad2ca7893",
+			"parentId": "fld_a510a75fe4124b8ebf6746daf8ae19b6",
+			"modified": 1690366857910,
+			"created": 1689167429413,
+			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Delete Shell by aasIdentifier",
+			"description": "",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [
+				{
+					"id": "pair_6266690c04fd466fa1617082f5b8ec76",
+					"name": "pageSize",
+					"value": "50",
+					"description": "",
+					"disabled": true
+				}
+			],
+			"headers": [
+				{
+					"id": "pair_7877c58fd3ae46758cabf9f6cb397818",
+					"name": "",
+					"value": "",
+					"description": "",
+					"disabled": true
+				}
+			],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}",
+				"credentialsInBody": false
+			},
+			"metaSortKey": -1680682418470,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_bb45174b20a245e4a2210ceb0157585b",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572360476,
 			"created": 1680682418551,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.0.0 [Register Job] https://${environment}/irs/jobs",
+			"name": "1.0.0 [Register Job]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"}\n}"
+				"text": "{\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -399,8 +530,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1680682418562,
 			"created": 1680682418562,
 			"name": "IRS Test Collection",
@@ -411,17 +542,17 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_326a055340d14eaeb094fa06d0ae392a",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686307937672,
+			"_id": "req_3af106da21004f3683d0104015026fc3",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572904486,
 			"created": 1680682418539,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.1.0 [Register Job globalAssetId <Unknown>] https://${environment}/irs/jobs",
+			"name": "1.1.0 [Register Job globalAssetId <Unknown>]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"key\": {\"globalAssetId\": \"urn:uuid:88f51be1-3771-4335-8b5c-4c5050123123\"}\n}"
+				"text": "{\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:00000000-0000-0000-0000-000000000000\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -448,17 +579,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_64fb4095c41a4defb9e03a20b026a14e",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1680685932259,
+			"_id": "req_dc2d378677394aaf941e9b9d4088d1b7",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572915877,
 			"created": 1680682418524,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.1.1 [Register Job globalAssetId <Unknown>] https://${environment}/irs/jobs",
+			"name": "1.1.1 [Register Job globalAssetId <Invalid>]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\r\n  \"globalAssetId\": \"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b\", \r\n  \"collectAspects\": true\r\n}"
+				"text": "{\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b918ea936c311d29-5753-46d4-b32c-19b\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -485,17 +616,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_65933d33b3f044fcb1e6c3b3d6167769",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686307967295,
+			"_id": "req_da19d53a731f480f89cd5a616192f623",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572926461,
 			"created": 1680682418514,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.2.0 [Register Job with depth and bomLifecycle asBuilt] https://${environment}/irs/jobs",
+			"name": "1.2.0 [Register Job with depth and bomLifecycle asBuilt]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"}\n  \"bomLifecycle\": \"asBuilt\",\n  \"depth\": 2,\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"depth\": 2,\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -522,17 +653,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_11476da2d6bc42e2be1e986bc7fc320d",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686307971338,
+			"_id": "req_604d12a0938d4492b06af530cedd52db",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572936024,
 			"created": 1680682418504,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.2.1 [Register Job with depth and bomLifecycle asPlanned] https://${environment}/irs/jobs",
+			"name": "1.2.1 [Register Job with depth and bomLifecycle asPlanned]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"}\n  \"bomLifecycle\": \"asPlanned\",\n  \"depth\": 2\n}"
+				"text": "{\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"bomLifecycle\": \"asPlanned\",\n\t\"depth\": 2\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -559,17 +690,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_4b396f9bb3f046888d3edc92db2aaf9a",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686307976861,
+			"_id": "req_2f7b6081c4eb4004913a8121503b4572",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572943357,
 			"created": 1680682418488,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.3.0 [Register Job with aspect SerialPartTypization] https://${environment}/irs/jobs",
+			"name": "1.3.0 [Register Job with aspect SerialPart]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"SerialPartTypization\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -596,17 +727,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_2215dd25ae7147dc885016a5b6d04009",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686307981750,
+			"_id": "req_d0f90500ead34240a6aeff59c1615c67",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572949775,
 			"created": 1680682418479,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.3.1 [Register Job with aspect SerialPartTypization and AssemblyPartRelationship] https://${environment}/irs/jobs",
+			"name": "1.3.1 [Register Job with aspect SerialPart and SingleLevelBomAsBuilt]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AssemblyPartRelationship\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\",\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -633,17 +764,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_3383fe002a3b4d37af7f05f7655aa222",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686307987129,
+			"_id": "req_f752f1e8844f400987c94a4d011e5908",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572957454,
 			"created": 1680682418469,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.3.2 [Register Job with aspect MaterialForRecycling and BatteryPass] https://${environment}/irs/jobs",
+			"name": "1.3.2 [Register Job with aspect MaterialForRecycling and BatteryPass]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"BatteryPass\",\n    \"MaterialForRecycling\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"BatteryPass\",\n\t\t\"MaterialForRecycling\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -670,17 +801,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_9e8d180b020943589d59c16cb13df2a9",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686307992825,
+			"_id": "req_e0c1ec99052b4196aed7f42f3ebecb1c",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572965207,
 			"created": 1680682418460,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.3.3 [Register Job with aspect type Batch and CertificateOfDestruction] https://${environment}/irs/jobs",
+			"name": "1.3.3 [Register Job with aspect type Batch and CertificateOfDestruction]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"Batch\",\n    \"CertificateOfDestruction\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"Batch\",\n\t\t\"CertificateOfDestruction\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -707,17 +838,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_1bff93f35fd147a5834c847ccd6df8fd",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686307997425,
+			"_id": "req_c4410cd091e04bc9942f9287301be842",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572975641,
 			"created": 1680682418451,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.3.4 [Register Job with aspect SerialPartTypization and AddressAspect] https://${environment}/irs/jobs",
+			"name": "1.3.4 [Register Job with aspect SerialPart and AddressAspect]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AddressAspect\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\",\n\t\t\"AddressAspect\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -744,17 +875,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_b7644a00d1eb4d93a84e0de6e7340d04",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686308001755,
+			"_id": "req_774ffd59977642f795cbb6ae81a67bc9",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572985624,
 			"created": 1680682418442,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.3.5 [Register Job with aspect PartAsPlanned] https://${environment}/irs/jobs",
+			"name": "1.3.5 [Register Job with aspect PartAsPlanned]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"PartAsPlanned\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"bomLifecycle\": \"asPlanned\",\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"PartAsPlanned\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"bomLifecycle\": \"asPlanned\",\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -781,17 +912,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_11ccb672301e40898a9f6aa083b865e1",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686308028716,
+			"_id": "req_1907c90d3ae64207949275ef174bc087",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572678250,
 			"created": 1680682418432,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.3.6 [Register Job with upward direction] https://${environment}/irs/jobs",
+			"name": "1.3.6 [Register Job with upward direction]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"key\": {\"globalAssetId\": \"urn:uuid:6d9be5cc-6eff-47f8-bcc6-f6c639c932cf\"},\n  \"direction\": \"upward\"\n}"
+				"text": "{\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:3402b29d-07a6-42ad-80ff-272b50fbe24a\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t},\n\t\"direction\": \"upward\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -818,17 +949,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_2a65bba9921845aea1a8fda6fce931bc",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686308040233,
+			"_id": "req_fe0c9b842236482b8cb6b36822b461e5",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691574126936,
 			"created": 1680682418424,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.4.0 [Register Job with invalid or not exisiting aspect type] https://${environment}/irs/jobs",
+			"name": "1.4.0 [Register Job with invalid or not exisiting aspect type]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"PartSerialTypization\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"PartSerialTypization\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -855,17 +986,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_b6da3b2a9fca406fae0eb258bc74cc1f",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686308043816,
+			"_id": "req_a302b6d5dad64659802ce3da9c1dd979",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691574130454,
 			"created": 1680682418414,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.4.1 [Register Job with invalid or not exisiting aspect type] https://${environment}/irs/jobs",
+			"name": "1.4.1 [Register Job with invalid or not exisiting aspect type]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -892,17 +1023,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_20b85d253ade4758bdab30bc07a37058",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686308047935,
+			"_id": "req_dfe85461bb794d2d945476434dbc7589",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691574133572,
 			"created": 1680682418401,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.5.0 [Register Job with all aspect type] https://{environment}/irs/jobs",
+			"name": "1.5.0 [Register Job with all aspect type]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"aspects\": [\n    \"SerialPartTypization\",\n    \"AssemblyPartRelationship\",\n    \"Batch\",\n    \"ProductDescription\",\n    \"IdConversion\",\n    \"MarketplaceOffer\",\n    \"MaterialForRecycling\",\n    \"PhysicalDimension\",\n    \"ReturnRequest\",\n    \"CertificateOfDestruction\",\n    \"CertificateOfDismantler\",\n    \"EndOfLife\",\n    \"EsrCertificate\",\n    \"EsrCertificateStateStatistic\",\n    \"ChargingProcess\",\n    \"AddressAspect\",\n    \"ClaimData\",\n    \"BatteryPass\",\n    \"DiagnosticData\",\n    \"MaterialForHomologation\",\n    \"PartAsPlanned\"\n  ],\n  \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n  \"collectAspects\": true\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPartTypization\",\n\t\t\"AssemblyPartRelationship\",\n\t\t\"Batch\",\n\t\t\"ProductDescription\",\n\t\t\"IdConversion\",\n\t\t\"MarketplaceOffer\",\n\t\t\"MaterialForRecycling\",\n\t\t\"PhysicalDimension\",\n\t\t\"ReturnRequest\",\n\t\t\"CertificateOfDestruction\",\n\t\t\"CertificateOfDismantler\",\n\t\t\"EndOfLife\",\n\t\t\"EsrCertificate\",\n\t\t\"EsrCertificateStateStatistic\",\n\t\t\"ChargingProcess\",\n\t\t\"AddressAspect\",\n\t\t\"ClaimData\",\n\t\t\"BatteryPass\",\n\t\t\"DiagnosticData\",\n\t\t\"MaterialForHomologation\",\n\t\t\"PartAsPlanned\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -929,17 +1060,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_47eb6545d223443792b130fbdc66366f",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686308052519,
+			"_id": "req_4f7a79caf3e2424bbd614a45de01d1b6",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691574328481,
 			"created": 1680682418392,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.6.0 [Register Job with BPN lookup] https://{environment}/irs/jobs",
+			"name": "1.6.0 [Register Job with BPN lookup]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n    \"aspects\": [\n        \"SerialPartTypization\",\n        \"Batch\"\n    ],\n    \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"},\n    \"lookupBPNs\": false\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\",\n\t\t\"Batch\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"lookupBPNs\": false\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -966,17 +1097,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_f929704534a44bff90b06fa4ba4b19a5",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1686308071655,
+			"_id": "req_492d4d7bc3204254b2b22755717ba631",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691574334421,
 			"created": 1683184048412,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "1.7.0 [Register Job with invalid policy] https://{environment}/irs/jobs",
+			"name": "1.7.0 [Register Job with invalid policy]",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n    \"aspects\": [\n        \"SerialPartTypization\"\n\t\t],\n\t\t\"key\": {\"globalAssetId\": \"urn:uuid:da53d429-5770-410e-a13e-424e77952d8a\"},\n\t  \"collectAspects\": true,\n    \"lookupBPNs\": false\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:da53d429-5770-410e-a13e-424e77952d8a\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true,\n\t\"lookupBPNs\": false\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -1003,12 +1134,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_9947265be6f142f7809ae23163c8f35b",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1680686177445,
+			"_id": "req_f69fd26078db464a8411a9fba3dbf2a3",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691571995584,
 			"created": 1680682418381,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "2.0.0 [Search for completed Jobs]  http://${environment}/irs/jobs?jobStates=COMPLETED",
+			"name": "2.0.0 [Search for completed Jobs]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1043,12 +1174,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_7a4bc0428eb342fd87364b9e826f43f2",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1680686183733,
+			"_id": "req_675d929234784379b9985ef10c7adf98",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691571999161,
 			"created": 1680682418372,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "2.0.1 [Search for Jobs in error state]  http://${environment}/irs/jobs?jobStates=ERROR",
+			"name": "2.0.1 [Search for Jobs in error state]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1083,12 +1214,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_bc28f0ad2a0f4ea2a5d8c90c0c8e79c8",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1680686190086,
+			"_id": "req_cebe0e3bc10e446f97ace973d18ced0a",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572006985,
 			"created": 1680682418358,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "2.0.2 [Search for Jobs in initial state]  http://${environment}/irs/jobs?jobStates=INITIAL",
+			"name": "2.0.2 [Search for Jobs in initial state]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1123,12 +1254,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_c3fb11b2448345b5bd83faf2e8044525",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1680686196119,
+			"_id": "req_a205df0a5d0f48c7a2ef0bbade4d2c25",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572010448,
 			"created": 1680682418348,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "2.0.3 [Search for all Jobs in JobStore]  http://${environment}/irs/jobs",
+			"name": "2.0.3 [Search for all Jobs in JobStore]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1157,12 +1288,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_b129adb830ed403f84b78dcf4d300ced",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1680686203186,
+			"_id": "req_f291bdf1cb9849ac9f76bc055a900b6c",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572013890,
 			"created": 1680682418339,
 			"url": "{{IRS_HOST}}/irs/jobs",
-			"name": "2.1.0 [Search for running Jobs]  http://${environment}/irs/jobs?jobStates=RUNNING",
+			"name": "2.1.0 [Search for running Jobs]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1197,12 +1328,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_e3c7d467eac043e4883fc0c090492214",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1681716829578,
+			"_id": "req_de8794f64e694f588e97895ce0a29696",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572169302,
 			"created": 1680682418325,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
-			"name": "3.0.0 [Search for given jobId] http://${environment}/irs/jobs/:jobId?returnUncompletedJob=true",
+			"name": "3.0.0 [Search for given jobId with uncomplete]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1237,12 +1368,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_49324f55308347d2a1bc5d63e54782ef",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1681717085453,
+			"_id": "req_6098993aae4642db8f3df8c959627f5a",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572020954,
 			"created": 1680682418316,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
-			"name": "3.1.0 [Search for given jobId] http://${environment}/irs/jobs/:jobId",
+			"name": "3.1.0 [Search for given jobId]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1271,12 +1402,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_18b0015ba57c48bcb84506b16967ab72",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1681717093358,
+			"_id": "req_fbce4639e5034cc79da851d50649f62c",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572140559,
 			"created": 1680682418307,
-			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
-			"name": "3.1.1 [Search for invalid jobId] http://${environment}/irs/jobs/:jobId",
+			"url": "{{IRS_HOST}}/irs/jobs/test",
+			"name": "3.1.1 [Search for invalid jobId]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1305,12 +1436,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_7b3cf9f3e9944b3cb21718022dbf0e44",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1681717096707,
+			"_id": "req_149b23360c04410fa17fe28edab11cbd",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572133946,
 			"created": 1680682418297,
-			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
-			"name": "3.1.2 [Search for unknown jobId] http://${environment}/irs/jobs/:jobId",
+			"url": "{{IRS_HOST}}/irs/jobs/00000000-0000-0000-0000-000000000000",
+			"name": "3.1.2 [Search for unknown jobId]",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1339,12 +1470,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_41609ac197f54a97824f89c59d24a1d6",
-			"parentId": "fld_890a64dc1d804ae1b35a3f81ee9cba26",
-			"modified": 1681717107446,
+			"_id": "req_2ea7faf98ca344009d8cdf9ebf962c28",
+			"parentId": "fld_f864c32fcc464c3195a60ddd12cb5a07",
+			"modified": 1691572032383,
 			"created": 1680682418280,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
-			"name": "6.0.0 [Cancel Job for given jobId] /irs/jobs/:jobid",
+			"name": "6.0.0 [Cancel Job for given jobId]",
 			"description": "",
 			"method": "PUT",
 			"body": {},
@@ -1373,8 +1504,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_4727c47227c74de6ad76f4204122b7fa",
-			"parentId": "fld_95ef726fa08946d4bdeb55bdde173d0c",
+			"_id": "req_f9e9a7a43e164749b61c4332ff404b78",
+			"parentId": "fld_118bbde5e3614233ad1c5537d8353075",
 			"modified": 1683630958934,
 			"created": 1682672699249,
 			"url": "{{ _.BPN_DISCOVERY }}/api/administration/connectors/bpnDiscovery/search",
@@ -1411,8 +1542,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_95ef726fa08946d4bdeb55bdde173d0c",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_118bbde5e3614233ad1c5537d8353075",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1683630931664,
 			"created": 1683630887514,
 			"name": "Discovery",
@@ -1423,8 +1554,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_5889ac6143d948aaa4aa23d4d076ff1a",
-			"parentId": "fld_95ef726fa08946d4bdeb55bdde173d0c",
+			"_id": "req_1491d5cb32d24308a5f8a8cb35d1f53d",
+			"parentId": "fld_118bbde5e3614233ad1c5537d8353075",
 			"modified": 1683630963691,
 			"created": 1683031718699,
 			"url": "{{ _.DISCOVERY_FINDER }}/api/administration/connectors/discovery/search",
@@ -1461,9 +1592,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_0ae2158853294bb983e23b01fa0b2529",
-			"parentId": "fld_95ef726fa08946d4bdeb55bdde173d0c",
-			"modified": 1683630977846,
+			"_id": "req_1dabe72b037443e38ba2ed766d8d295e",
+			"parentId": "fld_118bbde5e3614233ad1c5537d8353075",
+			"modified": 1691567913468,
 			"created": 1683560906453,
 			"url": "{{ _.EDC_DISCOVERY }}/api/administration/connectors/discovery",
 			"name": "Find EDC endpoints for BPNs",
@@ -1471,7 +1602,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "[\n\t\"BPNL00000001CRHK\"\n]\t"
+				"text": "[\n\t\"BPNL00000001CRHK\"\n]"
 			},
 			"parameters": [],
 			"headers": [
@@ -1499,9 +1630,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_775804f4cada4ab196d5a67e6f5cceed",
-			"parentId": "fld_a233f327d1a648cf82d5f34e05794675",
-			"modified": 1687162998402,
+			"_id": "req_8c111fa45692438fb2ce3a11a1169b17",
+			"parentId": "fld_79430e8b158e4dbab0a41c1f55c59473",
+			"modified": 1691567746933,
 			"created": 1680682418265,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "Register Job",
@@ -1509,7 +1640,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n    \"aspects\": [\n        \"AssemblyPartRelationship\",\n        \"SerialPartTypization\",\n        \"Batch\"\n    ],\n    \"bomLifecycle\": \"asBuilt\",\n    \"collectAspects\": true,\n    \"lookupBPNs\": true,\n    \"direction\": \"downward\",\n    \"depth\": 10,\n    \"key\": {\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\"}\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SingleLevelBomAsBuilt\",\n\t\t\"SerialPart\",\n\t\t\"Batch\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"lookupBPNs\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'Business Partner Number', '', _.BPN, '', false, true %}\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -1536,8 +1667,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_a233f327d1a648cf82d5f34e05794675",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_79430e8b158e4dbab0a41c1f55c59473",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1680682418273,
 			"created": 1680682418273,
 			"name": "IRS Basic API Calls",
@@ -1548,8 +1679,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_2a9ae7c93c1c43deb7e84a45f8474e32",
-			"parentId": "fld_a233f327d1a648cf82d5f34e05794675",
+			"_id": "req_a45b8df798b84b5295607e3f25e1b6f8",
+			"parentId": "fld_79430e8b158e4dbab0a41c1f55c59473",
 			"modified": 1680686256003,
 			"created": 1680682418257,
 			"url": "{{IRS_HOST}}/irs/jobs",
@@ -1582,9 +1713,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_7da37f3b09d0443f9b12fb782d5044e4",
-			"parentId": "fld_a233f327d1a648cf82d5f34e05794675",
-			"modified": 1680686266317,
+			"_id": "req_238f624521c844b08875c680b4fadf96",
+			"parentId": "fld_79430e8b158e4dbab0a41c1f55c59473",
+			"modified": 1691567830017,
 			"created": 1680682418247,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "Search for Jobs for given state",
@@ -1595,12 +1726,21 @@
 				{
 					"name": "jobStates",
 					"value": "ERROR",
-					"disabled": true
+					"disabled": true,
+					"id": "pair_c694b66f41e649db837f801b5699859e"
 				},
 				{
 					"name": "jobStates",
 					"value": "CANCELED,COMPLETED",
-					"disabled": false
+					"disabled": false,
+					"id": "pair_ab346623e5394504b7232cc40ae75bed"
+				},
+				{
+					"id": "pair_ddbccd5219944e8cac3d99249ba881e5",
+					"name": "jobStates",
+					"value": "RUNNING",
+					"description": "",
+					"disabled": true
 				}
 			],
 			"headers": [
@@ -1627,12 +1767,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_7a7f86c6f61b4beea7728d428d3c108e",
-			"parentId": "fld_a233f327d1a648cf82d5f34e05794675",
-			"modified": 1681717133103,
-			"created": 1680682418238,
+			"_id": "req_7b7f6da51b244246a19ccd1b3de52ece",
+			"parentId": "fld_79430e8b158e4dbab0a41c1f55c59473",
+			"modified": 1691567881065,
+			"created": 1690384427379,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
-			"name": "Search for given jobId",
+			"name": "Get Job for jobId",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -1667,12 +1807,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_7df006884a4b4c778b39ad3e734bbd5e",
-			"parentId": "fld_a233f327d1a648cf82d5f34e05794675",
-			"modified": 1681717137253,
+			"_id": "req_fc191d4ce755479e98418f5479dd432d",
+			"parentId": "fld_79430e8b158e4dbab0a41c1f55c59473",
+			"modified": 1691567884778,
 			"created": 1680682418229,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
-			"name": "Cancel Job for given jobId",
+			"name": "Cancel Job for jobId",
 			"description": "",
 			"method": "PUT",
 			"body": {},
@@ -1701,9 +1841,43 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_9c658c960b714f20a9cae371d274ab8a",
-			"parentId": "fld_b20e228f4dad483a95a36ffff2d672c1",
-			"modified": 1680787142083,
+			"_id": "req_f342724b20734c7caf38e692ab953d28",
+			"parentId": "fld_79430e8b158e4dbab0a41c1f55c59473",
+			"modified": 1690365987561,
+			"created": 1682498338739,
+			"url": "{{IRS_HOST}}/irs/aspectmodels",
+			"name": "Get all available Aspect Models",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}"
+			},
+			"metaSortKey": -1680682418179,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_5dbe361e2bfe458b9f625423bbeca97a",
+			"parentId": "fld_488de3f0f62c4dd581aac3034a1b5320",
+			"modified": 1691504888870,
 			"created": 1680682418213,
 			"url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models",
 			"name": "Get all models",
@@ -1714,7 +1888,14 @@
 				{
 					"name": "pageSize",
 					"value": "100",
-					"disabled": false
+					"disabled": false,
+					"id": "pair_96567b64925d4487bae4c74bfa9e021e"
+				},
+				{
+					"id": "pair_2dae68db8a564296a5835e66d951331f",
+					"name": "status",
+					"value": "RELEASED",
+					"description": ""
 				}
 			],
 			"headers": [],
@@ -1736,8 +1917,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_b20e228f4dad483a95a36ffff2d672c1",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_488de3f0f62c4dd581aac3034a1b5320",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1680682418222,
 			"created": 1680682418222,
 			"name": "Semantics Hub",
@@ -1748,9 +1929,9 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_c5d925d198b84c50bcadfa5d7bec45cb",
-			"parentId": "fld_b20e228f4dad483a95a36ffff2d672c1",
-			"modified": 1680787192766,
+			"_id": "req_3fc014a8e6084ce39ca19132a7614b69",
+			"parentId": "fld_488de3f0f62c4dd581aac3034a1b5320",
+			"modified": 1691504864710,
 			"created": 1680682418204,
 			"url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
 			"name": "Get SerialPartTypization",
@@ -1777,9 +1958,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_d97fe44165724a5f9b66b929d597a11e",
-			"parentId": "fld_b20e228f4dad483a95a36ffff2d672c1",
-			"modified": 1680787206836,
+			"_id": "req_42a2f09edddf4fbb9313177745085870",
+			"parentId": "fld_488de3f0f62c4dd581aac3034a1b5320",
+			"modified": 1691504802561,
 			"created": 1680682418192,
 			"url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization/json-schema",
 			"name": "Get SerialPartTypization Json Schema",
@@ -1806,8 +1987,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_f98042ffcb5c4066a3bedf1c6ddde39a",
-			"parentId": "fld_647a39e421f948d49700cd8bbf7ff122",
+			"_id": "req_042417efc0f543b58f815c2bc4ab7b0c",
+			"parentId": "fld_a9922015099b4462878168198298479f",
 			"modified": 1681718801853,
 			"created": 1680682418174,
 			"url": "{{ _.BPDM_URL }}/v1/api/catena/business-partner/{% prompt 'BPN', '', '', '', false, true %}",
@@ -1841,8 +2022,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_647a39e421f948d49700cd8bbf7ff122",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_a9922015099b4462878168198298479f",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1680682418184,
 			"created": 1680682418184,
 			"name": "Business partner data management",
@@ -1853,8 +2034,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_720c3def8bfc4a67bb94044311b5bc32",
-			"parentId": "fld_d04c420daf47487a8f3100cbe5f185a0",
+			"_id": "req_52ddc61039e64e5c9aa9b350f677da27",
+			"parentId": "fld_b0373ad99f0f4f44bacd501f61a13a8a",
 			"modified": 1681717263599,
 			"created": 1680682418157,
 			"url": "{{IRS_HOST}}/esr/esr-statistics/{% prompt 'globalAssetId', 'Provide global asset ID or use default', _.GLOBAL_ASSET_ID, '', false, true %}/{% prompt 'BOM Lifecycle', '', '', '', false, true %}/{% prompt 'Certificate', '', '', '', false, true %}/submodel",
@@ -1887,8 +2068,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_d04c420daf47487a8f3100cbe5f185a0",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_b0373ad99f0f4f44bacd501f61a13a8a",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1680682418167,
 			"created": 1680682418167,
 			"name": "ESR Spike",
@@ -1899,8 +2080,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_a9c851bab89c47ddbb3586a278968d7e",
-			"parentId": "fld_e0bbb12e409942d788c689096b7e21d1",
+			"_id": "req_14bb30cd896940a6a2db9e3882814482",
+			"parentId": "fld_cf68ddc262b34a5cb700d4107ee76772",
 			"modified": 1680686318643,
 			"created": 1680682418143,
 			"url": "{{IRS_HOST}}/ess/bpn/investigations",
@@ -1909,7 +2090,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\r\n    \"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\",\r\n    \"incidentBpns\": [\"BPNL00000003B6LU\"],\r\n    \"bomLifecycle\": \"asPlanned\"\r\n}"
+				"text": "{\r\n  \"key\": { \"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\", \"bpn\": \"BPNL00000003CRHK\" },\r\n    \"incidentBpns\": [\"BPNL00000003B6LU\"],\r\n    \"bomLifecycle\": \"asPlanned\"\r\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -1936,8 +2117,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_e0bbb12e409942d788c689096b7e21d1",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_cf68ddc262b34a5cb700d4107ee76772",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1680682418151,
 			"created": 1680682418151,
 			"name": "ESS Spike",
@@ -1948,8 +2129,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_c6fd1621208c4b93b8b564d986ad1166",
-			"parentId": "fld_e0bbb12e409942d788c689096b7e21d1",
+			"_id": "req_98098b47c80842ee9fa4d8a1c00b90cd",
+			"parentId": "fld_cf68ddc262b34a5cb700d4107ee76772",
 			"modified": 1681717309378,
 			"created": 1680682418134,
 			"url": "{{IRS_HOST}}/ess/bpn/investigations/{% prompt 'Job ID', '', '', '', false, true %}",
@@ -1982,9 +2163,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_21d3c342b0cd44cd94961917a6180a38",
-			"parentId": "fld_1ffc7ffe0b2145bb9fa4c6078ab56990",
-			"modified": 1686308448753,
+			"_id": "req_f6d07eea62b543b68cab7f5b3a5a19d9",
+			"parentId": "fld_ffe8fb5a65604e0f9756e8380e7214ed",
+			"modified": 1691504578204,
 			"created": 1680682418118,
 			"url": "{{IRS_HOST}}/irs/orders",
 			"name": "Register Batch Order",
@@ -1992,7 +2173,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"aspects\": [\n\t\t\"AssemblyPartRelationship\"\n\t],\n\t\"collectAspects\": true,\n\t\"lookupBPNs\": true,\n\t\"direction\": \"downward\",\n\t\"batchSize\": 10,\n  \"batchStrategy\": \"PRESERVE_BATCH_JOB_ORDER\",\n\t\"keys\": [\n\t\t{\n\t\t\"globalAssetId\": \"urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd211122\",\n \"bpn\": \"BPNL00000003AAXX\"},\n\t\t{\n\t\t\"globalAssetId\": \"urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a32211\",\n \"bpn\": \"BPNL00000003AAXX\"}\n\t]\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"AssemblyPartRelationship\"\n\t],\n\t\"collectAspects\": true,\n\t\"lookupBPNs\": true,\n\t\"direction\": \"downward\",\n\t\"batchSize\": 10,\n\t\"batchStrategy\": \"PRESERVE_BATCH_JOB_ORDER\",\n\t\"keys\": [\n\t\t{\n\t\t\t\"globalAssetId\": \"urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd211122\",\n\t\t\t\"bpn\": \"BPNL00000003AAXX\"\n\t\t},\n\t\t{\n\t\t\t\"globalAssetId\": \"urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a32211\",\n\t\t\t\"bpn\": \"BPNL00000003AAXX\"\n\t\t}\n\t]\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2019,8 +2200,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_1ffc7ffe0b2145bb9fa4c6078ab56990",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
+			"_id": "fld_ffe8fb5a65604e0f9756e8380e7214ed",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
 			"modified": 1680682418128,
 			"created": 1680682418128,
 			"name": "Batch Processing",
@@ -2031,8 +2212,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_729a8c0f4c644c8e9dd493af8d494634",
-			"parentId": "fld_1ffc7ffe0b2145bb9fa4c6078ab56990",
+			"_id": "req_ca52f4b22e3c476e8ea80fae2e8b1dbb",
+			"parentId": "fld_ffe8fb5a65604e0f9756e8380e7214ed",
 			"modified": 1681717455311,
 			"created": 1680682418109,
 			"url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}",
@@ -2065,8 +2246,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_cb1e78d8e75146df9e62ad068e811877",
-			"parentId": "fld_1ffc7ffe0b2145bb9fa4c6078ab56990",
+			"_id": "req_5b3b9bc90cc34f33b591489b29bd5268",
+			"parentId": "fld_ffe8fb5a65604e0f9756e8380e7214ed",
 			"modified": 1681717669066,
 			"created": 1680682418099,
 			"url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}/batches/{% prompt 'Batch ID', '', '', '', false, true %}",
@@ -2099,52 +2280,19 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_9824061ec1d049538c36a14898638f6c",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1681831217402,
-			"created": 1675675609564,
-			"url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/catalog",
-			"name": "CONSUMER Get catalog",
+			"_id": "req_2e68cc0bfedf45249ba83d8029747fae",
+			"parentId": "fld_6dd8d09f19ff4440aa124fbe27a165cf",
+			"modified": 1690472186478,
+			"created": 1678358655308,
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/catalog/request",
+			"name": "Get catalog",
 			"description": "",
-			"method": "GET",
+			"method": "POST",
 			"body": {
-				"params": [],
-				"mimeType": "application/x-www-form-urlencoded"
+				"mimeType": "application/json",
+				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\"\n}"
 			},
-			"parameters": [
-				{
-					"name": "providerUrl",
-					"value": "{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/ids/data",
-					"disabled": false,
-					"id": "pair_c5ea4df5df664291806a4c3bd2009d4b"
-				},
-				{
-					"id": "pair_7ff130997c24476889c22e9d12ea7499",
-					"name": "providerUrl",
-					"value": "{{ _.PROVIDER_CONTROLPLANE_2 }}/api/v1/ids/data",
-					"description": "",
-					"disabled": true
-				},
-				{
-					"id": "pair_3dd058bf8eab4d9e8b7f76cdf9c58a86",
-					"name": "providerUrl",
-					"value": "{{ _.PROVIDER_CONTROLPLANE_3 }}/api/v1/ids/data",
-					"description": "",
-					"disabled": true
-				},
-				{
-					"id": "pair_bd6a08271675462da556f31f6b91592f",
-					"name": "limit",
-					"value": "50",
-					"description": ""
-				},
-				{
-					"id": "pair_ad93b441b56542e59ffe06ca32c1a24e",
-					"name": "offset",
-					"value": "50",
-					"description": ""
-				}
-			],
+			"parameters": [],
 			"headers": [
 				{
 					"name": "Content-Type",
@@ -2158,7 +2306,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609564,
+			"metaSortKey": -1686195722939.1875,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2169,29 +2317,41 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_428ecb973652423da05844fff04f3392",
-			"parentId": "fld_86d2b3cc317140938409b97480e84293",
-			"modified": 1677746266561,
+			"_id": "fld_6dd8d09f19ff4440aa124fbe27a165cf",
+			"parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+			"modified": 1690362660167,
+			"created": 1690362660167,
+			"name": "Catalog",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1690362660167,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+			"parentId": "fld_594b246aac764c3eb981cf3b3ed37355",
+			"modified": 1690363778601,
 			"created": 1675675609576,
 			"name": "EDC-Requests",
 			"description": "",
 			"environment": {},
 			"environmentPropertyOrder": null,
-			"metaSortKey": -1675675593197.5,
+			"metaSortKey": -1680682418078,
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_176745d2e2f740c5b1e4a5f079d8078e",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1681831250337,
-			"created": 1678358655308,
-			"url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/catalog/request",
-			"name": "CONSUMER Get catalog",
+			"_id": "req_19147d6cc46b4af790d37dd471a4a1c4",
+			"parentId": "fld_6dd8d09f19ff4440aa124fbe27a165cf",
+			"modified": 1691500654267,
+			"created": 1685521485278,
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/catalog/request",
+			"name": "Get catalog with registry filter",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"providerUrl\": \"{% prompt 'edc', '', '', '', false, true %}/api/v1/ids/data\",\n  \"querySpec\": {\n\t\t\"limit\": 50\n  }\n}"
+				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:querySpec\": {\n\t\t\"edc:filterExpression\": {\n\t\t\t\"edc:operandLeft\": \"https://w3id.org/edc/v0.0.1/ns/type\",\n\t\t\t\"edc:operator\": \"=\",\n\t\t\t\"edc:operandRight\": \"data.core.digitalTwinRegistry\"\n\t\t}\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2207,7 +2367,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609560.5,
+			"metaSortKey": -1686195722889.1875,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2218,17 +2378,17 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_711023242fc648d69d3fa6fd293b40f1",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1680001417847,
+			"_id": "req_46258202700343669db666505a0481d3",
+			"parentId": "fld_9fde930e50854b468a73155fd6aa7371",
+			"modified": 1691578280640,
 			"created": 1675675609557,
-			"url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/contractnegotiations",
-			"name": "CONSUMER start contract negotiation",
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations",
+			"name": "Start contract negotiation",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"connectorId\": \"default\",\n\t\"connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_2 }}/api/v1/ids/data\",\n\t\"offer\": {\n\t\t\"offerId\": \"1:9ea66014-6858-4fe5-b6f0-ab18c233c409\",\n\t\t\"assetId\": \"urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6-urn:uuid:d5c4eadf-4aa7-4bc6-9ea9-ba25179d7e46\",\n\t\t\"policy\": {\n\t\t\t\"permissions\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\"edctype\": \"dataspaceconnector:permission\",\n\t\t\t\t\t\"uid\": null,\n\t\t\t\t\t\"target\": \"urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6-urn:uuid:d5c4eadf-4aa7-4bc6-9ea9-ba25179d7e46\",\n\t\t\t\t\t\"action\": {\n\t\t\t\t\t\t\"type\": \"USE\",\n\t\t\t\t\t\t\"includedIn\": null,\n\t\t\t\t\t\t\"constraint\": null\n\t\t\t\t\t},\n\t\t\t\t\t\"assignee\": null,\n\t\t\t\t\t\"assigner\": null,\n\t\t\t\t\t\"constraints\": [],\n\t\t\t\t\t\"duties\": []\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"prohibitions\": [],\n\t\t\t\"obligations\": [],\n\t\t\t\"extensibleProperties\": {},\n\t\t\t\"inheritsFrom\": null,\n\t\t\t\"assigner\": null,\n\t\t\t\"assignee\": null,\n\t\t\t\"target\": \"urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6-urn:uuid:d5c4eadf-4aa7-4bc6-9ea9-ba25179d7e46\",\n\t\t\t\"@type\": {\n\t\t\t\t\"@policytype\": \"set\"\n\t\t\t}\n\t\t}\n\t}\n}"
+				"text": "{\n\t\"edc:connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:connectorId\": \"BPNL00000001CRHK\",\n\t\"edc:offer\": {\n\t\t\"@type\": \"edc:ContractOfferDescription\",\n\t\t\"edc:offerId\": \"ZGR0ci1jeG1lbWJlcnMtY29udHJhY3Q=:ZGlnaXRhbC10d2luLXJlZ2lzdHJ5:OGQ0ZTNkODYtOTIxOC00MjljLWI1N2EtNWZlZTZkODIzMmEx\",\n\t\t\"edc:assetId\": \"digital-twin-registry\",\n\t\t\"edc:policy\": {\n\t\t\t\"@type\": \"odrl:Set\",\n\t\t\t\"odrl:permission\": {\n\t\t\t\t\"odrl:target\": \"digital-twin-registry\",\n\t\t\t\t\"odrl:action\": {\n\t\t\t\t\t\"odrl:type\": \"USE\"\n\t\t\t\t}\n\t\t\t},\n\t\t\t\"odrl:prohibition\": [],\n\t\t\t\"odrl:obligation\": [],\n\t\t\t\"odrl:target\": \"digital-twin-registry\"\n\t\t}\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:callbackAddresses\": [],\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2244,7 +2404,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609557,
+			"metaSortKey": -1684146511095,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2255,12 +2415,24 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_3632a91d5a3d462daa0a7fd21c9cffaf",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1680001404073,
+			"_id": "fld_9fde930e50854b468a73155fd6aa7371",
+			"parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+			"modified": 1684146626847,
+			"created": 1684146519491,
+			"name": "Negotiation",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1679911060327.75,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_f8523e3451934c9b92900ef1496359b0",
+			"parentId": "fld_9fde930e50854b468a73155fd6aa7371",
+			"modified": 1690362123962,
 			"created": 1675675609549,
-			"url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/contractnegotiations/{% prompt 'id', '', '', '', false, true %}",
-			"name": "CONSUMER get contract negotiation for id",
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Get contract negotiation",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -2278,7 +2450,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609549,
+			"metaSortKey": -1684146511045,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2289,17 +2461,46 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_a33458082cd840d0a580ff8a430b685c",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1680001464096,
-			"created": 1675675609541,
-			"url": "{{ _.CONSUMER_CONTROLPLANE }}/api/v1/management/transferprocess",
-			"name": "CONSUMER start transferprocess",
+			"_id": "req_862016317e784d119230e024b6fd43fc",
+			"parentId": "fld_9fde930e50854b468a73155fd6aa7371",
+			"modified": 1690362117725,
+			"created": 1685444139708,
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/{% prompt 'id', '', '', '', false, true %}/cancel",
+			"name": "Cancel contract negotation",
+			"description": "",
+			"method": "POST",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1684146511020,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_3d34688b555b4f6cb44b025bdcd6e0a1",
+			"parentId": "fld_9fde930e50854b468a73155fd6aa7371",
+			"modified": 1690361721223,
+			"created": 1681911985730,
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/request",
+			"name": "Get contract negotiations",
 			"description": "",
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"edctype\": \"dataspaceconnector:datarequest\",\n\t\"protocol\": \"ids-multipart\",\n\t\"assetId\": \"urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6-urn:uuid:d5c4eadf-4aa7-4bc6-9ea9-ba25179d7e46\",\n\t\"contractId\": \"1:00562ab0-1431-47f8-88fb-45f53d431ec3\",\n\t\"dataDestination\": {\n\t\t\"type\": \"HttpProxy\"\n\t},\n\t\"transferType\": {\n\t\t\"contentType\": \"application/octet-stream\",\n\t\t\"isFinite\": true\n\t},\n\t\"managedResources\": false,\n\t\"connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_2 }}/api/v1/ids/data\",\n\t\"connectorId\": \"default\",\n\t\"properties\": {\n\t\t\"receiver.http.endpoint\": \"http://irs-dev-irs-helm:8181/internal/endpoint-data-reference\"\n\t}\n}"
+				"text": ""
 			},
 			"parameters": [],
 			"headers": [
@@ -2315,7 +2516,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609541,
+			"metaSortKey": -1684146510995,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2326,83 +2527,18 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_54856de43ffa4b3caf355cbc67e9ec43",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1679995387568,
-			"created": 1675675609533,
-			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/management/transferprocess/{% prompt 'id', '', '', '', false, true %}",
-			"name": "CONSUMER get transferprocess by id",
-			"description": "",
-			"method": "GET",
-			"body": {},
-			"parameters": [],
-			"headers": [
-				{
-					"name": "Content-Type",
-					"value": "application/json"
-				}
-			],
-			"authentication": {
-				"type": "apikey",
-				"disabled": false,
-				"key": "X-Api-Key",
-				"value": "{{ _.EDC_API_KEY }}",
-				"addTo": "header"
-			},
-			"metaSortKey": -1675675609533,
-			"isPrivate": false,
-			"settingStoreCookies": true,
-			"settingSendCookies": true,
-			"settingDisableRenderRequestBody": false,
-			"settingEncodeUrl": true,
-			"settingRebuildPath": true,
-			"settingFollowRedirects": "global",
-			"_type": "request"
-		},
-		{
-			"_id": "req_cdda969cdde24d78b74c9347bcf0cf5f",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1679993996270,
-			"created": 1679993996270,
-			"url": "{{CONSUMER_CONTROLPLANE}}/api/v1/management/transferprocess/{% prompt 'id', '', '', '', false, true %}",
-			"name": "CONSUMER get transferprocess by id",
-			"description": "",
-			"method": "GET",
-			"body": {},
-			"parameters": [],
-			"headers": [
-				{
-					"name": "Content-Type",
-					"value": "application/json"
-				}
-			],
-			"authentication": {
-				"type": "apikey",
-				"disabled": false,
-				"key": "X-Api-Key",
-				"value": "{{ _.EDC_API_KEY }}",
-				"addTo": "header"
-			},
-			"metaSortKey": -1675675609529,
-			"isPrivate": false,
-			"settingStoreCookies": true,
-			"settingSendCookies": true,
-			"settingDisableRenderRequestBody": false,
-			"settingEncodeUrl": true,
-			"settingRebuildPath": true,
-			"settingFollowRedirects": "global",
-			"_type": "request"
-		},
-		{
-			"_id": "req_e04ec53004e041eca349203cbca9c845",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1679994024127,
-			"created": 1675675609525,
-			"url": "{{CONSUMER_CONTROLPLANE}}/api/v1/management/transferprocess/request",
-			"name": "CONSUMER get transferprocess by id Copy",
+			"_id": "req_25a27ae6da014b1c8c36c9fd2bc5b015",
+			"parentId": "fld_9fde930e50854b468a73155fd6aa7371",
+			"modified": 1691578311420,
+			"created": 1675675609541,
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses",
+			"name": "Start transferprocess",
 			"description": "",
 			"method": "POST",
-			"body": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"edc:assetId\": \"digital-twin-registry\",\n\t\"edc:connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:contractId\": \"ZGR0ci1jeG1lbWJlcnMtY29udHJhY3Q=:ZGlnaXRhbC10d2luLXJlZ2lzdHJ5:NGNlMDk0ODgtOTMzYy00ZDk3LThiNTAtNDMyZWRjMzIwM2Fm\",\n\t\"edc:dataDestination\": {\n\t\t\"edc:type\": \"HttpProxy\"\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:managedResources\": false,\n\t\"edc:connectorId\": \"BPNL00000001CRHK\",\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t}\n}"
+			},
 			"parameters": [],
 			"headers": [
 				{
@@ -2417,7 +2553,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609525,
+			"metaSortKey": -1684146510945,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2428,12 +2564,12 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_0ca86e2a2df945c3a13a00132c45c7a9",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1679929171846,
-			"created": 1675675609517,
-			"url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/policydefinitions",
-			"name": "PROVIDER get policydefinitions",
+			"_id": "req_895e87e2292d4569bd41360c7e699600",
+			"parentId": "fld_9fde930e50854b468a73155fd6aa7371",
+			"modified": 1691503370103,
+			"created": 1679993996270,
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Get transferprocess by id",
 			"description": "",
 			"method": "GET",
 			"body": {},
@@ -2451,7 +2587,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609517,
+			"metaSortKey": -1684146510895,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2462,15 +2598,18 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_9bd9e7d149b14e87b770d5beb8f343d0",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1680265424077,
-			"created": 1675675609509,
-			"url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/assets",
-			"name": "PROVIDER get assets",
+			"_id": "req_d1cfc45935734ff58afbd54a9d0998b7",
+			"parentId": "fld_9fde930e50854b468a73155fd6aa7371",
+			"modified": 1690361795179,
+			"created": 1675675609525,
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses/request",
+			"name": "Get transferprocesses",
 			"description": "",
-			"method": "GET",
-			"body": {},
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": ""
+			},
 			"parameters": [],
 			"headers": [
 				{
@@ -2485,7 +2624,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609509,
+			"metaSortKey": -1684146510845,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2496,15 +2635,18 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_7476938ce4544ec8b52ddb7e69fc8d15",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1680506822288,
-			"created": 1675675609501,
-			"url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/contractdefinitions",
-			"name": "PROVIDER get contractdefinitions",
+			"_id": "req_a5591f2eadc245cbabdd9c9b6e7ccb61",
+			"parentId": "fld_9fde930e50854b468a73155fd6aa7371",
+			"modified": 1690361763512,
+			"created": 1681910653593,
+			"url": "{{CONSUMER_CONTROLPLANE}}/management/v2/contractagreements/request",
+			"name": "Get contract agreements",
 			"description": "",
-			"method": "GET",
-			"body": {},
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": ""
+			},
 			"parameters": [],
 			"headers": [
 				{
@@ -2519,7 +2661,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609507,
+			"metaSortKey": -1684146510795,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2530,15 +2672,18 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_e669080f0754455aa6637c8e9c959ad3",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1681831162755,
-			"created": 1675675609493,
-			"url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/contractnegotiations/:id",
-			"name": "PROVIDER get contract negotiation for id",
+			"_id": "req_e66749af063c41868ce481fc8711709f",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362947546,
+			"created": 1681907482278,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets",
+			"name": "Create Asset",
 			"description": "",
-			"method": "GET",
-			"body": {},
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"@context\": {},\n\t\"asset\": {\n\t\t\"@id\": \"asset-id\",\n\t\t\"properties\": {\n\t\t\t\"description\": \"IRS EDC Demo Asset\"\n\t\t}\n\t},\n\t\"dataAddress\": {\n\t\t\"@type\": \"DataAddress\",\n\t\t\"type\": \"HttpData\",\n\t\t\"baseUrl\": \"http://backend-url/data/asset-id\",\n\t\t\"contentType\": \"application-json\",\n\t\t\"proxyPath\": \"false\",\n\t\t\"proxyBody\": \"false\",\n\t\t\"proxyMethod\": \"false\",\n\t\t\"proxyQueryParams\": \"false\"\n\t}\n}"
+			},
 			"parameters": [],
 			"headers": [
 				{
@@ -2553,7 +2698,7 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609493,
+			"metaSortKey": -1679911033461.75,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2564,15 +2709,59 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_a65d20cda0184044a86236399d8e2979",
-			"parentId": "fld_428ecb973652423da05844fff04f3392",
-			"modified": 1681831164494,
-			"created": 1675675609486,
-			"url": "{{PROVIDER_CONTROLPLANE_1}}/api/v1/management/transferprocess/{% prompt 'transferProcessId', 'transferProcessId', '', '', false, true %}",
-			"name": "PROVIDER get transfer process by id",
+			"_id": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"parentId": "fld_68fd72e89cf84cbabd86b0c2c9c07fc9",
+			"modified": 1684146621298,
+			"created": 1684146457388,
+			"name": "Provider",
+			"description": "",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1675675609471,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_79b7cef90ac04f11a2d1239d055817f9",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362407763,
+			"created": 1685444139630,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Get Asset by ID",
 			"description": "",
 			"method": "GET",
 			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033452.375,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_f5ca7eb03bb846a28c6bf5a58a6d0d7b",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362438115,
+			"created": 1685444139625,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/request",
+			"name": "Get all Assets",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": ""
+			},
 			"parameters": [],
 			"headers": [
 				{
@@ -2587,7 +2776,308 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1675675609486,
+			"metaSortKey": -1679911033447.6875,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_a86ab9c86fed4a0fba5ccc5d0917b731",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362400081,
+			"created": 1685444139636,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Delete Asset",
+			"description": "",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033433.625,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_c23bccbf702642f3888e08df23900f09",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362581978,
+			"created": 1685444139641,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions",
+			"name": "Create Policy",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"@context\": {\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\"\n\t},\n\t\"@id\": \"policy-id\",\n\t\"policy\": {\n\t\t\"odrl:permission\": [\n\t\t\t{\n\t\t\t\t\"odrl:action\": \"USE\",\n\t\t\t\t\"odrl:constraint\": {\n\t\t\t\t\t\"odrl:and\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"odrl:leftOperand\": \"Membership\",\n\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\"odrl:rightOperand\": \"active\"\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"odrl:leftOperand\": \"PURPOSE\",\n\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\"odrl:rightOperand\": \"ID 3.1 Trace\"\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t}\n\t\t]\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033403.9375,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_812ba22f8a3a417d8cf1d734637937d1",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362549290,
+			"created": 1685444139647,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Get Policy by ID",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033364.0938,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_2ed20544c5ce469a89037068e3b733a2",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362591799,
+			"created": 1685444139653,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/request",
+			"name": "Get all Policies",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033344.1719,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_74e60b175b4a4604a298615d94c3aad2",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362559324,
+			"created": 1685444139659,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Delte Policy by ID",
+			"description": "",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033299.25,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_8e65e46a52df4c5e8c96252cb090f670",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690363080444,
+			"created": 1685444139665,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions",
+			"name": "Create Contract Definitinion",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n    \"@context\": {\n        \"edc\": \"https://w3id.org/edc/v0.0.1/ns/\"\n    },\n    \"@type\": \"ContractDefinition\",\n    \"accessPolicyId\": \"policy-id\",\n    \"contractPolicyId\": \"policy-id\",\n    \"assetsSelector\": {\n        \"operandLeft\": \"https://w3id.org/edc/v0.0.1/ns/id\",\n        \"operator\": \"=\",\n        \"operandRight\": \"asset-id\"\n    }\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033261.75,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_7393aa35d3234e1b8b1815b0c20f8afe",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690362691392,
+			"created": 1685444139672,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Get Contract Definition by ID",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033199.25,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_d12fdcc7b93045ce87207ec30ffec009",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690363126919,
+			"created": 1685444139678,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/request",
+			"name": "Get all Contract Definitinions",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033174.25,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_b213079ff3094f04b5bb5570c1b599d2",
+			"parentId": "fld_54038cb7c2b7444b824feab8675dbe50",
+			"modified": 1690363136216,
+			"created": 1685444139684,
+			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/{% prompt 'id', '', '', '', false, true %}",
+			"name": "Delte Contract Definition",
+			"description": "",
+			"method": "DELETE",
+			"body": {
+				"mimeType": "application/json",
+				"text": ""
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1679911033149.25,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
@@ -2600,11 +3090,11 @@
 		{
 			"_id": "env_d2b7eb1621841465ea24b73343568b286aa8ac9a",
 			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-			"modified": 1680782486844,
+			"modified": 1683638503332,
 			"created": 1680782486844,
 			"name": "Base Environment",
 			"data": {},
-			"dataPropertyOrder": null,
+			"dataPropertyOrder": {},
 			"color": null,
 			"isPrivate": false,
 			"metaSortKey": 1680782486844,
@@ -2613,7 +3103,7 @@
 		{
 			"_id": "jar_d2b7eb1621841465ea24b73343568b286aa8ac9a",
 			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-			"modified": 1687162447241,
+			"modified": 1691574361950,
 			"created": 1680782486851,
 			"name": "Default Jar",
 			"cookies": [
@@ -2629,8 +3119,115 @@
 					],
 					"hostOnly": true,
 					"creation": "2023-04-06T13:30:18.499Z",
-					"lastAccessed": "2023-06-19T08:14:07.241Z",
-					"id": "8254351546519032"
+					"lastAccessed": "2023-08-09T09:46:01.950Z",
+					"id": "6494967878656461"
+				},
+				{
+					"key": "KC_RESTART",
+					"expires": "1970-01-01T00:00:10.000Z",
+					"maxAge": 0,
+					"domain": "centralidp.beta.demo.catena-x.net",
+					"path": "/auth/realms/CX-Central/",
+					"httpOnly": true,
+					"extensions": [
+						"Version=1"
+					],
+					"hostOnly": true,
+					"creation": "2023-04-28T12:09:23.681Z",
+					"lastAccessed": "2023-05-02T09:14:02.169Z",
+					"id": "5047040785099817"
+				},
+				{
+					"key": "rack.session",
+					"value": "5579bbaf14b5ac5c004f6806ca10d35363aca208e5d17e4b6b07da103e23f219",
+					"domain": "daps1.int.demo.catena-x.net",
+					"path": "/",
+					"secure": true,
+					"httpOnly": true,
+					"hostOnly": true,
+					"creation": "2023-06-14T15:30:53.779Z",
+					"lastAccessed": "2023-06-14T15:30:53.779Z",
+					"id": "6529247166311205"
+				},
+				{
+					"key": "rack.session",
+					"value": "26cd0504acae7aa1a40aff58b15b72989eba6ff7efb7890d035d97d7d96129e8",
+					"domain": "daps-irs.dev.demo.catena-x.net",
+					"path": "/",
+					"secure": true,
+					"httpOnly": true,
+					"hostOnly": true,
+					"creation": "2023-06-26T13:21:41.705Z",
+					"lastAccessed": "2023-06-26T13:21:41.705Z",
+					"id": "8387631106514033"
+				},
+				{
+					"key": "KC_RESTART",
+					"expires": "1970-01-01T00:00:10.000Z",
+					"maxAge": 0,
+					"domain": "localhost",
+					"path": "/realms/miw_test/",
+					"httpOnly": true,
+					"extensions": [
+						"Version=1"
+					],
+					"hostOnly": true,
+					"creation": "2023-06-29T14:17:50.058Z",
+					"lastAccessed": "2023-06-29T14:38:54.694Z",
+					"id": "5280821280019121"
+				},
+				{
+					"key": "JSESSIONID",
+					"value": "AA8B41248817CEF92F54E92816BA4E0C",
+					"domain": "managed-identity-wallets-new.int.demo.catena-x.net",
+					"path": "/",
+					"secure": true,
+					"httpOnly": true,
+					"hostOnly": true,
+					"creation": "2023-07-03T14:36:17.598Z",
+					"lastAccessed": "2023-07-03T14:39:34.758Z",
+					"id": "5211230315639401"
+				},
+				{
+					"key": "KC_RESTART",
+					"expires": "1970-01-01T00:00:10.000Z",
+					"maxAge": 0,
+					"domain": "centralidp-pen.dev.demo.catena-x.net",
+					"path": "/auth/realms/CX-Central/",
+					"httpOnly": true,
+					"extensions": [
+						"Version=1"
+					],
+					"hostOnly": true,
+					"creation": "2023-07-11T15:11:58.167Z",
+					"lastAccessed": "2023-07-17T07:10:09.815Z",
+					"id": "8626438223546624"
+				},
+				{
+					"key": "AWSALB",
+					"value": "XBr2pDKiJ9eB9tgdQ1S7WNGW6LVV4e4wBnXgbPFZ7pDre9G+02ZrS8VGFUYjlmLgaW909IJIXDy+o9jIE5Q4vphrsvI3ezlFhYjmbXJp9jz5APwKavVG3/gt2YZw",
+					"expires": "2023-08-15T14:12:54.000Z",
+					"domain": "connector.cx-rel.edc.aws.bmw.cloud",
+					"path": "/",
+					"hostOnly": true,
+					"creation": "2023-08-07T10:43:07.218Z",
+					"lastAccessed": "2023-08-08T14:12:54.582Z",
+					"id": "9961090864367583"
+				},
+				{
+					"key": "AWSALBCORS",
+					"value": "XBr2pDKiJ9eB9tgdQ1S7WNGW6LVV4e4wBnXgbPFZ7pDre9G+02ZrS8VGFUYjlmLgaW909IJIXDy+o9jIE5Q4vphrsvI3ezlFhYjmbXJp9jz5APwKavVG3/gt2YZw",
+					"expires": "2023-08-15T14:12:54.000Z",
+					"domain": "connector.cx-rel.edc.aws.bmw.cloud",
+					"path": "/",
+					"secure": true,
+					"extensions": [
+						"SameSite=None"
+					],
+					"hostOnly": true,
+					"creation": "2023-08-07T10:43:07.218Z",
+					"lastAccessed": "2023-08-08T14:12:54.582Z",
+					"id": "5054978890100754"
 				}
 			],
 			"_type": "cookie_jar"
@@ -2640,16 +3237,6 @@
 			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
 			"modified": 1680782484284,
 			"created": 1680782484284,
-			"fileName": "IRS",
-			"contents": "",
-			"contentType": "yaml",
-			"_type": "api_spec"
-		},
-		{
-			"_id": "spc_3a573993100a40b3bc2b0a5bd8e5cc48",
-			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-			"modified": 1681726479575,
-			"created": 1681726479575,
 			"fileName": "IRS",
 			"contents": "",
 			"contentType": "yaml",
