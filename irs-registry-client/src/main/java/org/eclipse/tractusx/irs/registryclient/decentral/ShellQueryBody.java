@@ -20,44 +20,28 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.irs;
+package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
-import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
-import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import lombok.Data;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 
 /**
- * Irs Request for IRS API
+ * Body for Digital Twin Registry Query Request.
  */
-@Value
-@Builder(toBuilder = true)
-@AllArgsConstructor
-class IrsRequest {
-    private PartChainIdentificationKey key;
-    private String bomLifecycle;
-    private List<String> aspects;
-    private boolean collectAspects;
-    private int depth;
+@Data
+@Builder
+public class ShellQueryBody {
+    private final ShellQuery query;
 
     /**
-     * Predefined request body for SupplyChain processing
-     *
-     * @param key          the key to identify the asset
-     * @param bomLifecycle lifecycle - default is asPlanned
-     * @return request body
+     * List of Identifier Name-Value Pairs for Digital Twin Registry Query.
      */
-    /* package */ static IrsRequest bpnInvestigations(final PartChainIdentificationKey key, final BomLifecycle bomLifecycle) {
-        return IrsRequest.builder()
-                         .key(key)
-                         .bomLifecycle(
-                                 bomLifecycle != null ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
-                         .depth(1)
-                         .collectAspects(false)
-                         .build();
+    @Data
+    @Builder
+    public static class ShellQuery {
+        private final List<IdentifierKeyValuePair> assetIds;
     }
-
 }

@@ -65,6 +65,7 @@
         <jar-plugin.version>3.3.0</jar-plugin.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
         <install-plugin.version>3.1.1</install-plugin.version>
+        <irs-registry-client.version>1.1.0-SNAPSHOT</irs-registry-client.version>
     </properties>
 
     <dependencyManagement>

@@ -36,15 +36,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -52,16 +53,22 @@ class EssServiceTest {
 
     private final IrsFacade irsFacade = mock(IrsFacade.class);
     private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
-    private final EssRecursiveNotificationHandler recursiveNotificationHandler = mock(EssRecursiveNotificationHandler.class);
-    private final EssService essService = new EssService(irsFacade, bpnInvestigationJobCache, recursiveNotificationHandler);
+    private final EssRecursiveNotificationHandler recursiveNotificationHandler = mock(
+            EssRecursiveNotificationHandler.class);
+    private final EssService essService = new EssService(irsFacade, bpnInvestigationJobCache,
+            recursiveNotificationHandler);
 
     @Test
     void shouldSuccessfullyStartJobAndReturnWithExtendedSubmodelList() {
         final String globalAssetId = UUID.randomUUID().toString();
         final List<String> bpns = List.of("BPNS000000000DDD");
         final UUID createdJobId = UUID.randomUUID();
+        final var key = PartChainIdentificationKey.builder()
+                                                  .globalAssetId(globalAssetId)
+                                                  .bpn("BPNS0000000000DD")
+                                                  .build();
         final RegisterBpnInvestigationJob request = RegisterBpnInvestigationJob.builder()
-                                                                               .globalAssetId(globalAssetId)
+                                                                               .key(key)
                                                                                .incidentBpns(bpns)
                                                                                .build();
         final Jobs expectedResponse = Jobs.builder()
@@ -74,7 +81,7 @@ class EssServiceTest {
                                           .shells(new ArrayList<>())
                                           .build();
 
-        when(irsFacade.startIrsJob(eq(globalAssetId), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
+        when(irsFacade.startIrsJob(eq(key), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
         when(irsFacade.getIrsJob(createdJobId.toString())).thenReturn(expectedResponse);
 
         final JobHandle jobHandle = essService.startIrsJob(request);
