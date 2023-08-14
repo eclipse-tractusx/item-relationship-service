@@ -37,6 +37,7 @@ import lombok.Builder;
 import lombok.ToString;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
@@ -108,11 +109,11 @@ public class Job {
     @Schema(description = "Summary of the job with statistics of the job processing.", implementation = Summary.class)
     private Summary summary;
 
-    @Schema(description = "The passed job parameters", implementation = JobParameter.class)
+    @Schema(description = "The passed job parameters.", implementation = JobParameter.class)
     @JsonAlias("jobParameter")
     private JobParameter parameter;
 
-    @Schema(description = "Flag to determine if data chain integrity is valid", implementation = Boolean.class)
-    private boolean integrityChainValid;
+    @Schema(description = "Specifies the integrity of the data chain.", implementation = IntegrityState.class)
+    private IntegrityState integrityState;
 
 }

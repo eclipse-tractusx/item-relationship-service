@@ -47,6 +47,7 @@ import org.bouncycastle.util.encoders.Hex;
 import org.eclipse.tractusx.irs.aaswrapper.job.IntegrityAspect;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Submodel;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +70,7 @@ public class DataIntegrityService {
             final SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) reader.readObject();
 
             publicKey = PublicKeyFactory.createKey(subjectPublicKeyInfo);
-        } catch (final IOException | NoSuchAlgorithmException e) {
+        } catch (final IOException | NoSuchAlgorithmException | IllegalArgumentException e) {
             log.error("Cannot create public key object based on injected publicKeyCert data", e);
         }
     }
@@ -78,7 +79,7 @@ public class DataIntegrityService {
      * @param itemContainer data
      * @return flag indicates if chain is valid
      */
-    public boolean chainDataIntegrityIsValid(final ItemContainer itemContainer) {
+    public IntegrityState chainDataIntegrityIsValid(final ItemContainer itemContainer) {
         final long numberOfValidSubmodels = itemContainer.getSubmodels().stream().takeWhile(submodel -> {
             try {
                 return submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities());
@@ -88,7 +89,7 @@ public class DataIntegrityService {
             }
         }).count();
 
-        return numberOfValidSubmodels == totalNumberOfSubmodels(itemContainer);
+        return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer));
     }
 
     private boolean submodelDataIntegrityIsValid(final Submodel submodel, final Set<IntegrityAspect> integrities) {
@@ -109,7 +110,7 @@ public class DataIntegrityService {
         log.debug("Comparing hashes and signatures Data integrity of Submodel {}", submodel.getIdentification());
 
         return hashesAreEqual(reference.getHash(), calculatedHash)
-                && signaturesAreEqual(reference.getSignature(), bytesOf(submodel.getPayload()));
+                && signaturesEquals(reference.getSignature(), bytesOf(submodel.getPayload()));
     }
 
     private static boolean hashesAreEqual(final String hashReference, final String calculatedHash) {

@@ -759,7 +759,7 @@ paths:
       responses:
         "200":
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
                 items:
@@ -887,7 +887,6 @@ components:
         completedOn: 2022-02-03T14:48:54.709Z
         globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
         id: 6c311d29-5753-46d4-b32c-19b918ea93b0
-        integrityChainValid: false
         lastModifiedOn: 2022-02-03T14:48:54.709Z
         startedOn: 2022-02-03T14:48:54.709Z
         state: CANCELED
@@ -903,7 +902,6 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -912,9 +910,9 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            collectIntegrities: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: CANCELED
@@ -956,7 +954,6 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -965,9 +962,9 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            collectIntegrities: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
@@ -1074,7 +1071,6 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1083,9 +1079,9 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            collectIntegrities: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
@@ -1218,7 +1214,6 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1227,9 +1222,9 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            collectIntegrities: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: ERROR
@@ -1258,7 +1253,6 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1267,9 +1261,9 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            collectIntegrities: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
@@ -1368,7 +1362,6 @@ components:
             exceptionDate: 2022-02-03T14:48:54.709Z
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
-          integrityChainValid: false
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           owner: ""
           parameter:
@@ -1377,9 +1370,9 @@ components:
               - AddressAspect
             bomLifecycle: asBuilt
             collectAspects: false
-            collectIntegrities: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: RUNNING
@@ -1430,9 +1423,9 @@ components:
           type: string
           description: Id of global asset.
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-        idShort:
-          type: string
         id:
+          type: string
+        idShort:
           type: string
         specificAssetIds:
           type: array
@@ -1469,8 +1462,8 @@ components:
           minimum: 0
     BatchOrderCreated:
       type: object
-      description: Id of the created Batch order.
       additionalProperties: false
+      description: Id of the created Batch order.
       properties:
         id:
           type: string
@@ -1760,9 +1753,13 @@ components:
           maxLength: 36
           minLength: 36
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
-        integrityChainValid:
-          type: boolean
-          description: Flag to determine if data chain integrity is valid
+        integrityState:
+          type: string
+          description: Specifies the integrity of the data chain.
+          enum:
+            - VALID
+            - INVALID
+            - INACTIVE
         lastModifiedOn:
           type: string
           format: date-time
@@ -1839,8 +1836,6 @@ components:
           type: string
         collectAspects:
           type: boolean
-        collectIntegrities:
-          type: boolean
         depth:
           type: integer
           format: int32
@@ -1852,6 +1847,8 @@ components:
           enum:
             - upward
             - downward
+        integrityCheck:
+          type: boolean
         lookupBPNs:
           type: boolean
     JobStatusResult:
@@ -2046,14 +2043,14 @@ components:
       type: object
       additionalProperties: false
       properties:
-        href:
-          type: string
         endpointProtocol:
           type: string
         endpointProtocolVersion:
           type: array
           items:
             type: string
+        href:
+          type: string
         subprotocol:
           type: string
         subprotocolBody:
@@ -2076,13 +2073,13 @@ components:
       type: object
       additionalProperties: false
       properties:
-        type:
-          type: string
         keys:
           type: array
           items:
             $ref: '#/components/schemas/SemanticId'
           maxItems: 2147483647
+        type:
+          type: string
     RegisterBatchOrder:
       type: object
       additionalProperties: false
@@ -2218,10 +2215,6 @@ components:
           type: boolean
           description: Flag to specify whether aspects should be requested and collected.
             Default is false.
-        collectIntegrities:
-          type: boolean
-          description: Flag to enable or disable the integrity validation of a part
-            chain. Default is true.
         depth:
           type: integer
           format: int32
@@ -2236,6 +2229,10 @@ components:
           enum:
             - upward
             - downward
+        integrityCheck:
+          type: boolean
+          description: Specifies if integrity of the data chain is checked. Default
+            is true.
         key:
           $ref: '#/components/schemas/PartChainIdentificationKey'
         lookupBPNs:
@@ -2298,9 +2295,9 @@ components:
           items:
             $ref: '#/components/schemas/Endpoint'
           maxItems: 2147483647
-        idShort:
-          type: string
         id:
+          type: string
+        idShort:
           type: string
         semanticId:
           $ref: '#/components/schemas/Reference'

@@ -31,6 +31,7 @@ import java.util.Set;
 import org.eclipse.tractusx.irs.aaswrapper.job.IntegrityAspect;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Submodel;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -70,10 +71,10 @@ class DataIntegrityServiceTest {
         final ItemContainer build = ItemContainer.builder().submodel(submodel).integrity(integrityAspect).build();
 
         // Act
-        final boolean b = dataIntegrityService.chainDataIntegrityIsValid(build);
+        final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build);
 
         // Assert
-        assertThat(b).isTrue();
+        assertThat(integrityState).isEqualTo(IntegrityState.VALID);
     }
 
     @Test
@@ -92,9 +93,9 @@ class DataIntegrityServiceTest {
         final ItemContainer build = ItemContainer.builder().submodel(submodel).integrity(integrityAspect).build();
 
         // Act
-        final boolean b = dataIntegrityService.chainDataIntegrityIsValid(build);
+        final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build);
 
         // Assert
-        assertThat(b).isFalse();
+        assertThat(integrityState).isEqualTo(IntegrityState.INVALID);
     }
 }

@@ -80,8 +80,8 @@ public class RegisterJob {
     @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.")
     private boolean lookupBPNs;
 
-    @Schema(description = "Flag to enable or disable the integrity validation of a part chain. Default is true.")
-    private boolean collectIntegrities = true;
+    @Schema(description = "Specifies if integrity of the data chain is checked. Default is true.")
+    private boolean integrityCheck = true;
 
     @URL(regexp = "^(http|https).*")
     @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: id and state.",

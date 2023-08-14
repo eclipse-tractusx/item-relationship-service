@@ -68,7 +68,7 @@ public class JobParameter {
     private boolean collectAspects;
 
     @Schema(implementation = Boolean.class)
-    private boolean collectIntegrities;
+    private boolean integrityCheck;
 
     @Schema(implementation = Boolean.class)
     private boolean lookupBPNs;

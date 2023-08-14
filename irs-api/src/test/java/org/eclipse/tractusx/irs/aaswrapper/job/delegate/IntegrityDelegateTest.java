@@ -138,7 +138,7 @@ class IntegrityDelegateTest {
     @Test
     void shouldNotValidateIntegrityChainWhenFlagIsDisabled() {
         // given
-        final JobParameter notValidateIntegrityParam = JobParameter.builder().collectIntegrities(false).build();
+        final JobParameter notValidateIntegrityParam = JobParameter.builder().integrityCheck(false).build();
         final ItemContainer.ItemContainerBuilder itemContainer = ItemContainer.builder().bpn(Bpn.withManufacturerId("BPNL00000003AYRE"));
 
         // when

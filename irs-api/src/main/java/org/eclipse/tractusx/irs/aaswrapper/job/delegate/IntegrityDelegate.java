@@ -68,7 +68,7 @@ public class IntegrityDelegate extends AbstractDelegate {
             final JobParameter jobData, final AASTransferProcess aasTransferProcess,
             final PartChainIdentificationKey itemId) {
 
-        if (jobData.isCollectIntegrities()) {
+        if (jobData.isIntegrityCheck()) {
             itemContainerBuilder.build()
                                 .getShells()
                                 .stream()

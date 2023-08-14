@@ -37,6 +37,7 @@ import java.util.function.UnaryOperator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.jetbrains.annotations.Nullable;
@@ -150,9 +151,9 @@ public abstract class BaseJobStore implements JobStore {
             final JobState jobState = job.getJob().getState();
             if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
                 final ItemContainer itemContainer = completionAction.apply(job);
-                final boolean chainDataIntegrityIsValid =
-                        job.getJobParameter().isCollectIntegrities() && dataIntegrityService.chainDataIntegrityIsValid(itemContainer);
-                return job.toBuilder().transitionComplete(chainDataIntegrityIsValid).build();
+                final IntegrityState integrityState = job.getJobParameter().isIntegrityCheck() ? dataIntegrityService.chainDataIntegrityIsValid(itemContainer)
+                        : IntegrityState.INACTIVE;
+                return job.toBuilder().transitionComplete(integrityState).build();
             } else {
                 log.info("Job is in state {}, cannot complete it.", jobState);
                 return job;
