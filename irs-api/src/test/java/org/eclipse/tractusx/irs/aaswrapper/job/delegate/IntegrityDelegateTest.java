@@ -63,6 +63,8 @@ class IntegrityDelegateTest {
     final IntegrityDelegate integrityDelegate = new IntegrityDelegate(submodelFacade,
             connectorEndpointsService, jsonUtil);
 
+    private static final String DATA_INTEGRITY_ASPECT = "DataIntegrity";
+
     private static PartChainIdentificationKey createKey() {
         return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
     }
@@ -78,7 +80,7 @@ class IntegrityDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
                                                                                                List.of(submodelDescriptor(
-                                                                                                       "DataIntegrity",
+                                                                                                       DATA_INTEGRITY_ASPECT,
                                                                                                        "address"))));
 
         // when
@@ -101,7 +103,7 @@ class IntegrityDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
                                                                                                List.of(submodelDescriptor(
-                                                                                                       "DataIntegrity",
+                                                                                                       DATA_INTEGRITY_ASPECT,
                                                                                                        "address"))));
 
         // when
@@ -121,7 +123,7 @@ class IntegrityDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
                                                                                                List.of(submodelDescriptor(
-                                                                                                       "DataIntegrity",
+                                                                                                       DATA_INTEGRITY_ASPECT,
                                                                                                        "address"))));
         // when
         final ItemContainer result = integrityDelegate.process(itemContainerWithShell, jobParameter(),
