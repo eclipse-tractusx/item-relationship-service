@@ -109,11 +109,11 @@ public class DataIntegrityService {
         final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
         log.debug("Comparing hashes and signatures Data integrity of Submodel {}", submodel.getIdentification());
 
-        return hashesAreEqual(reference.getHash(), calculatedHash)
+        return hashesEquals(reference.getHash(), calculatedHash)
                 && signaturesEquals(reference.getSignature(), bytesOf(submodel.getPayload()));
     }
 
-    private static boolean hashesAreEqual(final String hashReference, final String calculatedHash) {
+    private static boolean hashesEquals(final String hashReference, final String calculatedHash) {
         return MessageDigest.isEqual(hashReference.getBytes(StandardCharsets.UTF_8),
                 calculatedHash.getBytes(StandardCharsets.UTF_8));
     }
