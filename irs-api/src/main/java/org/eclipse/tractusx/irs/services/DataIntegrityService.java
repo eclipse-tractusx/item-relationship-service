@@ -117,7 +117,7 @@ public class DataIntegrityService {
                 calculatedHash.getBytes(StandardCharsets.UTF_8));
     }
 
-    private boolean signaturesAreEqual(final String signatureReference, final byte[] hashedMessage) {
+    private boolean signaturesEquals(final String signatureReference, final byte[] hashedMessage) {
         final RSADigestSigner verifier = new RSADigestSigner(new SHA256Digest());
         verifier.init(false, publicKey);
         verifier.update(hashedMessage, 0, hashedMessage.length);
