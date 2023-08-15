@@ -119,13 +119,13 @@ public class RelationshipDelegate extends AbstractDelegate {
             itemContainerBuilder.relationships(relationships);
             itemContainerBuilder.bpns(getBpnsFrom(relationships));
         } catch (final EdcClientException e) {
-            log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
+            log.warn("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                     endpoint.getProtocolInformation().getHref());
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
                             retryCount, ProcessStep.SUBMODEL_REQUEST));
         } catch (final JsonParseException e) {
-            log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+            log.warn("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
                             retryCount, ProcessStep.SUBMODEL_REQUEST));

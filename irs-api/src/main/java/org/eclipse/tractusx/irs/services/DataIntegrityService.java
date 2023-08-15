@@ -58,19 +58,15 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class DataIntegrityService {
 
-    private MessageDigest messageDigest;
     private AsymmetricKeyParameter publicKey;
 
     public DataIntegrityService(@Value("${integrity.publicKeyCert:}") final String publicKeyCert) {
-        try {
-            messageDigest = MessageDigest.getInstance("SHA3-256");
-
-            Security.addProvider(new BouncyCastleProvider());
-            final PEMParser reader = new PEMParser(new StringReader(publicKeyCert));
+        Security.addProvider(new BouncyCastleProvider());
+        try (PEMParser reader = new PEMParser(new StringReader(publicKeyCert))) {
             final SubjectPublicKeyInfo subjectPublicKeyInfo = (SubjectPublicKeyInfo) reader.readObject();
 
             publicKey = PublicKeyFactory.createKey(subjectPublicKeyInfo);
-        } catch (final IOException | NoSuchAlgorithmException | IllegalArgumentException e) {
+        } catch (final IOException | IllegalArgumentException e) {
             log.error("Cannot create public key object based on injected publicKeyCert data", e);
         }
     }
@@ -83,7 +79,7 @@ public class DataIntegrityService {
         final long numberOfValidSubmodels = itemContainer.getSubmodels().stream().takeWhile(submodel -> {
             try {
                 return submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities());
-            } catch (NoSuchElementException exc) {
+            } catch (NoSuchElementException | NoSuchAlgorithmException exc) {
                 log.error("DataIntegrity aspect is missing. Integrity of data chain cannot be determined.");
                 return false;
             }
@@ -92,7 +88,8 @@ public class DataIntegrityService {
         return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer));
     }
 
-    private boolean submodelDataIntegrityIsValid(final Submodel submodel, final Set<IntegrityAspect> integrities) {
+    private boolean submodelDataIntegrityIsValid(final Submodel submodel, final Set<IntegrityAspect> integrities)
+            throws NoSuchAlgorithmException {
         final IntegrityAspect.ChildData childData = integrities.stream()
                                                                .map(IntegrityAspect::getChildParts)
                                                                .flatMap(Set::stream)
@@ -129,15 +126,16 @@ public class DataIntegrityService {
         return itemContainer.getSubmodels().size();
     }
 
-    private String calculateHashForRawSubmodelPayload(final Map<String, Object> payload) {
+    private String calculateHashForRawSubmodelPayload(final Map<String, Object> payload)
+            throws NoSuchAlgorithmException {
         log.debug("Calculating hash for payload '{}", payload);
         final byte[] digest = bytesOf(payload);
         log.debug("Returning hash '{}'", Hex.toHexString(digest));
         return Hex.toHexString(digest);
     }
 
-    private byte[] bytesOf(final Map<String, Object> payload) {
-        return messageDigest.digest(mapToString(payload).getBytes(StandardCharsets.UTF_8));
+    private byte[] bytesOf(final Map<String, Object> payload) throws NoSuchAlgorithmException {
+        return MessageDigest.getInstance("SHA3-256").digest(mapToString(payload).getBytes(StandardCharsets.UTF_8));
     }
 
     private Predicate<? super IntegrityAspect.Reference> findReference(final String aspectType) {

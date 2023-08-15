@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.aaswrapper.job.delegate.IntegrityDelegate.DATA_INTEGRITY_ASPECT;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
@@ -62,8 +63,6 @@ class IntegrityDelegateTest {
     final JsonUtil jsonUtil = new JsonUtil();
     final IntegrityDelegate integrityDelegate = new IntegrityDelegate(submodelFacade,
             connectorEndpointsService, jsonUtil);
-
-    private static final String DATA_INTEGRITY_ASPECT = "DataIntegrity";
 
     private static PartChainIdentificationKey createKey() {
         return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();

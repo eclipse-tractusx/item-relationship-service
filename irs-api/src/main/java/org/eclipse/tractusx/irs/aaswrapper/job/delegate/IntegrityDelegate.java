@@ -49,11 +49,11 @@ import org.eclipse.tractusx.irs.util.JsonUtil;
 @Slf4j
 public class IntegrityDelegate extends AbstractDelegate {
 
+    public static final String DATA_INTEGRITY_ASPECT = "DataIntegrity";
+
     private final EdcSubmodelFacade submodelFacade;
     private final ConnectorEndpointsService connectorEndpointsService;
     private final JsonUtil jsonUtil;
-
-    private static final String DATA_INTEGRITY_ASPECT = "DataIntegrity";
 
     public IntegrityDelegate(final EdcSubmodelFacade submodelFacade,
             final ConnectorEndpointsService connectorEndpointsService, final JsonUtil jsonUtil) {
@@ -106,13 +106,13 @@ public class IntegrityDelegate extends AbstractDelegate {
             return Optional.ofNullable(jsonUtil.fromString(submodelRawPayload, IntegrityAspect.class));
 
         } catch (final EdcClientException e) {
-            log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
+            log.warn("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                     endpoint.getProtocolInformation().getHref());
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
                             retryCount, ProcessStep.DATA_INTEGRITY_CHECK));
         } catch (final JsonParseException e) {
-            log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+            log.warn("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
                             retryCount, ProcessStep.DATA_INTEGRITY_CHECK));
