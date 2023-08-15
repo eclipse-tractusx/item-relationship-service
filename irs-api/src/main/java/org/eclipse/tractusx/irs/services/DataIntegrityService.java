@@ -84,7 +84,7 @@ public class DataIntegrityService {
             try {
                 return submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities());
             } catch (NoSuchElementException exc) {
-                log.error("Validation of data integrity not possible - DataIntegrity aspect is missing");
+                log.error("DataIntegrity aspect is missing. Integrity of data chain cannot be determined.");
                 return false;
             }
         }).count();
