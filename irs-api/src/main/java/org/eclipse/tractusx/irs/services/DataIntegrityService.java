@@ -107,7 +107,7 @@ public class DataIntegrityService {
                                                              .orElseThrow();
 
         final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
-        log.debug("Comparing hashes and signatures Data integrity of Submodel {}", submodel.getIdentification());
+        log.debug("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
 
         return hashesEquals(reference.getHash(), calculatedHash)
                 && signaturesEquals(reference.getSignature(), bytesOf(submodel.getPayload()));
