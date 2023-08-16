@@ -93,7 +93,7 @@ public class PolicyStoreController {
     })
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('admin_irs')")
     public void registerAllowedPolicy(final @Valid @RequestBody CreatePolicyRequest request) {
         service.registerPolicy(request);
     }
@@ -122,7 +122,7 @@ public class PolicyStoreController {
     })
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('admin_irs')")
     public List<Policy> getPolicies() {
         return service.getStoredPolicies();
     }
@@ -154,7 +154,7 @@ public class PolicyStoreController {
     })
     @DeleteMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('admin_irs')")
     public void deleteAllowedPolicy(@PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
     }
