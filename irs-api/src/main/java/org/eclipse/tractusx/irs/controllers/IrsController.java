@@ -127,7 +127,7 @@ public class IrsController {
     @IrsTimer("registerjob")
     @PostMapping("/jobs")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('view_irs', 'admin_irs')")
     public JobHandle registerJobForGlobalAssetId(final @Valid @RequestBody RegisterJob request) {
         return itemJobService.registerItemJob(request);
     }
@@ -178,7 +178,7 @@ public class IrsController {
     })
     @IrsTimer("getjob")
     @GetMapping("/jobs/{id}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('view_irs', 'admin_irs')")
     public Jobs getJobById(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -227,7 +227,7 @@ public class IrsController {
     })
     @IrsTimer("canceljob")
     @PutMapping("/jobs/{id}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('view_irs', 'admin_irs')")
     public Job cancelJobByJobId(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -269,7 +269,7 @@ public class IrsController {
     @IrsTimer("getjobbystate")
     @GetMapping("/jobs")
     @PageableAsQueryParam
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('view_irs', 'admin_irs')")
     public PageResult getJobsByState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
                explode = Explode.FALSE, array = @ArraySchema(schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE))
@@ -305,7 +305,7 @@ public class IrsController {
                                          }),
     })
     @GetMapping("/aspectmodels")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('view_irs', 'admin_irs')")
     public AspectModels getAllAvailableAspectModels() throws SchemaNotFoundException {
         return semanticHubService.getAllAspectModels();
     }

@@ -22,9 +22,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.services;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -44,6 +48,27 @@ public final class SecurityHelperService {
 
     public String getBpnClaim() {
         return getClaimOrUnknown(BPN);
+    }
+
+    public boolean isAdmin() {
+        return getIrsRoles().contains("admin_irs");
+    }
+
+    public String getClientIdForViewIrs() {
+        if (getIrsRoles().contains("view_irs")) {
+            return getClientIdClaim();
+        }
+        return "";
+    }
+
+    private List<String> getIrsRoles() {
+        final Authentication authentication = getAuthenticationFromSecurityContext();
+
+        if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+            return jwtAuthenticationToken.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(
+                    Collectors.toList());
+            }
+        return Collections.emptyList();
     }
 
     private String getClaimOrUnknown(final String claimName) {
