@@ -65,9 +65,11 @@ public final class SecurityHelperService {
         final Authentication authentication = getAuthenticationFromSecurityContext();
 
         if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
-            return jwtAuthenticationToken.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(
-                    Collectors.toList());
-            }
+            return jwtAuthenticationToken.getAuthorities()
+                                         .stream()
+                                         .map(GrantedAuthority::getAuthority)
+                                         .collect(Collectors.toList());
+        }
         return Collections.emptyList();
     }
 
