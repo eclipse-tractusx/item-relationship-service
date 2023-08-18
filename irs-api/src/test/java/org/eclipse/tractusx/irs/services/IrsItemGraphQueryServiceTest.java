@@ -28,6 +28,7 @@ import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithLookupBPNs
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,6 +64,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,6 +94,7 @@ class IrsItemGraphQueryServiceTest {
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() throws Exception {
         // given
+        setupSecurityContext();
         final var jobId = UUID.randomUUID();
         final AASTransferProcess transfer1 = generate.aasTransferProcess();
         givenTransferResultIsStored(transfer1);
@@ -125,6 +131,8 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void cancelJobById() {
+        setupSecurityContext();
+
         final Job job = generate.fakeJob(JobState.CANCELED);
 
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(job).build();
@@ -146,6 +154,7 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldReturnFoundJobs() {
+        setupSecurityContext();
         final List<JobState> states = List.of(JobState.COMPLETED);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
                                                                   .job(generate.fakeJob(JobState.COMPLETED))
@@ -238,6 +247,14 @@ class IrsItemGraphQueryServiceTest {
         final Executable executable = () -> testee.registerItemJob(registerJobWithLookupBPNs());
 
         assertThrows(ResponseStatusException.class, executable);
+    }
+
+    private static void setupSecurityContext() {
+        JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
+        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("admin_irs")));
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
+        SecurityContextHolder.setContext(securityContext);
     }
 
 }
