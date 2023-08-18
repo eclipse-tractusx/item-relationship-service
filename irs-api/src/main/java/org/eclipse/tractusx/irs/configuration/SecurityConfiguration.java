@@ -39,6 +39,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.PermissionsPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -69,6 +71,7 @@ public class SecurityConfiguration {
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
     private static final String ONLY_SELF_SCRIPT_SRC = "script-src 'self'";
+    private static final String PERMISSION_POLICY = "microphone=(), geolocation=(), camera=()";
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
@@ -92,6 +95,9 @@ public class SecurityConfiguration {
         httpSecurity.headers(headers -> headers.addHeaderWriter(new ContentSecurityPolicyHeaderWriter(ONLY_SELF_SCRIPT_SRC)));
 
         httpSecurity.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+        httpSecurity.headers(headers -> headers.addHeaderWriter(new ReferrerPolicyHeaderWriter(
+                ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)));
+        httpSecurity.headers(headers -> headers.addHeaderWriter(new PermissionsPolicyHeaderWriter(PERMISSION_POLICY)));
 
         httpSecurity.sessionManagement(sessionManagement -> sessionManagement
                 .sessionCreationPolicy(STATELESS));
