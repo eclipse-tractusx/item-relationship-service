@@ -62,7 +62,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("irs")
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                    "PMD.ExcessiveImports"
+})
 public class PolicyStoreController {
 
     private final PolicyStoreService service;
