@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.tractusx.irs.auth.IrsRoles;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,11 +52,11 @@ public final class SecurityHelperService {
     }
 
     public boolean isAdmin() {
-        return getIrsRoles().contains("admin_irs");
+        return getIrsRoles().contains(IrsRoles.ADMIN_IRS);
     }
 
     public String getClientIdForViewIrs() {
-        if (getIrsRoles().contains("view_irs")) {
+        if (getIrsRoles().contains(IrsRoles.VIEW_IRS)) {
             return getClientIdClaim();
         }
         return "";

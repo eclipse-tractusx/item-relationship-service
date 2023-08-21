@@ -34,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
@@ -80,7 +81,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestWhenGlobalAssetIdWithWrongFormat() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
@@ -91,7 +92,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestWhenBatchSizeNotMod10Compliant() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
@@ -103,7 +104,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldRegisterBatchOrder() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
@@ -114,7 +115,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBatchOrder() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
@@ -127,7 +128,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBatch() throws Exception {
         final UUID orderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
@@ -142,7 +143,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldCancelBatchOrder() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
