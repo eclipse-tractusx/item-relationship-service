@@ -33,6 +33,11 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-api</artifactId>
+            <version>${revision}</version>
+          </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-registry-client</artifactId>
             <version>${irs-registry-client.version}</version>
             <exclusions>
