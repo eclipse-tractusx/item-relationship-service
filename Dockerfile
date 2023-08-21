@@ -60,10 +60,6 @@ WORKDIR /app
 
 COPY --chmod=755 --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
 
-COPY LICENSE LICENSE
-COPY NOTICE.md NOTICE.md
-COPY DEPENDENCIES DEPENDENCIES
-
 USER ${UID}:${GID}
 
 ENTRYPOINT ["java", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]
