@@ -25,6 +25,7 @@
         <module>irs-cucumber-tests</module>
         <module>docs</module>
         <module>irs-load-tests</module>
+        <module>irs-testdata-upload</module>
     </modules>
 
     <properties>
@@ -183,6 +184,7 @@
                         <exclude>**/*EntityNotFoundException.class</exclude>
                         <exclude>**/*IrsApiConstants.class</exclude>
                         <exclude>**/*ApiErrorsConstants.class</exclude>
+                        <exclude>org/eclipse/tractusx/irs/testing/dataintegrity/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

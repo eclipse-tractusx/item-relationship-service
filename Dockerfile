@@ -43,6 +43,7 @@ COPY irs-report-aggregate irs-report-aggregate
 COPY irs-cucumber-tests irs-cucumber-tests
 COPY docs docs
 COPY irs-load-tests irs-load-tests
+COPY irs-testdata-upload irs-testdata-upload
 
 # the --mount option requires BuildKit.
 RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET -am -DskipTests
