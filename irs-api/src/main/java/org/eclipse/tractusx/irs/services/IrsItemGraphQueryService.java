@@ -257,7 +257,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
         canceled.ifPresent(cancelledJob -> {
             if (!securityHelperService.isAdmin() && !cancelledJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access and cancel job with id [" + jobId+ "] due to missing privileges.");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access and cancel job with id [" + jobId + "] due to missing privileges.");
             }
         });
         canceled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
