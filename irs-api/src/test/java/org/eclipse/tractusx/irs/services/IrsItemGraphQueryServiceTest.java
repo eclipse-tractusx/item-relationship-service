@@ -28,6 +28,7 @@ import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithLookupBPNs
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,6 +41,7 @@ import java.util.UUID;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PageResult;
@@ -67,6 +69,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -94,7 +97,7 @@ class IrsItemGraphQueryServiceTest {
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() throws Exception {
         // given
-        setupSecurityContext();
+        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
         final var jobId = UUID.randomUUID();
         final AASTransferProcess transfer1 = generate.aasTransferProcess();
         givenTransferResultIsStored(transfer1);
@@ -131,7 +134,7 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void cancelJobById() {
-        setupSecurityContext();
+        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
 
         final Job job = generate.fakeJob(JobState.CANCELED);
 
@@ -145,6 +148,18 @@ class IrsItemGraphQueryServiceTest {
     }
 
     @Test
+    void shouldThrowForbiddenExceptionWhenCancelingAnotherOwnerJob() {
+        setupSecurityContextWithRole(IrsRoles.VIEW_IRS);
+
+        final Job job = generate.fakeJob(JobState.CANCELED);
+
+        final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(job).build();
+        when(jobStore.cancelJob(jobId.toString())).thenReturn(Optional.ofNullable(multiTransferJob));
+
+        assertThrows(ResponseStatusException.class, () -> testee.cancelJobById(jobId));
+    }
+
+    @Test
     void cancelJobById_throwEntityNotFoundException() {
         when(jobStore.cancelJob(jobId.toString())).thenThrow(
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId));
@@ -154,7 +169,7 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldReturnFoundJobs() {
-        setupSecurityContext();
+        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
         final List<JobState> states = List.of(JobState.COMPLETED);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
                                                                   .job(generate.fakeJob(JobState.COMPLETED))
@@ -249,9 +264,12 @@ class IrsItemGraphQueryServiceTest {
         assertThrows(ResponseStatusException.class, executable);
     }
 
-    private static void setupSecurityContext() {
+    private static void setupSecurityContextWithRole(final String irsRole) {
         JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
-        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("admin_irs")));
+        Jwt token = mock(Jwt.class);
+        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority(irsRole)));
+        lenient().when(jwtAuthenticationToken.getToken()).thenReturn(token);
+        lenient().when(token.getClaim("clientId")).thenReturn("test-client-id");
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
         SecurityContextHolder.setContext(securityContext);
