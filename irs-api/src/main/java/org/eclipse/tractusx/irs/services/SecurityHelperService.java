@@ -25,7 +25,6 @@ package org.eclipse.tractusx.irs.services;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.springframework.security.core.Authentication;
