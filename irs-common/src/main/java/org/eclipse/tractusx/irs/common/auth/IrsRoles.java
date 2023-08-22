@@ -22,9 +22,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.common.auth;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Technical user roles
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class IrsRoles {
     public static final String ADMIN_IRS = "admin_irs";
     public static final String VIEW_IRS = "view_irs";

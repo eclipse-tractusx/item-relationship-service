@@ -69,7 +69,7 @@ public final class SecurityHelperService {
             return jwtAuthenticationToken.getAuthorities()
                                          .stream()
                                          .map(GrantedAuthority::getAuthority)
-                                         .collect(Collectors.toList());
+                                         .toList();
         }
         return Collections.emptyList();
     }
