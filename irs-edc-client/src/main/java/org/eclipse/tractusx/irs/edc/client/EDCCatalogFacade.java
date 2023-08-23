@@ -34,10 +34,12 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -47,7 +49,7 @@ import org.springframework.stereotype.Component;
 @Component("irsEdcClientEdcCatalogFacade")
 @RequiredArgsConstructor
 @Slf4j
-public class EDCCatalogFacade {
+public class EDCCatalogFacade implements TraceXEdcAPI {
 
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
@@ -73,6 +75,13 @@ public class EDCCatalogFacade {
         }
         return builder.build();
     }
+
+    @Override
+    public List<CatalogItem> fetchCatalogItems(final CatalogRequest catalogRequest) {
+        final Catalog catalog = controlPlaneClient.getCatalog(catalogRequest);
+        return mapToCatalogItems(catalog);
+    }
+
 
     private static List<CatalogItem> mapToCatalogItems(final Catalog catalog) {
         if (catalog.getDatasets() == null) {
