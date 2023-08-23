@@ -893,3 +893,15 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | Managed Identity Wallet (MIW) | For more information see: <https://github.com/eclipse-tractusx/managed-identity-wallet> |
 | Self-Sovereign Identity (SSI) | For more information see: <https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2> |
 | PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. |
+
+### NOTICE
+
+This work is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+* SPDX-License-Identifier: Apache-2.0
+* SPDX-FileCopyrightText: 2021, 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+* SPDX-FileCopyrightText: 2022, 2023 BOSCH AG
+* SPDX-FileCopyrightText: 2021, 2022 ZF Friedrichshafen AG
+* SPDX-FileCopyrightText: 2022  ISTOS GmbH
+* SPDX-FileCopyrightText: 2021, 2023 Contributors to the Eclipse Foundation
+* Source URL: <https://github.com/eclipse-tractusx/item-relationship-service>

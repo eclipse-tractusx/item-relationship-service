@@ -610,3 +610,15 @@ It can also happen if the persistent volume claim is deleted / recreated.
 #### Different Job model versions maintenance
 
 Currently, the IRS only supports one version of the Job model at a time. This means that if the Job model is changed in a newer IRS version, old models stored in minio will no longer be supported and returned from IRS endpoints. The IRS application will work as usual, old versions of Job can stay in Minio and don’t need to be removed - the IRS will simply ignore them. If you want to clear the minio from old models, the only way to achieve that is to delete them all and register new Jobs.
+
+### NOTICE
+
+This work is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0).
+
+* SPDX-License-Identifier: Apache-2.0
+* SPDX-FileCopyrightText: 2021, 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+* SPDX-FileCopyrightText: 2022, 2023 BOSCH AG
+* SPDX-FileCopyrightText: 2021, 2022 ZF Friedrichshafen AG
+* SPDX-FileCopyrightText: 2022  ISTOS GmbH
+* SPDX-FileCopyrightText: 2021, 2023 Contributors to the Eclipse Foundation
+* Source URL: <https://github.com/eclipse-tractusx/item-relationship-service>
