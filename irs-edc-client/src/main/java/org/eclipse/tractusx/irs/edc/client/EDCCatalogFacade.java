@@ -81,8 +81,7 @@ public class EDCCatalogFacade implements TraceXEdcAPI {
         final Catalog catalog = controlPlaneClient.getCatalog(catalogRequest);
         return mapToCatalogItems(catalog);
     }
-
-
+    
     private static List<CatalogItem> mapToCatalogItems(final Catalog catalog) {
         if (catalog.getDatasets() == null) {
             return List.of();
