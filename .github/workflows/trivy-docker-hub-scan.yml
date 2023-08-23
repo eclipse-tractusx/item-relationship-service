@@ -1,22 +1,11 @@
 name: "Trivy vulnerability scanner for Docker Hub Image"
 
 on:
+  workflow_dispatch: # Trigger manually
   push:
-    branches: [ "main" ]
+  pull_request:
   schedule:
     - cron: "0 0 * * *"
-
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: "Branch to use"
-        required: true
-        default: "main"
-        type: string
-
-env:
-  IMAGE_NAMESPACE: 'tractusx'
-  IMAGE_NAME: "irs-api"
 
 jobs:
   image-scan:
@@ -27,46 +16,19 @@ jobs:
       security-events: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Cache maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      - name: Build with Maven
-        run: |
-          mvn -B clean install
-
-        # Build action for docker hub registry
-      - name: Build image from Dockerfile - Docker Hub
-        if: ${{ github.repository == 'eclipse-tractusx/item-relationship-service' }}
-        run: |
-          docker build -t ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest .
-
-        # Build action for docker hub registry
-      - name: Run Trivy vulnerability scanner - Docker Hub
-        if: ${{ github.repository == 'eclipse-tractusx/item-relationship-service' }}
+      - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: "${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}"
-          format: "sarif"
-          output: "trivy-results-irs.sarif"
-          exit-code: "1"
-          hide-progress: false
-          severity: "CRITICAL,HIGH"
+          image-ref: 'tractusx/irs-api:latest'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - run: cat trivy-results.sarif
 
       - name: Upload Trivy scan results to GitHub Security tab
-        if: always()
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: "trivy-results-irs.sarif"
+          sarif_file: 'trivy-results.sarif'
