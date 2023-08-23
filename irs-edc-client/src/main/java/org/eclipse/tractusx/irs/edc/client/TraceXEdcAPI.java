@@ -1,5 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2022,2023
+ *       2022: ZF Friedrichshafen AG
+ *       2022: ISTOS GmbH
+ *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2023: BOSCH AG
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,7 +26,13 @@ import java.util.List;
 
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
-
+/**
+ * The {@code TraceXEdcAPI} interface defines the contract for interacting with the EDC from trace-x.
+ * It includes methods to fetch catalog items and other EDC-related operations.
+ *
+ * @see CatalogItem
+ * @see CatalogRequest
+ */
 public interface TraceXEdcAPI {
 
     /**
@@ -33,5 +44,5 @@ public interface TraceXEdcAPI {
      * @param catalogRequest The request containing the parameters needed to fetch the catalog.
      * @return A list of {@link CatalogItem} objects representing the items in the catalog.
      */
-    List<CatalogItem> fetchCatalogItems(final CatalogRequest catalogRequest);
+    List<CatalogItem> fetchCatalogItems(CatalogRequest catalogRequest);
 }
