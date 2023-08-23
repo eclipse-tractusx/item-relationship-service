@@ -37,9 +37,8 @@ public interface TraceXEdcAPI {
 
     /**
      * Fetches a list of {@link CatalogItem} objects based on the given {@link CatalogRequest}.
-     * <p>
-     * This method communicates with the control plane client to retrieve the catalog based on the request,
-     * and then maps the result to a list of catalog items.
+     * This method communicates with the control plane client to retrieve the catalog
+     * and maps it to a list of catalog items.
      *
      * @param catalogRequest The request containing the parameters needed to fetch the catalog.
      * @return A list of {@link CatalogItem} objects representing the items in the catalog.
