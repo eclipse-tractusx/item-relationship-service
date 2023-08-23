@@ -48,9 +48,16 @@ import org.eclipse.edc.catalog.spi.DataService;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.catalog.spi.Distribution;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
+import org.eclipse.edc.policy.model.Action;
+import org.eclipse.edc.policy.model.AndConstraint;
 import org.eclipse.edc.policy.model.AtomicConstraint;
+import org.eclipse.edc.policy.model.Constraint;
 import org.eclipse.edc.policy.model.LiteralExpression;
+import org.eclipse.edc.policy.model.Operator;
+import org.eclipse.edc.policy.model.OrConstraint;
+import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.policy.model.XoneConstraint;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.jetbrains.annotations.NotNull;
@@ -103,4 +110,42 @@ public class TestMother {
         return UUID.randomUUID() + ":" + assetId + ":" + UUID.randomUUID();
     }
 
+    private static Permission createUsePermission(final Constraint constraint) {
+        return Permission.Builder.newInstance()
+                                 .action(Action.Builder.newInstance().type("USE").build())
+                                 .constraint(constraint)
+                                 .build();
+    }
+
+    public static AtomicConstraint createAtomicConstraint(final String leftExpr, final String rightExpr) {
+        return AtomicConstraint.Builder.newInstance()
+                                       .leftExpression(new LiteralExpression(leftExpr))
+                                       .rightExpression(new LiteralExpression(rightExpr))
+                                       .operator(Operator.EQ)
+                                       .build();
+    }
+
+    public static Policy createAtomicConstraintPolicy(final String leftExpr, final String rightExpr) {
+        final AtomicConstraint constraint = createAtomicConstraint(leftExpr, rightExpr);
+        final Permission permission = createUsePermission(constraint);
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    public static Policy createAndConstraintPolicy(final List<Constraint> constraints) {
+        final AndConstraint andConstraint = AndConstraint.Builder.newInstance().constraints(constraints).build();
+        final Permission permission = createUsePermission(andConstraint);
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    public static Policy createOrConstraintPolicy(final List<Constraint> constraints) {
+        final OrConstraint orConstraint = OrConstraint.Builder.newInstance().constraints(constraints).build();
+        final Permission permission = createUsePermission(orConstraint);
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    public static Policy createXOneConstraintPolicy(final List<Constraint> constraints) {
+        final XoneConstraint orConstraint = XoneConstraint.Builder.newInstance().constraints(constraints).build();
+        final Permission permission = createUsePermission(orConstraint);
+        return Policy.Builder.newInstance().permission(permission).build();
+    }
 }

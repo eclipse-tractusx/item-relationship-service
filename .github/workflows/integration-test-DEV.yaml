@@ -5,6 +5,19 @@ on:
   push:
     branches:
       - 'main'
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.txt'
+      - 'charts/**'
+      - '.config/**'
+      - 'docs/**'
+      - 'local/**'
+      - 'irs-load-tests/**'
+
+# Cancel previous Test executions if a new one is triggered.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   trigger-integration-test:

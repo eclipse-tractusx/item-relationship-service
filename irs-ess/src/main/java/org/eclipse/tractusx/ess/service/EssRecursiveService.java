@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
@@ -72,23 +73,31 @@ public class EssRecursiveService {
             final List<String> concernedCatenaXIds = getConcernedCatenaXIds(concernedCatenaXIdsNotification);
 
             final List<UUID> createdJobs = concernedCatenaXIds.stream()
-                                                        .map(catenaXId -> essService.startIrsJob(
-                                                                RegisterBpnInvestigationJob.builder()
-                                                                                           .incidentBpns(List.of(bpn))
-                                                                                           .globalAssetId(catenaXId)
-                                                                                           .build()))
-                                                        .map(JobHandle::getId)
-                                                        .toList();
+                                                              .map(catenaXId -> startIrsJob(bpn, catenaXId))
+                                                              .map(JobHandle::getId)
+                                                              .toList();
             relatedInvestigationJobsCache.store(notification.getHeader().getNotificationId(),
                     new RelatedInvestigationJobs(notification, createdJobs));
         }
     }
 
+    private JobHandle startIrsJob(final String bpn, final String catenaXId) {
+        final var job = RegisterBpnInvestigationJob.builder()
+                                                   .incidentBpns(List.of(bpn))
+                                                   .key(PartChainIdentificationKey.builder()
+                                                                                  .globalAssetId(catenaXId)
+                                                                                  .bpn(localBpn)
+                                                                                  .build())
+                                                   .build();
+
+        return essService.startIrsJob(job);
+    }
+
     @NotNull
     private static List<String> getConcernedCatenaXIds(final Optional<Object> concernedCatenaXIdsNotification) {
         final List<String> concernedCatenaXIds = new ArrayList<>();
-        concernedCatenaXIdsNotification.ifPresent(list -> concernedCatenaXIds.addAll(
-                ((List<String>) list).stream().toList()));
+        concernedCatenaXIdsNotification.ifPresent(
+                list -> concernedCatenaXIds.addAll(((List<String>) list).stream().toList()));
         return concernedCatenaXIds;
     }
 }

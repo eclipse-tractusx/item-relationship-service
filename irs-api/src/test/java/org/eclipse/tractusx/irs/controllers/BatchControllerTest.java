@@ -72,7 +72,6 @@ class BatchControllerTest {
     private AuthorizationService authorizationService;
 
     @Test
-    @Disabled("Disabled - failing on pipeline")
     void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(

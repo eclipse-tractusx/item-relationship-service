@@ -23,9 +23,7 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractAssetId;
-import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractSuffix;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,11 +101,9 @@ public abstract class AbstractDelegate {
     private void addSubmodelToList(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
             final List<String> submodelPayload, final String connectorEndpoint) throws EdcClientException {
         try {
-            submodelPayload.add(submodelFacade.getSubmodelRawPayload(connectorEndpoint,
-                    extractSuffix(endpoint.getProtocolInformation().getHref()),
-                    extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
-        } catch (URISyntaxException e) {
-            throw new EdcClientException(e);
+            submodelPayload.add(
+                    submodelFacade.getSubmodelRawPayload(connectorEndpoint, endpoint.getProtocolInformation().getHref(),
+                            extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
         } catch (ItemNotFoundInCatalogException e) {
             log.info("Could not find asset in catalog. Requesting next endpoint.", e);
         }

@@ -28,12 +28,12 @@ import java.util.function.Predicate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,7 +51,7 @@ public class EssService {
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
-        final JobHandle jobHandle = irsFacade.startIrsJob(request.getGlobalAssetId(), request.getBomLifecycle());
+        final JobHandle jobHandle = irsFacade.startIrsJob(request.getKey(), request.getBomLifecycle());
 
         final UUID createdJobId = jobHandle.getId();
         final Jobs createdJob = irsFacade.getIrsJob(createdJobId.toString());

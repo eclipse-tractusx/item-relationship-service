@@ -44,10 +44,10 @@ public class EdcSubmodelFacade {
     private final EdcSubmodelClient client;
 
     @SuppressWarnings("PMD.PreserveStackTrace")
-    public String getSubmodelRawPayload(final String connectorEndpoint, final String submodelSufix,
+    public String getSubmodelRawPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId) throws EdcClientException {
         try {
-            return client.getSubmodelRawPayload(connectorEndpoint, submodelSufix, assetId).get();
+            return client.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;

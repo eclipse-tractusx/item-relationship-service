@@ -15,25 +15,21 @@ def create_submodel_payload(json_payload):
     return json.dumps(json_payload)
 
 
-def create_digital_twin_payload(json_payload):
-    return json.dumps(json_payload)
-
-
-def create_edc_asset_payload(submodel_url_, asset_prop_id_, digital_twin_submodel_id_):
+def create_edc_asset_payload(submodel_url_, asset_id_):
     return json.dumps({
         "@context": {},
         "asset": {
             "@type": "Asset",
-            "@id": f"{asset_prop_id_}",
+            "@id": f"{asset_id_}",
             "properties": {
-                "description": "IRS EDC Demo Asset"
+                "description": "IRS EDC Test Asset"
             }
         },
         "dataAddress": {
             "@type": "DataAddress",
             "type": "HttpData",
-            "baseUrl": f"{submodel_url_}/data/{digital_twin_submodel_id_}",
-            "proxyPath": "false",
+            "baseUrl": f"{submodel_url_}",
+            "proxyPath": "true",
             "proxyBody": "false",
             "proxyMethod": "false",
             "proxyQueryParams": "false"
@@ -154,7 +150,7 @@ def create_aas_shell_3_0(global_asset_id_, id_short_, identification_, specific_
     })
 
 
-def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, endpoint_address_, id_, endpoint_):
+def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, dataplane_asset_address_, asset_id_, endpoint_):
     return json.dumps(
         {
             "description": [],
@@ -173,11 +169,11 @@ def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, end
                 {
                     "interface": "SUBMODEL-3.0",
                     "protocolInformation": {
-                        "href": endpoint_address_,
+                        "href": dataplane_asset_address_,
                         "endpointProtocol": "HTTP",
                         "endpointProtocolVersion": ["1.1"],
                         "subprotocol": "DSP",
-                        "subprotocolBody": f"id={id_};dspEndpoint={endpoint_}",
+                        "subprotocolBody": f"id={asset_id_};dspEndpoint={endpoint_}",
                         "subprotocolBodyEncoding": "plain"
                     }
                 }
@@ -192,23 +188,38 @@ def print_response(response_):
         print(response_.text)
 
 
-def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_upload_urls_, edc_urls_):
+def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_upload_urls_, edc_urls_, dataplane_urls_):
     nr_of_submodel_server_upload_urls = len(submodel_server_upload_urls_)
     nr_of_submodel_server_urls = len(submodel_server_urls_)
     if nr_of_submodel_server_upload_urls != nr_of_submodel_server_urls:
-        raise Exception(
+        raise ArgumentException(
             f"Number and order of submodelserver upload URLs '{submodel_server_upload_urls_}' "
             f"has to match number and order Number and order of submodelserver URLs '{submodel_server_urls_}'")
     nr_of_edc_upload_urls = len(edc_upload_urls_)
     nr_of_edc_urls = len(edc_urls_)
     if nr_of_edc_upload_urls != nr_of_edc_urls:
-        raise Exception(
+        raise ArgumentException(
             f"Number and order of edc upload URLs '{edc_upload_urls_}' has to match number and order of edc URLs "
             f"'{edc_urls_}'")
     if nr_of_submodel_server_urls != nr_of_edc_urls:
-        raise Exception(
+        raise ArgumentException(
             f"Number and order of edc URLs '{edc_urls_}' has to match number and order of submodelserver URLS "
             f"'{submodel_server_urls_}'")
+    nr_of_dataplane_urls = len(dataplane_urls_)
+    if nr_of_dataplane_urls != nr_of_edc_urls:
+        raise ArgumentException(
+            f"Number and order of edc controlplane URLs '{edc_urls_}' has to match number and order of edc dataplane "
+            f"URLS'{submodel_server_urls_}'")
+
+
+class ArgumentException(Exception):
+    def __init__(self, *args, **kwargs):  # real signature unknown
+        pass
+
+    @staticmethod  # known case of __new__
+    def __new__(*args, **kwargs):  # real signature unknown
+        """ Create and return a new object.  See help(type) for accurate signature. """
+        pass
 
 
 def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_):
@@ -227,7 +238,7 @@ def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_
 
 
 def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_definition_path_, catalog_path_, header_,
-                          session_, edc_urls_, policy_, registry_asset_id_, aas_upload_url_):
+                          session_, edc_urls_, policy_, registry_asset_id_, aas_url_):
     for edc_upload_url_ in edc_upload_urls_:
         index = edc_upload_urls_.index(edc_upload_url_)
         edc_url_ = edc_urls_[index]
@@ -265,7 +276,7 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
             print(
                 f"Offer with type {first_offer_['edc:type']} already exists. Skipping creation.")
         else:
-            payload_ = create_edc_registry_asset_payload(aas_upload_url_, registry_asset_id_)
+            payload_ = create_edc_registry_asset_payload(aas_url_, registry_asset_id_)
             response_ = session_.request(method="POST", url=asset_url_,
                                          headers=header_,
                                          data=payload_)
@@ -307,6 +318,8 @@ if __name__ == "__main__":
     parser.add_argument("-bpns", "--bpns", type=str, nargs="*", help="Filter upload to upload only specific BPNs",
                         required=False)
     parser.add_argument("--aas3", help="Create AAS assets in version 3.0", action='store_true', required=False)
+    parser.add_argument("-d", "--dataplane", type=str, nargs="*", help="EDC provider data plane display URLs",
+                        required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -325,6 +338,10 @@ if __name__ == "__main__":
     default_policy = config.get("policy")
     bpns_list = config.get("bpns")
     is_aas3 = config.get("aas3")
+    dataplane_urls = config.get("dataplane")
+
+    if is_aas3 and dataplane_urls is None:
+        raise ArgumentException("Dataplane URLs have to be specified with -d or --dataplane if --aas flag is set!")
 
     if submodel_server_upload_urls is None:
         submodel_server_upload_urls = submodel_server_urls
@@ -341,12 +358,13 @@ if __name__ == "__main__":
     if is_aas3:
         registry_path = "/shell-descriptors"
 
-    check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls)
+    check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls, dataplane_urls)
 
     edc_asset_path = "/management/v2/assets"
     edc_policy_path = "/management/v2/policydefinitions"
     edc_contract_definition_path = "/management/v2/contractdefinitions"
     edc_catalog_path = "/management/v2/catalog/request"
+    dataplane_public_path = "/api/public"
 
     registry_asset_id = "registry-asset"
 
@@ -382,7 +400,7 @@ if __name__ == "__main__":
     if "policies" in data.keys():
         policies.update(data["policies"])
 
-    contract_id = 1
+    contract_number = 1
 
     retries = Retry(total=5,
                     backoff_factor=0.1)
@@ -395,7 +413,12 @@ if __name__ == "__main__":
                 create_policy(policies[policy], url, edc_policy_path, headers_with_api_key, session)
 
     create_registry_asset(edc_upload_urls, edc_asset_path, edc_contract_definition_path, edc_catalog_path,
-                          headers_with_api_key, session, edc_urls, default_policy, registry_asset_id, aas_upload_url)
+                          headers_with_api_key, session, edc_urls, default_policy, registry_asset_id, aas_url)
+
+    edc_asset_ids = []
+    for url in dataplane_urls:
+        edc_asset_ids.append(uuid.uuid4().urn)
+    print(edc_asset_ids)
 
     esr = "urn:bamm:io.catenax.esr_certificates.esr_certificate_state_statistic:1.0.1#EsrCertificateStateStatistic"
     apr = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt"
@@ -452,10 +475,12 @@ if __name__ == "__main__":
                 if "PlainObject" not in tmp_key and "catenaXId" not in tmp_key and "bpn" not in tmp_key \
                         and "policy" not in tmp_key and "urn:bamm:io.catenax.aas:1.0.0#AAS" not in tmp_key:
                     # Prepare submodel endpoint address
-                    submodel_url = submodel_server_urls[contract_id % len(submodel_server_urls)]
-                    submodel_upload_url = submodel_server_upload_urls[contract_id % len(submodel_server_upload_urls)]
-                    edc_url = edc_urls[contract_id % len(edc_urls)]
-                    edc_upload_url = edc_upload_urls[contract_id % len(edc_upload_urls)]
+                    submodel_url = submodel_server_urls[contract_number % len(submodel_server_urls)]
+                    submodel_upload_url = submodel_server_upload_urls[contract_number % len(submodel_server_upload_urls)]
+                    edc_url = edc_urls[contract_number % len(edc_urls)]
+                    edc_upload_url = edc_upload_urls[contract_number % len(edc_upload_urls)]
+                    dataplane_url = dataplane_urls[contract_number % len(dataplane_urls)]
+                    edc_asset_id = edc_asset_ids[contract_number % len(edc_asset_ids)]
 
                     submodel_name = tmp_key[tmp_key.index("#") + 1: len(tmp_key)]
                     submodel_identification = uuid.uuid4().urn
@@ -468,10 +493,10 @@ if __name__ == "__main__":
                         endpoint_address = f"{edc_url}/{catenax_id}-{submodel_identification}/submodel?content=value&extent=withBlobValue"
 
                     if is_aas3:
-                        endpoint_address = f"{edc_url}/shells/{catenax_id}/submodels/{submodel_identification}/submodel"
+                        endpoint_address = f"{dataplane_url}{dataplane_public_path}/data/{submodel_identification}"
                         descriptor = create_submodel_descriptor_3_0(submodel_name, submodel_identification, semantic_id,
                                                                     endpoint_address,
-                                                                    f"{catenax_id}-{submodel_identification}",
+                                                                    edc_asset_id,
                                                                     edc_url)
                         submodel_descriptors.append(json.loads(descriptor))
                     else:
@@ -479,7 +504,10 @@ if __name__ == "__main__":
                                                                 endpoint_address)
                         submodel_descriptors.append(json.loads(descriptor))
 
-                    asset_prop_id = f"{catenax_id}-{submodel_identification}"
+                    if is_aas3:
+                        asset_prop_id = edc_asset_id
+                    else:
+                        asset_prop_id = f"{catenax_id}-{submodel_identification}"
 
                     print("Create submodel on submodel server")
                     if tmp_data[tmp_key] != "":
@@ -494,18 +522,20 @@ if __name__ == "__main__":
                     if submodel_name == "EsrCertificateStateStatistic" and esr_url is not None:
                         payload = create_esr_edc_asset_payload(esr_url, asset_prop_id, catenax_id)
                     else:
-                        payload = create_edc_asset_payload(submodel_url, asset_prop_id, submodel_identification)
+                        payload = create_edc_asset_payload(submodel_url, asset_prop_id)
                     response = session.request(method="POST", url=asset_path, headers=headers_with_api_key,
                                                data=payload)
                     print_response(response)
-
-                    print("Create edc contract definition")
-                    payload = create_edc_contract_definition_payload(policy_id, asset_prop_id)
-                    response = session.request(method="POST", url=edc_upload_url + edc_contract_definition_path,
-                                               headers=headers_with_api_key,
-                                               data=payload)
-                    print_response(response)
-                    contract_id = contract_id + 1
+                    if response.status_code > 205:
+                        print("Asset creation failed. Skipping creation of contract definition.")
+                    else:
+                        print("Create edc contract definition")
+                        payload = create_edc_contract_definition_payload(policy_id, asset_prop_id)
+                        response = session.request(method="POST", url=edc_upload_url + edc_contract_definition_path,
+                                                   headers=headers_with_api_key,
+                                                   data=payload)
+                        print_response(response)
+                    contract_number = contract_number + 1
 
             if submodel_descriptors:
                 print("Create aas shell")
@@ -515,7 +545,7 @@ if __name__ == "__main__":
                 else:
                     payload = create_aas_shell(catenax_id, name_at_manufacturer, identification, specific_asset_ids,
                                                submodel_descriptors)
-                response = session.request(method="POST", url=f"{aas_url}{registry_path}",
+                response = session.request(method="POST", url=f"{aas_upload_url}{registry_path}",
                                            headers=headers,
                                            data=payload)
                 print_response(response)

@@ -26,10 +26,10 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -47,21 +47,17 @@ import org.hibernate.validator.constraints.URL;
 @Builder
 public class RegisterBpnInvestigationJob {
 
-    private static final String GLOBAL_ASSET_ID_REGEX = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$";
     private static final String BPN_REGEX = "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}";
-    private static final int UUID_SIZE = 36;
-    private static final int URN_PREFIX_SIZE = 9;
-    private static final int GLOBAL_ASSET_ID_SIZE = URN_PREFIX_SIZE + UUID_SIZE;
 
-    @Pattern(regexp = GLOBAL_ASSET_ID_REGEX)
-    @NotBlank
-    @Size(min = GLOBAL_ASSET_ID_SIZE, max = GLOBAL_ASSET_ID_SIZE)
-    @Schema(description = "Id of global asset.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            implementation = String.class, minLength = GLOBAL_ASSET_ID_SIZE, maxLength = GLOBAL_ASSET_ID_SIZE)
-    private String globalAssetId;
+    @NotNull
+    @Valid
+    @Schema(description = "Key object contains required attributes for identify part chain entry node.",
+            implementation = PartChainIdentificationKey.class)
+    private PartChainIdentificationKey key;
 
     @NotEmpty
-    @ArraySchema(schema = @Schema(description = "Array of BPN numbers.", example = "BPNS000000000DDD", implementation = String.class, pattern = BPN_REGEX), maxItems = Integer.MAX_VALUE)
+    @ArraySchema(schema = @Schema(description = "Array of BPN numbers.", example = "BPNS000000000DDD",
+                                  implementation = String.class, pattern = BPN_REGEX), maxItems = Integer.MAX_VALUE)
     private List<@Pattern(regexp = BPN_REGEX) String> incidentBpns;
 
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)

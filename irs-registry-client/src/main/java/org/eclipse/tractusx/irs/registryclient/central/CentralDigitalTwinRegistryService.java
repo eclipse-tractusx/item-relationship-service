@@ -32,7 +32,6 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
-import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 
 /**
  * Central implementation of DigitalTwinRegistryService
@@ -46,16 +45,15 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
     @Override
     public Collection<AssetAdministrationShellDescriptor> fetchShells(final Collection<DigitalTwinRegistryKey> keys) {
         return keys.stream().map(key -> {
-            final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.globalAssetId());
-            log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification,
-                    key.globalAssetId());
+            final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.shellId());
+            log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.shellId());
 
             return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification);
         }).toList();
     }
 
     @Override
-    public Collection<DigitalTwinRegistryKey> lookupShells(final String bpn) throws RegistryServiceException {
+    public Collection<DigitalTwinRegistryKey> lookupShellIdentifiers(final String bpn) {
         log.info("Looking up shells for bpn {}", bpn);
         final var shellIds = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(List.of());
         log.info("Found {} shells in total", shellIds.size());
@@ -64,9 +62,9 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
 
     private String getAAShellIdentificationOrGlobalAssetId(final String globalAssetId) {
         final IdentifierKeyValuePair identifierKeyValuePair = IdentifierKeyValuePair.builder()
-                                                                           .name("globalAssetId")
-                                                                           .value(globalAssetId)
-                                                                           .build();
+                                                                                    .name("globalAssetId")
+                                                                                    .value(globalAssetId)
+                                                                                    .build();
 
         final List<String> allAssetAdministrationShellIdsByAssetLink = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                 Collections.singletonList(identifierKeyValuePair));
