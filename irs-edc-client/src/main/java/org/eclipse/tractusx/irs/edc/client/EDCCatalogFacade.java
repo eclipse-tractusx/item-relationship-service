@@ -49,7 +49,7 @@ import org.springframework.stereotype.Component;
 @Component("irsEdcClientEdcCatalogFacade")
 @RequiredArgsConstructor
 @Slf4j
-public class EDCCatalogFacade implements TraceXEdcAPI {
+public class EDCCatalogFacade {
 
     private final EdcControlPlaneClient controlPlaneClient;
     private final EdcConfiguration config;
@@ -76,7 +76,14 @@ public class EDCCatalogFacade implements TraceXEdcAPI {
         return builder.build();
     }
 
-    @Override
+    /**
+     * Fetches a list of {@link CatalogItem} objects based on the given {@link CatalogRequest}.
+     * This method communicates with the control plane client to retrieve the catalog
+     * and maps it to a list of catalog items.
+     *
+     * @param catalogRequest The request containing the parameters needed to fetch the catalog.
+     * @return A list of {@link CatalogItem} objects representing the items in the catalog.
+     */
     public List<CatalogItem> fetchCatalogItems(final CatalogRequest catalogRequest) {
         final Catalog catalog = controlPlaneClient.getCatalog(catalogRequest);
         return mapToCatalogItems(catalog);

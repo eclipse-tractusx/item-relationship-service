@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Added fetchCatalog to EDCCatalogFacade and provided method via new Interface for Trace-X
+- Added fetchCatalog to EDCCatalogFacade
 
 ## [3.3.3] - 2023-08-11
 ### Changed
