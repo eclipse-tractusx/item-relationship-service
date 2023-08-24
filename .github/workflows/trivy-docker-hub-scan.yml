@@ -2,8 +2,7 @@ name: "Trivy vulnerability scanner for Docker Hub Image"
 
 on:
   workflow_dispatch: # Trigger manually
-  push:
-  pull_request:
+  workflow_call: # Trigger by another workflow
   schedule:
     - cron: "0 0 * * *"
 
