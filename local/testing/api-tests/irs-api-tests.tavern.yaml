@@ -2034,7 +2034,7 @@ stages:
           - bpn: "BPNL00000003AYRE"
             globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
           - bpn: "BPNL00000003AYRE"
-            globalAssetId: urn:uuid:6ce41c0b-c84a-46b0-b4c4-78fce958663f
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
           - bpn: "BPNL00000003AVTH"
             globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
           - bpn: "BPNL00000003AYRE"
