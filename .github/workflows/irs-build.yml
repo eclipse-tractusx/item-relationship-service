@@ -173,3 +173,10 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
           repository: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
+
+  trigger-trivy-image-scan:
+    if: >-
+      github.event_name != 'pull_request'
+    needs:
+      - build_images
+    uses: ./.github/workflows/trivy-docker-hub-scan.yml
