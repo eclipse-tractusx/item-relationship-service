@@ -256,14 +256,14 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
         canceled.ifPresent(cancelledJob -> {
             if (!securityHelperService.isAdmin() && !cancelledJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access and cancel job with id [" + jobId + "] due to missing privileges.");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access and cancel job with id " + jobId + " due to missing privileges.");
             }
         });
         canceled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
                 new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState().name(),
                         cancelledJob.getJobParameter().getCallbackUrl(), cancelledJob.getBatchId())));
         return canceled.orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id [" + jobId + "] ")).getJob();
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId)).getJob();
     }
 
     @Override
@@ -276,7 +276,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final MultiTransferJob multiJob = multiTransferJob.get();
 
             if (!securityHelperService.isAdmin() && !multiJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access to job [" + jobId + "] due to missing privileges.");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access job with id " + jobId + " due to missing privileges.");
             }
 
             final var relationships = new ArrayList<Relationship>();
@@ -318,7 +318,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                        .bpns(bpns)
                        .build();
         } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id [ " + jobId + "] ");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId);
         }
     }
 
