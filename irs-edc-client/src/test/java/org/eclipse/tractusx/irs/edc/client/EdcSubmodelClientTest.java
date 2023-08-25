@@ -58,7 +58,6 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TimeoutException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
@@ -221,6 +220,19 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                                               .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).contains("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
+    }
+
+    @Test
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsSpecified() throws Exception {
+        final String catenaXId = "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e";
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId(catenaXId).build()));
+        prepareTestdata(catenaXId, "_singleLevelBomAsSpecified");
+
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse).contains("urn:uuid:7eeeac86-7b69-444d-81e6-655d0f1513bd");
     }
 
     @Test
