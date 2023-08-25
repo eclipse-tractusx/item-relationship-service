@@ -54,12 +54,14 @@ public enum AspectType {
     MATERIAL_FOR_HOMOLOGATION(AspectTypesConstants.MATERIAL_FOR_HOMOLOGATION),
     MATERIAL_FOR_RECYCLING(AspectTypesConstants.MATERIAL_FOR_RECYCLING),
     PART_AS_PLANNED(AspectTypesConstants.PART_AS_PLANNED),
+    PART_AS_SPECIFIED(AspectTypesConstants.PART_AS_SPECIFIED),
     PHYSICAL_DIMENSION(AspectTypesConstants.PHYSICAL_DIMENSION),
     PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
     RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST),
     SERIAL_PART(AspectTypesConstants.SERIAL_PART),
     SINGLE_LEVEL_BOM_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT),
     SINGLE_LEVEL_BOM_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_PLANNED),
+    SINGLE_LEVEL_BOM_AS_SPECIFIED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_SPECIFIED),
     SINGLE_LEVEL_USAGE_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_USAGE_AS_BUILT);
 
     private final String name;
@@ -120,12 +122,14 @@ public enum AspectType {
         public static final String MATERIAL_FOR_HOMOLOGATION = "MaterialForHomologation";
         public static final String MATERIAL_FOR_RECYCLING = "MaterialForRecycling";
         public static final String PART_AS_PLANNED = "PartAsPlanned";
+        public static final String PART_AS_SPECIFIED = "PartAsSpecified";
         public static final String PHYSICAL_DIMENSION = "PhysicalDimension";
         public static final String PRODUCT_DESCRIPTION = "ProductDescription";
         public static final String RETURN_REQUEST = "ReturnRequest";
         public static final String SERIAL_PART = "SerialPart";
         public static final String SINGLE_LEVEL_BOM_AS_BUILT = "SingleLevelBomAsBuilt";
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
+        public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED = "SingleLevelBomAsSpecified";
         public static final String SINGLE_LEVEL_USAGE_AS_BUILT = "SingleLevelUsageAsBuilt";
     }
 }

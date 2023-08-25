@@ -293,6 +293,16 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThrows(IllegalArgumentException.class, () -> service.registerItemJob(registerJob));
     }
 
+    @Test
+    void shouldThrowIllegalArgumentExceptionForLifecycleAsSpecifiedAndDirectionUpward() {
+        final RegisterJob registerJob = new RegisterJob();
+        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).build());
+        registerJob.setDirection(Direction.UPWARD);
+        registerJob.setBomLifecycle(BomLifecycle.AS_SPECIFIED);
+
+        assertThrows(IllegalArgumentException.class, () -> service.registerItemJob(registerJob));
+    }
+
     private int getRelationshipsSize(final UUID jobId) {
         setSecurityContext();
         return service.getJobForJobId(jobId, false).getRelationships().size();

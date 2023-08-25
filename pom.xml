@@ -25,6 +25,7 @@
         <module>irs-cucumber-tests</module>
         <module>docs</module>
         <module>irs-load-tests</module>
+        <module>irs-testdata-upload</module>
     </modules>
 
     <properties>
@@ -65,7 +66,7 @@
         <jar-plugin.version>3.3.0</jar-plugin.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
         <install-plugin.version>3.1.1</install-plugin.version>
-        <irs-registry-client.version>1.1.0-SNAPSHOT</irs-registry-client.version>
+        <irs-registry-client.version>1.1.1-SNAPSHOT</irs-registry-client.version>
     </properties>
 
     <dependencyManagement>
@@ -183,6 +184,7 @@
                         <exclude>**/*EntityNotFoundException.class</exclude>
                         <exclude>**/*IrsApiConstants.class</exclude>
                         <exclude>**/*ApiErrorsConstants.class</exclude>
+                        <exclude>org/eclipse/tractusx/irs/testing/dataintegrity/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
