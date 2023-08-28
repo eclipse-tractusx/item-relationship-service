@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.4.2] - 2023-08-11
+### Added
+- Added entry to .helmignore to only accept values.yaml
+
+### Changed
+- Update IRS version to 3.3.4
+ 
 ## [6.4.1] - 2023-08-11
 ### Changed
 - Update IRS version to 3.3.3

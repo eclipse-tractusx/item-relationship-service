@@ -58,6 +58,8 @@ class SubmodelTestdataCreator {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt).orElse(Map.of());
         } else if (endpointAddress.contains("singleLevelUsageAsBuilt")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelUsageAsBuilt).orElse(Map.of());
+        } else if (endpointAddress.contains("singleLevelBomAsSpecified")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsSpecified).orElse(Map.of());
         } else if (endpointAddress.contains("serialPart")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSerialPart).orElse(Map.of());
         } else if (endpointAddress.contains("singleLevelBomAsPlanned")) {
@@ -72,6 +74,8 @@ class SubmodelTestdataCreator {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getProductDescription).orElse(Map.of());
         } else if (endpointAddress.contains("physicalDimension")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension).orElse(Map.of());
+        } else if (endpointAddress.contains("partAsSpecified")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getPartAsSpecified).orElse(Map.of());
         }
         return Map.of();
     }

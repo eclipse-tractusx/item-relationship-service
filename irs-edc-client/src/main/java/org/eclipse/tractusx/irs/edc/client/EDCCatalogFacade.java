@@ -34,10 +34,12 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -74,6 +76,19 @@ public class EDCCatalogFacade {
         return builder.build();
     }
 
+    /**
+     * Fetches a list of {@link CatalogItem} objects based on the given {@link CatalogRequest}.
+     * This method communicates with the control plane client to retrieve the catalog
+     * and maps it to a list of catalog items.
+     *
+     * @param catalogRequest The request containing the parameters needed to fetch the catalog.
+     * @return A list of {@link CatalogItem} objects representing the items in the catalog.
+     */
+    public List<CatalogItem> fetchCatalogItems(final CatalogRequest catalogRequest) {
+        final Catalog catalog = controlPlaneClient.getCatalog(catalogRequest);
+        return mapToCatalogItems(catalog);
+    }
+    
     private static List<CatalogItem> mapToCatalogItems(final Catalog catalog) {
         if (catalog.getDatasets() == null) {
             return List.of();
