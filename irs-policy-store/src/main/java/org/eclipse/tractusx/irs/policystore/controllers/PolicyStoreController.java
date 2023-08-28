@@ -39,6 +39,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
@@ -61,7 +62,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("irs")
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                    "PMD.ExcessiveImports"
+})
 public class PolicyStoreController {
 
     private final PolicyStoreService service;
@@ -93,7 +96,7 @@ public class PolicyStoreController {
     })
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void registerAllowedPolicy(final @Valid @RequestBody CreatePolicyRequest request) {
         service.registerPolicy(request);
     }
@@ -122,7 +125,7 @@ public class PolicyStoreController {
     })
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public List<Policy> getPolicies() {
         return service.getStoredPolicies();
     }
@@ -154,7 +157,7 @@ public class PolicyStoreController {
     })
     @DeleteMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void deleteAllowedPolicy(@PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
     }

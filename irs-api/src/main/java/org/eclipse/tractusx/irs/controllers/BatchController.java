@@ -41,6 +41,7 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.BatchOrderCreated;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
@@ -113,7 +114,7 @@ public class BatchController {
     })
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderCreated registerBatchOrder(final @Valid @RequestBody RegisterBatchOrder request) {
         final UUID batchOrderId = creationBatchService.create(request);
         return BatchOrderCreated.builder().id(batchOrderId).build();
@@ -157,7 +158,7 @@ public class BatchController {
                                          }),
     })
     @GetMapping("/orders/{orderId}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderResponse getBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -203,7 +204,7 @@ public class BatchController {
                                          }),
     })
     @GetMapping("/orders/{orderId}/batches/{batchId}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchResponse getBatch(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -252,7 +253,7 @@ public class BatchController {
                                          }),
     })
     @PutMapping("/orders/{orderId}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderResponse cancelBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
