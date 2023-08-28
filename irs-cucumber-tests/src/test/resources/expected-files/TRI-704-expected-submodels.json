@@ -172,7 +172,7 @@
     },
     {
       "identification": "urn:uuid:83b895a9-fd61-4b69-97ca-681493ec94e4",
-      "aspectType": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+      "aspectType": "urn:bamm:io.catenax.batch:2.0.0#Batch",
       "payload": {
         "localIdentifiers": [
           {
@@ -195,10 +195,8 @@
         "catenaXId": "urn:uuid:9a852ada-7d42-4a85-8a19-300503e234ae",
         "partTypeInformation": {
           "manufacturerPartId": "96486G7-29",
-          "customerPartId": "96486G7-29",
           "classification": "component",
-          "nameAtManufacturer": "Engineering Plastics",
-          "nameAtCustomer": "Engineering Plastics"
+          "nameAtManufacturer": "Engineering Plastics"
         }
       }
     },
@@ -254,7 +252,7 @@
     },
     {
       "identification": "urn:uuid:6be590f7-5ef2-4b4b-b823-f656f1921c3d",
-      "aspectType": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+      "aspectType": "urn:bamm:io.catenax.batch:2.0.0#Batch",
       "payload": {
         "localIdentifiers": [
           {
@@ -277,10 +275,8 @@
         "catenaXId": "urn:uuid:13931e36-2319-4c18-896d-c99ac9fd5b9f",
         "partTypeInformation": {
           "manufacturerPartId": "79963M5-58",
-          "customerPartId": "79963M5-58",
           "classification": "component",
-          "nameAtManufacturer": "Glue",
-          "nameAtCustomer": "Glue"
+          "nameAtManufacturer": "Glue"
         }
       }
     },
@@ -322,7 +318,7 @@
     },
     {
       "identification": "urn:uuid:ca612488-875d-46c5-8b5a-9880a7a51850",
-      "aspectType": "urn:bamm:io.catenax.batch:1.0.2#Batch",
+      "aspectType": "urn:bamm:io.catenax.batch:2.0.0#Batch",
       "payload": {
         "localIdentifiers": [
           {
@@ -345,10 +341,8 @@
         "catenaXId": "urn:uuid:abce35f9-22c7-4a3b-b897-6f866a8039b7",
         "partTypeInformation": {
           "manufacturerPartId": "96587J8-84",
-          "customerPartId": "96587J8-84",
           "classification": "component",
-          "nameAtManufacturer": "NTIER Product",
-          "nameAtCustomer": "NTIER Product"
+          "nameAtManufacturer": "NTIER Product"
         }
       }
     },
