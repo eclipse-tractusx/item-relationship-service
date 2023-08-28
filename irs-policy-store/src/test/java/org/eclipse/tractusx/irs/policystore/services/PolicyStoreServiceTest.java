@@ -79,9 +79,10 @@ class PolicyStoreServiceTest {
         // act
         final String policyId = "testId";
         doThrow(new PolicyStoreException("")).when(persistence).save(eq(BPN), any());
+        final CreatePolicyRequest request = new CreatePolicyRequest(policyId, OffsetDateTime.now());
 
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(new CreatePolicyRequest(policyId, OffsetDateTime.now())));
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(request));
     }
 
     @Test
@@ -137,8 +138,9 @@ class PolicyStoreServiceTest {
         final String policyId = "testId";
         final OffsetDateTime validUntil = OffsetDateTime.now();
         doThrow(new PolicyStoreException("")).when(persistence).update(BPN, policyId, validUntil);
+        final UpdatePolicyRequest request = new UpdatePolicyRequest(validUntil);
 
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, new UpdatePolicyRequest(validUntil)));
+        assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, request));
     }
 }

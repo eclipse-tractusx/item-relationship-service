@@ -153,11 +153,12 @@ class PolicyPersistenceTest {
     @Test
     void updateShouldThrowExceptionIfPolicyWithIdDoesntExists() throws BlobPersistenceException, JsonProcessingException {
         // arrange
-        final var policy = new Policy("policyId", OffsetDateTime.now(), OffsetDateTime.now());
+        final OffsetDateTime now = OffsetDateTime.now();
+        final var policy = new Policy("policyId", now, now);
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(List.of(policy))));
 
         // act
-        assertThrows(PolicyStoreException.class, () -> testee.update("testBpn", "notExistingPolicyId", OffsetDateTime.now()));
+        assertThrows(PolicyStoreException.class, () -> testee.update("testBpn", "notExistingPolicyId", now));
     }
 
     @Test
