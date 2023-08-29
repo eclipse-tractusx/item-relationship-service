@@ -21,25 +21,10 @@ class Permission {
 
 
 class Constraint {
-     leftOperand  : String / LeftConstraintConstants
+     leftOperand  : String
      operator : OperatorType
-     rightOperand : List<RightOperand>
+     rightOperand : List<String>
 }
-
-class RightOperand {
-    value : String
-    version : ComparableVersion
-}
-
-enum LeftConstraintConstants {
-    Membership,
-    FrameworkAgreement.traceability
-    FrameworkAgreement.resiliency
-    FrameworkAgreement.quality
-    PURPOSE
-    BusinessPartnerNumber
-}
-
 
 'https://www.w3.org/TR/odrl-vocab/#constraintRelationalOperators'
 enum OperatorType {
@@ -87,7 +72,6 @@ Policy ||--|{  Permission
 Permission ||--|| PolicyType
 Permission ||--|| LogicalConstraintType
 Permission ||--|{   Constraint
-Constraint ||--|{ RightOperand
 Constraint ||--|| OperatorType
 Constraint -- LeftConstraintConstants
 @enduml
