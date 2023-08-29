@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - IRS now calls the entire dataplane URL retrieved from the registry href instead of building it from the URL of the EDC token and the path
 
+### Changed
+- Updated IRS Digital Twin Registry Client to support latest version 0.3.14-M1
+
 ### Fixed
 - Switched to POST for DTR lookup request
 - Added Base64 encoding to identifier for DTR shell-descriptor request 
