@@ -23,8 +23,10 @@
 package org.eclipse.tractusx.irs.policystore.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,14 +34,17 @@ import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 class PolicyStoreServiceTest {
@@ -70,6 +75,17 @@ class PolicyStoreServiceTest {
     }
 
     @Test
+    void registerPolicyShouldThrowResponseStatusException() {
+        // act
+        final String policyId = "testId";
+        doThrow(new PolicyStoreException("")).when(persistence).save(eq(BPN), any());
+        final CreatePolicyRequest request = new CreatePolicyRequest(policyId, OffsetDateTime.now());
+
+        // assert
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(request));
+    }
+
+    @Test
     void getStoredPolicies() {
         // arrange
         final List<Policy> policies = List.of(createPolicy("test1"), createPolicy("test2"), createPolicy("test3"));
@@ -93,5 +109,38 @@ class PolicyStoreServiceTest {
 
         // assert
         verify(persistence).delete(BPN, "testId");
+    }
+
+    @Test
+    void deletePolicyShouldThrowResponseStatusException() {
+        // act
+        final String policyId = "testId";
+        doThrow(new PolicyStoreException("")).when(persistence).delete(BPN, policyId);
+
+        // assert
+        assertThrows(ResponseStatusException.class, () -> testee.deletePolicy(policyId));
+    }
+
+    @Test
+    void updatePolicy() {
+        // act
+        final String policyId = "testId";
+        final OffsetDateTime validUntil = OffsetDateTime.now();
+        testee.updatePolicy(policyId, new UpdatePolicyRequest(validUntil));
+
+        // assert
+        verify(persistence).update(BPN, policyId, validUntil);
+    }
+
+    @Test
+    void updatePolicyShouldThrowResponseStatusException() {
+        // act
+        final String policyId = "testId";
+        final OffsetDateTime validUntil = OffsetDateTime.now();
+        doThrow(new PolicyStoreException("")).when(persistence).update(BPN, policyId, validUntil);
+        final UpdatePolicyRequest request = new UpdatePolicyRequest(validUntil);
+
+        // assert
+        assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, request));
     }
 }

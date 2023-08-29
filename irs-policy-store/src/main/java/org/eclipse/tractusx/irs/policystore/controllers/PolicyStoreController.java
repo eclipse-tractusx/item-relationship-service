@@ -43,6 +43,7 @@ import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,6 +51,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -160,5 +162,37 @@ public class PolicyStoreController {
     @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void deleteAllowedPolicy(@PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
+    }
+
+    @Operation(operationId = "updateAllowedPolicy",
+               summary = "Updates an existing policy with new validUntil value.",
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               tags = { "Item Relationship Service" },
+               description = "Updates an existing policy with new validUntil value.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200"),
+                            @ApiResponse(responseCode = "400", description = "Policy update failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
+    })
+    @PutMapping("/policies/{policyId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    public void updateAllowedPolicy(@PathVariable("policyId") final String policyId, final @Valid @RequestBody UpdatePolicyRequest request) {
+        service.updatePolicy(policyId, request);
     }
 }

@@ -24,24 +24,14 @@ package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 /**
- * A stored policy object.
+ * Request object for policy update
+ *
  */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Policy {
+@Schema(description = "Request to add a policy")
+public record UpdatePolicyRequest(@Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil) {
 
-    private String policyId;
-    private OffsetDateTime createdOn;
-    private OffsetDateTime validUntil;
-
-    public Policy update(final OffsetDateTime validUntil) {
-        this.validUntil = validUntil;
-        return this;
-    }
 }

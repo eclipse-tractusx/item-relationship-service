@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added fetchCatalog to EDCCatalogFacade
+- Introduced new API endpoint to update 'validUntil' property of Policy - PUT {{IRS_HOST}}/irs/policies/{policyId}
+
+### Fixed
+- Fixed bug where BPN's were delivered without 'manufacturerName' property filled
 
 ## [3.3.4] - 2023-08-24
 ### Fixed
