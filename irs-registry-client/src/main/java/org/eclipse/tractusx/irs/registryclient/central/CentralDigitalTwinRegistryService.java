@@ -55,7 +55,8 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
     @Override
     public Collection<DigitalTwinRegistryKey> lookupShellIdentifiers(final String bpn) {
         log.info("Looking up shells for bpn {}", bpn);
-        final var shellIds = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(List.of());
+        final var shellIds = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(List.of())
+                                                      .getResult();
         log.info("Found {} shells in total", shellIds.size());
         return shellIds.stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
     }
@@ -67,7 +68,7 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
                                                                                     .build();
 
         final List<String> allAssetAdministrationShellIdsByAssetLink = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                Collections.singletonList(identifierKeyValuePair));
+                Collections.singletonList(identifierKeyValuePair)).getResult();
 
         return allAssetAdministrationShellIdsByAssetLink.stream().findFirst().orElse(globalAssetId);
     }
