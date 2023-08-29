@@ -70,6 +70,8 @@ data:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
       shellLookupEndpoint: {{ tpl (.Values.digitalTwinRegistry.shellLookupEndpoint | default "") . | quote }}
       discoveryFinderUrl: {{ tpl (.Values.digitalTwinRegistry.discoveryFinderUrl | default "") . | quote }}
+      shellDescriptorTemplate: {{ .Values.digitalTwinRegistry.shellDescriptorTemplate | default "" | quote }}
+      lookupShellsTemplate: {{ .Values.digitalTwinRegistry.lookupShellsTemplate | default "" | quote }}
       type: {{ tpl (.Values.digitalTwinRegistry.type | default "") . | quote }}
 
     semanticshub:
