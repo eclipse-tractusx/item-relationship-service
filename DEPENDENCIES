@@ -84,7 +84,7 @@ maven/mavencentral/io.cucumber/html-formatter/20.2.1, MIT, approved, clearlydefi
 maven/mavencentral/io.cucumber/junit-xml-formatter/0.1.0, MIT, approved, clearlydefined
 maven/mavencentral/io.cucumber/messages/21.0.1, MIT, approved, clearlydefined
 maven/mavencentral/io.cucumber/tag-expressions/5.0.1, MIT, approved, clearlydefined
-maven/mavencentral/io.gatling.highcharts/gatling-charts-highcharts/3.9.2, NOASSERTION, restricted, clearlydefined
+maven/mavencentral/io.gatling.highcharts/gatling-charts-highcharts/3.9.2, None, restricted, #10218
 maven/mavencentral/io.gatling/gatling-app/3.9.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.gatling/gatling-charts/3.9.2, Apache-2.0 AND MIT, approved, #9696
 maven/mavencentral/io.gatling/gatling-commons-shared-unstable/3.9.2, Apache-2.0, approved, #9691
@@ -332,7 +332,7 @@ maven/mavencentral/org.glassfish/jakarta.json/2.0.1, EPL-2.0 OR GPL-2.0-only wit
 maven/mavencentral/org.graalvm.js/js/21.2.0, UPL-1.0 AND (LicenseRef-scancode-sunpro AND UPL-1.0) AND (GPL-2.0-only WITH Classpath-exception-2.0 AND UPL-1.0) AND (BSD-3-Clause AND UPL-1.0) AND (LicenseRef-scancode-x11-lucent AND MPL-2.0), restricted, #10176
 maven/mavencentral/org.graalvm.regex/regex/21.2.0, UPL-1.0 AND (LicenseRef-scancode-unicode AND UPL-1.0), restricted, #10181
 maven/mavencentral/org.graalvm.sdk/graal-sdk/23.0.1, UPL-1.0, approved, #9850
-maven/mavencentral/org.graalvm.truffle/truffle-api/21.2.0, NOASSERTION, restricted, clearlydefined
+maven/mavencentral/org.graalvm.truffle/truffle-api/21.2.0, UPL-1.0, approved, #10219
 maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/org.hamcrest/hamcrest/2.2, BSD-3-Clause, approved, clearlydefined
 maven/mavencentral/org.hdrhistogram/HdrHistogram/2.1.12, BSD-2-Clause OR LicenseRef-Public-Domain, approved, CQ13192
