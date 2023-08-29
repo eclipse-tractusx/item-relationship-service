@@ -29,11 +29,15 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
+import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service to manage stored policies in IRS.
@@ -63,8 +67,11 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public void registerPolicy(final CreatePolicyRequest request) {
         log.info("Registering new policy with id {}, valid until {}", request.policyId(), request.validUntil());
-        persistence.save(apiAllowedBpn,
-                new Policy(request.policyId(), OffsetDateTime.now(clock), request.validUntil()));
+        try {
+            persistence.save(apiAllowedBpn, new Policy(request.policyId(), OffsetDateTime.now(clock), request.validUntil()));
+        } catch (final PolicyStoreException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
     }
 
     public List<Policy> getStoredPolicies() {
@@ -79,8 +86,22 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     public void deletePolicy(final String policyId) {
-        log.info("Deleting policy with id {}", policyId);
-        persistence.delete(apiAllowedBpn, policyId);
+        try {
+            log.info("Deleting policy with id {}", policyId);
+            persistence.delete(apiAllowedBpn, policyId);
+        } catch (final PolicyStoreException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+
+    }
+
+    public void updatePolicy(final String policyId, final UpdatePolicyRequest request) {
+        try {
+            log.info("Updating policy with id {}", policyId);
+            persistence.update(apiAllowedBpn, policyId, request.validUntil());
+        } catch (final PolicyStoreException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
     }
 
     @Override
@@ -89,6 +110,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     private AcceptedPolicy toAcceptedPolicy(final Policy policy) {
-        return new AcceptedPolicy(policy.policyId(), policy.validUntil());
+        return new AcceptedPolicy(policy.getPolicyId(), policy.getValidUntil());
     }
+
 }

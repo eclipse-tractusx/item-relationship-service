@@ -24,11 +24,24 @@ package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 /**
  * A stored policy object.
- * @param policyId the ID of the policy
- * @param createdOn the timestamp the policy was stored
- * @param validUntil the timestamp after which the policy will no longer be accepted
  */
-public record Policy(String policyId, OffsetDateTime createdOn, OffsetDateTime validUntil) {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Policy {
+
+    private String policyId;
+    private OffsetDateTime createdOn;
+    private OffsetDateTime validUntil;
+
+    public Policy update(final OffsetDateTime validUntil) {
+        this.validUntil = validUntil;
+        return this;
+    }
 }

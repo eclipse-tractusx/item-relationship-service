@@ -312,7 +312,7 @@ maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/0.0.2-SNAPSHOT, Apach
 maven/mavencentral/org.eclipse.tractusx.irs/irs-ess/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-models/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-policy-store/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.1.0-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.1.1-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-testing/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.glassfish.hk2.external/aopalliance-repackaged/3.0.4, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.glassfish
 maven/mavencentral/org.glassfish.hk2/hk2-api/3.0.4, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.glassfish

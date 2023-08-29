@@ -880,6 +880,57 @@ paths:
       summary: Removes a policy that should no longer be accepted in EDC negotiation.
       tags:
         - Item Relationship Service
+    put:
+      description: Updates an existing policy with new validUntil value.
+      operationId: updateAllowedPolicy
+      parameters:
+        - in: path
+          name: policyId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePolicyRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Policy update failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorization refused by server.
+      security:
+        - oAuth2:
+            - profile email
+      summary: Updates an existing policy with new validUntil value.
+      tags:
+        - Item Relationship Service
 components:
   examples:
     canceled-job-response:
@@ -1817,6 +1868,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         bpn:
           type: string
         callbackUrl:
@@ -1934,6 +1986,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         quantity:
           $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
@@ -2095,6 +2148,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
@@ -2157,6 +2211,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
@@ -2190,6 +2245,7 @@ components:
           enum:
             - asBuilt
             - asPlanned
+            - asSpecified
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
@@ -2330,6 +2386,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AspectModel'
+    UpdatePolicyRequest:
+      type: object
+      additionalProperties: false
+      description: Request to add a policy
+      properties:
+        validUntil:
+          type: string
+          format: date-time
+          description: Timestamp after which the policy will no longer be accepted
+            in negotiations
+      required:
+        - validUntil
   securitySchemes:
     oAuth2:
       flows:

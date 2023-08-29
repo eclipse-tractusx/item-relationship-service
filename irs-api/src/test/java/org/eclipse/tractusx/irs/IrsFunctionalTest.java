@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
@@ -117,7 +118,7 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getShells()).isNotEmpty();
         assertThat(finishedJob.get().getTombstones()).isEmpty();
         assertThat(finishedJob.get().getSubmodels()).isEmpty();
-        assertThat(finishedJob.get().getBpns()).isNotEmpty();
+        assertThat(finishedJob.get().getBpns()).isEmpty();
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();
         assertThat(finishedJob.get().getJob().getParameter()).isNotNull();
@@ -179,7 +180,7 @@ class IrsFunctionalTest {
 
     private void thereIsJwtAuthentication() {
         final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(),
-                List.of(new SimpleGrantedAuthority("view_irs")));
+                List.of(new SimpleGrantedAuthority(IrsRoles.VIEW_IRS)));
         jwtAuthenticationToken.setAuthenticated(true);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);

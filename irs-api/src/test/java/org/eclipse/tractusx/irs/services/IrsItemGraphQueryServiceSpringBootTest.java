@@ -32,6 +32,7 @@ import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepth;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
@@ -68,6 +69,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -190,6 +196,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         final int expectedRelationshipsSizeFirstDepth = 34; // stub
 
+        setSecurityContext();
+
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);
 
@@ -242,6 +250,8 @@ class IrsItemGraphQueryServiceSpringBootTest {
 
         jobStore.create(multiTransferJob);
 
+        setSecurityContext();
+
         assertThat(service.cancelJobById(jobId)).isNotNull();
 
         final Optional<MultiTransferJob> fetchedJob = jobStore.find(idAsString);
@@ -283,11 +293,34 @@ class IrsItemGraphQueryServiceSpringBootTest {
         assertThrows(IllegalArgumentException.class, () -> service.registerItemJob(registerJob));
     }
 
+    @Test
+    void shouldThrowIllegalArgumentExceptionForLifecycleAsSpecifiedAndDirectionUpward() {
+        final RegisterJob registerJob = new RegisterJob();
+        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).build());
+        registerJob.setDirection(Direction.UPWARD);
+        registerJob.setBomLifecycle(BomLifecycle.AS_SPECIFIED);
+
+        assertThrows(IllegalArgumentException.class, () -> service.registerItemJob(registerJob));
+    }
+
     private int getRelationshipsSize(final UUID jobId) {
+        setSecurityContext();
         return service.getJobForJobId(jobId, false).getRelationships().size();
     }
 
+    private static void setSecurityContext() {
+        JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
+        Jwt token = mock(Jwt.class);
+        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("admin_irs")));
+        when(jwtAuthenticationToken.getToken()).thenReturn(token);
+        when(token.getClaim("clientId")).thenReturn("test-client-id");
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
+        SecurityContextHolder.setContext(securityContext);
+    }
+
     private int getSubmodelsSize(final UUID jobId) {
+        setSecurityContext();
         return service.getJobForJobId(jobId, false).getSubmodels().size();
     }
 
@@ -313,6 +346,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     private int getTombstonesSize(final UUID jobId) {
+        setSecurityContext();
         return service.getJobForJobId(jobId, false).getTombstones().size();
     }
 

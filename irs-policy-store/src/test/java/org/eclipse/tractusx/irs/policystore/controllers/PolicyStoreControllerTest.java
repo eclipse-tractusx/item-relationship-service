@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,5 +84,18 @@ class PolicyStoreControllerTest {
 
         // assert
         verify(service).deletePolicy("testId");
+    }
+
+    @Test
+    void updateAllowedPolicy() {
+        // arrange
+        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now());
+
+        // act
+        final String policyId = "policyId";
+        testee.updateAllowedPolicy(policyId, request);
+
+        // assert
+        verify(service).updatePolicy(policyId, request);
     }
 }
