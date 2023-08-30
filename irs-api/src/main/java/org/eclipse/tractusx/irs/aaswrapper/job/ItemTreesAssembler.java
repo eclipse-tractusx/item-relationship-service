@@ -65,7 +65,7 @@ public class ItemTreesAssembler {
             tombstones.addAll(itemGraph.getTombstones());
             shells.addAll(itemGraph.getShells());
             submodels.addAll(itemGraph.getSubmodels());
-            bpns.addAll(itemGraph.getBpns().stream().filter(bpn -> StringUtils.isNotBlank(bpn.getManufacturerName())).toList());
+            bpns.addAll(itemGraph.getBpnsWithManufacturerName());
         });
 
         log.info("Assembled item graph from {} partial graphs", numberOfPartialTrees);
