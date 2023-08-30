@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added configurable values for `digitalTwinRegistry.shellDescriptorTemplate` and `digitalTwinRegistry.lookupShellsTemplate`
 
 ## [6.4.2] - 2023-08-11
 ### Added

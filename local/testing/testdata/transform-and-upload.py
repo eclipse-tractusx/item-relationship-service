@@ -3,11 +3,10 @@
 import argparse
 import json
 import math
+import requests
 import time
 import uuid
 from copy import copy
-
-import requests
 from requests.adapters import HTTPAdapter, Retry
 
 
@@ -150,7 +149,8 @@ def create_aas_shell_3_0(global_asset_id_, id_short_, identification_, specific_
     })
 
 
-def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, dataplane_asset_address_, asset_id_, endpoint_):
+def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, dataplane_asset_address_, asset_id_,
+                                   endpoint_):
     return json.dumps(
         {
             "description": [],
@@ -174,7 +174,14 @@ def create_submodel_descriptor_3_0(id_short_, identification_, semantic_id_, dat
                         "endpointProtocolVersion": ["1.1"],
                         "subprotocol": "DSP",
                         "subprotocolBody": f"id={asset_id_};dspEndpoint={endpoint_}",
-                        "subprotocolBodyEncoding": "plain"
+                        "subprotocolBodyEncoding": "plain",
+                        "securityAttributes": [
+                            {
+                                "type": "NONE",
+                                "key": "NONE",
+                                "value": "NONE"
+                            }
+                        ]
                     }
                 }
             ]
@@ -455,10 +462,24 @@ if __name__ == "__main__":
                 "value": tmp_data["bpnl"]
             })
             if is_aas3:
+                externalSubjectId = {
+                    "type": "ExternalReference",
+                    "keys": [
+                        {
+                            "type": "GlobalReference",
+                            "value": "BPNL00000001CRHK"
+                        },
+                        {
+                            "type": "GlobalReference",
+                            "value": "PUBLIC_READABLE"
+                        }
+                    ]
+                }
                 for asset in specific_asset_ids_temp:
                     specific_asset_ids.append({
                         "name": asset.get("key"),
-                        "value": asset.get("value")
+                        "value": asset.get("value"),
+                        "externalSubjectId": externalSubjectId
                     })
             else:
                 specific_asset_ids = specific_asset_ids_temp

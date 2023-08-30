@@ -67,7 +67,9 @@ public class RegistryConfiguration {
     @ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "decentral")
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
             @Qualifier(RestTemplateConfig.EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate,
-            final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade facade) {
+            final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade facade,
+            @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
+            @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate) {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService,
                 new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
                     try {
@@ -75,7 +77,8 @@ public class RegistryConfiguration {
                     } catch (EdcClientException e) {
                         throw new EdcRetrieverException(e);
                     }
-                }), new DecentralDigitalTwinRegistryClient(edcRestTemplate));
+                }),
+                new DecentralDigitalTwinRegistryClient(edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate));
     }
 
     @Bean

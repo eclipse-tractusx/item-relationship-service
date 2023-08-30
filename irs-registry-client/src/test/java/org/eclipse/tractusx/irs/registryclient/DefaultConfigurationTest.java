@@ -40,12 +40,13 @@ import org.springframework.web.client.RestTemplate;
 class DefaultConfigurationTest {
 
     private final DefaultConfiguration testee = new DefaultConfiguration();
+    private final String descriptorTemplate = "descriptor/{aasIdentifier}";
+    private final String shellLookupTemplate = "shell?{assetIds}";
 
     @Test
     void centralDigitalTwinRegistryService() {
         final var service = testee.centralDigitalTwinRegistryService(
-                testee.digitalTwinRegistryClientImpl(new RestTemplate(), "descriptor/{aasIdentifier}",
-                        "shell?{assetIds}"));
+                testee.digitalTwinRegistryClientImpl(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
 
         assertThat(service).isNotNull();
     }
@@ -56,7 +57,7 @@ class DefaultConfigurationTest {
         final var service = testee.decentralDigitalTwinRegistryService(
                 testee.connectorEndpointsService(testee.discoveryFinderClient(new RestTemplate(), "finder")),
                 testee.endpointDataForConnectorsService(facadeMock),
-                testee.decentralDigitalTwinRegistryClient(new RestTemplate()));
+                testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
 
         assertThat(service).isNotNull();
     }
