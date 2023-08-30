@@ -26,22 +26,15 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Body for Digital Twin Registry Query Request.
+ * Response to a Digital Twin Registry request to lookup shells.
  */
 @Data
 @Builder
-public class ShellQueryBody {
-    private final ShellQuery query;
-
-    /**
-     * List of Identifier Name-Value Pairs for Digital Twin Registry Query.
-     */
-    @Data
-    @Builder
-    public static class ShellQuery {
-        private final List<IdentifierKeyValuePair> assetIds;
-    }
+@Jacksonized
+public class LookupShellsResponse {
+    private Object pagingMetadata;
+    private List<String> result;
 }
