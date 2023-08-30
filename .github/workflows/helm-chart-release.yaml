@@ -69,8 +69,8 @@ jobs:
           helm dependency update
 
       - name: Create temporary CHANGELOG file for helm release
+        working-directory: charts/irs-helm/
         run: |
-          cd charts/irs-helm
           
           touch CHANGELOG-temp.md
           
