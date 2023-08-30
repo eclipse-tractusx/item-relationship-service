@@ -23,6 +23,8 @@ irs-helm:
   digitalTwinRegistry:
     url: https://semantics.int.demo.catena-x.net/registry
     discoveryFinderUrl: https://semantics.int.demo.catena-x.net/discoveryfinder/api/administration/connectors/discovery/search
+    shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
+    lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
   semanticshub:
     url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
     pageSize: "200"
