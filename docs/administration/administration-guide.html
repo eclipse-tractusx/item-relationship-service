@@ -960,6 +960,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">type</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_TYPE:decentral}</span> <span class="c1"># The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.</span>
   <span class="na">descriptorEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DESCRIPTOR_URL:}</span> <span class="c1"># The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}</span>
   <span class="na">shellLookupEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:}</span> <span class="c1"># The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}</span>
+  <span class="na">shellDescriptorTemplate</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_SHELL_DESCRIPTOR_TEMPLATE:/shell-descriptors/{aasIdentifier}}</span> <span class="c1"># The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}</span>
+  <span class="na">lookupShellsTemplate</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_QUERY_SHELLS_PATH:/lookup/shells?assetIds={assetIds}}</span> <span class="c1"># The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}</span>
   <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">keycloak</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">discoveryFinderUrl</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:}</span> <span class="c1"># The endpoint to discover EDC endpoints to a particular BPN.</span>
   <span class="na">timeout</span><span class="pi">:</span>
@@ -1038,6 +1040,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="s">{{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/shell-descriptors/{aasIdentifier}</span>
   <span class="na">shellLookupEndpoint</span><span class="pi">:</span> <span class="pi">&gt;-</span>
     <span class="s">{{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}</span>
+  <span class="na">shellDescriptorTemplate</span><span class="pi">:</span> <span class="s">/shell-descriptors/{aasIdentifier}</span>  <span class="c1"># The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}</span>
+  <span class="na">lookupShellsTemplate</span><span class="pi">:</span> <span class="s">/lookup/shells?assetIds={assetIds}</span>  <span class="c1"># The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}</span>
   <span class="na">discoveryFinderUrl</span><span class="pi">:</span>  <span class="c1"># "https://&lt;discovery-finder-url&gt;</span>
 <span class="na">semanticshub</span><span class="pi">:</span>
   <span class="na">url</span><span class="pi">:</span>  <span class="c1"># https://&lt;semantics-hub-url&gt;</span>
@@ -1204,9 +1208,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">password</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-password&gt;</span>
 
   <span class="na">admin</span><span class="pi">:</span>
-    <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm"</span>
-    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
-    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span></code></pre>
+    <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm"</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1464,7 +1466,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-08-25 09:36:29 UTC
+Last updated 2023-08-30 13:51:39 UTC
 </div>
 </div>
 </body>
