@@ -23,3 +23,60 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 
 === EDC API
 The integrated EDC client in the IRS is responsible for creating restful requests to the component EDC. The IRS application builds from the retrieved AAS Descriptor (see previous section) the corresponding submodel endpoint URLs, negotiates an EDC contract and sends via the submodel REST client requests to the EDC. The EDC responds with the corresponding submodel data.
+
+# Semantic Models
+
+## Overview asBuilt
+
+### Traversal Aspect
+
+|===
+|Name | Description |
+|SingelLevelBomAsBuilt|The aspect provides the child parts (one structural level down) which the given object assembles.| 1.1.0
+|SingelLevelUsageAsBuilt | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | [X.X.X]|
+|===
+
+### Semantic Model
+
+|===
+|Name | Description | Version range
+|SerialPart | A serialized part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a serial numbers or a similar identifier (e.g. VAN) or a combination of multiple identifiers (e.g. combination of manufacturer, date and number) | [1.0,0, 1.1.0]
+|SingelLevelBomAsBuilt|The aspect provides the child parts (one structural level down) which the given object assembles.| [1.0.0,1.1.0]
+|SingelLevelUsageAsBuilt| The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | [1.0.0,1.0.1]
+|Batch|A batch is a quantity of (semi-) finished products or (raw) material product that have been produced under the same circumstances (e.g. same production location), as specified groups or amounts, within a certain time frame. Every batch can differ in the number or amount of products. Different batches can have varied specifications, e.g., different colors. A batch is identified via a Batch ID.| [1.0.0,2.0.0]
+|JustInSequencePart| A just-in-sequence part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a combination of several IDs related to a just-in-sequence process | [1.0.0]
+|TractionBatteryCode| The traction battery code is an identification code for any automotive traction battery, ultracapacitor and other reachargeble energy storage device. It allows to carry information as required by the National Standard of the People's Republic of China according to GB/T 34014-2017 published by the Standardization Administration of China (SAC).| 1.0.0
+|===
+
+## Overview asPlanned
+
+### Traversal Aspect
+
+|===
+|Name | Description |
+|SingelLevelBomAsPlanned | The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM.| 1.1.0
+|SingelLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list. | 1.1.0
+|===
+
+### Semantic Model
+|===
+|Name | Description |
+|PartAsPlanned | A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version.| [ , ]
+|PartSiteInformationAsPlanned|The aspect provides site related information for a given as planned item (i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In the \"as planned\" lifecycle context all potentially related sites are listed including all sites where e.g. production of this part (type) is planned.| 1.0.0
+|SingelLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list.| [1.0.0,1.1.0]
+|===
+
+## Overview asSpecified
+
+### Traversal Aspect
+|===
+|Name | Description |
+|SingelLevelBomAsSpecified| The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place. | 2.0.0
+|===
+
+### Semantic Model
+|===
+|Name | Description |
+|SingelLevelBomAsSpecified| The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place. | [1.0.0,2.0.0]
+
+|===
