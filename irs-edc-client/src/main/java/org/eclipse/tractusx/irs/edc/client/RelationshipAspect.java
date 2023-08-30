@@ -42,6 +42,8 @@ public enum RelationshipAspect {
             Direction.DOWNWARD),
     SINGLE_LEVEL_BOM_AS_BUILT("SingleLevelBomAsBuilt", SingleLevelBomAsBuilt.class, BomLifecycle.AS_BUILT,
             Direction.DOWNWARD),
+    SINGLE_LEVEL_BOM_AS_SPECIFIED("SingleLevelBomAsSpecified", SingleLevelBomAsSpecified.class, BomLifecycle.AS_SPECIFIED,
+            Direction.DOWNWARD),
     SINGLE_LEVEL_USAGE_AS_BUILT("SingleLevelUsageAsBuilt", SingleLevelUsageAsBuilt.class, BomLifecycle.AS_BUILT,
             Direction.UPWARD);
 
@@ -56,6 +58,7 @@ public enum RelationshipAspect {
      * @return Returns traversal aspect type
      * asBuilt + downward => SingleLevelBomAsBuilt
      * asPlanned + downward => SingleLevelBomAsPlanned
+     * asSpecified + downward => SingleLevelBomAsSpecified
      * asBuilt + upward => SingleLevelUsageAsBuilt
      * asPlanned + upward => SingleLevelXXXAsPlanned
      */

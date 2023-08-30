@@ -56,12 +56,14 @@ public class CxTestDataContainer {
         public static final String SERIAL_PART_ASPECT_TYPE = "urn:bamm:io.catenax.serial_part:1.1.0#SerialPart";
         public static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
         public static final String SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt";
+        public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_specified:1.0.0#SingleLevelBomAsSpecified";
         public static final String PART_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned";
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned";
         public static final String BATCH_ASPECT_TYPE = "urn:bamm:io.catenax.batch:1.0.0#Batch";
         public static final String MATERIAL_FOR_RECYCLING_ASPECT_TYPE = "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
         public static final String PRODUCT_DESCRIPTION_ASPECT_TYPE = "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription";
         public static final String PHYSICAL_DIMENSION_ASPECT_TYPE = "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension";
+        public static final String PART_AS_SPECIFIED_ASPECT_TYPE = "urn:bamm:io.catenax.part_as_specified:2.0.0#PartAsSpecified";
 
         private String catenaXId;
         @JsonProperty(SERIAL_PART_ASPECT_TYPE)
@@ -70,6 +72,8 @@ public class CxTestDataContainer {
         private List<Map<String, Object>> singleLevelBomAsBuilt;
         @JsonProperty(SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE)
         private List<Map<String, Object>> singleLevelUsageAsBuilt;
+        @JsonProperty(SINGLE_LEVEL_BOM_AS_SPECIFIED_ASPECT_TYPE)
+        private List<Map<String, Object>> singleLevelBomAsSpecified;
         @JsonProperty(PART_AS_PLANNED_ASPECT_TYPE)
         private List<Map<String, Object>> partAsPlanned;
         @JsonProperty(SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE)
@@ -82,6 +86,8 @@ public class CxTestDataContainer {
         private List<Map<String, Object>> productDescription;
         @JsonProperty(PHYSICAL_DIMENSION_ASPECT_TYPE)
         private List<Map<String, Object>> physicalDimension;
+        @JsonProperty(PART_AS_SPECIFIED_ASPECT_TYPE)
+        private List<Map<String, Object>> partAsSpecified;
 
         public Optional<Map<String, Object>> getSerialPart() {
             return serialPart != null ? serialPart.stream().findFirst() : Optional.empty();
@@ -93,6 +99,10 @@ public class CxTestDataContainer {
 
         public Optional<Map<String, Object>> getSingleLevelUsageAsBuilt() {
             return singleLevelUsageAsBuilt != null ? singleLevelUsageAsBuilt.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getSingleLevelBomAsSpecified() {
+            return singleLevelBomAsSpecified != null ? singleLevelBomAsSpecified.stream().findFirst() : Optional.empty();
         }
 
         public Optional<Map<String, Object>> getPartAsPlanned() {
@@ -117,6 +127,10 @@ public class CxTestDataContainer {
 
         public Optional<Map<String, Object>> getPhysicalDimension() {
             return physicalDimension != null ? physicalDimension.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getPartAsSpecified() {
+            return partAsSpecified != null ? partAsSpecified.stream().findFirst() : Optional.empty();
         }
     }
 }

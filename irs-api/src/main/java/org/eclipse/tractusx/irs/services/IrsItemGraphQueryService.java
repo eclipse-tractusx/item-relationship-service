@@ -73,6 +73,7 @@ import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.support.MutableSortDefinition;
@@ -109,6 +110,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final String bpdmUrl;
 
+    private final SecurityHelperService securityHelperService;
+
     public IrsItemGraphQueryService(final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator,
             final JobStore jobStore, @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
             final MeterRegistryService meterRegistryService, final SemanticsHubFacade semanticsHubFacade,
@@ -121,11 +124,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         this.semanticsHubFacade = semanticsHubFacade;
         this.applicationEventPublisher = applicationEventPublisher;
         this.bpdmUrl = bpdmUrl;
+        this.securityHelperService = new SecurityHelperService();
     }
 
     @Override
     public PageResult getJobsByState(final @NonNull List<JobState> states, final Pageable pageable) {
-        final List<MultiTransferJob> jobs = states.isEmpty() ? jobStore.findAll() : jobStore.findByStates(states);
+        final List<MultiTransferJob> jobs = filterJobs(states);
         final List<JobStatusResult> jobStatusResults = jobs.stream()
                                                            .map(job -> JobStatusResult.builder()
                                                                                       .id(job.getJob().getId())
@@ -138,6 +142,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                                            .toList();
 
         return new PageResult(paginateAndSortResults(pageable, jobStatusResults));
+    }
+
+    private List<MultiTransferJob> filterJobs(final @NotNull List<JobState> states) {
+        final List<MultiTransferJob> jobs = states.isEmpty() ? jobStore.findAll() : jobStore.findByStates(states);
+        if (securityHelperService.isAdmin()) {
+            return jobs;
+        } else {
+            return jobs.stream().filter(multiJob -> multiJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())).toList();
+        }
     }
 
     @Override
@@ -170,10 +183,9 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId) {
         final var params = buildJobParameter(request);
-        if (params.getBomLifecycle().equals(BomLifecycle.AS_PLANNED) && params.getDirection()
-                                                                              .equals(Direction.UPWARD)) {
+        if (params.getDirection().equals(Direction.UPWARD) && !params.getBomLifecycle().equals(BomLifecycle.AS_BUILT)) {
             // Currently not supported variant
-            throw new IllegalArgumentException("BomLifecycle asPlanned with direction upward is not supported yet!");
+            throw new IllegalArgumentException("Upward direction is supported only for asBuilt bomLifecycle parameter!");
         }
         if (params.isLookupBPNs() && StringUtils.isBlank(bpdmUrl)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -242,6 +254,11 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String idAsString = String.valueOf(jobId);
 
         final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
+        canceled.ifPresent(cancelledJob -> {
+            if (!securityHelperService.isAdmin() && !cancelledJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access and cancel job with id " + jobId + " due to missing privileges.");
+            }
+        });
         canceled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
                 new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState().name(),
                         cancelledJob.getJobParameter().getCallbackUrl(), cancelledJob.getBatchId())));
@@ -257,6 +274,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob multiJob = multiTransferJob.get();
+
+            if (!securityHelperService.isAdmin() && !multiJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access job with id " + jobId + " due to missing privileges.");
+            }
 
             final var relationships = new ArrayList<Relationship>();
             final var tombstones = new ArrayList<Tombstone>();

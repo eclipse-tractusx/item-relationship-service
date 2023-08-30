@@ -1,12 +1,12 @@
 {
     "submodels": [
         {
-            "identification": "urn:uuid:89696bae-6b72-40ce-8e9a-d3a84814edeb",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:1f3aa77d-975a-426d-a6d3-8ad74a841111",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2016-03-31T00:20:37.000Z",
-                    "validTo": "2027-01-17T01:39:30.000Z"
+                    "validFrom": "2018-08-15T15:18:04.000Z",
+                    "validTo": "2028-05-14T00:23:55.000Z"
                 },
                 "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
                 "partTypeInformation": {
@@ -17,12 +17,28 @@
             }
         },
         {
-            "identification": "urn:uuid:fe947c10-9659-46d8-87c9-2632ec105e04",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:db9468d1-16cd-4654-8be0-792a909b4fec",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2015-01-16T14:23:33.000Z",
-                    "validTo": "2032-05-18T15:14:36.000Z"
+                    "validFrom": "2019-11-02T11:14:15.000Z",
+                    "validTo": "2024-07-17T02:07:07.000Z"
+                },
+                "catenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
+                "partTypeInformation": {
+                    "manufacturerPartId": "123564887-01",
+                    "classification": "product",
+                    "nameAtManufacturer": "Tire Model A"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:f7c9b5df-cc49-483b-bb8d-fd86f5f37933",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2018-09-16T00:07:10.000Z",
+                    "validTo": "2032-01-10T15:26:52.000Z"
                 },
                 "catenaXId": "urn:uuid:e3e2a4d8-58bc-4ae9-afa2-e8946fda1f77",
                 "partTypeInformation": {
@@ -33,18 +49,50 @@
             }
         },
         {
-            "identification": "urn:uuid:c241cc8c-ccd4-4d38-beb6-27f4336a3e01",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned",
+            "identification": "urn:uuid:be7932d4-f324-4d39-9e4c-8b29b38d6026",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
-                    "validFrom": "2014-07-30T07:17:16.000Z",
-                    "validTo": "2028-03-27T22:34:57.000Z"
+                    "validFrom": "2019-08-17T14:14:30.000Z",
+                    "validTo": "2032-08-30T04:32:28.000Z"
                 },
                 "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
                 "partTypeInformation": {
                     "manufacturerPartId": "6775244-06",
                     "classification": "product",
                     "nameAtManufacturer": "Sub Tier B Glue"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:926d13f9-96d4-4e1c-830b-e9a32f4fcaae",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2017-04-29T01:48:37.000Z",
+                    "validTo": "2029-08-26T00:42:55.000Z"
+                },
+                "catenaXId": "urn:uuid:94d086c6-0124-4f2c-86b2-1d419e47499d",
+                "partTypeInformation": {
+                    "manufacturerPartId": "9953421-03",
+                    "classification": "product",
+                    "nameAtManufacturer": "Natural Rubber Product(40KG blocks)"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:964ad117-e6a9-4ff7-a70b-64965ff4f156",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2014-02-07T16:56:02.000Z",
+                    "validTo": "2029-08-26T11:05:18.000Z"
+                },
+                "catenaXId": "urn:uuid:b0926d3c-6a8f-4fc7-81a4-88c50817358a",
+                "partTypeInformation": {
+                    "manufacturerPartId": "A26581-11",
+                    "classification": "product",
+                    "nameAtManufacturer": "Natural Rubber"
                 }
             }
         }

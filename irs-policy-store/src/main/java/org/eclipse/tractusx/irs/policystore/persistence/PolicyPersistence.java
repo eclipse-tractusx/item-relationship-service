@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.policystore.persistence;
 import static org.eclipse.tractusx.irs.policystore.config.PolicyConfiguration.POLICY_BLOB_PERSISTENCE;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -66,8 +67,8 @@ public class PolicyPersistence {
 
     public void save(final String bpn, final Policy policy) {
         final var policies = readAll(bpn);
-        if (policies.stream().map(Policy::policyId).anyMatch(policy.policyId()::equals)) {
-            throw new PolicyStoreException("Policy with id '" + policy.policyId() + "' already exists!");
+        if (policies.stream().map(Policy::getPolicyId).anyMatch(policy.getPolicyId()::equals)) {
+            throw new PolicyStoreException("Policy with id '" + policy.getPolicyId() + "' already exists!");
         }
         policies.add(policy);
         save(bpn, policies);
@@ -75,8 +76,23 @@ public class PolicyPersistence {
 
     public void delete(final String bpn, final String policyId) {
         final var policies = readAll(bpn);
-        final var modifiedPolicies = policies.stream().filter(p -> !p.policyId().equals(policyId)).toList();
+        final var modifiedPolicies = policies.stream().filter(p -> !p.getPolicyId().equals(policyId)).toList();
+        if (policies.size() == modifiedPolicies.size()) {
+            throw new PolicyStoreException("Policy with id '" + policyId + "' doesn't exists!");
+        }
         save(bpn, modifiedPolicies);
+    }
+
+    public void update(final String bpn, final String policyId, final OffsetDateTime validUntil) {
+        final var policies = readAll(bpn);
+        final Policy policy = policies.stream()
+                                      .filter(p -> p.getPolicyId().equals(policyId))
+                                      .findFirst()
+                                      .orElseThrow(() -> new PolicyStoreException(
+                                              "Policy with id '" + policyId + "' doesn't exists!"));
+
+        policy.update(validUntil);
+        save(bpn, policies);
     }
 
     private void save(final String bpn, final List<Policy> modifiedPolicies) {
