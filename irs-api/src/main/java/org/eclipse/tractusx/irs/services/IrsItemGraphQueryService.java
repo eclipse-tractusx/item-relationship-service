@@ -386,7 +386,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     shells.addAll(itemContainer.getShells());
                     submodels.addAll(itemContainer.getSubmodels());
                     metrics.addAll(itemContainer.getMetrics());
-                    bpns.addAll(itemContainer.getBpns());
+                    bpns.addAll(itemContainer.getBpnsWithManufacturerName());
                 });
 
             } catch (BlobPersistenceException e) {
