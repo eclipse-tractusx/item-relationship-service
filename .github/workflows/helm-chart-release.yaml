@@ -60,8 +60,8 @@ jobs:
           version: v3.8.1
 
       - name: Update helm dependencies for irs
+        working-directory: charts/irs-helm/
         run: |
-          cd charts/irs-helm
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -71,7 +71,6 @@ jobs:
       - name: Create temporary CHANGELOG file for helm release
         working-directory: charts/irs-helm/
         run: |
-          
           touch CHANGELOG-temp.md
           
           currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^irs-helm-//" )
