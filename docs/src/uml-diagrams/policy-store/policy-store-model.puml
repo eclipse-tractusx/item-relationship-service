@@ -32,7 +32,7 @@ enum OperatorType {
     NEQ (neq, "Not equal to")
     LT (lt, "Less than")
     GT (gt, "Greater than")
-    ? IN (in, "In") '?'
+    IN (in, "In") '?'
     LTEQ (lteq, "Less than or equal to")
     GTEQ (gteq, "Greater than or equal to")
     ISA (isA, "Is a")
