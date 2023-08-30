@@ -20,33 +20,21 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.registryclient.central;
+package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import java.util.List;
 
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Digital Twin Registry Rest Client
+ * Response to a Digital Twin Registry request to lookup shells.
  */
-public interface DigitalTwinRegistryClient {
-
-    /**
-     * @param aasIdentifier The Asset Administration Shell’s unique id
-     * @return Returns a specific Asset Administration Shell Descriptor
-     */
-    AssetAdministrationShellDescriptor getAssetAdministrationShellDescriptor(String aasIdentifier);
-
-    /**
-     * Returns a list of Asset Administration Shell ids based on Asset identifier key-value-pairs.
-     * Only the Shell ids are returned when all provided key-value pairs match.
-     *
-     * @param assetIds The key-value-pair of an Asset identifier
-     * @return urn uuid string list
-     */
-    LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(List<IdentifierKeyValuePair> assetIds);
-
+@Data
+@Builder
+@Jacksonized
+public class LookupShellsResponse {
+    private Object pagingMetadata;
+    private List<String> result;
 }
-

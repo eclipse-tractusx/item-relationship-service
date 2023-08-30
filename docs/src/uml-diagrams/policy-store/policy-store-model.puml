@@ -1,0 +1,72 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+'https://www.w3.org/TR/odrl-model/'
+
+class Policy {
+    * policyId : String
+    createdOn : OffsetDateTime
+    validUntil : OffsetDateTime
+    permissions : Collection<Permission>
+}
+
+class Permission {
+    action : PolicyType
+    constraints : List<Constraint>
+}
+
+note left
+    AND (and)
+    OR (or)
+    XONE (xone)
+    ANDSEQUENCE (andsequence)
+end note
+
+class Constraint {
+     leftOperand  : String
+     operator : OperatorType
+     rightOperand : List<String>
+}
+
+'https://www.w3.org/TR/odrl-vocab/#constraintRelationalOperators'
+enum OperatorType {
+    EQ (eq, "Equals to")
+    NEQ (neq, "Not equal to")
+    LT (lt, "Less than")
+    GT (gt, "Greater than")
+    IN (in, "In")
+    LTEQ (lteq, "Less than or equal to")
+    GTEQ (gteq, "Greater than or equal to")
+    ISA (isA, "Is a")
+    HASPART (hasPart, "Has part")
+    ISPARTOF (isPartOf, "Is part of")
+    IAO (isAllOf, "Is all of")
+    ISALLOF (isAllOf, "Is all of")
+    ISNONEOF (isNoneOf, "Is none of")
+}
+
+'"@id": "http://www.w3.org/ns/odrl/2/gt"'
+'"@id": "http://www.w3.org/ns/odrl/2/gteq"'
+'"@id": "http://www.w3.org/ns/odrl/2/isPartOf"'
+'"@id": "http://www.w3.org/ns/odrl/2/hasPart"'
+'"@id": "http://www.w3.org/ns/odrl/2/isAnyOf"'
+'"@id": "http://www.w3.org/ns/odrl/2/lteq"'
+'"@id": "http://www.w3.org/ns/odrl/2/eq"'
+'"@id": "http://www.w3.org/ns/odrl/2/neq"'
+'"@id": "http://www.w3.org/ns/odrl/2/isNoneOf"'
+'"@id": "http://www.w3.org/ns/odrl/2/lt"'
+'"@id": "http://www.w3.org/ns/odrl/2/isAllOf"'
+'"@id": "http://www.w3.org/ns/odrl/2/isA"'
+
+enum PolicyType {
+    ACCESS
+    USE
+}
+
+
+
+Policy ||--|{  Permission
+Permission ||--|| PolicyType
+Permission ||--|{  Constraint
+Constraint ||--|| OperatorType
+@enduml

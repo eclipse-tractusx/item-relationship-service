@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added fetchCatalog to EDCCatalogFacade
+- Introduced new API endpoint to update 'validUntil' property of Policy - PUT {{IRS_HOST}}/irs/policies/{policyId}
+
+### Fixed
+- Fixed bug where BPN's were delivered without 'manufacturerName' property filled
+
+## [3.3.5] - 2023-08-30
+### Changed
+- Updated IRS Digital Twin Registry Client to support latest version 0.3.14-M1
 
 ## [3.3.4] - 2023-08-24
 ### Fixed
@@ -313,7 +321,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.4...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.5...HEAD
+[3.3.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.4...3.3.5
 [3.3.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.3...3.3.4
 [3.3.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.2...3.3.3
 [3.3.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.1...3.3.2
