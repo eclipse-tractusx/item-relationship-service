@@ -1,10 +1,7 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-
-
 'https://www.w3.org/TR/odrl-model/'
-
 
 class Policy {
     * policyId : String
@@ -15,10 +12,15 @@ class Policy {
 
 class Permission {
     action : PolicyType
-    logicalContraintType : LogicalConstraintType
-    constraints : Collection<Constraint>
+    constraints : List<Constraint>
 }
 
+note left
+    AND (and)
+    OR (or)
+    XONE (xone)
+    ANDSEQUENCE (andsequence)
+end note
 
 class Constraint {
      leftOperand  : String
@@ -32,7 +34,7 @@ enum OperatorType {
     NEQ (neq, "Not equal to")
     LT (lt, "Less than")
     GT (gt, "Greater than")
-    IN (in, "In") '?'
+    IN (in, "In")
     LTEQ (lteq, "Less than or equal to")
     GTEQ (gteq, "Greater than or equal to")
     ISA (isA, "Is a")
@@ -61,17 +63,10 @@ enum PolicyType {
     USE
 }
 
-enum LogicalConstraintType{
-    AND
-    OR
-    XONE
-    ANDSEQUENCE
-}
+
 
 Policy ||--|{  Permission
 Permission ||--|| PolicyType
-Permission ||--|| LogicalConstraintType
-Permission ||--|{   Constraint
+Permission ||--|{  Constraint
 Constraint ||--|| OperatorType
-Constraint -- LeftConstraintConstants
 @enduml
