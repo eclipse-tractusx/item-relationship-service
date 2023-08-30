@@ -29,7 +29,7 @@ class Constraint {
 'https://www.w3.org/TR/odrl-vocab/#constraintRelationalOperators'
 enum OperatorType {
     EQ (eq, "Equals to")
-    NEQ (new, "Not equal to")
+    NEQ (neq, "Not equal to")
     LT (lt, "Less than")
     GT (gt, "Greater than")
     ? IN (in, "In") '?'
