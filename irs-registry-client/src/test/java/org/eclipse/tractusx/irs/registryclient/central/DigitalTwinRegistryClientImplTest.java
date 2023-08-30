@@ -39,7 +39,7 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResult;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
@@ -69,28 +69,28 @@ class DigitalTwinRegistryClientImplTest {
 
     @Test
     void shouldCallExternalServiceOnceAndGetAssetAdministrationShellIds() {
-        doReturn(ResponseEntity.ok(LookupShellsResult.builder().result(List.of("testId")).build())).when(restTemplate)
-                                                                                                   .exchange(any(),
+        doReturn(ResponseEntity.ok(LookupShellsResponse.builder().result(List.of("testId")).build())).when(restTemplate)
+                                                                                                     .exchange(any(),
                                                                                                            any(), any(),
-                                                                                                           eq(LookupShellsResult.class));
+                                                                                                           eq(LookupShellsResponse.class));
 
         final List<String> empty = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                 Collections.emptyList()).getResult();
 
         assertNotNull(empty);
-        verify(this.restTemplate, times(1)).exchange(any(), any(), any(), eq(LookupShellsResult.class));
+        verify(this.restTemplate, times(1)).exchange(any(), any(), any(), eq(LookupShellsResponse.class));
     }
 
     @Test
     void shouldCallExternalServiceOnceAndRunIntoTimeout() {
         final SocketTimeoutException timeoutException = new SocketTimeoutException("UnitTestTimeout");
         Throwable ex = new ResourceAccessException("UnitTest", timeoutException);
-        doThrow(ex).when(restTemplate).exchange(any(), any(), any(), eq(LookupShellsResult.class));
+        doThrow(ex).when(restTemplate).exchange(any(), any(), any(), eq(LookupShellsResponse.class));
 
         final List<IdentifierKeyValuePair> emptyList = Collections.emptyList();
         assertThrows(ResourceAccessException.class,
                 () -> digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(emptyList));
 
-        verify(this.restTemplate, times(1)).exchange(any(), any(), any(), eq(LookupShellsResult.class));
+        verify(this.restTemplate, times(1)).exchange(any(), any(), any(), eq(LookupShellsResponse.class));
     }
 }

@@ -42,7 +42,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescr
 import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
-import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResult;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,7 +100,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenThrow(
                 new RestClientException("Dummy"));
         when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(any())).thenReturn(
-                LookupShellsResult.builder().result(Collections.emptyList()).build());
+                LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         final var keys = List.of(key);
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
@@ -115,7 +115,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
         when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(any())).thenReturn(
-                LookupShellsResult.builder().result(Collections.emptyList()).build());
+                LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(
                 List.of(new DigitalTwinRegistryKey(catenaXId, ""))).stream().findFirst().get().getSubmodelDescriptors();
@@ -130,7 +130,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
         when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(any())).thenReturn(
-                LookupShellsResult.builder().result(Collections.emptyList()).build());
+                LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         dtRegistryFacadeWithMock.fetchShells(List.of(new DigitalTwinRegistryKey(catenaXId, "")));
 
@@ -146,7 +146,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         shellDescriptor.setSubmodelDescriptors(List.of());
 
         when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(anyList())).thenReturn(
-                LookupShellsResult.builder().result(Collections.singletonList(identification)).build());
+                LookupShellsResponse.builder().result(Collections.singletonList(identification)).build());
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(identification)).thenReturn(shellDescriptor);
 
         final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(

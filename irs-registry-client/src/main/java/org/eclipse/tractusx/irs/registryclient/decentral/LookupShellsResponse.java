@@ -29,12 +29,12 @@ import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Result of a Digital Twin Registry request to lookup shells.
+ * Response to a Digital Twin Registry request to lookup shells.
  */
 @Data
 @Builder
 @Jacksonized
-public class LookupShellsResult {
+public class LookupShellsResponse {
     private Object pagingMetadata;
     private List<String> result;
 }

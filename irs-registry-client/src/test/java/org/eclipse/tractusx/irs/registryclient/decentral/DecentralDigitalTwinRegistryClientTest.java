@@ -55,14 +55,14 @@ class DecentralDigitalTwinRegistryClientTest {
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
                                                                                    .build();
-        when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResult.class))).thenReturn(
-                ResponseEntity.of(Optional.of(LookupShellsResult.builder().result(Collections.emptyList()).build())));
+        when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class))).thenReturn(
+                ResponseEntity.of(Optional.of(LookupShellsResponse.builder().result(Collections.emptyList()).build())));
 
         // when
         client.getAllAssetAdministrationShellIdsByAssetLink(endpointDataReference, new ArrayList<>());
 
         // then
-        verify(restTemplate).exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResult.class));
+        verify(restTemplate).exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class));
     }
 
 }

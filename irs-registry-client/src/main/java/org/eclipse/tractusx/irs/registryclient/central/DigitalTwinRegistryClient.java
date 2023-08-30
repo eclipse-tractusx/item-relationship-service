@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResult;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
 
 /**
  * Digital Twin Registry Rest Client
@@ -46,7 +46,7 @@ public interface DigitalTwinRegistryClient {
      * @param assetIds The key-value-pair of an Asset identifier
      * @return urn uuid string list
      */
-    LookupShellsResult getAllAssetAdministrationShellIdsByAssetLink(List<IdentifierKeyValuePair> assetIds);
+    LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(List<IdentifierKeyValuePair> assetIds);
 
 }
 

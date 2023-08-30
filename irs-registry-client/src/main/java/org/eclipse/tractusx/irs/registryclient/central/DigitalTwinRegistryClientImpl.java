@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.data.StringMapper;
-import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResult;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
@@ -95,11 +95,11 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
 
     @Override
     @Retry(name = "registry")
-    public LookupShellsResult getAllAssetAdministrationShellIdsByAssetLink(
+    public LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(
             final List<IdentifierKeyValuePair> assetIds) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
         final var values = Map.of(PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds));
-        return restTemplate.exchange(uriBuilder.build(values), HttpMethod.GET, null, LookupShellsResult.class)
+        return restTemplate.exchange(uriBuilder.build(values), HttpMethod.GET, null, LookupShellsResponse.class)
                            .getBody();
     }
 

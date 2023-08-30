@@ -76,13 +76,13 @@ public class DecentralDigitalTwinRegistryClient {
     }
 
     @Retry(name = "registry")
-    public LookupShellsResult getAllAssetAdministrationShellIdsByAssetLink(
+    public LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(
             final EndpointDataReference endpointDataReference, final List<IdentifierKeyValuePair> assetIds) {
         final String shellLookupEndpoint = endpointDataReference.getEndpoint() + lookupShellsTemplate;
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
         final var values = Map.of(PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds));
         return edcRestTemplate.exchange(uriBuilder.build(values), HttpMethod.GET,
-                new HttpEntity<>(null, headers(endpointDataReference)), LookupShellsResult.class).getBody();
+                new HttpEntity<>(null, headers(endpointDataReference)), LookupShellsResponse.class).getBody();
     }
 
     private HttpHeaders headers(final EndpointDataReference dataReference) {
