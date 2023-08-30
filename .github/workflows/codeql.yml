@@ -67,7 +67,7 @@ jobs:
           # Prefix the list here with "+" to use these queries and those in the config file.
           # queries: ./path/to/local/query, your-org/your-repo/queries@main
           # The queries security-extended and security-and-quality are built into CodeQL.
-          config-file: ./.github/codeql/codeql-config.yml
+          config-file: ./.github/configs/codeql-config.yml
           queries: +security-and-quality,security-extended
 
       - name: Cache maven packages
