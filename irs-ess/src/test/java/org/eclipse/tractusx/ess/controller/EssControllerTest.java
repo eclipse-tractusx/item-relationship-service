@@ -34,6 +34,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.ess.service.EssService;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
@@ -60,7 +61,7 @@ class EssControllerTest {
     private final String bpn = "BPNS000000000DDD";
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldRegisterBpnInvestigationForValidRequest() throws Exception {
         when(essService.startIrsJob(any(RegisterBpnInvestigationJob.class))).thenReturn(
                 JobHandle.builder().id(UUID.randomUUID()).build());
@@ -72,7 +73,7 @@ class EssControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldGetJob() throws Exception {
         final String jobId = UUID.randomUUID().toString();
         when(essService.getIrsJob(jobId)).thenReturn(Jobs.builder().build());
@@ -81,7 +82,7 @@ class EssControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestForWrongGlobalAssetId() throws Exception {
         this.mockMvc.perform(post(path).with(csrf())
                                        .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +92,7 @@ class EssControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestForWrongBpn() throws Exception {
         this.mockMvc.perform(post(path).with(csrf())
                                        .contentType(MediaType.APPLICATION_JSON)
