@@ -144,10 +144,10 @@ id "default-policy".
 (Optional) A list of BPNs Filter upload to upload only specific BPNs
 
 **-d, --dataplane <[URL ...] >**  
-(Optional) If specified, these public dataplane URLs will be displayed in the digital twin href
+(Optional) If specified, these public dataplane URLs will be displayed in the digital twin in attribute 'href'
 
 **--aas3 <[BPN ...] >**  
-(Optional) Flag to create AAS assets in version 3.0
+(Optional) Flag to create AAS assets according to version 3.0.1
 
 **--allowedBPNs <[BPN ...] >**  
 (Optional) (Required for --aas3) A list of allowed BPNs which will be added to the specificAssetIds when creating DTR assets
