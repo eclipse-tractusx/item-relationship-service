@@ -463,10 +463,12 @@ if __name__ == "__main__":
                     })
             print(name_at_manufacturer)
 
-            specific_asset_ids_temp.append({
+            manufacturerId = {
                 "key": "manufacturerId",
                 "value": tmp_data["bpnl"]
-            })
+            }
+            if manufacturerId not in specific_asset_ids_temp:
+                specific_asset_ids_temp.append(manufacturerId)
             if is_aas3:
                 keys = [{
                     "type": "GlobalReference",
