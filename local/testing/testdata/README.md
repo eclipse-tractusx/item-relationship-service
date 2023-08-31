@@ -150,7 +150,7 @@ id "default-policy".
 (Optional) Flag to create AAS assets in version 3.0
 
 **--allowedBPNs <[BPN ...] >**  
-(Optional) (Required for --aas3) A list of allowed BPNs which will be added to the specificAssetIds when creating AAS Registry assets
+(Optional) (Required for --aas3) A list of allowed BPNs which will be added to the specificAssetIds when creating DTR assets
 
 **-h, --help**  
 Usage help. This lists all current command line options with a short description.
