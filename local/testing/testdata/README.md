@@ -144,7 +144,7 @@ id "default-policy".
 (Optional) A list of BPNs Filter upload to upload only specific BPNs
 
 **-d, --dataplane <[URL ...] >**  
-(Optional) A list of BPNs Filter upload to upload only specific BPNs
+(Optional) If specified, these public datalane URLs will be displayed in the digital twin href
 
 **--aas3 <[BPN ...] >**  
 (Optional) Flag to create AAS assets in version 3.0
