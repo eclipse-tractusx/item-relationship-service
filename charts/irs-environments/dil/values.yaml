@@ -61,7 +61,7 @@ irs-helm:
 
       policystore:
         persistence:
-          endpoint: "http://irs-dil-name-minio:9000"
+          endpoint: "http://irs-dil-minio:9000"
           accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
           secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
 
