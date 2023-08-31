@@ -146,15 +146,23 @@ irs-helm:
 
       integrity:
         publicKeyCert: |
-          <path:traceability-irs/data/dil/integrity#certificate>
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6h9Uz0RH9xwlb/rqSws2
+          JccIs817v1wfgLDGDY36YwzKVBNm+5IUJvCwLeMRZJ6otUFYQUUInQgM6MgW90z7
+          k9SjUB7UxiSqZFfwIF6uanN0HisEo5dCfGSzLQBIrg1nw/CPKGf8Vn5kZ/+5aBl3
+          dLu8pht+29yALFNZxThmnUx2rmTB9fH0SKtgY9HxBzQlbYuiwhqgbpnWTgCQb+F5
+          6Q3TnvXyG3DkOMYvzdle/QLPm+ywSf1FKp/qOaX483yVN5GpkWkQJwA5fsBGFkmT
+          7hmisXEyTiIps5yR/scAOjj7evQk6+FqRksPr8mOwYwBU7F6LjnJRtg9WeHZn0CA
+          GQIDAQAB
+          -----END PUBLIC KEY-----
 
   resources:
-      limits:
-        cpu: 1
-        memory: 1.5Gi
-      requests:
-        cpu: 100m
-        memory: 1.5Gi
+    limits:
+      cpu: 1
+      memory: 1.5Gi
+    requests:
+      cpu: 100m
+      memory: 1.5Gi
 
 
   #######################
