@@ -44,14 +44,116 @@ irs-helm:
     controlplane:
       apikey:
         secret: <path:traceability-irs/data/dev/controlplane#apiKey>
+  config:
+    override: true
+    content:
+      # Config overriding Spring Boot configuration
+      server:
+        trustedPort: 8181
+
+      irs:
+        apiUrl: "https://irs-dil.dev.demo.catena-x.net"
+
+      blobstore:
+        endpoint: "http://release-name-minio:9000"
+        accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+        secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+
+      policystore:
+        persistence:
+          endpoint: "http://release-name-minio:9000"
+          accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+          secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+
+      spring:
+        security:
+          oauth2:
+            client:
+              registration:
+                keycloak:
+                  client-id: "${KEYCLOAK_OAUTH2_CLIENT_ID}" # taken from secret ENV
+                  client-secret: "${KEYCLOAK_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+                portal:
+                  client-id: ${PORTAL_OAUTH2_CLIENT_ID} # taken from secret ENV
+                  client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # taken from secret ENV
+              provider:
+                keycloak:
+                  token-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#tokenUri>"
+                portal:
+                  token-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#tokenUri>"
+            resourceserver:
+              jwt:
+                jwk-set-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#jwkSetUri>"
+
+      digitalTwinRegistry:
+        descriptorEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/shell-descriptors/{aasIdentifier}"
+        shellLookupEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/lookup/shells?assetIds={assetIds}"
+        discoveryFinderUrl: "https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search"
+        shellDescriptorTemplate: "/shell-descriptors/{aasIdentifier}"
+        lookupShellsTemplate: "/lookup/shells?assetIds={assetIds}"
+        type: "decentral"
+
+      semanticshub:
+        url: "https://semantics.int.demo.catena-x.net/hub/api/v1/models"
+        pageSize: 100
+        modelJsonSchemaEndpoint: "https://semantics.int.demo.catena-x.net/hub/api/v1/models/{urn}/json-schema"
+        defaultUrns: ""
+
+      bpdm:
+        bpnEndpoint: "https://partners-pool.int.demo.catena-x.net/api/catena/legal-entities/{partnerId}?idType={idType}"
+
+      irs-edc-client:
+        callback-url: "http://release-name-irs-helm:8181/internal/endpoint-data-reference"
+        controlplane:
+          request-ttl: "PT10M"
+          endpoint:
+            data: "http://release-name-tractusx-connector-controlplane:8081/management"
+            catalog: "/v2/catalog/request"
+            contract-negotiation: "/v2/contractnegotiations"
+            transfer-process: "/v2/transferprocesses"
+            state-suffix: "/state"
+          provider-suffix: "/api/v1/dsp"
+          catalog-limit: 1000
+          catalog-page-size: 50
+          api-key:
+            header: "X-Api-Key"
+            secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV
+
+        submodel:
+          request-ttl: "PT10M"
+          path: "/submodel"
+          urn-prefix: "/urn"
+
+        catalog:
+          policies:
+            acceptedRightOperands: "active"
+            acceptedLeftOperands: "PURPOSE"
+
+      edc:
+        catalog:
+          policies:
+            allowedNames: "ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability, Membership"
+
+      ess:
+        localBpn: "BPNL00000001CRHK"
+        localEdcEndpoint: ""
+        managementPath: "/management/v2"
+        irs:
+          url: "https://irs-dil.dev.demo.catena-x.net"
+        discovery:
+          endpoint: ""
+          oAuthClientId: portal
+
+      integrity:
+        publicKeyCert: <path:traceability-irs/data/dil/integrity#certificate>
 
   resources:
-    limits:
-      cpu: 1
-      memory: 1.5Gi
-    requests:
-      cpu: 100m
-      memory: 1.5Gi
+      limits:
+        cpu: 1
+        memory: 1.5Gi
+      requests:
+        cpu: 100m
+        memory: 1.5Gi
 
 
   #######################
