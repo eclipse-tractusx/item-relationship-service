@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.ess.service.EssRecursiveService;
@@ -53,7 +54,7 @@ class EssRecursiveControllerTest {
     private EssRecursiveService essRecursiveService;
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldHandleRecursiveBpnInvestigationByNotification() throws Exception {
 
         this.mockMvc.perform(post(path).with(csrf())

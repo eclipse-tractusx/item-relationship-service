@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 import java.util.UUID;
 
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
@@ -71,7 +72,7 @@ class MockedNotificationReceiverEndpointTest {
     private ArgumentCaptor<RegisterBpnInvestigationJob> jobArgumentCaptor;
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReceiveNotificationAndSendMockedNotificationResult() throws Exception {
         final String bpn = "BPN1";
         when(edcDiscoveryMockConfig.getMockEdcResult()).thenReturn(Map.of(bpn, SupplyChainImpacted.YES));

@@ -191,7 +191,7 @@ public class PolicyStoreController {
     })
     @PutMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void updateAllowedPolicy(@PathVariable("policyId") final String policyId, final @Valid @RequestBody UpdatePolicyRequest request) {
         service.updatePolicy(policyId, request);
     }

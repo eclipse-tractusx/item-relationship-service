@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -55,7 +56,7 @@ class JwtAuthenticationConverterTest {
         // then
         assertThat(authenticationToken).isNotNull();
         assertThat(authenticationToken.getAuthorities()).isNotNull();
-        assertThat(authenticationToken.getAuthorities()).contains(new SimpleGrantedAuthority("view_irs"));
+        assertThat(authenticationToken.getAuthorities()).contains(new SimpleGrantedAuthority(IrsRoles.VIEW_IRS));
     }
 
     @Test
