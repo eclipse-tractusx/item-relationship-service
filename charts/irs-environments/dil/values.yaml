@@ -145,7 +145,8 @@ irs-helm:
           oAuthClientId: portal
 
       integrity:
-        publicKeyCert: <path:traceability-irs/data/dil/integrity#certificate>
+        publicKeyCert: |
+          <path:traceability-irs/data/dil/integrity#certificate>
 
   resources:
       limits:
