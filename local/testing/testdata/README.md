@@ -140,8 +140,17 @@ twin with this BPN will be created with an invalid endpointAddress.
 the testdata file and pass the id with this parameter. If nothing is provided, the default policy will be empty with the
 id "default-policy".
 
-**-bpns, --bpns <[BPNS ...] >**  
+**-bpns, --bpns <[BPN ...] >**  
 (Optional) A list of BPNs Filter upload to upload only specific BPNs
+
+**-d, --dataplane <[URL ...] >**  
+(Optional) A list of BPNs Filter upload to upload only specific BPNs
+
+**--aas3 <[BPN ...] >**  
+(Optional) Flag to create AAS assets in version 3.0
+
+**--allowedBPNs <[BPN ...] >**  
+(Optional) (Required for --aas3) A list of allowed BPNs which will be added to the specificAssetIds when creating AAS Registry assets
 
 **-h, --help**  
 Usage help. This lists all current command line options with a short description.
