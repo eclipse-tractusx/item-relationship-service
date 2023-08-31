@@ -55,13 +55,13 @@ irs-helm:
         apiUrl: "https://irs-dil.dev.demo.catena-x.net"
 
       blobstore:
-        endpoint: "http://release-name-minio:9000"
+        endpoint: "http://irs-dil-minio:9000"
         accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
         secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
 
       policystore:
         persistence:
-          endpoint: "http://release-name-minio:9000"
+          endpoint: "http://irs-dil-name-minio:9000"
           accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
           secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
 
@@ -103,11 +103,11 @@ irs-helm:
         bpnEndpoint: "https://partners-pool.int.demo.catena-x.net/api/catena/legal-entities/{partnerId}?idType={idType}"
 
       irs-edc-client:
-        callback-url: "http://release-name-irs-helm:8181/internal/endpoint-data-reference"
+        callback-url: "http://irs-dil-irs-helm:8181/internal/endpoint-data-reference"
         controlplane:
           request-ttl: "PT10M"
           endpoint:
-            data: "http://release-name-tractusx-connector-controlplane:8081/management"
+            data: "http://irs-dil-tractusx-connector-controlplane:8081/management"
             catalog: "/v2/catalog/request"
             contract-negotiation: "/v2/contractnegotiations"
             transfer-process: "/v2/transferprocesses"
