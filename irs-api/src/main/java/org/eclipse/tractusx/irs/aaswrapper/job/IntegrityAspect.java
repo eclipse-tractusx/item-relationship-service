@@ -22,50 +22,47 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import java.util.List;
 import java.util.Set;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Singular;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.component.Bpn;
-import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.component.Submodel;
-import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 
 /**
- * Container class to store item data
+ * IntegrityAspect
  */
-@Getter
-@Builder
+@Data
 @Jacksonized
-public class ItemContainer {
+@AllArgsConstructor
+@NoArgsConstructor
+public class IntegrityAspect {
 
-    @Singular
-    private List<Relationship> relationships;
+    private String catenaXId;
+    private Set<ChildData> childParts;
 
-    @Singular
-    private List<Tombstone> tombstones;
+    /**
+     * ChildData
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ChildData {
+        private String childCatenaXId;
+        private Set<Reference> reference;
 
-    @Singular
-    private List<AssetAdministrationShellDescriptor> shells;
+    }
 
-    @Singular
-    private List<Submodel> submodels;
+    /**
+     * Reference
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Reference {
+        private String semanticModelUrn;
+        private String hash;
+        private String signature;
 
-    @Singular
-    private Set<Bpn> bpns;
-
-    @Singular
-    private Set<IntegrityAspect> integrities;
-
-    @Singular
-    private List<RequestMetric> metrics;
-
-    public List<Bpn> getBpnsWithManufacturerName() {
-        return this.getBpns().stream().filter(bpn -> StringUtils.isNotBlank(bpn.getManufacturerName())).toList();
     }
 }

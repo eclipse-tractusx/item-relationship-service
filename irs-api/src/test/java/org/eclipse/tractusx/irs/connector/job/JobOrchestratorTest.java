@@ -40,9 +40,11 @@ import static org.mockito.Mockito.when;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.util.TestMother;
@@ -279,7 +281,7 @@ class JobOrchestratorTest {
 
     private void letJobStoreCallCompletionAction() {
         doAnswer(i -> {
-            ((Consumer<MultiTransferJob>) i.getArgument(1)).accept(job);
+            ((Function<MultiTransferJob, ItemContainer>) i.getArgument(1)).apply(job);
             return i;
         }).when(jobStore).completeJob(any(), any());
     }

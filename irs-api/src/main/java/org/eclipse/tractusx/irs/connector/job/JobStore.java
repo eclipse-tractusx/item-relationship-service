@@ -25,8 +25,9 @@ package org.eclipse.tractusx.irs.connector.job;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,7 +102,7 @@ public interface JobStore {
      * @param completionAction the action to perform before marking the job as complete
      * @see JobState#COMPLETED
      */
-    void completeJob(String jobId, Consumer<MultiTransferJob> completionAction);
+    void completeJob(String jobId, Function<MultiTransferJob, ItemContainer> completionAction);
 
     /**
      * Mark job as in error.

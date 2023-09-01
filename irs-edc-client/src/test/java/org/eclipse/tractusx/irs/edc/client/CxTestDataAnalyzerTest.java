@@ -288,33 +288,33 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
         if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsBuilt, relationshipSubmodelData, submodels,
-                    SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE);
+                    SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE, catenaXId);
 
             checkAndAddSubmodel(testParameters.shouldCountSerialPart,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPart), submodels,
-                    SERIAL_PART_ASPECT_TYPE);
+                    SERIAL_PART_ASPECT_TYPE, catenaXId);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelUsageAsBuilt,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned), submodels,
-                    SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE);
+                    SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE, catenaXId);
             checkAndAddSubmodel(testParameters.shouldCountBatch,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels, BATCH_ASPECT_TYPE);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels, BATCH_ASPECT_TYPE, catenaXId);
             checkAndAddSubmodel(testParameters.shouldCountMaterialForRecycling,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getMaterialForRecycling), submodels,
-                    MATERIAL_FOR_RECYCLING_ASPECT_TYPE);
+                    MATERIAL_FOR_RECYCLING_ASPECT_TYPE, catenaXId);
             checkAndAddSubmodel(testParameters.shouldCountProductDescription,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getProductDescription), submodels,
-                    PRODUCT_DESCRIPTION_ASPECT_TYPE);
+                    PRODUCT_DESCRIPTION_ASPECT_TYPE, catenaXId);
             checkAndAddSubmodel(testParameters.shouldCountPhysicalDimension,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension), submodels,
-                    PHYSICAL_DIMENSION_ASPECT_TYPE);
+                    PHYSICAL_DIMENSION_ASPECT_TYPE, catenaXId);
         } else if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsPlanned, relationshipSubmodelData, submodels,
-                    SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE);
+                    SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE, catenaXId);
 
             checkAndAddSubmodel(testParameters.shouldCountPartAsPlanned,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned), submodels,
-                    PART_AS_PLANNED_ASPECT_TYPE);
+                    PART_AS_PLANNED_ASPECT_TYPE, catenaXId);
         }
 
         if (relationshipSubmodelData.isPresent()) {
@@ -338,9 +338,9 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
     }
 
     private void checkAndAddSubmodel(final boolean shouldCountSubmodel, final Optional<Map<String, Object>> payload,
-            final List<Submodel> submodels, final String aspectType) {
+            final List<Submodel> submodels, final String aspectType, final String catenaXId) {
         if (shouldCountSubmodel && payload.isPresent()) {
-            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, payload.get()));
+            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, payload.get(), catenaXId));
         }
     }
 

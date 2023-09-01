@@ -22,25 +22,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
- * Process step information
+ * Integrity State
  */
-@Getter
-@AllArgsConstructor
-public enum ProcessStep {
-    SUBMODEL_REQUEST("SubmodelRequest"),
-    DIGITAL_TWIN_REQUEST("DigitalTwinRequest"),
-    SCHEMA_VALIDATION("SchemaValidation"),
-    SCHEMA_REQUEST("SchemaRequest"),
-    BPDM_REQUEST("BpdmRequest"),
-    BPDM_VALIDATION("BpdmValidation"),
-    USAGE_POLICY_VALIDATION("UsagePolicyValidation"),
-    DATA_INTEGRITY_CHECK("DataIntegrityCheck");
+public enum IntegrityState {
+    VALID, INVALID, INACTIVE;
 
-    @JsonValue
-    private final String value;
+    public static IntegrityState from(final long numberOfValidSubmodels, final int totalNumberOfSubmodels) {
+        if (numberOfValidSubmodels == totalNumberOfSubmodels) {
+            return VALID;
+        } else {
+            return INVALID;
+        }
+    }
 }

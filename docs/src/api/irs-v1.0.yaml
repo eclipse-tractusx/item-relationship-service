@@ -759,7 +759,7 @@ paths:
       responses:
         "200":
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
                 items:
@@ -963,6 +963,7 @@ components:
             collectAspects: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: CANCELED
@@ -1014,6 +1015,7 @@ components:
             collectAspects: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
@@ -1130,6 +1132,7 @@ components:
             collectAspects: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
@@ -1272,6 +1275,7 @@ components:
             collectAspects: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: ERROR
@@ -1310,6 +1314,7 @@ components:
             collectAspects: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: COMPLETED
@@ -1418,6 +1423,7 @@ components:
             collectAspects: false
             depth: 1
             direction: downward
+            integrityCheck: false
             lookupBPNs: false
           startedOn: 2022-02-03T14:48:54.709Z
           state: RUNNING
@@ -1468,9 +1474,9 @@ components:
           type: string
           description: Id of global asset.
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-        idShort:
-          type: string
         id:
+          type: string
+        idShort:
           type: string
         specificAssetIds:
           type: array
@@ -1507,8 +1513,8 @@ components:
           minimum: 0
     BatchOrderCreated:
       type: object
-      description: Id of the created Batch order.
       additionalProperties: false
+      description: Id of the created Batch order.
       properties:
         id:
           type: string
@@ -1798,6 +1804,13 @@ components:
           maxLength: 36
           minLength: 36
           pattern: "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i"
+        integrityState:
+          type: string
+          description: Specifies the integrity of the data chain.
+          enum:
+            - VALID
+            - INVALID
+            - INACTIVE
         lastModifiedOn:
           type: string
           format: date-time
@@ -1886,6 +1899,8 @@ components:
           enum:
             - upward
             - downward
+        integrityCheck:
+          type: boolean
         lookupBPNs:
           type: boolean
     JobStatusResult:
@@ -2071,6 +2086,7 @@ components:
             - BpdmRequest
             - BpdmValidation
             - UsagePolicyValidation
+            - DataIntegrityCheck
         retryCounter:
           type: integer
           format: int32
@@ -2080,14 +2096,14 @@ components:
       type: object
       additionalProperties: false
       properties:
-        href:
-          type: string
         endpointProtocol:
           type: string
         endpointProtocolVersion:
           type: array
           items:
             type: string
+        href:
+          type: string
         subprotocol:
           type: string
         subprotocolBody:
@@ -2110,13 +2126,13 @@ components:
       type: object
       additionalProperties: false
       properties:
-        type:
-          type: string
         keys:
           type: array
           items:
             $ref: '#/components/schemas/SemanticId'
           maxItems: 2147483647
+        type:
+          type: string
     RegisterBatchOrder:
       type: object
       additionalProperties: false
@@ -2269,6 +2285,10 @@ components:
           enum:
             - upward
             - downward
+        integrityCheck:
+          type: boolean
+          description: Specifies if integrity of the data chain is checked. Default
+            is true.
         key:
           $ref: '#/components/schemas/PartChainIdentificationKey'
         lookupBPNs:
@@ -2331,9 +2351,9 @@ components:
           items:
             $ref: '#/components/schemas/Endpoint'
           maxItems: 2147483647
-        idShort:
-          type: string
         id:
+          type: string
+        idShort:
           type: string
         semanticId:
           $ref: '#/components/schemas/Reference'

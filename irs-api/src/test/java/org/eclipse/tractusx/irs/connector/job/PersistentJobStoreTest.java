@@ -33,18 +33,22 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
+import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -96,7 +100,7 @@ class PersistentJobStoreTest {
         final MinioBlobPersistence blobStore = new MinioBlobPersistence("http://" + minioContainer.getHostAddress(),
                 ACCESS_KEY, SECRET_KEY, "testbucket", 1);
         blobStoreSpy = Mockito.spy(blobStore);
-        sut = new PersistentJobStore(blobStoreSpy, meterRegistryService);
+        sut = new PersistentJobStore(blobStoreSpy, meterRegistryService, new DataIntegrityService(""));
     }
 
     @Test
@@ -280,7 +284,8 @@ class PersistentJobStoreTest {
         assertThat(job.getJob().getState()).isEqualTo(JobState.RUNNING);
     }
 
-    private void doNothing(final MultiTransferJob multiTransferJob) {
+    private ItemContainer doNothing(final MultiTransferJob multiTransferJob) {
+        return ItemContainer.builder().build();
     }
 
     @Test

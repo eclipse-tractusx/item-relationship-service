@@ -57,6 +57,7 @@ public class ItemTreesAssembler {
         final ArrayList<AssetAdministrationShellDescriptor> shells = new ArrayList<>();
         final ArrayList<Submodel> submodels = new ArrayList<>();
         final Set<Bpn> bpns = new HashSet<>();
+        final Set<IntegrityAspect> integrities = new HashSet<>();
 
         partialGraph.forEachOrdered(itemGraph -> {
             relationships.addAll(itemGraph.getRelationships());
@@ -65,6 +66,7 @@ public class ItemTreesAssembler {
             shells.addAll(itemGraph.getShells());
             submodels.addAll(itemGraph.getSubmodels());
             bpns.addAll(itemGraph.getBpnsWithManufacturerName());
+            integrities.addAll(itemGraph.getIntegrities());
         });
 
         log.info("Assembled item graph from {} partial graphs", numberOfPartialTrees);
@@ -75,6 +77,7 @@ public class ItemTreesAssembler {
                             .shells(shells)
                             .submodels(submodels)
                             .bpns(bpns)
+                            .integrities(integrities)
                             .build();
     }
 }

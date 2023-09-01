@@ -151,7 +151,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
                 List.of("singleLevelBomAsBuilt"));
 
-        final int expectedSubmodelsSizeFullTree = 5; // stub
+        final int expectedSubmodelsSizeFullTree = 8; // stub
 
         // when
         final JobHandle registeredJob = service.registerItemJob(registerJob);

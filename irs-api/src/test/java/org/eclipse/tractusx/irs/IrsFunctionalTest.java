@@ -117,7 +117,7 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getRelationships()).isNotEmpty();
         assertThat(finishedJob.get().getShells()).isNotEmpty();
         assertThat(finishedJob.get().getTombstones()).isEmpty();
-        assertThat(finishedJob.get().getSubmodels()).isEmpty();
+        assertThat(finishedJob.get().getSubmodels()).isNotEmpty();
         assertThat(finishedJob.get().getBpns()).isEmpty();
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();

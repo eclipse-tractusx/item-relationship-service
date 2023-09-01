@@ -46,6 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.jetbrains.annotations.Nullable;
 
@@ -135,9 +136,9 @@ public class MultiTransferJob {
         /**
          * Transition the job to the {@link JobState#COMPLETED} state.
          */
-        /* package */ MultiTransferJobBuilder transitionComplete() {
+        /* package */ MultiTransferJobBuilder transitionComplete(final IntegrityState integrityState) {
             return transition(JobState.COMPLETED, JobState.TRANSFERS_FINISHED, JobState.INITIAL).job(
-                    job.toBuilder().completedOn(ZonedDateTime.now(ZoneOffset.UTC)).build());
+                    job.toBuilder().completedOn(ZonedDateTime.now(ZoneOffset.UTC)).integrityState(integrityState).build());
         }
 
         /**
