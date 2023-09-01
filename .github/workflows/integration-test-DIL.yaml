@@ -1,4 +1,4 @@
-name: IRS DEV Cucumber Integration test execution
+name: IRS DIL Cucumber Integration test execution
 
 on:
   workflow_dispatch: # Trigger manually
