@@ -1,0 +1,167 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+| OEM  - IRS |
+start
+:Incident BPNS is identified;
+:Start investigation job in IRS via api call
+**POST /ess/bpn/investigations**;
+note left
+  "bomLifecycle": "asPlanned",
+  "incidentBPNSs": [
+    "BPNS111111111XX"
+  ],
+  "key": {
+    "bpn": "BPNL0123456789XX",
+    "globalAssetId": "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
+  }
+}
+end note
+: Request AAS in DT Registry for globalAssetId;
+: Request submodel for **SingleLevelBoMAsPlanned** for AAS;
+note left
+        Traverse PartChain OneLevelDown over
+        **SingleLevelBoMAsPlanned**
+end note
+    :Extract [childItems] from **SingleLevelBoMAsPlanned**;
+    :Extract attributes **businessPartner** for each [childItems];
+    :Lookup EDC Url for given BPNL in EDC DiscoveryService;
+    :discoveryServiceLookup getEDCBaseUrl(BPN);
+
+|DiscoveryService|
+    :return List<EDCBaseUrl> for passed BPN;
+| OEM  - IRS |
+    : Request AAS in DT Registry for childCXId;
+    : lookup/shells/${Identifier};
+|EDC|
+    : EEC Negotation;
+    : Catalog Offer for "DT_registry_Asset";
+    note left
+        EDC communication is not explained in detail.
+    end note
+|DTR_Registry|
+    : return AAS for childCXId;
+| OEM  - IRS |
+    : Request for submodel **PartSiteInformationAsPlanned** referenced in AAS;
+    : Extract **catenaXSiteId** from **PartSiteInformationAsPlanned** ;
+
+    if(incidentBPNSs.contains(**catenaXSiteId**))  then (true)
+        :Prepare response;
+        :create Job and ess submodel;
+        note left
+            job {
+             //details
+            }
+            submodels: [
+             {
+                  supplychain_impacted: yes|no|unknown
+                }
+             ]
+        end note
+
+
+    else (false)
+        :Prepare notification
+        **create ess supplier-request**;
+        :Collect and add all childCX_IDs with equals BPN number
+        the notification will be sent to as concernedCatenaXIds;
+        :send notification;
+
+| Tier 1  IRS |
+        :receive notification;
+        note left
+            {
+                "header": {
+                    "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+                    "senderBpn": "BPNL00000003BW3S",
+                    "recipientBpn": "BPNL00000003BV4H",
+                    "senderEdc": "https://edc.company-xyz.io/BPNL00000003BW3S",
+                    "replyAssetId": "ess-response-asset",
+                    "replyAssetSubPath" : "optionalSubPath",
+                    "notificationType": "ess-supplier-request"
+
+                },
+                "content": {
+                    "incidentBpn" : "BPNS123456"
+                    "concernedCatenaXIds" : ["CxUUID"]
+                }
+            }
+         end note
+        :Start investigation job in IRS via api call for each **concernedCatenaXIds**
+         **POST /ess/bpn/investigations**;
+
+        : Request Child assets in **SingleLevelBoMAsPlanned**;
+        : Request Child AAS for [childItems] in **SingleLevelBoMAsPlanned**;
+        : Check if submodel **PartSiteInformationAsPlanned** contains incidentBpn;
+        : Send notification for all [childItems] for each BPNL
+                  **create ess supplier-request**;
+            note left
+             1. Send notification over EDC Consumer
+             2. EDC Consumer forwards notification to EDC Provider
+             3. EDC Provider to SubmodelServer
+
+            end note
+
+        : Receive results;
+
+        :Prepare response;
+                :create Job and ess submodel;
+                note left
+                    job {
+                     //details
+                    }
+                    submodels: [
+                     {
+                          supplychain_impacted: yes|no|unknown
+                        }
+                     ]
+                end note
+         : send reponse notification
+            **create ess supplier-response**;  ;
+    endif;
+
+| OEM  - IRS |
+
+
+
+  note right
+        {
+            "header": {
+                "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+                "senderBpn": "BPNL00000003BW3S",
+                "recipientBpn": "BPNL00000003BV4H",
+                "senderEdc": "https://edc.company-xyz.io/BPNL00000003BW3S",
+                "replyAssetId": "ess-response-asset",
+                "replyAssetSubPath" : "optionalSubPath",
+                "originalNotificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+                "notificationType": "ess-supplier-response"
+            },
+            "content": {
+                "result" : "yes"
+            }
+        }
+    end note
+
+note right
+    job with ess submodel is returned to api caller
+end note
+:create Job and ess submodel;
+note left
+    job {
+     //details
+    }
+    submodels: [
+     {
+          supplychain_impacted: yes|no|unknown
+        }
+     ]
+end note
+
+
+
+stop
+
+
+
+@enduml
