@@ -6,7 +6,7 @@ The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS AP
 JWT token should also contain two claims:
 
 - 'bpn' which is equal to the configuration value from `API_ALLOWED_BPN` property
-- 'resource_access' with 'Cl20-CX-IRS' key. The list of values will be converted to roles by IRS. Currently IRS API handles two roles: 'admin_irs' and 'view_irs'. A valid token with the "admin_irs" role can access any endpoint exposed by the IRS API, while a token with the "view_irs" role does not have access to Policies endpoints and can operate only on resources it owns. That means that he only has access to the resources he has created, eg. Jobs and Batches. This behavior is shown in the table below.
+- 'resource_access' with 'Cl20-CX-IRS' key. The list of values will be converted to roles by IRS. Currently IRS API handles two roles: 'admin_irs' and 'view_irs'. A valid token with the "admin_irs" role can access any endpoint exposed by the IRS API, while a token with the "view_irs" role does not have access to Policies endpoints and can operate only on resources it owns. That means that he only has access to the resources he has created, e.g. Jobs and Batches. This behavior is shown in the table below.
 
 ==== Rights and Roles Matrix of IRS
 
