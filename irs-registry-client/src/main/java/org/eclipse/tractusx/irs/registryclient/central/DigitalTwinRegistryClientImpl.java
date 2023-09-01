@@ -31,10 +31,9 @@ import io.github.resilience4j.retry.annotation.Retry;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.registryclient.decentral.ShellQueryBody;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -45,6 +44,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient {
 
     private static final String PLACEHOLDER_AAS_IDENTIFIER = "aasIdentifier";
+    private static final String PLACEHOLDER_ASSET_IDS = "assetIds";
     private final RestTemplate restTemplate;
     private final String descriptorEndpoint;
     private final String shellLookupEndpoint;
@@ -95,15 +95,12 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
 
     @Override
     @Retry(name = "registry")
-    public List<String> getAllAssetAdministrationShellIdsByAssetLink(final List<IdentifierKeyValuePair> assetIds) {
-        final ShellQueryBody queryBody = ShellQueryBody.builder()
-                                                       .query(ShellQueryBody.ShellQuery.builder()
-                                                                                       .assetIds(assetIds)
-                                                                                       .build())
-                                                       .build();
-        return restTemplate.exchange(shellLookupEndpoint, HttpMethod.POST, new HttpEntity<>(queryBody),
-                new ParameterizedTypeReference<List<String>>() {
-                }).getBody();
+    public LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(
+            final List<IdentifierKeyValuePair> assetIds) {
+        final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
+        final var values = Map.of(PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds));
+        return restTemplate.exchange(uriBuilder.build(values), HttpMethod.GET, null, LookupShellsResponse.class)
+                           .getBody();
     }
 
 }

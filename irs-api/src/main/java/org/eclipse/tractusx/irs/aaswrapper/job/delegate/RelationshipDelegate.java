@@ -133,7 +133,7 @@ public class RelationshipDelegate extends AbstractDelegate {
     }
 
     private static List<Bpn> getBpnsFrom(final List<Relationship> relationships) {
-        return relationships.stream().map(Relationship::getBpn).map(Bpn::withManufacturerId).toList();
+        return relationships.stream().map(Relationship::getBpn).filter(StringUtils::isNotBlank).map(Bpn::withManufacturerId).toList();
     }
 
     private List<PartChainIdentificationKey> getIdsToProcess(final List<Relationship> relationships,

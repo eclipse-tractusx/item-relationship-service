@@ -65,7 +65,7 @@ public class ItemTreesAssembler {
             tombstones.addAll(itemGraph.getTombstones());
             shells.addAll(itemGraph.getShells());
             submodels.addAll(itemGraph.getSubmodels());
-            bpns.addAll(itemGraph.getBpns());
+            bpns.addAll(itemGraph.getBpnsWithManufacturerName());
             integrities.addAll(itemGraph.getIntegrities());
         });
 

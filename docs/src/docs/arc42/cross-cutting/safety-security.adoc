@@ -3,12 +3,34 @@
 == Authentication / Authorization
 === IRS API
 The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
-JWT token should also contain two fields:
+JWT token should also contain two claims:
 
-- `view_irs` role inside `resource_access` claim,
-- BPN claim which is equal to the configuration value from `API_ALLOWED_BPN` property
+- 'bpn' which is equal to the configuration value from `API_ALLOWED_BPN` property
+- 'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. The list of values will be converted to roles by IRS. Currently, IRS API handles two roles: **'admin_irs'** and **'view_irs'.** A valid token with the **'admin_irs'** role can access any endpoint exposed by the IRS API, while a token with the **'view_irs'** role does not have access to policies endpoints and can operate only on resources it owns. That means that he only has access to the resources he has created, e.g. jobs and batches. This behavior is shown in the table below.
 
-*Note: IRS currently does not support any other roles or rights. As long as you provide a valid token with the content listed above, you can access the IRS API to view and control all jobs on the IRS instance.*
+==== Rights and Roles Matrix of IRS
+
+|===
+| Category         | Action            | Endpoint                        | view_irs   | admin_irs
+| Policy Store     | Add policy        | POST /irs/policies              |            | x
+|                  | Get policies      | GET /irs/policies               |            | x
+|                  | Update policy     | PUT /irs/policies/{policyId}    |            | x
+|                  | Delete policy     | DELETE /irs/policies/{policyId} |            | x
+| Aspect models    | Get aspect models | GET /irs/aspectmodels           |  x         | x
+| Job processing   | Register job      | POST /irs/jobs                  | (x)        | x
+|                  | Get jobs          | GET /irs/jobs                   | (x)        | x
+|                  | Get job           | GET /irs/jobs/{jobId}           | (x)        | x
+|                  | Cancel job        | PUT /irs/jobs/{jobId}           | (x)        | x
+| Batch processing | Register order    | POST /irs/orders                | (x)        | x
+|                  | Get order         | GET /irs/orders/{orderId}       | (x)        | x
+|                  | Cancel order      | PUT /irs/orders/{orderId}       | (x)        | x
+|                  | Get batch         | GET /irs/orders/{orderId}/batches/{batchId}  | (x)    | x
+| Environmental- and
+Social Standards   | Register investigation job | POST /ess/bpn/investigations        | (x)    | x
+|                  | Get investigation job      | GET /ess/bpn/investigations{id}     | (x)    | x
+|                  | Accept notifications       | POST /ess/notification/receive      | x      | x
+|===
+Legend: x  = full access to all resources, (x) = access to the resources he owns
 
 === IRS as DTR client
 The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.

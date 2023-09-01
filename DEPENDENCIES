@@ -104,8 +104,11 @@ maven/mavencentral/org.apiguardian/apiguardian-api/1.1.2, Apache-2.0, approved, 
 maven/mavencentral/org.aspectj/aspectjweaver/1.9.19, EPL-1.0, approved, tools.aspectj
 maven/mavencentral/org.assertj/assertj-core/3.24.2, Apache-2.0, approved, #6161
 maven/mavencentral/org.bouncycastle/bcpkix-jdk18on/1.75, MIT, approved, #9166
+maven/mavencentral/org.bouncycastle/bcpkix-jdk18on/1.76, MIT, approved, #9825
 maven/mavencentral/org.bouncycastle/bcprov-jdk18on/1.75, MIT AND CC0-1.0, approved, #9167
+maven/mavencentral/org.bouncycastle/bcprov-jdk18on/1.76, MIT AND CC0-1.0, approved, #9827
 maven/mavencentral/org.bouncycastle/bcutil-jdk18on/1.75, MIT, approved, #9170
+maven/mavencentral/org.bouncycastle/bcutil-jdk18on/1.76, MIT, approved, #9828
 maven/mavencentral/org.checkerframework/checker-qual/3.33.0, MIT, approved, clearlydefined
 maven/mavencentral/org.eclipse.edc/aggregate-service-spi/0.1.3, Apache-2.0, approved, technology.edc
 maven/mavencentral/org.eclipse.edc/asset-spi/0.1.3, Apache-2.0, approved, technology.edc
@@ -155,7 +158,7 @@ maven/mavencentral/org.eclipse.tractusx.irs/irs-edc-client/0.0.2-SNAPSHOT, Apach
 maven/mavencentral/org.eclipse.tractusx.irs/irs-ess/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-models/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.eclipse.tractusx.irs/irs-policy-store/0.0.2-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
-maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.1.0-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
+maven/mavencentral/org.eclipse.tractusx.irs/irs-registry-client/1.2.1-SNAPSHOT, Apache-2.0, approved, automotive.tractusx
 maven/mavencentral/org.glassfish/jakarta.json/2.0.1, EPL-2.0 OR GPL-2.0-only with Classpath-exception-2.0, approved, ee4j.jsonp
 maven/mavencentral/org.graalvm.sdk/graal-sdk/23.0.1, UPL-1.0, approved, #9850
 maven/mavencentral/org.hamcrest/hamcrest-core/2.2, BSD-3-Clause, approved, clearlydefined

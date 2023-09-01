@@ -29,6 +29,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.extern.jackson.Jacksonized;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
@@ -63,4 +64,8 @@ public class ItemContainer {
 
     @Singular
     private List<RequestMetric> metrics;
+
+    public List<Bpn> getBpnsWithManufacturerName() {
+        return this.getBpns().stream().filter(bpn -> StringUtils.isNotBlank(bpn.getManufacturerName())).toList();
+    }
 }

@@ -20,28 +20,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.registryclient.decentral;
+package org.eclipse.tractusx.irs.policystore.models;
 
-import java.util.List;
+import java.time.OffsetDateTime;
 
-import lombok.Builder;
-import lombok.Data;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 /**
- * Body for Digital Twin Registry Query Request.
+ * Request object for policy update
+ *
  */
-@Data
-@Builder
-public class ShellQueryBody {
-    private final ShellQuery query;
+@Schema(description = "Request to add a policy")
+public record UpdatePolicyRequest(@Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil) {
 
-    /**
-     * List of Identifier Name-Value Pairs for Digital Twin Registry Query.
-     */
-    @Data
-    @Builder
-    public static class ShellQuery {
-        private final List<IdentifierKeyValuePair> assetIds;
-    }
 }
