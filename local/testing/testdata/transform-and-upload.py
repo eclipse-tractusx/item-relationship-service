@@ -327,6 +327,8 @@ if __name__ == "__main__":
     parser.add_argument("--aas3", help="Create AAS assets in version 3.0", action='store_true', required=False)
     parser.add_argument("-d", "--dataplane", type=str, nargs="*", help="EDC provider data plane display URLs",
                         required=False)
+    parser.add_argument("--allowedBPNs", type=str, nargs="*",
+                        help="The allowed BPNs for digital twin registration in the registry.", required=False)
 
     args = parser.parse_args()
     config = vars(args)
@@ -346,6 +348,7 @@ if __name__ == "__main__":
     bpns_list = config.get("bpns")
     is_aas3 = config.get("aas3")
     dataplane_urls = config.get("dataplane")
+    allowedBPNs = config.get("allowedBPNs")
 
     if is_aas3 and dataplane_urls is None:
         raise ArgumentException("Dataplane URLs have to be specified with -d or --dataplane if --aas flag is set!")
@@ -360,6 +363,9 @@ if __name__ == "__main__":
 
     if aas_upload_url is None:
         aas_upload_url = aas_url
+
+    if allowedBPNs is None:
+        allowedBPNs = []
 
     registry_path = "/registry/shell-descriptors"
     if is_aas3:
@@ -457,23 +463,25 @@ if __name__ == "__main__":
                     })
             print(name_at_manufacturer)
 
-            specific_asset_ids_temp.append({
+            manufacturerId = {
                 "key": "manufacturerId",
                 "value": tmp_data["bpnl"]
-            })
+            }
+            if manufacturerId not in specific_asset_ids_temp:
+                specific_asset_ids_temp.append(manufacturerId)
             if is_aas3:
+                keys = [{
+                    "type": "GlobalReference",
+                    "value": "PUBLIC_READABLE"
+                }]
+                for bpn in allowedBPNs:
+                    keys.append({
+                        "type": "GlobalReference",
+                        "value": bpn
+                    })
                 externalSubjectId = {
                     "type": "ExternalReference",
-                    "keys": [
-                        {
-                            "type": "GlobalReference",
-                            "value": "BPNL00000001CRHK"
-                        },
-                        {
-                            "type": "GlobalReference",
-                            "value": "PUBLIC_READABLE"
-                        }
-                    ]
+                    "keys": keys
                 }
                 for asset in specific_asset_ids_temp:
                     specific_asset_ids.append({
