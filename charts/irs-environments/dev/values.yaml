@@ -3,7 +3,7 @@ irs-helm:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs.dev.demo.catena-x.net"
-  bpn: BPNL00000003CRHK
+  bpn: <path:traceability-irs/data/dev/irs#bpn>
   ingress:
     enabled: true
     className: "nginx"
