@@ -1,0 +1,22 @@
+name: IRS DEV Cucumber Integration test execution
+
+on:
+  workflow_dispatch: # Trigger manually
+
+# Cancel previous Test executions if a new one is triggered.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  trigger-integration-test:
+    uses: ./.github/workflows/xray-cucumber-integration.yaml
+    secrets:
+      keycloakTokenUrl: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
+      clientId: ${{ secrets.ORG_IRS_OAUTH2_CLIENT_ID_DIL }}
+      clientSecret: ${{ secrets.ORG_IRS_OAUTH2_CLIENT_SECRET_DIL }}
+      jiraUser: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
+      jiraPassword: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
+    with:
+      executionFilter: "not @Ignore and @INTEGRATION_TEST and @DIL"
+      exportFilter: "11349"
