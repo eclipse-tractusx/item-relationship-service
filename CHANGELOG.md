@@ -20,7 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.3.4] - 2023-08-24
 ### Fixed
 - Added missing license information to documentation and docker image
->>>>>>> main
 
 ## [3.3.3] - 2023-08-11
 ### Changed
