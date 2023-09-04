@@ -18,28 +18,30 @@ note left
   }
 }
 end note
-: Request AAS in DT Registry for globalAssetId;
-: Request submodel for **SingleLevelBoMAsPlanned** for AAS;
+: Request AAS in DT Registry
+ for **globalAssetId**;
+    :Lookup EDC Url for given BPNL in EDC DiscoveryService
+    discoveryServiceLookup getEDCBaseUrl(BPN);
+
+|DTR_Registry|
+    : return AAS for childCXId;
+| OEM  - IRS |
+: Request submodel for
+**SingleLevelBoMAsPlanned** for AAS;
 note left
         Traverse PartChain OneLevelDown over
         **SingleLevelBoMAsPlanned**
 end note
     :Extract [childItems] from **SingleLevelBoMAsPlanned**;
     :Extract attributes **businessPartner** for each [childItems];
-    :Lookup EDC Url for given BPNL in EDC DiscoveryService;
-    :discoveryServiceLookup getEDCBaseUrl(BPN);
-
-|DiscoveryService|
-    :return List<EDCBaseUrl> for passed BPN;
+    : Request AAS in DT Registry
+        for **childItems CX-ID**;
+|DTR_Registry|
+    : return AAS for childCXId;
 | OEM  - IRS |
-    : Request AAS in DT Registry for childCXId;
-    : lookup/shells/${Identifier};
-|EDC|
-    : EEC Negotation;
-    : Catalog Offer for "DT_registry_Asset";
-    note left
-        EDC communication is not explained in detail.
-    end note
+    : Request AAS in DT Registry for childCXId
+     lookup/shells/${Identifier};
+
 |DTR_Registry|
     : return AAS for childCXId;
 | OEM  - IRS |
@@ -47,8 +49,8 @@ end note
     : Extract **catenaXSiteId** from **PartSiteInformationAsPlanned** ;
 
     if(incidentBPNSs.contains(**catenaXSiteId**))  then (true)
-        :Prepare response;
-        :create Job and ess submodel;
+        :Prepare response
+        Create Job and ess submodel;
         note left
             job {
              //details
@@ -105,19 +107,10 @@ end note
 
         : Receive results;
 
-        :Prepare response;
-                :create Job and ess submodel;
-                note left
-                    job {
-                     //details
-                    }
-                    submodels: [
-                     {
-                          supplychain_impacted: yes|no|unknown
-                        }
-                     ]
-                end note
-         : send reponse notification
+        :Prepare response
+        Create Job and ess submodel;
+
+         : Send reponse notification
             **create ess supplier-response**;  ;
     endif;
 
@@ -146,19 +139,8 @@ end note
 note right
     job with ess submodel is returned to api caller
 end note
-:create Job and ess submodel;
-note left
-    job {
-     //details
-    }
-    submodels: [
-     {
-          supplychain_impacted: yes|no|unknown
-        }
-     ]
-end note
-
-
+:create Job and ess submodel
+send response to requestor;
 
 stop
 
