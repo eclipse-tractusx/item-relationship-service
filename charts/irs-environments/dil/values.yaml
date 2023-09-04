@@ -1,0 +1,321 @@
+irs-helm:
+  #####################
+  # IRS Configuration #
+  #####################
+  irsUrl: "https://irs-dil.dev.demo.catena-x.net"
+  image:
+    repository: ghcr.io/catenax-ng/irs-api
+    tag: PR-469
+  bpn: BPNL00000001CRHK
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    hosts:
+      - host: "irs-dil.dev.demo.catena-x.net"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - "irs-dil.dev.demo.catena-x.net"
+        secretName: tls-secret
+  digitalTwinRegistry:
+    url: https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0
+    discoveryFinderUrl: https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search
+    shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
+    lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
+  semanticshub:
+    url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
+  bpdm:
+    url: https://partners-pool.int.demo.catena-x.net
+  minioUser: <path:traceability-irs/data/dev/minio#minioUser>
+  minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
+  keycloak:
+    oauth2:
+      clientId: <path:traceability-irs/data/dil/keycloak/oauth2#clientId>
+      clientSecret: <path:traceability-irs/data/dil/keycloak/oauth2#clientSecret>
+      clientTokenUri: <path:traceability-irs/data/dil/keycloak/oauth2#tokenUri>
+      jwkSetUri: <path:traceability-irs/data/dil/keycloak/oauth2#jwkSetUri>
+  edc:
+    controlplane:
+      apikey:
+        secret: <path:traceability-irs/data/dev/controlplane#apiKey>
+  config:
+    override: true
+    content:
+      # Config overriding Spring Boot configuration
+      server:
+        trustedPort: 8181
+
+      irs:
+        apiUrl: "https://irs-dil.dev.demo.catena-x.net"
+
+      blobstore:
+        endpoint: "http://irs-dil-minio:9000"
+        accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+        secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+
+      policystore:
+        persistence:
+          endpoint: "http://irs-dil-minio:9000"
+          accessKey: "${MINIO_ACCESS_KEY}" # taken from secret ENV
+          secretKey: "${MINIO_SECRET_KEY}" # taken from secret ENV
+
+      spring:
+        security:
+          oauth2:
+            client:
+              registration:
+                keycloak:
+                  client-id: "${KEYCLOAK_OAUTH2_CLIENT_ID}" # taken from secret ENV
+                  client-secret: "${KEYCLOAK_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+                portal:
+                  client-id: ${PORTAL_OAUTH2_CLIENT_ID} # taken from secret ENV
+                  client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # taken from secret ENV
+              provider:
+                keycloak:
+                  token-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#tokenUri>"
+                portal:
+                  token-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#tokenUri>"
+            resourceserver:
+              jwt:
+                jwk-set-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#jwkSetUri>"
+
+      digitalTwinRegistry:
+        descriptorEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/shell-descriptors/{aasIdentifier}"
+        shellLookupEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/lookup/shells?assetIds={assetIds}"
+        discoveryFinderUrl: "https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search"
+        shellDescriptorTemplate: "/shell-descriptors/{aasIdentifier}"
+        lookupShellsTemplate: "/lookup/shells?assetIds={assetIds}"
+        type: "decentral"
+
+      semanticshub:
+        url: "https://semantics.int.demo.catena-x.net/hub/api/v1/models"
+        pageSize: 100
+        modelJsonSchemaEndpoint: "https://semantics.int.demo.catena-x.net/hub/api/v1/models/{urn}/json-schema"
+        defaultUrns: ""
+
+      bpdm:
+        bpnEndpoint: "https://partners-pool.int.demo.catena-x.net/api/catena/legal-entities/{partnerId}?idType={idType}"
+
+      irs-edc-client:
+        callback-url: "http://irs-dil-irs-helm:8181/internal/endpoint-data-reference"
+        controlplane:
+          request-ttl: "PT10M"
+          endpoint:
+            data: "http://irs-dil-tractusx-connector-controlplane:8081/management"
+            catalog: "/v2/catalog/request"
+            contract-negotiation: "/v2/contractnegotiations"
+            transfer-process: "/v2/transferprocesses"
+            state-suffix: "/state"
+          provider-suffix: "/api/v1/dsp"
+          catalog-limit: 1000
+          catalog-page-size: 50
+          api-key:
+            header: "X-Api-Key"
+            secret: ${EDC_API_KEY_SECRET:} # taken from secret ENV
+
+        submodel:
+          request-ttl: "PT10M"
+          path: "/submodel"
+          urn-prefix: "/urn"
+
+        catalog:
+          policies:
+            acceptedRightOperands: "active"
+            acceptedLeftOperands: "PURPOSE"
+
+      edc:
+        catalog:
+          policies:
+            allowedNames: "ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability, Membership"
+
+      ess:
+        localBpn: "BPNL00000001CRHK"
+        localEdcEndpoint: ""
+        managementPath: "/management/v2"
+        irs:
+          url: "https://irs-dil.dev.demo.catena-x.net"
+        discovery:
+          endpoint: ""
+          oAuthClientId: portal
+
+      integrity:
+        publicKeyCert: |
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6h9Uz0RH9xwlb/rqSws2
+          JccIs817v1wfgLDGDY36YwzKVBNm+5IUJvCwLeMRZJ6otUFYQUUInQgM6MgW90z7
+          k9SjUB7UxiSqZFfwIF6uanN0HisEo5dCfGSzLQBIrg1nw/CPKGf8Vn5kZ/+5aBl3
+          dLu8pht+29yALFNZxThmnUx2rmTB9fH0SKtgY9HxBzQlbYuiwhqgbpnWTgCQb+F5
+          6Q3TnvXyG3DkOMYvzdle/QLPm+ywSf1FKp/qOaX483yVN5GpkWkQJwA5fsBGFkmT
+          7hmisXEyTiIps5yR/scAOjj7evQk6+FqRksPr8mOwYwBU7F6LjnJRtg9WeHZn0CA
+          GQIDAQAB
+          -----END PUBLIC KEY-----
+
+  resources:
+    limits:
+      cpu: 1
+      memory: 1.5Gi
+    requests:
+      cpu: 100m
+      memory: 1.5Gi
+
+
+  #######################
+  # Minio Configuration #
+  #######################
+  minio:
+    rootUser: <path:traceability-irs/data/dev/minio#minioUser>
+    rootPassword: <path:traceability-irs/data/dev/minio#minioPassword>
+    serviceAccount:
+      name: "irs-dil-minio-sa"
+
+
+tractusx-connector:
+  install:
+    postgresql: false
+    vault: false
+  participant:
+    id: <path:traceability-irs/data/dev/controlplane#participantId>
+
+  controlplane:
+    # SSI configuration
+    ssi:
+      miw:
+        url: <path:traceability-irs/data/dev/controlplane#ssi.miw.url>
+        authorityId: <path:traceability-irs/data/dev/controlplane#ssi.miw.authorityId>
+      oauth:
+        tokenurl: <path:traceability-irs/data/dev/controlplane#ssi.oauth.tokenurl>
+        client:
+          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id>
+          secretAlias: edc-test-miw-keycloak-secret
+    ingresses:
+      - enabled: true
+        hostname: "irs-dil-consumer-controlplane.dev.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - protocol
+          - management
+        tls:
+          enabled: true
+          secretName: tls-secret
+
+    endpoints:
+      # -- data management api, used by internal users, can be added to an ingress and must not be internet facing
+      management:
+        port: 8081
+        path: /management
+        authKey: <path:traceability-irs/data/dev/controlplane#apiKey>  # -- authentication key, must be attached to each 'X-Api-Key' request header
+      # -- protocol api, used for inter connector communication and must be internet facing
+      protocol:
+        port: 8084
+        path: /api/v1/dsp
+      # -- observability api with unsecured access, must not be internet facing
+      observability:
+        port: 8085
+        path: /observability  # -- observability api, provides /health /readiness and /liveness endpoints
+        insecure: true  # -- allow or disallow insecure access, i.e. access without authentication
+
+    internationalDataSpaces:
+      id: TXDC
+      description: Tractus-X Eclipse IDS Data Space Connector
+      title: ""
+      maintainer: ""
+      curator: ""
+      catalogId: TXDC-Catalog
+
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 2Gi
+
+  dataplane:
+    ingresses:
+      - enabled: true
+        hostname: "irs-dil-consumer-dataplane.dev.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - public
+        className: "nginx"
+        tls:
+          enabled: true
+          secretName: tls-secret
+
+    endpoints:
+      public:
+        port: 8081
+        path: /api/public
+      observability:
+        port: 8085
+        path: /observability
+        insecure: true
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+
+  # URL where the EndpointDataReference callback will be sent to
+  backendService:
+    httpProxyTokenReceiverUrl: "http://irs-dev-irs-helm:8181/internal/endpoint-data-reference"
+
+  ################################
+  # EDC Vault/DAPS Configuration #
+  ################################
+  vault:
+    hashicorp:
+      url: "https://vault.demo.catena-x.net"
+      token: "<path:traceability-irs/data/dev/controlplane#vaultToken>"
+      timeout: 30
+      healthCheck:
+        enabled: true
+        standbyOk: true
+      paths:
+        secret: /v1/traceability-irs
+        health: /v1/sys/health
+    secretNames:
+      transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-consumer-key
+      transferProxyTokenSignerPublicKey: irs-dev-daps-cert-consumer
+      transferProxyTokenEncryptionAesKey: test-edc-encryption-key
+
+  ##################################
+  # EDC Postgres Configuration #
+  ##################################
+  postgresql:
+    enabled: true
+    auth:
+      username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
+      password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
+    username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
+    password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
+    jdbcUrl: "jdbc:postgresql://irs-dev-edc-postgresql-hl:5432/edc"
+
+##############################
+# EDC Postgres Configuration #
+##############################
+# EDC chart do not support multiple postgres instances in the same namespace at the moment.
+# Enable this to use the postgres dependency for when you want to deploy multiple EDC instances in one namespace
+postgresql:
+  enabled: true
+edc-postgresql:
+  auth:
+    database: edc
+    username: <path:traceability-irs/data/dev/controlplane#databaseuser>
+    postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
+    password: <path:traceability-irs/data/dev/controlplane#databasepassword>
