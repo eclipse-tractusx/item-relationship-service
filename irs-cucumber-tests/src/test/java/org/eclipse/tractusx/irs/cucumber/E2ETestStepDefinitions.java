@@ -64,6 +64,7 @@ import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -171,6 +172,11 @@ public class E2ETestStepDefinitions {
     public void bomlifecycle(String bomLifecycle) {
         registerJobBuilder.bomLifecycle(BomLifecycle.fromValue(bomLifecycle));
         registerBatchOrderBuilder.bomLifecycle(BomLifecycle.fromValue(bomLifecycle));
+    }
+
+    @And("integrityCheck {string}")
+    public void integrityCheck(String integrityCheck) {
+        registerJobBuilder.integrityCheck(Boolean.parseBoolean(integrityCheck));
     }
 
     @And("aspects :")
@@ -477,6 +483,11 @@ public class E2ETestStepDefinitions {
                                      .stream()
                                      .filter(submodel -> submodel.getPayload().toString().contains(bpnlNumber))
                                      .count()).isGreaterThanOrEqualTo(numberOfOccurrence);
+    }
+
+    @And("I check, if integrityState is {string}")
+    public void iCheckIfIntegrityStateIs(String state) {
+        assertThat(completedJob.getJob().getIntegrityState()).isEqualTo(IntegrityState.valueOf(state));
     }
 
     @And("{string} are empty")
