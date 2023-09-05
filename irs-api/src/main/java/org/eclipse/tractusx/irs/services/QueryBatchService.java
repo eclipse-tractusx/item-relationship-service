@@ -82,12 +82,6 @@ public class QueryBatchService {
     }
 
     public BatchResponse findBatchById(final UUID batchOrderId, final UUID batchId) {
-        final Integer totalJobs = batchStore.findAll()
-                                            .stream()
-                                            .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
-                                            .map(batch -> batch.getJobProgressList().size())
-                                            .reduce(0, Integer::sum);
-
         final Batch batchResponse = batchStore.find(batchId)
                                               .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
                                               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -98,6 +92,12 @@ public class QueryBatchService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot accessBatch with orderId: " + batchOrderId
                     + " and id: " + batchId + " due to missing privileges.");
         }
+
+        final Integer totalJobs = batchStore.findAll()
+                                            .stream()
+                                            .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
+                                            .map(batch -> batch.getJobProgressList().size())
+                                            .reduce(0, Integer::sum);
 
         return toBatchResponse(batchResponse, totalJobs);
     }

@@ -179,10 +179,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        return this.registerItemJob(request, null);
+        return this.registerItemJob(request, null, securityHelperService.getClientIdClaim());
     }
 
-    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId) {
+    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId, final String owner) {
         final var params = buildJobParameter(request);
         if (params.getDirection().equals(Direction.UPWARD) && !params.getBomLifecycle().equals(BomLifecycle.AS_BUILT)) {
             // Currently not supported variant
@@ -194,7 +194,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(),
-                params, batchId);
+                params, batchId, owner);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {

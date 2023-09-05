@@ -115,7 +115,7 @@ public class BatchOrderEventListener {
                                                      .map(identificationKey -> createRegisterJob(batchOrder, identificationKey))
                                                      .map(registerJob -> createJobProgress(
                                                              irsItemGraphQueryService.registerItemJob(registerJob,
-                                                                     batch.getBatchId()),
+                                                                     batch.getBatchId(), batch.getOwner()),
                                                              registerJob.getKey()))
                                                      .toList();
         batch.setJobProgressList(createdJobIds);
