@@ -24,7 +24,10 @@ end note
     discoveryServiceLookup getEDCBaseUrl(BPN);
 
 |DTR_Registry|
-    : return AAS for childCXId;
+    partition "lookup AAS" {
+        : return AAS for globalAssetId;
+    }
+
 | OEM  - IRS |
 : Request submodel for
 **SingleLevelBoMAsPlanned** for AAS;
@@ -35,15 +38,13 @@ end note
     :Extract [childItems] from **SingleLevelBoMAsPlanned**;
     :Extract attributes **businessPartner** for each [childItems];
     : Request AAS in DT Registry
-        for **childItems CX-ID**;
+        for **childItems CX-ID**
+        lookup/shells/${Identifier};
 |DTR_Registry|
-    : return AAS for childCXId;
-| OEM  - IRS |
-    : Request AAS in DT Registry for childCXId
-     lookup/shells/${Identifier};
+    partition "lookup AAS" {
+        : return AAS for childCXId;
+    }
 
-|DTR_Registry|
-    : return AAS for childCXId;
 | OEM  - IRS |
     : Request for submodel **PartSiteInformationAsPlanned** referenced in AAS;
     : Extract **catenaXSiteId** from **PartSiteInformationAsPlanned** ;
@@ -66,45 +67,56 @@ end note
     else (false)
         :Prepare notification
         **create ess supplier-request**;
-        :Collect and add all childCX_IDs with equals BPN number
-        the notification will be sent to as concernedCatenaXIds;
+        :Collect and add all childCX_IDs
+        with equals BPN number
+        the notification will be sent to all concernedCatenaXIds;
         :send notification;
 
 | Tier 1  IRS |
-        :receive notification;
-        note left
-            {
-                "header": {
-                    "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
-                    "senderBpn": "BPNL00000003BW3S",
-                    "recipientBpn": "BPNL00000003BV4H",
-                    "senderEdc": "https://edc.company-xyz.io/BPNL00000003BW3S",
-                    "replyAssetId": "ess-response-asset",
-                    "replyAssetSubPath" : "optionalSubPath",
-                    "notificationType": "ess-supplier-request"
-
-                },
-                "content": {
-                    "incidentBpn" : "BPNS123456"
-                    "concernedCatenaXIds" : ["CxUUID"]
-                }
-            }
-         end note
-        :Start investigation job in IRS via api call for each **concernedCatenaXIds**
-         **POST /ess/bpn/investigations**;
-
-        : Request Child assets in **SingleLevelBoMAsPlanned**;
-        : Request Child AAS for [childItems] in **SingleLevelBoMAsPlanned**;
-        : Check if submodel **PartSiteInformationAsPlanned** contains incidentBpn;
-        : Send notification for all [childItems] for each BPNL
-                  **create ess supplier-request**;
+         partition "Process BPNS incestigtion on tier level" {
+            :receive notification;
             note left
-             1. Send notification over EDC Consumer
-             2. EDC Consumer forwards notification to EDC Provider
-             3. EDC Provider to SubmodelServer
+                {
+                    "header": {
+                        "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+                        "senderBpn": "BPNL00000003BW3S",
+                        "recipientBpn": "BPNL00000003BV4H",
+                        "senderEdc": "https://edc.company-xyz.io/BPNL00000003BW3S",
+                        "replyAssetId": "ess-response-asset",
+                        "replyAssetSubPath" : "optionalSubPath",
+                        "notificationType": "ess-supplier-request"
 
-            end note
+                    },
+                    "content": {
+                        "incidentBpn" : "BPNS123456"
+                        "concernedCatenaXIds" : ["CxUUID"]
+                    }
+                }
+             end note
+            :Start investigation job in IRS via api call for each **concernedCatenaXIds**
+             **POST /ess/bpn/investigations**;
 
+            : Request Child assets in **SingleLevelBoMAsPlanned**;
+            : Request Child AAS for [childItems] in **SingleLevelBoMAsPlanned**;
+            : Check if submodel **PartSiteInformationAsPlanned** contains incidentBpn;
+            : Send notification for all [childItems] for each BPNL
+                      **create ess supplier-request**;
+                note left
+                 1. Send notification over EDC Consumer
+                 2. EDC Consumer forwards notification to EDC Provider
+                 3. EDC Provider to SubmodelServer
+
+                end note
+
+            :send notification;
+         }
+|#AntiqueWhite| Tier 2  IRS |
+         partition "Process BPNS incestigtion on next tier level" {
+            :receive notification;
+            :BPNS incident check on 1 level down structure;
+            :send response notification;
+        }
+| Tier 1  IRS |
         : Receive results;
 
         :Prepare response
@@ -115,10 +127,8 @@ end note
     endif;
 
 | OEM  - IRS |
-
-
-
-  note right
+    : receive notification;
+ note right
         {
             "header": {
                 "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
@@ -135,11 +145,11 @@ end note
             }
         }
     end note
-
 note right
     job with ess submodel is returned to api caller
 end note
 :create Job and ess submodel
+
 send response to requestor;
 
 stop
