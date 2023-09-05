@@ -246,8 +246,8 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
             try {
                 final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(
                         config.getModelJsonSchemaEndpoint());
-                final Map<String, String> values = Map.of(PLACEHOLDER_URN, urn);
-                return Optional.ofNullable(restTemplate.getForObject(uriBuilder.build(values), String.class));
+                uriBuilder.uriVariables(Map.of(PLACEHOLDER_URN, urn));
+                return Optional.ofNullable(restTemplate.getForObject(uriBuilder.build().toUri(), String.class));
             } catch (final RestClientException e) {
                 log.error("Unable to retrieve schema from semantic hub for urn '{}'", urn, e);
             }
