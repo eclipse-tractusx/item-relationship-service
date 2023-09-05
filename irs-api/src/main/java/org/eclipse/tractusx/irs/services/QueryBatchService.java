@@ -89,7 +89,7 @@ public class QueryBatchService {
                                                                               + " and id: " + batchId));
 
         if (!securityHelperService.isAdmin() && !batchResponse.getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot accessBatch with orderId: " + batchOrderId
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access Batch with orderId: " + batchOrderId
                     + " and id: " + batchId + " due to missing privileges.");
         }
 
