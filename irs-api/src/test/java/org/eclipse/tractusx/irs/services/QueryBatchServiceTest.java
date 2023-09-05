@@ -23,10 +23,13 @@
 package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
@@ -46,14 +49,21 @@ class QueryBatchServiceTest {
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
     private JobStore jobStore;
+
+    private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
     private QueryBatchService service;
+
+    private static final String owner = "TestUser";
 
     @BeforeEach
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
         jobStore = new InMemoryJobStore();
-        service = new QueryBatchService(batchOrderStore, batchStore, jobStore);
+
+        when(securityHelperService.getClientIdForViewIrs()).thenReturn(owner);
+
+        service = new QueryBatchService(batchOrderStore, batchStore, jobStore, securityHelperService);
     }
 
     @Test
@@ -94,15 +104,16 @@ class QueryBatchServiceTest {
     }
 
     private BatchOrder createBatchOrder(final UUID batchOrderId) {
-        return BatchOrder.builder().batchOrderId(batchOrderId).build();
+        return BatchOrder.builder().batchOrderId(batchOrderId).owner(owner).build();
     }
 
     private Batch createBatch(final UUID batchId, final UUID batchOrderId) {
-        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).jobProgressList(List.of(
-                JobProgress.builder().jobId(UUID.randomUUID()).build(),
-                JobProgress.builder().jobId(UUID.randomUUID()).build(),
-                JobProgress.builder().jobId(UUID.randomUUID()).build()
-        )).build();
+        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).owner(owner)
+                    .jobProgressList(List.of(
+                            JobProgress.builder().jobId(UUID.randomUUID()).build(),
+                            JobProgress.builder().jobId(UUID.randomUUID()).build(),
+                            JobProgress.builder().jobId(UUID.randomUUID()).build()
+                    )).build();
     }
 
 }

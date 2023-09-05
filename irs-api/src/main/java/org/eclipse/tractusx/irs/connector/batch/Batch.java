@@ -91,4 +91,9 @@ public class Batch {
     @Setter
     private ZonedDateTime completedOn;
 
+    /**
+     * Owner
+     */
+    private String owner;
+
 }

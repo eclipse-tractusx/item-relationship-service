@@ -42,6 +42,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
 import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
@@ -85,6 +86,7 @@ public class JobConfiguration {
             final DigitalTwinDelegate digitalTwinDelegate,
             @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JobStore jobStore,
             final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
+            final SecurityHelperService securityHelperService,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
             @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs) {
 
@@ -94,7 +96,7 @@ public class JobConfiguration {
         final var handler = new AASRecursiveJobHandler(logic);
         final JobTTL jobTTL = new JobTTL(ttlCompletedJobs, ttlFailedJobs);
 
-        return new JobOrchestrator<>(manager, jobStore, handler, meterService, applicationEventPublisher, jobTTL);
+        return new JobOrchestrator<>(manager, jobStore, handler, securityHelperService, meterService, applicationEventPublisher, jobTTL);
     }
 
     @Bean

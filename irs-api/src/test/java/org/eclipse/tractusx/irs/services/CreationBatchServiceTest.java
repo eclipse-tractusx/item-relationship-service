@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
@@ -59,6 +60,7 @@ class CreationBatchServiceTest {
     private BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener = mock(JobEventLinkedQueueListener.class);
+    private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
     private final IrsConfiguration irsConfiguration = mock(IrsConfiguration.class);
     private final static String EXAMPLE_URL = "https://exampleUrl.com";
     private CreationBatchService service;
@@ -68,7 +70,7 @@ class CreationBatchServiceTest {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
         service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher,
-                jobEventLinkedQueueListener, irsConfiguration);
+                jobEventLinkedQueueListener, securityHelperService, irsConfiguration);
     }
 
     @Test
@@ -103,7 +105,7 @@ class CreationBatchServiceTest {
         given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
 
         // when
-        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID());
+        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID(), securityHelperService.getClientIdClaim());
 
         // then
         assertThat(batches).hasSize(7);

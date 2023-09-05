@@ -34,6 +34,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.ess.service.EssService;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
@@ -55,6 +56,9 @@ class EssControllerTest {
 
     @MockBean
     private EssService essService;
+
+    @MockBean(name = "authorizationService")
+    private AuthorizationService authorizationService;
 
     private final String path = "/ess/bpn/investigations";
     private final String globalAssetId = "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6";

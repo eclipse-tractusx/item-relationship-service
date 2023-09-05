@@ -30,6 +30,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -45,7 +46,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
- *
+ * Creation service for Batches
  */
 @Service
 @Slf4j
@@ -56,6 +57,7 @@ public class CreationBatchService {
     private final BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener;
+    private final SecurityHelperService securityHelperService;
     private final IrsConfiguration irsConfiguration;
 
     public UUID create(final RegisterBatchOrder request) {
@@ -72,11 +74,12 @@ public class CreationBatchService {
                                                 .timeout(request.getTimeout())
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
+                                                .owner(securityHelperService.getClientIdClaim())
                                                 .build();
 
         // need to use whole key
         final List<Batch> batches = createBatches(request.getKeys().stream().toList(),
-                request.getBatchSize(), batchOrderId);
+                request.getBatchSize(), batchOrderId, securityHelperService.getClientIdClaim());
         batchOrderStore.save(batchOrderId, batchOrder);
         batches.forEach(batch -> {
             batchStore.save(batch.getBatchId(), batch);
@@ -86,7 +89,7 @@ public class CreationBatchService {
         return batchOrderId;
     }
 
-    public List<Batch> createBatches(final List<PartChainIdentificationKey> keys, final int batchSize, final UUID batchOrderId) {
+    public List<Batch> createBatches(final List<PartChainIdentificationKey> keys, final int batchSize, final UUID batchOrderId, final String owner) {
         final List<List<PartChainIdentificationKey>> globalAssetIdsBatches = Lists.partition(keys, batchSize);
 
         final AtomicInteger batchNumber = new AtomicInteger(1);
@@ -100,6 +103,7 @@ public class CreationBatchService {
                         .batchTotal(globalAssetIdsBatches.size())
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
+                        .owner(owner)
                         .jobProgressList(batch.stream()
                                               .map(identificationKey -> JobProgress.builder()
                                                                                .identificationKey(identificationKey)

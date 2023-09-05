@@ -40,7 +40,7 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
-import org.eclipse.tractusx.irs.services.SecurityHelperService;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -94,17 +94,18 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param processManager            the process manager
      * @param jobStore                  Job store.
      * @param handler                   Recursive job handler.
+     * @param securityHelperService     Security helper.
      * @param meterService              Collect metrics for monitoring
      * @param applicationEventPublisher publisher of spring application events
      * @param jobTTL                    time to live for jobs
      */
     public JobOrchestrator(final TransferProcessManager<T, P> processManager, final JobStore jobStore,
-            final RecursiveJobHandler<T, P> handler, final MeterRegistryService meterService,
+            final RecursiveJobHandler<T, P> handler, final SecurityHelperService securityHelperService, final MeterRegistryService meterService,
             final ApplicationEventPublisher applicationEventPublisher, final JobTTL jobTTL) {
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
-        this.securityHelperService = new SecurityHelperService();
+        this.securityHelperService = securityHelperService;
         this.meterService = meterService;
         this.applicationEventPublisher = applicationEventPublisher;
         this.jobTTL = jobTTL;

@@ -20,22 +20,23 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.services;
+package org.eclipse.tractusx.irs.common.auth;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.stereotype.Service;
 
 /**
  * Helper methods to retrieve data from Jwt token
  */
+@Service
 public final class SecurityHelperService {
 
     private static final String UNKNOWN = "Unknown";
