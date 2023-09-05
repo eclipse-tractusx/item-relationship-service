@@ -20,7 +20,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.services;
+package org.eclipse.tractusx.irs.common.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -29,7 +29,6 @@ import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
 import java.time.Instant;
 import java.util.Map;
 
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.context.SecurityContext;

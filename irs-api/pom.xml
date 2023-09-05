@@ -209,8 +209,6 @@
             <version>23.0.1</version>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-testing</artifactId>
