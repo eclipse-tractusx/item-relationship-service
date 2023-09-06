@@ -61,8 +61,6 @@ class QueryBatchServiceTest {
         batchStore = new InMemoryBatchStore();
         jobStore = new InMemoryJobStore();
 
-        when(securityHelperService.getClientIdForViewIrs()).thenReturn(owner);
-
         service = new QueryBatchService(batchOrderStore, batchStore, jobStore, securityHelperService);
     }
 
@@ -71,6 +69,25 @@ class QueryBatchServiceTest {
         // given
         final UUID batchOrderId = UUID.randomUUID();
         batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId));
+        when(securityHelperService.getClientIdForViewIrs()).thenReturn(owner);
+
+        final UUID batchId = UUID.randomUUID();
+        batchStore.save(batchId, createBatch(batchId, batchOrderId));
+
+        // when
+        final BatchOrderResponse response = service.findOrderById(batchOrderId);
+
+        // then
+        assertThat(response.getOrderId()).isEqualTo(batchOrderId);
+        assertThat(response.getBatches()).hasSize(1);
+    }
+
+    @Test
+    void shouldFindBatchOrderWithAdminRole() {
+        // given
+        final UUID batchOrderId = UUID.randomUUID();
+        batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId));
+        when(securityHelperService.isAdmin()).thenReturn(true);
 
         final UUID batchId = UUID.randomUUID();
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
@@ -93,6 +110,8 @@ class QueryBatchServiceTest {
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
         batchStore.save(secondBatchId, createBatch(secondBatchId, batchOrderId));
 
+        when(securityHelperService.getClientIdForViewIrs()).thenReturn(owner);
+
         // when
         final BatchResponse response = service.findBatchById(batchOrderId, batchId);
 
@@ -101,6 +120,23 @@ class QueryBatchServiceTest {
         assertThat(response.getBatchId()).isEqualTo(batchId);
         assertThat(response.getJobsInBatchChecksum()).isEqualTo(3);
         assertThat(response.getTotalJobs()).isEqualTo(6);
+    }
+
+    @Test
+    void shouldFindBatchWithAdminRole() {
+        // given
+        final UUID batchOrderId = UUID.randomUUID();
+        final UUID batchId = UUID.randomUUID();
+        batchStore.save(batchId, createBatch(batchId, batchOrderId));
+
+        when(securityHelperService.isAdmin()).thenReturn(true);
+
+        // when
+        final BatchResponse response = service.findBatchById(batchOrderId, batchId);
+
+        // then
+        assertThat(response.getOrderId()).isEqualTo(batchOrderId);
+        assertThat(response.getBatchId()).isEqualTo(batchId);
     }
 
     private BatchOrder createBatchOrder(final UUID batchOrderId) {

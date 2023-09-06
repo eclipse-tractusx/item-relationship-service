@@ -105,11 +105,13 @@
                     <groupId>org.bouncycastle</groupId>
                     <artifactId>bcpkix-jdk18on</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>com.squareup.okio</groupId>
-                    <artifactId>okio-jvm</artifactId>
-                </exclusion>
             </exclusions>
+        </dependency>
+        <!-- Below overrides the one provided with above EDC Client -->
+        <dependency>
+            <groupId>com.squareup.okio</groupId>
+            <artifactId>okio-jvm</artifactId>
+            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
