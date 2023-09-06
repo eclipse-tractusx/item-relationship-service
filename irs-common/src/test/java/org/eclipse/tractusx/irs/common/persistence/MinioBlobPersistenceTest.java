@@ -33,12 +33,19 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import io.minio.messages.ErrorResponse;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
@@ -147,6 +154,31 @@ class MinioBlobPersistenceTest {
         // act + assert
         assertThatThrownBy(() -> testee.putBlob("testBlobName", "test".getBytes(StandardCharsets.UTF_8))).isInstanceOf(
                 BlobPersistenceException.class);
+    }
+
+    @Test
+    void shouldGetBlobByPrefixWithClient() {
+        // act
+        testee.findBlobByPrefix("testBlobName");
+
+        // assert
+        verify(client).listObjects(any());
+    }
+
+    @Test
+    void shouldGetEmptyBlobIfNoSuchKey() throws Exception {
+        // arrange
+        final ErrorResponseException ex = mock(ErrorResponseException.class);
+        final ErrorResponse errorResponse = mock(ErrorResponse.class);
+        when(errorResponse.code()).thenReturn("NoSuchKey");
+        when(ex.errorResponse()).thenReturn(errorResponse);
+        when(client.getObject(any())).thenThrow(ex);
+
+        // act
+        final Optional<byte[]> testBlob = testee.getBlob("testBlobName");
+
+        // assert
+        assertThat(testBlob).isEmpty();
     }
 
 }
