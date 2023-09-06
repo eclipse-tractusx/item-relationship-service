@@ -207,25 +207,22 @@ class MinioBlobPersistenceTest {
     }
 
     @Test
-    void shouldFindBlobByPrefixx() throws Exception {
+    void shouldNotFindBlobByPrefix() throws Exception {
         // arrange
         final Item item = mock(Item.class);
         final String testBlobName = "testBlobName";
         when(item.objectName()).thenReturn(testBlobName);
         final List<Result<Item>> result = Stream.of(new Result<>(item)).toList();
         when(client.listObjects(any())).thenReturn(result);
-//        byte[] blob = "TestData".getBytes(StandardCharsets.UTF_8);
-//        final GetObjectResponse response = mock(GetObjectResponse.class);
-//        when(response.readAllBytes()).thenReturn(blob);
-//        when(client.getObject(any())).thenReturn(response);
         when(client.getObject(any())).thenThrow(new IOException("Test"));
 
         // act
-        testee.findBlobByPrefix(testBlobName);
+        final Collection<byte[]> blobsByPrefix = testee.findBlobByPrefix(testBlobName);
 
         // assert
         verify(client).listObjects(any());
         verify(client).getObject(any());
+        assertThat(blobsByPrefix).isEmpty();
     }
 
 }

@@ -31,7 +31,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
-import net.datafaker.providers.base.Bool;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -104,7 +103,7 @@ class SecurityHelperServiceTest {
         final Boolean isAdmin = securityHelperService.isAdmin();
 
         // then
-        assertThat(isAdmin).isEqualTo(true);
+        assertThat(isAdmin).isTrue();
     }
 
     private void thereIsJwtAuthentication(final String irsRole) {
