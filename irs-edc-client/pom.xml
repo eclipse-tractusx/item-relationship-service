@@ -105,6 +105,10 @@
                     <groupId>org.bouncycastle</groupId>
                     <artifactId>bcpkix-jdk18on</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.squareup.okio</groupId>
+                    <artifactId>okio-jvm</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
