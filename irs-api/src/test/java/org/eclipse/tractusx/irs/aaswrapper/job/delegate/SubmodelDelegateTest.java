@@ -58,7 +58,7 @@ class SubmodelDelegateTest {
     final SemanticsHubFacade semanticsHubFacade = mock(SemanticsHubFacade.class);
     final JsonValidatorService jsonValidatorService = mock(JsonValidatorService.class);
     final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
-    final SubmodelDelegate submodelDelegate = new SubmodelDelegate(null, submodelFacade, semanticsHubFacade,
+    final SubmodelDelegate submodelDelegate = new SubmodelDelegate(submodelFacade, semanticsHubFacade,
             jsonValidatorService, new JsonUtil(), connectorEndpointsService);
 
     @Test

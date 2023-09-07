@@ -64,10 +64,10 @@ public class SubmodelDelegate extends AbstractDelegate {
     private final JsonUtil jsonUtil;
     private final ConnectorEndpointsService connectorEndpointsService;
 
-    public SubmodelDelegate(final AbstractDelegate nextStep, final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
+    public SubmodelDelegate(final EdcSubmodelFacade submodelFacade, final SemanticsHubFacade semanticsHubFacade,
             final JsonValidatorService jsonValidatorService, final JsonUtil jsonUtil,
             final ConnectorEndpointsService connectorEndpointsService) {
-        super(nextStep);
+        super(null); // no next step
         this.submodelFacade = submodelFacade;
         this.semanticsHubFacade = semanticsHubFacade;
         this.jsonValidatorService = jsonValidatorService;

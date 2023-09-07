@@ -55,9 +55,9 @@ public class IntegrityDelegate extends AbstractDelegate {
     private final ConnectorEndpointsService connectorEndpointsService;
     private final JsonUtil jsonUtil;
 
-    public IntegrityDelegate(final EdcSubmodelFacade submodelFacade,
+    public IntegrityDelegate(final AbstractDelegate nextStep, final EdcSubmodelFacade submodelFacade,
             final ConnectorEndpointsService connectorEndpointsService, final JsonUtil jsonUtil) {
-        super(null); // no next step
+        super(nextStep);
         this.submodelFacade = submodelFacade;
         this.connectorEndpointsService = connectorEndpointsService;
         this.jsonUtil = jsonUtil;

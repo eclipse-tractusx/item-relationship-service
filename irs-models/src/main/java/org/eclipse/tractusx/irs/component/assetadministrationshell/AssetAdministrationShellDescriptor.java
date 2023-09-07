@@ -130,18 +130,12 @@ public class AssetAdministrationShellDescriptor {
      */
     public List<SubmodelDescriptor> filterDescriptorsByAspectTypes(final List<String> aspectTypes) {
         log.info("Filtering for Aspect Types '{}'", aspectTypes);
-        final List<SubmodelDescriptor> list = this.submodelDescriptors.stream()
-                                                                      .filter(submodelDescriptor -> aspectTypes.stream()
-                                                                                                               .anyMatch(
-                                                                                                                       type -> isMatching(
-                                                                                                                               submodelDescriptor,
-                                                                                                                               type)))
+        return this.submodelDescriptors.stream()
+                                       .filter(submodelDescriptor -> aspectTypes.stream()
+                                                                                .anyMatch(type -> isMatching(
+                                                                                        submodelDescriptor, type)))
 
-                                                                      .toList();
-        if (aspectTypes.contains("DataIntegrity")) {
-            log.info("Found submodel Descriptor {}", list.size());
-        }
-        return list;
+                                       .toList();
     }
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {

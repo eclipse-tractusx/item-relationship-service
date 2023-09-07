@@ -61,7 +61,7 @@ class IntegrityDelegateTest {
     final EdcSubmodelFacade submodelFacade = mock(EdcSubmodelFacade.class);
     final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
     final JsonUtil jsonUtil = new JsonUtil();
-    final IntegrityDelegate integrityDelegate = new IntegrityDelegate(submodelFacade,
+    final IntegrityDelegate integrityDelegate = new IntegrityDelegate(null, submodelFacade,
             connectorEndpointsService, jsonUtil);
 
     private static PartChainIdentificationKey createKey() {

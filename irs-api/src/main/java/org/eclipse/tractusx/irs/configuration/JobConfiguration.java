@@ -139,22 +139,22 @@ public class JobConfiguration {
     }
 
     @Bean
-    public BpdmDelegate bpdmDelegate(final SubmodelDelegate submodelDelegate, final BpdmFacade bpdmFacade) {
-        return new BpdmDelegate(submodelDelegate, bpdmFacade);
+    public BpdmDelegate bpdmDelegate(final IntegrityDelegate integrityDelegate, final BpdmFacade bpdmFacade) {
+        return new BpdmDelegate(integrityDelegate, bpdmFacade);
     }
 
     @Bean
-    public SubmodelDelegate submodelDelegate(final IntegrityDelegate integrityDelegate, final EdcSubmodelFacade submodelFacade,
+    public IntegrityDelegate integrityDelegate(final SubmodelDelegate submodelDelegate, final EdcSubmodelFacade submodelFacade,
+            final ConnectorEndpointsService connectorEndpointsService, final JsonUtil jsonUtil) {
+        return new IntegrityDelegate(submodelDelegate, submodelFacade, connectorEndpointsService, jsonUtil);
+    }
+
+    @Bean
+    public SubmodelDelegate submodelDelegate(final EdcSubmodelFacade submodelFacade,
             final SemanticsHubFacade semanticsHubFacade, final JsonValidatorService jsonValidatorService,
             final ConnectorEndpointsService connectorEndpointsService, final JsonUtil jsonUtil) {
-        return new SubmodelDelegate(integrityDelegate, submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil,
+        return new SubmodelDelegate(submodelFacade, semanticsHubFacade, jsonValidatorService, jsonUtil,
                 connectorEndpointsService);
-    }
-
-    @Bean
-    public IntegrityDelegate integrityDelegate(final EdcSubmodelFacade submodelFacade,
-            final ConnectorEndpointsService connectorEndpointsService, final JsonUtil jsonUtil) {
-        return new IntegrityDelegate(submodelFacade, connectorEndpointsService, jsonUtil);
     }
 
 }
