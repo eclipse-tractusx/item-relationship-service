@@ -93,8 +93,8 @@ public class DataIntegrityService {
             final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
 
             log.debug("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
-            return hashesEquals(reference.get().getHash(), calculatedHash) &&
-                    signaturesEquals(reference.get().getSignature(), bytesOf(submodel.getPayload()));
+            return hashesEquals(reference.get().getHash(), calculatedHash)
+                    && signaturesEquals(reference.get().getSignature(), bytesOf(submodel.getPayload()));
         } else {
             log.debug("Integrity of Data chain cannot be determined, as Data Integrity Aspect Reference was not found for Submodel: {}, {}", submodel.getIdentification(), submodel.getAspectType());
             return false;

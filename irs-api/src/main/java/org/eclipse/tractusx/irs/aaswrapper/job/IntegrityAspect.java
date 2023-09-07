@@ -23,7 +23,6 @@
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
 import java.util.Set;
-import java.util.function.Predicate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
