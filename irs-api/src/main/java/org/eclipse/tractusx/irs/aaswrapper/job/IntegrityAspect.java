@@ -23,6 +23,7 @@
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
 import java.util.Set;
+import java.util.function.Predicate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -51,6 +52,10 @@ public class IntegrityAspect {
         private String childCatenaXId;
         private Set<Reference> reference;
 
+        public boolean childCatenaXIdMatches(final String catenaXId) {
+            return this.childCatenaXId.equals(catenaXId);
+        }
+
     }
 
     /**
@@ -64,5 +69,8 @@ public class IntegrityAspect {
         private String hash;
         private String signature;
 
+        public boolean semanticModelUrnMatches(final String aspectType) {
+            return this.getSemanticModelUrn().equals(aspectType);
+        }
     }
 }

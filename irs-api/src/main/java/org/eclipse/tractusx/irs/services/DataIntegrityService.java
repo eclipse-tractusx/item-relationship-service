@@ -31,8 +31,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -86,25 +86,31 @@ public class DataIntegrityService {
     }
 
     private boolean submodelDataIntegrityIsValid(final Submodel submodel, final Set<IntegrityAspect> integrities) {
-        final IntegrityAspect.ChildData childData = integrities.stream()
-                                                               .map(IntegrityAspect::getChildParts)
-                                                               .flatMap(Set::stream)
-                                                               .filter(findIntegrityChildPart(submodel.getCatenaXId()))
-                                                               .findFirst()
-                                                               .orElseThrow();
+        final Optional<IntegrityAspect.Reference> reference = findIntegrityAspectReferenceForSubmodel(submodel, integrities);
 
-        final IntegrityAspect.Reference reference = childData.getReference()
-                                                             .stream()
-                                                             .filter(findReference(submodel.getAspectType()))
-                                                             .findFirst()
-                                                             .orElseThrow();
+        if (reference.isPresent()) {
+            log.debug("Calculating hash of Submodel id: {}", submodel.getIdentification());
+            final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
 
-        log.debug("Calculating hash of Submodel id: {}", submodel.getIdentification());
-        final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
+            log.debug("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
+            return hashesEquals(reference.get().getHash(), calculatedHash) &&
+                    signaturesEquals(reference.get().getSignature(), bytesOf(submodel.getPayload()));
+        } else {
+            log.debug("Integrity of Data chain cannot be determined, as Data Integrity Aspect Reference was not found for Submodel: {}, {}", submodel.getIdentification(), submodel.getAspectType());
+            return false;
+        }
+    }
 
-        log.debug("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
-        return hashesEquals(reference.getHash(), calculatedHash)
-                && signaturesEquals(reference.getSignature(), bytesOf(submodel.getPayload()));
+    private Optional<IntegrityAspect.Reference> findIntegrityAspectReferenceForSubmodel(final Submodel submodel, final Set<IntegrityAspect> integrities) {
+        return integrities.stream()
+                          .map(IntegrityAspect::getChildParts)
+                          .flatMap(Set::stream)
+                          .filter(childData -> childData.childCatenaXIdMatches(submodel.getCatenaXId()))
+                          .findFirst()
+                          .flatMap(childData -> childData.getReference()
+                                                         .stream()
+                                                         .filter(reference -> reference.semanticModelUrnMatches(submodel.getAspectType()))
+                                                         .findFirst());
     }
 
     private static boolean hashesEquals(final String hashReference, final String calculatedHash) {
@@ -133,17 +139,9 @@ public class DataIntegrityService {
         try {
             return MessageDigest.getInstance(SHA3_256).digest(mapToString(payload).getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException exc) {
-            log.error("Cant retrieve bytes from payload, integrity of data chain cannot be determined.", exc);
+            log.error("Integrity of Data chain cannot be determined, cant retrieve bytes from payload.", exc);
             return new byte[0];
         }
-    }
-
-    private Predicate<? super IntegrityAspect.Reference> findReference(final String aspectType) {
-        return reference -> reference.getSemanticModelUrn().equals(aspectType);
-    }
-
-    private Predicate<? super IntegrityAspect.ChildData> findIntegrityChildPart(final String catenaXId) {
-        return integrityChildPart -> integrityChildPart.getChildCatenaXId().equals(catenaXId);
     }
 
 }
