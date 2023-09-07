@@ -105,7 +105,7 @@ public class DataIntegrityService {
         return integrities.stream()
                           .map(IntegrityAspect::getChildParts)
                           .flatMap(Set::stream)
-                          .filter(childData -> childData.childCatenaXIdMatches(submodel.getCatenaXId()))
+                          .filter(childData -> childData.catenaXIdMatches(submodel.getCatenaXId()))
                           .findFirst()
                           .flatMap(childData -> childData.getReference()
                                                          .stream()
