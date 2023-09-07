@@ -95,13 +95,14 @@ public class IntegrityDelegate extends AbstractDelegate {
                     itemId.getGlobalAssetId());
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(),
-                            "Can't get relationship without a BPN", retryCount, ProcessStep.DATA_INTEGRITY_CHECK));
+                            "Can't get Data Integrity aspect without a BPN", retryCount, ProcessStep.DATA_INTEGRITY_CHECK));
             return Optional.empty();
         }
 
         try {
             final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
                     endpoint, itemId.getBpn());
+            log.debug("Found DataIntegrity aspect for item: {}", itemId.getGlobalAssetId());
 
             return Optional.ofNullable(jsonUtil.fromString(submodelRawPayload, IntegrityAspect.class));
 

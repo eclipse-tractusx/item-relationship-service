@@ -51,6 +51,15 @@ public class IntegrityAspect {
         private String childCatenaXId;
         private Set<Reference> reference;
 
+        /**
+         *
+         * @param catenaXId filter
+         * @return Check if childCatenaXId matches argument
+         */
+        public boolean childCatenaXIdMatches(final String catenaXId) {
+            return this.childCatenaXId.equals(catenaXId);
+        }
+
     }
 
     /**
@@ -64,5 +73,12 @@ public class IntegrityAspect {
         private String hash;
         private String signature;
 
+        /**
+         * @param aspectType filter
+         * @return Check if semanticModelUrn matches argument
+         */
+        public boolean semanticModelUrnMatches(final String aspectType) {
+            return this.getSemanticModelUrn().equals(aspectType);
+        }
     }
 }

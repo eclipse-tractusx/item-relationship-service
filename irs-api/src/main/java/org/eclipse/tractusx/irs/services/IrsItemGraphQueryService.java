@@ -230,8 +230,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         try {
             final HashSet<AspectModel> availableModels = new HashSet<>(
                     semanticsHubFacade.getAllAspectModels().models());
-            log.info("Available AspectModels: '{}'", availableModels);
-            log.info("Provided AspectModels: '{}'", aspectTypeValues);
+            log.debug("Available AspectModels: '{}'", availableModels);
+            log.debug("Provided AspectModels: '{}'", aspectTypeValues);
             final Set<String> availableNames = new HashSet<>(availableModels.stream().map(AspectModel::name).toList());
             final Set<String> availableUrns = new HashSet<>(availableModels.stream().map(AspectModel::urn).toList());
 

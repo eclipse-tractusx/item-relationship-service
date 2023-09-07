@@ -116,6 +116,7 @@ public class TestMother {
         registerJob.setCollectAspects(collectAspects);
         registerJob.setDirection(direction);
         registerJob.setLookupBPNs(lookupBPNs);
+        registerJob.setIntegrityCheck(false);
 
         return registerJob;
     }

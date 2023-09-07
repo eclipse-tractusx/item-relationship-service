@@ -105,7 +105,7 @@ public abstract class AbstractDelegate {
                     submodelFacade.getSubmodelRawPayload(connectorEndpoint, endpoint.getProtocolInformation().getHref(),
                             extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
         } catch (ItemNotFoundInCatalogException e) {
-            log.info("Could not find asset in catalog. Requesting next endpoint.", e);
+            log.debug("Could not find asset in catalog. Requesting next endpoint.", e);
         }
     }
 
