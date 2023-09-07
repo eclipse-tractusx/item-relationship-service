@@ -75,6 +75,7 @@ public class IntegrityDelegate extends AbstractDelegate {
                                 .findFirst()
                                 .ifPresent(shell -> shell.filterDescriptorsByAspectTypes(List.of(DATA_INTEGRITY_ASPECT))
                                                          .stream()
+                                                         .peek(x -> log.debug("Number of endpoints: {}, {} ", x.getAspectType(), x.getEndpoints().size()))
                                                          .map(SubmodelDescriptor::getEndpoints)
                                                          .flatMap(Collection::stream)
                                                          .forEach(endpoint -> getIntegrityAspect(endpoint,
