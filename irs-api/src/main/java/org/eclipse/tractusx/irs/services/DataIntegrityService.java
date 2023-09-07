@@ -76,7 +76,7 @@ public class DataIntegrityService {
      * @return flag indicates if chain is valid
      */
     public IntegrityState chainDataIntegrityIsValid(final ItemContainer itemContainer) {
-        log.debug("Starting validation of Data Chain Integrity with {} integrity aspects.", itemContainer.getIntegrities().size());
+        log.info("Starting validation of Data Chain Integrity with {} integrity aspects.", itemContainer.getIntegrities().size());
         final long numberOfValidSubmodels = itemContainer.getSubmodels()
                                                          .stream()
                                                          .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities()))
@@ -89,10 +89,10 @@ public class DataIntegrityService {
         final Optional<IntegrityAspect.Reference> reference = findIntegrityAspectReferenceForSubmodel(submodel, integrities);
 
         if (reference.isPresent()) {
-            log.debug("Calculating hash of Submodel id: {}", submodel.getIdentification());
+            log.info("Calculating hash of Submodel id: {}", submodel.getIdentification());
             final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
 
-            log.debug("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
+            log.info("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
             return hashesEquals(reference.get().getHash(), calculatedHash)
                     && signaturesEquals(reference.get().getSignature(), bytesOf(submodel.getPayload()));
         } else {

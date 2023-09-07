@@ -69,13 +69,14 @@ public class IntegrityDelegate extends AbstractDelegate {
             final PartChainIdentificationKey itemId) {
 
         if (jobData.isIntegrityCheck()) {
+            log.info("Getting data integrity aspects");
             itemContainerBuilder.build()
                                 .getShells()
                                 .stream()
                                 .findFirst()
                                 .ifPresent(shell -> shell.filterDescriptorsByAspectTypes(List.of(DATA_INTEGRITY_ASPECT))
                                                          .stream()
-                                                         .peek(x -> log.debug("Number of endpoints: {}, {} ", x.getAspectType(), x.getEndpoints().size()))
+                                                         .peek(x -> log.info("Number of endpoints: {}, {} ", x.getAspectType(), x.getEndpoints().size()))
                                                          .map(SubmodelDescriptor::getEndpoints)
                                                          .flatMap(Collection::stream)
                                                          .forEach(endpoint -> getIntegrityAspect(endpoint,
@@ -103,7 +104,7 @@ public class IntegrityDelegate extends AbstractDelegate {
         try {
             final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
                     endpoint, itemId.getBpn());
-            log.debug("Found DataIntegrity aspect for item: {}", itemId.getGlobalAssetId());
+            log.info("Found DataIntegrity aspect for item: {}", itemId.getGlobalAssetId());
 
             return Optional.ofNullable(jsonUtil.fromString(submodelRawPayload, IntegrityAspect.class));
 
