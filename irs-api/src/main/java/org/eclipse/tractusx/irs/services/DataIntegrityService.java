@@ -104,9 +104,9 @@ public class DataIntegrityService {
 
     private Optional<IntegrityAspect.Reference> findIntegrityAspectReferenceForSubmodel(final Submodel submodel, final Set<IntegrityAspect> integrities) {
         return integrities.stream()
+                          .filter(integrityAspect -> integrityAspect.catenaXIdMatches(submodel.getCatenaXId()))
                           .map(IntegrityAspect::getChildParts)
                           .flatMap(Set::stream)
-                          .filter(childData -> childData.catenaXIdMatches(submodel.getCatenaXId()))
                           .findFirst()
                           .flatMap(childData -> childData.getReference()
                                                          .stream()

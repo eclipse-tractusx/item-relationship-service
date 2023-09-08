@@ -42,6 +42,15 @@ public class IntegrityAspect {
     private Set<ChildData> childParts;
 
     /**
+     *
+     * @param catenaXId filter
+     * @return Check if childCatenaXId matches argument
+     */
+    public boolean catenaXIdMatches(final String catenaXId) {
+        return this.catenaXId.equals(catenaXId);
+    }
+
+    /**
      * ChildData
      */
     @Data
@@ -50,16 +59,6 @@ public class IntegrityAspect {
     public static class ChildData {
         private String catenaXId;
         private Set<Reference> reference;
-
-        /**
-         *
-         * @param catenaXId filter
-         * @return Check if childCatenaXId matches argument
-         */
-        public boolean catenaXIdMatches(final String catenaXId) {
-            return this.catenaXId.equals(catenaXId);
-        }
-
     }
 
     /**
