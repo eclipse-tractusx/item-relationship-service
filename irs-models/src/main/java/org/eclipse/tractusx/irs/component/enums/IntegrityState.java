@@ -28,7 +28,7 @@ package org.eclipse.tractusx.irs.component.enums;
 public enum IntegrityState {
     VALID, INVALID, INACTIVE;
 
-    public static IntegrityState from(final long numberOfValidSubmodels, final int totalNumberOfSubmodels) {
+    public static IntegrityState from(final long numberOfValidSubmodels, final long totalNumberOfSubmodels) {
         if (numberOfValidSubmodels == totalNumberOfSubmodels) {
             return VALID;
         } else {

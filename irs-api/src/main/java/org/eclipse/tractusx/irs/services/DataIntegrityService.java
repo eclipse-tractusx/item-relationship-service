@@ -75,14 +75,15 @@ public class DataIntegrityService {
      * @param itemContainer data
      * @return flag indicates if chain is valid
      */
-    public IntegrityState chainDataIntegrityIsValid(final ItemContainer itemContainer) {
+    public IntegrityState chainDataIntegrityIsValid(final ItemContainer itemContainer, final String globalAssetId) {
         log.info("Starting validation of Data Chain Integrity with {} integrity aspects and submodels {}.", itemContainer.getIntegrities().size(), itemContainer.getSubmodels().size());
         final long numberOfValidSubmodels = itemContainer.getSubmodels()
                                                          .stream()
+                                                         .filter(submodel -> !submodel.getCatenaXId().equals(globalAssetId))
                                                          .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities()))
                                                          .count();
 
-        return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer));
+        return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer, globalAssetId));
     }
 
     private boolean submodelDataIntegrityIsValid(final Submodel submodel, final Set<IntegrityAspect> integrities) {
@@ -104,11 +105,11 @@ public class DataIntegrityService {
 
     private Optional<IntegrityAspect.Reference> findIntegrityAspectReferenceForSubmodel(final Submodel submodel, final Set<IntegrityAspect> integrities) {
         return integrities.stream()
-                          .filter(integrityAspect -> integrityAspect.catenaXIdMatches(submodel.getCatenaXId()))
                           .map(IntegrityAspect::getChildParts)
                           .flatMap(Set::stream)
+                          .filter(childData -> childData.catenaXIdMatches(submodel.getCatenaXId()))
                           .findFirst()
-                          .flatMap(childData -> childData.getReference()
+                          .flatMap(childData -> childData.getReferences()
                                                          .stream()
                                                          .filter(reference -> reference.semanticModelUrnMatches(submodel.getAspectType()))
                                                          .findFirst());
@@ -126,8 +127,8 @@ public class DataIntegrityService {
         return verifier.verifySignature(Hex.decode(signatureReference));
     }
 
-    private int totalNumberOfSubmodels(final ItemContainer itemContainer) {
-        return itemContainer.getSubmodels().size();
+    private long totalNumberOfSubmodels(final ItemContainer itemContainer, final String globalAssetId) {
+        return itemContainer.getSubmodels().stream().filter(submodel -> !submodel.getCatenaXId().equals(globalAssetId)).count();
     }
 
     private String calculateHashForRawSubmodelPayload(final Map<String, Object> payload) {

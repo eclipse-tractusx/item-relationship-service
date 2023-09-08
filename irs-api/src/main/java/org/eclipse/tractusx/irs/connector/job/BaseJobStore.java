@@ -151,7 +151,7 @@ public abstract class BaseJobStore implements JobStore {
             final JobState jobState = job.getJob().getState();
             if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
                 final ItemContainer itemContainer = completionAction.apply(job);
-                final IntegrityState integrityState = job.getJobParameter().isIntegrityCheck() ? dataIntegrityService.chainDataIntegrityIsValid(itemContainer)
+                final IntegrityState integrityState = job.getJobParameter().isIntegrityCheck() ? dataIntegrityService.chainDataIntegrityIsValid(itemContainer, job.getGlobalAssetId())
                         : IntegrityState.INACTIVE;
                 return job.toBuilder().transitionComplete(integrityState).build();
             } else {

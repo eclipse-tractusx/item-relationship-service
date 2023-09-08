@@ -39,6 +39,9 @@ class DataIntegrityServiceTest {
 
     private DataIntegrityService dataIntegrityService;
 
+    private static final String parentCatenaXId = "parent-id";
+    private static final String childCatenaXId = "child-id";
+
     private String publicKey = "-----BEGIN PUBLIC KEY-----\n"
             + "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6h9Uz0RH9xwlb/rqSws2\n"
             + "JccIs817v1wfgLDGDY36YwzKVBNm+5IUJvCwLeMRZJ6otUFYQUUInQgM6MgW90z7\n"
@@ -59,27 +62,28 @@ class DataIntegrityServiceTest {
         // Arrange
         final IntegrityAspect.Reference reference = new IntegrityAspect.Reference("testType",
                 "3d9a14153459ef617d86116297fb63d37948bffc9247bb969b63af29fe9aac6f", "a330b06d73ec0747fd7da4c099f5687eba57766f8a33ae02ba23c2f239a82a6c14b9701c1d57f946de4363453a4974231a02180fc2f44be313b2da3a83cd56ef4077ac75ce2bab32d7a6402dfa7ab98a4e54320b66b9d087d07ee2f516fab929d270485d666b96872ae251881e3698506905b28842b070e1e8ffb8509f0a183396754fdadc75028b72b3e23aa7525d4b47cf4af947b9c2715ea46cb61cc5a834e35496b03a624da92b65ebe2124d76e5cf0e5520fc0841d33b80072a05e595c5c29d9db6b5e94ec3c83efd11b80ff639e168dd578b6b92d4e8143dfdcedf43495654f5ccd388f0233c082652a1c1eb8bfccae6d065b481f653674773a4cbbb07");
-        final IntegrityAspect.ChildData childData = new IntegrityAspect.ChildData("child-id", Set.of(reference));
-        final IntegrityAspect integrityAspect = new IntegrityAspect("parent-id", Set.of(childData));
+        final IntegrityAspect.ChildData childData = new IntegrityAspect.ChildData(childCatenaXId, Set.of(reference));
+
+        final IntegrityAspect integrityAspect = new IntegrityAspect(parentCatenaXId, Set.of(childData));
         final ItemContainer build = ItemContainer.builder().submodel(getSubmodel()).integrity(integrityAspect).build();
 
         // Act
-        final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build);
+        final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build, parentCatenaXId);
 
         // Assert
-        assertThat(integrityState).isEqualTo(IntegrityState.INVALID);
+        assertThat(integrityState).isEqualTo(IntegrityState.VALID);
     }
 
     @Test
     void shouldFailDataChainValidationWhenPresentedHashIsWrong() {
         // Arrange
         final IntegrityAspect.Reference reference = new IntegrityAspect.Reference("testType", "wrongHash", null);
-        final IntegrityAspect.ChildData childData = new IntegrityAspect.ChildData("child-id", Set.of(reference));
-        final IntegrityAspect integrityAspect = new IntegrityAspect("parent-id", Set.of(childData));
+        final IntegrityAspect.ChildData childData = new IntegrityAspect.ChildData(childCatenaXId, Set.of(reference));
+        final IntegrityAspect integrityAspect = new IntegrityAspect(parentCatenaXId, Set.of(childData));
         final ItemContainer build = ItemContainer.builder().submodel(getSubmodel()).integrity(integrityAspect).build();
 
         // Act
-        final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build);
+        final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build, parentCatenaXId);
 
         // Assert
         assertThat(integrityState).isEqualTo(IntegrityState.INVALID);
@@ -89,12 +93,12 @@ class DataIntegrityServiceTest {
     void shouldFailDataChainValidationWhenPresentedSignatureIsWrong() {
         // Arrange
         final IntegrityAspect.Reference reference = new IntegrityAspect.Reference("testType", "3d9a14153459ef617d86116297fb63d37948bffc9247bb969b63af29fe9aac6f", "30b06d73ec07");
-        final IntegrityAspect.ChildData childData = new IntegrityAspect.ChildData("child-id", Set.of(reference));
-        final IntegrityAspect integrityAspect = new IntegrityAspect("parent-id", Set.of(childData));
+        final IntegrityAspect.ChildData childData = new IntegrityAspect.ChildData(childCatenaXId, Set.of(reference));
+        final IntegrityAspect integrityAspect = new IntegrityAspect(parentCatenaXId, Set.of(childData));
         final ItemContainer build = ItemContainer.builder().submodel(getSubmodel()).integrity(integrityAspect).build();
 
         // Act
-        final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build);
+        final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build, parentCatenaXId);
 
         // Assert
         assertThat(integrityState).isEqualTo(IntegrityState.INVALID);
@@ -103,9 +107,10 @@ class DataIntegrityServiceTest {
     private Submodel getSubmodel() {
         final String payload = "{\"test\":\"test\"}";
 
+
         return Submodel.builder()
                        .aspectType("testType")
-                       .catenaXId("child-id")
+                       .catenaXId(childCatenaXId)
                        .identification("child-identifier")
                        .payload(mapFromString(payload, Map.class))
                        .build();
