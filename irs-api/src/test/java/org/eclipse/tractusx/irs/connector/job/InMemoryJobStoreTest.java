@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -410,6 +411,7 @@ class InMemoryJobStoreTest {
         return MultiTransferJob.builder()
                                .job(Job.builder()
                                        .id(UUID.fromString(jobId))
+                                       .globalAssetId(GlobalAssetIdentification.of("urn:uuid:756e960f-3b3d-47e5-a900-7f4bf3f46ed8"))
                                        .state(JobState.UNSAVED)
                                        .completedOn(ZonedDateTime.now())
                                        .exception(JobErrorDetails.builder()
