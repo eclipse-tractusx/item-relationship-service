@@ -2329,6 +2329,9 @@ components:
       properties:
         aspectType:
           type: string
+        catenaXId:
+          type: string
+          writeOnly: true
         identification:
           type: string
         payload:
