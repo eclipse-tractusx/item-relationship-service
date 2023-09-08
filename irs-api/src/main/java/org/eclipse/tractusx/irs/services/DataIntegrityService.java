@@ -76,7 +76,7 @@ public class DataIntegrityService {
      * @return flag indicates if chain is valid
      */
     public IntegrityState chainDataIntegrityIsValid(final ItemContainer itemContainer) {
-        log.info("Starting validation of Data Chain Integrity with {} integrity aspects.", itemContainer.getIntegrities().size());
+        log.info("Starting validation of Data Chain Integrity with {} integrity aspects and submodels {}.", itemContainer.getIntegrities().size(), itemContainer.getSubmodels().size());
         final long numberOfValidSubmodels = itemContainer.getSubmodels()
                                                          .stream()
                                                          .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities()))
@@ -86,6 +86,7 @@ public class DataIntegrityService {
     }
 
     private boolean submodelDataIntegrityIsValid(final Submodel submodel, final Set<IntegrityAspect> integrities) {
+        log.info("Validation data integrity of submodel: {}, {}, {}", submodel.getCatenaXId(), submodel.getAspectType(), submodel.getIdentification());
         final Optional<IntegrityAspect.Reference> reference = findIntegrityAspectReferenceForSubmodel(submodel, integrities);
 
         if (reference.isPresent()) {
