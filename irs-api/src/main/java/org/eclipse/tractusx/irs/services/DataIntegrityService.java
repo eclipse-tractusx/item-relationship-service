@@ -72,7 +72,8 @@ public class DataIntegrityService {
     }
 
     /**
-     * @param itemContainer data
+     * @param itemContainer data container
+     * @param globalAssetId tier 0 submodels - not able to validate, because DataIntegrity Aspect is missing
      * @return flag indicates if chain is valid
      */
     public IntegrityState chainDataIntegrityIsValid(final ItemContainer itemContainer, final String globalAssetId) {
