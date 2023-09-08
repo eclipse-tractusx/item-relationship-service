@@ -2331,7 +2331,6 @@ components:
           type: string
         catenaXId:
           type: string
-          writeOnly: true
         identification:
           type: string
         payload:
