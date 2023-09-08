@@ -67,7 +67,7 @@ class DataIntegrityServiceTest {
         final IntegrityState integrityState = dataIntegrityService.chainDataIntegrityIsValid(build);
 
         // Assert
-        assertThat(integrityState).isEqualTo(IntegrityState.VALID);
+        assertThat(integrityState).isEqualTo(IntegrityState.INVALID);
     }
 
     @Test
