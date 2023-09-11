@@ -22,8 +22,18 @@ wiremock:
   ]
 
 ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   hosts:
     - host: "discovery-mock.int.demo.catena-x.net"
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   tls:
     - hosts:
         - "discovery-mock.int.demo.catena-x.net"
+      secretName: tls-secret
