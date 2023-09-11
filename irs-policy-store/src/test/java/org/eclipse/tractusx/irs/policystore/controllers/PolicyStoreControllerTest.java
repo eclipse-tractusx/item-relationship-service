@@ -30,8 +30,15 @@ import static org.mockito.Mockito.when;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import org.eclipse.tractusx.irs.policystore.models.Constraints;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.LeftOperand;
+import org.eclipse.tractusx.irs.policystore.models.LogicalConstraintType;
+import org.eclipse.tractusx.irs.policystore.models.OperatorType;
+import org.eclipse.tractusx.irs.policystore.models.Permission;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.policystore.models.PolicyType;
+import org.eclipse.tractusx.irs.policystore.models.RightOperand;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +63,7 @@ class PolicyStoreControllerTest {
     @Test
     void registerAllowedPolicy() {
         // arrange
-        final CreatePolicyRequest request = new CreatePolicyRequest("policyId", OffsetDateTime.now(), emptyList());
+        final CreatePolicyRequest request = new CreatePolicyRequest("policyId", OffsetDateTime.now(), createPermissions());
 
         // act
         testee.registerAllowedPolicy(request);
@@ -68,7 +75,7 @@ class PolicyStoreControllerTest {
     @Test
     void getPolicies() {
         // arrange
-        final List<Policy> policies = List.of(new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), emptyList()));
+        final List<Policy> policies = List.of(new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
         when(service.getStoredPolicies()).thenReturn(policies);
 
         // act
@@ -99,4 +106,16 @@ class PolicyStoreControllerTest {
         // assert
         verify(service).updatePolicy(policyId, request);
     }
+
+    private List<Permission> createPermissions() {
+        return List.of(
+                new Permission(PolicyType.USE, LogicalConstraintType.AND, List.of(createConstraints())),
+                new Permission(PolicyType.ACCESS, LogicalConstraintType.OR, List.of(createConstraints()))
+        );
+    }
+
+    private Constraints createConstraints() {
+        return new Constraints(LeftOperand.BUSINESS_PARTNER_NUMBER, OperatorType.GT, new RightOperand("active", "1.0"));
+    }
+
 }
