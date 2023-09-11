@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.controllers;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -55,7 +56,7 @@ class PolicyStoreControllerTest {
     @Test
     void registerAllowedPolicy() {
         // arrange
-        final CreatePolicyRequest request = new CreatePolicyRequest("policyId", OffsetDateTime.now());
+        final CreatePolicyRequest request = new CreatePolicyRequest("policyId", OffsetDateTime.now(), emptyList());
 
         // act
         testee.registerAllowedPolicy(request);
@@ -67,7 +68,7 @@ class PolicyStoreControllerTest {
     @Test
     void getPolicies() {
         // arrange
-        final List<Policy> policies = List.of(new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now()));
+        final List<Policy> policies = List.of(new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), emptyList()));
         when(service.getStoredPolicies()).thenReturn(policies);
 
         // act

@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.persistence;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,6 +34,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +71,7 @@ class PolicyPersistenceTest {
     @Test
     void save() throws BlobPersistenceException {
         // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
 
         // act
         testee.save("testBpn", policy);
@@ -80,7 +83,7 @@ class PolicyPersistenceTest {
     @Test
     void saveDuplicate() throws BlobPersistenceException, JsonProcessingException {
         // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         final var policies = List.of(policy);
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
@@ -91,7 +94,7 @@ class PolicyPersistenceTest {
     @Test
     void saveWithError() throws BlobPersistenceException {
         // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         when(mockPersistence.getBlob(any())).thenThrow(
                 new BlobPersistenceException("test", new IllegalStateException()));
 
@@ -102,7 +105,7 @@ class PolicyPersistenceTest {
     @Test
     void saveWithWriteError() throws BlobPersistenceException {
         // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         doThrow(new BlobPersistenceException("test", new IllegalStateException())).when(mockPersistence)
                                                                                   .putBlob(any(), any());
 
@@ -114,7 +117,7 @@ class PolicyPersistenceTest {
     void delete() throws BlobPersistenceException, JsonProcessingException {
         // arrange
         final String policyId = "test";
-        final var policy = new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         final var policies = List.of(policy);
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
@@ -129,7 +132,7 @@ class PolicyPersistenceTest {
     void update() throws BlobPersistenceException, JsonProcessingException {
         // arrange
         final String policyId = "test";
-        final var policy = new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         final var policies = List.of(policy);
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
@@ -143,7 +146,7 @@ class PolicyPersistenceTest {
     @Test
     void deleteShouldThrowExceptionIfPolicyWithIdDoesntExists() throws BlobPersistenceException, JsonProcessingException {
         // arrange
-        final var policy = new Policy("policyId", OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy("policyId", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(List.of(policy))));
 
         // act
@@ -154,7 +157,7 @@ class PolicyPersistenceTest {
     void updateShouldThrowExceptionIfPolicyWithIdDoesntExists() throws BlobPersistenceException, JsonProcessingException {
         // arrange
         final OffsetDateTime now = OffsetDateTime.now();
-        final var policy = new Policy("policyId", now, now);
+        final var policy = new Policy("policyId", now, now, emptyList());
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(List.of(policy))));
 
         // act
@@ -164,7 +167,7 @@ class PolicyPersistenceTest {
     @Test
     void readAll() throws BlobPersistenceException, JsonProcessingException {
         // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         final var policies = List.of(policy);
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
@@ -178,7 +181,7 @@ class PolicyPersistenceTest {
     @Test
     void readAllWithError() throws BlobPersistenceException, JsonProcessingException {
         // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now());
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         final var policies = List.of(policy);
         final var mapperMock = mock(ObjectMapper.class);
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));

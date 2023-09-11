@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.services;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,7 +66,7 @@ class PolicyStoreServiceTest {
     @Test
     void registerPolicy() {
         // arrange
-        final var req = new CreatePolicyRequest("testId", OffsetDateTime.now(clock).plusMinutes(1));
+        final var req = new CreatePolicyRequest("testId", OffsetDateTime.now(clock).plusMinutes(1), emptyList());
 
         // act
         testee.registerPolicy(req);
@@ -79,7 +80,7 @@ class PolicyStoreServiceTest {
         // act
         final String policyId = "testId";
         doThrow(new PolicyStoreException("")).when(persistence).save(eq(BPN), any());
-        final CreatePolicyRequest request = new CreatePolicyRequest(policyId, OffsetDateTime.now());
+        final CreatePolicyRequest request = new CreatePolicyRequest(policyId, OffsetDateTime.now(), emptyList());
 
         // assert
         assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(request));
@@ -99,7 +100,7 @@ class PolicyStoreServiceTest {
     }
 
     private Policy createPolicy(final String policyId) {
-        return new Policy(policyId, OffsetDateTime.now(clock), OffsetDateTime.now(clock).plusDays(1));
+        return new Policy(policyId, OffsetDateTime.now(clock), OffsetDateTime.now(clock).plusDays(1), emptyList());
     }
 
     @Test

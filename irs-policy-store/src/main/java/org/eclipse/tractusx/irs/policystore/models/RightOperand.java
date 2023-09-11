@@ -22,28 +22,19 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.models;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * A stored policy object.
+ * A RightOperand object use in Constraints
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Policy {
+public class RightOperand {
 
-    private String policyId;
-    private OffsetDateTime createdOn;
-    private OffsetDateTime validUntil;
-    private List<Permission> permissions;
+   private String value;
+   private String version;
 
-    public Policy update(final OffsetDateTime validUntil) {
-        this.validUntil = validUntil;
-        return this;
-    }
 }

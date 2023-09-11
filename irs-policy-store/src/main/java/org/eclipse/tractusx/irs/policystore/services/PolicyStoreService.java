@@ -24,6 +24,7 @@ package org.eclipse.tractusx.irs.policystore.services;
 
 import java.time.Clock;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +60,8 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         this.allowedPoliciesFromConfig = allowedPolicies.stream()
                                                         .map(p -> new Policy(p, OffsetDateTime.now(),
                                                                 OffsetDateTime.now().plusYears(
-                                                                        DEFAULT_POLICY_LIFETIME_YEARS)))
+                                                                        DEFAULT_POLICY_LIFETIME_YEARS),
+                                                                Collections.emptyList()))
                                                         .toList();
         this.persistence = persistence;
         this.clock = clock;
@@ -68,7 +70,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public void registerPolicy(final CreatePolicyRequest request) {
         log.info("Registering new policy with id {}, valid until {}", request.policyId(), request.validUntil());
         try {
-            persistence.save(apiAllowedBpn, new Policy(request.policyId(), OffsetDateTime.now(clock), request.validUntil()));
+            persistence.save(apiAllowedBpn, new Policy(request.policyId(), OffsetDateTime.now(clock), request.validUntil(), request.permissions()));
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

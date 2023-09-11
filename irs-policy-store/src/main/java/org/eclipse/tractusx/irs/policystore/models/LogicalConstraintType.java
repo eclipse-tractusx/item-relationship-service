@@ -22,28 +22,46 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.models;
 
-import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
- * A stored policy object.
+ * A LogicalConstraintType object use in Permission
  */
+@JsonSerialize(using = ToStringSerializer.class)
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Policy {
+public enum LogicalConstraintType {
 
-    private String policyId;
-    private OffsetDateTime createdOn;
-    private OffsetDateTime validUntil;
-    private List<Permission> permissions;
+    AND("and"),
+    OR("or"),
+    XONE("xone"),
+    ANDSEQUENCE("andsequence");
 
-    public Policy update(final OffsetDateTime validUntil) {
-        this.validUntil = validUntil;
-        return this;
+    private String code;
+
+    LogicalConstraintType(String code) {
+        this.code = code;
     }
+
+    @JsonCreator
+    public static LogicalConstraintType fromValue(final String value) {
+        return Stream.of(LogicalConstraintType.values())
+                     .filter(logicalConstraintType -> logicalConstraintType.code.equals(value))
+                     .findFirst()
+                     .orElseThrow(() -> new NoSuchElementException("Unsupported LogicalConstraintType: " + value));
+    }
+
+    /**
+     * @return convert OperatorType to string value
+     */
+    @Override
+    public String toString() {
+        return code;
+    }
+
 }
