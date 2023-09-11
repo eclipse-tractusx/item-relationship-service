@@ -36,8 +36,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.models.Constraints;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.LeftOperand;
+import org.eclipse.tractusx.irs.policystore.models.LogicalConstraintType;
+import org.eclipse.tractusx.irs.policystore.models.OperatorType;
+import org.eclipse.tractusx.irs.policystore.models.Permission;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.policystore.models.PolicyType;
+import org.eclipse.tractusx.irs.policystore.models.RightOperand;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,6 +83,18 @@ class PolicyStoreServiceTest {
     }
 
     @Test
+    void registerPolicyWithPermission() {
+        // arrange
+        final var req = new CreatePolicyRequest("testId", OffsetDateTime.now(clock).plusMinutes(1), createPermissions());
+
+        // act
+        testee.registerPolicy(req);
+
+        // assert
+        verify(persistence).save(eq(BPN), any());
+    }
+
+    @Test
     void registerPolicyShouldThrowResponseStatusException() {
         // act
         final String policyId = "testId";
@@ -102,6 +121,18 @@ class PolicyStoreServiceTest {
     private Policy createPolicy(final String policyId) {
         return new Policy(policyId, OffsetDateTime.now(clock), OffsetDateTime.now(clock).plusDays(1), emptyList());
     }
+
+    private List<Permission> createPermissions() {
+        return List.of(
+            new Permission(PolicyType.USE, LogicalConstraintType.AND, List.of(createConstraints())),
+            new Permission(PolicyType.ACCESS, LogicalConstraintType.OR, List.of(createConstraints()))
+        );
+    }
+
+    private Constraints createConstraints() {
+        return new Constraints(LeftOperand.BUSINESS_PARTNER_NUMBER, OperatorType.GT, new RightOperand("active", "1.0"));
+    }
+
 
     @Test
     void deletePolicy() {
