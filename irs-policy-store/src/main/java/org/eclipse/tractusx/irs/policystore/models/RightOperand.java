@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RightOperand {
 
-   private String value;
-   private String version;
+    private String value;
+    private String version;
 
 }

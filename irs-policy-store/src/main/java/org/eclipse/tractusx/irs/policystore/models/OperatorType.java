@@ -37,19 +37,19 @@ import lombok.Getter;
 @Getter
 public enum OperatorType {
 
-    EQ ("eq", "Equals to"),
-    NEQ ("neq", "Not equal to"),
-    LT ("lt", "Less than"),
-    GT ("gt", "Greater than"),
-    IN ("in", "In"),
-    LTEQ ("lteq", "Less than or equal to"),
-    GTEQ ("gteq", "Greater than or equal to"),
-    ISA ("isA", "Is a"),
-    HASPART ("hasPart", "Has part"),
-    ISPARTOF ("isPartOf", "Is part of"),
-    IAO ("isAllOf", "Is all of"),
-    ISALLOF ("isAllOf", "Is all of"),
-    ISNONEOF ("isNoneOf", "Is none of");
+    EQ("eq", "Equals to"),
+    NEQ("neq", "Not equal to"),
+    LT("lt", "Less than"),
+    GT("gt", "Greater than"),
+    IN("in", "In"),
+    LTEQ("lteq", "Less than or equal to"),
+    GTEQ("gteq", "Greater than or equal to"),
+    ISA("isA", "Is a"),
+    HASPART("hasPart", "Has part"),
+    ISPARTOF("isPartOf", "Is part of"),
+    IAO("isAllOf", "Is all of"),
+    ISALLOF("isAllOf", "Is all of"),
+    ISNONEOF("isNoneOf", "Is none of");
 
     private final String code;
     private final String label;
