@@ -46,8 +46,6 @@ irs-helm:
     provider:
       host: "https://irs-provider-controlplane.dev.demo.catena-x.net"
     controlplane:
-      endpoint:
-        data: http://ess-irs-edc-controlplane:8181/api/v1/management
       apikey:
         secret: <path:traceability-irs/data/ess/controlplane#apiKey>
 
