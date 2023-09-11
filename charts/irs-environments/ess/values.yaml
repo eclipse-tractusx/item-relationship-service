@@ -86,15 +86,6 @@ irs-helm:
       name: "irs-ess-minio-sa"
 
 
-irs-edc-consumer:
-  ##############################
-  # EDC Postgres Configuration #
-  ##############################
-  postgresql:
-    auth:
-      postgresPassword: <path:traceability-irs/data/int/controlplane#databasepassword>
-      password: <path:traceability-irs/data/int/controlplane#databasepassword>
-
 tractusx-connector:
   install:
     postgresql: false
