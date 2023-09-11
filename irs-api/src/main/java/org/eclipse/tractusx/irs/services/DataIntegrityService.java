@@ -84,7 +84,7 @@ public class DataIntegrityService {
         log.info("Starting validation of Data Chain Integrity with {} Integrity aspects and {} Submodels.", itemContainer.getIntegrities().size(), itemContainer.getSubmodels().size());
         final long numberOfValidSubmodels = itemContainer.getSubmodels()
                                                          .stream()
-                .peek(x -> log.info("Comparing {} and {}", x.getCatenaXId(), globalAssetId))
+                                                         .peek(x -> log.info("Comparing {} and {}", x.getCatenaXId(), globalAssetId))
                                                          .filter(notTierZeroSubmodel(globalAssetId))
                                                          .peek(x -> log.info("Comparing went through {} and {}", x.getCatenaXId(), globalAssetId))
                                                          .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer))
