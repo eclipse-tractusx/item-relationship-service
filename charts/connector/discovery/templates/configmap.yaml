@@ -75,11 +75,7 @@ data:
     [
       {
         "bpn": "{{ printf "{{jsonPath request.body '$.[0]'}}" }}",
-        "connectorEndpoint": [
-          "https://irs-provider-controlplane.dev.demo.catena-x.net/",
-          "https://irs-provider-controlplane2.dev.demo.catena-x.net/",
-          "https://irs-provider-controlplane3.dev.demo.catena-x.net/"
-        ]
+        "connectorEndpoint": {{- .Values.wiremock.connectorEndpoints | toJson }}
       }
     ]
 

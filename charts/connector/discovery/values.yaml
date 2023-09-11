@@ -62,6 +62,11 @@ service:
 
 wiremock:
   host: "discovery-mock.dev.demo.catena-x.net"
+  connectorEndpoints: [
+    "https://irs-provider-controlplane.dev.demo.catena-x.net/",
+    "https://irs-provider-controlplane2.dev.demo.catena-x.net/",
+    "https://irs-provider-controlplane3.dev.demo.catena-x.net/"
+  ]
 
 ingress:
   enabled: true
