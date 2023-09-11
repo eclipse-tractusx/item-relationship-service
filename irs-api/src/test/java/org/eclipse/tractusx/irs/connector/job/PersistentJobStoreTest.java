@@ -22,9 +22,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.job;
 
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -33,29 +33,27 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import net.datafaker.Faker;
+import org.assertj.core.api.SoftAssertions;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
-import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.eclipse.tractusx.irs.util.TestMother;
-import net.datafaker.Faker;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -101,7 +99,7 @@ class PersistentJobStoreTest {
         final MinioBlobPersistence blobStore = new MinioBlobPersistence("http://" + minioContainer.getHostAddress(),
                 ACCESS_KEY, SECRET_KEY, "testbucket", 1);
         blobStoreSpy = Mockito.spy(blobStore);
-        sut = new PersistentJobStore(blobStoreSpy, meterRegistryService, new DataIntegrityService(""));
+        sut = new PersistentJobStore(blobStoreSpy, meterRegistryService);
     }
 
     @Test
@@ -285,8 +283,8 @@ class PersistentJobStoreTest {
         assertThat(job.getJob().getState()).isEqualTo(JobState.RUNNING);
     }
 
-    private ItemContainer doNothing(final MultiTransferJob multiTransferJob) {
-        return ItemContainer.builder().build();
+    private IntegrityState doNothing(final MultiTransferJob multiTransferJob) {
+        return IntegrityState.INACTIVE;
     }
 
     @Test

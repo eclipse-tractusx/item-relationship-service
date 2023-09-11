@@ -70,8 +70,8 @@ public class ItemContainer {
         return this.getBpns().stream().filter(bpn -> StringUtils.isNotBlank(bpn.getManufacturerName())).toList();
     }
 
-    public void testAddTombstone() {
+    public void putTombstone(final Tombstone tombstone) {
         this.tombstones = new ArrayList<>(this.tombstones);
-        this.tombstones.add(Tombstone.builder().catenaXId("test-me").endpointURL("test-me").build());
+        this.tombstones.add(tombstone);
     }
 }

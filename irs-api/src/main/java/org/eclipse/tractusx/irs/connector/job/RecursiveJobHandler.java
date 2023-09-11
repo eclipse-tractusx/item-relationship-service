@@ -24,7 +24,7 @@ package org.eclipse.tractusx.irs.connector.job;
 
 import java.util.stream.Stream;
 
-import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 
 /**
  * Interface for extensions to provide the logic to build jobs with
@@ -51,9 +51,8 @@ public interface RecursiveJobHandler<T extends DataRequest, P extends TransferPr
 
     /**
      * Called when all transfers in the job have completed.
-     *
      * @param job job definition.
-     * @return asd
+     * @return integrity chain state
      */
-    ItemContainer complete(MultiTransferJob job);
+    IntegrityState complete(MultiTransferJob job);
 }

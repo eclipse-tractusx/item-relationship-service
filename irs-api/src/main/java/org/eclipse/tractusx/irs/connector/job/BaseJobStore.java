@@ -36,10 +36,8 @@ import java.util.function.UnaryOperator;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -59,8 +57,6 @@ public abstract class BaseJobStore implements JobStore {
      * A lock to synchronize access to the collection of stored jobs.
      */
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    private final DataIntegrityService dataIntegrityService;
 
     protected abstract Optional<MultiTransferJob> get(String jobId);
 
@@ -145,14 +141,12 @@ public abstract class BaseJobStore implements JobStore {
     }
 
     @Override
-    public void completeJob(final String jobId, final Function<MultiTransferJob, ItemContainer> completionAction) {
+    public void completeJob(final String jobId, final Function<MultiTransferJob, IntegrityState> completionAction) {
         log.info("Completing job {}", jobId);
         modifyJob(jobId, job -> {
             final JobState jobState = job.getJob().getState();
             if (jobState == JobState.TRANSFERS_FINISHED || jobState == JobState.INITIAL) {
-                final ItemContainer itemContainer = completionAction.apply(job);
-                final IntegrityState integrityState = job.getJobParameter().isIntegrityCheck() ? dataIntegrityService.chainDataIntegrityIsValid(itemContainer, job.getGlobalAssetId())
-                        : IntegrityState.INACTIVE;
+                final IntegrityState integrityState = completionAction.apply(job);
                 return job.toBuilder().transitionComplete(integrityState).build();
             } else {
                 log.info("Job is in state {}, cannot complete it.", jobState);

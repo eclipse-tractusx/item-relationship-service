@@ -34,11 +34,11 @@ import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.SecurityHelperService;
@@ -252,14 +252,14 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         publishJobProcessingFinishedEventIfFinished(jobId);
     }
 
-    private ItemContainer completeJob(final MultiTransferJob job) {
+    private IntegrityState completeJob(final MultiTransferJob job) {
         try {
             return handler.complete(job);
         } catch (RuntimeException e) {
             meterService.incrementJobFailed();
             markJobInError(job, e, JOB_EXECUTION_FAILED);
         }
-        return ItemContainer.builder().build();
+        return IntegrityState.INVALID;
     }
 
     private void markJobInError(final MultiTransferJob job, final Throwable exception, final String message) {

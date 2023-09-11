@@ -33,11 +33,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
-import org.eclipse.tractusx.irs.services.DataIntegrityService;
+import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -62,8 +61,8 @@ public class PersistentJobStore extends BaseJobStore {
     private final MeterRegistryService meterService;
 
     public PersistentJobStore(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
-            final MeterRegistryService meterService, final DataIntegrityService dataIntegrityService) {
-        super(dataIntegrityService);
+            final MeterRegistryService meterService) {
+        super();
         this.blobStore = blobStore;
         this.meterService = meterService;
     }

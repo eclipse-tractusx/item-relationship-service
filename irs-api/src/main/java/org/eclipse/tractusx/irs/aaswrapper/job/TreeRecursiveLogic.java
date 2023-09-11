@@ -28,9 +28,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -62,29 +64,37 @@ public class TreeRecursiveLogic {
      */
     private final ItemTreesAssembler assembler;
 
+    private final DataIntegrityService dataIntegrityService;
+
     public TreeRecursiveLogic(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStoreApi,
-            final JsonUtil jsonUtil, final ItemTreesAssembler assembler) {
+            final JsonUtil jsonUtil, final ItemTreesAssembler assembler, final DataIntegrityService dataIntegrityService) {
         this.blobStoreApi = blobStoreApi;
         this.jsonUtil = jsonUtil;
         this.assembler = assembler;
+        this.dataIntegrityService = dataIntegrityService;
     }
 
     /**
      * Assembles multiple partial item graph into one overall item graph.
      *
      * @param completedTransfers the completed transfer processes, containing the location of the
-     *                           blobs with partial item graph.
-     * @param targetBlobName     Storage blob name to store overall item graph.
+     *                           blobs with partial item graph
+     * @param integrityCheck flag to check processing of integrity check
+     * @param globalAssetId global asset id
+     * @param targetBlobName Storage blob name to store overall item graph.
      * @return
      */
-    /* package */ ItemContainer assemblePartialItemGraphBlobs(final List<TransferProcess> completedTransfers,
-            final String targetBlobName) {
+    /* package */ IntegrityState assemblePartialItemGraphBlobs(final List<TransferProcess> completedTransfers, final boolean integrityCheck,
+            final String globalAssetId, final String targetBlobName) {
         final var partialTrees = completedTransfers.stream()
                                                    .map(this::downloadPartialItemGraphBlobs)
                                                    .map(payload -> jsonUtil.fromString(
                                                            new String(payload, StandardCharsets.UTF_8),
                                                            ItemContainer.class));
         final var assembledTree = assembler.retrieveItemGraph(partialTrees);
+        final IntegrityState integrityState = integrityCheck ? dataIntegrityService.chainDataIntegrityIsValid(assembledTree, globalAssetId)
+                : IntegrityState.INACTIVE;
+
         final String json = jsonUtil.asString(assembledTree);
         final var blob = json.getBytes(StandardCharsets.UTF_8);
 
@@ -94,7 +104,7 @@ public class TreeRecursiveLogic {
         } catch (BlobPersistenceException e) {
             log.error("Could not store blob", e);
         }
-        return assembledTree;
+        return integrityState;
     }
 
     private byte[] downloadPartialItemGraphBlobs(final TransferProcess transfer) {

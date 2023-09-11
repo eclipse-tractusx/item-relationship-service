@@ -53,6 +53,7 @@ import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
+import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -83,7 +84,7 @@ public class JobConfiguration {
 
     @Bean
     public JobOrchestrator<ItemDataRequest, AASTransferProcess> jobOrchestrator(
-            final DigitalTwinDelegate digitalTwinDelegate,
+            final DigitalTwinDelegate digitalTwinDelegate, final DataIntegrityService dataIntegrityService,
             @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JobStore jobStore,
             final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
@@ -91,7 +92,7 @@ public class JobConfiguration {
 
         final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(),
                 blobStore);
-        final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
+        final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler(), dataIntegrityService);
         final var handler = new AASRecursiveJobHandler(logic);
         final JobTTL jobTTL = new JobTTL(ttlCompletedJobs, ttlFailedJobs);
 

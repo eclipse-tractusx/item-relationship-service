@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -47,7 +48,9 @@ import org.bouncycastle.util.encoders.Hex;
 import org.eclipse.tractusx.irs.aaswrapper.job.IntegrityAspect;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Submodel;
+import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.IntegrityState;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -82,26 +85,37 @@ public class DataIntegrityService {
         final long numberOfValidSubmodels = itemContainer.getSubmodels()
                                                          .stream()
                                                          .filter(notTierZeroSubmodel(globalAssetId))
-                                                         .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities()))
+                                                         .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer))
                                                          .count();
-        itemContainer.testAddTombstone();
 
-        return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer, globalAssetId));
+        return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer.getSubmodels(), globalAssetId));
     }
 
-    private boolean submodelDataIntegrityIsValid(final Submodel submodel, final Set<IntegrityAspect> integrities) {
+    private boolean submodelDataIntegrityIsValid(final Submodel submodel, final ItemContainer itemContainer) {
         log.debug("Validation data integrity of submodel: {}, {}, {}", submodel.getCatenaXId(), submodel.getAspectType(), submodel.getIdentification());
-        final Optional<IntegrityAspect.Reference> reference = findIntegrityAspectReferenceForSubmodel(submodel, integrities);
+        final Optional<IntegrityAspect.Reference> reference = findIntegrityAspectReferenceForSubmodel(submodel, itemContainer.getIntegrities());
 
         if (reference.isPresent()) {
             log.debug("Calculating hash of Submodel id: {}", submodel.getIdentification());
             final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
 
             log.debug("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
-            return hashesEquals(reference.get().getHash(), calculatedHash)
-                    && signaturesEquals(reference.get().getSignature(), bytesOf(submodel.getPayload()));
+            final boolean submodelDataIntegrityIsValid = hashesEquals(reference.get().getHash(), calculatedHash) && signaturesEquals(
+                    reference.get().getSignature(), bytesOf(submodel.getPayload()));
+
+            if (!submodelDataIntegrityIsValid) {
+                itemContainer.putTombstone(Tombstone.from(submodel.getCatenaXId(), null, String.format("Submodel %s, %s didn't pass Data Integrity validation - hash or signature not equal.",
+                                submodel.getIdentification(), submodel.getAspectType()), 0, ProcessStep.DATA_INTEGRITY_CHECK));
+            }
+            return submodelDataIntegrityIsValid;
         } else {
-            log.warn("Integrity of Data chain cannot be determined, as Data Integrity Aspect Reference was not found for Submodel: {}, {}", submodel.getIdentification(), submodel.getAspectType());
+            final String errorDetails = String.format(
+                    "Integrity of Data chain cannot be determined, as Data Integrity Aspect Reference was not found for Submodel: %s, %s",
+                    submodel.getIdentification(), submodel.getAspectType());
+            log.warn(errorDetails);
+            itemContainer.putTombstone(Tombstone.from(submodel.getCatenaXId(), null, errorDetails,
+                    0, ProcessStep.DATA_INTEGRITY_CHECK));
+
             return false;
         }
     }
@@ -130,8 +144,8 @@ public class DataIntegrityService {
         return verifier.verifySignature(Hex.decode(signatureReference));
     }
 
-    private long totalNumberOfSubmodels(final ItemContainer itemContainer, final String globalAssetId) {
-        return itemContainer.getSubmodels().stream().filter(notTierZeroSubmodel(globalAssetId)).count();
+    private long totalNumberOfSubmodels(final List<Submodel> submodels, final String globalAssetId) {
+        return submodels.stream().filter(notTierZeroSubmodel(globalAssetId)).count();
     }
 
     private String calculateHashForRawSubmodelPayload(final Map<String, Object> payload) {

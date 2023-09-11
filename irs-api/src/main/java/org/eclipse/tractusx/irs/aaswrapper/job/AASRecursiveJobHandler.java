@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.RecursiveJobHandler;
 
@@ -61,11 +62,11 @@ public class AASRecursiveJobHandler implements RecursiveJobHandler<ItemDataReque
     }
 
     @Override
-    public ItemContainer complete(final MultiTransferJob job) {
+    public IntegrityState complete(final MultiTransferJob job) {
         log.info("Completed retrieval for Job {}", job.getJobIdString());
         final var completedTransfers = job.getCompletedTransfers();
         final var targetBlobName = job.getJob().getId();
-        return logic.assemblePartialItemGraphBlobs(completedTransfers, targetBlobName.toString());
+        return logic.assemblePartialItemGraphBlobs(completedTransfers, job.getJobParameter().isIntegrityCheck(), job.getGlobalAssetId(), targetBlobName.toString());
     }
 
 }

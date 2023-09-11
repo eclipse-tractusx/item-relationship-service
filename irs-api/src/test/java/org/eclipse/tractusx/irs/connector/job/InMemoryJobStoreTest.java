@@ -22,32 +22,29 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.job;
 
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import net.datafaker.Faker;
+import org.assertj.core.api.SoftAssertions;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
+import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.services.DataIntegrityService;
 import org.eclipse.tractusx.irs.util.TestMother;
-import net.datafaker.Faker;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 class InMemoryJobStoreTest {
     final int TTL_IN_HOUR_SECONDS = 3600;
-    InMemoryJobStore sut = new InMemoryJobStore(new DataIntegrityService(""));
+    InMemoryJobStore sut = new InMemoryJobStore();
     Faker faker = new Faker();
     TestMother generate = new TestMother();
     MultiTransferJob job = generate.job(JobState.UNSAVED);
@@ -188,8 +185,8 @@ class InMemoryJobStoreTest {
         assertThat(job.getJob().getState()).isEqualTo(JobState.INITIAL);
     }
 
-    private ItemContainer doNothing(final MultiTransferJob multiTransferJob) {
-        return ItemContainer.builder().build();
+    private IntegrityState doNothing(final MultiTransferJob multiTransferJob) {
+        return IntegrityState.INACTIVE;
     }
 
     @Test
