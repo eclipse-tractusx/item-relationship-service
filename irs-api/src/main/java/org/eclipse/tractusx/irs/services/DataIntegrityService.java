@@ -94,14 +94,14 @@ public class DataIntegrityService {
     }
 
     private boolean submodelDataIntegrityIsValid(final Submodel submodel, final ItemContainer itemContainer) {
-        log.debug("Validation data integrity of submodel: {}, {}, {}", submodel.getCatenaXId(), submodel.getAspectType(), submodel.getIdentification());
+        log.info("Validation data integrity of submodel: {}, {}, {}", submodel.getCatenaXId(), submodel.getAspectType(), submodel.getIdentification());
         final Optional<IntegrityAspect.Reference> reference = findIntegrityAspectReferenceForSubmodel(submodel, itemContainer.getIntegrities());
 
         if (reference.isPresent()) {
-            log.debug("Calculating hash of Submodel id: {}", submodel.getIdentification());
+            log.info("Calculating hash of Submodel id: {}", submodel.getIdentification());
             final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
 
-            log.debug("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
+            log.info("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
             final boolean submodelDataIntegrityIsValid = hashesEquals(reference.get().getHash(), calculatedHash) && signaturesEquals(
                     reference.get().getSignature(), bytesOf(submodel.getPayload()));
 
