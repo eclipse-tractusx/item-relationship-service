@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.6.0] - 2023-09-01
+### Changed
+- Update IRS version to 3.4.0
+
 ## [6.5.0] - 2023-08-30
 ### Added
 - Added configurable values for `digitalTwinRegistry.shellDescriptorTemplate` and `digitalTwinRegistry.lookupShellsTemplate`

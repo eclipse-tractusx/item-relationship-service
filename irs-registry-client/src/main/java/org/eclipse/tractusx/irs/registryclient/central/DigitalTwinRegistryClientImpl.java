@@ -98,8 +98,8 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
     public LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(
             final List<IdentifierKeyValuePair> assetIds) {
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
-        final var values = Map.of(PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds));
-        return restTemplate.exchange(uriBuilder.build(values), HttpMethod.GET, null, LookupShellsResponse.class)
+        uriBuilder.uriVariables(Map.of(PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds)));
+        return restTemplate.exchange(uriBuilder.build().toUri(), HttpMethod.GET, null, LookupShellsResponse.class)
                            .getBody();
     }
 
