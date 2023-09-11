@@ -33,6 +33,7 @@ import java.security.Security;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -46,6 +47,7 @@ import org.bouncycastle.util.encoders.Hex;
 import org.eclipse.tractusx.irs.aaswrapper.job.IntegrityAspect;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Submodel;
+import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -77,29 +79,31 @@ public class DataIntegrityService {
      * @return flag indicates if chain is valid
      */
     public IntegrityState chainDataIntegrityIsValid(final ItemContainer itemContainer, final String globalAssetId) {
-        log.info("Starting validation of Data Chain Integrity with {} integrity aspects and submodels {}.", itemContainer.getIntegrities().size(), itemContainer.getSubmodels().size());
+        log.info("Starting validation of Data Chain Integrity with {} Integrity aspects and {} Submodels.", itemContainer.getIntegrities().size(), itemContainer.getSubmodels().size());
         final long numberOfValidSubmodels = itemContainer.getSubmodels()
                                                          .stream()
-                                                         .filter(submodel -> !submodel.getCatenaXId().equals(globalAssetId))
+                                                         .filter(notTierZeroSubmodel(globalAssetId))
                                                          .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities()))
                                                          .count();
+
+        itemContainer.getTombstones().add(Tombstone.builder().catenaXId("test-me").endpointURL("test-me").build());
 
         return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer, globalAssetId));
     }
 
     private boolean submodelDataIntegrityIsValid(final Submodel submodel, final Set<IntegrityAspect> integrities) {
-        log.info("Validation data integrity of submodel: {}, {}, {}", submodel.getCatenaXId(), submodel.getAspectType(), submodel.getIdentification());
+        log.debug("Validation data integrity of submodel: {}, {}, {}", submodel.getCatenaXId(), submodel.getAspectType(), submodel.getIdentification());
         final Optional<IntegrityAspect.Reference> reference = findIntegrityAspectReferenceForSubmodel(submodel, integrities);
 
         if (reference.isPresent()) {
-            log.info("Calculating hash of Submodel id: {}", submodel.getIdentification());
+            log.debug("Calculating hash of Submodel id: {}", submodel.getIdentification());
             final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
 
-            log.info("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
+            log.debug("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
             return hashesEquals(reference.get().getHash(), calculatedHash)
                     && signaturesEquals(reference.get().getSignature(), bytesOf(submodel.getPayload()));
         } else {
-            log.debug("Integrity of Data chain cannot be determined, as Data Integrity Aspect Reference was not found for Submodel: {}, {}", submodel.getIdentification(), submodel.getAspectType());
+            log.warn("Integrity of Data chain cannot be determined, as Data Integrity Aspect Reference was not found for Submodel: {}, {}", submodel.getIdentification(), submodel.getAspectType());
             return false;
         }
     }
@@ -129,7 +133,7 @@ public class DataIntegrityService {
     }
 
     private long totalNumberOfSubmodels(final ItemContainer itemContainer, final String globalAssetId) {
-        return itemContainer.getSubmodels().stream().filter(submodel -> !submodel.getCatenaXId().equals(globalAssetId)).count();
+        return itemContainer.getSubmodels().stream().filter(notTierZeroSubmodel(globalAssetId)).count();
     }
 
     private String calculateHashForRawSubmodelPayload(final Map<String, Object> payload) {
@@ -145,6 +149,10 @@ public class DataIntegrityService {
             log.error("Integrity of Data chain cannot be determined, cant retrieve bytes from payload.", exc);
             return new byte[0];
         }
+    }
+
+    private static Predicate<Submodel> notTierZeroSubmodel(final String globalAssetId) {
+        return submodel -> !submodel.getCatenaXId().equals(globalAssetId);
     }
 
 }
