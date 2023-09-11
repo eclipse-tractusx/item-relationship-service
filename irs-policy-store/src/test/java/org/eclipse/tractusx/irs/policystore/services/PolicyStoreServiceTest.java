@@ -50,6 +50,8 @@ import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
@@ -62,6 +64,9 @@ class PolicyStoreServiceTest {
 
     @Mock
     private PolicyPersistence persistence;
+
+    @Captor
+    ArgumentCaptor<Policy> policyCaptor;
 
     private final Clock clock = Clock.systemUTC();
 
@@ -91,7 +96,13 @@ class PolicyStoreServiceTest {
         testee.registerPolicy(req);
 
         // assert
-        verify(persistence).save(eq(BPN), any());
+        verify(persistence).save(eq(BPN), policyCaptor.capture());
+
+        assertThat(policyCaptor.getValue()).isNotNull();
+        List<Permission> permissionList = policyCaptor.getValue().getPermissions();
+        assertThat(permissionList).hasSize(2);
+        assertThat(permissionList.get(0)).usingRecursiveComparison().isEqualTo(createPermissions().get(0));
+        assertThat(permissionList.get(1)).usingRecursiveComparison().isEqualTo(createPermissions().get(1));
     }
 
     @Test
