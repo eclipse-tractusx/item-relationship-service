@@ -19,7 +19,12 @@ version: 1.0.0
 dependencies:
   - name: irs-helm
     repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 5.1.1
-  - name: irs-edc-consumer
-    repository: https://catenax-ng.github.io/tx-item-relationship-service
-    version: 1.1.2
+    version: 6.6.0
+  - name: tractusx-connector
+    repository: https://eclipse-tractusx.github.io/charts/dev
+    version: 0.5.0
+  - condition: postgresql.enabled
+    alias: edc-postgresql
+    name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 12.1.6

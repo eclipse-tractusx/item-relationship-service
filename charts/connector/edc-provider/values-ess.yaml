@@ -1,21 +1,6 @@
-irs-edc-provider:
-  ##############################
-  # EDC Postgres Configuration #
-  ##############################
-  postgresql:
-    auth:
-      postgresPassword: <path:traceability-irs/data/int/controlplane#databasepassword>
-      password: <path:traceability-irs/data/int/controlplane#databasepassword>
-    primary:
-      resources:
-        limits:
-          cpu: 1
-          memory: 1.5Gi
+tractusx-connector:
 
-  ##################################
-  # EDC Controlplane Configuration #
-  ##################################
-  edc-controlplane:
+  controlplane:
     ingresses:
       - enabled: true
         hostname: "irs-ess-provider-controlplane.int.demo.catena-x.net"
@@ -26,92 +11,33 @@ irs-edc-provider:
         endpoints:
           - protocol
           - management
-        className: ""
         tls:
-          - hosts:
-              - "irs-ess-provider-controlplane.int.demo.catena-x.net"
-            secretName: tls-secret
-        certManager:
-          issuer: ""
-          clusterIssuer: ""
+          enabled: true
+          secretName: tls-secret
 
-    edc:
-      postgresql:
-        password: <path:traceability-irs/data/int/controlplane#databasepassword>
-      transfer:
-        proxy:
-          token:
-            verifier:
-              publickey:
-                alias: irs-int-daps-cert
-            signer:
-              privatekey:
-                alias: irs-int-daps-key
-      api:
-        auth:
-          key: <path:traceability-irs/data/ess/controlplane#apiKey>
-      controlplane:
-        url: "https://irs-ess-provider-controlplane.int.demo.catena-x.net"
-      dataplane:
-        url: "https://irs-ess-provider-dataplane.int.demo.catena-x.net"
-    configuration:
-      properties: |-
-        edc.oauth.client.id=<path:traceability-irs/data/int/controlplane#edc.oauth.client.id>
-        edc.oauth.private.key.alias=irs-int-daps-key
-        edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
-        edc.oauth.certificate.alias=irs-int-daps-cert
-        edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
-        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
-        edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
-        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
-        edc.data.encryption.keys.alias=irs-int-daps-key
-        edc.data.encryption.algorithm=NONE
-
-  ###############################
-  # EDC Dataplane Configuration #
-  ###############################
-  edc-dataplane:
-    edc:
-      api:
-        auth:
-          key: <path:traceability-irs/data/ess/controlplane#apiKey>
-    ## Ingress declaration to expose the network service.
+  dataplane:
     ingresses:
-      ## Public / Internet facing Ingress
       - enabled: true
-        # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
         hostname: "irs-ess-provider-dataplane.int.demo.catena-x.net"
-        # -- Additional ingress annotations to add
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        # -- EDC endpoints exposed by this ingress resource
         endpoints:
           - public
-        # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
         className: "nginx"
-        # -- Enables TLS on the ingress resource
         tls:
-          - hosts:
-              - "irs-ess-provider-dataplane.int.demo.catena-x.net"
-            # Default secret for certificate creation already provided to your namespace
-            secretName: tls-secret
-        ## Adds [cert-manager](https://cert-manager.io/docs/) annotations to the ingress resource
-        certManager:
-          # -- If preset enables certificate generation via cert-manager namespace scoped issuer
-          issuer: ""
-          # -- If preset enables certificate generation via cert-manager cluster-wide issuer
-          clusterIssuer: ""
+          enabled: true
+          secretName: tls-secret
 
-    configuration:
-      properties: |-
-        edc.oauth.client.id=<path:traceability-irs/data/int/controlplane#edc.oauth.client.id>
-        edc.oauth.private.key.alias=irs-int-daps-key
-        edc.oauth.provider.audience=idsc:IDS_CONNECTORS_ALL
-        edc.oauth.provider.jwks.url=https://daps1.int.demo.catena-x.net/.well-known/jwks.json
-        edc.oauth.certificate.alias=irs-int-daps-cert
-        edc.oauth.token.url=https://daps1.int.demo.catena-x.net/token
-        edc.vault.hashicorp.url=https://vault.demo.catena-x.net
-        edc.vault.hashicorp.token=<path:traceability-irs/data/int/controlplane#vaultToken>
-        edc.vault.hashicorp.api.secret.path=/v1/traceability-irs
+  backendService:
+    httpProxyTokenReceiverUrl: "https://irs-ess-submodel-server.int.demo.catena-x.net/data/endpoint-data-reference-provider1"
+
+  vault:
+    secretNames:
+      transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-provider-key
+      transferProxyTokenSignerPublicKey: irs-dev-daps-cert-provider
+      transferProxyTokenEncryptionAesKey: test-edc-encryption-key
+
+  postgresql:
+    jdbcUrl: "jdbc:postgresql://ess-provider-edc-postgresql-hl:5432/edc"
