@@ -44,7 +44,7 @@ public enum LogicalConstraintType {
 
     private String code;
 
-    LogicalConstraintType(String code) {
+    LogicalConstraintType(final String code) {
         this.code = code;
     }
 

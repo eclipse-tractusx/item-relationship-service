@@ -54,7 +54,7 @@ public enum OperatorType {
     private final String code;
     private final String label;
 
-    OperatorType(String code, String label) {
+    OperatorType(final String code, final String label) {
         this.code = code;
         this.label = label;
     }

@@ -46,7 +46,7 @@ public enum LeftOperand {
 
     private String value;
 
-    LeftOperand(String value) {
+    LeftOperand(final String value) {
         this.value = value;
     }
 
