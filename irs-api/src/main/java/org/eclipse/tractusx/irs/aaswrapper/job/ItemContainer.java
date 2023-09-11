@@ -22,6 +22,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -67,5 +68,10 @@ public class ItemContainer {
 
     public List<Bpn> getBpnsWithManufacturerName() {
         return this.getBpns().stream().filter(bpn -> StringUtils.isNotBlank(bpn.getManufacturerName())).toList();
+    }
+
+    public void testAddTombstone() {
+        this.tombstones = new ArrayList<>(this.tombstones);
+        this.tombstones.add(Tombstone.builder().catenaXId("test-me").endpointURL("test-me").build());
     }
 }

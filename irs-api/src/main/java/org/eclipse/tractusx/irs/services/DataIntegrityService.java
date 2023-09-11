@@ -85,8 +85,8 @@ public class DataIntegrityService {
                                                          .filter(notTierZeroSubmodel(globalAssetId))
                                                          .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities()))
                                                          .count();
-
-        itemContainer.getTombstones().add(Tombstone.builder().catenaXId("test-me").endpointURL("test-me").build());
+//        itemContainer.getTombstones().
+        itemContainer.testAddTombstone();
 
         return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer, globalAssetId));
     }
