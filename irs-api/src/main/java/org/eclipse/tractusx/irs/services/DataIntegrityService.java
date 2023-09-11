@@ -47,7 +47,6 @@ import org.bouncycastle.util.encoders.Hex;
 import org.eclipse.tractusx.irs.aaswrapper.job.IntegrityAspect;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Submodel;
-import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.IntegrityState;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -85,7 +84,6 @@ public class DataIntegrityService {
                                                          .filter(notTierZeroSubmodel(globalAssetId))
                                                          .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer.getIntegrities()))
                                                          .count();
-//        itemContainer.getTombstones().
         itemContainer.testAddTombstone();
 
         return IntegrityState.from(numberOfValidSubmodels, totalNumberOfSubmodels(itemContainer, globalAssetId));
