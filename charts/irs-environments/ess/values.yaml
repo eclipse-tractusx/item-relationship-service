@@ -194,7 +194,7 @@ tractusx-connector:
       token: "<path:traceability-irs/data/int/controlplane#vaultToken>"
       timeout: 30
       healthCheck:
-        enabled: true
+        enabled: false
         standbyOk: true
       paths:
         secret: /v1/traceability-irs
