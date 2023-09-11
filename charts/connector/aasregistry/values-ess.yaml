@@ -19,7 +19,23 @@
 ###############################################################
 
 registry:
+  postgresql:
+    primary:
+      resources:
+        limits:
+          cpu: 600m
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 1Gi
   registry:
     authentication: false
     idpIssuerUri: https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central
     host: irs-aas-registry-ess.int.demo.catena-x.net
+    resources:
+      limits:
+        cpu: 600m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 1Gi
