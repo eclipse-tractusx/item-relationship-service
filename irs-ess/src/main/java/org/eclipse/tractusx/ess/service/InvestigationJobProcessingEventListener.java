@@ -149,10 +149,12 @@ class InvestigationJobProcessingEventListener {
             final Map<String, List<String>> bpns) {
         bpns.forEach((bpn, globalAssetIds) -> {
             final List<String> edcBaseUrl = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-            log.info("Received EDC URL for BPN '{}': '{}'", bpn, edcBaseUrl);
             if (edcBaseUrl.isEmpty()) {
+                log.warn("No EDC URL found for BPN '{}'. Setting investigation result to '{}'", bpn,
+                        SupplyChainImpacted.UNKNOWN);
                 investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
             }
+            log.info("Received EDC URL for BPN '{}': '{}'", bpn, edcBaseUrl);
             edcBaseUrl.forEach(url -> {
                 try {
                     final String notificationId = sendEdcNotification(bpn, url,
