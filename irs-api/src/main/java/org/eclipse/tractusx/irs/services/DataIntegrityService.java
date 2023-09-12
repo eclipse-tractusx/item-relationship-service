@@ -76,6 +76,9 @@ public class DataIntegrityService {
     }
 
     /**
+     * Specifies the integrity of the data chain.
+     * VALID - total number of Submodels is equal to number of submodels that passed validation
+     * INVALID - total number of Submodels is not equal to number of submodels that passed validation
      * @param itemContainer data container
      * @param globalAssetId tier 0 submodels DataIntegrity aspect is missing
      * @return flag indicates if chain is valid
@@ -84,9 +87,7 @@ public class DataIntegrityService {
         log.info("Starting validation of Data Chain Integrity with {} Integrity aspects and {} Submodels.", itemContainer.getIntegrities().size(), itemContainer.getSubmodels().size());
         final long numberOfValidSubmodels = itemContainer.getSubmodels()
                                                          .stream()
-                                                         .peek(x -> log.info("Comparing {} and {}", x.getCatenaXId(), globalAssetId))
                                                          .filter(notTierZeroSubmodel(globalAssetId))
-                                                         .peek(x -> log.info("Comparing went through {} and {}", x.getCatenaXId(), globalAssetId))
                                                          .takeWhile(submodel -> submodelDataIntegrityIsValid(submodel, itemContainer))
                                                          .count();
 
@@ -94,21 +95,25 @@ public class DataIntegrityService {
     }
 
     private boolean submodelDataIntegrityIsValid(final Submodel submodel, final ItemContainer itemContainer) {
-        log.info("Validation data integrity of submodel: {}, {}, {}", submodel.getCatenaXId(), submodel.getAspectType(), submodel.getIdentification());
+        log.info("Validating Data integrity of Submodel: catenaXId {}, id {}, aspect {}", submodel.getCatenaXId(), submodel.getIdentification(), submodel.getAspectType());
         final Optional<IntegrityAspect.Reference> reference = findIntegrityAspectReferenceForSubmodel(submodel, itemContainer.getIntegrities());
 
         if (reference.isPresent()) {
-            log.info("Calculating hash of Submodel id: {}", submodel.getIdentification());
+            log.info("Calculating hash for Submodel with id: {}", submodel.getIdentification());
             final String calculatedHash = calculateHashForRawSubmodelPayload(submodel.getPayload());
 
-            log.info("Comparing hashes and signatures Data integrity of Submodel id: {}", submodel.getIdentification());
+            log.info("Comparing hash and signature for Submodel with id: {}", submodel.getIdentification());
             final boolean submodelDataIntegrityIsValid = hashesEquals(reference.get().getHash(), calculatedHash) && signaturesEquals(
                     reference.get().getSignature(), bytesOf(submodel.getPayload()));
 
             if (!submodelDataIntegrityIsValid) {
-                itemContainer.putTombstone(Tombstone.from(submodel.getCatenaXId(), null, String.format("Submodel %s, %s didn't pass Data Integrity validation - hash or signature not equal.",
-                                submodel.getIdentification(), submodel.getAspectType()), 0, ProcessStep.DATA_INTEGRITY_CHECK));
+                final String errorDetails = String.format("Submodel %s, %s didn't pass Data Integrity validation - hash or signature not equal.",
+                        submodel.getIdentification(), submodel.getAspectType());
+                log.warn(errorDetails);
+                itemContainer.putTombstone(Tombstone.from(submodel.getCatenaXId(), null, errorDetails,
+                        0, ProcessStep.DATA_INTEGRITY_CHECK));
             }
+
             return submodelDataIntegrityIsValid;
         } else {
             final String errorDetails = String.format(
