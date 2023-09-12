@@ -355,7 +355,7 @@ def create_notification_assets(edc_upload_urls_, edc_asset_path_, edc_contract_d
         for notification_ in notifications_:
             notification_id = notification_['id']
             notification_type = notification_['type']
-            ess_url = ess_base_url_ + notification_['path']
+            ess_url = f"{ess_base_url_}{notification_['path']}"
             response_ = search_for_asset_in_catalog(edc_catalog_path_, edc_upload_url_, edc_url_, header_, session_,
                                                     notification_id)
             asset_url_ = edc_upload_url_ + edc_asset_path_
@@ -428,8 +428,7 @@ if __name__ == "__main__":
                         required=False)
     parser.add_argument("--allowedBPNs", type=str, nargs="*",
                         help="The allowed BPNs for digital twin registration in the registry.", required=False)
-    parser.add_argument("--essURL", type=str, nargs="*",
-                        help="The base URL of the ESS Service API", required=False)
+    parser.add_argument("--essURL", type=str, help="The base URL of the ESS Service API", required=False)
 
     args = parser.parse_args()
     config = vars(args)
