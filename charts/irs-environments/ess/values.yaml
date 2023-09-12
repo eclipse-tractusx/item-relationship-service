@@ -22,7 +22,7 @@ irs-helm:
         secretName: tls-secret
   digitalTwinRegistry:
     url: https://irs-aas-registry-ess.int.demo.catena-x.net/semantics/registry
-    discoveryFinderUrl: https://semantics.int.demo.catena-x.net/discoveryfinder/api/administration/connectors/discovery/search
+    discoveryFinderUrl: https://irs-ess-discovery-mock.int.demo.catena-x.net/api/administration/connectors/discovery/search
     shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
     lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
   semanticshub:
@@ -44,13 +44,13 @@ irs-helm:
       clientSecret: <path:traceability-irs/data/int/keycloak/dataspacediscovery#clientSecret>
   edc:
     provider:
-      host: "https://irs-provider-controlplane.dev.demo.catena-x.net"
+      host: "https://irs-ess-consumer-controlplane.int.demo.catena-x.net"
     controlplane:
       apikey:
         secret: <path:traceability-irs/data/ess/controlplane#apiKey>
 
   discovery:
-    endpoint: https://semantics.int.demo.catena-x.net/discoveryfinder/api/administration/connectors/discovery
+    endpoint: ""
     mockEdcAddress:  # Mocked EDC BPN Addresses
       BPNL00000003B6LU: https://lrp.int.pdm-cloud-connector.com/edc-control-plane/BPNL00000003B6LU
       BPNL00000003B3NX: ${EDC_PROVIDER_URL:https://irs-ess-provider-controlplane.int.demo.catena-x.net}
