@@ -300,7 +300,9 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private String appendSuffix(final String endpointAddress, final String providerSuffix) {
         String addressWithSuffix;
-        if (endpointAddress.endsWith("/") && providerSuffix.startsWith("/")) {
+        if (endpointAddress.endsWith(providerSuffix)) {
+            addressWithSuffix = endpointAddress;
+        } else if (endpointAddress.endsWith("/") && providerSuffix.startsWith("/")) {
             addressWithSuffix = endpointAddress.substring(0, endpointAddress.length() - 1) + providerSuffix;
         } else {
             addressWithSuffix = endpointAddress + providerSuffix;
