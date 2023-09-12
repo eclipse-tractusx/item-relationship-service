@@ -1610,11 +1610,47 @@ components:
           type: string
         manufacturerName:
           type: string
+    Constraints:
+      type: object
+      additionalProperties: false
+      properties:
+        leftOperand:
+          type: string
+          enum:
+            - Membership
+            - FrameworkAgreement.traceability
+            - FrameworkAgreement.resiliency
+            - FrameworkAgreement.quality
+            - PURPOSE
+            - BusinessPartnerNumber
+        operator:
+          type: string
+          enum:
+            - eq
+            - neq
+            - lt
+            - gt
+            - in
+            - lteq
+            - gteq
+            - isA
+            - hasPart
+            - isPartOf
+            - isAllOf
+            - isAllOf
+            - isNoneOf
+        rightOperand:
+          $ref: '#/components/schemas/RightOperand'
     CreatePolicyRequest:
       type: object
       additionalProperties: false
       description: Request to add a policy
       properties:
+        permissions:
+          type: array
+          description: List of permissions that will be add to Policy on creation.
+          items:
+            $ref: '#/components/schemas/Permission'
         policyId:
           type: string
           description: The ID of the policy to add
@@ -1623,6 +1659,7 @@ components:
           format: date-time
           description: Timestamp after which the policy will no longer be accepted in negotiations
       required:
+        - permissions
         - policyId
         - validUntil
     EdcNotification:
@@ -2040,6 +2077,26 @@ components:
       required:
         - bpn
         - globalAssetId
+    Permission:
+      type: object
+      additionalProperties: false
+      properties:
+        action:
+          type: string
+          enum:
+            - ACCESS
+            - USE
+        constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/Constraints'
+        logicalConstraintType:
+          type: string
+          enum:
+            - and
+            - or
+            - xone
+            - andsequence
     Policy:
       type: object
       additionalProperties: false
@@ -2047,6 +2104,10 @@ components:
         createdOn:
           type: string
           format: date-time
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
         policyId:
           type: string
         validUntil:
@@ -2293,6 +2354,14 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
+    RightOperand:
+      type: object
+      additionalProperties: false
+      properties:
+        value:
+          type: string
+        version:
+          type: string
     SemanticId:
       type: object
       additionalProperties: false
