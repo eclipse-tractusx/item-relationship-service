@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import argparse
-
+import base64
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
@@ -26,7 +26,10 @@ def delete_shells_aas_3(url_, headers_):
         items = response_json["result"]
         for item in items:
             global_asset_id = item["id"]
-            delete_response = session.request(method="DELETE", url=url_ + "/" + global_asset_id, headers=headers_)
+            global_asset_id_bytes = global_asset_id.encode('ascii')
+            base64_global_asset_id_bytes = base64.b64encode(global_asset_id_bytes)
+            base64_global_asset_id = base64_global_asset_id_bytes.decode('ascii')
+            delete_response = session.request(method="DELETE", url=url_ + "/" + base64_global_asset_id, headers=headers_)
             print(delete_response)
             if delete_response.status_code > 205:
                 print(global_asset_id)
