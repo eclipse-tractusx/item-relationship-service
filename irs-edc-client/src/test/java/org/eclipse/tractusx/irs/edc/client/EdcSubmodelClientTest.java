@@ -27,6 +27,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -144,7 +146,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void shouldSendNotificationSuccessfully() throws Exception {
         // arrange
         final EdcNotification notification = EdcNotification.builder().build();
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
@@ -153,11 +155,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(edcDataPlaneClient.sendData(eq(ref), any(), eq(notification))).thenReturn(() -> true);
 
         // act
-        final var result = testee.sendNotification(ENDPOINT_ADDRESS, "notify-request-asset", notification);
+        final var result = testee.sendNotification(CONNECTOR_ENDPOINT, "notify-request-asset", notification);
         final EdcNotificationResponse response = result.get(5, TimeUnit.SECONDS);
 
         // assert
         assertThat(response.deliveredSuccessfully()).isTrue();
+        verify(contractNegotiationService, times(1)).negotiate(eq(CONNECTOR_ENDPOINT + PROVIDER_SUFFIX), any());
     }
 
     @Test
