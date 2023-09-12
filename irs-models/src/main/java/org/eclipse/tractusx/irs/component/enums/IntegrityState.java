@@ -31,8 +31,8 @@ public enum IntegrityState {
     /**
      * VALID - total number of Submodels is equal to number of submodels that passed validation
      * INVALID - total number of Submodels is not equal to number of submodels that passed validation
-     * @param numberOfValidSubmodels number of submodels that hash and signature was equal during comparison
-     * @param totalNumberOfSubmodels total number of submodels
+     * @param numberOfValidSubmodels submodels that hash and signature was equal during comparison
+     * @param totalNumberOfSubmodels total submodels size
      * @return integrity state
      */
     public static IntegrityState from(final long numberOfValidSubmodels, final long totalNumberOfSubmodels) {
