@@ -260,13 +260,14 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
+    public CompletableFuture<EdcNotificationResponse> sendNotification(final String connectorEndpoint,
             final String assetId, final EdcNotification notification) throws EdcClientException {
-        return execute(submodelEndpointAddress, () -> {
+        return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
-            stopWatch.start("Send EDC notification task, endpoint " + submodelEndpointAddress);
-
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            stopWatch.start("Send EDC notification task, endpoint " + connectorEndpoint);
+            final var negotiationEndpoint = appendSuffix(connectorEndpoint,
+                    config.getControlplane().getProviderSuffix());
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint, assetId);
 
             return sendNotificationAsync(negotiationResponse.getContractAgreementId(), notification, stopWatch);
         });
