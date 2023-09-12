@@ -151,8 +151,10 @@ public class EdcRegistration {
                               "odrl:or": [
                                 {
                                   "@type": "Constraint",
-                                  "odrl:leftOperand": "idsc:PURPOSE",
-                                  "odrl:operator": "EQ",
+                                  "odrl:leftOperand": "PURPOSE",
+                                  "odrl:operator": {
+                                    "@id": "odrl:eq"
+                                  },
                                   "odrl:rightOperand": "ID 3.0 Trace"
                                 }
                               ]
