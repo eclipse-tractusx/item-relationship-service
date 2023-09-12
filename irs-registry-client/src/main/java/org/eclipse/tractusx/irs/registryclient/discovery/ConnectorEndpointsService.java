@@ -32,11 +32,11 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Connector Endpoints service to find connectors in Discovery Finder
  */
+@Getter
 @RequiredArgsConstructor
 @Slf4j
 public class ConnectorEndpointsService {
 
-    @Getter
     private final DiscoveryFinderClient discoveryFinderClient;
 
     public List<String> fetchConnectorEndpoints(final String bpn) {
