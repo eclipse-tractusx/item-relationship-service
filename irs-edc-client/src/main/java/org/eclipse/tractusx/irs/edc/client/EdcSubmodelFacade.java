@@ -64,6 +64,7 @@ public class EdcSubmodelFacade {
     public EdcNotificationResponse sendNotification(final String submodelEndpointAddress, final String assetId,
             final EdcNotification notification) throws EdcClientException {
         try {
+            log.debug("Sending EDC Notification '{}'", notification);
             return client.sendNotification(submodelEndpointAddress, assetId, notification).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
