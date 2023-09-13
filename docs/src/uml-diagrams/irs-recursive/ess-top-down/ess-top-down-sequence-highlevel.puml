@@ -1,0 +1,142 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+actor "Client App (Script)" as Client
+
+box "OEM" #LightGrey
+    participant IRS as IRS
+    participant SubmodelServer as SubmodelServer
+    participant dDTR as dDTR
+    participant EDC as EDC #99FF99
+end box
+
+participant EDC as EDCTier1
+
+box "Tier 1"
+     participant IRS as IRSTier1
+     participant SubmodelServer as SubmodelServerTier1
+     participant dDTR as dDTRTier1
+     participant EDC as EDCConsumerTier1 #99FF99
+end box
+
+box SharedServices
+    participant DiscoveryFinder as DiscoveryFinder
+    participant EDCDiscoveryService as EDCDiscoveryService
+end box
+
+
+    Client -> IRS : [hidden] GET /irs/proxy/registry/lookup/shells{bpn} {bpnl="BPNL0123456789XX"}
+
+    ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
+        lookup/shells for given BPN
+        :return array of {aasIdentifier}
+    end
+    Client <-- IRS :return array of aasIdentifier
+
+
+loop array of aasIdentifier
+    Client -> IRS : [hidden] GET /irs/proxy/registry/shell-descriptors/{aasIdentifier}
+    ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
+         registry/shell-descriptors/{aasIdentifier} for given BPN
+        :return array of {aasIdentifier}
+    end
+
+    Client <-- IRS : return array of {aasIdentifier}
+
+    Client -> Client :  filter aas for submodelDescriptor  (asPlanned)
+
+    opt aas is asPlanned
+        note left
+               semanticId/["type"="ExternalReference"]/keys["type"="GlobalReference"]/["value".contains("SingleLevelBomAsPlanned")]
+               SingleLevelBomAsPlanned (only downwards)
+         end note
+         Client -> Client : add aas to aasResultSet
+         note left
+                     Requesting all twins for a given "bomLifecycle"
+              end note
+       else
+            break
+    end opt
+
+    Client <-- Client : aasResultSet
+
+end loop
+
+
+Client -> IRS : POST /ess/bpn/investigations
+note left
+    {
+      "bomLifecycle": "asPlanned",
+      "callbackUrl": "https://hostname.com/callback?jobId={jobId}&jobState={jobState}",
+      "incidentBpns": [
+        "string"
+      ],
+      "key": {
+        "bpn": "BPNL0123456789XX",
+        "globalAssetId": "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
+      }
+    }
+end note
+IRS -> IRS : register an IRS ess incident job
+
+ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
+    lookup/shells for given globalAssetId
+    :return aasIdentifier
+    /registry/shell-descriptors/{aasIdentifier}
+    :return AAS for aasIdentifier
+end
+IRS -> SubmodelServer : GET SingleLevelUsageAsPlanned
+IRS <-- SubmodelServer : Receiver SingleLevelBomAsPlanned
+IRS --> IRS : Extract childCXIds from SingleLevelBomAsPlanned
+
+loop  childCXIds
+
+    ref over IRS, DiscoveryFinder, EDCDiscoveryService
+        get EDC endpoint for Tier1
+    end
+    ref over IRS, EDCTier1, dDTRTier1
+        lookup/shells for given globalAssetId
+        :return AAS for globalAssetId
+    end
+    IRS -> SubmodelServer : Get PartAsPlanned
+    IRS <-- SubmodelServer : Receive PartAsPlanned
+    IRS -> IRS: Validity Check on PartAsPlanned validityPeriod
+
+    opt validFrom >=  Timstamp.UTC.now <= validTo
+        IRS -> SubmodelServer : GET PartSiteInformationAsPlanned
+        IRS -> IRS : Extract **catenaXsiteId** from PartSiteInformationAsPlanned
+
+        alt Match of "incidentBpns" and catenaXsiteId
+            IRS -> IRS:
+            Client <-- IRS: Respond part-chain infected
+            note left
+                    {
+                        "header": {
+                            "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+                            "senderBpn": "BPNL00000003BW3S",
+                            "recipientBpn": "BPNL00000003BV4H",
+                            ...
+                        },
+                        "content": {
+                            "result" : "yes"
+                        }
+                    }
+              end note
+         else
+            ref over IRS, IRSTier1
+                : Send ess-request notification
+            end ref
+            IRSTier1 -> IRSTier1 : Receiver ess-request notification
+
+            IRS <-- IRSTier1: Response ess-response notification
+        end
+    else -
+        IRS -> IRS: continue  loop
+    end
+end loop
+
+@enduml
