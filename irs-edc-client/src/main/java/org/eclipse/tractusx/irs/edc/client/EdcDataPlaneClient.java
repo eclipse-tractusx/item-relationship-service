@@ -63,14 +63,6 @@ public class EdcDataPlaneClient {
         return extractData(response);
     }
 
-    private String getUrl(final String connectorUrl, final String subUrl) {
-        var url = connectorUrl;
-        if (subUrl != null && !subUrl.isEmpty()) {
-            url = url.endsWith("/") ? url + subUrl : url + "/" + subUrl;
-        }
-        return url;
-    }
-
     private HttpHeaders headers(final EndpointDataReference dataReference) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
@@ -92,9 +84,9 @@ public class EdcDataPlaneClient {
         return modifiedResponse;
     }
 
-    public EdcNotificationResponse sendData(final EndpointDataReference dataReference, final String subUrl,
+    public EdcNotificationResponse sendData(final EndpointDataReference dataReference,
             final EdcNotification notification) {
-        final String url = getUrl(dataReference.getEndpoint(), subUrl);
+        final String url = dataReference.getEndpoint();
         final HttpHeaders headers = headers(dataReference);
         headers.setContentType(MediaType.APPLICATION_JSON);
 

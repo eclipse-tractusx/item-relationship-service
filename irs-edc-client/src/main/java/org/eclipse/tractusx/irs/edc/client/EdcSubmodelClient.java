@@ -146,8 +146,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final EdcNotification notification, final StopWatch stopWatch) {
 
         return pollingService.<EdcNotificationResponse>createJob()
-                             .action(() -> sendSubmodelNotification(config.getSubmodel().getPath(), contractAgreementId,
-                                     notification, stopWatch))
+                             .action(() -> sendSubmodelNotification(contractAgreementId, notification, stopWatch))
                              .timeToLive(config.getSubmodel().getRequestTtl())
                              .description("waiting for submodel notification to be sent")
                              .build()
@@ -184,14 +183,14 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return Optional.empty();
     }
 
-    private Optional<EdcNotificationResponse> sendSubmodelNotification(final String submodel,
-            final String contractAgreementId, final EdcNotification notification, final StopWatch stopWatch) {
+    private Optional<EdcNotificationResponse> sendSubmodelNotification(final String contractAgreementId,
+            final EdcNotification notification, final StopWatch stopWatch) {
         final Optional<EndpointDataReference> dataReference = retrieveEndpointDataReference(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
             log.info("Sending data to EDC data plane with dataReference {}:{}", ref.getAuthKey(), ref.getAuthCode());
-            final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, submodel, notification);
+            final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, notification);
             stopWatchOnEdcTask(stopWatch);
             return Optional.of(response);
         }

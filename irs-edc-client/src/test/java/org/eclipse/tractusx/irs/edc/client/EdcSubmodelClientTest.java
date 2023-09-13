@@ -152,7 +152,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         endpointDataReferenceStorage.put("agreementId", ref);
-        when(edcDataPlaneClient.sendData(eq(ref), any(), eq(notification))).thenReturn(() -> true);
+        when(edcDataPlaneClient.sendData(ref, notification)).thenReturn(() -> true);
 
         // act
         final var result = testee.sendNotification(CONNECTOR_ENDPOINT, "notify-request-asset", notification);

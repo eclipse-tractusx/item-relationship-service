@@ -145,7 +145,7 @@ irs-edc-client:
 
   submodel:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M} # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
-    path: ${EDC_SUBMODEL_PATH:/submodel} # The path to append to the submodel data reference endpoint
+    path: ${EDC_SUBMODEL_PATH:} # The path to append to the submodel data reference endpoint
     urn-prefix: ${EDC_SUBMODEL_URN_PREFIX:/urn} # A prefix used to identify URNs correctly in the submodel endpoint address
     timeout:
       read: PT90S # HTTP read timeout for the submodel client
