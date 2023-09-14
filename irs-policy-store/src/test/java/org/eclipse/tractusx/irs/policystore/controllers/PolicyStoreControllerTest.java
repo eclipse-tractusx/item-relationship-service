@@ -22,23 +22,21 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.controllers;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.tractusx.irs.policystore.models.Constraint;
 import org.eclipse.tractusx.irs.policystore.models.Constraints;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
-import org.eclipse.tractusx.irs.policystore.models.LeftOperand;
-import org.eclipse.tractusx.irs.policystore.models.LogicalConstraintType;
 import org.eclipse.tractusx.irs.policystore.models.OperatorType;
 import org.eclipse.tractusx.irs.policystore.models.Permission;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
 import org.eclipse.tractusx.irs.policystore.models.PolicyType;
-import org.eclipse.tractusx.irs.policystore.models.RightOperand;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,13 +107,18 @@ class PolicyStoreControllerTest {
 
     private List<Permission> createPermissions() {
         return List.of(
-                new Permission(PolicyType.USE, LogicalConstraintType.AND, List.of(createConstraints())),
-                new Permission(PolicyType.ACCESS, LogicalConstraintType.OR, List.of(createConstraints()))
+                new Permission(PolicyType.USE, List.of(createConstraints())),
+                new Permission(PolicyType.ACCESS, List.of(createConstraints()))
         );
     }
 
     private Constraints createConstraints() {
-        return new Constraints(LeftOperand.BUSINESS_PARTNER_NUMBER, OperatorType.GT, new RightOperand("active", "1.0"));
+        return new Constraints(
+                Collections.emptyList(),
+                List.of(
+                        new Constraint("Membership", OperatorType.EQ, List.of("active")),
+                        new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active")),
+                        new Constraint("PURPOSE", OperatorType.EQ, List.of("ID 3.1 Trace")))
+        );
     }
-
 }

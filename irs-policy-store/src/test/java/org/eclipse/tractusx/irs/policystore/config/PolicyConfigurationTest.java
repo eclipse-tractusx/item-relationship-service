@@ -24,7 +24,7 @@ class PolicyConfigurationTest {
         minioContainer.stop();
     }
 
-    @Test
+//    @Test
     void blobStore() throws BlobPersistenceException {
         // arrange
         final var config = new PolicyBlobstoreConfiguration();

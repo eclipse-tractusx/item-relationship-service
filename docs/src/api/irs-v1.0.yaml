@@ -1610,19 +1610,12 @@ components:
           type: string
         manufacturerName:
           type: string
-    Constraints:
+    Constraint:
       type: object
       additionalProperties: false
       properties:
         leftOperand:
           type: string
-          enum:
-            - Membership
-            - FrameworkAgreement.traceability
-            - FrameworkAgreement.resiliency
-            - FrameworkAgreement.quality
-            - PURPOSE
-            - BusinessPartnerNumber
         operator:
           type: string
           enum:
@@ -1640,7 +1633,21 @@ components:
             - isAllOf
             - isNoneOf
         rightOperand:
-          $ref: '#/components/schemas/RightOperand'
+          type: array
+          items:
+            type: string
+    Constraints:
+      type: object
+      additionalProperties: false
+      properties:
+        and:
+          type: array
+          items:
+            $ref: '#/components/schemas/Constraint'
+        or:
+          type: array
+          items:
+            $ref: '#/components/schemas/Constraint'
     CreatePolicyRequest:
       type: object
       additionalProperties: false
@@ -2090,13 +2097,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Constraints'
-        logicalConstraintType:
-          type: string
-          enum:
-            - and
-            - or
-            - xone
-            - andsequence
     Policy:
       type: object
       additionalProperties: false
@@ -2354,14 +2354,6 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
-    RightOperand:
-      type: object
-      additionalProperties: false
-      properties:
-        value:
-          type: string
-        version:
-          type: string
     SemanticId:
       type: object
       additionalProperties: false

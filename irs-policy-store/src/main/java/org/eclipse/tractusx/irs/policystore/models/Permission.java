@@ -37,7 +37,6 @@ import lombok.NoArgsConstructor;
 public class Permission {
 
     private PolicyType action;
-    private LogicalConstraintType logicalConstraintType;
     private List<Constraints> constraints;
 
 
