@@ -116,7 +116,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getControlplane().setProviderSuffix(PROVIDER_SUFFIX);
 
         config.setSubmodel(new EdcConfiguration.SubmodelConfig());
-        config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,

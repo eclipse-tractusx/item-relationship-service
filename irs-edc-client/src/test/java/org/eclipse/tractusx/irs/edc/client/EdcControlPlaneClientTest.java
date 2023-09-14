@@ -93,7 +93,6 @@ class EdcControlPlaneClientTest {
         config.getControlplane().setCatalogPageSize(10);
 
         config.setSubmodel(new EdcConfiguration.SubmodelConfig());
-        config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
     }
