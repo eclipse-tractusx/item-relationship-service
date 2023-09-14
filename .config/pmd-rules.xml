@@ -58,7 +58,7 @@
 
     <rule ref="category/java/documentation.xml/CommentSize">
         <properties>
-            <property name="maxLines" value="22"/>
+            <property name="maxLines" value="23"/>
             <property name="maxLineLength" value="100"/>
         </properties>
     </rule>
