@@ -176,7 +176,6 @@ edc:
   submodel:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
-    path: /submodel
     urnprefix: /urn
   catalog:
     policies:
