@@ -173,9 +173,10 @@ class InvestigationJobProcessingEventListener {
         final String notificationId = UUID.randomUUID().toString();
 
         final boolean isRecursiveAsset = mockRecursiveEdcAssets.contains(bpn);
+        final EdcNotification notification = edcRequest(notificationId, bpn, incidentBpns, globalAssetIds);
+        log.debug("Sending Notification '{}'", notification);
         final var response = edcSubmodelFacade.sendNotification(url,
-                isRecursiveAsset ? "notify-request-asset-recursive" : "notify-request-asset",
-                edcRequest(notificationId, bpn, incidentBpns, globalAssetIds));
+                isRecursiveAsset ? "notify-request-asset-recursive" : "notify-request-asset", notification);
         if (response.deliveredSuccessfully()) {
             log.info("Successfully sent notification with id '{}' to EDC endpoint '{}'.", notificationId, url);
         } else {
