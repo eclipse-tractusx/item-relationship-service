@@ -51,8 +51,8 @@ public class BpnInvestigationJob {
     private List<String> unansweredNotifications;
     private List<String> answeredNotifications;
 
-    public static BpnInvestigationJob create(final Jobs jobSnapshot, final List<String> incidentBpns) {
-        return new BpnInvestigationJob(jobSnapshot, incidentBpns, new ArrayList<>(), new ArrayList<>());
+    public static BpnInvestigationJob create(final Jobs jobSnapshot, final String owner, final List<String> incidentBpns) {
+        return new BpnInvestigationJob(withOwner(jobSnapshot, owner), incidentBpns, new ArrayList<>(), new ArrayList<>());
     }
 
     public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
@@ -61,8 +61,10 @@ public class BpnInvestigationJob {
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
+        final String originalOwner = this.jobSnapshot.getJob().getOwner();
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
+        this.jobSnapshot = withOwner(this.jobSnapshot, originalOwner);
         return this;
     }
 
@@ -85,7 +87,11 @@ public class BpnInvestigationJob {
                         answeredNotifications.size()));
         final Job job = irsJob.getJob().toBuilder().summary(newSummary).build();
         return irsJob.toBuilder().job(job).build();
+    }
 
+    private static Jobs withOwner(final Jobs jobSnapshot, final String owner) {
+        final Job overrideOwner = jobSnapshot.getJob().toBuilder().owner(owner).build();
+        return jobSnapshot.toBuilder().job(overrideOwner).build();
     }
 
     public BpnInvestigationJob withNotifications(final List<String> notifications) {

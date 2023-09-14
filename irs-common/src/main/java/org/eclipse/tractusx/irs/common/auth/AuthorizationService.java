@@ -21,16 +21,16 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.services;
+package org.eclipse.tractusx.irs.common.auth;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * BPN contains in JWT Token matches BPN under which IRS product is registered.
  */
-@Component
+@Service
 public class AuthorizationService {
 
     private final SecurityHelperService securityHelperService;

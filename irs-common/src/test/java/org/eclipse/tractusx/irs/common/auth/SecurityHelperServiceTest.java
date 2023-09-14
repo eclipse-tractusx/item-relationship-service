@@ -21,16 +21,20 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.services;
+package org.eclipse.tractusx.irs.common.auth;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -58,7 +62,7 @@ class SecurityHelperServiceTest {
     @Test
     void shouldReturnClientIdClaimWhenJwtAuthentication() {
         // given
-        thereIsJwtAuthentication();
+        thereIsJwtAuthentication(IrsRoles.VIEW_IRS);
 
         // when
         final String clientIdClaim = securityHelperService.getClientIdClaim();
@@ -70,7 +74,7 @@ class SecurityHelperServiceTest {
     @Test
     void shouldReturnBpnClaimWhenJwtAuthentication() {
         // given
-        thereIsJwtAuthentication();
+        thereIsJwtAuthentication(IrsRoles.VIEW_IRS);
 
         // when
         final String bpnClaim = securityHelperService.getBpnClaim();
@@ -79,10 +83,39 @@ class SecurityHelperServiceTest {
         assertThat(bpnClaim).isEqualTo(BPN);
     }
 
-    private void thereIsJwtAuthentication() {
-        final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt());
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
+    @Test
+    void shouldReturnClientIdWhenJwtAuthenticationAndViewIrsRole() {
+        // given
+        thereIsJwtAuthentication(IrsRoles.VIEW_IRS);
+
+        // when
+        final String bpnClaim = securityHelperService.getClientIdForViewIrs();
+
+        // then
+        assertThat(bpnClaim).isEqualTo(CLIENT_ID);
+    }
+
+    @Test
+    void shouldReturnTrueWhenAdminRolePresentInToken() {
+        // given
+        thereIsJwtAuthentication(IrsRoles.ADMIN_IRS);
+
+        // when
+        final Boolean isAdmin = securityHelperService.isAdmin();
+
+        // then
+        assertThat(isAdmin).isTrue();
+    }
+
+    private void thereIsJwtAuthentication(final String irsRole) {
+        final JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
+        final Jwt token = mock(Jwt.class);
+        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority(irsRole)));
+        when(jwtAuthenticationToken.getToken()).thenReturn(token);
+        when(token.getClaim("clientId")).thenReturn(CLIENT_ID);
+        when(token.getClaim("bpn")).thenReturn(BPN);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
         SecurityContextHolder.setContext(securityContext);
     }
 

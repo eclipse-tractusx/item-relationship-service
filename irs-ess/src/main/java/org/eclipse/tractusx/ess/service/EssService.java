@@ -30,6 +30,7 @@ import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
@@ -48,6 +49,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class EssService {
 
     private final IrsFacade irsFacade;
+    private final SecurityHelperService securityHelperService;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
@@ -56,16 +58,25 @@ public class EssService {
 
         final UUID createdJobId = jobHandle.getId();
         final Jobs createdJob = irsFacade.getIrsJob(createdJobId.toString());
-        bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, request.getIncidentBpns()));
+        final String owner = securityHelperService.getClientIdClaim();
+        bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, owner, request.getIncidentBpns()));
 
         return jobHandle;
     }
 
     public Jobs getIrsJob(final String jobId) {
-        return bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId))
-                                       .map(EssService::updateState)
-                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                               "No investigation job exists with id " + jobId));
+        final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId));
+
+        if (job.isPresent()) {
+            final BpnInvestigationJob bpnInvestigationJob = job.get();
+            if (!securityHelperService.isAdmin() && !bpnInvestigationJob.getJobSnapshot().getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access investigation job with id " + jobId + " due to missing privileges.");
+            }
+
+            return updateState(bpnInvestigationJob);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No investigation job exists with id " + jobId);
+        }
     }
 
     private static Jobs updateState(final BpnInvestigationJob investigationJob) {

@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.persistence;
+package org.eclipse.tractusx.irs.common.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,13 +34,24 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
+import io.minio.Result;
 import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import io.minio.messages.ErrorResponse;
+import io.minio.messages.Item;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.junit.jupiter.api.BeforeEach;
@@ -148,6 +159,71 @@ class MinioBlobPersistenceTest {
         // act + assert
         assertThatThrownBy(() -> testee.putBlob("testBlobName", "test".getBytes(StandardCharsets.UTF_8))).isInstanceOf(
                 BlobPersistenceException.class);
+    }
+
+    @Test
+    void shouldGetBlobByPrefixWithClient() {
+        // act
+        testee.findBlobByPrefix("testBlobName");
+
+        // assert
+        verify(client).listObjects(any());
+    }
+
+    @Test
+    void shouldGetEmptyBlobIfNoSuchKey() throws Exception {
+        // arrange
+        final ErrorResponseException ex = mock(ErrorResponseException.class);
+        final ErrorResponse errorResponse = mock(ErrorResponse.class);
+        when(errorResponse.code()).thenReturn("NoSuchKey");
+        when(ex.errorResponse()).thenReturn(errorResponse);
+        when(client.getObject(any())).thenThrow(ex);
+
+        // act
+        final Optional<byte[]> testBlob = testee.getBlob("testBlobName");
+
+        // assert
+        assertThat(testBlob).isEmpty();
+    }
+
+    @Test
+    void shouldFindBlobByPrefix() throws Exception {
+        // arrange
+        final Item item = mock(Item.class);
+        final String testBlobName = "testBlobName";
+        when(item.objectName()).thenReturn(testBlobName);
+        final List<Result<Item>> result = Stream.of(new Result<>(item)).toList();
+        when(client.listObjects(any())).thenReturn(result);
+        byte[] blob = "TestData".getBytes(StandardCharsets.UTF_8);
+        final GetObjectResponse response = mock(GetObjectResponse.class);
+        when(response.readAllBytes()).thenReturn(blob);
+        when(client.getObject(any())).thenReturn(response);
+
+        // act
+        final Collection<byte[]> blobsByPrefix = testee.findBlobByPrefix(testBlobName);
+
+        // assert
+        verify(client).listObjects(any());
+        assertThat(blobsByPrefix).isNotEmpty();
+    }
+
+    @Test
+    void shouldNotFindBlobByPrefix() throws Exception {
+        // arrange
+        final Item item = mock(Item.class);
+        final String testBlobName = "testBlobName";
+        when(item.objectName()).thenReturn(testBlobName);
+        final List<Result<Item>> result = Stream.of(new Result<>(item)).toList();
+        when(client.listObjects(any())).thenReturn(result);
+        when(client.getObject(any())).thenThrow(new IOException("Test"));
+
+        // act
+        final Collection<byte[]> blobsByPrefix = testee.findBlobByPrefix(testBlobName);
+
+        // assert
+        verify(client).listObjects(any());
+        verify(client).getObject(any());
+        assertThat(blobsByPrefix).isEmpty();
     }
 
 }
