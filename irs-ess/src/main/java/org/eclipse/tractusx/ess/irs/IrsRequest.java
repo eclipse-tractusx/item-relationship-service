@@ -57,7 +57,7 @@ class IrsRequest {
                          .bomLifecycle(
                                  bomLifecycle != null ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
                          .depth(1)
-                         .collectAspects(false)
+                         .collectAspects(true)
                          .build();
     }
 
