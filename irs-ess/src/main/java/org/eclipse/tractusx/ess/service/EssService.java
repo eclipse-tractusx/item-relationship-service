@@ -70,6 +70,8 @@ public class EssService {
 
     private static Jobs updateState(final BpnInvestigationJob investigationJob) {
         final Jobs jobSnapshot = investigationJob.getJobSnapshot();
+        log.debug("Unanswered Notifications '{}'", investigationJob.getAnsweredNotifications());
+        log.debug("Answered Notifications '{}'", investigationJob.getUnansweredNotifications());
         if (hasUnansweredNotifications(investigationJob)) {
             return jobSnapshot.toBuilder()
                               .job(jobSnapshot.getJob().toBuilder().state(JobState.RUNNING).build())

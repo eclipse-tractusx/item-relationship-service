@@ -155,7 +155,6 @@ class InvestigationJobProcessingEventListener {
                         SupplyChainImpacted.UNKNOWN);
                 investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
             }
-            log.info("Received EDC URL for BPN '{}': '{}'", bpn, edcBaseUrl);
             edcBaseUrl.forEach(url -> {
                 try {
                     final String notificationId = sendEdcNotification(bpn, url,

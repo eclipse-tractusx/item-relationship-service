@@ -190,7 +190,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
-            log.info("Sending data to EDC data plane with dataReference {}:{}", ref.getAuthKey(), ref.getAuthCode());
+            log.info("Sending dataReference to EDC data plane for contractAgreementId '{}'", Masker.mask(contractAgreementId));
             final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, notification);
             stopWatchOnEdcTask(stopWatch);
             return Optional.of(response);
