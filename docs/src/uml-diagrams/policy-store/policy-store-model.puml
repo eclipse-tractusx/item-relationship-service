@@ -1,4 +1,8 @@
 @startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 100
+skinparam ranksep 20
 'https://plantuml.com/class-diagram
 
 'https://www.w3.org/TR/odrl-model/'

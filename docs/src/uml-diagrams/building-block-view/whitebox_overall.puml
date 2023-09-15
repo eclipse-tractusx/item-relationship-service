@@ -2,6 +2,8 @@
 skinparam monochrome true
 skinparam shadowing false
 skinparam spacing 50
+skinparam linetype ortho
+skinparam defaultFontName "Architects daughter"
 
 
 component [**IRSApplication**] <<System>> {
