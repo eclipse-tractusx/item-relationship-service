@@ -5,6 +5,7 @@ skinparam spacing 50
 skinparam linetype ortho
 skinparam nodesep 150
 skinparam ranksep 150
+skinparam defaultFontName "Architects daughter"
 
 
 package [**OEM**] <<CatenaX Company>> as consumer {
@@ -31,7 +32,7 @@ package [**CatenaX-Network**] as network {
 
 
 
-package [**OEM/N-Tier**] <<CatenaX Data Provider Company>> as provider {
+package [**N-Tier**] <<CatenaX Data Provider Company>> as provider {
     component [**EDC (Provider)**] <<System>> as EDCProvider
     component [**SubmodelServer**] <<System>> as SubmodelServer
     component [**decentral Digital Twin Registry**] <<System>> as DT_REG

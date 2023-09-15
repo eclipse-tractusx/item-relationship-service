@@ -3,6 +3,8 @@ skinparam monochrome true
 skinparam shadowing false
 skinparam nodesep 10
 skinparam ranksep 100
+skinparam linetype ortho
+skinparam defaultFontName "Architects daughter"
 
 
 component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement {

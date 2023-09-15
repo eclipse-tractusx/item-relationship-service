@@ -44,3 +44,59 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |BPDM
 |The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.
 |===
+
+
+|===
+|Number |Description
+
+| 01
+| IrsApiConsumer calls the **IRS** public **API**
+
+| 02
+| IrsApiConsumer must authorize using **technical C-X User**
+
+| 03
+| Delegate authorization request to **IdP**
+
+| 04
+| IRS requesting for **SubmodelAspects** using **EDC**
+
+| 05
+| IRS requesting the **decentral DigitalTwinRegistry** over **EDC** and service discovery flow
+
+| 06
+| IRS uses EDC to ensure sovereign data consumption
+
+| 07
+| IRS MUST authorize at central IAM
+
+| 08
+| IRS lookup for EDC Provider by given BPNs over the **EDC Discovery Service**
+
+| 09
+| IRS lookup for **EDC Discovery Services** by given type <BPN> over the **Discovery Finder**
+
+| 10
+| IRS uses **Semantic Hub** to validate  of **SubmodelAspects** payloads agains the schema provided in **Semantic Hub**
+
+| 11
+| In case "lookupBPNs" is active IRS provides a lookup of company for given BPN
+
+| 12
+| **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers
+
+| 13
+| **EDC** communication covering negotation and data consumption
+
+| 14
+| **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers
+
+| 15
+| **IRS** accessing to **SubmodelServer** on Tier Level using the **EDC**
+
+| 16
+| **IRS** accessing the **decentral DigitalTwinRegistry** on Tier Level using the **EDC**
+
+
+
+
