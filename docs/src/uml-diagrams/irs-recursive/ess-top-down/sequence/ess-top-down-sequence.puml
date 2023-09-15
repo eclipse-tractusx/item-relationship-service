@@ -61,7 +61,7 @@ ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
     lookup/shells for given globalAssetId
     :return AAS for globalAssetId
 end
-IRS -> SubmodelServer : GET SingleLevelUsageAsPlanned
+IRS -> SubmodelServer : GET SingleLevelBomAsPlanned
 IRS <-- SubmodelServer : Receiver SingleLevelBomAsPlanned
 IRS --> IRS : Extract childCXIds from SingleLevelBomAsPlanned
 

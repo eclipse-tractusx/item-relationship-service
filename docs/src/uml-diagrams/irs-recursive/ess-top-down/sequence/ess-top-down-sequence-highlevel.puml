@@ -42,12 +42,14 @@ loop array of aasIdentifier
     Client -> IRS : [hidden] GET /irs/proxy/registry/shell-descriptors/{aasIdentifier}
     ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
          registry/shell-descriptors/{aasIdentifier} for given BPN
-        :return array of {aasIdentifier}
+        :add {aasIdentifier} to collection
     end
+    IRS -> IRS : :return array of {aasIdentifier}
+end loop
 
     Client <-- IRS : return array of {aasIdentifier}
 
-    Client -> Client :  filter aas for submodelDescriptor  (asPlanned)
+    Client -> Client :  filter aas for **SubmodelDescriptor**  (asPlanned)
 
     opt aas is asPlanned
         note left
@@ -64,7 +66,7 @@ loop array of aasIdentifier
 
     Client <-- Client : aasResultSet
 
-end loop
+
 
 
 Client -> IRS : POST /ess/bpn/investigations
@@ -89,7 +91,7 @@ ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
     /registry/shell-descriptors/{aasIdentifier}
     :return AAS for aasIdentifier
 end
-IRS -> SubmodelServer : GET SingleLevelUsageAsPlanned
+IRS -> SubmodelServer : GET SingleLevelBomAsPlanned
 IRS <-- SubmodelServer : Receiver SingleLevelBomAsPlanned
 IRS --> IRS : Extract childCXIds from SingleLevelBomAsPlanned
 

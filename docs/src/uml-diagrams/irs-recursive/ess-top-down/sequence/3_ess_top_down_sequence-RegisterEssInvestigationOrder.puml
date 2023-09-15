@@ -36,7 +36,7 @@ note left
         "callbackUrl": "https://hostname.com/callback?orderId={orderId}&batchId={batchId}",
       ...
       "incidentBPNSs": [
-        "BPNL666666666666","BPNL666666666667"
+        "BPNS666666666666","BPNS666666666667"
       ],
       "keys": [
         {
