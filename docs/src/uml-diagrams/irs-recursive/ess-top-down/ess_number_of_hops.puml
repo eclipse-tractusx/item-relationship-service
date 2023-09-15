@@ -1,0 +1,39 @@
+@startuml
+skinparam defaultFontName "Architects daughter"
+skinparam monochrome true
+skinparam shadowing false
+skinparam spacing 100
+skinparam linetype ortho
+skinparam nodesep 250
+skinparam ranksep 250
+
+
+Tier3 : hop 0
+Tier2 : hop 1
+Tier1 : hop 2
+OEM : hop 3
+
+Tier3 :
+Tier2 :
+Tier1 :
+OEM :
+Tier3 :
+Tier2 :
+Tier1 :
+OEM :
+Tier3 :
+Tier2 :
+Tier1 :
+OEM :
+
+
+[*] -r-> OEM
+OEM -r-> Tier1: 1
+Tier1 -r-> Tier2: 2
+Tier2 -r-> Tier3: 3
+
+Tier2 <-- Tier3 : increment hop++ (hop=0+1)
+Tier1 <-- Tier2 : increment hop++ (hop=1+1)
+OEM <-- Tier1  : increment hop++ (hop=2+1)
+
+@enduml

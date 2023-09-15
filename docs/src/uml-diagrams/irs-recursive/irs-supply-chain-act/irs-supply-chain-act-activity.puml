@@ -46,7 +46,7 @@ end note
 
     | OEM  - IRS |
     :create supplier-request;
-    :add all childBPNs as concernedCatenaXIds;
+    :add all childCX_IDs with the same BPN the notification will be sent to as concernedCatenaXIds;
     :add incidentBpn as incidentBpn;
     note left
     {

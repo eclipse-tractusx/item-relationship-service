@@ -44,7 +44,7 @@ enum OperatorType {
     ISA (isA, "Is a")
     HASPART (hasPart, "Has part")
     ISPARTOF (isPartOf, "Is part of")
-    IAO (isAllOf, "Is all of")
+    ISONEOF (isOneOf, "Is one of")
     ISALLOF (isAllOf, "Is all of")
     ISNONEOF (isNoneOf, "Is none of")
 }
