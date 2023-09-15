@@ -19,10 +19,11 @@ box SharedServices #DarkGrey
     participant EDCDiscoveryService as EDCDiscoveryService
 end box
 
-    Client -> IRS : [hidden] GET /irs/proxy/registry/lookup/shells/{bpn}
+    Client -> IRS : [hidden] GET /irs/proxy/registry/lookup/shells/{searchBpn}
     note left
-        {bpnl="BPNL0123456789XX"};
-        {limit=50}
+        request body
+             {providerBpnl="BPNL0123456789XX"};
+             {limit=50}
     end note
     IRS -> DiscoveryFinder : POST /api/administration/connectors/discovery/search { "types": [ "bpn" ] }
     IRS <-- DiscoveryFinder: 200 [array of EDCDiscoveryService urls]
@@ -31,7 +32,7 @@ end box
         IRS <-- EDCDiscoveryService : 200 [array of EDC urls]
         ref over IRS, EDC
             1. Request Contract Offer Catalog
-            2. Negotiate Contract Negotation
+            2. Negotiate Contract negotiation
             3. Transfer Data
         end ref
         IRS -> EDC : GET lookup/shells for given BPN

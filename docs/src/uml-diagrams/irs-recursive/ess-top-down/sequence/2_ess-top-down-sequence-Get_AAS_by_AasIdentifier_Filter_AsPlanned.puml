@@ -24,34 +24,35 @@ end box
 loop array of aasIdentifier
     Client -> IRS : [hidden] GET /irs/proxy/registry/shell-descriptors/{aasIdentifier}/{bpn}
     ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
-         registry/shell-descriptors/{aasIdentifier} for given BPN
-        :return array of {aasIdentifier}
+        create collection of {aasIdentifier}
+
+        registry/shell-descriptors/{aasIdentifier} for given BPN
+        collection.add({aasIdentifier})
     end
-
-    Client <-- IRS : return array of {aasIdentifier}
-
-    Client -> Client :  filter aas for submodelDescriptor  (asPlanned)
-            note right
-                   semanticId/
-                        ["type"="ExternalReference"]/
-                            keys["type"="GlobalReference"]/
-                                ["value".contains("SingleLevelBomAsPlanned")]
-                   SingleLevelBomAsPlanned (only downwards supported!!)
-            end note
-
-    opt aas is asPlanned
-
-         Client -> Client : add aas to aasResultSet
-         note right
-                     Requesting all twins for a given "bomLifecycle"
-         end note
-
-    end opt
-
-    Client <-- Client : aasResultSet
-
 end loop
 
+
+Client <-- IRS : return array of {aasIdentifier}
+
+Client -> Client :  filter aas for submodelDescriptor  (asPlanned)
+        note right
+               semanticId/
+                    ["type"="ExternalReference"]/
+                        keys["type"="GlobalReference"]/
+                            ["value".contains("SingleLevelBomAsPlanned")]
+               SingleLevelBomAsPlanned (only downwards supported!!)
+        end note
+
+opt aas is asPlanned
+
+     Client -> Client : add aas to aasResultSet
+     note right
+                 Requesting all twins for a given "bomLifecycle"
+     end note
+
+end opt
+
+Client <-- Client : aasResultSet
 
 
 @enduml
