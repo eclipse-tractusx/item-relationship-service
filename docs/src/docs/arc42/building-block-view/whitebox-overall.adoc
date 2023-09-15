@@ -42,5 +42,5 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers.
 
 |BPDM
-|The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNLs of DAta Providers along the value chain.
+|The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.
 |===
