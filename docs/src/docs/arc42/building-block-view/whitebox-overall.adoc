@@ -86,7 +86,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers
 
 | 13
-| **EDC** communication covering negotation and data consumption
+| **EDC** communication covering negotiation and data consumption
 
 | 14
 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers
