@@ -35,6 +35,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@SuppressWarnings("PMD.ShortVariable")
 public class Constraints {
 
     private List<Constraint> and;
