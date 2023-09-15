@@ -100,4 +100,9 @@ public class BatchOrder {
      */
     private String callbackUrl;
 
+    /**
+     * Owner
+     */
+    private String owner;
+
 }

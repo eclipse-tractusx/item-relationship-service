@@ -41,7 +41,6 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
-import org.eclipse.tractusx.irs.services.SecurityHelperService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -73,11 +72,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
     private final RecursiveJobHandler<T, P> handler;
 
     /**
-     * Helper for retrieving data from JWT token
-     */
-    private final SecurityHelperService securityHelperService;
-
-    /**
      * Use to collect metrics
      */
     private final MeterRegistryService meterService;
@@ -105,21 +99,9 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         this.processManager = processManager;
         this.jobStore = jobStore;
         this.handler = handler;
-        this.securityHelperService = new SecurityHelperService();
         this.meterService = meterService;
         this.applicationEventPublisher = applicationEventPublisher;
         this.jobTTL = jobTTL;
-    }
-
-    /**
-     * Start a job.
-     *
-     * @param globalAssetId root id
-     * @param jobData       additional data for the job to be managed by the {@link JobStore}.
-     * @return response.
-     */
-    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData) {
-        return this.startJob(globalAssetId, jobData, null);
     }
 
     /**
@@ -128,10 +110,11 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param globalAssetId root id
      * @param jobData       additional data for the job to be managed by the {@link JobStore}.
      * @param batchId       batch id
+     * @param owner         owner
      * @return response.
      */
-    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData, final UUID batchId) {
-        final Job job = createJob(globalAssetId, jobData);
+    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData, final UUID batchId, final String owner) {
+        final Job job = createJob(globalAssetId, jobData, owner);
         final var multiJob = MultiTransferJob.builder().job(job).batchId(Optional.ofNullable(batchId)).build();
         jobStore.create(multiJob);
 
@@ -298,7 +281,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return response;
     }
 
-    private Job createJob(final String globalAssetId, final JobParameter jobData) {
+    private Job createJob(final String globalAssetId, final JobParameter jobData, final String owner) {
         if (StringUtils.isEmpty(globalAssetId)) {
             throw new JobException("GlobalAsset Identifier cannot be null or empty string");
         }
@@ -309,7 +292,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .state(JobState.UNSAVED)
-                  .owner(securityHelperService.getClientIdClaim())
+                  .owner(owner)
                   .parameter(jobData)
                   .build();
     }

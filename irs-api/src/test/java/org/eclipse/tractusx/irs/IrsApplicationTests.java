@@ -96,7 +96,8 @@ class IrsApplicationTests {
                                                       .aspects(List.of())
                                                       .build();
 
-        final JobInitiateResponse response = jobOrchestrator.startJob("rootitemid", jobParameter);
+        final JobInitiateResponse response = jobOrchestrator.startJob("rootitemid", jobParameter, null, "owner");
+
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

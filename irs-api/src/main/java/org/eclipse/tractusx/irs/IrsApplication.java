@@ -44,7 +44,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
     basePackages = {
         "org.eclipse.tractusx.irs",
         "org.eclipse.tractusx.ess",
-        "org.eclipse.tractusx.edc"
+        "org.eclipse.tractusx.edc",
+        "org.eclipse.tractusx.irs.common.auth",
     },
     excludeFilters = {
         @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),

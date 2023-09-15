@@ -224,7 +224,7 @@ class InvestigationJobProcessingEventListenerTest {
                                       .build())
                               .shells(bpns.stream().map(bpn -> createShell(UUID.randomUUID().toString(), bpn)).toList())
                               .build();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, List.of("BPNS000000000DDD"));
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner", List.of("BPNS000000000DDD"));
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
         when(irsFacade.getIrsJob(mockedJobId.toString())).thenReturn(jobs);
