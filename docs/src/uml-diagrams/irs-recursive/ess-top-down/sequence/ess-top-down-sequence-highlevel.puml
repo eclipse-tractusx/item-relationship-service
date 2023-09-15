@@ -38,7 +38,7 @@ end box
     Client <-- IRS :return array of aasIdentifier
 
 
-loop array of aasIdentifier
+ loop array of aasIdentifier
     Client -> IRS : [hidden] GET /irs/proxy/registry/shell-descriptors/{aasIdentifier}
     ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
          registry/shell-descriptors/{aasIdentifier} for given BPN
@@ -53,7 +53,10 @@ end loop
 
     opt aas is asPlanned
         note left
-               semanticId/["type"="ExternalReference"]/keys["type"="GlobalReference"]/["value".contains("SingleLevelBomAsPlanned")]
+               semanticId/
+               ["type"="ExternalReference"]/
+               keys["type"="GlobalReference"]/
+               ["value".contains("SingleLevelBomAsPlanned")]
                SingleLevelBomAsPlanned (only downwards)
          end note
          Client -> Client : add aas to aasResultSet
@@ -66,21 +69,13 @@ end loop
 
     Client <-- Client : aasResultSet
 
-
-
-
 Client -> IRS : POST /ess/bpn/investigations
 note left
     {
       "bomLifecycle": "asPlanned",
-      "callbackUrl": "https://hostname.com/callback?jobId={jobId}&jobState={jobState}",
-      "incidentBpns": [
-        "string"
-      ],
-      "key": {
-        "bpn": "BPNL0123456789XX",
-        "globalAssetId": "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
-      }
+      "callbackUrl": "https://hostname.com/callback?jobId={jobId}",
+      "incidentBpns": [],
+      "key": {"bpn", "globalAssetId"}
     }
 end note
 IRS -> IRS : register an IRS ess incident job
@@ -112,15 +107,14 @@ loop  childCXIds
         IRS -> SubmodelServer : GET PartSiteInformationAsPlanned
         IRS -> IRS : Extract **catenaXsiteId** from PartSiteInformationAsPlanned
 
-        alt Match of "incidentBpns" and catenaXsiteId
-            IRS -> IRS:
+        alt "incidentBpns".contains(catenaXsiteId)
             Client <-- IRS: Respond part-chain infected
-            note left
+            note right
                     {
                         "header": {
-                            "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
-                            "senderBpn": "BPNL00000003BW3S",
-                            "recipientBpn": "BPNL00000003BV4H",
+                            "notificationId": "e0f8...",
+                            "senderBpn": "BPNL0..S",
+                            "recipientBpn": "BPNL..H",
                             ...
                         },
                         "content": {
