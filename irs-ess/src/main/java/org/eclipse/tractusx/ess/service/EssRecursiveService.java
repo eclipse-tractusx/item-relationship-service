@@ -29,10 +29,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -57,7 +57,6 @@ public class EssRecursiveService {
         this.localBpn = localBpn;
         this.edcNotificationSender = edcNotificationSender;
     }
-
     public void handleNotification(final EdcNotification notification) {
 
         final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
@@ -84,7 +83,7 @@ public class EssRecursiveService {
 
     private JobHandle startIrsJob(final String bpn, final String catenaXId) {
         final var job = RegisterBpnInvestigationJob.builder()
-                                                   .incidentBpns(List.of(bpn))
+                                                   .incidentBPNSs(List.of(bpn))
                                                    .key(PartChainIdentificationKey.builder()
                                                                                   .globalAssetId(catenaXId)
                                                                                   .bpn(localBpn)

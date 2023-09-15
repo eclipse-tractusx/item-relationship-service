@@ -25,6 +25,7 @@ package org.eclipse.tractusx.ess.bpn.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,10 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
+import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
+import org.eclipse.tractusx.irs.component.partasplanned.ValidityPeriod;
+import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
+import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.Site;
 import org.junit.jupiter.api.Test;
 
 class BPNIncidentValidationTest {
@@ -167,5 +171,117 @@ class BPNIncidentValidationTest {
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
+    }
+
+    @Test
+    void shouldReturnNoWhenPartSideInformationDoesNotContainBPNS() {
+        // Arrange
+        final List<String> bpns = List.of("BPNS00000003B0Q0");
+        final PartSiteInformationAsPlanned partSiteInformation = PartSiteInformationAsPlanned.builder()
+                                                                                             .sites(List.of(
+                                                                                                     Site.builder()
+                                                                                                         .catenaXSiteId(
+                                                                                                                 "BPNS123456")
+                                                                                                         .build()))
+                                                                                             .build();
+
+        // Act
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNSs(partSiteInformation, bpns);
+
+        // Assert
+        assertThat(actual).isEqualTo(SupplyChainImpacted.NO);
+    }
+
+    @Test
+    void shouldReturnYesWhenPartSideInformationContainBPNS() {
+        // Arrange
+        final List<String> incidentBPNSs = List.of("BPNS00000003B0Q0");
+        final PartSiteInformationAsPlanned partSiteInformation = PartSiteInformationAsPlanned.builder()
+                                                                                             .sites(List.of(
+                                                                                                     Site.builder()
+                                                                                                         .catenaXSiteId(
+                                                                                                                 "BPNS00000003B0Q0")
+                                                                                                         .build()))
+                                                                                             .build();
+
+        // Act
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNSs(partSiteInformation,
+                incidentBPNSs);
+
+        // Assert
+        assertThat(actual).isEqualTo(SupplyChainImpacted.YES);
+    }
+
+    @Test
+    void shouldReturnUnknownWhenPartSideInformationContainNoSites() {
+        // Arrange
+        final List<String> incidentBPNSs = List.of("BPNS00000003B0Q0");
+        final PartSiteInformationAsPlanned partSiteInformation = PartSiteInformationAsPlanned.builder()
+                                                                                             .sites(List.of())
+                                                                                             .build();
+
+        // Act
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNSs(partSiteInformation,
+                incidentBPNSs);
+
+        // Assert
+        assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
+    }
+
+    @Test
+    void shouldReturnNoWhenNowIsInValidityPeriod() {
+        // Arrange
+        final ZonedDateTime validFrom = ZonedDateTime.parse("2020-01-01T00:00:00.000Z");
+        final ZonedDateTime validTo = ZonedDateTime.parse("2125-12-31T23:59:59.999Z");
+        final PartAsPlanned partAsPlanned = PartAsPlanned.builder()
+                                                         .validityPeriod(ValidityPeriod.builder()
+                                                                                       .validFrom(validFrom)
+                                                                                       .validTo(validTo)
+                                                                                       .build())
+                                                         .build();
+
+        // Act
+        final SupplyChainImpacted supplyChainImpacted = BPNIncidentValidation.partAsPlannedValidity(partAsPlanned);
+
+        // Assert
+        assertThat(supplyChainImpacted).isEqualTo(SupplyChainImpacted.NO);
+    }
+
+    @Test
+    void shouldReturnYesWhenNowAfterValidityPeriod() {
+        // Arrange
+        final ZonedDateTime validFrom = ZonedDateTime.parse("2020-01-01T00:00:00.000Z");
+        final ZonedDateTime validTo = ZonedDateTime.parse("2020-12-31T23:59:59.999Z");
+        final PartAsPlanned partAsPlanned = PartAsPlanned.builder()
+                                                         .validityPeriod(ValidityPeriod.builder()
+                                                                                       .validFrom(validFrom)
+                                                                                       .validTo(validTo)
+                                                                                       .build())
+                                                         .build();
+
+        // Act
+        final SupplyChainImpacted supplyChainImpacted = BPNIncidentValidation.partAsPlannedValidity(partAsPlanned);
+
+        // Assert
+        assertThat(supplyChainImpacted).isEqualTo(SupplyChainImpacted.YES);
+    }
+
+    @Test
+    void shouldReturnYesWhenNowBeforeValidityPeriod() {
+        // Arrange
+        final ZonedDateTime validFrom = ZonedDateTime.parse("2120-01-01T00:00:00.000Z");
+        final ZonedDateTime validTo = ZonedDateTime.parse("2125-12-31T23:59:59.999Z");
+        final PartAsPlanned partAsPlanned = PartAsPlanned.builder()
+                                                         .validityPeriod(ValidityPeriod.builder()
+                                                                                       .validFrom(validFrom)
+                                                                                       .validTo(validTo)
+                                                                                       .build())
+                                                         .build();
+
+        // Act
+        final SupplyChainImpacted supplyChainImpacted = BPNIncidentValidation.partAsPlannedValidity(partAsPlanned);
+
+        // Assert
+        assertThat(supplyChainImpacted).isEqualTo(SupplyChainImpacted.YES);
     }
 }

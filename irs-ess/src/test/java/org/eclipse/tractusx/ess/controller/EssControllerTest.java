@@ -108,7 +108,7 @@ class EssControllerTest {
                                                                          .globalAssetId(globalAssetId)
                                                                          .bpn(bpn)
                                                                          .build())
-                                          .incidentBpns(bpns)
+                                          .incidentBPNSs(bpns)
                                           .build();
     }
 

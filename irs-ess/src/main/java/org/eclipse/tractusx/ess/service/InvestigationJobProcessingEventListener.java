@@ -37,6 +37,10 @@ import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
+import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
+import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
@@ -54,6 +58,7 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@SuppressWarnings("PMD.TooManyMethods")
 class InvestigationJobProcessingEventListener {
 
     private final IrsFacade irsFacade;
@@ -96,6 +101,56 @@ class InvestigationJobProcessingEventListener {
         return edcAddresses.entrySet().stream().filter(t -> t.getValue().isEmpty()).toList();
     }
 
+    private static PartSiteInformationAsPlanned getPartSiteInformationAsPlanned(final Jobs job)
+            throws AspectTypeNotFoundException {
+        final String value = getAspectTypeFromJob(job, AspectType.PART_SITE_INFORMATION_AS_PLANNED);
+        return StringMapper.mapFromString(value, PartSiteInformationAsPlanned.class);
+    }
+
+    private static PartAsPlanned getPartAsPlanned(final Jobs job) throws AspectTypeNotFoundException {
+        final String value = getAspectTypeFromJob(job, AspectType.PART_AS_PLANNED);
+        return StringMapper.mapFromString(value, PartAsPlanned.class);
+    }
+
+    private static String getAspectTypeFromJob(final Jobs job, final AspectType aspectType)
+            throws AspectTypeNotFoundException {
+        log.debug("Searching for AspectType '{}'", aspectType.toString());
+        return StringMapper.mapToString(job.getSubmodels()
+                                           .stream()
+                                           .filter(submodel -> submodel.getAspectType().endsWith(aspectType.toString()))
+                                           .findFirst()
+                                           .orElseThrow(() -> new AspectTypeNotFoundException(
+                                                   "AspectType '%s' not found in Job.".formatted(
+                                                           aspectType.toString())))
+                                           .getPayload());
+    }
+
+    private static SupplyChainImpacted validatePartSiteInformationAsPlanned(final BpnInvestigationJob investigationJob,
+            final Jobs completedJob) {
+        SupplyChainImpacted partSiteInformationAsPlannedValidity;
+        try {
+            final PartSiteInformationAsPlanned partSiteInformation = getPartSiteInformationAsPlanned(completedJob);
+            partSiteInformationAsPlannedValidity = BPNIncidentValidation.jobContainsIncidentBPNSs(partSiteInformation,
+                    investigationJob.getIncidentBpns());
+        } catch (AspectTypeNotFoundException e) {
+            log.warn("Aspect not found.", e);
+            partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
+        }
+        return partSiteInformationAsPlannedValidity;
+    }
+
+    private static SupplyChainImpacted validatePartAsPlanned(final Jobs completedJob) {
+        SupplyChainImpacted partAsPlannedValidity;
+        try {
+            final PartAsPlanned partAsPlanned = getPartAsPlanned(completedJob);
+            partAsPlannedValidity = BPNIncidentValidation.partAsPlannedValidity(partAsPlanned);
+        } catch (AspectTypeNotFoundException e) {
+            log.warn("Aspect not found.", e);
+            partAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
+        }
+        return partAsPlannedValidity;
+    }
+
     @Async
     @EventListener
     public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
@@ -106,19 +161,29 @@ class InvestigationJobProcessingEventListener {
             log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", completedJobId);
 
             final Jobs completedJob = irsFacade.getIrsJob(completedJobId.toString());
+            final SupplyChainImpacted partAsPlannedValidity = validatePartAsPlanned(completedJob);
+            log.info("Local validation of PartAsPlanned Validity was done for job {}. with result {}.", completedJobId,
+                    partAsPlannedValidity);
+            final SupplyChainImpacted partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(
+                    investigationJob, completedJob);
+            log.info("Local validation of PartSiteInformationAsPlanned Validity was done for job {}. with result {}.",
+                    completedJobId, partSiteInformationAsPlannedValidity);
 
-            final SupplyChainImpacted localSupplyChain = BPNIncidentValidation.jobContainsIncidentBPNs(
-                    completedJob.getShells(), investigationJob.getIncidentBpns());
-            log.info("Local validation of BPN was done for job {}. with result {}.", completedJobId, localSupplyChain);
-            final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob, localSupplyChain);
+            final SupplyChainImpacted supplyChainImpacted = partAsPlannedValidity.or(
+                    partSiteInformationAsPlannedValidity);
+            log.debug("Supply Chain Validity result of {} and {} resulted in {}", partAsPlannedValidity,
+                    partSiteInformationAsPlannedValidity, supplyChainImpacted);
 
-            if (supplyChainIsNotImpacted(localSupplyChain)) {
+            final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob,
+                    supplyChainImpacted);
+
+            if (supplyChainIsNotImpacted(supplyChainImpacted)) {
                 triggerInvestigationOnNextLevel(completedJob, investigationJobUpdate);
                 bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
             } else {
                 bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
                 recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
-                        localSupplyChain);
+                        supplyChainImpacted);
             }
         });
     }

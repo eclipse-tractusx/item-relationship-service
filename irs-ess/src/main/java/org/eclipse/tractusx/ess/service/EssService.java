@@ -56,7 +56,7 @@ public class EssService {
 
         final UUID createdJobId = jobHandle.getId();
         final Jobs createdJob = irsFacade.getIrsJob(createdJobId.toString());
-        bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, request.getIncidentBpns()));
+        bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, request.getIncidentBPNSs()));
 
         return jobHandle;
     }

@@ -70,7 +70,7 @@ class EssServiceTest {
                                                   .build();
         final RegisterBpnInvestigationJob request = RegisterBpnInvestigationJob.builder()
                                                                                .key(key)
-                                                                               .incidentBpns(bpns)
+                                                                               .incidentBPNSs(bpns)
                                                                                .build();
         final Jobs expectedResponse = Jobs.builder()
                                           .job(Job.builder()

@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,9 +44,11 @@ import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
@@ -167,12 +170,45 @@ class InvestigationJobProcessingEventListenerTest {
     }
 
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell) {
+        final String partAsPlannedRaw = """
+                {
+                  "validityPeriod": {
+                    "validFrom": "2019-04-04T03:19:03.000Z",
+                    "validTo": "2124-12-29T10:25:12.000Z"
+                  },
+                  "catenaXId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e",
+                  "partTypeInformation": {
+                    "manufacturerPartId": "ZX-55",
+                    "classification": "product",
+                    "nameAtManufacturer": "Vehicle Model A"
+                  }
+                }
+                """;
+        final String partSiteInformationAsPlannedRaw = """
+                {
+                  "catenaXId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e",
+                  "sites": [
+                    {
+                      "functionValidUntil": "2025-02-08T04:30:48.000Z",
+                      "function": "production",
+                      "functionValidFrom": "2019-08-21T02:10:36.000Z",
+                      "catenaXSiteId": "BPNS000004711DMY"
+                    }
+                  ]
+                }
+                """;
+        final Submodel partAsPlanned = Submodel.from("test1", "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+                StringMapper.mapFromString(partAsPlannedRaw, Map.class));
+        final Submodel partSiteInformationAsPlanned = Submodel.from("test2",
+                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
+                StringMapper.mapFromString(partSiteInformationAsPlannedRaw, Map.class));
         final Jobs jobs = Jobs.builder()
                               .job(Job.builder()
                                       .id(mockedJobId)
                                       .globalAssetId(GlobalAssetIdentification.of("dummyGlobalAssetId"))
                                       .build())
                               .shells(List.of(createShell(UUID.randomUUID().toString(), mockedShell)))
+                              .submodels(List.of(partAsPlanned, partSiteInformationAsPlanned))
                               .build();
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, List.of("BPNS000000000DDD"));
 
