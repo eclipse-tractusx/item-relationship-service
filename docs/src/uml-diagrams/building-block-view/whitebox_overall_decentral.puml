@@ -49,13 +49,13 @@ IRS <.d.> EDC  : **[06]**
 IRS <..> IAM_IRS : **[07]**
 IRS <..> edc_discovery  : **[08]**
 
-IRS <..> discovery_finder  : : **[09]**
-IRS <..> semantic_hub  : : **[10]**
-IRS <..> bpdm  : : **[11]**
-EDC <..> miw  : : **[12]**
-EDC <..> EDCProvider  : : **[13]**
+IRS <..> discovery_finder  : **[09]**
+IRS <..> semantic_hub  : **[10]**
+IRS <..> bpdm  : **[11]**
+EDC <..> miw  : **[12]**
+EDC <..> EDCProvider  : **[13]**
 
-miw <..> EDCProvider  : : **[14]**
+miw <..> EDCProvider  : **[14]**
 EDCProvider <--> SubmodelServer : **[15]**
 EDCProvider <--> DT_REG : **[16]**
 
