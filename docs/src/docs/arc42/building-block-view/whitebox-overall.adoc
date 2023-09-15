@@ -77,7 +77,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | IRS lookup for **EDC Discovery Services** by given type <BPN> over the **Discovery Finder**
 
 | 10
-| IRS uses **Semantic Hub** to validate  of **SubmodelAspects** payloads agains the schema provided in **Semantic Hub**
+| IRS uses **Semantic Hub** to validate of **SubmodelAspects** payloads agains the schema provided in **Semantic Hub**
 
 | 11
 | In case "lookupBPNs" is active IRS provides a lookup of company for given BPN
@@ -96,7 +96,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 
 | 16
 | **IRS** accessing the **decentral DigitalTwinRegistry** on Tier Level using the **EDC**
-
+|===
 
 
 
