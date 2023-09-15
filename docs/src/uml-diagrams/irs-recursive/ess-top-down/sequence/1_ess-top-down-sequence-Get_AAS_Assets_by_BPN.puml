@@ -19,9 +19,10 @@ box SharedServices #DarkGrey
     participant EDCDiscoveryService as EDCDiscoveryService
 end box
 
-    Client -> IRS : [hidden] GET /irs/proxy/registry/lookup/shells{bpn}
+    Client -> IRS : [hidden] GET /irs/proxy/registry/lookup/shells/{bpn}
     note left
         {bpnl="BPNL0123456789XX"};
+        {limit=50}
     end note
     IRS -> DiscoveryFinder : POST /api/administration/connectors/discovery/search { "types": [ "bpn" ] }
     IRS <-- DiscoveryFinder: 200 [array of EDCDiscoveryService urls]
@@ -37,8 +38,10 @@ end box
         EDC -> dDTR: GET lookup/shells for given BPN
         EDC <-- dDTR: return 200 [array of {aasIdentifier}
         IRS <-- dDTR: return 200 [array of {aasIdentifier}
-
     end
-     Client <-- IRS : 201 return array of aasIdentifier
+     Client <-- IRS : 201 return array[limit] of aasIdentifier
+     note left
+        number of aasIdentifier is limited by given limit
+     end note
 
 @enduml

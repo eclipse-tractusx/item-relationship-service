@@ -2,6 +2,8 @@
 skinparam monochrome true
 skinparam shadowing false
 skinparam defaultFontName "Architects daughter"
+title "Scenario 1 : (Investigation for ONE globalAssetId)"
+
 
 | OEM  - IRS |
 start
@@ -133,16 +135,11 @@ end note
         {
             "header": {
                 "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
-                "senderBpn": "BPNL00000003BW3S",
-                "recipientBpn": "BPNL00000003BV4H",
-                "senderEdc": "https://edc.company-xyz.io/BPNL00000003BW3S",
-                "replyAssetId": "ess-response-asset",
-                "replyAssetSubPath" : "optionalSubPath",
-                "originalNotificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
-                "notificationType": "ess-supplier-response"
+                ...
             },
             "content": {
-                "result" : "yes"
+                "result" : "yes",
+                "hops" : "<numberOfHopsIntheSupplyChain>"
             }
         }
     end note
@@ -154,7 +151,5 @@ end note
 send response to requestor;
 
 stop
-
-
 
 @enduml
