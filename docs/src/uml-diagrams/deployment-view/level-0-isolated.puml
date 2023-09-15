@@ -3,6 +3,8 @@ skinparam monochrome true
 skinparam shadowing false
 skinparam nodesep 100
 skinparam ranksep 20
+skinparam defaultFontName "Architects daughter"
+skinparam linetype ortho
 
 
 node "Kubernetes Cluster" as k8s {
@@ -20,7 +22,7 @@ node "Kubernetes Cluster" as k8s {
     }
 
     component Keycloak
-    component "DAPS" as daps
+    component "Managed IdentityWallet" as MIW
 
     component "Discovery Service" as ds
     component "Semantic Hub" as semHub
@@ -30,8 +32,8 @@ node "Kubernetes Cluster" as k8s {
     IRS --> consumer
     IRS --> ds
 
-    daps ---> provider
-    daps ---> consumer
+    MIW ---> provider
+    MIW ---> consumer
 
     provider <-> consumer
 

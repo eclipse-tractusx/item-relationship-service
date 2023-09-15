@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -23,10 +24,13 @@
 package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.UUID;
 
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.connector.batch.Batch;
@@ -46,14 +50,19 @@ class QueryBatchServiceTest {
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
     private JobStore jobStore;
+
+    private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
     private QueryBatchService service;
+
+    private static final String owner = "TestUser";
 
     @BeforeEach
     void beforeEach() {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
         jobStore = new InMemoryJobStore();
-        service = new QueryBatchService(batchOrderStore, batchStore, jobStore);
+
+        service = new QueryBatchService(batchOrderStore, batchStore, jobStore, securityHelperService);
     }
 
     @Test
@@ -61,6 +70,25 @@ class QueryBatchServiceTest {
         // given
         final UUID batchOrderId = UUID.randomUUID();
         batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId));
+        when(securityHelperService.getClientIdForViewIrs()).thenReturn(owner);
+
+        final UUID batchId = UUID.randomUUID();
+        batchStore.save(batchId, createBatch(batchId, batchOrderId));
+
+        // when
+        final BatchOrderResponse response = service.findOrderById(batchOrderId);
+
+        // then
+        assertThat(response.getOrderId()).isEqualTo(batchOrderId);
+        assertThat(response.getBatches()).hasSize(1);
+    }
+
+    @Test
+    void shouldFindBatchOrderWithAdminRole() {
+        // given
+        final UUID batchOrderId = UUID.randomUUID();
+        batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId));
+        when(securityHelperService.isAdmin()).thenReturn(true);
 
         final UUID batchId = UUID.randomUUID();
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
@@ -83,6 +111,8 @@ class QueryBatchServiceTest {
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
         batchStore.save(secondBatchId, createBatch(secondBatchId, batchOrderId));
 
+        when(securityHelperService.getClientIdForViewIrs()).thenReturn(owner);
+
         // when
         final BatchResponse response = service.findBatchById(batchOrderId, batchId);
 
@@ -93,16 +123,34 @@ class QueryBatchServiceTest {
         assertThat(response.getTotalJobs()).isEqualTo(6);
     }
 
+    @Test
+    void shouldFindBatchWithAdminRole() {
+        // given
+        final UUID batchOrderId = UUID.randomUUID();
+        final UUID batchId = UUID.randomUUID();
+        batchStore.save(batchId, createBatch(batchId, batchOrderId));
+
+        when(securityHelperService.isAdmin()).thenReturn(true);
+
+        // when
+        final BatchResponse response = service.findBatchById(batchOrderId, batchId);
+
+        // then
+        assertThat(response.getOrderId()).isEqualTo(batchOrderId);
+        assertThat(response.getBatchId()).isEqualTo(batchId);
+    }
+
     private BatchOrder createBatchOrder(final UUID batchOrderId) {
-        return BatchOrder.builder().batchOrderId(batchOrderId).build();
+        return BatchOrder.builder().batchOrderId(batchOrderId).owner(owner).build();
     }
 
     private Batch createBatch(final UUID batchId, final UUID batchOrderId) {
-        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).jobProgressList(List.of(
-                JobProgress.builder().jobId(UUID.randomUUID()).build(),
-                JobProgress.builder().jobId(UUID.randomUUID()).build(),
-                JobProgress.builder().jobId(UUID.randomUUID()).build()
-        )).build();
+        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).owner(owner)
+                    .jobProgressList(List.of(
+                            JobProgress.builder().jobId(UUID.randomUUID()).build(),
+                            JobProgress.builder().jobId(UUID.randomUUID()).build(),
+                            JobProgress.builder().jobId(UUID.randomUUID()).build()
+                    )).build();
     }
 
 }
