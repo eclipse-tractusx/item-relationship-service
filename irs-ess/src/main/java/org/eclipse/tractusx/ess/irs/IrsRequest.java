@@ -59,8 +59,7 @@ class IrsRequest {
                                  bomLifecycle != null ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
                          .depth(1)
                          .aspects(List.of(AspectType.PART_SITE_INFORMATION_AS_PLANNED.toString(),
-                                 AspectType.PART_AS_PLANNED.toString(),
-                                 AspectType.SINGLE_LEVEL_BOM_AS_PLANNED.toString()))
+                                 AspectType.PART_AS_PLANNED.toString()))
                          .collectAspects(true)
                          .build();
     }
