@@ -2220,13 +2220,13 @@ components:
           example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         key:
           $ref: '#/components/schemas/PartChainIdentificationKey'
-        incidentBpns:
+        incidentBPNSs:
           type: array
           items:
             type: string
           maxItems: 2147483647
       required:
-        - incidentBpns
+        - incidentBPNSs
         - key
     RegisterJob:
       type: object
