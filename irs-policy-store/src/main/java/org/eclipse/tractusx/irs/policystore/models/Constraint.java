@@ -30,7 +30,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * A Constraint object use as a element of collection in Permission
+ * A Constraint object used as an element of collection in Permission
  */
 @Getter
 @AllArgsConstructor

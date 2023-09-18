@@ -30,7 +30,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * A Constraints contain two collection of Constraint
+ * A Constraint containing two collections of Constraints
  */
 @Getter
 @AllArgsConstructor
