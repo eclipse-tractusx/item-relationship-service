@@ -138,6 +138,65 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 
 The integrated EDC client in the IRS is responsible for creating restful requests to the component EDC. The IRS application builds from the retrieved AAS Descriptor (see previous section) the corresponding submodel endpoint URLs, negotiates an EDC contract and sends via the submodel REST client requests to the EDC. The EDC responds with the corresponding submodel data.
 
+### Semantic Models
+
+#### Overview asBuilt
+
+##### Traversal Aspect
+
+|     |     |     |
+| --- | --- | --- |
+| Name | Description |  |
+| SingelLevelBomAsBuilt | The aspect provides the child parts (one structural level down) which the given object assembles. | 1.1.0 |
+| SingelLevelUsageAsBuilt | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | [X.X.X] |
+
+##### Semantic Model
+
+|     |     |     |
+| --- | --- | --- |
+| Name | Description | Version range |
+| SerialPart | A serialized part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a serial numbers or a similar identifier (e.g. VAN) or a combination of multiple identifiers (e.g. combination of manufacturer, date and number) | [1.0,0, 1.1.0] |
+| SingelLevelBomAsBuilt | The aspect provides the child parts (one structural level down) which the given object assembles. | [1.0.0,1.1.0] |
+| SingelLevelUsageAsBuilt | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | [1.0.0,1.0.1] |
+| Batch | A batch is a quantity of (semi-) finished products or (raw) material product that have been produced under the same circumstances (e.g. same production location), as specified groups or amounts, within a certain time frame. Every batch can differ in the number or amount of products. Different batches can have varied specifications, e.g., different colors. A batch is identified via a Batch ID. | [1.0.0,2.0.0] |
+| JustInSequencePart | A just-in-sequence part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a combination of several IDs related to a just-in-sequence process | [1.0.0] |
+| TractionBatteryCode | The traction battery code is an identification code for any automotive traction battery, ultracapacitor and other reachargeble energy storage device. It allows to carry information as required by the National Standard of the People’s Republic of China according to GB/T 34014-2017 published by the Standardization Administration of China (SAC). | 1.0.0 |
+
+#### Overview asPlanned
+
+##### Traversal Aspect
+
+|     |     |     |
+| --- | --- | --- |
+| Name | Description |  |
+| SingelLevelBomAsPlanned | The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM. | 1.1.0 |
+| SingelLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list. | 1.1.0 |
+
+##### Semantic Model
+
+|     |     |     |
+| --- | --- | --- |
+| Name | Description |  |
+| PartAsPlanned | A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version. | [ , ] |
+| PartSiteInformationAsPlanned | The aspect provides site related information for a given as planned item (i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In the \"as planned\" lifecycle context all potentially related sites are listed including all sites where e.g. production of this part (type) is planned. | 1.0.0 |
+| SingelLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list. | [1.0.0,1.1.0] |
+
+#### Overview asSpecified
+
+##### Traversal Aspect
+
+|     |     |     |
+| --- | --- | --- |
+| Name | Description |  |
+| SingelLevelBomAsSpecified | The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place. | 2.0.0 |
+
+##### Semantic Model
+
+|     |     |     |
+| --- | --- | --- |
+| Name | Description |  |
+| SingelLevelBomAsSpecified | The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place. | [1.0.0,2.0.0] |
+
 ## Solution strategy
 
 ### Introduction
@@ -193,6 +252,29 @@ The interfaces show how the components interact with each other and which interf
 | EDC Provider | The EDC Provider Component connects with EDC Consumer component and forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications. |
 | Submodel Server | The Submodel Server offers endpoints for requesting the Submodel aspects. |
 | MIW | Managed Identity Wallet as Self-Sovereign-Identity Provider for EDC |
+| Discovery Finder | The Discovery Finder is used to get the EDC Discovery Endpoint for a certain type of identification, e.g. BPNL. |
+| EDC Discovery | The EDC Discovery Service is used to get EDC endpoints for a certain BPNL. |
+| Semantic Hub | Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers. |
+| BPDM | The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain. |
+
+| Number | Description |
+| --- | --- |
+| 01 | IrsApiConsumer calls the ***IRS*** public ***API*** |
+| 02 | IrsApiConsumer must authorize using ***technical C-X User*** |
+| 03 | Delegate authorization request to ***IdP*** |
+| 04 | IRS requesting for ***SubmodelAspects*** using ***EDC*** |
+| 05 | IRS requesting the ***decentral DigitalTwinRegistry*** over ***EDC*** and service discovery flow |
+| 06 | IRS uses EDC to ensure sovereign data consumption |
+| 07 | IRS MUST authorize at central IAM |
+| 08 | IRS lookup for EDC Provider by given BPNs over the ***EDC Discovery Service*** |
+| 09 | IRS lookup for ***EDC Discovery Services*** by given type &lt;BPN> over the ***Discovery Finder*** |
+| 10 | IRS uses ***Semantic Hub*** to validate of ***SubmodelAspects*** payloads agains the schema provided in ***Semantic Hub*** |
+| 11 | In case "lookupBPNs" is active IRS provides a lookup of company for given BPN |
+| 12 | ***EDC*** is connected to ***Managed Identity Wallet*** for access policy check for data offers |
+| 13 | ***EDC*** communication covering negotiation and data consumption |
+| 14 | ***EDC*** is connected to ***Managed Identity Wallet*** for access policy check for data offers |
+| 15 | ***IRS*** accessing to ***SubmodelServer*** on Tier Level using the ***EDC*** |
+| 16 | ***IRS*** accessing the ***decentral DigitalTwinRegistry*** on Tier Level using the ***EDC*** |
 
 ## Level 1
 
@@ -618,12 +700,33 @@ A job can be in one of the following states:
 #### IRS API
 
 The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
-JWT token should also contain two fields:
+JWT token should also contain two claims:
 
-* `view_irs` role inside `resource_access` claim,
-* BPN claim which is equal to the configuration value from `API_ALLOWED_BPN` property
+* 'bpn' which is equal to the configuration value from `API_ALLOWED_BPN` property
+* 'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. The list of values will be converted to roles by IRS. Currently, IRS API handles two roles: ***'admin_irs'*** and ***'view_irs'.*** A valid token with the ***'admin_irs'*** role can access any endpoint exposed by the IRS API, while a token with the ***'view_irs'*** role does not have access to policies endpoints and can operate only on resources it owns. That means that he only has access to the resources he has created, e.g. jobs and batches. This behavior is shown in the table below.
 
-**Note: IRS currently does not support any other roles or rights. As long as you provide a valid token with the content listed above, you can access the IRS API to view and control all jobs on the IRS instance.**
+##### Rights and Roles Matrix of IRS
+
+|     |     |     |     |     |
+| --- | --- | --- | --- | --- |
+| Category | Action | Endpoint | view_irs | admin_irs |
+| Policy Store | Add policy | POST /irs/policies |  | x |
+|  | Get policies | GET /irs/policies |  | x |
+|  | Update policy | PUT /irs/policies/{policyId} |  | x |
+|  | Delete policy | DELETE /irs/policies/{policyId} |  | x |
+| Aspect models | Get aspect models | GET /irs/aspectmodels | x | x |
+| Job processing | Register job | POST /irs/jobs | (x) | x |
+|  | Get jobs | GET /irs/jobs | (x) | x |
+|  | Get job | GET /irs/jobs/{jobId} | (x) | x |
+|  | Cancel job | PUT /irs/jobs/{jobId} | (x) | x |
+| Batch processing | Register order | POST /irs/orders | (x) | x |
+|  | Get order | GET /irs/orders/{orderId} | (x) | x |
+|  | Cancel order | PUT /irs/orders/{orderId} | (x) | x |
+|  | Get batch | GET /irs/orders/{orderId}/batches/{batchId} | (x) | x |
+| Environmental- and Social Standards | Register investigation job | POST /ess/bpn/investigations | (x) | x |
+|  | Get investigation job | GET /ess/bpn/investigations{id} | (x) | x |
+|  | Accept notifications | POST /ess/notification/receive | x | x |
+Legend: x  = full access to all resources, (x) = access to the resources he owns
 
 #### IRS as DTR client
 

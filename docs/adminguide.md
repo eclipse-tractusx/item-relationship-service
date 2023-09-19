@@ -59,8 +59,6 @@ You can define the URLs as well as most of the secrets yourself.
 
 The Keycloak, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
-**Note: IRS currently does not support any roles or rights for the API. As long as you provide a valid access token, you can use the IRS API to view and control all jobs on the IRS instance.**
-
 ## Spring Configuration
 
 The IRS application is configured using the Spring configuration mechanism. The main configuration file is the ``application.yaml``.

@@ -450,6 +450,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_edc_api">EDC API</a></li>
 </ul>
 </li>
+<li><a href="#_semantic_models">Semantic Models</a>
+<ul class="sectlevel2">
+<li><a href="#_overview_asbuilt">Overview asBuilt</a></li>
+<li><a href="#_overview_asplanned">Overview asPlanned</a></li>
+<li><a href="#_overview_asspecified">Overview asSpecified</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -498,10 +505,201 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_semantic_models">Semantic Models</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_overview_asbuilt">Overview asBuilt</h3>
+<div class="sect3">
+<h4 id="_traversal_aspect">Traversal Aspect</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsBuilt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the child parts (one structural level down) which the given object assembles.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelUsageAsBuilt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[X.X.X]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_semantic_model">Semantic Model</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version range</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SerialPart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A serialized part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a serial numbers or a similar identifier (e.g. VAN) or a combination of multiple identifiers (e.g. combination of manufacturer, date and number)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0,0, 1.1.0]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsBuilt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the child parts (one structural level down) which the given object assembles.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,1.1.0]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelUsageAsBuilt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,1.0.1]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Batch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A batch is a quantity of (semi-) finished products or (raw) material product that have been produced under the same circumstances (e.g. same production location), as specified groups or amounts, within a certain time frame. Every batch can differ in the number or amount of products. Different batches can have varied specifications, e.g., different colors. A batch is identified via a Batch ID.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,2.0.0]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JustInSequencePart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A just-in-sequence part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a combination of several IDs related to a just-in-sequence process</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TractionBatteryCode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The traction battery code is an identification code for any automotive traction battery, ultracapacitor and other reachargeble energy storage device. It allows to carry information as required by the National Standard of the People&#8217;s Republic of China according to GB/T 34014-2017 published by the Standardization Administration of China (SAC).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_overview_asplanned">Overview asPlanned</h3>
+<div class="sect3">
+<h4 id="_traversal_aspect_2">Traversal Aspect</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelUsageAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_semantic_model_2">Semantic Model</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PartAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[ , ]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PartSiteInformationAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides site related information for a given as planned item (i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In the \"as planned\" lifecycle context all potentially related sites are listed including all sites where e.g. production of this part (type) is planned.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelUsageAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,1.1.0]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_overview_asspecified">Overview asSpecified</h3>
+<div class="sect3">
+<h4 id="_traversal_aspect_3">Traversal Aspect</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsSpecified</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_semantic_model_3">Semantic Model</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsSpecified</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,2.0.0]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-08-30 13:51:39 UTC
+Last updated 2023-09-19 07:25:03 UTC
 </div>
 </div>
 </body>

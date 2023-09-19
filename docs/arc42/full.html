@@ -945,6 +945,195 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_semantic_models">Semantic Models</h4>
+<div class="sect4">
+<h5 id="_overview_asbuilt">Overview asBuilt</h5>
+<div class="sect5">
+<h6 id="_traversal_aspect">Traversal Aspect</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsBuilt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the child parts (one structural level down) which the given object assembles.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelUsageAsBuilt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[X.X.X]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_semantic_model">Semantic Model</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version range</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SerialPart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A serialized part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a serial numbers or a similar identifier (e.g. VAN) or a combination of multiple identifiers (e.g. combination of manufacturer, date and number)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0,0, 1.1.0]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsBuilt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the child parts (one structural level down) which the given object assembles.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,1.1.0]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelUsageAsBuilt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,1.0.1]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Batch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A batch is a quantity of (semi-) finished products or (raw) material product that have been produced under the same circumstances (e.g. same production location), as specified groups or amounts, within a certain time frame. Every batch can differ in the number or amount of products. Different batches can have varied specifications, e.g., different colors. A batch is identified via a Batch ID.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,2.0.0]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JustInSequencePart</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A just-in-sequence part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a combination of several IDs related to a just-in-sequence process</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TractionBatteryCode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The traction battery code is an identification code for any automotive traction battery, ultracapacitor and other reachargeble energy storage device. It allows to carry information as required by the National Standard of the People&#8217;s Republic of China according to GB/T 34014-2017 published by the Standardization Administration of China (SAC).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_overview_asplanned">Overview asPlanned</h5>
+<div class="sect5">
+<h6 id="_traversal_aspect_2">Traversal Aspect</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelUsageAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_semantic_model_2">Semantic Model</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PartAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[ , ]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PartSiteInformationAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides site related information for a given as planned item (i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In the \"as planned\" lifecycle context all potentially related sites are listed including all sites where e.g. production of this part (type) is planned.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelUsageAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,1.1.0]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_overview_asspecified">Overview asSpecified</h5>
+<div class="sect5">
+<h6 id="_traversal_aspect_3">Traversal Aspect</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsSpecified</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_semantic_model_3">Semantic Model</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SingelLevelBomAsSpecified</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0,2.0.0]</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1087,7 +1276,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <h4 id="_component_diagram">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/whitebox-overview.svg" alt="whitebox overview" width="1641" height="654">
+<img src="architecture-constraints/whitebox-overview.svg" alt="whitebox overview" width="1974" height="1060">
 </div>
 </div>
 </div>
@@ -1128,6 +1317,100 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MIW</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Managed Identity Wallet as Self-Sovereign-Identity Provider for EDC</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Discovery Finder</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Discovery Finder is used to get the EDC Discovery Endpoint for a certain type of identification, e.g. BPNL.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EDC Discovery</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The EDC Discovery Service is used to get EDC endpoints for a certain BPNL.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Semantic Hub</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BPDM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Number</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">01</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IrsApiConsumer calls the <strong>IRS</strong> public <strong>API</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">02</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IrsApiConsumer must authorize using <strong>technical C-X User</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">03</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delegate authorization request to <strong>IdP</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">04</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS requesting for <strong>SubmodelAspects</strong> using <strong>EDC</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">05</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS requesting the <strong>decentral DigitalTwinRegistry</strong> over <strong>EDC</strong> and service discovery flow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">06</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS uses EDC to ensure sovereign data consumption</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">07</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS MUST authorize at central IAM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">08</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS lookup for EDC Provider by given BPNs over the <strong>EDC Discovery Service</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">09</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS lookup for <strong>EDC Discovery Services</strong> by given type &lt;BPN&gt; over the <strong>Discovery Finder</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS uses <strong>Semantic Hub</strong> to validate of <strong>SubmodelAspects</strong> payloads agains the schema provided in <strong>Semantic Hub</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">In case "lookupBPNs" is active IRS provides a lookup of company for given BPN</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> is connected to <strong>Managed Identity Wallet</strong> for access policy check for data offers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> communication covering negotiation and data consumption</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> is connected to <strong>Managed Identity Wallet</strong> for access policy check for data offers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IRS</strong> accessing to <strong>SubmodelServer</strong> on Tier Level using the <strong>EDC</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IRS</strong> accessing the <strong>decentral DigitalTwinRegistry</strong> on Tier Level using the <strong>EDC</strong></p></td>
 </tr>
 </tbody>
 </table>
@@ -1786,20 +2069,154 @@ The IRS Helm charts can be found here: <a href="https://github.com/eclipse-tract
 <h5 id="_irs_api_3">IRS API</h5>
 <div class="paragraph">
 <p>The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
-JWT token should also contain two fields:</p>
+JWT token should also contain two claims:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>view_irs</code> role inside <code>resource_access</code> claim,</p>
+<p>'bpn' which is equal to the configuration value from <code>API_ALLOWED_BPN</code> property</p>
 </li>
 <li>
-<p>BPN claim which is equal to the configuration value from <code>API_ALLOWED_BPN</code> property</p>
+<p>'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. The list of values will be converted to roles by IRS. Currently, IRS API handles two roles: <strong>'admin_irs'</strong> and <strong>'view_irs'.</strong> A valid token with the <strong>'admin_irs'</strong> role can access any endpoint exposed by the IRS API, while a token with the <strong>'view_irs'</strong> role does not have access to policies endpoints and can operate only on resources it owns. That means that he only has access to the resources he has created, e.g. jobs and batches. This behavior is shown in the table below.</p>
 </li>
 </ul>
 </div>
+<div class="sect5">
+<h6 id="_rights_and_roles_matrix_of_irs">Rights and Roles Matrix of IRS</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Category</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Action</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">view_irs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">admin_irs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policy Store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /irs/policies</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get policies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/policies</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT /irs/policies/{policyId}</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DELETE /irs/policies/{policyId}</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aspect models</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get aspect models</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/aspectmodels</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Register job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /irs/jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/jobs/{jobId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancel job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT /irs/jobs/{jobId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Batch processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Register order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /irs/orders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/orders/{orderId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancel order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT /irs/orders/{orderId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get batch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/orders/{orderId}/batches/{batchId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Environmental- and
+Social Standards</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Register investigation job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /ess/bpn/investigations</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get investigation job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /ess/bpn/investigations{id}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Accept notifications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /ess/notification/receive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p><strong>Note: IRS currently does not support any other roles or rights. As long as you provide a valid token with the content listed above, you can access the IRS API to view and control all jobs on the IRS instance.</strong></p>
+<p>Legend: x  = full access to all resources, (x) = access to the resources he owns</p>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -2344,7 +2761,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-08-30 13:51:39 UTC
+Last updated 2023-09-19 07:25:03 UTC
 </div>
 </div>
 </body>

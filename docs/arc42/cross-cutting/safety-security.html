@@ -463,20 +463,154 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_irs_api">IRS API</h3>
 <div class="paragraph">
 <p>The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
-JWT token should also contain two fields:</p>
+JWT token should also contain two claims:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>view_irs</code> role inside <code>resource_access</code> claim,</p>
+<p>'bpn' which is equal to the configuration value from <code>API_ALLOWED_BPN</code> property</p>
 </li>
 <li>
-<p>BPN claim which is equal to the configuration value from <code>API_ALLOWED_BPN</code> property</p>
+<p>'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. The list of values will be converted to roles by IRS. Currently, IRS API handles two roles: <strong>'admin_irs'</strong> and <strong>'view_irs'.</strong> A valid token with the <strong>'admin_irs'</strong> role can access any endpoint exposed by the IRS API, while a token with the <strong>'view_irs'</strong> role does not have access to policies endpoints and can operate only on resources it owns. That means that he only has access to the resources he has created, e.g. jobs and batches. This behavior is shown in the table below.</p>
 </li>
 </ul>
 </div>
+<div class="sect3">
+<h4 id="_rights_and_roles_matrix_of_irs">Rights and Roles Matrix of IRS</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Category</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Action</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Endpoint</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">view_irs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">admin_irs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policy Store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /irs/policies</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get policies</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/policies</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT /irs/policies/{policyId}</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DELETE /irs/policies/{policyId}</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aspect models</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get aspect models</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/aspectmodels</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Register job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /irs/jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/jobs/{jobId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancel job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT /irs/jobs/{jobId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Batch processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Register order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /irs/orders</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/orders/{orderId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancel order</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PUT /irs/orders/{orderId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get batch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /irs/orders/{orderId}/batches/{batchId}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Environmental- and
+Social Standards</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Register investigation job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /ess/bpn/investigations</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get investigation job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET /ess/bpn/investigations{id}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(x)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Accept notifications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST /ess/notification/receive</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p><strong>Note: IRS currently does not support any other roles or rights. As long as you provide a valid token with the content listed above, you can access the IRS API to view and control all jobs on the IRS instance.</strong></p>
+<p>Legend: x  = full access to all resources, (x) = access to the resources he owns</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -513,7 +647,7 @@ JWT token should also contain two fields:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-08-30 13:51:39 UTC
+Last updated 2023-09-19 07:25:03 UTC
 </div>
 </div>
 </body>

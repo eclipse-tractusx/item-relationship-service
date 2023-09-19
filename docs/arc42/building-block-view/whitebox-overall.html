@@ -461,7 +461,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="whitebox-overview.svg" alt="whitebox overview" width="1641" height="654">
+<img src="whitebox-overview.svg" alt="whitebox overview" width="1974" height="1060">
 </div>
 </div>
 </div>
@@ -505,6 +505,100 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">MIW</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Managed Identity Wallet as Self-Sovereign-Identity Provider for EDC</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Discovery Finder</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Discovery Finder is used to get the EDC Discovery Endpoint for a certain type of identification, e.g. BPNL.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EDC Discovery</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The EDC Discovery Service is used to get EDC endpoints for a certain BPNL.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Semantic Hub</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BPDM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Number</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">01</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IrsApiConsumer calls the <strong>IRS</strong> public <strong>API</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">02</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IrsApiConsumer must authorize using <strong>technical C-X User</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">03</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delegate authorization request to <strong>IdP</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">04</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS requesting for <strong>SubmodelAspects</strong> using <strong>EDC</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">05</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS requesting the <strong>decentral DigitalTwinRegistry</strong> over <strong>EDC</strong> and service discovery flow</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">06</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS uses EDC to ensure sovereign data consumption</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">07</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS MUST authorize at central IAM</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">08</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS lookup for EDC Provider by given BPNs over the <strong>EDC Discovery Service</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">09</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS lookup for <strong>EDC Discovery Services</strong> by given type &lt;BPN&gt; over the <strong>Discovery Finder</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS uses <strong>Semantic Hub</strong> to validate of <strong>SubmodelAspects</strong> payloads agains the schema provided in <strong>Semantic Hub</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">In case "lookupBPNs" is active IRS provides a lookup of company for given BPN</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> is connected to <strong>Managed Identity Wallet</strong> for access policy check for data offers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> communication covering negotiation and data consumption</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> is connected to <strong>Managed Identity Wallet</strong> for access policy check for data offers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IRS</strong> accessing to <strong>SubmodelServer</strong> on Tier Level using the <strong>EDC</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IRS</strong> accessing the <strong>decentral DigitalTwinRegistry</strong> on Tier Level using the <strong>EDC</strong></p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -512,7 +606,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-08-30 13:51:39 UTC
+Last updated 2023-09-19 07:25:03 UTC
 </div>
 </div>
 </body>
