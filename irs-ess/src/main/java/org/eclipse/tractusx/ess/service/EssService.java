@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -85,10 +87,12 @@ public class EssService {
         log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
         if (hasUnansweredNotifications(investigationJob)) {
             return jobSnapshot.toBuilder()
-                              .job(jobSnapshot.getJob().toBuilder().state(JobState.RUNNING).build())
+                              .job(jobSnapshot.getJob().toBuilder().state(JobState.RUNNING).completedOn(null).build())
                               .build();
         }
-        return jobSnapshot;
+        return jobSnapshot.toBuilder()
+                          .job(jobSnapshot.getJob().toBuilder().completedOn(ZonedDateTime.now(ZoneOffset.UTC)).build())
+                          .build();
 
     }
 

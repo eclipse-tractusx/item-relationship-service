@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,8 +53,34 @@ public class BpnInvestigationJob {
     private List<String> unansweredNotifications;
     private List<String> answeredNotifications;
 
-    public static BpnInvestigationJob create(final Jobs jobSnapshot, final String owner, final List<String> incidentBpns) {
-        return new BpnInvestigationJob(withOwner(jobSnapshot, owner), incidentBpns, new ArrayList<>(), new ArrayList<>());
+    public static BpnInvestigationJob create(final Jobs jobSnapshot, final String owner,
+            final List<String> incidentBpns) {
+        return new BpnInvestigationJob(withOwner(jobSnapshot, owner), incidentBpns, new ArrayList<>(),
+                new ArrayList<>());
+    }
+
+    private static Jobs withOwner(final Jobs jobSnapshot, final String owner) {
+        final Job overrideOwner = jobSnapshot.getJob().toBuilder().owner(owner).build();
+        return jobSnapshot.toBuilder().job(overrideOwner).build();
+    }
+
+    private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob,
+            final SupplyChainImpacted supplyChainImpacted) {
+        final Submodel supplyChainImpactedSubmodel = Submodel.builder()
+                                                             .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
+                                                             .payload(Map.of("supplyChainImpacted",
+                                                                     supplyChainImpacted.getDescription()))
+                                                             .build();
+
+        return irsJob.toBuilder()
+                     .clearSubmodels()
+                     .submodels(Collections.singletonList(supplyChainImpactedSubmodel))
+                     .build();
+    }
+
+    private static Jobs updateLastModified(final Jobs irsJob, final ZonedDateTime lastModifiedOn) {
+        final Job job = irsJob.getJob().toBuilder().lastModifiedOn(lastModifiedOn).build();
+        return irsJob.toBuilder().job(job).build();
     }
 
     public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
@@ -65,6 +93,7 @@ public class BpnInvestigationJob {
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
         this.jobSnapshot = withOwner(this.jobSnapshot, originalOwner);
+        this.jobSnapshot = updateLastModified(this.jobSnapshot, ZonedDateTime.now(ZoneOffset.UTC));
         return this;
     }
 
@@ -89,11 +118,6 @@ public class BpnInvestigationJob {
         return irsJob.toBuilder().job(job).build();
     }
 
-    private static Jobs withOwner(final Jobs jobSnapshot, final String owner) {
-        final Job overrideOwner = jobSnapshot.getJob().toBuilder().owner(owner).build();
-        return jobSnapshot.toBuilder().job(overrideOwner).build();
-    }
-
     public BpnInvestigationJob withNotifications(final List<String> notifications) {
         this.unansweredNotifications.addAll(notifications);
         return this;
@@ -103,20 +127,6 @@ public class BpnInvestigationJob {
         this.unansweredNotifications.remove(notificationId);
         this.answeredNotifications.add(notificationId);
         return this;
-    }
-
-    private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob,
-            final SupplyChainImpacted supplyChainImpacted) {
-        final Submodel supplyChainImpactedSubmodel = Submodel.builder()
-                                                             .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
-                                                             .payload(Map.of("supplyChainImpacted",
-                                                                     supplyChainImpacted.getDescription()))
-                                                             .build();
-
-        return irsJob.toBuilder()
-                     .clearSubmodels()
-                     .submodels(Collections.singletonList(supplyChainImpactedSubmodel))
-                     .build();
     }
 
 }
