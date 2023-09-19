@@ -61,7 +61,7 @@ public class RegisterBpnInvestigationJob {
                                   implementation = String.class, pattern = BPN_REGEX), maxItems = Integer.MAX_VALUE)
     private List<@Pattern(regexp = BPN_REGEX) String> incidentBPNSs;
 
-    @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
+    @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class, example = "asPlanned")
     private BomLifecycle bomLifecycle;
 
     @URL

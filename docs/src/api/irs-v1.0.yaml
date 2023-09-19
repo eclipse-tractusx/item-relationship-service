@@ -2205,6 +2205,7 @@ components:
       description: The requested job definition.
       properties:
         bomLifecycle:
+          example: asPlanned
           type: string
           description: The lifecycle context in which the child part was assembled
             into the parent part.
