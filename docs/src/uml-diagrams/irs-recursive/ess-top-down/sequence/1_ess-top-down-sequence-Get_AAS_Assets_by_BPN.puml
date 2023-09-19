@@ -1,0 +1,48 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+participant "Client App (Script)" as Client
+
+box "OEM" #LightGrey
+    participant IRS as IRS
+    participant EDC as EDC
+    participant decentralDigitalTwinRegistry as dDTR
+end box
+
+
+box SharedServices #DarkGrey
+    participant DiscoveryFinder as DiscoveryFinder
+    participant EDCDiscoveryService as EDCDiscoveryService
+end box
+
+    Client -> IRS : [hidden] GET /irs/proxy/registry/lookup/shells/{searchBpn}
+    note left
+        request body
+             {providerBpnl="BPNL0123456789XX"};
+             {limit=50}
+    end note
+    IRS -> DiscoveryFinder : POST /api/administration/connectors/discovery/search { "types": [ "bpn" ] }
+    IRS <-- DiscoveryFinder: 200 [array of EDCDiscoveryService urls]
+    loop for each $endpoints
+        IRS -> EDCDiscoveryService : POST /api/administration/connectors/discovery [ "BPNL..." ]
+        IRS <-- EDCDiscoveryService : 200 [array of EDC urls]
+        ref over IRS, EDC
+            1. Request Contract Offer Catalog
+            2. Negotiate Contract negotiation
+            3. Transfer Data
+        end ref
+        IRS -> EDC : GET lookup/shells for given BPN
+        EDC -> dDTR: GET lookup/shells for given BPN
+        EDC <-- dDTR: return 200 [array of {aasIdentifier}
+        IRS <-- dDTR: return 200 [array of {aasIdentifier}
+    end
+     Client <-- IRS : 201 return array[limit] of aasIdentifier
+     note left
+        number of aasIdentifier is limited by given limit
+     end note
+
+@enduml

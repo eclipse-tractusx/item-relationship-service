@@ -3,6 +3,7 @@ skinparam monochrome true
 skinparam shadowing false
 skinparam nodesep 100
 skinparam ranksep 20
+skinparam defaultFontName "Architects daughter"
 
 cloud "Digital Twin Registry" as dtr
 cloud "EDC Providers" as providers
