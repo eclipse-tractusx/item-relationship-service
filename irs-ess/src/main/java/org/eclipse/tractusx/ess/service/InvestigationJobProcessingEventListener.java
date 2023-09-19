@@ -36,7 +36,7 @@ import org.eclipse.tractusx.ess.bpn.validation.BPNIncidentValidation;
 import org.eclipse.tractusx.ess.irs.IrsFacade;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.Jobs;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
 import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
@@ -45,6 +45,7 @@ import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,13 +87,11 @@ class InvestigationJobProcessingEventListener {
         this.recursiveNotificationHandler = recursiveNotificationHandler;
     }
 
-    private static Map<String, List<String>> getBPNsFromShells(
-            final List<AssetAdministrationShellDescriptor> shellDescriptors, final String startAssetId) {
-        return shellDescriptors.stream()
-                               .filter(descriptor -> !descriptor.getGlobalAssetId().equals(startAssetId))
-                               .collect(Collectors.groupingBy(shell -> shell.findManufacturerId().orElseThrow(),
-                                       Collectors.mapping(AssetAdministrationShellDescriptor::getGlobalAssetId,
-                                               Collectors.toList())));
+    private static Map<String, List<String>> getBPNsFromRelationships(final List<Relationship> relationships) {
+        return relationships.stream()
+                            .collect(Collectors.groupingBy(Relationship::getBpn,
+                                    Collectors.mapping(relationship -> relationship.getCatenaXId().getGlobalAssetId(),
+                                            Collectors.toList())));
     }
 
     @NotNull
@@ -177,22 +176,28 @@ class InvestigationJobProcessingEventListener {
             final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob,
                     supplyChainImpacted);
 
-            if (supplyChainIsNotImpacted(supplyChainImpacted)) {
-                triggerInvestigationOnNextLevel(completedJob, investigationJobUpdate);
-                bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
-            } else {
+            if (leafNodeIsReached(completedJob) || supplyChainIsImpacted(supplyChainImpacted)) {
                 bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
                 recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
                         supplyChainImpacted);
+            } else {
+                triggerInvestigationOnNextLevel(completedJob, investigationJobUpdate);
+                bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
             }
         });
     }
 
+    private boolean leafNodeIsReached(final Jobs completedJob) {
+        return completedJob.getRelationships().isEmpty() && completedJob.getTombstones().isEmpty();
+    }
+
     private void triggerInvestigationOnNextLevel(final Jobs completedJob,
             final BpnInvestigationJob investigationJobUpdate) {
+        log.debug("Triggering investigation on the next level.");
         // Map<BPN, List<GlobalAssetID>>
-        final Map<String, List<String>> bpns = getBPNsFromShells(completedJob.getShells(),
-                completedJob.getJob().getGlobalAssetId().getGlobalAssetId());
+        final Map<String, List<String>> bpns = getBPNsFromRelationships(completedJob.getRelationships());
+        log.debug("Extracted BPNs '{}'", bpns);
+
         final HashMap<String, List<String>> resolvedBPNs = new HashMap<>();
         bpns.keySet().forEach(bpn -> resolvedBPNs.put(bpn, connectorEndpointsService.fetchConnectorEndpoints(bpn)));
         log.debug("Found Endpoints to BPNs '{}'", resolvedBPNs);
@@ -202,11 +207,15 @@ class InvestigationJobProcessingEventListener {
                                                                                 .map(Map.Entry::getKey)
                                                                                 .toList();
             log.debug("BPNs '{}' could not be resolved to an EDC address using DiscoveryService.", unresolvedBPNs);
+            final SupplyChainImpacted unknown = SupplyChainImpacted.UNKNOWN;
             log.info(
                     "Some EDC addresses could not be resolved with DiscoveryService. Updating SupplyChainImpacted to {}",
-                    SupplyChainImpacted.UNKNOWN);
-            investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
+                    unknown);
+            investigationJobUpdate.update(completedJob, unknown);
+            recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
+                    unknown);
         } else {
+            log.debug("Sending notification for BPNs '{}'", bpns);
             sendNotifications(completedJob, investigationJobUpdate, bpns);
         }
     }
@@ -237,11 +246,18 @@ class InvestigationJobProcessingEventListener {
             final List<String> globalAssetIds) throws EdcClientException {
         final String notificationId = UUID.randomUUID().toString();
 
-        final boolean isRecursiveAsset = mockRecursiveEdcAssets.contains(bpn);
+        final boolean isRecursiveMockAsset = mockRecursiveEdcAssets.contains(bpn);
+        final boolean isNotMockAsset = mockRecursiveEdcAssets.isEmpty();
         final EdcNotification notification = edcRequest(notificationId, bpn, incidentBpns, globalAssetIds);
         log.debug("Sending Notification '{}'", notification);
-        final var response = edcSubmodelFacade.sendNotification(url,
-                isRecursiveAsset ? "notify-request-asset-recursive" : "notify-request-asset", notification);
+        final EdcNotificationResponse response;
+        if (isRecursiveMockAsset || isNotMockAsset) {
+            log.debug("Sending recursive notification");
+            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset-recursive", notification);
+        } else {
+            log.debug("Sending mock recursive notification");
+            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset", notification);
+        }
         if (response.deliveredSuccessfully()) {
             log.info("Successfully sent notification with id '{}' to EDC endpoint '{}'.", notificationId, url);
         } else {
@@ -271,8 +287,8 @@ class InvestigationJobProcessingEventListener {
         return EdcNotification.builder().header(header).content(content).build();
     }
 
-    private boolean supplyChainIsNotImpacted(final SupplyChainImpacted supplyChain) {
-        return SupplyChainImpacted.NO.equals(supplyChain);
+    private boolean supplyChainIsImpacted(final SupplyChainImpacted supplyChain) {
+        return !SupplyChainImpacted.NO.equals(supplyChain);
     }
 
 }

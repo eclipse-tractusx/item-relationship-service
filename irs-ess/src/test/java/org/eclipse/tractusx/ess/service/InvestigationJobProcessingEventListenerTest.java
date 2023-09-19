@@ -44,6 +44,8 @@ import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.LinkedItem;
+import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -70,12 +72,12 @@ class InvestigationJobProcessingEventListenerTest {
             EssRecursiveNotificationHandler.class);
     private final UUID jobId = UUID.randomUUID();
     private final UUID recursiveJobId = UUID.randomUUID();
-    private final String bpnRecursiveEdcNotification = "BPN000RECURSIVE";
+
     private final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
 
     private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(
             irsFacade, connectorEndpointsService, edcSubmodelFacade, bpnInvestigationJobCache, "", "",
-            List.of(bpnRecursiveEdcNotification), recursiveNotificationHandler);
+            List.of(), recursiveNotificationHandler);
 
     @Captor
     ArgumentCaptor<EdcNotification> edcNotificationCaptor;
@@ -90,9 +92,21 @@ class InvestigationJobProcessingEventListenerTest {
                                                  .build();
     }
 
+    private static Relationship createRelationship(final String lifecycle, final String bpn, final String parentId,
+            final String childId) {
+        return Relationship.builder()
+                           .aspectType(lifecycle)
+                           .bpn(bpn)
+                           .catenaXId(GlobalAssetIdentification.of(parentId))
+                           .linkedItem(
+                                   LinkedItem.builder().childCatenaXId(GlobalAssetIdentification.of(childId)).build())
+                           .build();
+    }
+
     @BeforeEach
     void mockInit() {
-        createMockForJobIdAndShell(jobId, "bpn");
+        createMockForJobIdAndShell(jobId, "bpn", List.of(createRelationship("SingleLevelBomAsPlanned", "BPN123",
+                "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb", "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e")));
     }
 
     @Test
@@ -130,6 +144,23 @@ class InvestigationJobProcessingEventListenerTest {
     }
 
     @Test
+    void shouldSendCallbackIfNoMoreRelationshipsAreFound() throws EdcClientException {
+        // given
+        createMockForJobIdAndShell(jobId, "bpn", List.of());
+        when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(Collections.emptyList());
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
+                JobState.COMPLETED.name(), "", Optional.empty());
+
+        // when
+        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
+        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO));
+    }
+
+    @Test
     void shouldStopProcessingIfOneOfEdcAddressesIsNotDiscovered() throws EdcClientException {
         // given
         createMockForJobIdAndShells(jobId, List.of("BPN123", "BPN456"));
@@ -150,7 +181,8 @@ class InvestigationJobProcessingEventListenerTest {
     @Test
     void shouldSendEdcRecursiveNotificationWhenJobCompleted() throws EdcClientException {
         // given
-        createMockForJobIdAndShell(recursiveJobId, bpnRecursiveEdcNotification);
+        createMockForJobIdAndShell(recursiveJobId, "BPN000RECURSIVE", List.of(createRelationship("SingleLevelBomAsPlanned", "BPN123",
+                "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb", "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e")));
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
@@ -169,7 +201,8 @@ class InvestigationJobProcessingEventListenerTest {
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(recursiveJobId), any(BpnInvestigationJob.class));
     }
 
-    private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell) {
+    private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
+            final List<Relationship> relationships) {
         final String partAsPlannedRaw = """
                 {
                   "validityPeriod": {
@@ -207,10 +240,12 @@ class InvestigationJobProcessingEventListenerTest {
                                       .id(mockedJobId)
                                       .globalAssetId(GlobalAssetIdentification.of("dummyGlobalAssetId"))
                                       .build())
+                              .relationships(relationships)
                               .shells(List.of(createShell(UUID.randomUUID().toString(), mockedShell)))
                               .submodels(List.of(partAsPlanned, partSiteInformationAsPlanned))
                               .build();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner", List.of("BPNS000000000DDD"));
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner",
+                List.of("BPNS000000000DDD"));
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
         when(irsFacade.getIrsJob(mockedJobId.toString())).thenReturn(jobs);
@@ -224,7 +259,8 @@ class InvestigationJobProcessingEventListenerTest {
                                       .build())
                               .shells(bpns.stream().map(bpn -> createShell(UUID.randomUUID().toString(), bpn)).toList())
                               .build();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner", List.of("BPNS000000000DDD"));
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner",
+                List.of("BPNS000000000DDD"));
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
         when(irsFacade.getIrsJob(mockedJobId.toString())).thenReturn(jobs);

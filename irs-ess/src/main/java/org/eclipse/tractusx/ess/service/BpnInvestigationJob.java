@@ -79,7 +79,7 @@ public class BpnInvestigationJob {
     }
 
     private static Jobs updateLastModified(final Jobs irsJob, final ZonedDateTime lastModifiedOn) {
-        final Job job = irsJob.getJob().toBuilder().lastModifiedOn(lastModifiedOn).build();
+        final Job job = irsJob.getJob().toBuilder().completedOn(lastModifiedOn).lastModifiedOn(lastModifiedOn).build();
         return irsJob.toBuilder().job(job).build();
     }
 

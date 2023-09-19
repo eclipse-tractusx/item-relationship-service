@@ -44,6 +44,7 @@ public class EssRecursiveNotificationHandler {
     private final EdcNotificationSender edcNotificationSender;
 
     /* package */ void handleNotification(final UUID finishedJobId, final SupplyChainImpacted supplyChainImpacted) {
+        log.debug("Triggering investigation on the next level.");
         final Optional<RelatedInvestigationJobs> relatedJobsId = relatedInvestigationJobsCache.findByRecursiveRelatedJobId(
                 finishedJobId);
 
