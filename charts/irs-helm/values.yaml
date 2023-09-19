@@ -186,8 +186,6 @@ edc:
       acceptedLeftOperands: PURPOSE  # List of comma separated names of the leftOperands to accept.
 
 discovery:
-  endpoint:  # EDC Discovery Service endpoint
-  mockEdcAddress:  # Map of BPNs and EDC Provider URLs - this overrides any real Discovery Service for the given BPN
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:

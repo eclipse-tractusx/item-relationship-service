@@ -214,12 +214,10 @@ ess:
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
-    endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
     oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
     timeout:
       read: PT90S # HTTP read timeout for the discovery client
       connect: PT90S # HTTP connect timeout for the discovery client
-    mockEdcAddress: { } # Mocked EDC BPN Addresses
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 

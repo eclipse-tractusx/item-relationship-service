@@ -124,12 +124,7 @@ data:
       irs:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:
-        endpoint: {{ tpl (.Values.discovery.endpoint | default "") . | quote }}
         oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }}
-        {{- if .Values.discovery.mockEdcAddress }}
-        mockEdcAddress:
-        {{- tpl (toYaml .Values.discovery.mockEdcAddress) . | nindent 10 }}
-        {{- end }}
         {{- if .Values.ess.mockEdcResult }}
         mockEdcResult:
         {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 10 }}

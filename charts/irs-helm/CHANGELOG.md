@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Removed
-- Removed configuration parameter `edc.submodel.path`
+- Removed unused configuration parameters `edc.submodel.path`,`discovery.endpoint`, `discovery.mockEdcAddres`
 
 ## [6.6.0] - 2023-09-01
 ### Changed
