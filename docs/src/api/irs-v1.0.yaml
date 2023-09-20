@@ -2285,6 +2285,8 @@ components:
       properties:
         aspectType:
           type: string
+        bpn:
+          type: string
         catenaXId:
           type: string
           description: CATENA-X global asset id in the format urn:uuid:uuid4.
