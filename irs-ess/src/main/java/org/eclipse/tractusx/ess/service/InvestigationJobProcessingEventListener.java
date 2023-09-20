@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import static org.eclipse.tractusx.ess.service.SupplyChainImpacted.UNKNOWN;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -89,8 +91,9 @@ class InvestigationJobProcessingEventListener {
 
     private static Map<String, List<String>> getBPNsFromRelationships(final List<Relationship> relationships) {
         return relationships.stream()
+                            .filter(relationship -> relationship.getBpn() != null)
                             .collect(Collectors.groupingBy(Relationship::getBpn,
-                                    Collectors.mapping(relationship -> relationship.getCatenaXId().getGlobalAssetId(),
+                                    Collectors.mapping(relationship -> relationship.getLinkedItem().getChildCatenaXId().getGlobalAssetId(),
                                             Collectors.toList())));
     }
 
@@ -133,7 +136,7 @@ class InvestigationJobProcessingEventListener {
                     investigationJob.getIncidentBpns());
         } catch (AspectTypeNotFoundException e) {
             log.warn("Aspect not found.", e);
-            partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
+            partSiteInformationAsPlannedValidity = UNKNOWN;
         }
         return partSiteInformationAsPlannedValidity;
     }
@@ -145,9 +148,13 @@ class InvestigationJobProcessingEventListener {
             partAsPlannedValidity = BPNIncidentValidation.partAsPlannedValidity(partAsPlanned);
         } catch (AspectTypeNotFoundException e) {
             log.warn("Aspect not found.", e);
-            partAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
+            partAsPlannedValidity = UNKNOWN;
         }
         return partAsPlannedValidity;
+    }
+
+    private static boolean anyBpnIsMissingFromRelationship(final Jobs completedJob) {
+        return completedJob.getRelationships().stream().anyMatch(relationship -> relationship.getBpn() == null);
     }
 
     @Async
@@ -194,6 +201,10 @@ class InvestigationJobProcessingEventListener {
     private void triggerInvestigationOnNextLevel(final Jobs completedJob,
             final BpnInvestigationJob investigationJobUpdate) {
         log.debug("Triggering investigation on the next level.");
+        if (anyBpnIsMissingFromRelationship(completedJob)) {
+            log.error("One or more Relationship items did not contain a BPN.");
+            investigationJobUpdate.update(completedJob, UNKNOWN);
+        }
         // Map<BPN, List<GlobalAssetID>>
         final Map<String, List<String>> bpns = getBPNsFromRelationships(completedJob.getRelationships());
         log.debug("Extracted BPNs '{}'", bpns);
@@ -207,13 +218,16 @@ class InvestigationJobProcessingEventListener {
                                                                                 .map(Map.Entry::getKey)
                                                                                 .toList();
             log.debug("BPNs '{}' could not be resolved to an EDC address using DiscoveryService.", unresolvedBPNs);
-            final SupplyChainImpacted unknown = SupplyChainImpacted.UNKNOWN;
-            log.info(
-                    "Some EDC addresses could not be resolved with DiscoveryService. Updating SupplyChainImpacted to {}",
-                    unknown);
-            investigationJobUpdate.update(completedJob, unknown);
+            log.info("Some EDC addresses could not be resolved with DiscoveryService. "
+                    + "Updating SupplyChainImpacted to {}", UNKNOWN);
+            investigationJobUpdate.update(completedJob, UNKNOWN);
             recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
-                    unknown);
+                    UNKNOWN);
+        } else if (resolvedBPNs.isEmpty()) {
+            log.info("No BPNs could not be found. Updating SupplyChainImpacted to {}", UNKNOWN);
+            investigationJobUpdate.update(completedJob, UNKNOWN);
+            recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
+                    UNKNOWN);
         } else {
             log.debug("Sending notification for BPNs '{}'", bpns);
             sendNotifications(completedJob, investigationJobUpdate, bpns);
@@ -225,9 +239,8 @@ class InvestigationJobProcessingEventListener {
         bpns.forEach((bpn, globalAssetIds) -> {
             final List<String> edcBaseUrl = connectorEndpointsService.fetchConnectorEndpoints(bpn);
             if (edcBaseUrl.isEmpty()) {
-                log.warn("No EDC URL found for BPN '{}'. Setting investigation result to '{}'", bpn,
-                        SupplyChainImpacted.UNKNOWN);
-                investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
+                log.warn("No EDC URL found for BPN '{}'. Setting investigation result to '{}'", bpn, UNKNOWN);
+                investigationJobUpdate.update(completedJob, UNKNOWN);
             }
             edcBaseUrl.forEach(url -> {
                 try {
@@ -236,7 +249,7 @@ class InvestigationJobProcessingEventListener {
                     investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
                 } catch (final EdcClientException e) {
                     log.error("Exception during sending EDC notification.", e);
-                    investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
+                    investigationJobUpdate.update(completedJob, UNKNOWN);
                 }
             });
         });

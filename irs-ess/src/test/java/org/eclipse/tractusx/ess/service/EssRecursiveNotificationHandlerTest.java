@@ -26,6 +26,7 @@ package org.eclipse.tractusx.ess.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -88,7 +89,7 @@ class EssRecursiveNotificationHandlerTest {
         cut.handleNotification(jobId, SupplyChainImpacted.NO);
 
         // then
-        verify(edcNotificationSender).sendEdcNotification(any(), eq(SupplyChainImpacted.NO));
+        verify(edcNotificationSender, times(1)).sendEdcNotification(any(), eq(SupplyChainImpacted.NO));
     }
 
     private RelatedInvestigationJobs createRelatedJobsWith(List<UUID> uuids) {

@@ -76,8 +76,8 @@ class InvestigationJobProcessingEventListenerTest {
     private final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
 
     private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(
-            irsFacade, connectorEndpointsService, edcSubmodelFacade, bpnInvestigationJobCache, "", "",
-            List.of(), recursiveNotificationHandler);
+            irsFacade, connectorEndpointsService, edcSubmodelFacade, bpnInvestigationJobCache, "", "", List.of(),
+            recursiveNotificationHandler);
 
     @Captor
     ArgumentCaptor<EdcNotification> edcNotificationCaptor;
@@ -125,6 +125,72 @@ class InvestigationJobProcessingEventListenerTest {
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
                 any(EdcNotification.class));
+        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
+    }
+
+    @Test
+    void shouldStopProcessingIfNoRelationshipContainsBPN() throws EdcClientException {
+        // given
+        createMockForJobIdAndShell(jobId, "bpn",
+                List.of(createRelationship("asPlanned", null, "testParent", "testChild")));
+        final String edcBaseUrl = "http://edc-server-url.com";
+        when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+                () -> true);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
+                JobState.COMPLETED.name(), "", Optional.empty());
+
+        // when
+        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.UNKNOWN));
+        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
+    }
+
+    @Test
+    void shouldHandleCaseWhenRelationshipDoesNotContainBPN() throws EdcClientException {
+        // given
+        createMockForJobIdAndShell(jobId, "bpn",
+                List.of(createRelationship("asPlanned", "BPN1", "parentId1", "childId1"),
+                        createRelationship("asPlanned", null, "parentId2", "childId2")));
+        final String edcBaseUrl = "http://edc-server-url.com";
+        when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+                () -> true);
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
+                JobState.COMPLETED.name(), "", Optional.empty());
+
+        // when
+        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
+                any(EdcNotification.class));
+        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
+    }
+
+    @Test
+    void shouldTriggerCorrectNotificationOnNExtLevel() throws EdcClientException {
+        // given
+        createMockForJobIdAndShell(jobId, "bpn",
+                List.of(createRelationship("asPlanned", "BPN1", "parentId1", "childId1")));
+        final String edcBaseUrl = "http://edc-server-url.com";
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+                () -> true);
+        when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
+                JobState.COMPLETED.name(), "", Optional.empty());
+
+        // when
+        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq("notify-request-asset-recursive"),
+                edcNotificationCaptor.capture());
+        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo("ess-supplier-request");
+        assertThat(edcNotificationCaptor.getValue().getContent()).containsEntry("incidentBpn", "BPNS000000000DDD");
+        assertThat(edcNotificationCaptor.getValue().getContent()).containsEntry("concernedCatenaXIds", List.of("childId1"));
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
@@ -181,8 +247,10 @@ class InvestigationJobProcessingEventListenerTest {
     @Test
     void shouldSendEdcRecursiveNotificationWhenJobCompleted() throws EdcClientException {
         // given
-        createMockForJobIdAndShell(recursiveJobId, "BPN000RECURSIVE", List.of(createRelationship("SingleLevelBomAsPlanned", "BPN123",
-                "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb", "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e")));
+        createMockForJobIdAndShell(recursiveJobId, "BPN000RECURSIVE",
+                List.of(createRelationship("SingleLevelBomAsPlanned", "BPN123",
+                        "urn:uuid:52207a60-e541-4bea-8ec4-3172f09e6dbb",
+                        "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e")));
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
