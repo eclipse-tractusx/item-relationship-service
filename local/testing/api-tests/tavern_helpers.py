@@ -35,8 +35,9 @@ def supplyChainImpacted_is_correct_in_submodels_for_unknown_ID(response):
 def errors_for_invalid_investigation_request_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
-    assert 'incidentBpns:must not be empty' in error_list
-    assert 'globalAssetId:must not be blank' in error_list
+    assert 'incidentBPNSs:must not be empty' in error_list
+    assert 'key.globalAssetId:must not be blank' in error_list
+    assert 'key.bpn:must not be blank' in error_list
 
 
 def relationships_for_BPN_investigations_contains_several_childs(response):
@@ -44,6 +45,20 @@ def relationships_for_BPN_investigations_contains_several_childs(response):
     print("relationships: ", relationships)
     print("Länge: ", len(relationships))
     assert len(relationships) > 1
+
+def ESS_job_parameter_are_as_requested(response):
+    print("Check if ESS-job parameter are as requested:")
+    parameter = response.json().get('job').get('parameter')
+    print(parameter)
+    assert parameter.get('bomLifecycle') == 'asPlanned'
+    assert parameter.get('collectAspects') is True
+    assert parameter.get('depth') == 1
+    assert parameter.get('direction') == 'downward'
+    assert parameter.get('lookupBPNs') is False
+    #assert parameter.get('callbackUrl') == 'https://www.check123.com'
+    aspects_list = parameter.get("aspects")
+    assert 'PartSiteInformationAsPlanned' in aspects_list
+    assert 'PartAsPlanned' in aspects_list
 
 
 ############################## /\ ESS helpers /\ ##############################

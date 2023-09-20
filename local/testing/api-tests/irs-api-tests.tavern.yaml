@@ -7,14 +7,13 @@ strict:
 stages:
   - name: register a BPN investigation with invalid request
     request:
-      url: "{tavern.env_vars.IRS_HOST}/ess/bpn/investigations"
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-#        key:
-#          globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-#          bpn: BPNL00000003CRHK
-        incidentBpns11:
-          - BPNL00000003B6LU
+        key:
+          globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+          bpn111: BPNL00000003CRHK
+        incidentBPNSs111:
+          - BPNS00000003B6LU
       method: POST
       headers:
         content-type: application/json
@@ -45,14 +44,13 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-#        key:
-#          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-#          bpn: BPNL00000003CRHK
-        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+        key:
+          globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          bpn: BPNL00000003AYRE
         bomLifecycle: asPlanned
         callbackUrl: http://testikus.com
-        incidentBpns:
-          - BPNL00000003B6LU
+        incidentBPNSs:
+          - BPNS00000003B6LU
       method: POST
       headers:
         content-type: application/json
@@ -99,6 +97,7 @@ stages:
       status_code: 200
       verify_response_with:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
 
@@ -117,14 +116,13 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-#        key:
-#          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-#          bpn: BPNL00000003CRHK
-        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+        key:
+          globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          bpn: BPNL00000003AYRE
         bomLifecycle: asPlanned
         callbackUrl: http://testikus.com
-        incidentBpns:
-          - BPNL00ARBITRARY1
+        incidentBPNSs:
+          - BPNS00ARBITRARY9
       method: POST
       headers:
         content-type: application/json
@@ -154,6 +152,7 @@ stages:
       status_code: 200
       verify_response_with:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
 
@@ -172,12 +171,11 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-#        key:
-#          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
-#          bpn: BPNL00000003CRHK
-        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
-        incidentBpns:
-          - BPNL00000003B6LU
+        key:
+          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
+          bpn: BPNL00000003AYRE
+        incidentBPNSs:
+          - BPNS00000003B6LU
       method: POST
       headers:
         content-type: application/json
@@ -207,6 +205,7 @@ stages:
       status_code: 200
       verify_response_with:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_unknown_ID
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
 
@@ -225,12 +224,11 @@ stages:
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-#        key:
-#          globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c
-#          bpn: BPNL00000003CRHK
-        globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c
-        incidentBpns:
-          - BPNL00ARBITRARY1
+        key:
+          globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
+          bpn: BPNL00ARBITRARY4
+        incidentBPNSs:
+          - BPNS00ARBITRARY7
       method: POST
       headers:
         content-type: application/json
@@ -261,6 +259,7 @@ stages:
       verify_response_with:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
         - function: local.testing.api-tests.tavern_helpers:relationships_for_BPN_investigations_contains_several_childs
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
 
@@ -281,10 +280,12 @@ stages:
 #    request:
 #      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
 #      json:
-#        globalAssetId: urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9
+#        key:
+#          globalAssetId: urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9
+#          bpn: BPNL00000003B0Q0
 #        bomLifecycle: asPlanned
 #        callbackUrl: http://testikus.com
-#        incidentBpns:
+#        incidentBPNSs:
 #          - BPNL00000003B0Q0
 #      method: POST
 #      headers:
@@ -315,6 +316,7 @@ stages:
 #      status_code: 200
 #      verify_response_with:
 #        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+#        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
 #      headers:
 #        content-type: application/json
 #
@@ -335,9 +337,11 @@ stages:
 #    request:
 #      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
 #      json:
-#        globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
-#        incidentBpns:
-#          - BPNL00ARBITRARY7
+#        key:
+#          globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
+#          bpn: BPNL00ARBITRARY4
+#        incidentBPNSs:
+#          - BPNS00ARBITRARY7
 #      method: POST
 #      headers:
 #        content-type: application/json
@@ -371,6 +375,7 @@ stages:
 #        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
 #        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
 #        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+#        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
 #      headers:
 #        content-type: application/json
 
