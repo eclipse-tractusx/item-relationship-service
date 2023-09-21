@@ -61,8 +61,8 @@ class EssRecursiveServiceTest {
     void shouldResponseWithoutRecursiveWhenLocalBpnIsPartOfIncident() {
         // given
         final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder()
-                                                                                                     .incidentBpn(
-                                                                                                             localBpn)
+                                                                                                     .incidentBPNSs(
+                                                                                                             List.of(localBpn))
                                                                                                      .build();
         EdcNotification<InvestigationNotificationContent> edcNotification = EdcNotification.<InvestigationNotificationContent>builder()
                                                                                            .content(notificationContent)
@@ -81,8 +81,8 @@ class EssRecursiveServiceTest {
         // given
         UUID uuid = UUID.randomUUID();
         final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder()
-                                                                                                     .incidentBpn(
-                                                                                                             "BPNS000000000BBB")
+                                                                                                     .incidentBPNSs(
+                                                                                                             List.of("BPNS000000000BBB"))
                                                                                                      .concernedCatenaXIds(
                                                                                                              List.of("cat1",
                                                                                                                      "cat2"))

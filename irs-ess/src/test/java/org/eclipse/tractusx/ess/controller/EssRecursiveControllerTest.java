@@ -79,7 +79,7 @@ class EssRecursiveControllerTest {
                               .header(header)
                               .content(InvestigationNotificationContent.builder()
                                                                        .concernedCatenaXIds(List.of("cat1", "cat2"))
-                                                                       .incidentBpn("BPNS000000000BBB")
+                                                                       .incidentBPNSs(List.of("BPNS000000000BBB"))
                                                                        .build())
                               .build();
     }

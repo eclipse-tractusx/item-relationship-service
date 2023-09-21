@@ -302,7 +302,7 @@ class InvestigationJobProcessingEventListener {
                                                 .build();
         final NotificationContent content = InvestigationNotificationContent.builder()
                                                                             .concernedCatenaXIds(globalAssetIds)
-                                                                            .incidentBpn(incidentBpns.get(0))
+                                                                            .incidentBPNSs(incidentBpns)
                                                                             .build();
 
         return EdcNotification.builder().header(header).content(content).build();

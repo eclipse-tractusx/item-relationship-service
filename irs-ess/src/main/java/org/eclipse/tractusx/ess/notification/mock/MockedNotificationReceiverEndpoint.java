@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.notification.mock;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,13 +66,13 @@ public class MockedNotificationReceiverEndpoint {
     private final EdcSubmodelFacade edcSubmodelFacade;
 
     @NotNull
-    private static Optional<String> getIncidentBPN(
+    private static Optional<List<String>> getIncidentBPNSs(
             final EdcNotification<InvestigationNotificationContent> notification) {
         final InvestigationNotificationContent content = Optional.ofNullable(notification.getContent())
                                                                  .orElseThrow(() -> new ResponseStatusException(
                                                                          HttpStatus.BAD_REQUEST,
                                                                          "Malformed EDC Notification - no content is null."));
-        return Optional.ofNullable(content.getIncidentBpn());
+        return Optional.ofNullable(content.getIncidentBPNSs());
     }
 
     @PostMapping("/receive")
@@ -78,44 +80,43 @@ public class MockedNotificationReceiverEndpoint {
             final @Valid @RequestBody EdcNotification<InvestigationNotificationContent> notification)
             throws EdcClientException {
         log.info("receiveNotification mock called");
-        final Optional<String> incidentBpn = getIncidentBPN(notification);
+        final List<String> incidentBPNSs = getIncidentBPNSs(notification).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Malformed EDC Notification - content without incidentBPN key."));
+        log.info("Received notification request on mock with id {} and incidentBPNSs {}",
+                notification.getHeader().getNotificationId(), incidentBPNSs);
 
-        if (incidentBpn.isPresent()) {
-            final String bpn = incidentBpn.get();
-            log.info("Received notification request on mock with id {} and incidentBpn {}",
-                    notification.getHeader().getNotificationId(), bpn);
+        final Map<String, SupplyChainImpacted> mockEdcResult = edcDiscoveryMockConfig.getMockEdcResult();
+        if (incidentBPNSs.stream().anyMatch(mockEdcResult::containsKey)) {
+            final List<SupplyChainImpacted> list = incidentBPNSs.stream().map(mockEdcResult::get).toList();
+            final SupplyChainImpacted supplyChainImpacted = list.stream()
+                                                                .reduce(SupplyChainImpacted::or)
+                                                                .orElse(SupplyChainImpacted.UNKNOWN);
 
-            if (edcDiscoveryMockConfig.getMockEdcResult().containsKey(bpn)) {
-                final SupplyChainImpacted supplyChainImpacted = edcDiscoveryMockConfig.getMockEdcResult().get(bpn);
+            final String notificationId = UUID.randomUUID().toString();
+            final String originalNotificationId = notification.getHeader().getNotificationId();
+            final String senderEdc = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
+            final String senderBpn = notification.getHeader().getRecipientBpn();
+            final String recipientBpn = notification.getHeader().getSenderBpn();
+            final String recipientUrl = notification.getHeader().getSenderEdc();
 
-                final String notificationId = UUID.randomUUID().toString();
-                final String originalNotificationId = notification.getHeader().getNotificationId();
-                final String senderEdc = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
-                final String senderBpn = notification.getHeader().getRecipientBpn();
-                final String recipientBpn = notification.getHeader().getSenderBpn();
-                final String recipientUrl = notification.getHeader().getSenderEdc();
+            final NotificationContent notificationContent = ResponseNotificationContent.builder()
+                                                                                       .result(supplyChainImpacted.getDescription())
+                                                                                       .build();
 
-                final NotificationContent notificationContent = ResponseNotificationContent.builder()
-                                                                                           .result(supplyChainImpacted.getDescription())
-                                                                                           .build();
+            final EdcNotification<NotificationContent> edcRequest = edcRequest(notificationId, originalNotificationId,
+                    senderEdc, senderBpn, recipientBpn, notificationContent);
 
-                final EdcNotification<NotificationContent> edcRequest = edcRequest(notificationId,
-                        originalNotificationId, senderEdc, senderBpn, recipientBpn, notificationContent);
-
-                final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
-                if (!response.deliveredSuccessfully()) {
-                    throw new EdcClientException(
-                            "EDC Provider did not accept message with notificationId " + notificationId);
-                }
-                log.info("Successfully sent response notification.");
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "BPN " + bpn + " not handled.");
+            final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
+            if (!response.deliveredSuccessfully()) {
+                throw new EdcClientException(
+                        "EDC Provider did not accept message with notificationId " + notificationId);
             }
-
+            log.info("Successfully sent response notification.");
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Malformed EDC Notification - content without incidentBPN key.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "BPN " + incidentBPNSs + " not handled.");
         }
+
     }
 
     private EdcNotification<NotificationContent> edcRequest(final String notificationId, final String originalId,

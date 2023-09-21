@@ -58,7 +58,6 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotif
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -195,7 +194,7 @@ class InvestigationJobProcessingEventListenerTest {
                 "ess-supplier-request");
         final InvestigationNotificationContent content = (InvestigationNotificationContent) edcNotificationCaptor.getValue()
                                                                                                                  .getContent();
-        assertThat(content.getIncidentBpn()).isEqualTo("BPNS000000000DDD");
+        assertThat(content.getIncidentBPNSs()).containsAll(List.of("BPNS000000000DDD"));
         assertThat(content.getConcernedCatenaXIds()).containsAll(List.of("childId1"));
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
@@ -275,8 +274,36 @@ class InvestigationJobProcessingEventListenerTest {
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(recursiveJobId), any(BpnInvestigationJob.class));
     }
 
+    @Test
+    void shouldSendEdcRecursiveNotificationWithMultipleIncidentBPNSs() throws EdcClientException {
+        // given
+        createMockForJobIdAndShell(jobId, "bpn",
+                List.of(createRelationship("asPlanned", "BPN1", "parentId1", "childId1")), List.of("BPN1", "BPN2"));
+        final String edcBaseUrl = "http://edc-server-url.com";
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+                () -> true);
+        when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
+        final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
+                JobState.COMPLETED.name(), "", Optional.empty());
+
+        // when
+        jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
+
+        // then
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq("notify-request-asset-recursive"),
+                edcNotificationCaptor.capture());
+        final InvestigationNotificationContent content = (InvestigationNotificationContent) edcNotificationCaptor.getValue()
+                                                                                                                 .getContent();
+        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
+                "ess-supplier-request");
+        assertThat(content.getIncidentBPNSs()).containsAll(List.of("BPN1", "BPN2"));
+        assertThat(content.getConcernedCatenaXIds()).containsAll(List.of("childId1"));
+        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(any(), any(), any(EdcNotification.class));
+    }
+
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
-            final List<Relationship> relationships) {
+            final List<Relationship> relationships, final List<String> incindentBPNSs) {
         final String partAsPlannedRaw = """
                 {
                   "validityPeriod": {
@@ -318,11 +345,15 @@ class InvestigationJobProcessingEventListenerTest {
                               .shells(List.of(createShell(UUID.randomUUID().toString(), mockedShell)))
                               .submodels(List.of(partAsPlanned, partSiteInformationAsPlanned))
                               .build();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner",
-                List.of("BPNS000000000DDD"));
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner", incindentBPNSs);
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
         when(irsFacade.getIrsJob(mockedJobId.toString())).thenReturn(jobs);
+    }
+
+    private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
+            final List<Relationship> relationships) {
+        createMockForJobIdAndShell(mockedJobId, mockedShell, relationships, List.of("BPNS000000000DDD"));
     }
 
     private void createMockForJobIdAndShells(final UUID mockedJobId, final List<String> bpns) {

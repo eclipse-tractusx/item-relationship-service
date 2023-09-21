@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -73,7 +74,8 @@ class MockedNotificationReceiverEndpointTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
 
         final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder()
-                                                                                                     .incidentBpn(bpn)
+                                                                                                     .incidentBPNSs(
+                                                                                                             List.of(bpn))
                                                                                                      .build();
         testee.receiveNotification(EdcNotification.<InvestigationNotificationContent>builder()
                                                   .header(validHeader())
@@ -108,7 +110,8 @@ class MockedNotificationReceiverEndpointTest {
     @Test
     void shouldReturnBadRequestIfIncidentBpnNotInMockedMapResult() {
         final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder()
-                                                                                                     .incidentBpn("BPN")
+                                                                                                     .incidentBPNSs(
+                                                                                                             List.of("BPN"))
                                                                                                      .build();
         final EdcNotification<InvestigationNotificationContent> request = EdcNotification.<InvestigationNotificationContent>builder()
                                                                                          .header(validHeader())

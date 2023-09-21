@@ -37,5 +37,5 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class InvestigationNotificationContent implements NotificationContent {
     private final List<String> concernedCatenaXIds;
-    private final String incidentBpn;
+    private final List<String> incidentBPNSs;
 }
