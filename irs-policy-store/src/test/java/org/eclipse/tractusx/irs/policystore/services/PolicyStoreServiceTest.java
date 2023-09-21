@@ -60,6 +60,7 @@ import org.springframework.web.server.ResponseStatusException;
 class PolicyStoreServiceTest {
 
     private static final String BPN = "testBpn";
+    private static final String EXAMPLE_ALLOWED_NAME = "ID 3.0 Trace";
     private PolicyStoreService testee;
 
     @Mock
@@ -72,7 +73,7 @@ class PolicyStoreServiceTest {
 
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreService(BPN, List.of(), persistence, clock);
+        testee = new PolicyStoreService(BPN, List.of(EXAMPLE_ALLOWED_NAME), persistence, clock);
     }
 
     @Test
@@ -127,6 +128,17 @@ class PolicyStoreServiceTest {
 
         // assert
         assertThat(storedPolicies).hasSize(3);
+    }
+
+    @Test
+    void getStoredPoliciesWhenEmpty() {
+        // act
+        final var defaultPolicies = testee.getStoredPolicies();
+
+        // assert
+        assertThat(defaultPolicies).hasSize(1);
+        List<Permission> permissionList = defaultPolicies.get(0).getPermissions();
+        assertThat(permissionList).hasSize(1);
     }
 
     private Policy createPolicy(final String policyId) {

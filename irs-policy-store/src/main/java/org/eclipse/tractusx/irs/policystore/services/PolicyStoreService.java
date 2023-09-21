@@ -32,8 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.models.Constraint;
+import org.eclipse.tractusx.irs.policystore.models.Constraints;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.OperatorType;
+import org.eclipse.tractusx.irs.policystore.models.Permission;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.policystore.models.PolicyType;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,10 +67,16 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
                                                         .map(p -> new Policy(p, OffsetDateTime.now(),
                                                                 OffsetDateTime.now().plusYears(
                                                                         DEFAULT_POLICY_LIFETIME_YEARS),
-                                                                Collections.emptyList()))
+                                                                createPermissionFrom(p)))
                                                         .toList();
         this.persistence = persistence;
         this.clock = clock;
+    }
+
+    private List<Permission> createPermissionFrom(final String name) {
+        return List.of(new Permission(PolicyType.USE,
+                List.of(new Constraints(List.of(new Constraint("PURPOSE", OperatorType.EQ, List.of(name))),
+                        Collections.emptyList()))));
     }
 
     public void registerPolicy(final CreatePolicyRequest request) {
