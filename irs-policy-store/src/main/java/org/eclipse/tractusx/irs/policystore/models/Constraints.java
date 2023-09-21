@@ -23,7 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.models;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -31,20 +30,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * A stored policy object.
+ * A Constraint containing two collections of Constraints
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Policy {
+@SuppressWarnings("PMD.ShortVariable")
+public class Constraints {
 
-    private String policyId;
-    private OffsetDateTime createdOn;
-    private OffsetDateTime validUntil;
-    private List<Permission> permissions;
+    private List<Constraint> and;
+    private List<Constraint> or;
 
-    public Policy update(final OffsetDateTime validUntil) {
-        this.validUntil = validUntil;
-        return this;
-    }
 }

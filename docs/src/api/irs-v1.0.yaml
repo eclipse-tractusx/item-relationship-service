@@ -1610,11 +1610,54 @@ components:
           type: string
         manufacturerName:
           type: string
+    Constraint:
+      type: object
+      additionalProperties: false
+      properties:
+        leftOperand:
+          type: string
+        operator:
+          type: string
+          enum:
+            - eq
+            - neq
+            - lt
+            - gt
+            - in
+            - lteq
+            - gteq
+            - isA
+            - hasPart
+            - isPartOf
+            - isOneOf
+            - isAllOf
+            - isNoneOf
+        rightOperand:
+          type: array
+          items:
+            type: string
+    Constraints:
+      type: object
+      additionalProperties: false
+      properties:
+        and:
+          type: array
+          items:
+            $ref: '#/components/schemas/Constraint'
+        or:
+          type: array
+          items:
+            $ref: '#/components/schemas/Constraint'
     CreatePolicyRequest:
       type: object
       additionalProperties: false
       description: Request to add a policy
       properties:
+        permissions:
+          type: array
+          description: List of permissions that will be added to the Policy on creation.
+          items:
+            $ref: '#/components/schemas/Permission'
         policyId:
           type: string
           description: The ID of the policy to add
@@ -1623,6 +1666,7 @@ components:
           format: date-time
           description: Timestamp after which the policy will no longer be accepted in negotiations
       required:
+        - permissions
         - policyId
         - validUntil
     EdcNotification:
@@ -2040,6 +2084,19 @@ components:
       required:
         - bpn
         - globalAssetId
+    Permission:
+      type: object
+      additionalProperties: false
+      properties:
+        action:
+          type: string
+          enum:
+            - ACCESS
+            - USE
+        constraints:
+          type: array
+          items:
+            $ref: '#/components/schemas/Constraints'
     Policy:
       type: object
       additionalProperties: false
@@ -2047,6 +2104,10 @@ components:
         createdOn:
           type: string
           format: date-time
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
         policyId:
           type: string
         validUntil:

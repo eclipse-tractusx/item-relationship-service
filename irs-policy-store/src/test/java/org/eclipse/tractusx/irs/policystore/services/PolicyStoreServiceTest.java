@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.services;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,16 +34,24 @@ import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.models.Constraint;
+import org.eclipse.tractusx.irs.policystore.models.Constraints;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.OperatorType;
+import org.eclipse.tractusx.irs.policystore.models.Permission;
 import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.policystore.models.PolicyType;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,22 +60,26 @@ import org.springframework.web.server.ResponseStatusException;
 class PolicyStoreServiceTest {
 
     private static final String BPN = "testBpn";
+    private static final String EXAMPLE_ALLOWED_NAME = "ID 3.0 Trace";
     private PolicyStoreService testee;
 
     @Mock
     private PolicyPersistence persistence;
 
+    @Captor
+    ArgumentCaptor<Policy> policyCaptor;
+
     private final Clock clock = Clock.systemUTC();
 
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreService(BPN, List.of(), persistence, clock);
+        testee = new PolicyStoreService(BPN, List.of(EXAMPLE_ALLOWED_NAME), persistence, clock);
     }
 
     @Test
     void registerPolicy() {
         // arrange
-        final var req = new CreatePolicyRequest("testId", OffsetDateTime.now(clock).plusMinutes(1));
+        final var req = new CreatePolicyRequest("testId", OffsetDateTime.now(clock).plusMinutes(1), emptyList());
 
         // act
         testee.registerPolicy(req);
@@ -76,11 +89,29 @@ class PolicyStoreServiceTest {
     }
 
     @Test
+    void registerPolicyWithPermission() {
+        // arrange
+        final var req = new CreatePolicyRequest("testId", OffsetDateTime.now(clock).plusMinutes(1), createPermissions());
+
+        // act
+        testee.registerPolicy(req);
+
+        // assert
+        verify(persistence).save(eq(BPN), policyCaptor.capture());
+
+        assertThat(policyCaptor.getValue()).isNotNull();
+        List<Permission> permissionList = policyCaptor.getValue().getPermissions();
+        assertThat(permissionList).hasSize(2);
+        assertThat(permissionList.get(0)).usingRecursiveComparison().isEqualTo(createPermissions().get(0));
+        assertThat(permissionList.get(1)).usingRecursiveComparison().isEqualTo(createPermissions().get(1));
+    }
+
+    @Test
     void registerPolicyShouldThrowResponseStatusException() {
         // act
         final String policyId = "testId";
         doThrow(new PolicyStoreException("")).when(persistence).save(eq(BPN), any());
-        final CreatePolicyRequest request = new CreatePolicyRequest(policyId, OffsetDateTime.now());
+        final CreatePolicyRequest request = new CreatePolicyRequest(policyId, OffsetDateTime.now(), emptyList());
 
         // assert
         assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(request));
@@ -99,9 +130,38 @@ class PolicyStoreServiceTest {
         assertThat(storedPolicies).hasSize(3);
     }
 
-    private Policy createPolicy(final String policyId) {
-        return new Policy(policyId, OffsetDateTime.now(clock), OffsetDateTime.now(clock).plusDays(1));
+    @Test
+    void getStoredPoliciesWhenEmpty() {
+        // act
+        final var defaultPolicies = testee.getStoredPolicies();
+
+        // assert
+        assertThat(defaultPolicies).hasSize(1);
+        List<Permission> permissionList = defaultPolicies.get(0).getPermissions();
+        assertThat(permissionList).hasSize(1);
     }
+
+    private Policy createPolicy(final String policyId) {
+        return new Policy(policyId, OffsetDateTime.now(clock), OffsetDateTime.now(clock).plusDays(1), emptyList());
+    }
+
+    private List<Permission> createPermissions() {
+        return List.of(
+                new Permission(PolicyType.USE, List.of(createConstraints())),
+                new Permission(PolicyType.ACCESS, List.of(createConstraints()))
+        );
+    }
+
+    private Constraints createConstraints() {
+        return new Constraints(
+                Collections.emptyList(),
+                List.of(
+                        new Constraint("Membership", OperatorType.EQ, List.of("active")),
+                        new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active")),
+                        new Constraint("PURPOSE", OperatorType.EQ, List.of("ID 3.1 Trace")))
+        );
+    }
+
 
     @Test
     void deletePolicy() {
