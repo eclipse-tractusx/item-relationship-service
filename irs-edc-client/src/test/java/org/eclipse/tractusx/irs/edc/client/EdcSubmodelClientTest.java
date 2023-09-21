@@ -68,6 +68,7 @@ import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -145,7 +146,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldSendNotificationSuccessfully() throws Exception {
         // arrange
-        final EdcNotification notification = EdcNotification.builder().build();
+        final EdcNotification<NotificationContent> notification = EdcNotification.builder().build();
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(

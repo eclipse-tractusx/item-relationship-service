@@ -55,8 +55,10 @@ import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -81,7 +83,7 @@ class InvestigationJobProcessingEventListenerTest {
             recursiveNotificationHandler);
 
     @Captor
-    ArgumentCaptor<EdcNotification<InvestigationNotificationContent>> edcNotificationCaptor;
+    ArgumentCaptor<EdcNotification<NotificationContent>> edcNotificationCaptor;
 
     private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
         return AssetAdministrationShellDescriptor.builder()
@@ -191,9 +193,10 @@ class InvestigationJobProcessingEventListenerTest {
                 edcNotificationCaptor.capture());
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
-        assertThat(edcNotificationCaptor.getValue().getContent().getIncidentBpn()).isEqualTo("BPNS000000000DDD");
-        assertThat(edcNotificationCaptor.getValue().getContent().getConcernedCatenaXIds()).containsAll(
-                List.of("childId1"));
+        final InvestigationNotificationContent content = (InvestigationNotificationContent) edcNotificationCaptor.getValue()
+                                                                                                                 .getContent();
+        assertThat(content.getIncidentBpn()).isEqualTo("BPNS000000000DDD");
+        assertThat(content.getConcernedCatenaXIds()).containsAll(List.of("childId1"));
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 

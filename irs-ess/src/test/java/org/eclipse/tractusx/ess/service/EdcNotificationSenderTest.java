@@ -35,6 +35,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class EdcNotificationSenderTest {
             essLocalEdcEndpoint, connectorEndpointsService);
 
     @Captor
-    ArgumentCaptor<EdcNotification<ResponseNotificationContent>> notificationCaptor;
+    ArgumentCaptor<EdcNotification<NotificationContent>> notificationCaptor;
 
     @Test
     void shouldSendEdcNotificationWithSuccess() throws EdcClientException {
@@ -71,9 +72,9 @@ class EdcNotificationSenderTest {
         sender.sendEdcNotification(edcNotification, SupplyChainImpacted.NO);
 
         // then
-        assertThat(notificationCaptor.getValue().getContent().getResult()).isEqualTo(
-                SupplyChainImpacted.NO.getDescription());
-
+        final ResponseNotificationContent content = (ResponseNotificationContent) notificationCaptor.getValue()
+                                                                                                    .getContent();
+        assertThat(content.getResult()).isEqualTo(SupplyChainImpacted.NO.getDescription());
     }
 
     private EdcNotification<InvestigationNotificationContent> prepareNotification(final String notificationId) {

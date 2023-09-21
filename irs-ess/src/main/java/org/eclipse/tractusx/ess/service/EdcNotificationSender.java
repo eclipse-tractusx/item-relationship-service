@@ -31,6 +31,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,10 +67,10 @@ public class EdcNotificationSender {
         connectorEndpointsService.fetchConnectorEndpoints(recipientBpn).forEach(connectorEndpoint -> {
             try {
                 log.info("Edc Notification will be send to connector endpoint: {}", connectorEndpoint);
-                final ResponseNotificationContent notificationContent = ResponseNotificationContent.builder()
-                                                                                                   .result(supplyChainImpacted.getDescription())
-                                                                                                   .build();
-                final EdcNotification<ResponseNotificationContent> responseNotification = edcRequest(notificationId,
+                final NotificationContent notificationContent = ResponseNotificationContent.builder()
+                                                                                           .result(supplyChainImpacted.getDescription())
+                                                                                           .build();
+                final EdcNotification<NotificationContent> responseNotification = edcRequest(notificationId,
                         originalNotificationId, essLocalEdcEndpoint, localBpn, recipientBpn, notificationContent);
 
                 final var response = edcSubmodelFacade.sendNotification(connectorEndpoint, "ess-response-asset",
@@ -85,9 +86,9 @@ public class EdcNotificationSender {
         });
     }
 
-    private EdcNotification<ResponseNotificationContent> edcRequest(final String notificationId,
-            final String originalId, final String senderEdc, final String senderBpn, final String recipientBpn,
-            final ResponseNotificationContent content) {
+    private EdcNotification<NotificationContent> edcRequest(final String notificationId, final String originalId,
+            final String senderEdc, final String senderBpn, final String recipientBpn,
+            final NotificationContent content) {
         final EdcNotificationHeader header = EdcNotificationHeader.builder()
                                                                   .notificationId(notificationId)
                                                                   .senderEdc(senderEdc)
@@ -99,7 +100,7 @@ public class EdcNotificationSender {
                                                                   .notificationType("ess-supplier-response")
                                                                   .build();
 
-        return EdcNotification.<ResponseNotificationContent>builder().header(header).content(content).build();
+        return EdcNotification.builder().header(header).content(content).build();
     }
 
 }

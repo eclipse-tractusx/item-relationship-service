@@ -49,6 +49,7 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -264,8 +265,8 @@ class InvestigationJobProcessingEventListener {
 
         final boolean isRecursiveMockAsset = mockRecursiveEdcAssets.contains(bpn);
         final boolean isNotMockAsset = mockRecursiveEdcAssets.isEmpty();
-        final EdcNotification<InvestigationNotificationContent> notification = edcRequest(notificationId, bpn,
-                incidentBpns, globalAssetIds);
+        final EdcNotification<NotificationContent> notification = edcRequest(notificationId, bpn, incidentBpns,
+                globalAssetIds);
         log.debug("Sending Notification '{}'", notification);
         final EdcNotificationResponse response;
         if (isRecursiveMockAsset || isNotMockAsset) {
@@ -288,8 +289,8 @@ class InvestigationJobProcessingEventListener {
         return !getNotResolvedBPNs(edcAddresses).isEmpty();
     }
 
-    private EdcNotification<InvestigationNotificationContent> edcRequest(final String notificationId,
-            final String recipientBpn, final List<String> incidentBpns, final List<String> globalAssetIds) {
+    private EdcNotification<NotificationContent> edcRequest(final String notificationId, final String recipientBpn,
+            final List<String> incidentBpns, final List<String> globalAssetIds) {
         final var header = EdcNotificationHeader.builder()
                                                 .notificationId(notificationId)
                                                 .recipientBpn(recipientBpn)
@@ -299,14 +300,12 @@ class InvestigationJobProcessingEventListener {
                                                 .replyAssetSubPath("")
                                                 .notificationType("ess-supplier-request")
                                                 .build();
-        final InvestigationNotificationContent content = InvestigationNotificationContent.builder()
-                                                                                         .concernedCatenaXIds(
-                                                                                                 globalAssetIds)
-                                                                                         .incidentBpn(
-                                                                                                 incidentBpns.get(0))
-                                                                                         .build();
+        final NotificationContent content = InvestigationNotificationContent.builder()
+                                                                            .concernedCatenaXIds(globalAssetIds)
+                                                                            .incidentBpn(incidentBpns.get(0))
+                                                                            .build();
 
-        return EdcNotification.<InvestigationNotificationContent>builder().header(header).content(content).build();
+        return EdcNotification.builder().header(header).content(content).build();
     }
 
     private boolean supplyChainIsImpacted(final SupplyChainImpacted supplyChain) {

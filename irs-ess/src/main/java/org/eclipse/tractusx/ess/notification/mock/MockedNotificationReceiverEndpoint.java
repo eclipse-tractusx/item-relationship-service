@@ -37,6 +37,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
@@ -94,11 +95,11 @@ public class MockedNotificationReceiverEndpoint {
                 final String recipientBpn = notification.getHeader().getSenderBpn();
                 final String recipientUrl = notification.getHeader().getSenderEdc();
 
-                final ResponseNotificationContent notificationContent = ResponseNotificationContent.builder()
-                                                                                                   .result(supplyChainImpacted.getDescription())
-                                                                                                   .build();
+                final NotificationContent notificationContent = ResponseNotificationContent.builder()
+                                                                                           .result(supplyChainImpacted.getDescription())
+                                                                                           .build();
 
-                final EdcNotification<ResponseNotificationContent> edcRequest = edcRequest(notificationId,
+                final EdcNotification<NotificationContent> edcRequest = edcRequest(notificationId,
                         originalNotificationId, senderEdc, senderBpn, recipientBpn, notificationContent);
 
                 final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
@@ -117,9 +118,9 @@ public class MockedNotificationReceiverEndpoint {
         }
     }
 
-    private EdcNotification<ResponseNotificationContent> edcRequest(final String notificationId,
-            final String originalId, final String senderEdc, final String senderBpn, final String recipientBpn,
-            final ResponseNotificationContent content) {
+    private EdcNotification<NotificationContent> edcRequest(final String notificationId, final String originalId,
+            final String senderEdc, final String senderBpn, final String recipientBpn,
+            final NotificationContent content) {
         final EdcNotificationHeader header = EdcNotificationHeader.builder()
                                                                   .notificationId(notificationId)
                                                                   .senderEdc(senderEdc)
@@ -131,7 +132,7 @@ public class MockedNotificationReceiverEndpoint {
                                                                   .notificationType("ess-supplier-response")
                                                                   .build();
 
-        return EdcNotification.<ResponseNotificationContent>builder().header(header).content(content).build();
+        return EdcNotification.builder().header(header).content(content).build();
     }
 
 }

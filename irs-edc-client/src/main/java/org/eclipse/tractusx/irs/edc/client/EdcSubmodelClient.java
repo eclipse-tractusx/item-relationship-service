@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,7 @@ public interface EdcSubmodelClient {
             String assetId) throws EdcClientException;
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
-            EdcNotification notification) throws EdcClientException;
+            EdcNotification<NotificationContent> notification) throws EdcClientException;
 
     CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress, String filterKey,
             String filterValue) throws EdcClientException;
@@ -92,7 +93,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final String assetId, final EdcNotification notification) {
+            final String assetId, final EdcNotification<NotificationContent> notification) {
         // not actually sending anything, just return success response
         return CompletableFuture.completedFuture(() -> true);
     }
@@ -144,7 +145,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     private CompletableFuture<EdcNotificationResponse> sendNotificationAsync(final String contractAgreementId,
-            final EdcNotification notification, final StopWatch stopWatch) {
+            final EdcNotification<NotificationContent> notification, final StopWatch stopWatch) {
 
         return pollingService.<EdcNotificationResponse>createJob()
                              .action(() -> sendSubmodelNotification(contractAgreementId, notification, stopWatch))
@@ -185,12 +186,13 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     private Optional<EdcNotificationResponse> sendSubmodelNotification(final String contractAgreementId,
-            final EdcNotification notification, final StopWatch stopWatch) {
+            final EdcNotification<NotificationContent> notification, final StopWatch stopWatch) {
         final Optional<EndpointDataReference> dataReference = retrieveEndpointDataReference(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
-            log.info("Sending dataReference to EDC data plane for contractAgreementId '{}'", Masker.mask(contractAgreementId));
+            log.info("Sending dataReference to EDC data plane for contractAgreementId '{}'",
+                    Masker.mask(contractAgreementId));
             final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, notification);
             stopWatchOnEdcTask(stopWatch);
             return Optional.of(response);
@@ -221,7 +223,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String connectorEndpoint,
-            final String assetId, final EdcNotification notification) throws EdcClientException {
+            final String assetId, final EdcNotification<NotificationContent> notification) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + connectorEndpoint);

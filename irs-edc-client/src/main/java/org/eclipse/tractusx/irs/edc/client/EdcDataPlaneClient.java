@@ -32,6 +32,7 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -86,7 +87,7 @@ public class EdcDataPlaneClient {
     }
 
     public EdcNotificationResponse sendData(final EndpointDataReference dataReference,
-            final EdcNotification notification) {
+            final EdcNotification<NotificationContent> notification) {
         final String url = dataReference.getEndpoint();
         final HttpHeaders headers = headers(dataReference);
         headers.setContentType(MediaType.APPLICATION_JSON);
