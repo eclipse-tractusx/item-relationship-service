@@ -126,7 +126,6 @@ class IrsItemGraphQueryServiceSpringBootTest {
     void registerJobWithoutDepthShouldBuildFullTree() {
         // given
         final RegisterJob registerJob = registerJobWithoutDepth();
-        final int expectedRelationshipsSizeFullTree = 44; // stub
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("http://localhost/discovery"));
 
