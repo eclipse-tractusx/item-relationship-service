@@ -55,7 +55,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-class MockedNotificationReceiverEndpointTest {
+class MockedNotificationReceiverControllerTest {
 
     @InjectMocks
     private MockedNotificationReceiverEndpoint testee;

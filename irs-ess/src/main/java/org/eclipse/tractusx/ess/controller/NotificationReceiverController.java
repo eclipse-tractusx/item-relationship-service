@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.notification;
+package org.eclipse.tractusx.ess.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ess/notification")
 @RequiredArgsConstructor
 @Validated
-public class NotificationReceiverEndpoint {
+public class NotificationReceiverController {
 
     private final EssService essService;
 
