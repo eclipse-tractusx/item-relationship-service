@@ -633,6 +633,8 @@ if __name__ == "__main__":
 
                     if is_aas3:
                         endpoint_address = f"{dataplane_url}{dataplane_public_path}/data/{submodel_identification}"
+                        if is_ess and tmp_data["bpnl"] in bpnl_fail:
+                            endpoint_address = f"http://idonotexist/{dataplane_public_path}/data/{submodel_identification}"
                         descriptor = create_submodel_descriptor_3_0(submodel_name, submodel_identification, semantic_id,
                                                                     endpoint_address,
                                                                     edc_asset_id,
