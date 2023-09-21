@@ -48,6 +48,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,11 +62,11 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods",
+                    "PMD.ExcessiveImports"
+})
 class InvestigationJobProcessingEventListener {
 
-    public static final String INCIDENT_BPN = "incidentBpn";
-    public static final String CONCERNED_CATENA_X_IDS = "concernedCatenaXIds";
     private final IrsFacade irsFacade;
     private final ConnectorEndpointsService connectorEndpointsService;
     private final EdcSubmodelFacade edcSubmodelFacade;
@@ -94,9 +95,9 @@ class InvestigationJobProcessingEventListener {
     private static Map<String, List<String>> getBPNsFromRelationships(final List<Relationship> relationships) {
         return relationships.stream()
                             .filter(relationship -> relationship.getBpn() != null)
-                            .collect(Collectors.groupingBy(Relationship::getBpn,
-                                    Collectors.mapping(relationship -> relationship.getLinkedItem().getChildCatenaXId().getGlobalAssetId(),
-                                            Collectors.toList())));
+                            .collect(Collectors.groupingBy(Relationship::getBpn, Collectors.mapping(
+                                    relationship -> relationship.getLinkedItem().getChildCatenaXId().getGlobalAssetId(),
+                                    Collectors.toList())));
     }
 
     @NotNull
@@ -263,7 +264,8 @@ class InvestigationJobProcessingEventListener {
 
         final boolean isRecursiveMockAsset = mockRecursiveEdcAssets.contains(bpn);
         final boolean isNotMockAsset = mockRecursiveEdcAssets.isEmpty();
-        final EdcNotification notification = edcRequest(notificationId, bpn, incidentBpns, globalAssetIds);
+        final EdcNotification<InvestigationNotificationContent> notification = edcRequest(notificationId, bpn,
+                incidentBpns, globalAssetIds);
         log.debug("Sending Notification '{}'", notification);
         final EdcNotificationResponse response;
         if (isRecursiveMockAsset || isNotMockAsset) {
@@ -286,8 +288,8 @@ class InvestigationJobProcessingEventListener {
         return !getNotResolvedBPNs(edcAddresses).isEmpty();
     }
 
-    private EdcNotification edcRequest(final String notificationId, final String recipientBpn,
-            final List<String> incidentBpns, final List<String> globalAssetIds) {
+    private EdcNotification<InvestigationNotificationContent> edcRequest(final String notificationId,
+            final String recipientBpn, final List<String> incidentBpns, final List<String> globalAssetIds) {
         final var header = EdcNotificationHeader.builder()
                                                 .notificationId(notificationId)
                                                 .recipientBpn(recipientBpn)
@@ -297,10 +299,14 @@ class InvestigationJobProcessingEventListener {
                                                 .replyAssetSubPath("")
                                                 .notificationType("ess-supplier-request")
                                                 .build();
-        final Map<String, Object> content = Map.of(INCIDENT_BPN, incidentBpns.get(0), CONCERNED_CATENA_X_IDS,
-                globalAssetIds);
+        final InvestigationNotificationContent content = InvestigationNotificationContent.builder()
+                                                                                         .concernedCatenaXIds(
+                                                                                                 globalAssetIds)
+                                                                                         .incidentBpn(
+                                                                                                 incidentBpns.get(0))
+                                                                                         .build();
 
-        return EdcNotification.builder().header(header).content(content).build();
+        return EdcNotification.<InvestigationNotificationContent>builder().header(header).content(content).build();
     }
 
     private boolean supplyChainIsImpacted(final SupplyChainImpacted supplyChain) {

@@ -36,6 +36,7 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -101,7 +102,7 @@ public class EssService {
         }
     }
 
-    public void handleNotificationCallback(final EdcNotification notification) {
+    public void handleNotificationCallback(final EdcNotification<ResponseNotificationContent> notification) {
         log.info("Received notification response with id {}", notification.getHeader().getNotificationId());
         final var investigationJob = bpnInvestigationJobCache.findAll()
                                                              .stream()
@@ -112,7 +113,7 @@ public class EssService {
         investigationJob.ifPresent(job -> {
             final String originalNotificationId = notification.getHeader().getOriginalNotificationId();
             job.withAnsweredNotification(originalNotificationId);
-            final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().get("result"))
+            final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().getResult())
                                                                 .map(Object::toString);
 
             final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
@@ -128,7 +129,8 @@ public class EssService {
         });
     }
 
-    private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(final EdcNotification notification) {
+    private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(
+            final EdcNotification<ResponseNotificationContent> notification) {
         return investigationJob -> investigationJob.getUnansweredNotifications()
                                                    .contains(notification.getHeader().getOriginalNotificationId());
     }

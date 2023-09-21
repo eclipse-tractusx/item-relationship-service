@@ -23,7 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.notification.mock;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,12 +30,15 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.ess.discovery.EdcDiscoveryMockConfig;
+import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
-import org.eclipse.tractusx.ess.discovery.EdcDiscoveryMockConfig;
-import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,11 +62,22 @@ public class MockedNotificationReceiverEndpoint {
     private final EdcDiscoveryMockConfig edcDiscoveryMockConfig;
     private final EdcSubmodelFacade edcSubmodelFacade;
 
+    @NotNull
+    private static Optional<String> getIncidentBPN(
+            final EdcNotification<InvestigationNotificationContent> notification) {
+        final InvestigationNotificationContent content = Optional.ofNullable(notification.getContent())
+                                                                 .orElseThrow(() -> new ResponseStatusException(
+                                                                         HttpStatus.BAD_REQUEST,
+                                                                         "Malformed EDC Notification - no content is null."));
+        return Optional.ofNullable(content.getIncidentBpn());
+    }
+
     @PostMapping("/receive")
-    public void receiveNotification(final @Valid @RequestBody EdcNotification notification) throws EdcClientException {
+    public void receiveNotification(
+            final @Valid @RequestBody EdcNotification<InvestigationNotificationContent> notification)
+            throws EdcClientException {
         log.info("receiveNotification mock called");
-        final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
-                                                     .map(Object::toString);
+        final Optional<String> incidentBpn = getIncidentBPN(notification);
 
         if (incidentBpn.isPresent()) {
             final String bpn = incidentBpn.get();
@@ -80,10 +93,13 @@ public class MockedNotificationReceiverEndpoint {
                 final String senderBpn = notification.getHeader().getRecipientBpn();
                 final String recipientBpn = notification.getHeader().getSenderBpn();
                 final String recipientUrl = notification.getHeader().getSenderEdc();
-                final Map<String, Object> notificationContent = Map.of("result", supplyChainImpacted.getDescription());
 
-                final EdcNotification edcRequest = edcRequest(notificationId, originalNotificationId, senderEdc,
-                        senderBpn, recipientBpn, notificationContent);
+                final ResponseNotificationContent notificationContent = ResponseNotificationContent.builder()
+                                                                                                   .result(supplyChainImpacted.getDescription())
+                                                                                                   .build();
+
+                final EdcNotification<ResponseNotificationContent> edcRequest = edcRequest(notificationId,
+                        originalNotificationId, senderEdc, senderBpn, recipientBpn, notificationContent);
 
                 final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
                 if (!response.deliveredSuccessfully()) {
@@ -101,8 +117,9 @@ public class MockedNotificationReceiverEndpoint {
         }
     }
 
-    private EdcNotification edcRequest(final String notificationId, final String originalId, final String senderEdc,
-            final String senderBpn, final String recipientBpn, final Map<String, Object> content) {
+    private EdcNotification<ResponseNotificationContent> edcRequest(final String notificationId,
+            final String originalId, final String senderEdc, final String senderBpn, final String recipientBpn,
+            final ResponseNotificationContent content) {
         final EdcNotificationHeader header = EdcNotificationHeader.builder()
                                                                   .notificationId(notificationId)
                                                                   .senderEdc(senderEdc)
@@ -114,7 +131,7 @@ public class MockedNotificationReceiverEndpoint {
                                                                   .notificationType("ess-supplier-response")
                                                                   .build();
 
-        return EdcNotification.builder().header(header).content(content).build();
+        return EdcNotification.<ResponseNotificationContent>builder().header(header).content(content).build();
     }
 
 }

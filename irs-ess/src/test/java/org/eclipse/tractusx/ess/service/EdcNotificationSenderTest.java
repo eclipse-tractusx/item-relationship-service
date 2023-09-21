@@ -34,6 +34,8 @@ import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,15 +52,17 @@ class EdcNotificationSenderTest {
 
     private final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
 
-    private final EdcNotificationSender sender = new EdcNotificationSender(edcSubmodelFacade, localBpn, essLocalEdcEndpoint, connectorEndpointsService);
+    private final EdcNotificationSender sender = new EdcNotificationSender(edcSubmodelFacade, localBpn,
+            essLocalEdcEndpoint, connectorEndpointsService);
 
     @Captor
-    ArgumentCaptor<EdcNotification> notificationCaptor;
+    ArgumentCaptor<EdcNotification<ResponseNotificationContent>> notificationCaptor;
 
     @Test
     void shouldSendEdcNotificationWithSuccess() throws EdcClientException {
         // given
-        final EdcNotification edcNotification = prepareNotification("notification-id");
+        final EdcNotification<InvestigationNotificationContent> edcNotification = prepareNotification(
+                "notification-id");
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), notificationCaptor.capture())).thenReturn(
                 () -> true);
         when(connectorEndpointsService.fetchConnectorEndpoints("senderBpn")).thenReturn(List.of("senderEdc"));
@@ -67,11 +71,12 @@ class EdcNotificationSenderTest {
         sender.sendEdcNotification(edcNotification, SupplyChainImpacted.NO);
 
         // then
-        assertThat(notificationCaptor.getValue().getContent()).containsEntry("result", SupplyChainImpacted.NO.getDescription());
+        assertThat(notificationCaptor.getValue().getContent().getResult()).isEqualTo(
+                SupplyChainImpacted.NO.getDescription());
 
     }
 
-    private EdcNotification prepareNotification(String notificationId) {
+    private EdcNotification<InvestigationNotificationContent> prepareNotification(final String notificationId) {
         final EdcNotificationHeader header = EdcNotificationHeader.builder()
                                                                   .notificationId(notificationId)
                                                                   .senderBpn("senderBpn")
@@ -81,6 +86,6 @@ class EdcNotificationSenderTest {
                                                                   .notificationType("ess-supplier-request")
                                                                   .build();
 
-        return EdcNotification.builder().header(header).build();
+        return EdcNotification.<InvestigationNotificationContent>builder().header(header).build();
     }
 }

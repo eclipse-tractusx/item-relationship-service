@@ -139,7 +139,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EdcNotification'
+              $ref: '#/components/schemas/EdcNotificationResponseNotificationContent'
         required: true
       responses:
         "200":
@@ -1625,14 +1625,12 @@ components:
       required:
         - policyId
         - validUntil
-    EdcNotification:
+    EdcNotificationResponseNotificationContent:
       type: object
       additionalProperties: false
       properties:
         content:
-          type: object
-          additionalProperties:
-            type: object
+          $ref: '#/components/schemas/ResponseNotificationContent'
         header:
           $ref: '#/components/schemas/EdcNotificationHeader'
       required:
@@ -2296,6 +2294,12 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
+    ResponseNotificationContent:
+      type: object
+      additionalProperties: false
+      properties:
+        result:
+          type: string
     SemanticId:
       type: object
       additionalProperties: false

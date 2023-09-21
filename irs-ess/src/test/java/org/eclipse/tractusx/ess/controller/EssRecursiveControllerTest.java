@@ -28,13 +28,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.ess.service.EssRecursiveService;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
-import org.eclipse.tractusx.ess.service.EssRecursiveService;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -64,7 +64,7 @@ class EssRecursiveControllerTest {
                     .andExpect(status().isCreated());
     }
 
-    private EdcNotification prepareNotification() {
+    private EdcNotification<InvestigationNotificationContent> prepareNotification() {
         final EdcNotificationHeader header = EdcNotificationHeader.builder()
                                                                   .notificationId("notification-id")
                                                                   .senderEdc("senderEdc")
@@ -75,11 +75,13 @@ class EssRecursiveControllerTest {
                                                                   .notificationType("ess-supplier-request")
                                                                   .build();
 
-        return EdcNotification.builder()
-                                                         .header(header)
-                                                         .content(
-                                                                 Map.of("incidentBpn", "BPNS000000000BBB",
-                                                                         "concernedCatenaXIds", List.of("cat1", "cat2"))).build();
+        return EdcNotification.<InvestigationNotificationContent>builder()
+                              .header(header)
+                              .content(InvestigationNotificationContent.builder()
+                                                                       .concernedCatenaXIds(List.of("cat1", "cat2"))
+                                                                       .incidentBpn("BPNS000000000BBB")
+                                                                       .build())
+                              .build();
     }
 
 }

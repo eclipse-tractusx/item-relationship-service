@@ -25,8 +25,6 @@ package org.eclipse.tractusx.ess.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.ess.service.EdcRegistration.ASSET_ID_REQUEST_RECURSIVE;
-import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.CONCERNED_CATENA_X_IDS;
-import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.INCIDENT_BPN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -56,6 +54,7 @@ import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -82,7 +81,7 @@ class InvestigationJobProcessingEventListenerTest {
             recursiveNotificationHandler);
 
     @Captor
-    ArgumentCaptor<EdcNotification> edcNotificationCaptor;
+    ArgumentCaptor<EdcNotification<InvestigationNotificationContent>> edcNotificationCaptor;
 
     private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
         return AssetAdministrationShellDescriptor.builder()
@@ -192,8 +191,8 @@ class InvestigationJobProcessingEventListenerTest {
                 edcNotificationCaptor.capture());
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
-        assertThat(edcNotificationCaptor.getValue().getContent()).containsEntry(INCIDENT_BPN, "BPNS000000000DDD");
-        assertThat(edcNotificationCaptor.getValue().getContent()).containsEntry(CONCERNED_CATENA_X_IDS,
+        assertThat(edcNotificationCaptor.getValue().getContent().getIncidentBpn()).isEqualTo("BPNS000000000DDD");
+        assertThat(edcNotificationCaptor.getValue().getContent().getConcernedCatenaXIds()).containsAll(
                 List.of("childId1"));
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }

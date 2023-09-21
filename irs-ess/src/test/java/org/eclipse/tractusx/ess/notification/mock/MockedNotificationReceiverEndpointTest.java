@@ -38,6 +38,7 @@ import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,7 +51,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-class MockedNotificationReceiverControllerTest {
+class MockedNotificationReceiverEndpointTest {
 
     @InjectMocks
     private MockedNotificationReceiverEndpoint testee;
@@ -69,36 +70,50 @@ class MockedNotificationReceiverControllerTest {
         when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
                 () -> true);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
 
-        testee.receiveNotification(
-                EdcNotification.builder().header(validHeader()).content(Map.of("incidentBpn", bpn)).build());
+        final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder()
+                                                                                                     .incidentBpn(bpn)
+                                                                                                     .build();
+        testee.receiveNotification(EdcNotification.<InvestigationNotificationContent>builder()
+                                                  .header(validHeader())
+                                                  .content(notificationContent)
+                                                  .build());
 
         verify(edcSubmodelFacade).sendNotification(anyString(), anyString(), any(EdcNotification.class));
     }
 
     @Test
     void shouldReturnBadRequestIfNotificationHeaderBodyNotValid() {
-        final EdcNotification request = EdcNotification.builder()
-                                                       .header(EdcNotificationHeader.builder().build())
-                                                       .content(Map.of())
-                                                       .build();
+        final EdcNotification<InvestigationNotificationContent> request = EdcNotification.<InvestigationNotificationContent>builder()
+                                                                                         .header(EdcNotificationHeader.builder()
+                                                                                                                      .build())
+                                                                                         .content(null)
+                                                                                         .build();
 
         assertThrows(ResponseStatusException.class, () -> testee.receiveNotification(request));
     }
 
     @Test
     void shouldReturnBadRequestIfIncidentBpnNotInRequestBody() {
-        final EdcNotification request = EdcNotification.builder().header(validHeader()).content(Map.of()).build();
+        final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder().build();
+        final EdcNotification<InvestigationNotificationContent> request = EdcNotification.<InvestigationNotificationContent>builder()
+                                                                                         .header(validHeader())
+                                                                                         .content(notificationContent)
+                                                                                         .build();
 
         assertThrows(ResponseStatusException.class, () -> testee.receiveNotification(request));
     }
 
     @Test
     void shouldReturnBadRequestIfIncidentBpnNotInMockedMapResult() {
-        final EdcNotification request = EdcNotification.builder()
-                                                       .header(validHeader())
-                                                       .content(Map.of("incidentBpn", "BPN"))
-                                                       .build();
+        final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder()
+                                                                                                     .incidentBpn("BPN")
+                                                                                                     .build();
+        final EdcNotification<InvestigationNotificationContent> request = EdcNotification.<InvestigationNotificationContent>builder()
+                                                                                         .header(validHeader())
+                                                                                         .content(notificationContent)
+                                                                                         .build();
 
         assertThrows(ResponseStatusException.class, () -> testee.receiveNotification(request));
     }

@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.ess.service.EssRecursiveService;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,7 +53,8 @@ public class EssRecursiveController {
 
     @PostMapping("/receive-recursive")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerRecursiveBPNInvestigation(final @Valid @RequestBody EdcNotification notification) {
+    public void registerRecursiveBPNInvestigation(
+            final @Valid @RequestBody EdcNotification<InvestigationNotificationContent> notification) {
         log.info("Received recursive notification, starting investigation.");
         essRecursiveService.handleNotification(notification);
     }

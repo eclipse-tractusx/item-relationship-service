@@ -24,20 +24,18 @@
 package org.eclipse.tractusx.ess.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.CONCERNED_CATENA_X_IDS;
-import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.INCIDENT_BPN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -62,9 +60,13 @@ class EssRecursiveServiceTest {
     @Test
     void shouldResponseWithoutRecursiveWhenLocalBpnIsPartOfIncident() {
         // given
-        EdcNotification edcNotification = EdcNotification.builder()
-                                                         .content(Map.of(INCIDENT_BPN, localBpn))
-                                                         .build();
+        final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder()
+                                                                                                     .incidentBpn(
+                                                                                                             localBpn)
+                                                                                                     .build();
+        EdcNotification<InvestigationNotificationContent> edcNotification = EdcNotification.<InvestigationNotificationContent>builder()
+                                                                                           .content(notificationContent)
+                                                                                           .build();
         Mockito.doNothing().when(edcNotificationSender).sendEdcNotification(any(), supplyChainCaptor.capture());
 
         // when
@@ -78,14 +80,18 @@ class EssRecursiveServiceTest {
     void shouldStartBpnInvestigationsJobForEachCatenaXId() {
         // given
         UUID uuid = UUID.randomUUID();
-
-        EdcNotification edcNotification = EdcNotification.builder()
-                                                         .header(EdcNotificationHeader.builder()
-                                                                                      .notificationId("notification-id")
-                                                                                      .build())
-                                                         .content(Map.of(INCIDENT_BPN, "BPNS000000000BBB",
-                                                                 CONCERNED_CATENA_X_IDS, List.of("cat1", "cat2")))
-                                                         .build();
+        final InvestigationNotificationContent notificationContent = InvestigationNotificationContent.builder()
+                                                                                                     .incidentBpn(
+                                                                                                             "BPNS000000000BBB")
+                                                                                                     .concernedCatenaXIds(
+                                                                                                             List.of("cat1",
+                                                                                                                     "cat2"))
+                                                                                                     .build();
+        final EdcNotificationHeader header = EdcNotificationHeader.builder().notificationId("notification-id").build();
+        EdcNotification<InvestigationNotificationContent> edcNotification = EdcNotification.<InvestigationNotificationContent>builder()
+                                                                                           .header(header)
+                                                                                           .content(notificationContent)
+                                                                                           .build();
         Mockito.when(essService.startIrsJob(any())).thenReturn(JobHandle.builder().id(uuid).build());
 
         // when

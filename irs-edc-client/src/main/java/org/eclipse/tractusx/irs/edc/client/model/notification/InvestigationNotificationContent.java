@@ -21,33 +21,21 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.controller;
+package org.eclipse.tractusx.irs.edc.client.model.notification;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import java.util.List;
 
-import org.eclipse.tractusx.ess.service.EssService;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
-import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import lombok.Builder;
+import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
-@ExtendWith(MockitoExtension.class)
-class NotificationReceiverControllerTest {
-
-    @InjectMocks
-    private NotificationReceiverController testee;
-
-    @Mock
-    private EssService essService;
-
-    @Test
-    void receiveNotification() {
-        testee.receiveNotification(EdcNotification.<ResponseNotificationContent>builder().build());
-
-        verify(essService).handleNotificationCallback(any());
-    }
+/**
+ * ESS Investigation notification content for {@link EdcNotification}.
+ */
+@Data
+@Builder
+@Jacksonized
+public class InvestigationNotificationContent implements NotificationContent {
+    private final List<String> concernedCatenaXIds;
+    private final String incidentBpn;
 }

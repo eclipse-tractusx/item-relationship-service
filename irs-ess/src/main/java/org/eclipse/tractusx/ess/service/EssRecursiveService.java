@@ -23,9 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
-import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.CONCERNED_CATENA_X_IDS;
-import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.INCIDENT_BPN;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +33,7 @@ import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -60,18 +58,24 @@ public class EssRecursiveService {
         this.localBpn = localBpn;
         this.edcNotificationSender = edcNotificationSender;
     }
-    public void handleNotification(final EdcNotification notification) {
 
-        final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get(INCIDENT_BPN))
-                                                     .map(Object::toString);
+    @NotNull
+    private static List<String> getConcernedCatenaXIds(final Optional<List<String>> concernedCatenaXIdsNotification) {
+        final List<String> concernedCatenaXIds = new ArrayList<>();
+        concernedCatenaXIdsNotification.ifPresent(concernedCatenaXIds::addAll);
+        return concernedCatenaXIds;
+    }
 
-        final Optional<Object> concernedCatenaXIdsNotification = Optional.ofNullable(
-                notification.getContent().get(CONCERNED_CATENA_X_IDS));
+    public void handleNotification(final EdcNotification<InvestigationNotificationContent> notification) {
+
+        final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().getIncidentBpn());
+
+        final Optional<List<String>> concernedCatenaXIdsNotification = Optional.ofNullable(
+                notification.getContent().getConcernedCatenaXIds());
 
         if (incidentBpn.isPresent() && localBpn.equals(incidentBpn.get())) {
             edcNotificationSender.sendEdcNotification(notification, SupplyChainImpacted.YES);
-        } else if (concernedCatenaXIdsNotification.isPresent() && concernedCatenaXIdsNotification.get() instanceof List
-                && incidentBpn.isPresent()) {
+        } else if (concernedCatenaXIdsNotification.isPresent() && incidentBpn.isPresent()) {
             final String bpn = incidentBpn.get();
             final List<String> concernedCatenaXIds = getConcernedCatenaXIds(concernedCatenaXIdsNotification);
 
@@ -94,13 +98,5 @@ public class EssRecursiveService {
                                                    .build();
 
         return essService.startIrsJob(job);
-    }
-
-    @NotNull
-    private static List<String> getConcernedCatenaXIds(final Optional<Object> concernedCatenaXIdsNotification) {
-        final List<String> concernedCatenaXIds = new ArrayList<>();
-        concernedCatenaXIdsNotification.ifPresent(
-                list -> concernedCatenaXIds.addAll(((List<String>) list).stream().toList()));
-        return concernedCatenaXIds;
     }
 }

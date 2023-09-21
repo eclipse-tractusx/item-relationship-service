@@ -34,7 +34,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.tractusx.ess.irs.IrsFacade;
@@ -49,6 +48,7 @@ import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -61,8 +61,8 @@ class EssServiceTest {
     private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
     private final EssRecursiveNotificationHandler recursiveNotificationHandler = mock(
             EssRecursiveNotificationHandler.class);
-    private final EssService essService = new EssService(irsFacade, securityHelperService,
-            bpnInvestigationJobCache, recursiveNotificationHandler);
+    private final EssService essService = new EssService(irsFacade, securityHelperService, bpnInvestigationJobCache,
+            recursiveNotificationHandler);
 
     @Test
     void shouldSuccessfullyStartJobAndReturnWithExtendedSubmodelList() {
@@ -107,27 +107,30 @@ class EssServiceTest {
         final String notificationId2 = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();
         final String owner = securityHelperService.getClientIdClaim();
-        final EdcNotification edcNotification = EdcNotification.builder()
-                                                               .header(EdcNotificationHeader.builder()
-                                                                                            .notificationId(
-                                                                                                    notificationId)
-                                                                                            .originalNotificationId(
-                                                                                                    notificationId)
-                                                                                            .build())
-                                                               .content(Map.of("result", "No"))
-                                                               .build();
-        final EdcNotification edcNotification2 = EdcNotification.builder()
-                                                                .header(EdcNotificationHeader.builder()
-                                                                                             .notificationId(
-                                                                                                     notificationId2)
-                                                                                             .originalNotificationId(
-                                                                                                     notificationId2)
-                                                                                             .build())
-                                                                .content(Map.of("result", "Yes"))
-                                                                .build();
+
+        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").build();
+        final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notificationId)
+                                                                   .originalNotificationId(notificationId)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> edcNotification = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                            .header(header1)
+                                                                                            .content(resultNo)
+                                                                                            .build();
+        final ResponseNotificationContent resultYes = ResponseNotificationContent.builder().result("Yes").build();
+        final EdcNotificationHeader header2 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notificationId2)
+                                                                   .originalNotificationId(notificationId2)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> edcNotification2 = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                             .header(header2)
+                                                                                             .content(resultYes)
+                                                                                             .build();
+
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
                                                                                    Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), owner, new ArrayList<>())
-                                                                           .withNotifications(List.of(notificationId, notificationId2));
+                                                                           .withNotifications(List.of(notificationId,
+                                                                                   notificationId2));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
@@ -162,8 +165,7 @@ class EssServiceTest {
         when(securityHelperService.isAdmin()).thenReturn(true);
 
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
-                                                                                   Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), owner,
-                                                                                   new ArrayList<>())
+                                                                                   Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), owner, new ArrayList<>())
                                                                            .withNotifications(Collections.singletonList(
                                                                                    notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
