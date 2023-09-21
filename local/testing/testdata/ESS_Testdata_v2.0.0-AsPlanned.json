@@ -726,6 +726,186 @@
           ]
         }
       ]
+    },
+    {
+      "catenaXId": "urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f",
+      "bpnl": "BPNL00ARBITRARY8",
+      "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2013-09-21T23:24:07.000Z",
+            "validTo": "2026-11-22T17:35:54.000Z"
+          },
+          "catenaXId": "urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f",
+          "partTypeInformation": {
+            "manufacturerPartId": "FJ-87",
+            "classification": "product",
+            "nameAtManufacturer": "Vehicle Model D"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f",
+          "sites": [
+            {
+              "functionValidUntil": "2025-03-23T05:10:13.000Z",
+              "function": "production",
+              "functionValidFrom": "2018-12-09T05:11:28.000Z",
+              "catenaXSiteId": "BPNS00ARBITRARY8"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f",
+          "childItems": [
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNL00000004FAIL",
+              "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8"
+            },
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNL00ARBITRARY9",
+              "catenaXId": "urn:uuid:9846f1c6-0dd0-4d5a-9c7a-30af0b7e0247"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:9846f1c6-0dd0-4d5a-9c7a-30af0b7e0247",
+      "bpnl": "BPNL00ARBITRARY9",
+      "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2014-07-30T07:17:16.000Z",
+            "validTo": "2028-03-27T22:34:57.000Z"
+          },
+          "catenaXId": "urn:uuid:9846f1c6-0dd0-4d5a-9c7a-30af0b7e0247",
+          "partTypeInformation": {
+            "manufacturerPartId": "6775244-06",
+            "classification": "product",
+            "nameAtManufacturer": "Sub Tier B Glue"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:9846f1c6-0dd0-4d5a-9c7a-30af0b7e0247",
+          "sites": [
+            {
+              "functionValidUntil": "2026-03-11T19:58:28.000Z",
+              "function": "production",
+              "functionValidFrom": "2020-03-04T21:09:12.000Z",
+              "catenaXSiteId": "BPNS00ARBITRARY9"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8",
+      "bpnl": "BPNL0ARBITRARY10",
+      "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2015-01-16T14:23:33.000Z",
+            "validTo": "2032-05-18T15:14:36.000Z"
+          },
+          "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8",
+          "partTypeInformation": {
+            "manufacturerPartId": "39478586-36",
+            "classification": "product",
+            "nameAtManufacturer": "Tier B ECU2"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8",
+          "sites": [
+            {
+              "functionValidUntil": "2024-06-08T03:49:26.000Z",
+              "function": "production",
+              "functionValidFrom": "2015-08-29T08:43:40.000Z",
+              "catenaXSiteId": "BPNS0ARBITRARY10"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8",
+          "childItems": [
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNS00ARBITRARY9",
+              "catenaXId": "urn:uuid:01796f87-9677-43f0-9c62-61665be29d85"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:01796f87-9677-43f0-9c62-61665be29d85",
+      "bpnl": "BPNL0ARBITRARY11",
+      "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2014-07-30T07:17:16.000Z",
+            "validTo": "2028-03-27T22:34:57.000Z"
+          },
+          "catenaXId": "urn:uuid:01796f87-9677-43f0-9c62-61665be29d85",
+          "partTypeInformation": {
+            "manufacturerPartId": "6775244-06",
+            "classification": "product",
+            "nameAtManufacturer": "Sub Tier B Glue"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:01796f87-9677-43f0-9c62-61665be29d85",
+          "sites": [
+            {
+              "functionValidUntil": "2026-03-11T19:58:28.000Z",
+              "function": "production",
+              "functionValidFrom": "2020-03-04T21:09:12.000Z",
+              "catenaXSiteId": "BPNS0ARBITRARY11"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
