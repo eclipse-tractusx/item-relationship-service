@@ -1655,7 +1655,7 @@ components:
       properties:
         permissions:
           type: array
-          description: List of permissions that will be add to Policy on creation.
+          description: List of permissions that will be added to the Policy on creation.
           items:
             $ref: '#/components/schemas/Permission'
         policyId:
