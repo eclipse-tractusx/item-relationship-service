@@ -64,6 +64,8 @@ import org.springframework.stereotype.Service;
 @SuppressWarnings("PMD.TooManyMethods")
 class InvestigationJobProcessingEventListener {
 
+    public static final String INCIDENT_BPN = "incidentBpn";
+    public static final String CONCERNED_CATENA_X_IDS = "concernedCatenaXIds";
     private final IrsFacade irsFacade;
     private final ConnectorEndpointsService connectorEndpointsService;
     private final EdcSubmodelFacade edcSubmodelFacade;
@@ -295,7 +297,8 @@ class InvestigationJobProcessingEventListener {
                                                 .replyAssetSubPath("")
                                                 .notificationType("ess-supplier-request")
                                                 .build();
-        final var content = Map.of("incidentBpn", incidentBpns.get(0), "concernedCatenaXIds", globalAssetIds);
+        final Map<String, Object> content = Map.of(INCIDENT_BPN, incidentBpns.get(0), CONCERNED_CATENA_X_IDS,
+                globalAssetIds);
 
         return EdcNotification.builder().header(header).content(content).build();
     }

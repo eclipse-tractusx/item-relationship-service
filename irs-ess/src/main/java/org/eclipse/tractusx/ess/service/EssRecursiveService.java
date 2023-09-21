@@ -23,6 +23,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
+import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.CONCERNED_CATENA_X_IDS;
+import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.INCIDENT_BPN;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,11 +62,11 @@ public class EssRecursiveService {
     }
     public void handleNotification(final EdcNotification notification) {
 
-        final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
+        final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get(INCIDENT_BPN))
                                                      .map(Object::toString);
 
         final Optional<Object> concernedCatenaXIdsNotification = Optional.ofNullable(
-                notification.getContent().get("concernedCatenaXIds"));
+                notification.getContent().get(CONCERNED_CATENA_X_IDS));
 
         if (incidentBpn.isPresent() && localBpn.equals(incidentBpn.get())) {
             edcNotificationSender.sendEdcNotification(notification, SupplyChainImpacted.YES);

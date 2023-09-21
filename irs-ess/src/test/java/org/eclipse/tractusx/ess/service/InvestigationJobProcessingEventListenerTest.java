@@ -25,6 +25,8 @@ package org.eclipse.tractusx.ess.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.ess.service.EdcRegistration.ASSET_ID_REQUEST_RECURSIVE;
+import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.CONCERNED_CATENA_X_IDS;
+import static org.eclipse.tractusx.ess.service.InvestigationJobProcessingEventListener.INCIDENT_BPN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -171,7 +173,7 @@ class InvestigationJobProcessingEventListenerTest {
     }
 
     @Test
-    void shouldTriggerCorrectNotificationOnNExtLevel() throws EdcClientException {
+    void shouldTriggerCorrectNotificationOnNextLevel() throws EdcClientException {
         // given
         createMockForJobIdAndShell(jobId, "bpn",
                 List.of(createRelationship("asPlanned", "BPN1", "parentId1", "childId1")));
@@ -188,9 +190,11 @@ class InvestigationJobProcessingEventListenerTest {
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq("notify-request-asset-recursive"),
                 edcNotificationCaptor.capture());
-        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo("ess-supplier-request");
-        assertThat(edcNotificationCaptor.getValue().getContent()).containsEntry("incidentBpn", "BPNS000000000DDD");
-        assertThat(edcNotificationCaptor.getValue().getContent()).containsEntry("concernedCatenaXIds", List.of("childId1"));
+        assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
+                "ess-supplier-request");
+        assertThat(edcNotificationCaptor.getValue().getContent()).containsEntry(INCIDENT_BPN, "BPNS000000000DDD");
+        assertThat(edcNotificationCaptor.getValue().getContent()).containsEntry(CONCERNED_CATENA_X_IDS,
+                List.of("childId1"));
         verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
