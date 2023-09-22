@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class Policy {
     private String policyId;
     private OffsetDateTime createdOn;
     private OffsetDateTime validUntil;
+    private List<Permission> permissions;
 
     public Policy update(final OffsetDateTime validUntil) {
         this.validUntil = validUntil;
