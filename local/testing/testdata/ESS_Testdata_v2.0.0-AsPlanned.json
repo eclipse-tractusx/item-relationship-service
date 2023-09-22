@@ -795,7 +795,7 @@
     },
     {
       "catenaXId": "urn:uuid:9846f1c6-0dd0-4d5a-9c7a-30af0b7e0247",
-      "bpnl": "BPNL00ARBITRARY9",
+      "bpnl": "BPNL00000004FAIL",
       "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned": [
         {
           "validityPeriod": {
@@ -818,7 +818,7 @@
               "functionValidUntil": "2026-03-11T19:58:28.000Z",
               "function": "production",
               "functionValidFrom": "2020-03-04T21:09:12.000Z",
-              "catenaXSiteId": "BPNS00ARBITRARY9"
+              "catenaXSiteId": "BPNS00000004FAIL"
             }
           ]
         }
