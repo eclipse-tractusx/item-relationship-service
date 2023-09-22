@@ -58,8 +58,8 @@ class RelationshipDelegateTest {
     final RelationshipDelegate relationshipDelegate = new RelationshipDelegate(null, submodelFacade,
             connectorEndpointsService, jsonUtil);
 
-    final String singleLevelBomAsBuiltAspectName = "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
-    final String singleLevelUsageAsBuiltAspectName = "urn:bamm:com.catenax.single_level_usage_as_built:1.0.0#SingleLevelUsageAsBuilt";
+    final String singleLevelBomAsBuiltAspectName = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt";
+    final String singleLevelUsageAsBuiltAspectName = "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
 
     private static PartChainIdentificationKey createKey() {
         return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();

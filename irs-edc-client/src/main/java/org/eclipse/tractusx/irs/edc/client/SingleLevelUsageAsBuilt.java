@@ -52,30 +52,47 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
 
     private String catenaXId;
-    private Set<ParentData> parentParts;
+    private Set<Customer> customers;
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.parentParts).stream().flatMap(Collection::stream)
-                       .map(parentData -> parentData.toRelationship(this.catenaXId))
+        return Optional.ofNullable(this.customers).stream().flatMap(Collection::stream)
+                       .map(customer -> customer.toRelationship(this.catenaXId))
+                       .flatMap(Optional::stream)
                        .toList();
     }
 
+    /**
+     * Customer
+     */
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    /* package */ static class Customer {
+
+        private String businessPartner;
+        private ZonedDateTime createdOn;
+        private ZonedDateTime lastModifiedOn;
+        private Set<ParentItem> parentItems;
+
+        public Optional<Relationship> toRelationship(final String catenaXId) {
+            return parentItems.stream().findFirst().map(parentItem -> parentItem.toRelationship(catenaXId, this.businessPartner));
+        }
+    }
     /**
      * ParentData
      */
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    /* package */ static class ParentData {
+    /* package */ static class ParentItem {
 
-        private ZonedDateTime createdOn;
+        private String catenaXId;
         private Quantity quantity;
+        private ZonedDateTime createdOn;
         private ZonedDateTime lastModifiedOn;
-        private String parentCatenaXId;
-        private String businessPartner;
 
-        public Relationship toRelationship(final String catenaXId) {
+        public Relationship toRelationship(final String catenaXId, final String businessPartner) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)
@@ -92,9 +109,9 @@ class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
             }
 
             return Relationship.builder()
-                               .catenaXId(GlobalAssetIdentification.of(this.parentCatenaXId))
+                               .catenaXId(GlobalAssetIdentification.of(this.catenaXId))
                                .linkedItem(linkedItem.build())
-                               .bpn(this.businessPartner)
+                               .bpn(businessPartner)
                                .aspectType(AspectType.SINGLE_LEVEL_USAGE_AS_BUILT.toString())
                                .build();
         }
