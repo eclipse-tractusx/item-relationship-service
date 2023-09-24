@@ -29,6 +29,7 @@ import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAtom
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.edc.policy.model.Policy;
@@ -50,8 +51,8 @@ class PolicyCheckerSpringBootTest {
     void shouldValidateWithDefaultOperands() {
         // given
         final var policyList = List.of(
-                new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy("ID 3.1 Trace", OffsetDateTime.now().plusYears(1)));
+                new AcceptedPolicy(policy("FrameworkAgreement.traceability"), OffsetDateTime.now().plusYears(1)),
+                new AcceptedPolicy(policy("ID 3.1 Trace"), OffsetDateTime.now().plusYears(1)));
         when(policiesProvider.getAcceptedPolicies()).thenReturn(policyList);
         Policy policy = createAndConstraintPolicy(
                 List.of(createAtomicConstraint("FrameworkAgreement.traceability", "active"),
@@ -61,6 +62,15 @@ class PolicyCheckerSpringBootTest {
 
         // then
         assertThat(result).isTrue();
+    }
+
+    private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId) {
+        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(
+                policyId,
+                OffsetDateTime.now().plusYears(1),
+                OffsetDateTime.now().plusYears(1),
+                Collections.emptyList()
+        );
     }
 
 }

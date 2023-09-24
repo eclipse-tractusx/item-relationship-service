@@ -82,7 +82,7 @@ public class PolicyCheckerService {
         return policyStore.getAcceptedPolicies()
                           .stream()
                           .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
-                          .map(AcceptedPolicy::policyId)
+                          .map(acceptedPolicy -> acceptedPolicy.policy().getPolicyId())
                           .flatMap(this::addEncodedVersion)
                           .toList();
     }

@@ -28,8 +28,8 @@ import java.time.OffsetDateTime;
 /**
  * A policy accepted for negotiation.
  *
- * @param policyId   the ID of the policy
+ * @param policy policy with permissions
  * @param validUntil the timestamp after which the policy will no longer be accepted
  */
-public record AcceptedPolicy(String policyId, OffsetDateTime validUntil) {
+public record AcceptedPolicy(Policy policy, OffsetDateTime validUntil) {
 }

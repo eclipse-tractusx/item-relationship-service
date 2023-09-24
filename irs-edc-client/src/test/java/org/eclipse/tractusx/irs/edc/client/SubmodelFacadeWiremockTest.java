@@ -40,6 +40,7 @@ import static org.mockito.Mockito.when;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -111,8 +112,8 @@ class SubmodelFacadeWiremockTest {
 
         final AcceptedPoliciesProvider acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(
-                List.of(new AcceptedPolicy("FrameworkAgreement.traceability", OffsetDateTime.now().plusYears(1)),
-                        new AcceptedPolicy("Membership", OffsetDateTime.now().plusYears(1))));
+                List.of(new AcceptedPolicy(policy("FrameworkAgreement.traceability"), OffsetDateTime.now().plusYears(1)),
+                        new AcceptedPolicy(policy("Membership"), OffsetDateTime.now().plusYears(1))));
         final List<String> leftOperands = List.of("PURPOSE");
         final List<String> rightOperands = List.of("active");
         final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider,
@@ -280,5 +281,14 @@ class SubmodelFacadeWiremockTest {
     }
     private String buildApiMethodUrl() {
         return String.format("http://localhost:%d", this.wireMockServer.port());
+    }
+
+    private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId) {
+        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(
+                policyId,
+                OffsetDateTime.now().plusYears(1),
+                OffsetDateTime.now().plusYears(1),
+                Collections.emptyList()
+        );
     }
 }

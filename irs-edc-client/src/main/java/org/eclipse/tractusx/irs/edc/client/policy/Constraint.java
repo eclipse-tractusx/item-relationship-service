@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.policystore.models;
+package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.util.List;
 
@@ -30,15 +30,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * A Constraint containing two collections of Constraints
+ * A Constraint object used as an element of collection in Permission
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuppressWarnings("PMD.ShortVariable")
-public class Constraints {
+public class Constraint {
 
-    private List<Constraint> and;
-    private List<Constraint> or;
+    private String leftOperand;
+    private OperatorType operator;
+    private List<String> rightOperand;
 
 }

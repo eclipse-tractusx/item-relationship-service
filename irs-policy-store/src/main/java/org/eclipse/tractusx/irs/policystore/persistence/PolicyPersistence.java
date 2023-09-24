@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
-import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
