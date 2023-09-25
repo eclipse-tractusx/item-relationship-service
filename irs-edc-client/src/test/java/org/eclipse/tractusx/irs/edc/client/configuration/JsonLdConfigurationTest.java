@@ -73,7 +73,7 @@ class JsonLdConfigurationTest {
                                                                           .build();
         final ObjectMapper objectMapper = new JsonLdConfiguration().objectMapper();
         final String s = objectMapper.writeValueAsString(atomicConstraint);
-        System.out.println(s);
+
         assertThat(s).isNotBlank().contains("dataspaceconnector:literalexpression");
     }
 }
