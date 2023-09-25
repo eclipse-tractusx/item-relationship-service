@@ -5,7 +5,7 @@ import requests
 import os
 
 
-def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
+def supplyChainImpacted_is_Yes(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
     assert len(submodels) <= 1
@@ -14,7 +14,7 @@ def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
         assert 'Yes' in i.get("payload").get('supplyChainImpacted')
 
 
-def supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN(response):
+def supplyChainImpacted_is_No(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
     assert len(submodels) <= 1
@@ -23,7 +23,7 @@ def supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN(resp
         assert 'No' in i.get("payload").get('supplyChainImpacted')
 
 
-def supplyChainImpacted_is_correct_in_submodels_for_unknown_ID(response):
+def supplyChainImpacted_is_Unknown(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
     assert len(submodels) <= 1

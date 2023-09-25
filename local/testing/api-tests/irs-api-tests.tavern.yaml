@@ -45,6 +45,7 @@ stages:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
         key:
+          # Tested with Vehicle A
           globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
           bpn: BPNL00000003AYRE
         bomLifecycle: asPlanned
@@ -96,7 +97,7 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
@@ -117,6 +118,7 @@ stages:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
         key:
+          # Tested with Vehicle A
           globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
           bpn: BPNL00000003AYRE
         bomLifecycle: asPlanned
@@ -151,7 +153,7 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_No
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
@@ -204,7 +206,120 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_unknown_ID
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with valid globalAssetId and valid BPN but partial supply chain is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId and valid BPN
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          #tested with Vehicle D
+          globalAssetId: urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f
+          bpn: BPNL00ARBITRARY8
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNS0ARBITRARY11
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+      headers:
+        content-type: application/json
+
+
+
+---
+
+
+test_name: Make sure investigation job with valid globalAssetId and valid BPN but not reachable incidentBPN is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId and valid BPN but not reachable incidentBPN
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          #tested with Vehicle B
+          globalAssetId: urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b
+          bpn: BPNL00000003B6LU
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNS00000003AXS3
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
@@ -225,6 +340,7 @@ stages:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
         key:
+          # Tested with Vehicle C
           globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
           bpn: BPNL00ARBITRARY4
         incidentBPNSs:
@@ -257,7 +373,7 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
         - function: local.testing.api-tests.tavern_helpers:relationships_for_BPN_investigations_contains_several_childs
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
@@ -315,7 +431,7 @@ stages:
 #    response:
 #      status_code: 200
 #      verify_response_with:
-#        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+#        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
 #        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
 #      headers:
 #        content-type: application/json
@@ -370,7 +486,7 @@ stages:
 #    response:
 #      status_code: 200
 #      verify_response_with:
-#        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+#        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
 #        - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
 #        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
 #        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
