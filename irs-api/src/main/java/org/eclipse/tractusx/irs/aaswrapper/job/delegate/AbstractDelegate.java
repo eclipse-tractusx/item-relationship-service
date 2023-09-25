@@ -92,6 +92,7 @@ public abstract class AbstractDelegate {
         for (final String connectorEndpoint : connectorEndpoints) {
             addSubmodelToList(submodelFacade, endpoint, submodelPayload, connectorEndpoint);
         }
+        final List<String> submodelPayload = getSubmodels(submodelFacade, endpoint, connectorEndpoints);
         return submodelPayload.stream()
                               .findFirst()
                               .orElseThrow(() -> new EdcClientException(String.format(
@@ -99,16 +100,35 @@ public abstract class AbstractDelegate {
                                       connectorEndpoints.size(), String.join(", ", connectorEndpoints))));
     }
 
-    private void addSubmodelToList(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
-            final List<String> submodelPayload, final String connectorEndpoint) {
-        try {
-            submodelPayload.add(
-                    submodelFacade.getSubmodelRawPayload(connectorEndpoint, endpoint.getProtocolInformation().getHref(),
-                            extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
-        } catch (ItemNotFoundInCatalogException e) {
-            log.info("Could not find asset in catalog. Requesting next endpoint.", e);
-        } catch (EdcClientException e) {
-            log.info("EdcClientException while accessing endpoint '{}'", connectorEndpoint, e);
+    private List<String> getSubmodels(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
+            final List<String> connectorEndpoints) throws EdcClientException {
+        final ArrayList<String> submodelPayload = new ArrayList<>();
+        final ArrayList<EdcClientException> exceptions = new ArrayList<>();
+        for (final String connectorEndpoint : connectorEndpoints) {
+            try {
+                submodelPayload.add(submodelFacade.getSubmodelRawPayload(connectorEndpoint,
+                        endpoint.getProtocolInformation().getHref(),
+                        extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
+            } catch (ItemNotFoundInCatalogException e) {
+                log.info("Could not find asset in catalog. Requesting next endpoint.", e);
+            } catch (EdcClientException e) {
+                log.info("EdcClientException while accessing endpoint '{}'", connectorEndpoint, e);
+                exceptions.add(e);
+            }
+        }
+        if (submodelPayload.isEmpty()) {
+            throwUsagePolicyExceptionIfPresent(exceptions);
+        }
+        return submodelPayload;
+    }
+
+    private void throwUsagePolicyExceptionIfPresent(final ArrayList<EdcClientException> exceptions)
+            throws EdcClientException {
+        final Optional<EdcClientException> usagePolicyException = exceptions.stream()
+                                                                            .filter(UsagePolicyException.class::isInstance)
+                                                                            .findFirst();
+        if (usagePolicyException.isPresent()) {
+            throw usagePolicyException.get();
         }
     }
 
