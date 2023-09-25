@@ -1,4 +1,4 @@
-test_name: Make sure investigation job with invalid request is handled correctly with MOCK
+test_name: Make sure investigation job with invalid request is handled correctly
 
 strict:
   - headers:off
@@ -33,7 +33,7 @@ stages:
 ---
 
 
-test_name: Make sure investigation job with valid globalAssetId and BPN is processed correctly with MOCK
+test_name: Make sure investigation job with valid globalAssetId and BPN is processed correctly
 
 strict:
   - headers:off
@@ -105,7 +105,7 @@ stages:
 ---
 
 
-test_name: Make sure investigation job with valid globalAssetId for unknown BPN is processed correctly with MOCK
+test_name: Make sure investigation job with valid globalAssetId for unknown BPN is processed correctly
 
 strict:
   - headers:off
@@ -160,7 +160,7 @@ stages:
 ---
 
 
-test_name: Make sure investigation job with unknown globalAssetId and BPN is processed correctly with MOCK
+test_name: Make sure investigation job with unknown globalAssetId and valid BPN is processed correctly
 
 strict:
   - headers:off
@@ -213,7 +213,7 @@ stages:
 ---
 
 
-test_name: Make sure investigation job with several relationships for valid globalAssetId and BPN is processed correctly with MOCK
+test_name: Make sure investigation job with several relationships for valid globalAssetId and BPN is processed correctly
 
 strict:
   - headers:off
