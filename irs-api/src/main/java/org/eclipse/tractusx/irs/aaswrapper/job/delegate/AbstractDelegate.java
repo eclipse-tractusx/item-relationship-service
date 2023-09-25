@@ -100,13 +100,15 @@ public abstract class AbstractDelegate {
     }
 
     private void addSubmodelToList(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
-            final List<String> submodelPayload, final String connectorEndpoint) throws EdcClientException {
+            final List<String> submodelPayload, final String connectorEndpoint) {
         try {
             submodelPayload.add(
                     submodelFacade.getSubmodelRawPayload(connectorEndpoint, endpoint.getProtocolInformation().getHref(),
                             extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
         } catch (ItemNotFoundInCatalogException e) {
             log.info("Could not find asset in catalog. Requesting next endpoint.", e);
+        } catch (EdcClientException e) {
+            log.info("EdcClientException while accessing endpoint '{}'", connectorEndpoint, e);
         }
     }
 
