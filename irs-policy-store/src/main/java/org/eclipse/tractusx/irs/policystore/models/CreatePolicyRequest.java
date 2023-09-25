@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -37,6 +38,8 @@ import jakarta.validation.constraints.NotNull;
 @Schema(description = "Request to add a policy")
 public record CreatePolicyRequest(@Schema(description = "The ID of the policy to add") @NotNull String policyId,
 
-                                  @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil) {
+                                  @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil,
+                                  @Schema(description = "List of permissions that will be added to the Policy on creation.") @NotNull List<Permission> permissions
+                                  ) {
 
 }

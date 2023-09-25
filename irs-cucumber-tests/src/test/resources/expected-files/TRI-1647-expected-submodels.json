@@ -1,0 +1,18 @@
+{
+    "submodels": [
+        {
+            "identification": "urn:uuid:3c1779c6-23c7-410e-96f7-6c219bb43912",
+            "aspectType": "urn:bamm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
+            "payload": {
+                "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                "subcomponents": [
+                    {
+                        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                        "productType": "cell"
+                    }
+                ],
+                "productType": "cell"
+            }
+        }
+    ]
+}

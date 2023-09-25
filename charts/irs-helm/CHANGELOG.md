@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Removed unused configuration parameters `edc.submodel.path`,`discovery.endpoint`, `discovery.mockEdcAddres`
 
+## [6.6.1] - 2023-09-22
+### Changed
+- Update IRS version to 3.4.1
+- 
 ## [6.6.0] - 2023-09-01
 ### Changed
 - Update IRS version to 3.4.0

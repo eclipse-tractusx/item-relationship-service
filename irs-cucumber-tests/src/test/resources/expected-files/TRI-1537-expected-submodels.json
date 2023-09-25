@@ -1,0 +1,28 @@
+{
+    "submodels": [
+        {
+            "identification": "urn:uuid:2dbc1dcf-e4a8-47e9-8a59-f325cb0cd196",
+            "aspectType": "urn:bamm:io.catenax.just_in_sequence_part:1.0.0#JustInSequencePart",
+            "payload": {
+                "localIdentifiers": [
+                    {
+                        "value": "57465959HRT",
+                        "key": "jisNumber"
+                    }
+                ],
+                "manufacturingInformation": {
+                    "date": "2022-02-04T14:48:54",
+                    "country": "HUR"
+                },
+                "catenaXId": "urn:uuid:af04a881-0784-44d5-89e4-bee3835a7d56",
+                "partTypeInformation": {
+                    "manufacturerPartId": "123-0.740-3434-A",
+                    "customerPartId": "PRT-12345",
+                    "classification": "product",
+                    "nameAtManufacturer": "Door Key",
+                    "nameAtCustomer": "Door Key"
+                }
+            }
+        }
+    ]
+}

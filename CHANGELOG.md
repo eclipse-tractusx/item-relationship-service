@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed missing access control for Batch and ESS API.
 
+## [3.4.1] - 2023-09-22
+### Changed
+- Updated SingleLevelUsageAsBuilt schema to 2.0.0 version.
+
+### Fixed
+- Fixed missing access control for Batch and ESS API.
+
 ## [3.4.0] - 2023-09-01
 ### Added
 - Added fetchCatalog to EDCCatalogFacade
@@ -336,7 +343,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.1...HEAD
+[3.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.5...3.4.0
 [3.3.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.4...3.3.5
 [3.3.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.3...3.3.4

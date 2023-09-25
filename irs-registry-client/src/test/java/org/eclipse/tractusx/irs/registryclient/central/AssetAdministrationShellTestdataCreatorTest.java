@@ -47,7 +47,7 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
 
     @Test
     void shouldReturnAssetAdministrationShellDescriptorWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:0b45c63b-0e5e-4232-9074-a05607783c33";
+        final String catenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
 
         final AssetAdministrationShellDescriptor aasDescriptor = assetAdministrationShellTestdataCreator.createDummyAssetAdministrationShellDescriptorForId(
                 catenaXId);
