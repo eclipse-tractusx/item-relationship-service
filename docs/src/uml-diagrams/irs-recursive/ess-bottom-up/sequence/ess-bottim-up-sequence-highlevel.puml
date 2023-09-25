@@ -54,8 +54,17 @@ ClientApp -> dDTR_Tier_N : /ess/broadcast/recipients/orders
         Determining relationships 1 tier level upwards
     end ref
 
-    dDTR_Tier_N -> dDTR_Tier_N : validtyCheck
+    dDTR_Tier_N -> dDTR_Tier_N : deduplicateBPNLs
     note left
+        Aggregate bpns numbers for each bpnl
+    end note
+    dDTR_Tier_N <-- dDTR_Tier_N : [{globalAssetId,businessPartnerNumberLegalEntity, [businessPartnerNumberSite]}]
+
+    dDTR_Tier_N -> dDTR_Tier_N : validityPeriodChecker
+    note left
+        validtyPeriodCheck: Checks if passed timestamp is in validity period defined with
+        validityPeriod.validFrom and  PartAsPlanned.validityPeriod.validTo
+
         PartAsPlanned.validityPeriod.validFrom
         >= validityTimestamp
         >= PartAsPlanned.validityPeriod.validTo
@@ -72,7 +81,10 @@ ClientApp -> dDTR_Tier_N : /ess/broadcast/recipients/orders
         [
             {
                 globalAssetId : <globalAssetId>
-                bpns : <bpns>
+                bpnl : <bpnl>
+                bpns [
+                 <bpns>
+                 ]
             },
         ]
     end note
