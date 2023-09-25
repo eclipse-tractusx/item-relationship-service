@@ -376,6 +376,10 @@ stages:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
         - function: local.testing.api-tests.tavern_helpers:relationships_for_BPN_investigations_contains_several_childs
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+        - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -436,64 +440,6 @@ stages:
 #      headers:
 #        content-type: application/json
 #
-
-#---
-#
-#
-#test_name: Make sure investigation job with valid globalAssetId and BPN is processed in submodel servers correctly in MOCK
-#
-#strict:
-#  - headers:off
-#  - json:off
-#
-#stages:
-#  - *authenticate_and_fetch_token
-#
-#  - name: register a BPN investigation with valid globalAssetId for processing in submodel servers in MOCK
-#    request:
-#      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
-#      json:
-#        key:
-#          globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
-#          bpn: BPNL00ARBITRARY4
-#        incidentBPNSs:
-#          - BPNS00ARBITRARY7
-#      method: POST
-#      headers:
-#        content-type: application/json
-#        $ext:
-#          function: local.testing.api-tests.tavern_helpers:create_bearer_token
-#    response:
-#      status_code: 201
-#      headers:
-#        content-type: application/json
-#      save:
-#        json:
-#          job_id: id
-#
-#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
-#
-#  - name: get response for created investigation
-#    request:
-#      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
-#      params:
-#        returnUncompletedJob: true
-#      method: GET
-#      headers:
-#        content-type: application/json
-#        $ext:
-#          function: local.testing.api-tests.tavern_helpers:create_bearer_token
-#    response:
-#      status_code: 200
-#      verify_response_with:
-#        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
-#        - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
-#        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
-#        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
-#        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
-#        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
-#      headers:
-#        content-type: application/json
 
 ############################## /\ ESS Tests with T-Systems and submodel servers /\ ##############################
 ###### !!!!!! Commented out since there is no testdata available for the moment !!!!!! ######
