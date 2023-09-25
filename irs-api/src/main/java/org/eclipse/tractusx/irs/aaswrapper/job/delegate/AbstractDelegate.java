@@ -27,6 +27,7 @@ import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInf
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 
 /**
