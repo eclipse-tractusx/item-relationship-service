@@ -1,0 +1,80 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+actor "Client" as User
+
+participant "Client App (Script)" as ClientApp
+
+box Incident Company (Tier 4)
+participant "Digital Twin Registry" as dDTR_Tier_N
+participant "IRS Incident" as IRS_Tier_N
+end box
+
+participant EDC
+
+box Tier3 Company
+participant "Digital Twin Registry" as dDTR_Tier_3
+participant "SubmodelServer" as SubmodelServer_Tier_3
+
+end box
+
+
+User -> ClientApp
+ClientApp -> dDTR_Tier_N : getAAShells ()
+ref over dDTR_Tier_N
+    GET AAShells from dDTR for own BPNL
+end ref
+ClientApp <-- dDTR_Tier_N : Array [{AAS shells}]
+
+ClientApp -> ClientApp : Extract globalAssetId
+
+ClientApp -> dDTR_Tier_N : /ess/broadcast/recipients/orders
+    note left
+        globalAssetIds [
+            bpn : <bpnl>
+            globalAssetIds : <globalAssetIds>
+        ]
+        bomLifecycle : asPlanned,
+        direction : upwards (SingleLevelUsageAsPlanned),
+        depth : 1,
+        filters [
+            {
+              validityTimestamp : <validityTimestamp>
+            },
+         ],
+        incidentBpns [<bpns>,..]
+
+    end note
+
+    ref over dDTR_Tier_N, dDTR_Tier_3, SubmodelServer_Tier_3
+        Determining relationships 1 tier level upwards
+    end ref
+
+    dDTR_Tier_N -> dDTR_Tier_N : validtyCheck
+    note left
+        PartAsPlanned.validityPeriod.validFrom
+        >= validityTimestamp
+        >= PartAsPlanned.validityPeriod.validTo
+    end note
+
+
+    ClientApp --> dDTR_Tier_N : GET /irs/orders/{orderId}
+    ClientApp <-- dDTR_Tier_N : Get a batch order for a given orderId.
+    ClientApp --> dDTR_Tier_N : GET /irs/orders/{orderId}/batches/{batchId}
+    ClientApp <-- dDTR_Tier_N : Get a batch with a given batchId for a given orderId.
+    ClientApp --> dDTR_Tier_N : GET /irs/jobs/{id}
+    ClientApp <-- dDTR_Tier_N : Return job with item graph for the requested id.
+    note left
+        [
+            {
+                globalAssetId : <globalAssetId>
+                bpns : <bpns>
+            },
+        ]
+    end note
+    User <-- ClientApp : Return job with item graph for the requested id.
+@enduml
