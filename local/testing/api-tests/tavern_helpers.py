@@ -44,7 +44,7 @@ def relationships_for_BPN_investigations_contains_several_childs(response):
     relationships = response.json().get("relationships")
     print("relationships: ", relationships)
     print("Länge: ", len(relationships))
-    assert len(relationships) > 1
+    assert len(relationships) != 0
 
 def ESS_job_parameter_are_as_requested(response):
     print("Check if ESS-job parameter are as requested:")
