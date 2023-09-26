@@ -74,12 +74,12 @@ ClientApp -> dDTR_Tier_N : /ess/customers/investigations/orders
     end note
 
 
-    ClientApp --> dDTR_Tier_N : GET /irs/orders/{orderId}
-    ClientApp <-- dDTR_Tier_N : Get a batch order for a given orderId.
-    ClientApp --> dDTR_Tier_N : GET /irs/orders/{orderId}/batches/{batchId}
-    ClientApp <-- dDTR_Tier_N : Get a batch with a given batchId for a given orderId.
-    ClientApp --> dDTR_Tier_N : GET /irs/jobs/{id}
-    ClientApp <-- dDTR_Tier_N : Return job with item graph for the requested id.
+    ClientApp --> IRS_Tier_N : GET /irs/orders/{orderId}
+    ClientApp <-- IRS_Tier_N : Get a batch order for a given orderId.
+    ClientApp --> IRS_Tier_N : GET /irs/orders/{orderId}/batches/{batchId}
+    ClientApp <-- IRS_Tier_N : Get a batch with a given batchId for a given orderId.
+    ClientApp --> IRS_Tier_N : GET /irs/jobs/{id}
+    ClientApp <-- IRS_Tier_N : Return job with item graph for the requested id.
     User <-- ClientApp : Return job with item graph for the requested id.
       note left
             {
