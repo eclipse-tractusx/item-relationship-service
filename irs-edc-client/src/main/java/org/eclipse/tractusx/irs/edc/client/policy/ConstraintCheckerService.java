@@ -34,6 +34,9 @@ import org.eclipse.edc.policy.model.Operator;
 import org.eclipse.edc.policy.model.OrConstraint;
 import org.springframework.stereotype.Service;
 
+/**
+ * Check and validate Constraint from Policy in Catalog fetch from EDC providers against accepted Policies.
+ */
 @Slf4j
 @Service
 public class ConstraintCheckerService {
