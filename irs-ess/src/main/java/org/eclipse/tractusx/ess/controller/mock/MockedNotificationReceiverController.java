@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.notification.mock;
+package org.eclipse.tractusx.ess.controller.mock;
 
 import java.util.List;
 import java.util.Map;
@@ -60,7 +60,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Validated
 @Hidden
 @Slf4j
-public class MockedNotificationReceiverEndpoint {
+public class MockedNotificationReceiverController {
 
     private final EdcDiscoveryMockConfig edcDiscoveryMockConfig;
     private final EdcSubmodelFacade edcSubmodelFacade;

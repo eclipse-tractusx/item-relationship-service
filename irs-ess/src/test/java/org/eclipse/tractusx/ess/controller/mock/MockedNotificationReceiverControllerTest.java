@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.notification.mock;
+package org.eclipse.tractusx.ess.controller.mock;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -52,10 +52,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-class MockedNotificationReceiverEndpointTest {
+class MockedNotificationReceiverControllerTest {
 
     @InjectMocks
-    private MockedNotificationReceiverEndpoint testee;
+    private MockedNotificationReceiverController testee;
 
     @Mock
     private EdcSubmodelFacade edcSubmodelFacade;
