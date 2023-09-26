@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- IRS now makes use of the value `dspEndpoint` in `subprotocolBody` of the Asset Administration Shell to request submodel data directly.
+
+### Fixed
+- Fixed a case where IRS submodel requests did not reuqest all EDC endpoints discovered by Discovery Finder
 
 ## [3.4.1] - 2023-09-22
 ### Changed
