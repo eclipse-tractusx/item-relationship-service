@@ -124,7 +124,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     private AcceptedPolicy toAcceptedPolicy(final Policy policy) {
-        return new AcceptedPolicy(policy.getPolicyId(), policy.getValidUntil());
+        return new AcceptedPolicy(policy, policy.getValidUntil());
     }
 
 }
