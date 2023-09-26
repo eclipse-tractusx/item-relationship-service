@@ -121,7 +121,7 @@ public abstract class AbstractDelegate {
         return submodelPayload;
     }
 
-    private void throwUsagePolicyExceptionIfPresent(final ArrayList<EdcClientException> exceptions)
+    private void throwUsagePolicyExceptionIfPresent(final List<EdcClientException> exceptions)
             throws EdcClientException {
         final Optional<EdcClientException> usagePolicyException = exceptions.stream()
                                                                             .filter(UsagePolicyException.class::isInstance)
