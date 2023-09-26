@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -63,6 +64,24 @@ class DecentralDigitalTwinRegistryServiceTest {
     private final DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(
             connectorEndpointsService, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
 
+    private static String createAuthCode(final Function<Instant, Instant> expirationModifier) {
+        final var serializedEdrAuthCode = StringMapper.mapToString(
+                EDRAuthCode.builder().exp(expirationModifier.apply(Instant.now()).getEpochSecond()).build());
+        final var bytes = serializedEdrAuthCode.getBytes(StandardCharsets.UTF_8);
+        return Base64.getUrlEncoder().encodeToString(bytes);
+    }
+
+    public static AssetAdministrationShellDescriptor shellDescriptor(
+            final List<SubmodelDescriptor> submodelDescriptors) {
+        return AssetAdministrationShellDescriptor.builder()
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                                                                 .name("ManufacturerId")
+                                                                                                 .value("BPNL00000003AYRE")
+                                                                                                 .build()))
+                                                 .submodelDescriptors(submodelDescriptors)
+                                                 .build();
+    }
+
     @Test
     void shouldReturnExpectedShell() throws RegistryServiceException {
         // given
@@ -72,11 +91,14 @@ class DecentralDigitalTwinRegistryServiceTest {
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
                                                                                    .build();
+        final LookupShellsResponse lookupShellsResponse = LookupShellsResponse.builder()
+                                                                              .result(Collections.emptyList())
+                                                                              .build();
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
         when(endpointDataForConnectorsService.findEndpointDataForConnectors(ArgumentMatchers.anyList())).thenReturn(
                 endpointDataReference);
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                ArgumentMatchers.anyList())).thenReturn(Collections.emptyList());
+                ArgumentMatchers.anyList())).thenReturn(lookupShellsResponse);
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
                 expectedShell);
 
@@ -103,11 +125,14 @@ class DecentralDigitalTwinRegistryServiceTest {
         EndpointDataReference renewedReference = EndpointDataReference.Builder.newInstance()
                                                                               .endpoint("url.to.host")
                                                                               .build();
+        final LookupShellsResponse lookupShellsResponse = LookupShellsResponse.builder()
+                                                                              .result(Collections.emptyList())
+                                                                              .build();
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
         when(endpointDataForConnectorsService.findEndpointDataForConnectors(ArgumentMatchers.anyList())).thenReturn(
                 endpointDataReference, renewedReference);
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                ArgumentMatchers.anyList())).thenReturn(Collections.emptyList());
+                ArgumentMatchers.anyList())).thenReturn(lookupShellsResponse);
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
                 expectedShell);
 
@@ -133,11 +158,14 @@ class DecentralDigitalTwinRegistryServiceTest {
                                                                                    .authKey("test")
                                                                                    .authCode(authCode)
                                                                                    .build();
+        final LookupShellsResponse lookupShellsResponse = LookupShellsResponse.builder()
+                                                                              .result(Collections.emptyList())
+                                                                              .build();
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
         when(endpointDataForConnectorsService.findEndpointDataForConnectors(ArgumentMatchers.anyList())).thenReturn(
                 endpointDataReference);
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                ArgumentMatchers.anyList())).thenReturn(Collections.emptyList());
+                ArgumentMatchers.anyList())).thenReturn(lookupShellsResponse);
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
                 expectedShell);
 
@@ -151,24 +179,6 @@ class DecentralDigitalTwinRegistryServiceTest {
         verify(endpointDataForConnectorsService, times(1)).findEndpointDataForConnectors(anyList());
     }
 
-    private static String createAuthCode(final Function<Instant, Instant> expirationModifier) {
-        final var serializedEdrAuthCode = StringMapper.mapToString(
-                EDRAuthCode.builder().exp(expirationModifier.apply(Instant.now()).getEpochSecond()).build());
-        final var bytes = serializedEdrAuthCode.getBytes(StandardCharsets.UTF_8);
-        return Base64.getUrlEncoder().encodeToString(bytes);
-    }
-
-    public static AssetAdministrationShellDescriptor shellDescriptor(
-            final List<SubmodelDescriptor> submodelDescriptors) {
-        return AssetAdministrationShellDescriptor.builder()
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .name("ManufacturerId")
-                                                                                                 .value("BPNL00000003AYRE")
-                                                                                                 .build()))
-                                                 .submodelDescriptors(submodelDescriptors)
-                                                 .build();
-    }
-
     @Test
     void shouldReturnExpectedGlobalAssetId() throws RegistryServiceException {
         // given
@@ -180,11 +190,15 @@ class DecentralDigitalTwinRegistryServiceTest {
                                                                           .globalAssetId(expectedGlobalAssetId)
                                                                           .build();
         final var endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint("url.to.host").build();
+        final LookupShellsResponse lookupShellsResponse = LookupShellsResponse.builder()
+                                                                              .result(List.of(
+                                                                                digitalTwinRegistryKey.shellId()))
+                                                                              .build();
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
         when(endpointDataForConnectorsService.findEndpointDataForConnectors(ArgumentMatchers.anyList())).thenReturn(
                 endpointDataReference);
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                ArgumentMatchers.anyList())).thenReturn(List.of(digitalTwinRegistryKey.shellId()));
+                ArgumentMatchers.anyList())).thenReturn(lookupShellsResponse);
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
                 expectedShell);
 

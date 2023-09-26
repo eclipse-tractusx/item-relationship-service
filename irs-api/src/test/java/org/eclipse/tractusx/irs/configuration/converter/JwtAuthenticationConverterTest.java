@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.nimbusds.jose.shaded.gson.internal.LinkedTreeMap;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -55,7 +57,7 @@ class JwtAuthenticationConverterTest {
         // then
         assertThat(authenticationToken).isNotNull();
         assertThat(authenticationToken.getAuthorities()).isNotNull();
-        assertThat(authenticationToken.getAuthorities()).contains(new SimpleGrantedAuthority("view_irs"));
+        assertThat(authenticationToken.getAuthorities()).contains(new SimpleGrantedAuthority(IrsRoles.VIEW_IRS));
     }
 
     @Test

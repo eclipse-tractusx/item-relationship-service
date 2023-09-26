@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -43,6 +44,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.aaswrapper.job.RequestMetric;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.FetchedItems;
@@ -178,10 +180,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        return this.registerItemJob(request, null);
+        return this.registerItemJob(request, null, securityHelperService.getClientIdClaim());
     }
 
-    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId) {
+    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId, final String owner) {
         final var params = buildJobParameter(request);
         if (params.getDirection().equals(Direction.UPWARD) && !params.getBomLifecycle().equals(BomLifecycle.AS_BUILT)) {
             // Currently not supported variant
@@ -193,7 +195,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(),
-                params, batchId);
+                params, batchId, owner);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
@@ -386,7 +388,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     shells.addAll(itemContainer.getShells());
                     submodels.addAll(itemContainer.getSubmodels());
                     metrics.addAll(itemContainer.getMetrics());
-                    bpns.addAll(itemContainer.getBpns());
+                    bpns.addAll(itemContainer.getBpnsWithManufacturerName());
                 });
 
             } catch (BlobPersistenceException e) {

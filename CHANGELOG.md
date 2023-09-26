@@ -5,12 +5,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [3.4.1] - 2023-09-22
+### Changed
+- Updated SingleLevelUsageAsBuilt schema to 2.0.0 version.
+
+### Fixed
+- Fixed missing access control for Batch and ESS API.
+
+## [3.4.0] - 2023-09-01
 ### Added
 - Added fetchCatalog to EDCCatalogFacade
 - Introduced new API endpoint to update 'validUntil' property of Policy - PUT {{IRS_HOST}}/irs/policies/{policyId}
+- Introduced new IRS role `admin_irs` which has unrestricted access to every API endpoint
 
+### Changed
+- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. PolicyStore API access is restricted to role `admin_irs`.
+- 
 ### Fixed
 - Fixed bug where BPN's were delivered without 'manufacturerName' property filled
+
+## [3.3.5] - 2023-08-30
+### Changed
+- Updated IRS Digital Twin Registry Client to support latest version 0.3.14-M1
 
 ## [3.3.4] - 2023-08-24
 ### Fixed
@@ -317,7 +334,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.4...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.1...HEAD
+[3.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.0...3.4.1
+[3.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.5...3.4.0
+[3.3.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.4...3.3.5
 [3.3.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.3...3.3.4
 [3.3.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.2...3.3.3
 [3.3.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.1...3.3.2

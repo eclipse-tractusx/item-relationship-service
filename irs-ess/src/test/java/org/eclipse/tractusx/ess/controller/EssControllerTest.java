@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -34,6 +35,8 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.ess.service.EssService;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
@@ -55,12 +58,15 @@ class EssControllerTest {
     @MockBean
     private EssService essService;
 
+    @MockBean(name = "authorizationService")
+    private AuthorizationService authorizationService;
+
     private final String path = "/ess/bpn/investigations";
     private final String globalAssetId = "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6";
     private final String bpn = "BPNS000000000DDD";
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldRegisterBpnInvestigationForValidRequest() throws Exception {
         when(essService.startIrsJob(any(RegisterBpnInvestigationJob.class))).thenReturn(
                 JobHandle.builder().id(UUID.randomUUID()).build());
@@ -72,7 +78,7 @@ class EssControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldGetJob() throws Exception {
         final String jobId = UUID.randomUUID().toString();
         when(essService.getIrsJob(jobId)).thenReturn(Jobs.builder().build());
@@ -81,7 +87,7 @@ class EssControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestForWrongGlobalAssetId() throws Exception {
         this.mockMvc.perform(post(path).with(csrf())
                                        .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +97,7 @@ class EssControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestForWrongBpn() throws Exception {
         this.mockMvc.perform(post(path).with(csrf())
                                        .contentType(MediaType.APPLICATION_JSON)

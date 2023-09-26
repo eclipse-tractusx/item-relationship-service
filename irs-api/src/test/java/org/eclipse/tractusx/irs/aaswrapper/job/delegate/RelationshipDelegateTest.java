@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -57,8 +58,8 @@ class RelationshipDelegateTest {
     final RelationshipDelegate relationshipDelegate = new RelationshipDelegate(null, submodelFacade,
             connectorEndpointsService, jsonUtil);
 
-    final String singleLevelBomAsBuiltAspectName = "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
-    final String singleLevelUsageAsBuiltAspectName = "urn:bamm:com.catenax.single_level_usage_as_built:1.0.0#SingleLevelUsageAsBuilt";
+    final String singleLevelBomAsBuiltAspectName = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt";
+    final String singleLevelUsageAsBuiltAspectName = "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
 
     private static PartChainIdentificationKey createKey() {
         return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();

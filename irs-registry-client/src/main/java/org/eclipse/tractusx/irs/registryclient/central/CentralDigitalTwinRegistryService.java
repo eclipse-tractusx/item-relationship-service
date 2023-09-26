@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -55,7 +56,8 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
     @Override
     public Collection<DigitalTwinRegistryKey> lookupShellIdentifiers(final String bpn) {
         log.info("Looking up shells for bpn {}", bpn);
-        final var shellIds = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(List.of());
+        final var shellIds = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(List.of())
+                                                      .getResult();
         log.info("Found {} shells in total", shellIds.size());
         return shellIds.stream().map(id -> new DigitalTwinRegistryKey(id, bpn)).toList();
     }
@@ -67,7 +69,7 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
                                                                                     .build();
 
         final List<String> allAssetAdministrationShellIdsByAssetLink = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                Collections.singletonList(identifierKeyValuePair));
+                Collections.singletonList(identifierKeyValuePair)).getResult();
 
         return allAssetAdministrationShellIdsByAssetLink.stream().findFirst().orElse(globalAssetId);
     }

@@ -3,6 +3,7 @@ skinparam monochrome true
 skinparam shadowing false
 skinparam nodesep 100
 skinparam ranksep 20
+skinparam defaultFontName "Architects daughter"
 
 node ArgoCD
 node GitHub

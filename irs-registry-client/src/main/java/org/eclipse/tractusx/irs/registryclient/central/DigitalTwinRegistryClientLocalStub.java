@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -25,9 +26,10 @@ package org.eclipse.tractusx.irs.registryclient.central;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +54,8 @@ class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
     }
 
     @Override
-    public List<String> getAllAssetAdministrationShellIdsByAssetLink(final List<IdentifierKeyValuePair> assetIds) {
-        return Collections.emptyList();
+    public LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(
+            final List<IdentifierKeyValuePair> assetIds) {
+        return LookupShellsResponse.builder().result(Collections.emptyList()).build();
     }
 }

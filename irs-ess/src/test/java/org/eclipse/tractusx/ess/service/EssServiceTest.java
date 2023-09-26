@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -37,6 +38,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.tractusx.ess.irs.IrsFacade;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -52,11 +55,14 @@ import org.springframework.web.server.ResponseStatusException;
 class EssServiceTest {
 
     private final IrsFacade irsFacade = mock(IrsFacade.class);
+
+    private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
+
     private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
     private final EssRecursiveNotificationHandler recursiveNotificationHandler = mock(
             EssRecursiveNotificationHandler.class);
-    private final EssService essService = new EssService(irsFacade, bpnInvestigationJobCache,
-            recursiveNotificationHandler);
+    private final EssService essService = new EssService(irsFacade, securityHelperService,
+            bpnInvestigationJobCache, recursiveNotificationHandler);
 
     @Test
     void shouldSuccessfullyStartJobAndReturnWithExtendedSubmodelList() {
@@ -75,6 +81,7 @@ class EssServiceTest {
                                           .job(Job.builder()
                                                   .state(JobState.COMPLETED)
                                                   .id(createdJobId)
+                                                  .owner(IrsRoles.VIEW_IRS)
                                                   .globalAssetId(GlobalAssetIdentification.of(globalAssetId))
                                                   .build())
                                           .submodels(new ArrayList<>())
@@ -83,6 +90,7 @@ class EssServiceTest {
 
         when(irsFacade.startIrsJob(eq(key), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
         when(irsFacade.getIrsJob(createdJobId.toString())).thenReturn(expectedResponse);
+        when(securityHelperService.isAdmin()).thenReturn(true);
 
         final JobHandle jobHandle = essService.startIrsJob(request);
         final Jobs jobs = essService.getIrsJob(jobHandle.getId().toString());
@@ -98,6 +106,7 @@ class EssServiceTest {
         final String notificationId = UUID.randomUUID().toString();
         final String notificationId2 = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();
+        final String owner = securityHelperService.getClientIdClaim();
         final EdcNotification edcNotification = EdcNotification.builder()
                                                                .header(EdcNotificationHeader.builder()
                                                                                             .notificationId(
@@ -117,9 +126,8 @@ class EssServiceTest {
                                                                 .content(Map.of("result", "Yes"))
                                                                 .build();
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
-                                                                                   Jobs.builder().job(Job.builder().id(jobId).build()).build(), new ArrayList<>())
-                                                                           .withNotifications(List.of(notificationId,
-                                                                                   notificationId2));
+                                                                                   Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), owner, new ArrayList<>())
+                                                                           .withNotifications(List.of(notificationId, notificationId2));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
@@ -150,9 +158,12 @@ class EssServiceTest {
     void shouldKeepJobInRunningIfNotificationIsOpen() {
         final String notificationId = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();
+        final String owner = securityHelperService.getClientIdClaim();
+        when(securityHelperService.isAdmin()).thenReturn(true);
 
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
-                                                                                   Jobs.builder().job(Job.builder().id(jobId).build()).build(), new ArrayList<>())
+                                                                                   Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), owner,
+                                                                                   new ArrayList<>())
                                                                            .withNotifications(Collections.singletonList(
                                                                                    notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);

@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -67,7 +68,9 @@ public class RegistryConfiguration {
     @ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "decentral")
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
             @Qualifier(RestTemplateConfig.EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate,
-            final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade facade) {
+            final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade facade,
+            @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
+            @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate) {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService,
                 new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
                     try {
@@ -75,7 +78,8 @@ public class RegistryConfiguration {
                     } catch (EdcClientException e) {
                         throw new EdcRetrieverException(e);
                     }
-                }), new DecentralDigitalTwinRegistryClient(edcRestTemplate));
+                }),
+                new DecentralDigitalTwinRegistryClient(edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate));
     }
 
     @Bean

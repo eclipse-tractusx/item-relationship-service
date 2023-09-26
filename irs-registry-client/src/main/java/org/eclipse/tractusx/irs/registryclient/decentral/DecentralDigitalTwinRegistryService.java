@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -56,6 +57,11 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private final EndpointDataForConnectorsService endpointDataForConnectorsService;
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
 
+    private static Stream<Map.Entry<String, List<DigitalTwinRegistryKey>>> groupKeysByBpn(
+            final Collection<DigitalTwinRegistryKey> keys) {
+        return keys.stream().collect(Collectors.groupingBy(DigitalTwinRegistryKey::bpn)).entrySet().stream();
+    }
+
     @Override
     public Collection<AssetAdministrationShellDescriptor> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
             throws RegistryServiceException {
@@ -69,11 +75,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.info("Found {} shell(s) for {} key(s)", collectedShells.size(), keys.size());
             return collectedShells;
         }
-    }
-
-    private static Stream<Map.Entry<String, List<DigitalTwinRegistryKey>>> groupKeysByBpn(
-            final Collection<DigitalTwinRegistryKey> keys) {
-        return keys.stream().collect(Collectors.groupingBy(DigitalTwinRegistryKey::bpn)).entrySet().stream();
     }
 
     @NotNull
@@ -134,7 +135,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private String mapToShellId(final EndpointDataReference endpointDataReference, final String key) {
         final var identifierKeyValuePair = IdentifierKeyValuePair.builder().name("globalAssetId").value(key).build();
         final var aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                endpointDataReference, List.of(identifierKeyValuePair)).stream().findFirst().orElse(key);
+                endpointDataReference, List.of(identifierKeyValuePair)).getResult().stream().findFirst().orElse(key);
 
         if (key.equals(aaShellIdentification)) {
             log.info("Found shell with shellId {} in registry", aaShellIdentification);
@@ -156,7 +157,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         final var shellIds = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                 endpointDataReference,
-                List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build()));
+                List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())).getResult();
         log.info("Found {} shell id(s) in total", shellIds.size());
         return shellIds;
     }

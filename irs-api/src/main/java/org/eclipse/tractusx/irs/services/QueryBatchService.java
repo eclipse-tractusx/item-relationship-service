@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -29,6 +30,7 @@ import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
@@ -43,7 +45,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- *
+ * Read service for Batches
  */
 @Service
 @Slf4j
@@ -54,6 +56,7 @@ public class QueryBatchService {
     private final BatchStore batchStore;
 
     private final JobStore jobStore;
+    private final SecurityHelperService securityHelperService;
 
     public BatchOrderResponse findOrderById(final UUID batchOrderId) {
         final BatchOrder batchOrder = batchOrderStore.find(batchOrderId)
@@ -61,6 +64,11 @@ public class QueryBatchService {
                                                              () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                                                      "Cannot find Batch Order with id: "
                                                                              + batchOrderId));
+
+        if (!securityHelperService.isAdmin() && !batchOrder.getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access Batch Order with id " + batchOrderId + " due to missing privileges.");
+        }
+
         final List<Batch> batches = batchStore.findAll()
                                               .stream()
                                               .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
@@ -75,17 +83,24 @@ public class QueryBatchService {
     }
 
     public BatchResponse findBatchById(final UUID batchOrderId, final UUID batchId) {
+        final Batch batchResponse = batchStore.find(batchId)
+                                              .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
+                                              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                                      "Cannot find Batch with orderId: " + batchOrderId
+                                                                              + " and id: " + batchId));
+
+        if (!securityHelperService.isAdmin() && !batchResponse.getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access Batch with orderId: " + batchOrderId
+                    + " and id: " + batchId + " due to missing privileges.");
+        }
+
         final Integer totalJobs = batchStore.findAll()
                                             .stream()
                                             .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
                                             .map(batch -> batch.getJobProgressList().size())
                                             .reduce(0, Integer::sum);
 
-        return batchStore.find(batchId)
-                         .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
-                         .map(batch -> toBatchResponse(batch, totalJobs))
-                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                 "Cannot find Batch with orderId: " + batchOrderId + " and id: " + batchId));
+        return toBatchResponse(batchResponse, totalJobs);
     }
 
     private BatchOrderResponse.BatchResponse toResponse(final Batch batch) {

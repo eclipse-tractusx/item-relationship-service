@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -80,7 +81,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
-        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes, false, false,
+        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", depth, aspectTypes, false, false,
                 Direction.DOWNWARD);
     }
 
@@ -89,7 +90,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithUrl(final String callbackUrl) {
-        final RegisterJob registerJob = registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", 100, List.of(),
+        final RegisterJob registerJob = registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", 100, List.of(),
                 false, false, Direction.DOWNWARD);
         registerJob.setCallbackUrl(callbackUrl);
         return registerJob;
@@ -97,12 +98,12 @@ public class TestMother {
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
-        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", depth, aspectTypes, true, false,
+        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", depth, aspectTypes, true, false,
                 Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJobWithLookupBPNs() {
-        return registerJob("urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e", null,
+        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", null,
                 List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), false, true, Direction.DOWNWARD);
     }
 

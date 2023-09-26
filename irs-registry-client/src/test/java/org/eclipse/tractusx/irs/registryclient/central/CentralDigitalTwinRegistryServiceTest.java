@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -24,6 +25,7 @@ package org.eclipse.tractusx.irs.registryclient.central;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -35,12 +37,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.BeforeEach;
@@ -73,7 +76,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() throws RegistryServiceException {
-        final String existingCatenaXId = "urn:uuid:bdadc54c-9ac3-478b-95e6-f968580d85b3";
+        final String existingCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
 
         final Collection<AssetAdministrationShellDescriptor> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
                 List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")));
@@ -86,7 +89,8 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         final Endpoint endpoint = shellEndpoints.get(0).getEndpoints().get(0);
 
         assertThat(endpoint.getProtocolInformation().getSubprotocolBody()).contains(existingCatenaXId);
-        assertThat(shellEndpoints.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltURN);
+        assertThat(shellEndpoints.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                singleLevelBomAsBuiltURN);
         assertThat(shellEndpoints.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartURN);
     }
 
@@ -96,6 +100,8 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         final DigitalTwinRegistryKey key = new DigitalTwinRegistryKey(catenaXId, "");
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenThrow(
                 new RestClientException("Dummy"));
+        when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(any())).thenReturn(
+                LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         final var keys = List.of(key);
         assertThatExceptionOfType(RestClientException.class).isThrownBy(
@@ -109,6 +115,8 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         shellDescriptor.setSubmodelDescriptors(List.of());
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
+        when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(any())).thenReturn(
+                LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(
                 List.of(new DigitalTwinRegistryKey(catenaXId, ""))).stream().findFirst().get().getSubmodelDescriptors();
@@ -122,6 +130,8 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         shellDescriptor.setSubmodelDescriptors(List.of());
 
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(catenaXId)).thenReturn(shellDescriptor);
+        when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(any())).thenReturn(
+                LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         dtRegistryFacadeWithMock.fetchShells(List.of(new DigitalTwinRegistryKey(catenaXId, "")));
 
@@ -137,7 +147,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         shellDescriptor.setSubmodelDescriptors(List.of());
 
         when(dtRegistryClientMock.getAllAssetAdministrationShellIdsByAssetLink(anyList())).thenReturn(
-                Collections.singletonList(identification));
+                LookupShellsResponse.builder().result(Collections.singletonList(identification)).build());
         when(dtRegistryClientMock.getAssetAdministrationShellDescriptor(identification)).thenReturn(shellDescriptor);
 
         final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(
@@ -161,7 +171,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() throws RegistryServiceException {
-        final String existingCatenaXId = "urn:uuid:bdadc54c-9ac3-478b-95e6-f968580d85b3";
+        final String existingCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
 
         final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryService.fetchShells(
                                                                                           List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")))

@@ -13,31 +13,13 @@ The library is based on Spring Boot and uses its configuration features.
 Include the library into your project:
 
 ```
-<repositories>
-    <repository>
-        <id>github</id>
-        <name>GitHub Packages</name>
-        <url>https://maven.pkg.github.com/catenax-ng/tx-item-relationship-service</url>
-    </repository>
-</repositories>
-
 <dependencies>
     <dependency>
         <groupId>org.eclipse.tractusx.irs</groupId>
         <artifactId>irs-registry-client</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.2.0-SNAPSHOT</version>
     </dependency>
 </dependencies>
-```
-**Note**: Since the library is currently only available on GitHub Packages, you need to provide a personal access token (PAT) for local builds. Update your Maven settings.xml (usually located at ~/.m2/settings.xml) like this:
-```
-<servers>
-    <server>
-        <id>github</id>
-        <username>enter-your-github-username</username>
-        <password>enter-your-generated-personal-access-token</password>
-    </server>
-</servers>
 ```
 
 Add the following configuration to your `application.yaml`:
@@ -50,6 +32,8 @@ digitalTwinRegistryClient:
 
   descriptorEndpoint: "" # required if type is "central", must contain the placeholder {aasIdentifier}
   shellLookupEndpoint: "" # required if type is "central", must contain the placeholder {assetIds}
+  shellDescriptorTemplate: /shell-descriptors/{aasIdentifier} # The path to retrieve AAS descriptors from the DTR. Required if type is "decentral", must contain the placeholder {aasIdentifier}
+  lookupShellsTemplate: /lookup/shells?assetIds={assetIds} # The path to lookup shells from the DTR. Required if type is "decentral", must contain the placeholder {assetIds}
 
 irs-edc-client:
   callback-url: "" # The URL where the EDR token callback will be sent to. This defaults to {BASE_URL}/internal/endpoint-data-reference. If you want to use a different mapping, you can override it with irs-edc-client.callback.mapping.
@@ -78,10 +62,10 @@ irs-edc-client:
 
 
   catalog:
-    cache:
-      enabled: false # Set to false to disable caching
-      ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
-      maxCachedItems: 64000 # Maximum amount of cached catalog items
+    policies:
+    # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
+    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
+    allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability # List of comma separated names of the policies to accept.
 
 ```
 

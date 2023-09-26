@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -40,12 +41,13 @@ import org.springframework.web.client.RestTemplate;
 class DefaultConfigurationTest {
 
     private final DefaultConfiguration testee = new DefaultConfiguration();
+    private final String descriptorTemplate = "descriptor/{aasIdentifier}";
+    private final String shellLookupTemplate = "shell?{assetIds}";
 
     @Test
     void centralDigitalTwinRegistryService() {
         final var service = testee.centralDigitalTwinRegistryService(
-                testee.digitalTwinRegistryClientImpl(new RestTemplate(), "descriptor/{aasIdentifier}",
-                        "shell?{assetIds}"));
+                testee.digitalTwinRegistryClientImpl(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
 
         assertThat(service).isNotNull();
     }
@@ -56,7 +58,7 @@ class DefaultConfigurationTest {
         final var service = testee.decentralDigitalTwinRegistryService(
                 testee.connectorEndpointsService(testee.discoveryFinderClient(new RestTemplate(), "finder")),
                 testee.endpointDataForConnectorsService(facadeMock),
-                testee.decentralDigitalTwinRegistryClient(new RestTemplate()));
+                testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
 
         assertThat(service).isNotNull();
     }

@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -53,13 +54,13 @@ public class CxTestDataContainer {
     @Data
     public static class CxTestData {
 
-        public static final String SERIAL_PART_ASPECT_TYPE = "urn:bamm:io.catenax.serial_part:1.1.0#SerialPart";
-        public static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
-        public static final String SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt";
+        public static final String SERIAL_PART_ASPECT_TYPE = "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart";
+        public static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt";
+        public static final String SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
         public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_specified:1.0.0#SingleLevelBomAsSpecified";
         public static final String PART_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.part_as_planned:1.0.0#PartAsPlanned";
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned";
-        public static final String BATCH_ASPECT_TYPE = "urn:bamm:io.catenax.batch:1.0.0#Batch";
+        public static final String BATCH_ASPECT_TYPE = "urn:bamm:io.catenax.batch:2.0.0#Batch";
         public static final String MATERIAL_FOR_RECYCLING_ASPECT_TYPE = "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
         public static final String PRODUCT_DESCRIPTION_ASPECT_TYPE = "urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription";
         public static final String PHYSICAL_DIMENSION_ASPECT_TYPE = "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension";

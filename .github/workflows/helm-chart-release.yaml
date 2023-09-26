@@ -60,15 +60,31 @@ jobs:
           version: v3.8.1
 
       - name: Update helm dependencies for irs
+        working-directory: charts/irs-helm/
         run: |
-          cd charts/irs-helm
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo add grafana https://grafana.github.io/helm-charts
           helm dependency update
 
+      - name: Create temporary CHANGELOG file for helm release
+        working-directory: charts/irs-helm/
+        run: |
+          touch CHANGELOG-temp.md
+          
+          currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^irs-helm-//" )
+          echo currentVersionNumber=$currentVersionNumber
+          
+          sed -n -e '/## \['"${currentVersionNumber}"'\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> CHANGELOG-temp.md
+          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ needs.get-helm-charts-versions-irs.outputs.latest_version }}...${{ needs.get-helm-charts-versions-irs.outputs.current_version }} >> CHANGELOG-temp.md
+          
+          echo "cat CHANGELOG-temp.md"
+          cat CHANGELOG-temp.md
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
+        with:
+          config: ./.github/configs/cr-config.yml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

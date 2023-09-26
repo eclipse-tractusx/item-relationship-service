@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -25,7 +26,6 @@ package org.eclipse.tractusx.irs.registryclient.central;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -40,8 +40,8 @@ import java.util.List;
 
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -70,27 +70,28 @@ class DigitalTwinRegistryClientImplTest {
 
     @Test
     void shouldCallExternalServiceOnceAndGetAssetAdministrationShellIds() {
-        doReturn(ResponseEntity.ok(List.of("testId"))).when(restTemplate)
-                                                      .exchange(anyString(), any(), any(),
-                                                              any(ParameterizedTypeReference.class));
+        doReturn(ResponseEntity.ok(LookupShellsResponse.builder().result(List.of("testId")).build())).when(restTemplate)
+                                                                                                     .exchange(any(),
+                                                                                                           any(), any(),
+                                                                                                           eq(LookupShellsResponse.class));
 
         final List<String> empty = digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                Collections.emptyList());
+                Collections.emptyList()).getResult();
 
         assertNotNull(empty);
-        verify(this.restTemplate, times(1)).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class));
+        verify(this.restTemplate, times(1)).exchange(any(), any(), any(), eq(LookupShellsResponse.class));
     }
 
     @Test
     void shouldCallExternalServiceOnceAndRunIntoTimeout() {
         final SocketTimeoutException timeoutException = new SocketTimeoutException("UnitTestTimeout");
         Throwable ex = new ResourceAccessException("UnitTest", timeoutException);
-        doThrow(ex).when(restTemplate).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class));
+        doThrow(ex).when(restTemplate).exchange(any(), any(), any(), eq(LookupShellsResponse.class));
 
         final List<IdentifierKeyValuePair> emptyList = Collections.emptyList();
         assertThrows(ResourceAccessException.class,
                 () -> digitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(emptyList));
 
-        verify(this.restTemplate, times(1)).exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class));
+        verify(this.restTemplate, times(1)).exchange(any(), any(), any(), eq(LookupShellsResponse.class));
     }
 }
