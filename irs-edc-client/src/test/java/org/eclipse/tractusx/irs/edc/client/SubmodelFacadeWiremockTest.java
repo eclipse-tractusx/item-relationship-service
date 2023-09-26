@@ -40,6 +40,7 @@ import static org.mockito.Mockito.when;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,13 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
+import org.eclipse.tractusx.irs.edc.client.policy.ConstraintCheckerService;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
+import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
+import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,12 +119,15 @@ class SubmodelFacadeWiremockTest {
 
         final AcceptedPoliciesProvider acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(
-                List.of(new AcceptedPolicy(policy("FrameworkAgreement.traceability"), OffsetDateTime.now().plusYears(1)),
-                        new AcceptedPolicy(policy("Membership"), OffsetDateTime.now().plusYears(1))));
-        final List<String> leftOperands = List.of("PURPOSE");
-        final List<String> rightOperands = List.of("active");
+                List.of(new AcceptedPolicy(policy("IRS Policy", List.of(
+                        new Permission(PolicyType.USE, List.of(new Constraints(
+                                List.of(new Constraint("Membership", OperatorType.EQ, List.of("active")),
+                                        new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active"))),
+                                new ArrayList<>()
+                        )))
+                        )), OffsetDateTime.now().plusYears(1))));
         final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider,
-                rightOperands, leftOperands);
+                new ConstraintCheckerService());
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
 
@@ -283,12 +293,12 @@ class SubmodelFacadeWiremockTest {
         return String.format("http://localhost:%d", this.wireMockServer.port());
     }
 
-    private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId) {
+    private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId, List<Permission> permissions) {
         return new org.eclipse.tractusx.irs.edc.client.policy.Policy(
                 policyId,
                 OffsetDateTime.now().plusYears(1),
                 OffsetDateTime.now().plusYears(1),
-                Collections.emptyList()
+                permissions
         );
     }
 }
