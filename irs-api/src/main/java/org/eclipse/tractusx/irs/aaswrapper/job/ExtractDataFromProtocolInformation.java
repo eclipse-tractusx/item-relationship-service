@@ -51,6 +51,7 @@ public class ExtractDataFromProtocolInformation {
         if (subprotocolBody.contains(DSP_ENDPOINT)) {
             final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
                                                                  .map(str -> str.split("="))
+                                                                 .filter(strings -> strings.length == 2)
                                                                  .collect(Collectors.toMap(e -> e[0], e -> e[1]));
             if (parametersFromPath.containsKey(DSP_ENDPOINT)) {
                 return Optional.of(parametersFromPath.get(DSP_ENDPOINT));
