@@ -35,7 +35,8 @@ import org.eclipse.edc.policy.model.OrConstraint;
 import org.springframework.stereotype.Service;
 
 /**
- * Check and validate Constraint from Policy in Catalog fetch from EDC providers against accepted Policies.
+ * Check and validate Constraint from Policy in Catalog
+ * fetch from EDC providers against accepted Policies.
  */
 @Slf4j
 @Service
@@ -84,12 +85,13 @@ public class ConstraintCheckerService {
         }
     }
 
-    private boolean isSameAs(final AtomicConstraint atomicConstraint, final org.eclipse.tractusx.irs.edc.client.policy.Constraint ac) {
+    private boolean isSameAs(final AtomicConstraint atomicConstraint,
+            final org.eclipse.tractusx.irs.edc.client.policy.Constraint acceptedConstraint) {
         return AtomicConstraintValidator.builder()
                                         .atomicConstraint(atomicConstraint)
-                                        .leftExpressionValue(ac.getLeftOperand())
-                                        .rightExpressionValue(ac.getRightOperand().stream().findFirst().orElse(""))
-                                        .expectedOperator(Operator.valueOf(ac.getOperator().name()))
+                                        .leftExpressionValue(acceptedConstraint.getLeftOperand())
+                                        .rightExpressionValue(acceptedConstraint.getRightOperand().stream().findFirst().orElse(""))
+                                        .expectedOperator(Operator.valueOf(acceptedConstraint.getOperator().name()))
                                         .build()
                                         .isValid();
     }
