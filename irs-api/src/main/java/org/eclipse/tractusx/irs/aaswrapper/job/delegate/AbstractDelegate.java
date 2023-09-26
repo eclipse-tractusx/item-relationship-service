@@ -90,10 +90,7 @@ public abstract class AbstractDelegate {
             final ConnectorEndpointsService connectorEndpointsService, final Endpoint endpoint, final String bpn)
             throws EdcClientException {
         final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        final ArrayList<String> submodelPayload = new ArrayList<>();
-        for (final String connectorEndpoint : connectorEndpoints) {
-            addSubmodelToList(submodelFacade, endpoint, submodelPayload, connectorEndpoint);
-        }
+
         final List<String> submodelPayload = getSubmodels(submodelFacade, endpoint, connectorEndpoints);
         return submodelPayload.stream()
                               .findFirst()
