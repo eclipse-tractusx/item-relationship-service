@@ -23,7 +23,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.DSP_ENDPOINT;
 import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractAssetId;
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractDspEndpoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,14 +91,23 @@ public abstract class AbstractDelegate {
     protected String requestSubmodelAsString(final EdcSubmodelFacade submodelFacade,
             final ConnectorEndpointsService connectorEndpointsService, final Endpoint endpoint, final String bpn)
             throws EdcClientException {
-        final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-
-        final List<String> submodelPayload = getSubmodels(submodelFacade, endpoint, connectorEndpoints);
-        return submodelPayload.stream()
-                              .findFirst()
-                              .orElseThrow(() -> new EdcClientException(String.format(
-                                      "Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
-                                      connectorEndpoints.size(), String.join(", ", connectorEndpoints))));
+        final List<String> connectorEndpoints;
+        final String subprotocolBody = endpoint.getProtocolInformation().getSubprotocolBody();
+        final Optional<String> dspEndpoint = extractDspEndpoint(subprotocolBody);
+        if (dspEndpoint.isPresent()) {
+            log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload", subprotocolBody);
+            return submodelFacade.getSubmodelRawPayload(dspEndpoint.get(), endpoint.getProtocolInformation().getHref(),
+                    extractAssetId(subprotocolBody));
+        } else {
+            log.info("SubprotocolBody does not contain '{}'. Using Discovery Service as fallback.", DSP_ENDPOINT);
+            connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            final List<String> submodelPayload = getSubmodels(submodelFacade, endpoint, connectorEndpoints);
+            return submodelPayload.stream()
+                                  .findFirst()
+                                  .orElseThrow(() -> new EdcClientException(String.format(
+                                          "Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
+                                          connectorEndpoints.size(), String.join(", ", connectorEndpoints))));
+        }
     }
 
     private List<String> getSubmodels(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,

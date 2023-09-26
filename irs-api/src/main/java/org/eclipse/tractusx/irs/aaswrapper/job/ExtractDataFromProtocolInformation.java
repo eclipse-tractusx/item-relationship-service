@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,20 +36,30 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExtractDataFromProtocolInformation {
+    public static final String DSP_ENDPOINT = "dspEndpoint";
+    public static final String DSP_ID = "id";
     private static final String ASSET_ID_SEPARATOR = ";";
 
     public static String extractAssetId(final String subprotocolBody) {
         final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
                                                              .map(str -> str.split("="))
                                                              .collect(Collectors.toMap(e -> e[0], e -> e[1]));
-        return parametersFromPath.get("id");
+        return parametersFromPath.get(DSP_ID);
     }
 
-    public static String extractDspEndpoint(final String subprotocolBody) {
-        final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
-                                                             .map(str -> str.split("="))
-                                                             .collect(Collectors.toMap(e -> e[0], e -> e[1]));
-        return parametersFromPath.get("dspEndpoint");
+    public static Optional<String> extractDspEndpoint(final String subprotocolBody) {
+        if (subprotocolBody.contains(DSP_ENDPOINT)) {
+            final Map<String, String> parametersFromPath = Stream.of(subprotocolBody.split(ASSET_ID_SEPARATOR))
+                                                                 .map(str -> str.split("="))
+                                                                 .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+            if (parametersFromPath.containsKey(DSP_ENDPOINT)) {
+                return Optional.of(parametersFromPath.get(DSP_ENDPOINT));
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
     }
 
 }
