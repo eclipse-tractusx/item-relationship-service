@@ -53,11 +53,8 @@ public class ExtractDataFromProtocolInformation {
                                                                  .map(str -> str.split("="))
                                                                  .filter(strings -> strings.length == 2)
                                                                  .collect(Collectors.toMap(e -> e[0], e -> e[1]));
-            if (parametersFromPath.containsKey(DSP_ENDPOINT)) {
-                return Optional.of(parametersFromPath.get(DSP_ENDPOINT));
-            } else {
-                return Optional.empty();
-            }
+
+            return Optional.ofNullable(parametersFromPath.get(DSP_ENDPOINT));
         } else {
             return Optional.empty();
         }

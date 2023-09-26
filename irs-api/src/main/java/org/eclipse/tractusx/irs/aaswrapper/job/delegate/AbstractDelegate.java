@@ -91,7 +91,6 @@ public abstract class AbstractDelegate {
     protected String requestSubmodelAsString(final EdcSubmodelFacade submodelFacade,
             final ConnectorEndpointsService connectorEndpointsService, final Endpoint endpoint, final String bpn)
             throws EdcClientException {
-        final List<String> connectorEndpoints;
         final String subprotocolBody = endpoint.getProtocolInformation().getSubprotocolBody();
         final Optional<String> dspEndpoint = extractDspEndpoint(subprotocolBody);
         if (dspEndpoint.isPresent()) {
@@ -100,7 +99,7 @@ public abstract class AbstractDelegate {
                     extractAssetId(subprotocolBody));
         } else {
             log.info("SubprotocolBody does not contain '{}'. Using Discovery Service as fallback.", DSP_ENDPOINT);
-            connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
             final List<String> submodelPayload = getSubmodels(submodelFacade, endpoint, connectorEndpoints);
             return submodelPayload.stream()
                                   .findFirst()
