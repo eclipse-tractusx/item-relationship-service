@@ -1,0 +1,13 @@
+@startuml
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+participant
+participant
+
+
+@enduml
