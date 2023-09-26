@@ -23,7 +23,9 @@ participant "SubmodelServer" as SubmodelServer_Tier_3
 end box
 
 
-User -> ClientApp
+User -> ClientApp : Incident notification (incidentID)
+activate ClientApp
+
 ClientApp -> dDTR_Tier_N : getAAShells ()
 ref over dDTR_Tier_N
     GET AAShells from dDTR for own BPNL
@@ -32,7 +34,7 @@ ClientApp <-- dDTR_Tier_N : Array [{AAS shells}]
 
 ClientApp -> ClientApp : Extract globalAssetId
 
-ClientApp -> dDTR_Tier_N : /ess/customers/investigations/orders
+ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
     note left
         Investigation of customers who must be notified about an incident.
         parameters:
@@ -57,13 +59,13 @@ ClientApp -> dDTR_Tier_N : /ess/customers/investigations/orders
         Determining relationships 1 tier level upwards
     end ref
 
-    dDTR_Tier_N -> dDTR_Tier_N : aggregateBPNLs
+    IRS_Tier_N -> IRS_Tier_N : aggregateBPNLs
     note left
         Aggregate bpns numbers for each bpnl
     end note
-    dDTR_Tier_N <-- dDTR_Tier_N : [{globalAssetId,businessPartnerNumberLegalEntity, [businessPartnerNumberSite]}]
+    IRS_Tier_N <-- IRS_Tier_N : [{globalAssetId,businessPartnerNumberLegalEntity, [businessPartnerNumberSite]}]
 
-    dDTR_Tier_N -> dDTR_Tier_N : validityPeriodChecker
+    IRS_Tier_N -> IRS_Tier_N : validityPeriodChecker
     note left
         validityPeriodCheck: Checks if passed timestamp is in validity period defined with
         validityPeriod.validFrom and  PartAsPlanned.validityPeriod.validTo

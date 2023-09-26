@@ -1,0 +1,39 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+box Incident Originator Company (Tier 4)
+    participant "Incident App" as BusinessApp_Tier_4
+end box
+
+participant EDC
+
+box Incident Company (Tier 3)
+participant "Incident App" as BusinessApp_Tier_3
+
+
+BusinessApp_Tier_4 -> BusinessApp_Tier_3 : notification
+note left
+{
+    "header": {
+        "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+         ...
+    },
+    "content": {
+        "incidentBpn" : ["BPNS123456"]
+        "concernedCatenaXIds" : [ {
+            globalAssetId : <globalAssetId>,
+            bpns: [
+                <bpns>
+            ]
+         }
+    }
+}
+end note
+
+
+
+@enduml
