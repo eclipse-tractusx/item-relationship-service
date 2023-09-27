@@ -27,7 +27,6 @@ import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInf
 import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractAssetId;
 import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractDspEndpoint;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,9 +39,7 @@ import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 
 /**
@@ -100,45 +97,24 @@ public abstract class AbstractDelegate {
         } else {
             log.info("SubprotocolBody does not contain '{}'. Using Discovery Service as fallback.", DSP_ENDPOINT);
             final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-            final List<String> submodelPayload = getSubmodels(submodelFacade, endpoint, connectorEndpoints);
-            return submodelPayload.stream()
-                                  .findFirst()
-                                  .orElseThrow(() -> new EdcClientException(String.format(
-                                          "Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
-                                          connectorEndpoints.size(), String.join(", ", connectorEndpoints))));
+            return getSubmodel(submodelFacade, endpoint, connectorEndpoints);
         }
     }
 
-    private List<String> getSubmodels(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
+    private String getSubmodel(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
             final List<String> connectorEndpoints) throws EdcClientException {
-        final ArrayList<String> submodelPayload = new ArrayList<>();
-        final ArrayList<EdcClientException> exceptions = new ArrayList<>();
         for (final String connectorEndpoint : connectorEndpoints) {
             try {
-                submodelPayload.add(submodelFacade.getSubmodelRawPayload(connectorEndpoint,
+                return submodelFacade.getSubmodelRawPayload(connectorEndpoint,
                         endpoint.getProtocolInformation().getHref(),
-                        extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
-            } catch (ItemNotFoundInCatalogException e) {
-                log.info("Could not find asset in catalog. Requesting next endpoint.", e);
+                        extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
             } catch (EdcClientException e) {
                 log.info("EdcClientException while accessing endpoint '{}'", connectorEndpoint, e);
-                exceptions.add(e);
             }
         }
-        if (submodelPayload.isEmpty()) {
-            throwUsagePolicyExceptionIfPresent(exceptions);
-        }
-        return submodelPayload;
-    }
-
-    private void throwUsagePolicyExceptionIfPresent(final List<EdcClientException> exceptions)
-            throws EdcClientException {
-        final Optional<EdcClientException> usagePolicyException = exceptions.stream()
-                                                                            .filter(UsagePolicyException.class::isInstance)
-                                                                            .findFirst();
-        if (usagePolicyException.isPresent()) {
-            throw usagePolicyException.get();
-        }
+        throw new EdcClientException(
+                String.format("Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
+                        connectorEndpoints.size(), String.join(", ", connectorEndpoints)));
     }
 
 }

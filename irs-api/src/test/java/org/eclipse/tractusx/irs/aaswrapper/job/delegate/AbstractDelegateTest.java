@@ -37,7 +37,6 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -110,34 +109,7 @@ class AbstractDelegateTest {
     }
 
     @Test
-    void shouldThrowPreserveUsagePolicyExceptionIfAllEndpointsThrowExceptions() throws EdcClientException {
-        // Arrange
-        final String connector1 = "http://edc.test1";
-        final String connector2 = "http://edc.test2";
-        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(new UsagePolicyException("test"));
-        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of(connector1, connector2));
-        final String dataplaneUrl = "http://dataplane.test/123";
-        final Endpoint endpoint = Endpoint.builder()
-                                          .protocolInformation(ProtocolInformation.builder()
-                                                                                  .href(dataplaneUrl)
-                                                                                  .subprotocolBody("id=123")
-                                                                                  .build())
-                                          .build();
-        final String bpn = "BPN123";
-
-        // Act
-        assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
-                () -> submodelDelegate.requestSubmodelAsString(submodelFacade, connectorEndpointsService, endpoint,
-                        bpn));
-
-        // Assert
-        verify(submodelFacade, times(1)).getSubmodelRawPayload(connector1, dataplaneUrl, "123");
-        verify(submodelFacade, times(1)).getSubmodelRawPayload(connector2, dataplaneUrl, "123");
-        verify(connectorEndpointsService, times(1)).fetchConnectorEndpoints(bpn);
-    }
-
-    @Test
-    void shouldThrowGeneralEdcClientExceptionIfAllEndpointsThrowExceptions() throws EdcClientException {
+    void shouldThrowGenericEdcClientExceptionIfAllEndpointsThrowExceptions() throws EdcClientException {
         // Arrange
         final String connector1 = "http://edc.test1";
         final String connector2 = "http://edc.test2";
