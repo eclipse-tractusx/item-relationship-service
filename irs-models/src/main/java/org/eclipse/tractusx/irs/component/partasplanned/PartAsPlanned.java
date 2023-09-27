@@ -21,32 +21,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.notification;
+package org.eclipse.tractusx.irs.component.partasplanned;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
-import org.eclipse.tractusx.ess.service.EssService;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-@ExtendWith(MockitoExtension.class)
-class NotificationReceiverEndpointTest {
-
-    @InjectMocks
-    private NotificationReceiverEndpoint testee;
-
-    @Mock
-    private EssService essService;
-
-    @Test
-    void receiveNotification() {
-        testee.receiveNotification(EdcNotification.builder().build());
-
-        verify(essService).handleNotificationCallback(any());
-    }
+/**
+ * PartAsPlanned according to semantic model version 1.0.1.
+ */
+@Builder
+@Jacksonized
+public record PartAsPlanned(String catenaXId, ValidityPeriod validityPeriod, PartTypeInformation partTypeInformation) {
 }

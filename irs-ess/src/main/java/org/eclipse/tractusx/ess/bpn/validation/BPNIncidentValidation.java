@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.bpn.validation;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -31,6 +32,8 @@ import lombok.NoArgsConstructor;
 import org.eclipse.tractusx.ess.service.SupplyChainImpacted;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
+import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
 
 /**
  * Validation for BPNs.
@@ -43,7 +46,7 @@ public final class BPNIncidentValidation {
      * and check if they are part of the incident BPNs.
      *
      * @param incidentBPNs the incident BPNs
-     * @param shells
+     * @param shells the shell from which to take the BPNs
      * @return Yes, if one or more of the BPNs of the job matches the incident BPNs.
      * No, if none of the job BPNs matches the incident BPNs.
      * Unknown if job contains no AssetAdministrationShellDescriptors
@@ -63,6 +66,52 @@ public final class BPNIncidentValidation {
             return SupplyChainImpacted.UNKNOWN;
         }
         return SupplyChainImpacted.NO;
+    }
+
+    /**
+     * Check if siteIds of PartAsPlanned are part of the incident BPNs.
+     *
+     * @param incidentBPNs                 the incident BPNs
+     * @param partSiteInformationAsPlanned The {@link PartSiteInformationAsPlanned} to extract the
+     *                                     siteIds from
+     * @return Yes, if one or more of the siteIds of PartAsPlanned matches the incident BPNs.
+     * No, if none of the job siteIds matches the incident BPNs.
+     * Unknown if PartAsPlanned contains no siteIds.
+     */
+    public static SupplyChainImpacted jobContainsIncidentBPNSs(
+            final PartSiteInformationAsPlanned partSiteInformationAsPlanned, final List<String> incidentBPNs) {
+        final List<String> siteIds = partSiteInformationAsPlanned.getCatenaXSiteId();
+        try {
+            if (siteIds.isEmpty()) {
+                return SupplyChainImpacted.UNKNOWN;
+            }
+            if (incidentBPNs.stream().anyMatch(siteIds::contains)) {
+                return SupplyChainImpacted.YES;
+            }
+        } catch (NoSuchElementException e) {
+            return SupplyChainImpacted.UNKNOWN;
+        }
+        return SupplyChainImpacted.NO;
+    }
+
+    /**
+     * Validates the validityPeriod of {@link PartAsPlanned}.
+     *
+     * @param partAsPlanned PartAsPlanned aspect to check the validityPeriod
+     * @return Yes, if current time is outside the range of validFrom to validTo.
+     * No, if current time is between the range of validFrom to validTo.
+     * Else Unknown.
+     */
+    public static SupplyChainImpacted partAsPlannedValidity(final PartAsPlanned partAsPlanned) {
+        final ZonedDateTime validFrom = partAsPlanned.validityPeriod().validFrom();
+        final ZonedDateTime validTo = partAsPlanned.validityPeriod().validTo();
+        final ZonedDateTime now = ZonedDateTime.now();
+        if (validTo.isAfter(now) && validFrom.isBefore(now)) {
+            return SupplyChainImpacted.NO;
+        } else if (validTo.isBefore(now) || validFrom.isAfter(now)) {
+            return SupplyChainImpacted.YES;
+        }
+        return SupplyChainImpacted.UNKNOWN;
     }
 
     private static List<String> getBPNsFromShells(final List<AssetAdministrationShellDescriptor> shellDescriptors) {

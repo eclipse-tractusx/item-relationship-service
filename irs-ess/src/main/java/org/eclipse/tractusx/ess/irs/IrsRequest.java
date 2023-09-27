@@ -29,6 +29,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 
 /**
@@ -57,7 +58,9 @@ class IrsRequest {
                          .bomLifecycle(
                                  bomLifecycle != null ? bomLifecycle.getName() : BomLifecycle.AS_PLANNED.getName())
                          .depth(1)
-                         .collectAspects(false)
+                         .aspects(List.of(AspectType.PART_SITE_INFORMATION_AS_PLANNED.toString(),
+                                 AspectType.PART_AS_PLANNED.toString()))
+                         .collectAspects(true)
                          .build();
     }
 

@@ -31,6 +31,7 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.springframework.stereotype.Service;
 
 /**
@@ -63,8 +64,9 @@ public class EdcSubmodelFacade {
 
     @SuppressWarnings("PMD.PreserveStackTrace")
     public EdcNotificationResponse sendNotification(final String submodelEndpointAddress, final String assetId,
-            final EdcNotification notification) throws EdcClientException {
+            final EdcNotification<NotificationContent> notification) throws EdcClientException {
         try {
+            log.debug("Sending EDC Notification '{}'", notification);
             return client.sendNotification(submodelEndpointAddress, assetId, notification).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

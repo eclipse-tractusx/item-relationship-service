@@ -91,8 +91,6 @@ public class EdcConfiguration {
 
         private Duration requestTtl;
 
-        private String path;
-
         private String urnPrefix;
     }
 

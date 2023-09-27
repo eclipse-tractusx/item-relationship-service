@@ -5,6 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- ESS
+  - Updated investigation request body field `incidentBPNs` to `incidentBPNSs`.
+  - Streamlined EDC notification flow and adjusted it to existing EDC client methods
+  - Changed investigation from BPNL to BPNS (`catenaXSiteId` of `PartSiteInformationAsPlanned`)
+  - Additional validation for `validityPeriod` of `PartAsPlanned`
+
+### Fixed
+- Fixed missing access control for Batch and ESS API.
 
 ## [3.4.1] - 2023-09-22
 ### Changed
@@ -21,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. PolicyStore API access is restricted to role `admin_irs`.
-- 
+
 ### Fixed
 - Fixed bug where BPN's were delivered without 'manufacturerName' property filled
 

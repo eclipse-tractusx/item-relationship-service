@@ -85,7 +85,7 @@ class EdcDataPlaneClientTest {
                 ResponseEntity.of(Optional.of(expectedData)));
 
         // act
-        final EdcNotificationResponse result = testee.sendData(dataRef, "", EdcNotification.builder().build());
+        final EdcNotificationResponse result = testee.sendData(dataRef, EdcNotification.builder().build());
 
         // assert
         assertThat(result.deliveredSuccessfully()).isTrue();
