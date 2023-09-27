@@ -26,7 +26,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -52,7 +52,7 @@ class DigitalTwinDelegateTest {
     void shouldFillItemContainerWithShell() throws RegistryServiceException {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(shellDescriptor(List.of(submodelDescriptorWithoutEndpoint("any")))));
+                List.of(shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),

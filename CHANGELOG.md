@@ -6,14 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- IRS now makes use of the value `dspEndpoint` in `subprotocolBody` of the Asset Administration Shell to request submodel data directly.
+
+### Fixed
+- Fixed a case where IRS submodel requests did not reuqest all EDC endpoints discovered by Discovery Finder
 - ESS
   - Updated investigation request body field `incidentBPNs` to `incidentBPNSs`.
   - Streamlined EDC notification flow and adjusted it to existing EDC client methods
   - Changed investigation from BPNL to BPNS (`catenaXSiteId` of `PartSiteInformationAsPlanned`)
   - Additional validation for `validityPeriod` of `PartAsPlanned`
-
-### Fixed
-- Fixed missing access control for Batch and ESS API.
 
 ## [3.4.1] - 2023-09-22
 ### Changed
