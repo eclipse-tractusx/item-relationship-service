@@ -411,7 +411,7 @@ maven/mavencentral/org.springframework.boot/spring-boot-actuator-autoconfigure/3
 maven/mavencentral/org.springframework.boot/spring-boot-actuator/3.1.3, Apache-2.0, approved, #9342
 maven/mavencentral/org.springframework.boot/spring-boot-autoconfigure/3.1.3, Apache-2.0, approved, #9341
 maven/mavencentral/org.springframework.boot/spring-boot-configuration-metadata/3.1.3, Apache-2.0, approved, clearlydefined
-maven/mavencentral/org.springframework.boot/spring-boot-properties-migrator/3.1.3, , restricted, clearlydefined
+maven/mavencentral/org.springframework.boot/spring-boot-properties-migrator/3.1.3, Apache-2.0, approved, #10675
 maven/mavencentral/org.springframework.boot/spring-boot-starter-actuator/3.1.3, Apache-2.0, approved, #9344
 maven/mavencentral/org.springframework.boot/spring-boot-starter-aop/3.1.3, Apache-2.0, approved, #9338
 maven/mavencentral/org.springframework.boot/spring-boot-starter-json/3.1.3, Apache-2.0, approved, #9336
@@ -436,7 +436,7 @@ maven/mavencentral/org.springframework.security/spring-security-oauth2-client/6.
 maven/mavencentral/org.springframework.security/spring-security-oauth2-core/6.1.3, Apache-2.0, approved, #9741
 maven/mavencentral/org.springframework.security/spring-security-oauth2-jose/6.1.3, Apache-2.0, approved, #9345
 maven/mavencentral/org.springframework.security/spring-security-oauth2-resource-server/6.1.3, Apache-2.0, approved, #8798
-maven/mavencentral/org.springframework.security/spring-security-test/6.1.3, , restricted, clearlydefined
+maven/mavencentral/org.springframework.security/spring-security-test/6.1.3, Apache-2.0, approved, #10674
 maven/mavencentral/org.springframework.security/spring-security-web/6.1.3, Apache-2.0, approved, #9800
 maven/mavencentral/org.springframework/spring-aop/6.0.11, Apache-2.0, approved, #5940
 maven/mavencentral/org.springframework/spring-beans/6.0.11, Apache-2.0, approved, #5937
