@@ -117,7 +117,6 @@
                     <artifactId>license-tool-plugin</artifactId>
                     <version>0.0.1-SNAPSHOT</version>
                     <configuration>
-                        <summary>DEPENDENCIES</summary>
                         <includeScope>test</includeScope>
                     </configuration>
                     <executions>
