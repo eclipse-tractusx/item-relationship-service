@@ -21,15 +21,10 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.discovery;
-
-import java.util.List;
-
-import lombok.extern.jackson.Jacksonized;
+package org.eclipse.tractusx.irs.edc.client.model.notification;
 
 /**
- * Request for Discovery Finder
+ * Interface for Generic notification content of {@link EdcNotification}
  */
-@Jacksonized
-public record DiscoveryFinderRequest(List<String> types) {
+public interface NotificationContent {
 }

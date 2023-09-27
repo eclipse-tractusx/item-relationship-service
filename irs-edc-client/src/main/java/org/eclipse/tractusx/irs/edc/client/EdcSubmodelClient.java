@@ -26,14 +26,10 @@ package org.eclipse.tractusx.irs.edc.client;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 
 import java.net.URI;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
@@ -48,6 +44,7 @@ import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -59,11 +56,11 @@ import org.springframework.util.StopWatch;
 @SuppressWarnings("PMD.ExcessiveImports")
 public interface EdcSubmodelClient {
 
-    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelDataplaneUrl, String assetId)
-            throws EdcClientException;
+    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelDataplaneUrl,
+            String assetId) throws EdcClientException;
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
-            EdcNotification notification) throws EdcClientException;
+            EdcNotification<NotificationContent> notification) throws EdcClientException;
 
     CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress, String filterKey,
             String filterValue) throws EdcClientException;
@@ -85,8 +82,8 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
-            final String assetId) throws EdcClientException {
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint,
+            final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
         if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(assetId)) {
             throw new EdcClientException("Dummy Exception");
         }
@@ -96,7 +93,7 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final String assetId, final EdcNotification notification) {
+            final String assetId, final EdcNotification<NotificationContent> notification) {
         // not actually sending anything, just return success response
         return CompletableFuture.completedFuture(() -> true);
     }
@@ -118,7 +115,6 @@ class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 @SuppressWarnings("PMD.TooManyMethods")
 class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
-    public static final String UUID_REGEX = "\\p{XDigit}{8}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{12}";
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
@@ -131,37 +127,6 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private static void stopWatchOnEdcTask(final StopWatch stopWatch) {
         stopWatch.stop();
         log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
-    }
-
-    private NegotiationResponse fetchNegotiationResponse(final String submodelEndpointAddress)
-            throws EdcClientException {
-        final Pattern pairRegex = Pattern.compile(UUID_REGEX + "-" + UUID_REGEX);
-        final Matcher matcher = pairRegex.matcher(submodelEndpointAddress);
-        if (!matcher.find()) {
-            throw new EdcClientException(
-                    "Cannot extract assetId from endpoint address, malformed format: " + submodelEndpointAddress);
-        }
-        final String assetId = matcher.group(0);
-
-        final int indexOfUrn = findIndexOf(submodelEndpointAddress, assetId);
-        final int indexOfSubModel = findIndexOf(submodelEndpointAddress, config.getSubmodel().getPath());
-
-        if (indexOfUrn == -1 || indexOfSubModel == -1) {
-            throw new EdcClientException(
-                    "Cannot rewrite endpoint address, malformed format: " + submodelEndpointAddress);
-        }
-
-        final String providerConnectorUrl = submodelEndpointAddress.substring(0, indexOfUrn);
-        final String decodedTarget = URLDecoder.decode(assetId, StandardCharsets.UTF_8);
-        final String providerWithSuffix = appendSuffix(providerConnectorUrl,
-                config.getControlplane().getProviderSuffix());
-        log.info("Starting contract negotiation with providerConnectorUrl {} and target {}", providerWithSuffix,
-                decodedTarget);
-        final CatalogItem catalogItem = catalogFacade.fetchCatalogById(providerWithSuffix, decodedTarget)
-                                                     .stream()
-                                                     .findFirst()
-                                                     .orElseThrow();
-        return contractNegotiationService.negotiate(providerWithSuffix, catalogItem);
     }
 
     private NegotiationResponse fetchNegotiationResponseWithFilter(final String connectorEndpoint, final String assetId)
@@ -180,11 +145,10 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     private CompletableFuture<EdcNotificationResponse> sendNotificationAsync(final String contractAgreementId,
-            final EdcNotification notification, final StopWatch stopWatch) {
+            final EdcNotification<NotificationContent> notification, final StopWatch stopWatch) {
 
         return pollingService.<EdcNotificationResponse>createJob()
-                             .action(() -> sendSubmodelNotification(config.getSubmodel().getPath(), contractAgreementId,
-                                     notification, stopWatch))
+                             .action(() -> sendSubmodelNotification(contractAgreementId, notification, stopWatch))
                              .timeToLive(config.getSubmodel().getRequestTtl())
                              .description("waiting for submodel notification to be sent")
                              .build()
@@ -221,27 +185,24 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return Optional.empty();
     }
 
-    private Optional<EdcNotificationResponse> sendSubmodelNotification(final String submodel,
-            final String contractAgreementId, final EdcNotification notification, final StopWatch stopWatch) {
+    private Optional<EdcNotificationResponse> sendSubmodelNotification(final String contractAgreementId,
+            final EdcNotification<NotificationContent> notification, final StopWatch stopWatch) {
         final Optional<EndpointDataReference> dataReference = retrieveEndpointDataReference(contractAgreementId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
-            log.info("Sending data to EDC data plane with dataReference {}:{}", ref.getAuthKey(), ref.getAuthCode());
-            final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, submodel, notification);
+            log.info("Sending dataReference to EDC data plane for contractAgreementId '{}'",
+                    Masker.mask(contractAgreementId));
+            final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, notification);
             stopWatchOnEdcTask(stopWatch);
             return Optional.of(response);
         }
         return Optional.empty();
     }
 
-    private int findIndexOf(final String endpointAddress, final String str) {
-        return endpointAddress.indexOf(str);
-    }
-
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
-            final String assetId) throws EdcClientException {
+    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint,
+            final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             log.info("Requesting raw SubmodelPayload for endpoint '{}'.", connectorEndpoint);
             final StopWatch stopWatch = new StopWatch();
@@ -263,13 +224,15 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final String assetId, final EdcNotification notification) throws EdcClientException {
-        return execute(submodelEndpointAddress, () -> {
+    public CompletableFuture<EdcNotificationResponse> sendNotification(final String connectorEndpoint,
+            final String assetId, final EdcNotification<NotificationContent> notification) throws EdcClientException {
+        return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
-            stopWatch.start("Send EDC notification task, endpoint " + submodelEndpointAddress);
-
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponse(submodelEndpointAddress);
+            stopWatch.start("Send EDC notification task, endpoint " + connectorEndpoint);
+            final var negotiationEndpoint = appendSuffix(connectorEndpoint,
+                    config.getControlplane().getProviderSuffix());
+            final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint,
+                    assetId);
 
             return sendNotificationAsync(negotiationResponse.getContractAgreementId(), notification, stopWatch);
         });

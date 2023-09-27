@@ -23,17 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.ess.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.component.JobHandle;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
-import org.jetbrains.annotations.NotNull;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -58,23 +57,21 @@ public class EssRecursiveService {
         this.edcNotificationSender = edcNotificationSender;
     }
 
-    public void handleNotification(final EdcNotification notification) {
+    public void handleNotification(final EdcNotification<InvestigationNotificationContent> notification) {
 
-        final Optional<String> incidentBpn = Optional.ofNullable(notification.getContent().get("incidentBpn"))
-                                                     .map(Object::toString);
+        final Optional<List<String>> incidentBPNSs = Optional.ofNullable(notification.getContent().getIncidentBPNSs());
 
-        final Optional<Object> concernedCatenaXIdsNotification = Optional.ofNullable(
-                notification.getContent().get("concernedCatenaXIds"));
+        final Optional<List<String>> concernedCatenaXIdsNotification = Optional.ofNullable(
+                notification.getContent().getConcernedCatenaXIds());
 
-        if (incidentBpn.isPresent() && localBpn.equals(incidentBpn.get())) {
+        if (incidentBPNSs.isPresent() && incidentBPNSs.get().contains(localBpn)) {
             edcNotificationSender.sendEdcNotification(notification, SupplyChainImpacted.YES);
-        } else if (concernedCatenaXIdsNotification.isPresent() && concernedCatenaXIdsNotification.get() instanceof List
-                && incidentBpn.isPresent()) {
-            final String bpn = incidentBpn.get();
-            final List<String> concernedCatenaXIds = getConcernedCatenaXIds(concernedCatenaXIdsNotification);
-
+        } else if (concernedCatenaXIdsNotification.isPresent() && incidentBPNSs.isPresent()) {
+            final List<String> bpns = incidentBPNSs.get();
+            final List<String> concernedCatenaXIds = concernedCatenaXIdsNotification.get();
             final List<UUID> createdJobs = concernedCatenaXIds.stream()
-                                                              .map(catenaXId -> startIrsJob(bpn, catenaXId))
+                                                              .map(catenaXId -> startIrsJob(bpns, catenaXId,
+                                                                      notification.getHeader().getRecipientBpn()))
                                                               .map(JobHandle::getId)
                                                               .toList();
             relatedInvestigationJobsCache.store(notification.getHeader().getNotificationId(),
@@ -82,23 +79,15 @@ public class EssRecursiveService {
         }
     }
 
-    private JobHandle startIrsJob(final String bpn, final String catenaXId) {
+    private JobHandle startIrsJob(final List<String> incidentBPNSs, final String catenaXId, final String bpn) {
         final var job = RegisterBpnInvestigationJob.builder()
-                                                   .incidentBpns(List.of(bpn))
+                                                   .incidentBPNSs(incidentBPNSs)
                                                    .key(PartChainIdentificationKey.builder()
                                                                                   .globalAssetId(catenaXId)
-                                                                                  .bpn(localBpn)
+                                                                                  .bpn(bpn)
                                                                                   .build())
                                                    .build();
 
         return essService.startIrsJob(job);
-    }
-
-    @NotNull
-    private static List<String> getConcernedCatenaXIds(final Optional<Object> concernedCatenaXIdsNotification) {
-        final List<String> concernedCatenaXIds = new ArrayList<>();
-        concernedCatenaXIdsNotification.ifPresent(
-                list -> concernedCatenaXIds.addAll(((List<String>) list).stream().toList()));
-        return concernedCatenaXIds;
     }
 }

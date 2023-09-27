@@ -44,26 +44,31 @@ public class EssRecursiveNotificationHandler {
     private final EdcNotificationSender edcNotificationSender;
 
     /* package */ void handleNotification(final UUID finishedJobId, final SupplyChainImpacted supplyChainImpacted) {
+
         final Optional<RelatedInvestigationJobs> relatedJobsId = relatedInvestigationJobsCache.findByRecursiveRelatedJobId(
                 finishedJobId);
 
-        relatedJobsId.ifPresent(relatedJobs -> {
+        relatedJobsId.ifPresentOrElse(relatedJobs -> {
             if (SupplyChainImpacted.YES.equals(supplyChainImpacted)) {
+                log.debug("SupplyChain is impacted. Sending notification back to requestor.");
                 edcNotificationSender.sendEdcNotification(relatedJobs.originalNotification(), supplyChainImpacted);
                 relatedInvestigationJobsCache.remove(
                         relatedJobs.originalNotification().getHeader().getNotificationId());
             } else {
+                log.debug(
+                        "SupplyChainImpacted in state '{}'. Waiting for Jobs to complete to send notification back to requestor.",
+                        supplyChainImpacted);
                 sendNotificationAfterAllCompleted(relatedJobs);
             }
-        });
+        }, () -> log.debug("No RelatedInvestigationJob found for id '{}'.", finishedJobId));
     }
 
     private void sendNotificationAfterAllCompleted(final RelatedInvestigationJobs relatedInvestigationJobs) {
         final List<BpnInvestigationJob> allInvestigationJobs = relatedInvestigationJobs.recursiveRelatedJobIds()
-                                                                                 .stream()
-                                                                                 .map(bpnInvestigationJobCache::findByJobId)
-                                                                                 .flatMap(Optional::stream)
-                                                                                 .toList();
+                                                                                       .stream()
+                                                                                       .map(bpnInvestigationJobCache::findByJobId)
+                                                                                       .flatMap(Optional::stream)
+                                                                                       .toList();
         if (checkAllFinished(allInvestigationJobs)) {
             final SupplyChainImpacted finalResult = allInvestigationJobs.stream()
                                                                         .map(BpnInvestigationJob::getSupplyChainImpacted)

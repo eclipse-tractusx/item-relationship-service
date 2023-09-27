@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed a case where IRS submodel requests did not reuqest all EDC endpoints discovered by Discovery Finder
+- ESS
+  - Updated investigation request body field `incidentBPNs` to `incidentBPNSs`.
+  - Streamlined EDC notification flow and adjusted it to existing EDC client methods
+  - Changed investigation from BPNL to BPNS (`catenaXSiteId` of `PartSiteInformationAsPlanned`)
+  - Additional validation for `validityPeriod` of `PartAsPlanned`
 
 ## [3.4.1] - 2023-09-22
 ### Changed
@@ -26,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. PolicyStore API access is restricted to role `admin_irs`.
-- 
+
 ### Fixed
 - Fixed bug where BPN's were delivered without 'manufacturerName' property filled
 

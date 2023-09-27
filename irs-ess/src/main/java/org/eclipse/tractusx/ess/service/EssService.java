@@ -36,6 +36,7 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,34 +54,10 @@ public class EssService {
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
-    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
-        final JobHandle jobHandle = irsFacade.startIrsJob(request.getKey(), request.getBomLifecycle());
-
-        final UUID createdJobId = jobHandle.getId();
-        final Jobs createdJob = irsFacade.getIrsJob(createdJobId.toString());
-        final String owner = securityHelperService.getClientIdClaim();
-        bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, owner, request.getIncidentBpns()));
-
-        return jobHandle;
-    }
-
-    public Jobs getIrsJob(final String jobId) {
-        final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId));
-
-        if (job.isPresent()) {
-            final BpnInvestigationJob bpnInvestigationJob = job.get();
-            if (!securityHelperService.isAdmin() && !bpnInvestigationJob.getJobSnapshot().getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access investigation job with id " + jobId + " due to missing privileges.");
-            }
-
-            return updateState(bpnInvestigationJob);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No investigation job exists with id " + jobId);
-        }
-    }
-
     private static Jobs updateState(final BpnInvestigationJob investigationJob) {
         final Jobs jobSnapshot = investigationJob.getJobSnapshot();
+        log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotifications());
+        log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
         if (hasUnansweredNotifications(investigationJob)) {
             return jobSnapshot.toBuilder()
                               .job(jobSnapshot.getJob().toBuilder().state(JobState.RUNNING).build())
@@ -94,7 +71,38 @@ public class EssService {
         return !job.getUnansweredNotifications().isEmpty();
     }
 
-    public void handleNotificationCallback(final EdcNotification notification) {
+    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
+        final JobHandle jobHandle = irsFacade.startIrsJob(request.getKey(), request.getBomLifecycle());
+
+        final UUID createdJobId = jobHandle.getId();
+        final Jobs createdJob = irsFacade.getIrsJob(createdJobId.toString());
+        final String owner = securityHelperService.getClientIdClaim();
+        bpnInvestigationJobCache.store(createdJobId,
+                BpnInvestigationJob.create(createdJob, owner, request.getIncidentBPNSs()));
+
+        return jobHandle;
+    }
+
+    public Jobs getIrsJob(final String jobId) {
+        final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId));
+
+        if (job.isPresent()) {
+            final BpnInvestigationJob bpnInvestigationJob = job.get();
+            if (!securityHelperService.isAdmin() && !bpnInvestigationJob.getJobSnapshot()
+                                                                        .getJob()
+                                                                        .getOwner()
+                                                                        .equals(securityHelperService.getClientIdForViewIrs())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "Cannot access investigation job with id " + jobId + " due to missing privileges.");
+            }
+
+            return updateState(bpnInvestigationJob);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No investigation job exists with id " + jobId);
+        }
+    }
+
+    public void handleNotificationCallback(final EdcNotification<ResponseNotificationContent> notification) {
         log.info("Received notification response with id {}", notification.getHeader().getNotificationId());
         final var investigationJob = bpnInvestigationJobCache.findAll()
                                                              .stream()
@@ -103,12 +111,16 @@ public class EssService {
                                                              .findFirst();
 
         investigationJob.ifPresent(job -> {
-            job.withAnsweredNotification(notification.getHeader().getOriginalNotificationId());
-            final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().get("result"))
+            final String originalNotificationId = notification.getHeader().getOriginalNotificationId();
+            job.withAnsweredNotification(originalNotificationId);
+            final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().getResult())
                                                                 .map(Object::toString);
 
             final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
                                                                               .orElse(SupplyChainImpacted.UNKNOWN);
+            log.debug("Received answer for Notification with id '{}' and investigation result '{}'.",
+                    originalNotificationId, supplyChainImpacted);
+            log.debug("Unanswered notifications left: '{}'", job.getUnansweredNotifications());
             final UUID jobId = job.getJobSnapshot().getJob().getId();
 
             bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
@@ -117,7 +129,8 @@ public class EssService {
         });
     }
 
-    private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(final EdcNotification notification) {
+    private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(
+            final EdcNotification<ResponseNotificationContent> notification) {
         return investigationJob -> investigationJob.getUnansweredNotifications()
                                                    .contains(notification.getHeader().getOriginalNotificationId());
     }
