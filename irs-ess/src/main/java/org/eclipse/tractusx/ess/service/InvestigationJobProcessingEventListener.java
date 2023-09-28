@@ -188,7 +188,7 @@ class InvestigationJobProcessingEventListener {
                     supplyChainImpacted);
 
             if (leafNodeIsReached(completedJob) || supplyChainIsImpacted(supplyChainImpacted)) {
-                bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
+                bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate.complete());
                 recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
                         supplyChainImpacted);
             } else {

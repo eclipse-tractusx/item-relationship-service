@@ -143,6 +143,7 @@ class EssServiceTest {
                                                        .getPayload()
                                                        .get("supplyChainImpacted");
         assertThat(supplyChainImpacted).isEqualTo("No");
+        assertThat(job.getState()).isEqualTo(JobState.RUNNING);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification2));
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
@@ -154,6 +155,7 @@ class EssServiceTest {
                                                         .getPayload()
                                                         .get("supplyChainImpacted");
         assertThat(supplyChainImpacted2).isEqualTo("Yes");
+        assertThat(job.getState()).isEqualTo(JobState.COMPLETED);
 
     }
 
@@ -164,10 +166,8 @@ class EssServiceTest {
         final String owner = securityHelperService.getClientIdClaim();
         when(securityHelperService.isAdmin()).thenReturn(true);
 
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
-                                                                                   Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), owner, new ArrayList<>())
-                                                                           .withNotifications(Collections.singletonList(
-                                                                                   notificationId));
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(job(jobId, owner), owner,
+                new ArrayList<>()).withNotifications(Collections.singletonList(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
@@ -182,4 +182,64 @@ class EssServiceTest {
         assertThrows(ResponseStatusException.class, () -> essService.getIrsJob(jobIdNotExisting));
     }
 
+    @Test
+    void shouldCompleteJobIfAllNotificationsSentWereAnswered() {
+        // Arrange
+        final String notificationId = UUID.randomUUID().toString();
+        final String owner = securityHelperService.getClientIdClaim();
+        when(securityHelperService.isAdmin()).thenReturn(true);
+
+        final UUID jobId = UUID.randomUUID();
+        final Jobs jobSnapshot = job(jobId, owner);
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobSnapshot, owner, null)
+                                                                           .withAnsweredNotification(notificationId)
+                                                                           .withNotifications(List.of());
+        bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
+
+        // Act
+        final Jobs byJobId = essService.getIrsJob(jobId.toString());
+
+        // Assert
+        assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+        assertThat(byJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+    }
+
+    @Test
+    void shouldCompleteJobIfFinalNotificationWasReceived() {
+        // Arrange
+        final String owner = securityHelperService.getClientIdClaim();
+        when(securityHelperService.isAdmin()).thenReturn(true);
+
+        final UUID jobId = UUID.randomUUID();
+        final Jobs jobSnapshot = job(jobId, owner);
+        final String notificationId = UUID.randomUUID().toString();
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobSnapshot, owner, null)
+                                                                           .update(jobSnapshot, SupplyChainImpacted.NO)
+                                                                           .withNotifications(List.of(notificationId));
+        bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
+        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").build();
+        final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notificationId)
+                                                                   .originalNotificationId(notificationId)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> edcNotification2 = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                             .header(header1)
+                                                                                             .content(resultNo)
+                                                                                             .build();
+
+        // Act
+        final Jobs jobBeforeNotificationReceive = essService.getIrsJob(jobId.toString());
+        essService.handleNotificationCallback(edcNotification2);
+        final Jobs jobAfterNotificationReceive = essService.getIrsJob(jobId.toString());
+
+        // Assert
+        assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+        assertThat(jobBeforeNotificationReceive.getJob().getState()).isEqualTo(JobState.RUNNING);
+        assertThat(jobAfterNotificationReceive.getJob().getState()).isEqualTo(JobState.COMPLETED);
+    }
+
+    private Jobs job(final UUID jobId, final String owner) {
+        final Job job = Job.builder().id(jobId).owner(owner).build();
+        return Jobs.builder().job(job).build();
+    }
 }
