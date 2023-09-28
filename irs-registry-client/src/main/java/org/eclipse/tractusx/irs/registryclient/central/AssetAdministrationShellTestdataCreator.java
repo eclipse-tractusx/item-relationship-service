@@ -171,7 +171,7 @@ class AssetAdministrationShellTestdataCreator {
                                                                            .endpointProtocol("AAS/SUBMODEL")
                                                                            .endpointProtocolVersion(List.of("1.0RC02"))
                                                                            .subprotocolBody("id=" + catenaXId
-                                                                                   + ";idsEndpoint=http://edc.control.plane/")
+                                                                                   + ";dspEndpoint=http://edc.control.plane/")
                                                                            .build();
 
         final Endpoint endpoint = Endpoint.builder()

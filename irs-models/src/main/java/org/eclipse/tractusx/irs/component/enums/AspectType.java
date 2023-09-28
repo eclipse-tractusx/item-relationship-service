@@ -60,6 +60,7 @@ public enum AspectType {
     PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
     RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST),
     SERIAL_PART(AspectTypesConstants.SERIAL_PART),
+    PART_SITE_INFORMATION_AS_PLANNED(AspectTypesConstants.PART_SITE_INFORMATION_AS_PLANNED),
     SINGLE_LEVEL_BOM_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT),
     SINGLE_LEVEL_BOM_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_PLANNED),
     SINGLE_LEVEL_BOM_AS_SPECIFIED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_SPECIFIED),
@@ -128,6 +129,7 @@ public enum AspectType {
         public static final String PRODUCT_DESCRIPTION = "ProductDescription";
         public static final String RETURN_REQUEST = "ReturnRequest";
         public static final String SERIAL_PART = "SerialPart";
+        public static final String PART_SITE_INFORMATION_AS_PLANNED = "PartSiteInformationAsPlanned";
         public static final String SINGLE_LEVEL_BOM_AS_BUILT = "SingleLevelBomAsBuilt";
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
         public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED = "SingleLevelBomAsSpecified";

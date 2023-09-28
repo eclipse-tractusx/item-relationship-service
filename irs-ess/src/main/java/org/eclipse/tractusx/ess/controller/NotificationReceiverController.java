@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.notification;
+package org.eclipse.tractusx.ess.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -33,9 +33,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.ess.service.EssService;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,7 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/ess/notification")
 @RequiredArgsConstructor
 @Validated
-public class NotificationReceiverEndpoint {
+public class NotificationReceiverController {
 
     private final EssService essService;
 
@@ -65,7 +66,8 @@ public class NotificationReceiverEndpoint {
                                          }),
     })
     @PostMapping("/receive")
-    public void receiveNotification(final @Valid @RequestBody EdcNotification notification) {
+    public void receiveNotification(
+            final @Valid @RequestBody EdcNotification<ResponseNotificationContent> notification) {
         essService.handleNotificationCallback(notification);
     }
 }

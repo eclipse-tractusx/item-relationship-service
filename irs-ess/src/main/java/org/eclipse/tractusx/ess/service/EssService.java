@@ -36,6 +36,7 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -53,13 +54,42 @@ public class EssService {
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
+    private static Jobs updateState(final BpnInvestigationJob investigationJob) {
+        final Jobs jobSnapshot = investigationJob.getJobSnapshot();
+        log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotifications());
+        log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
+
+        final JobState jobState = updateJobState(investigationJob);
+
+        return jobSnapshot.toBuilder().job(jobSnapshot.getJob().toBuilder().state(jobState).build()).build();
+    }
+
+    private static JobState updateJobState(final BpnInvestigationJob investigationJob) {
+        if (hasUnansweredNotifications(investigationJob)) {
+            return JobState.RUNNING;
+        }
+        if (hasAnsweredNotifications(investigationJob)) {
+            return JobState.COMPLETED;
+        }
+        return investigationJob.getState();
+    }
+
+    private static boolean hasAnsweredNotifications(final BpnInvestigationJob investigationJob) {
+        return !investigationJob.getAnsweredNotifications().isEmpty();
+    }
+
+    private static boolean hasUnansweredNotifications(final BpnInvestigationJob investigationJob) {
+        return !investigationJob.getUnansweredNotifications().isEmpty();
+    }
+
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
         final JobHandle jobHandle = irsFacade.startIrsJob(request.getKey(), request.getBomLifecycle());
 
         final UUID createdJobId = jobHandle.getId();
         final Jobs createdJob = irsFacade.getIrsJob(createdJobId.toString());
         final String owner = securityHelperService.getClientIdClaim();
-        bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, owner, request.getIncidentBpns()));
+        bpnInvestigationJobCache.store(createdJobId,
+                BpnInvestigationJob.create(createdJob, owner, request.getIncidentBPNSs()));
 
         return jobHandle;
     }
@@ -69,8 +99,12 @@ public class EssService {
 
         if (job.isPresent()) {
             final BpnInvestigationJob bpnInvestigationJob = job.get();
-            if (!securityHelperService.isAdmin() && !bpnInvestigationJob.getJobSnapshot().getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access investigation job with id " + jobId + " due to missing privileges.");
+            if (!securityHelperService.isAdmin() && !bpnInvestigationJob.getJobSnapshot()
+                                                                        .getJob()
+                                                                        .getOwner()
+                                                                        .equals(securityHelperService.getClientIdForViewIrs())) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                        "Cannot access investigation job with id " + jobId + " due to missing privileges.");
             }
 
             return updateState(bpnInvestigationJob);
@@ -79,22 +113,7 @@ public class EssService {
         }
     }
 
-    private static Jobs updateState(final BpnInvestigationJob investigationJob) {
-        final Jobs jobSnapshot = investigationJob.getJobSnapshot();
-        if (hasUnansweredNotifications(investigationJob)) {
-            return jobSnapshot.toBuilder()
-                              .job(jobSnapshot.getJob().toBuilder().state(JobState.RUNNING).build())
-                              .build();
-        }
-        return jobSnapshot;
-
-    }
-
-    private static boolean hasUnansweredNotifications(final BpnInvestigationJob job) {
-        return !job.getUnansweredNotifications().isEmpty();
-    }
-
-    public void handleNotificationCallback(final EdcNotification notification) {
+    public void handleNotificationCallback(final EdcNotification<ResponseNotificationContent> notification) {
         log.info("Received notification response with id {}", notification.getHeader().getNotificationId());
         final var investigationJob = bpnInvestigationJobCache.findAll()
                                                              .stream()
@@ -103,13 +122,21 @@ public class EssService {
                                                              .findFirst();
 
         investigationJob.ifPresent(job -> {
-            job.withAnsweredNotification(notification.getHeader().getOriginalNotificationId());
-            final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().get("result"))
+            final String originalNotificationId = notification.getHeader().getOriginalNotificationId();
+            job.withAnsweredNotification(originalNotificationId);
+            final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().getResult())
                                                                 .map(Object::toString);
 
             final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
                                                                               .orElse(SupplyChainImpacted.UNKNOWN);
+            log.debug("Received answer for Notification with id '{}' and investigation result '{}'.",
+                    originalNotificationId, supplyChainImpacted);
+            log.debug("Unanswered notifications left: '{}'", job.getUnansweredNotifications());
             final UUID jobId = job.getJobSnapshot().getJob().getId();
+
+            if (job.getUnansweredNotifications().isEmpty()) {
+                job = job.complete();
+            }
 
             bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
             recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
@@ -117,7 +144,8 @@ public class EssService {
         });
     }
 
-    private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(final EdcNotification notification) {
+    private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(
+            final EdcNotification<ResponseNotificationContent> notification) {
         return investigationJob -> investigationJob.getUnansweredNotifications()
                                                    .contains(notification.getHeader().getOriginalNotificationId());
     }

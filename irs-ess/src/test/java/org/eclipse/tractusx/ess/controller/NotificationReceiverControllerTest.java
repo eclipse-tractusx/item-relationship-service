@@ -21,23 +21,33 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.ess.discovery;
+package org.eclipse.tractusx.ess.controller;
 
-import java.util.List;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import org.eclipse.tractusx.ess.service.EssService;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- *
- */
-@Value
-@Builder
-@Jacksonized
-class EdcAddressResponse {
+@ExtendWith(MockitoExtension.class)
+class NotificationReceiverControllerTest {
 
-    private String bpn;
-    private List<String> connectorEndpoint;
+    @InjectMocks
+    private NotificationReceiverController testee;
 
+    @Mock
+    private EssService essService;
+
+    @Test
+    void receiveNotification() {
+        testee.receiveNotification(EdcNotification.<ResponseNotificationContent>builder().build());
+
+        verify(essService).handleNotificationCallback(any());
+    }
 }
