@@ -16,7 +16,6 @@
         <module>irs-common</module>
         <module>irs-edc-client</module>
         <module>irs-registry-client</module>
-        <module>irs-ess</module>
         <module>irs-policy-store</module>
         <module>irs-api</module>
         <module>irs-models</module>
