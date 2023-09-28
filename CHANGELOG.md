@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - IRS now makes use of the value `dspEndpoint` in `subprotocolBody` of the Asset Administration Shell to request submodel data directly.
+- Policy Store API is extended to handle:
+  - multi permissions per each allowed Policy in POST call to create Policy
+  - multi constraint per each permission in POST call to create Permission
+  - logical AndConstraint and OrConstraint to give possibility to create complex restriction
 
 ### Fixed
 - Fixed a case where IRS submodel requests did not reuqest all EDC endpoints discovered by Discovery Finder
