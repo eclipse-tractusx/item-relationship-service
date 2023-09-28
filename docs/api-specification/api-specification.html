@@ -768,6 +768,7 @@ font-style: italic;
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
   "relationships" : [ {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -784,6 +785,7 @@ font-style: italic;
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -800,6 +802,7 @@ font-style: italic;
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -816,6 +819,7 @@ font-style: italic;
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -832,6 +836,7 @@ font-style: italic;
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -4502,7 +4507,7 @@ font-style: italic;
 
     <h3 class="field-label">Request body</h3>
     <div class="field-items">
-      <div class="param">EdcNotification <a href="#EdcNotification">EdcNotification</a> (required)</div>
+      <div class="param">EdcNotificationResponseNotificationContent <a href="#EdcNotificationResponseNotificationContent">EdcNotificationResponseNotificationContent</a> (required)</div>
 
       <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
 
@@ -5561,6 +5566,7 @@ font-style: italic;
     <div class="example-data-content-type">Content-Type: application/json</div>
     <pre class="example"><code>{
   "relationships" : [ {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -5577,6 +5583,7 @@ font-style: italic;
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -5593,6 +5600,7 @@ font-style: italic;
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -5609,6 +5617,7 @@ font-style: italic;
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -5625,6 +5634,7 @@ font-style: italic;
       "lastModifiedOn" : "2000-01-23T04:56:07.000+00:00"
     }
   }, {
+    "bpn" : "bpn",
     "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
     "aspectType" : "aspectType",
     "linkedItem" : {
@@ -9605,8 +9615,8 @@ font-style: italic;
     <li><a href="#Constraint"><code>Constraint</code> - </a></li>
     <li><a href="#Constraints"><code>Constraints</code> - </a></li>
     <li><a href="#CreatePolicyRequest"><code>CreatePolicyRequest</code> - </a></li>
-    <li><a href="#EdcNotification"><code>EdcNotification</code> - </a></li>
     <li><a href="#EdcNotificationHeader"><code>EdcNotificationHeader</code> - </a></li>
+    <li><a href="#EdcNotificationResponseNotificationContent"><code>EdcNotificationResponseNotificationContent</code> - </a></li>
     <li><a href="#Endpoint"><code>Endpoint</code> - </a></li>
     <li><a href="#ErrorResponse"><code>ErrorResponse</code> - </a></li>
     <li><a href="#IdentifierKeyValuePair"><code>IdentifierKeyValuePair</code> - </a></li>
@@ -9631,6 +9641,7 @@ font-style: italic;
     <li><a href="#RegisterBpnInvestigationJob"><code>RegisterBpnInvestigationJob</code> - </a></li>
     <li><a href="#RegisterJob"><code>RegisterJob</code> - </a></li>
     <li><a href="#Relationship"><code>Relationship</code> - </a></li>
+    <li><a href="#ResponseNotificationContent"><code>ResponseNotificationContent</code> - </a></li>
     <li><a href="#SemanticId"><code>SemanticId</code> - </a></li>
     <li><a href="#Submodel"><code>Submodel</code> - </a></li>
     <li><a href="#SubmodelDescriptor"><code>SubmodelDescriptor</code> - </a></li>
@@ -9762,14 +9773,6 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="EdcNotification"><code>EdcNotification</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">content </div><div class="param-desc"><span class="param-type"><a href="#object">map[String, Object]</a></span>  </div>
-<div class="param">header </div><div class="param-desc"><span class="param-type"><a href="#EdcNotificationHeader">EdcNotificationHeader</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
     <h3><a name="EdcNotificationHeader"><code>EdcNotificationHeader</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>EDC notification header information</div>
     <div class="field-items">
@@ -9781,6 +9784,14 @@ font-style: italic;
 <div class="param">replyAssetSubPath (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">senderBpn </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">senderEdc (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="EdcNotificationResponseNotificationContent"><code>EdcNotificationResponseNotificationContent</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">content </div><div class="param-desc"><span class="param-type"><a href="#ResponseNotificationContent">ResponseNotificationContent</a></span>  </div>
+<div class="param">header </div><div class="param-desc"><span class="param-type"><a href="#EdcNotificationHeader">EdcNotificationHeader</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -10030,7 +10041,7 @@ font-style: italic;
         <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div><div class="param-enum">asSpecified</div>
 <div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState. </div>
 <div class="param">key </div><div class="param-desc"><span class="param-type"><a href="#PartChainIdentificationKey">PartChainIdentificationKey</a></span>  </div>
-<div class="param">incidentBpns </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">incidentBPNSs </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -10056,8 +10067,16 @@ font-style: italic;
     <div class='model-description'>Relationships between parent and child items.</div>
     <div class="field-items">
       <div class="param">aspectType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">bpn (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">catenaXId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> CATENA-X global asset id in the format urn:uuid:uuid4. </div>
 <div class="param">linkedItem (optional)</div><div class="param-desc"><span class="param-type"><a href="#LinkedItem">LinkedItem</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ResponseNotificationContent"><code>ResponseNotificationContent</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">result (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -10120,7 +10139,7 @@ font-style: italic;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-22 13:09:51 UTC
+Last updated 2023-09-28 13:11:49 UTC
 </div>
 </div>
 </body>

@@ -211,7 +211,6 @@ irs-edc-client:
 
   submodel:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M} # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
-    path: ${EDC_SUBMODEL_PATH:/submodel} # The path to append to the submodel data reference endpoint
     urn-prefix: ${EDC_SUBMODEL_URN_PREFIX:/urn} # A prefix used to identify URNs correctly in the submodel endpoint address
     timeout:
       read: PT90S # HTTP read timeout for the submodel client
@@ -281,12 +280,10 @@ ess:
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
-    endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
     oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
     timeout:
       read: PT90S # HTTP read timeout for the discovery client
       connect: PT90S # HTTP connect timeout for the discovery client
-    mockEdcAddress: { } # Mocked EDC BPN Addresses
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
@@ -371,7 +368,6 @@ edc:
   submodel:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
-    path: /submodel
     urnprefix: /urn
   catalog:
     policies:
@@ -382,8 +378,6 @@ edc:
       acceptedLeftOperands: PURPOSE  # List of comma separated names of the leftOperands to accept.
 
 discovery:
-  endpoint:  # EDC Discovery Service endpoint
-  mockEdcAddress:  # Map of BPNs and EDC Provider URLs - this overrides any real Discovery Service for the given BPN
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:
@@ -480,6 +474,9 @@ grafana:
 
   admin:
     existingSecret: "{{ .Release.Name }}-irs-helm"
+    userKey: grafanaUser
+    passwordKey: grafanaPassword
+
 ```
 
 1. Use this to enable or disable the monitoring components

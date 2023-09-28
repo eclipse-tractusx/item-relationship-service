@@ -809,7 +809,6 @@ pre.rouge {
 
   <span class="na">submodel</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration</span>
-    <span class="na">path</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_PATH:/submodel}</span> <span class="c1"># The path to append to the submodel data reference endpoint</span>
     <span class="na">urn-prefix</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_URN_PREFIX:/urn}</span> <span class="c1"># A prefix used to identify URNs correctly in the submodel endpoint address</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the submodel client</span>
@@ -879,12 +878,10 @@ pre.rouge {
   <span class="na">irs</span><span class="pi">:</span>
     <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
   <span class="na">discovery</span><span class="pi">:</span>
-    <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${DISCOVERY_URL:}"</span> <span class="c1"># Endpoint to retrieve EDC base url address for BPN</span>
     <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the discovery client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the discovery client</span>
-    <span class="na">mockEdcAddress</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked EDC BPN Addresses</span>
     <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked BPN Investigation results</span>
     <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
 
@@ -894,7 +891,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-22 13:09:51 UTC
+Last updated 2023-09-28 13:11:49 UTC
 </div>
 </div>
 </body>

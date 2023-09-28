@@ -935,7 +935,6 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
   <span class="na">submodel</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration</span>
-    <span class="na">path</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_PATH:/submodel}</span> <span class="c1"># The path to append to the submodel data reference endpoint</span>
     <span class="na">urn-prefix</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_URN_PREFIX:/urn}</span> <span class="c1"># A prefix used to identify URNs correctly in the submodel endpoint address</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the submodel client</span>
@@ -1005,12 +1004,10 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">irs</span><span class="pi">:</span>
     <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
   <span class="na">discovery</span><span class="pi">:</span>
-    <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${DISCOVERY_URL:}"</span> <span class="c1"># Endpoint to retrieve EDC base url address for BPN</span>
     <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the discovery client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the discovery client</span>
-    <span class="na">mockEdcAddress</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked EDC BPN Addresses</span>
     <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked BPN Investigation results</span>
     <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
 
@@ -1097,7 +1094,6 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">submodel</span><span class="pi">:</span>
     <span class="na">request</span><span class="pi">:</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)</span>
-    <span class="na">path</span><span class="pi">:</span> <span class="s">/submodel</span>
     <span class="na">urnprefix</span><span class="pi">:</span> <span class="s">/urn</span>
   <span class="na">catalog</span><span class="pi">:</span>
     <span class="na">policies</span><span class="pi">:</span>
@@ -1108,8 +1104,6 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">acceptedLeftOperands</span><span class="pi">:</span> <span class="s">PURPOSE</span>  <span class="c1"># List of comma separated names of the leftOperands to accept.</span>
 
 <span class="na">discovery</span><span class="pi">:</span>
-  <span class="na">endpoint</span><span class="pi">:</span>  <span class="c1"># EDC Discovery Service endpoint</span>
-  <span class="na">mockEdcAddress</span><span class="pi">:</span>  <span class="c1"># Map of BPNs and EDC Provider URLs - this overrides any real Discovery Service for the given BPN</span>
   <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span>  <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
 
 <span class="na">ess</span><span class="pi">:</span>
@@ -1205,7 +1199,9 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">password</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-password&gt;</span>
 
   <span class="na">admin</span><span class="pi">:</span>
-    <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm"</span></code></pre>
+    <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-irs-helm"</span>
+    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
+    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1463,7 +1459,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-22 13:09:51 UTC
+Last updated 2023-09-28 13:11:49 UTC
 </div>
 </div>
 </body>
