@@ -88,8 +88,6 @@ public class EssService {
         return jobHandle;
     }
 
-
-
     public Jobs getIrsJob(final String jobId) {
         final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(UUID.fromString(jobId));
 
