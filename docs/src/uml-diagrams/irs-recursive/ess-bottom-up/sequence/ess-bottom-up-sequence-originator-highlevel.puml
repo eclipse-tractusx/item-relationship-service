@@ -19,7 +19,7 @@ participant EDC
 box Tier3 Company
 participant "Digital Twin Registry" as dDTR_Tier_3
 participant "SubmodelServer" as SubmodelServer_Tier_3
-
+participant "IRS Customer Tier 3" as IRS_Tier_3
 end box
 
 
@@ -33,6 +33,30 @@ end ref
 ClientApp <-- dDTR_Tier_N : Array [{AAS shells}]
 
 ClientApp -> ClientApp : Extract globalAssetId
+
+
+ClientApp <-- dDTR_Tier_N : return array of {aasIdentifier}
+
+ClientApp -> ClientApp :  filter aas for submodelDescriptor  (asPlanned)
+        note left
+               semanticId/
+                    ["type"="ExternalReference"]/
+                        keys["type"="GlobalReference"]/
+                            ["value".contains("SingleLevelBomAsPlanned")]
+               SingleLevelBomAsPlanned (only downwards supported!!)
+        end note
+
+opt aas is asPlanned
+
+     ClientApp -> ClientApp : add aas to aasResultSet
+     note right
+                 Requesting all twins for a given "bomLifecycle"
+     end note
+
+end opt
+
+ClientApp <-- ClientApp : aasResultSet
+
 
 ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
     note left
@@ -55,15 +79,17 @@ ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
             }
     end note
 
+    IRS_Tier_N -> IRS_Tier_N : Check PartSiteInformationAsPlanned if BPNS matches
+    note left
+        Check if bpns contains any catenaXsiteId  in PartSiteInformationAsPlanned
+    end note
+    opt "!bpns.containsAny(catenaXsiteIds) then"
+        IRS_Tier_N -> IRS_Tier_N : skip twin;
+    end
+
     ref over dDTR_Tier_N, dDTR_Tier_3, SubmodelServer_Tier_3
         Determining relationships 1 tier level upwards
     end ref
-
-    IRS_Tier_N -> IRS_Tier_N : aggregateBPNLs
-    note left
-        Aggregate bpns numbers for each bpnl
-    end note
-    IRS_Tier_N <-- IRS_Tier_N : [{globalAssetId,businessPartnerNumberLegalEntity, [businessPartnerNumberSite]}]
 
     IRS_Tier_N -> IRS_Tier_N : validityPeriodChecker
     note left
@@ -74,6 +100,14 @@ ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
         >= validityTimestamp
         >= PartAsPlanned.validityPeriod.validTo
     end note
+
+    IRS_Tier_N -> IRS_Tier_N : aggregateBPNLs
+    note left
+        Aggregate bpns numbers for each bpnl
+    end note
+    IRS_Tier_N <-- IRS_Tier_N : [{globalAssetId,businessPartnerNumberLegalEntity, [businessPartnerNumberSite]}]
+
+
 
 
     ClientApp --> IRS_Tier_N : GET /irs/orders/{orderId}
@@ -100,4 +134,5 @@ ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
                 ]
             }
         end note
+
 @enduml
