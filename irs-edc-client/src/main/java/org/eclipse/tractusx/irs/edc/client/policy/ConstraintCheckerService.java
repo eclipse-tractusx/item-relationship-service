@@ -44,42 +44,41 @@ public class ConstraintCheckerService {
 
     public boolean hasAllConstraint(final Policy acceptedPolicy, final List<Constraint> constraints) {
         final List<Constraints> acceptedConstraintsList = acceptedPolicy.getPermissions()
-                                                     .stream()
-                                                     .map(Permission::getConstraints)
-                                                     .flatMap(Collection::stream)
-                                                     .toList();
+                                                                        .stream()
+                                                                        .map(Permission::getConstraints)
+                                                                        .flatMap(Collection::stream)
+                                                                        .toList();
 
         return constraints.stream().allMatch(constraint -> isValidOnList(constraint, acceptedConstraintsList));
     }
 
     private boolean isValidOnList(final Constraint constraint, final List<Constraints> acceptedConstraintsList) {
-        return acceptedConstraintsList.stream().anyMatch(acceptedConstraints -> isSameAs(constraint, acceptedConstraints));
+        return acceptedConstraintsList.stream()
+                                      .anyMatch(acceptedConstraints -> isSameAs(constraint, acceptedConstraints));
     }
 
     private boolean isSameAs(final Constraint constraint, final Constraints acceptedConstraints) {
         if (constraint instanceof AtomicConstraint atomicConstraint) {
             return acceptedConstraints.getOr().stream().anyMatch(p -> isSameAs(atomicConstraint, p))
                     || acceptedConstraints.getAnd().stream().anyMatch(p -> isSameAs(atomicConstraint, p));
-        } else if (constraint instanceof AndConstraint andConstraint) {
-            return andConstraint.getConstraints().stream().allMatch(constr -> isOnAndList(constr, acceptedConstraints));
-        } else if (constraint instanceof OrConstraint orConstraint) {
-            return orConstraint.getConstraints().stream().anyMatch(constr -> isOnOrList(constr, acceptedConstraints));
-        } else {
-            return false;
         }
+        if (constraint instanceof AndConstraint andConstraint) {
+            return andConstraint.getConstraints()
+                                .stream()
+                                .allMatch(constr -> isInList(constr, acceptedConstraints.getAnd()));
+        }
+        if (constraint instanceof OrConstraint orConstraint) {
+            return orConstraint.getConstraints()
+                               .stream()
+                               .anyMatch(constr -> isInList(constr, acceptedConstraints.getOr()));
+        }
+        return false;
     }
 
-    private boolean isOnAndList(final Constraint constraint, final Constraints acceptedConstraints) {
+    private boolean isInList(final Constraint constraint,
+            final List<org.eclipse.tractusx.irs.edc.client.policy.Constraint> acceptedConstraints) {
         if (constraint instanceof AtomicConstraint atomicConstraint) {
-            return acceptedConstraints.getAnd().stream().anyMatch(ac -> isSameAs(atomicConstraint, ac));
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isOnOrList(final Constraint constraint, final Constraints acceptedConstraints) {
-        if (constraint instanceof AtomicConstraint atomicConstraint) {
-            return acceptedConstraints.getOr().stream().anyMatch(ac -> isSameAs(atomicConstraint, ac));
+            return acceptedConstraints.stream().anyMatch(ac -> isSameAs(atomicConstraint, ac));
         } else {
             return false;
         }
@@ -90,7 +89,8 @@ public class ConstraintCheckerService {
         return AtomicConstraintValidator.builder()
                                         .atomicConstraint(atomicConstraint)
                                         .leftExpressionValue(acceptedConstraint.getLeftOperand())
-                                        .rightExpressionValue(acceptedConstraint.getRightOperand().stream().findFirst().orElse(""))
+                                        .rightExpressionValue(
+                                                acceptedConstraint.getRightOperand().stream().findFirst().orElse(""))
                                         .expectedOperator(Operator.valueOf(acceptedConstraint.getOperator().name()))
                                         .build()
                                         .isValid();

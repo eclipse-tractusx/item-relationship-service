@@ -296,7 +296,7 @@ class SubmodelFacadeWiremockTest {
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId, List<Permission> permissions) {
         return new org.eclipse.tractusx.irs.edc.client.policy.Policy(
                 policyId,
-                OffsetDateTime.now().plusYears(1),
+                OffsetDateTime.now(),
                 OffsetDateTime.now().plusYears(1),
                 permissions
         );

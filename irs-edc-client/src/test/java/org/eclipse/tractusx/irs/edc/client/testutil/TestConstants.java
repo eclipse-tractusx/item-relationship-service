@@ -21,15 +21,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.policy;
-
-import java.time.OffsetDateTime;
+package org.eclipse.tractusx.irs.edc.client.testutil;
 
 /**
- * A policy accepted for negotiation.
- *
- * @param policy     policy with permissions
- * @param validUntil the timestamp after which the policy will no longer be accepted
+ * Commonly used constants for tests.
  */
-public record AcceptedPolicy(Policy policy, OffsetDateTime validUntil) {
+public class TestConstants {
+    public static final String FRAMEWORK_AGREEMENT_TRACEABILITY = "FrameworkAgreement.traceability";
+    public static final String FRAMEWORK_AGREEMENT_DISMANTLER = "FrameworkAgreement.dismantler";
+    public static final String FRAMEWORK_AGREEMENT_TEST = "FrameworkAgreement.test";
+    public static final String MEMBERSHIP = "Membership";
+    public static final String ID_3_0_TRACE = "ID 3.0 Trace";
+    public static final String ID_3_1_TRACE = "ID 3.1 Trace";
+    public static final String STATUS_ACTIVE = "active";
+    public static final String PURPOSE = "PURPOSE";
 }
