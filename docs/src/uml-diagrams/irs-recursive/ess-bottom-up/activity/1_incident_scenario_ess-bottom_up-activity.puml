@@ -24,7 +24,7 @@ note left
                             ["value".contains("SingleLevelBomAsPlanned")]
                SingleLevelBomAsPlanned (only downwards supported!!)
 end note
-if(twinsAsPlanned.isEmpty?) then (no)
+if(twinsAsPlanned.isEmpty?) then (yes)
     stop
 endif
 
