@@ -51,9 +51,11 @@ public class EdcSubmodelFacade {
         try {
             return client.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get();
         } catch (InterruptedException e) {
+            log.debug("InterruptedException occurred.", e);
             Thread.currentThread().interrupt();
             return null;
         } catch (ExecutionException e) {
+            log.debug("ExecutionException occurred.", e);
             final Throwable cause = e.getCause();
             if (cause instanceof EdcClientException exceptionCause) {
                 throw exceptionCause;

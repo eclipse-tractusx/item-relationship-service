@@ -28,6 +28,6 @@ package org.eclipse.tractusx.irs.edc.client.exceptions;
  */
 public class UsagePolicyException extends EdcClientException {
     public UsagePolicyException(final String itemId) {
-        super("Consumption of asset " + itemId + "  is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
+        super("Consumption of asset '" + itemId + "' is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
     }
 }

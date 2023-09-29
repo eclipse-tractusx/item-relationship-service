@@ -63,17 +63,28 @@ public class EssService {
         final Jobs jobSnapshot = investigationJob.getJobSnapshot();
         log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotifications());
         log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
-        if (hasUnansweredNotifications(investigationJob)) {
-            return jobSnapshot.toBuilder()
-                              .job(jobSnapshot.getJob().toBuilder().state(JobState.RUNNING).build())
-                              .build();
-        }
-        return jobSnapshot;
 
+        final JobState jobState = updateJobState(investigationJob);
+
+        return jobSnapshot.toBuilder().job(jobSnapshot.getJob().toBuilder().state(jobState).build()).build();
     }
 
-    private static boolean hasUnansweredNotifications(final BpnInvestigationJob job) {
-        return !job.getUnansweredNotifications().isEmpty();
+    private static JobState updateJobState(final BpnInvestigationJob investigationJob) {
+        if (hasUnansweredNotifications(investigationJob)) {
+            return JobState.RUNNING;
+        }
+        if (hasAnsweredNotifications(investigationJob)) {
+            return JobState.COMPLETED;
+        }
+        return investigationJob.getState();
+    }
+
+    private static boolean hasAnsweredNotifications(final BpnInvestigationJob investigationJob) {
+        return !investigationJob.getAnsweredNotifications().isEmpty();
+    }
+
+    private static boolean hasUnansweredNotifications(final BpnInvestigationJob investigationJob) {
+        return !investigationJob.getUnansweredNotifications().isEmpty();
     }
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
@@ -127,6 +138,10 @@ public class EssService {
                     originalNotificationId, supplyChainImpacted);
             log.debug("Unanswered notifications left: '{}'", job.getUnansweredNotifications());
             final UUID jobId = job.getJobSnapshot().getJob().getId();
+
+            if (job.getUnansweredNotifications().isEmpty()) {
+                job = job.complete();
+            }
 
             bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
             recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);

@@ -38,6 +38,7 @@ import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
+import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
  * Object to store in cache
@@ -52,11 +53,12 @@ public class BpnInvestigationJob {
     private List<String> incidentBpns;
     private List<String> unansweredNotifications;
     private List<String> answeredNotifications;
+    private JobState state;
 
     public static BpnInvestigationJob create(final Jobs jobSnapshot, final String owner,
             final List<String> incidentBpns) {
         return new BpnInvestigationJob(withOwner(jobSnapshot, owner), incidentBpns, new ArrayList<>(),
-                new ArrayList<>());
+                new ArrayList<>(), JobState.RUNNING);
     }
 
     private static Jobs withOwner(final Jobs jobSnapshot, final String owner) {
@@ -129,4 +131,8 @@ public class BpnInvestigationJob {
         return this;
     }
 
+    public BpnInvestigationJob complete() {
+        this.state = JobState.COMPLETED;
+        return this;
+    }
 }

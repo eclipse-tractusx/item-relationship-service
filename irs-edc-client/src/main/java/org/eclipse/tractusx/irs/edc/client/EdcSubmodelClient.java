@@ -204,11 +204,13 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
     public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint,
             final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
+            log.info("Requesting raw SubmodelPayload for endpoint '{}'.", connectorEndpoint);
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
 
             final var negotiationEndpoint = appendSuffix(connectorEndpoint,
                     config.getControlplane().getProviderSuffix());
+            log.debug("Starting negotiation with EDC endpoint: '{}'", negotiationEndpoint);
             final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint,
                     assetId);
             return pollingService.<String>createJob()
