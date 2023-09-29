@@ -24,7 +24,7 @@ note left
          ...
     },
     "content": {
-        "incidentBpn" : ["BPNS123456"]
+        "incidentBPNSs" : ["BPNS123456"]
         "concernedCatenaXIds" : [ {
             globalAssetId : <globalAssetId>,
             hopsCount: <hopsCount>,
