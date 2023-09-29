@@ -43,7 +43,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(
     basePackages = {
         "org.eclipse.tractusx.irs",
-        "org.eclipse.tractusx.ess",
+        "org.eclipse.tractusx.irs.ess",
         "org.eclipse.tractusx.irs.edc",
         "org.eclipse.tractusx.irs.common.auth",
     },
