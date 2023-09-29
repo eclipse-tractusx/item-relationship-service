@@ -94,14 +94,12 @@ class EssRecursiveNotificationHandlerTest {
     }
 
     private RelatedInvestigationJobs createRelatedJobsWith(List<UUID> uuids) {
-        final EdcNotification<InvestigationNotificationContent> build = EdcNotification.<InvestigationNotificationContent>builder()
-                                                                          .header(EdcNotificationHeader.builder()
-                                                                                                       .notificationId(
-                                                                                                               "notification-id")
-                                                                                                       .build())
-                                                                          .content(InvestigationNotificationContent.builder().build())
-                                                                          .build();
-        return new RelatedInvestigationJobs(build, uuids);
+        return new RelatedInvestigationJobs(EdcNotification.<InvestigationNotificationContent>builder()
+                                                           .header(EdcNotificationHeader.builder()
+                                                                                        .notificationId(
+                                                                                                "notification-id")
+                                                                                        .build())
+                                                           .build(), uuids);
     }
 
 }
