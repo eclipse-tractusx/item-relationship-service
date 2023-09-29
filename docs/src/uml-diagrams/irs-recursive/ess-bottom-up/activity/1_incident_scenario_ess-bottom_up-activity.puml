@@ -55,7 +55,7 @@ endif
  tier level upwards;
 
 : aggregateBPNLs Aggregate bpns numbers for each bpnl;
-
+: increment hops count for each twin ;
 stop
 
 @enduml

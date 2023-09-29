@@ -27,6 +27,7 @@ note left
         "incidentBpn" : ["BPNS123456"]
         "concernedCatenaXIds" : [ {
             globalAssetId : <globalAssetId>,
+            hopsCount: <hopsCount>,
             bpns: [
                 <bpns>
             ]
@@ -45,7 +46,6 @@ end note
           "collectAspects": true,
           "depth": 1,
           "direction": "upwards",
-
           "keys": [
             {
               "bpn": "BPNL0123456789XX",

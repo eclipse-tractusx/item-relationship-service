@@ -105,6 +105,12 @@ ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
     note left
         Aggregate bpns numbers for each bpnl
     end note
+    IRS_Tier_N -> IRS_Tier_N : incrementHopsCount
+        note left
+            increment hopsCount on twin level
+        end note
+
+
     IRS_Tier_N <-- IRS_Tier_N : [{globalAssetId,businessPartnerNumberLegalEntity, [businessPartnerNumberSite]}]
 
 
@@ -125,6 +131,7 @@ ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
                         "customerParts" [
                             {
                                 globalAssetId:   <globalAssetId>,
+                                hopsCount: <hopsCount>,
                                 sites : [
                                     {<bpns>},
                                 ],
