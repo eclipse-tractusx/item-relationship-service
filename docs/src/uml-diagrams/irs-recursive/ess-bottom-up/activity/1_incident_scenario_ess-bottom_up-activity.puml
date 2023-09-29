@@ -12,7 +12,7 @@ start
 note left
    Requesting all AAS  from dDTR
 end note
-if(aas.isEmpty?) then (no)
+if(aas.isEmpty?) then (yes)
     stop
 endif
 
