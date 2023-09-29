@@ -27,10 +27,11 @@ import java.util.List;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 
 /**
  * RelatedInvestigationJobs to store in cache
  */
-public record RelatedInvestigationJobs(EdcNotification originalNotification, List<UUID> recursiveRelatedJobIds) {
+public record RelatedInvestigationJobs(EdcNotification<InvestigationNotificationContent> originalNotification, List<UUID> recursiveRelatedJobIds) {
 
 }
