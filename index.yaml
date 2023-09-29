@@ -118,6 +118,35 @@ entries:
   irs-helm:
   - apiVersion: v2
     appVersion: 3.5.0
+    created: "2023-09-29T13:48:21.706653448Z"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.x.x
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 5.0.1
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 17.0.1
+    - condition: grafana.enabled
+      name: grafana
+      repository: https://grafana.github.io/helm-charts
+      version: 6.44.8
+    description: IRS Helm chart for Kubernetes
+    digest: 781d2fb8b64ab32b281c50d05ba709c6e0ee0f968c1ca9a9cd8d1b4645cef447
+    home: https://eclipse-tractusx.github.io/
+    name: irs-helm
+    sources:
+    - https://github.com/eclipse-tractusx/item-relationship-service
+    type: application
+    urls:
+    - https://github.com/eclipse-tractusx/item-relationship-service/releases/download/irs-helm-6.7.1/irs-helm-6.7.1.tgz
+    version: 6.7.1
+  - apiVersion: v2
+    appVersion: 3.5.0
     created: "2023-09-28T13:12:32.901950932Z"
     dependencies:
     - name: common
@@ -1105,4 +1134,4 @@ entries:
     urls:
     - https://github.com/catenax-ng/product-item-relationship-service/releases/download/irs-helm-2.0.0/irs-helm-2.0.0.tgz
     version: 2.0.0
-generated: "2023-09-28T13:12:32.902280536Z"
+generated: "2023-09-29T13:48:21.706981248Z"
