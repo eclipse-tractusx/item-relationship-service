@@ -36,6 +36,7 @@ import java.util.UUID;
 
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
+import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -93,12 +94,14 @@ class EssRecursiveNotificationHandlerTest {
     }
 
     private RelatedInvestigationJobs createRelatedJobsWith(List<UUID> uuids) {
-        return new RelatedInvestigationJobs(EdcNotification.builder()
-                                                           .header(EdcNotificationHeader.builder()
-                                                                                        .notificationId(
-                                                                                                "notification-id")
-                                                                                        .build())
-                                                           .build(), uuids);
+        final EdcNotification<InvestigationNotificationContent> build = EdcNotification.<InvestigationNotificationContent>builder()
+                                                                          .header(EdcNotificationHeader.builder()
+                                                                                                       .notificationId(
+                                                                                                               "notification-id")
+                                                                                                       .build())
+                                                                          .content(InvestigationNotificationContent.builder().build())
+                                                                          .build();
+        return new RelatedInvestigationJobs(build, uuids);
     }
 
 }
