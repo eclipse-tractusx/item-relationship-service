@@ -70,7 +70,7 @@ ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
             bomLifecycle : asPlanned,
             direction : upwards (SingleLevelUsageAsPlanned),
             depth : 1,
-            incidentBpns [<bpns>,..],
+            incidentBPNSs [<bpns>,..],
             filterExpressions :  [
                         {
                           validityTimestamp : <validityTimestamp>
