@@ -40,9 +40,8 @@
 
         <!-- Dependencies -->
         <springboot.version>3.1.3</springboot.version>
-        <springcloud-feign.version>3.1.5</springcloud-feign.version>
-        <springdoc.version>1.6.7</springdoc.version>
-        <micrometer.version>1.10.4</micrometer.version>
+        <springdoc.version>2.2.0</springdoc.version>
+        <micrometer.version>1.11.4</micrometer.version>
         <junit.version>5.8.2</junit.version>
         <datafaker.version>1.9.0</datafaker.version>
         <json-unit-assertj.version>2.36.0</json-unit-assertj.version>
@@ -61,7 +60,7 @@
         <pmd-plugin.version>3.19.0</pmd-plugin.version>
         <owasp-plugin.version>8.2.1</owasp-plugin.version>
 
-        <surefire-plugin.version>3.0.0-M8</surefire-plugin.version>
+        <surefire-plugin.version>3.1.2</surefire-plugin.version>
         <jar-plugin.version>3.3.0</jar-plugin.version>
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
         <install-plugin.version>3.1.1</install-plugin.version>
