@@ -109,19 +109,19 @@ maven/mavencentral/io.gatling/gatling-mqtt/3.9.5, Apache-2.0, approved, #9698
 maven/mavencentral/io.gatling/gatling-netty-util/3.9.5, Apache-2.0, approved, clearlydefined
 maven/mavencentral/io.gatling/gatling-redis-java/3.9.5, Apache-2.0, approved, #9702
 maven/mavencentral/io.gatling/gatling-redis/3.9.5, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-annotations/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-bulkhead/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-circuitbreaker/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-circularbuffer/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-consumer/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-core/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-framework-common/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-micrometer/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-ratelimiter/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-retry/2.0.2, Apache-2.0, approved, clearlydefined
-maven/mavencentral/io.github.resilience4j/resilience4j-spring-boot3/2.0.2, Apache-2.0, approved, #7276
-maven/mavencentral/io.github.resilience4j/resilience4j-spring6/2.0.2, Apache-2.0, approved, #7277
-maven/mavencentral/io.github.resilience4j/resilience4j-timelimiter/2.0.2, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.github.resilience4j/resilience4j-annotations/2.1.0, Apache-2.0, approved, #10171
+maven/mavencentral/io.github.resilience4j/resilience4j-bulkhead/2.1.0, Apache-2.0, approved, #10172
+maven/mavencentral/io.github.resilience4j/resilience4j-circuitbreaker/2.1.0, Apache-2.0, approved, #10170
+maven/mavencentral/io.github.resilience4j/resilience4j-circularbuffer/2.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.github.resilience4j/resilience4j-consumer/2.1.0, Apache-2.0, approved, #10165
+maven/mavencentral/io.github.resilience4j/resilience4j-core/2.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.github.resilience4j/resilience4j-framework-common/2.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.github.resilience4j/resilience4j-micrometer/2.1.0, , restricted, clearlydefined
+maven/mavencentral/io.github.resilience4j/resilience4j-ratelimiter/2.1.0, Apache-2.0, approved, #10168
+maven/mavencentral/io.github.resilience4j/resilience4j-retry/2.1.0, Apache-2.0, approved, clearlydefined
+maven/mavencentral/io.github.resilience4j/resilience4j-spring-boot3/2.1.0, , restricted, clearlydefined
+maven/mavencentral/io.github.resilience4j/resilience4j-spring6/2.1.0, , restricted, clearlydefined
+maven/mavencentral/io.github.resilience4j/resilience4j-timelimiter/2.1.0, Apache-2.0, approved, #10166
 maven/mavencentral/io.micrometer/micrometer-commons/1.11.3, Apache-2.0 AND (Apache-2.0 AND MIT), approved, #9243
 maven/mavencentral/io.micrometer/micrometer-core/1.11.3, Apache-2.0 AND (Apache-2.0 AND MIT), approved, #9238
 maven/mavencentral/io.micrometer/micrometer-observation/1.11.3, Apache-2.0, approved, #9242
