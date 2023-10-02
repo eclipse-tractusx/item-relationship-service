@@ -46,6 +46,7 @@ import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.InMemoryBatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
+import org.eclipse.tractusx.irs.ess.service.EssService;
 import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
@@ -62,6 +63,7 @@ class BatchOrderEventListenerTest {
     private BatchOrderStore batchOrderStore;
     private BatchStore batchStore;
     private final IrsItemGraphQueryService irsItemGraphQueryService = mock(IrsItemGraphQueryService.class);
+    private final EssService essService = mock(EssService.class);
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
     private final TimeoutSchedulerBatchProcessingService timeoutScheduler = mock(
             TimeoutSchedulerBatchProcessingService.class);
@@ -73,7 +75,7 @@ class BatchOrderEventListenerTest {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
         eventListener = new BatchOrderEventListener(batchOrderStore, batchStore, irsItemGraphQueryService,
-                applicationEventPublisher, timeoutScheduler);
+                essService, applicationEventPublisher, timeoutScheduler);
     }
 
     @Test
@@ -90,6 +92,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .owner(owner)
+                                                .jobType(BatchOrder.JobType.REGULAR)
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -135,6 +138,7 @@ class BatchOrderEventListenerTest {
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
                                                 .owner(owner)
+                                                .jobType(BatchOrder.JobType.REGULAR)
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)
@@ -177,6 +181,7 @@ class BatchOrderEventListenerTest {
                                                 .timeout(timeout)
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
+                                                .jobType(BatchOrder.JobType.REGULAR)
                                                 .build();
         final Batch firstBatch = Batch.builder()
                                       .batchId(FIRST_BATCH_ID)

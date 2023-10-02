@@ -346,7 +346,7 @@ class InvestigationJobProcessingEventListenerTest {
                               .shells(List.of(createShell(UUID.randomUUID().toString(), mockedShell)))
                               .submodels(List.of(partAsPlanned, partSiteInformationAsPlanned))
                               .build();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner", incindentBPNSs);
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, incindentBPNSs);
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
         when(irsItemGraphQueryService.getJobForJobId(mockedJobId, false)).thenReturn(jobs);
@@ -365,7 +365,7 @@ class InvestigationJobProcessingEventListenerTest {
                                       .build())
                               .shells(bpns.stream().map(bpn -> createShell(UUID.randomUUID().toString(), bpn)).toList())
                               .build();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, "owner",
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs,
                 List.of("BPNS000000000DDD"));
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));

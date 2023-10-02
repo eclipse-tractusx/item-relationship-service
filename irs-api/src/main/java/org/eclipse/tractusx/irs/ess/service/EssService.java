@@ -59,42 +59,17 @@ public class EssService {
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
-    private static Jobs updateState(final BpnInvestigationJob investigationJob) {
-        final Jobs jobSnapshot = investigationJob.getJobSnapshot();
-        log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotifications());
-        log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
-
-        final JobState jobState = updateJobState(investigationJob);
-
-        return jobSnapshot.toBuilder().job(jobSnapshot.getJob().toBuilder().state(jobState).build()).build();
-    }
-
-    private static JobState updateJobState(final BpnInvestigationJob investigationJob) {
-        if (hasUnansweredNotifications(investigationJob)) {
-            return JobState.RUNNING;
-        }
-        if (hasAnsweredNotifications(investigationJob)) {
-            return JobState.COMPLETED;
-        }
-        return investigationJob.getState();
-    }
-
-    private static boolean hasAnsweredNotifications(final BpnInvestigationJob investigationJob) {
-        return !investigationJob.getAnsweredNotifications().isEmpty();
-    }
-
-    private static boolean hasUnansweredNotifications(final BpnInvestigationJob investigationJob) {
-        return !investigationJob.getUnansweredNotifications().isEmpty();
-    }
-
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
-        final JobHandle jobHandle = irsItemGraphQueryService.registerItemJob(bpnInvestigations(request.getKey(), request.getBomLifecycle()));
+        return startIrsJob(request, null, securityHelperService.getClientIdClaim());
+    }
+
+    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request, final UUID batchId, final String owner) {
+        final JobHandle jobHandle = irsItemGraphQueryService.registerItemJob(bpnInvestigations(request.getKey(), request.getBomLifecycle()), batchId, owner);
 
         final UUID createdJobId = jobHandle.getId();
         final Jobs createdJob = irsItemGraphQueryService.getJobForJobId(createdJobId, true);
-        final String owner = securityHelperService.getClientIdClaim();
         bpnInvestigationJobCache.store(createdJobId,
-                BpnInvestigationJob.create(createdJob, owner, request.getIncidentBPNSs()));
+                BpnInvestigationJob.create(createdJob, request.getIncidentBPNSs()));
 
         return jobHandle;
     }
@@ -149,6 +124,34 @@ public class EssService {
         });
     }
 
+    private Jobs updateState(final BpnInvestigationJob investigationJob) {
+        final Jobs jobSnapshot = investigationJob.getJobSnapshot();
+        log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotifications());
+        log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
+
+        final JobState jobState = updateJobState(investigationJob);
+
+        return jobSnapshot.toBuilder().job(jobSnapshot.getJob().toBuilder().state(jobState).build()).build();
+    }
+
+    private JobState updateJobState(final BpnInvestigationJob investigationJob) {
+        if (hasUnansweredNotifications(investigationJob)) {
+            return JobState.RUNNING;
+        }
+        if (hasAnsweredNotifications(investigationJob)) {
+            return JobState.COMPLETED;
+        }
+        return investigationJob.getState();
+    }
+
+    private boolean hasAnsweredNotifications(final BpnInvestigationJob investigationJob) {
+        return !investigationJob.getAnsweredNotifications().isEmpty();
+    }
+
+    private boolean hasUnansweredNotifications(final BpnInvestigationJob job) {
+        return !job.getUnansweredNotifications().isEmpty();
+    }
+
     private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(
             final EdcNotification<ResponseNotificationContent> notification) {
         return investigationJob -> investigationJob.getUnansweredNotifications()
@@ -165,4 +168,5 @@ public class EssService {
                           .collectAspects(true)
                           .build();
     }
+
 }
