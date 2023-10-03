@@ -39,6 +39,8 @@ import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.connector.job.JobStore;
+import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
@@ -57,6 +59,7 @@ public class EssService {
     private final IrsItemGraphQueryService irsItemGraphQueryService;
     private final SecurityHelperService securityHelperService;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
+    private final JobStore jobStore;
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
@@ -67,9 +70,11 @@ public class EssService {
         final JobHandle jobHandle = irsItemGraphQueryService.registerItemJob(bpnInvestigations(request.getKey(), request.getBomLifecycle()), batchId, owner);
 
         final UUID createdJobId = jobHandle.getId();
-        final Jobs createdJob = irsItemGraphQueryService.getJobForJobId(createdJobId, true);
-        bpnInvestigationJobCache.store(createdJobId,
-                BpnInvestigationJob.create(createdJob, request.getIncidentBPNSs()));
+        final Optional<MultiTransferJob> multiTransferJob = jobStore.find(createdJobId.toString());
+        multiTransferJob.ifPresent(job -> {
+            final Jobs createdJob = irsItemGraphQueryService.getJobForJobId(job, true);
+            bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, request.getIncidentBPNSs()));
+        });
 
         return jobHandle;
     }

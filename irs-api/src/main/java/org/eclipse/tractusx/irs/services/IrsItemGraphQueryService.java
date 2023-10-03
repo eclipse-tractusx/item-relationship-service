@@ -281,47 +281,51 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access job with id " + jobId + " due to missing privileges.");
             }
 
-            final var relationships = new ArrayList<Relationship>();
-            final var tombstones = new ArrayList<Tombstone>();
-            final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
-            final var submodels = new ArrayList<Submodel>();
-            final var bpns = new ArrayList<Bpn>();
-
-            if (jobIsCompleted(multiJob)) {
-                final var container = retrieveJobResultRelationships(multiJob.getJob().getId());
-                relationships.addAll(container.getRelationships());
-                tombstones.addAll(container.getTombstones());
-                shells.addAll(container.getShells());
-                submodels.addAll(container.getSubmodels());
-                bpns.addAll(container.getBpns());
-            } else if (includePartialResults) {
-                final var container = retrievePartialResults(multiJob);
-                relationships.addAll(container.getRelationships());
-                tombstones.addAll(container.getTombstones());
-                shells.addAll(container.getShells());
-                submodels.addAll(container.getSubmodels());
-                bpns.addAll(container.getBpns());
-            }
-
-            log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", jobId,
-                    multiJob.getJob().getState(), relationships.size(), tombstones.size(), submodels.size());
-
-            return Jobs.builder()
-                       .job(multiJob.getJob()
-                                    .toBuilder()
-                                    .summary(buildSummary(multiJob.getCompletedTransfers().size(),
-                                            multiJob.getTransferProcessIds().size(), tombstones.size(),
-                                            retrievePartialResults(multiJob)))
-                                    .build())
-                       .relationships(relationships)
-                       .tombstones(tombstones)
-                       .shells(shells)
-                       .submodels(submodels)
-                       .bpns(bpns)
-                       .build();
+            return getJobForJobId(multiJob, includePartialResults);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId);
         }
+    }
+
+    public Jobs getJobForJobId(final MultiTransferJob multiJob, final boolean includePartialResults) {
+        final var relationships = new ArrayList<Relationship>();
+        final var tombstones = new ArrayList<Tombstone>();
+        final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
+        final var submodels = new ArrayList<Submodel>();
+        final var bpns = new ArrayList<Bpn>();
+
+        if (jobIsCompleted(multiJob)) {
+            final var container = retrieveJobResultRelationships(multiJob.getJob().getId());
+            relationships.addAll(container.getRelationships());
+            tombstones.addAll(container.getTombstones());
+            shells.addAll(container.getShells());
+            submodels.addAll(container.getSubmodels());
+            bpns.addAll(container.getBpns());
+        } else if (includePartialResults) {
+            final var container = retrievePartialResults(multiJob);
+            relationships.addAll(container.getRelationships());
+            tombstones.addAll(container.getTombstones());
+            shells.addAll(container.getShells());
+            submodels.addAll(container.getSubmodels());
+            bpns.addAll(container.getBpns());
+        }
+
+        log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", multiJob.getJob().getId(),
+                multiJob.getJob().getState(), relationships.size(), tombstones.size(), submodels.size());
+
+        return Jobs.builder()
+                   .job(multiJob.getJob()
+                                .toBuilder()
+                                .summary(buildSummary(multiJob.getCompletedTransfers().size(),
+                                        multiJob.getTransferProcessIds().size(), tombstones.size(),
+                                        retrievePartialResults(multiJob)))
+                                .build())
+                   .relationships(relationships)
+                   .tombstones(tombstones)
+                   .shells(shells)
+                   .submodels(submodels)
+                   .bpns(bpns)
+                   .build();
     }
 
     @Scheduled(cron = "${irs.job.jobstore.cron.expression}")

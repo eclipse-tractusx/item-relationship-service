@@ -49,6 +49,8 @@ import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.connector.job.JobStore;
+import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -71,6 +73,7 @@ class InvestigationJobProcessingEventListenerTest {
     private final IrsItemGraphQueryService irsItemGraphQueryService = mock(IrsItemGraphQueryService.class);
     private final EdcSubmodelFacade edcSubmodelFacade = mock(EdcSubmodelFacade.class);
     private final BpnInvestigationJobCache bpnInvestigationJobCache = Mockito.mock(BpnInvestigationJobCache.class);
+    private final JobStore jobStore = Mockito.mock(JobStore.class);
     private final EssRecursiveNotificationHandler recursiveNotificationHandler = Mockito.mock(
             EssRecursiveNotificationHandler.class);
     private final UUID jobId = UUID.randomUUID();
@@ -79,8 +82,8 @@ class InvestigationJobProcessingEventListenerTest {
     private final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
 
     private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(
-            irsItemGraphQueryService, connectorEndpointsService, edcSubmodelFacade, bpnInvestigationJobCache, "", "", List.of(),
-            recursiveNotificationHandler);
+            irsItemGraphQueryService, connectorEndpointsService, edcSubmodelFacade, bpnInvestigationJobCache, jobStore,
+            "", "", List.of(), recursiveNotificationHandler);
 
     @Captor
     ArgumentCaptor<EdcNotification<NotificationContent>> edcNotificationCaptor;
@@ -349,7 +352,8 @@ class InvestigationJobProcessingEventListenerTest {
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, incindentBPNSs);
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
-        when(irsItemGraphQueryService.getJobForJobId(mockedJobId, false)).thenReturn(jobs);
+        when(jobStore.find(eq(mockedJobId.toString()))).thenReturn(Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
+        when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(false))).thenReturn(jobs);
     }
 
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
@@ -369,7 +373,8 @@ class InvestigationJobProcessingEventListenerTest {
                 List.of("BPNS000000000DDD"));
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
-        when(irsItemGraphQueryService.getJobForJobId(mockedJobId, false)).thenReturn(jobs);
+        when(jobStore.find(eq(mockedJobId.toString()))).thenReturn(Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
+        when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(false))).thenReturn(jobs);
     }
 
 }
