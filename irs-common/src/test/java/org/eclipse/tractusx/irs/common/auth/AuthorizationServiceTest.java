@@ -42,7 +42,7 @@ class AuthorizationServiceTest {
     @Test
     void shouldReturnTrueWhenTokenBpnIsEqualToAllowedBpn() {
         // given
-        final String BPN = "BPNL00000003CRHK";
+        final String BPN = "BPNL00000001CRHK";
         final Map<String, Object> claims = Map.of(SUB, "sub", "clientId", "clientId", "bpn", BPN);
         thereIsJwtAuthenticationWithClaims(claims);
         final AuthorizationService authorizationService = new AuthorizationService(BPN);

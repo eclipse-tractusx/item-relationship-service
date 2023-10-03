@@ -43,7 +43,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 class SecurityHelperServiceTest {
 
     private final String CLIENT_ID = "sa-cl6-cx-2";
-    private final String BPN = "BPNL00000003CRHK";
+    private final String BPN = "BPNL00000001CRHK";
 
     final SecurityHelperService securityHelperService = new SecurityHelperService();
 
