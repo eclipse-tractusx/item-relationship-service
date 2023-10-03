@@ -114,13 +114,12 @@ public class BatchOrderEventListener {
     }
 
     private void startBatch(final BatchOrder batchOrder, final Batch batch) {
-        // here we use only globalAssetId
-        final Stream<PartChainIdentificationKey> keyStream = batch.getJobProgressList()
+        final List<PartChainIdentificationKey> keyStream = batch.getJobProgressList()
                                                                                          .stream()
-                                                                                         .map(JobProgress::getIdentificationKey);
-        final List<JobProgress> createdJobIds = new ArrayList<>();
+                                                                                         .map(JobProgress::getIdentificationKey)
+                                                                  .toList();
         if (batchOrder.getJobType().equals(BatchOrder.JobType.REGULAR)) {
-            createdJobIds.addAll(keyStream
+            batch.setJobProgressList(keyStream.stream()
                     .map(identificationKey -> createRegisterJob(batchOrder, identificationKey))
                     .map(registerJob -> createJobProgress(
                             irsItemGraphQueryService.registerItemJob(registerJob,
@@ -128,20 +127,19 @@ public class BatchOrderEventListener {
                             registerJob.getKey()))
                     .toList());
         } else if (batchOrder.getJobType().equals(BatchOrder.JobType.ESS)) {
-            createdJobIds.addAll(keyStream
-                    .map(identificationKey -> createRegisterBpnInvestigationBatchOrder(batchOrder, identificationKey))
+            batch.setJobProgressList(keyStream.stream()
+                    .map(identificationKey -> createRegisterBpnInvestigationBatchOrder(
+                            batchOrder, identificationKey))
                     .map(registerJob -> createJobProgress(
-                            essService.startIrsJob(registerJob,
-                                    batch.getBatchId(), batch.getOwner()),
-                            registerJob.getKey()))
+                            essService.startIrsJob(registerJob, batch.getBatchId(),
+                                    batch.getOwner()), registerJob.getKey()))
                     .toList());
         }
 
-        batch.setJobProgressList(createdJobIds);
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
         batchStore.save(batch.getBatchId(), batch);
         timeoutScheduler.registerBatchTimeout(batch.getBatchId(), batchOrder.getTimeout());
-        timeoutScheduler.registerJobsTimeout(createdJobIds.stream().map(JobProgress::getJobId).toList(),
+        timeoutScheduler.registerJobsTimeout(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList(),
                 batchOrder.getJobTimeout());
     }
 
