@@ -114,7 +114,7 @@ public class RegisterBpnInvestigationBatchOrder {
     @Max(MAX_JOB_TIMEOUT)
     private Integer jobTimeout = DEFAULT_JOB_TIMEOUT;
 
-    @Schema(implementation = BatchStrategy.class/*, defaultValue = BatchStrategy.PRESERVE_BATCH_JOB_ORDER.name()*/, description = "The strategy how the batch is processed internally in IRS.")
+    @Schema(implementation = BatchStrategy.class, description = "The strategy how the batch is processed internally in IRS.")
     private BatchStrategy batchStrategy;
 
 
