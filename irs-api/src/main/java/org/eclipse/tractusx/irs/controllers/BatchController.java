@@ -123,7 +123,7 @@ public class BatchController {
     }
 
     @Operation(operationId = "registerESSInvestigationOrder",
-               summary = "Registers an order  for an ess investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.",
+               summary = "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Environmental- and Social Standards" },
                description = "Registers an order  for an ess investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.")
