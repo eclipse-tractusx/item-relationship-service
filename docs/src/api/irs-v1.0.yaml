@@ -158,9 +158,8 @@ paths:
         - Environmental- and Social Standards
   /irs/ess/orders:
     post:
-      description: "Registers an order  for an ess investigation with an array of\
-          \ {globalAssetIds}. Each globalAssetId will be processed in an separate job,\
-          \ grouped in batches."
+      description: "Registers an order for an ESS investigation with an array of 
+      {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches."
       operationId: registerESSInvestigationOrder
       requestBody:
         content:
@@ -208,8 +207,8 @@ paths:
       security:
         - oAuth2:
             - profile email
-      summary: "Registers an order  for an ess investigation with an array of {globalAssetIds}.\
-          \ Each globalAssetId will be processed in an separate job, grouped in batches."
+      summary: "Registers an order for an ESS investigation with an array of {globalAssetIds}. 
+      Each globalAssetId will be processed in an separate job, grouped in batches."
       tags:
         - Environmental- and Social Standards
   /irs/jobs:
