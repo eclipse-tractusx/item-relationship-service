@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.NoSuchElementException;
 
+import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.junit.jupiter.api.Test;
 
 class OperatorTypeTest {

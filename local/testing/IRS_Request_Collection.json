@@ -5,8 +5,8 @@
 	"__export_source": "insomnia.desktop.app:v2023.5.8",
 	"resources": [
 		{
-			"_id": "req_f916b2912a8345d8b370d325fa1eb5df",
-			"parentId": "fld_a9821240386945ec8f185fab7c7456bc",
+			"_id": "req_0d87b4e10fb44787826d9283f86230b2",
+			"parentId": "fld_be8c2610cff74eb59ed09055773d60be",
 			"modified": 1687243172179,
 			"created": 1687243056648,
 			"url": "{{IRS_HOST}}/irs/policies",
@@ -20,8 +20,8 @@
 				"type": "oauth2",
 				"grantType": "client_credentials",
 				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"clientId": "{{ _.ADMIN_ID }}",
+				"clientSecret": "{{ _.ADMIN_SECRET }}"
 			},
 			"metaSortKey": -1687243056648,
 			"isPrivate": false,
@@ -72,7 +72,7 @@
 			"parentId": "fld_a9821240386945ec8f185fab7c7456bc",
 			"modified": 1687243241313,
 			"created": 1687243204155,
-			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'policyId', '', '', '', false, true %}",
+			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'policyId', '', 'traceability-test', '', false, true %}",
 			"name": "Delete policy",
 			"description": "",
 			"method": "DELETE",
@@ -83,8 +83,8 @@
 				"type": "oauth2",
 				"grantType": "client_credentials",
 				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"clientId": "{{ _.ADMIN_ID }}",
+				"clientSecret": "{{ _.ADMIN_SECRET }}"
 			},
 			"metaSortKey": -1685602897140.75,
 			"isPrivate": false,
@@ -101,13 +101,13 @@
 			"parentId": "fld_a9821240386945ec8f185fab7c7456bc",
 			"modified": 1693576028823,
 			"created": 1693576003390,
-			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'policyId', '', '', '', false, true %}",
+			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'id', '', 'traceability-test', '', false, true %}",
 			"name": "Update policy",
 			"description": "",
 			"method": "PUT",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"validUntil\": \"2028-08-01T00:00:00Z\"\n}"
+				"text": "{\n  \"validUntil\": \"2025-12-12T23:59:59.999Z\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -120,8 +120,8 @@
 				"type": "oauth2",
 				"grantType": "client_credentials",
 				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"clientId": "{{ _.ADMIN_ID }}",
+				"clientSecret": "{{ _.ADMIN_SECRET }}"
 			},
 			"metaSortKey": -1684874704117.875,
 			"isPrivate": false,
@@ -144,7 +144,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"policyId\": \"R2_Traceability\",\n\t\"validUntil\": \"2026-08-01T00:00:00Z\"\n}"
+				"text": "{\n  \"permissions\": [\n    {\n      \"action\": \"ACCESS\",\n      \"constraints\": [\n        {\n          \"and\": [\n            {\n              \"leftOperand\": \"FrameworkAgreement.traceability\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            },\n            {\n              \"leftOperand\": \"Membership\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"policyId\": \"traceability-test\",\n  \"validUntil\": \"2024-12-12T23:59:59.999Z\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -157,8 +157,8 @@
 				"type": "oauth2",
 				"grantType": "client_credentials",
 				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"clientId": "{{ _.ADMIN_ID }}",
+				"clientSecret": "{{ _.ADMIN_SECRET }}"
 			},
 			"metaSortKey": -1683962737633.5,
 			"isPrivate": false,

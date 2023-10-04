@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
-import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.springframework.http.HttpStatus;

@@ -24,22 +24,13 @@
 package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.edc.policy.model.AndConstraint;
-import org.eclipse.edc.policy.model.AtomicConstraint;
-import org.eclipse.edc.policy.model.Constraint;
-import org.eclipse.edc.policy.model.Operator;
-import org.eclipse.edc.policy.model.OrConstraint;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.edc.policy.model.XoneConstraint;
-import org.eclipse.tractusx.irs.data.StringMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
 
@@ -52,93 +43,35 @@ import org.springframework.web.util.UriUtils;
 public class PolicyCheckerService {
 
     private final AcceptedPoliciesProvider policyStore;
-    @Value("${irs-edc-client.catalog.policies.acceptedRightOperands:active}")
-    private final List<String> acceptedRightOperands;
-    @Value("${irs-edc-client.catalog.policies.acceptedLeftOperands:PURPOSE}")
-    private final List<String> acceptedLeftOperands;
+    private final ConstraintCheckerService constraintCheckerService;
 
     public boolean isValid(final Policy policy) {
-        final List<PolicyDefinition> policyList = getAllowedPolicies();
-        log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policy),
-                String.join(",", policyList.stream().map(PolicyDefinition::getRightExpressionValue).toList()));
         if (getValidStoredPolicyIds().contains("*")) {
             return true;
         }
-        return policy.getPermissions().stream().allMatch(permission -> isValid(permission, policyList));
+
+        return policy.getPermissions().stream().allMatch(permission -> isValid(permission, getValidStoredPolicies()));
     }
 
-    private List<PolicyDefinition> getAllowedPolicies() {
-        final List<String> policyIds = getValidStoredPolicyIds();
-        final List<PolicyDefinition> allowedPolicies = new ArrayList<>();
-        acceptedRightOperands.forEach(rightOperand -> allowedPolicies.addAll(
-                policyIds.stream().map(policy -> createPolicy(policy, rightOperand)).toList()));
-        acceptedLeftOperands.forEach(leftOperand -> allowedPolicies.addAll(
-                policyIds.stream().map(policy -> createPolicy(leftOperand, policy)).toList()));
-
-        return allowedPolicies;
+    private boolean isValid(final Permission permission, final List<AcceptedPolicy> validStoredPolicies) {
+        return validStoredPolicies.stream().anyMatch(acceptedPolicy ->
+                constraintCheckerService.hasAllConstraint(acceptedPolicy.policy(), permission.getConstraints()));
     }
 
     private List<String> getValidStoredPolicyIds() {
         return policyStore.getAcceptedPolicies()
                           .stream()
                           .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
-                          .map(AcceptedPolicy::policyId)
+                          .map(acceptedPolicy -> acceptedPolicy.policy().getPolicyId())
                           .flatMap(this::addEncodedVersion)
                           .toList();
     }
 
-    private boolean isValid(final Permission permission, final List<PolicyDefinition> policyDefinitions) {
-        final boolean permissionTypesMatch = policyDefinitions.stream()
-                                                              .allMatch(
-                                                                      policyDefinition -> policyDefinition.getPermissionActionType()
-                                                                                                          .equals(permission.getAction()
-                                                                                                                            .getType()));
-        final boolean constraintsMatch = permission.getConstraints()
-                                                   .stream()
-                                                   .allMatch(constraint -> isValid(constraint, policyDefinitions));
-        return permissionTypesMatch && constraintsMatch;
-    }
-
-    private boolean isValid(final Constraint constraint, final List<PolicyDefinition> policyDefinitions) {
-        if (constraint instanceof AtomicConstraint atomicConstraint) {
-            return validateAtomicConstraint(atomicConstraint, policyDefinitions);
-        } else if (constraint instanceof AndConstraint andConstraint) {
-            return andConstraint.getConstraints().stream().allMatch(constr -> isValid(constr, policyDefinitions));
-        } else if (constraint instanceof OrConstraint orConstraint) {
-            return orConstraint.getConstraints().stream().anyMatch(constr -> isValid(constr, policyDefinitions));
-        } else if (constraint instanceof XoneConstraint xoneConstraint) {
-            return xoneConstraint.getConstraints().stream().filter(constr -> isValid(constr, policyDefinitions)).count()
-                    == 1;
-        }
-        return false;
-    }
-
-    private boolean validateAtomicConstraint(final AtomicConstraint atomicConstraint,
-            final PolicyDefinition policyDefinition) {
-        return AtomicConstraintValidator.builder()
-                                        .atomicConstraint(atomicConstraint)
-                                        .leftExpressionValue(policyDefinition.getLeftExpressionValue())
-                                        .rightExpressionValue(policyDefinition.getRightExpressionValue())
-                                        .expectedOperator(Operator.valueOf(policyDefinition.getConstraintOperator()))
-                                        .build()
-                                        .isValid();
-    }
-
-    private boolean validateAtomicConstraint(final AtomicConstraint atomicConstraint,
-            final List<PolicyDefinition> policyDefinitions) {
-        return policyDefinitions.stream()
-                                .anyMatch(policyDefinition -> validateAtomicConstraint(atomicConstraint,
-                                        policyDefinition));
-    }
-
-    private PolicyDefinition createPolicy(final String leftExpression, final String rightExpression) {
-        return PolicyDefinition.builder()
-                               .permissionActionType("USE")
-                               .constraintType("AtomicConstraint")
-                               .leftExpressionValue(leftExpression)
-                               .rightExpressionValue(rightExpression)
-                               .constraintOperator("EQ")
-                               .build();
+    private List<AcceptedPolicy> getValidStoredPolicies() {
+        return policyStore.getAcceptedPolicies()
+                          .stream()
+                          .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
+                          .toList();
     }
 
     private Stream<String> addEncodedVersion(final String original) {
