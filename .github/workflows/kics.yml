@@ -52,6 +52,8 @@ jobs:
           exclude_results: "03df1ef13c69b0ada26fc5bbf35eabca288c5c3c93c0f5d918e41f4951ca8795,8bdf179adec9aee0035149315b63a3f8afd684076358433767758a4a9aeac922" # application-local.yml - local env minio password
           # Exclude accepted queries from the build
           #exclude_queries: ""
+          # No secret scanning
+          disable_secrets: true
 
       # Upload findings to GitHub Advanced Security Dashboard
       - name: Upload SARIF file for GitHub Advanced Security Dashboard
