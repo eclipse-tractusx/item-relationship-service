@@ -35,8 +35,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +44,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
-import org.eclipse.tractusx.irs.policystore.models.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -21,14 +21,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.exceptions;
+package org.eclipse.tractusx.irs.edc.client.policy;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
- * Usage Policy Exception errors in the contract negotiation.
+ * A Constraint object used as an element of collection in Permission
  */
-public class UsagePolicyException extends EdcClientException {
-    public UsagePolicyException(final String itemId) {
-        super("Consumption of asset '" + itemId
-                + "' is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
-    }
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Constraint {
+
+    private String leftOperand;
+    private OperatorType operator;
+    private List<String> rightOperand;
+
 }
