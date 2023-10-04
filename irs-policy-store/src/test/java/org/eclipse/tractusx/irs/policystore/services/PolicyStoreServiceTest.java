@@ -37,14 +37,14 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
-import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,19 +61,20 @@ class PolicyStoreServiceTest {
 
     private static final String BPN = "testBpn";
     private static final String EXAMPLE_ALLOWED_NAME = "ID 3.0 Trace";
+    private static final String EXAMPLE_ACCEPTED_LEFT_OPERAND = "PURPOSE";
+    private final Clock clock = Clock.systemUTC();
+    @Captor
+    ArgumentCaptor<Policy> policyCaptor;
     private PolicyStoreService testee;
-
     @Mock
     private PolicyPersistence persistence;
 
-    @Captor
-    ArgumentCaptor<Policy> policyCaptor;
-
-    private final Clock clock = Clock.systemUTC();
-
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreService(BPN, List.of(EXAMPLE_ALLOWED_NAME), persistence, clock);
+        final List<String> acceptedRightOperands = List.of();
+        final List<String> acceptedLeftOperands = List.of(EXAMPLE_ACCEPTED_LEFT_OPERAND);
+        testee = new PolicyStoreService(BPN, List.of(EXAMPLE_ALLOWED_NAME), persistence, clock, acceptedRightOperands,
+                acceptedLeftOperands);
     }
 
     @Test
@@ -91,7 +92,8 @@ class PolicyStoreServiceTest {
     @Test
     void registerPolicyWithPermission() {
         // arrange
-        final var req = new CreatePolicyRequest("testId", OffsetDateTime.now(clock).plusMinutes(1), createPermissions());
+        final var req = new CreatePolicyRequest("testId", OffsetDateTime.now(clock).plusMinutes(1),
+                createPermissions());
 
         // act
         testee.registerPolicy(req);
@@ -146,22 +148,16 @@ class PolicyStoreServiceTest {
     }
 
     private List<Permission> createPermissions() {
-        return List.of(
-                new Permission(PolicyType.USE, List.of(createConstraints())),
-                new Permission(PolicyType.ACCESS, List.of(createConstraints()))
-        );
+        return List.of(new Permission(PolicyType.USE, List.of(createConstraints())),
+                new Permission(PolicyType.ACCESS, List.of(createConstraints())));
     }
 
     private Constraints createConstraints() {
-        return new Constraints(
-                Collections.emptyList(),
-                List.of(
-                        new Constraint("Membership", OperatorType.EQ, List.of("active")),
+        return new Constraints(Collections.emptyList(),
+                List.of(new Constraint("Membership", OperatorType.EQ, List.of("active")),
                         new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active")),
-                        new Constraint("PURPOSE", OperatorType.EQ, List.of("ID 3.1 Trace")))
-        );
+                        new Constraint(EXAMPLE_ACCEPTED_LEFT_OPERAND, OperatorType.EQ, List.of("ID 3.1 Trace"))));
     }
-
 
     @Test
     void deletePolicy() {
