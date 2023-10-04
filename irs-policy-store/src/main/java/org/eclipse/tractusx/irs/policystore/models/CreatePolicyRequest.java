@@ -28,6 +28,7 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 
 /**
  * Request object for policy creation
