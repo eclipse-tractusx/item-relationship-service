@@ -54,6 +54,7 @@ import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
@@ -80,6 +81,7 @@ class SubmodelFacadeWiremockTest {
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
     private WireMockServer wireMockServer;
     private EdcSubmodelClient edcSubmodelClient;
+    private AcceptedPoliciesProvider acceptedPoliciesProvider;
 
     @BeforeEach
     void configureSystemUnderTest() {
@@ -116,15 +118,12 @@ class SubmodelFacadeWiremockTest {
 
         final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
 
-        final AcceptedPoliciesProvider acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
-        when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(
-                List.of(new AcceptedPolicy(policy("IRS Policy", List.of(
-                        new Permission(PolicyType.USE, List.of(new Constraints(
-                                List.of(new Constraint("Membership", OperatorType.EQ, List.of("active")),
-                                        new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active"))),
-                                new ArrayList<>()
-                        )))
-                        )), OffsetDateTime.now().plusYears(1))));
+        acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
+        when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
+                List.of(new Permission(PolicyType.USE, List.of(new Constraints(
+                        List.of(new Constraint("Membership", OperatorType.EQ, List.of("active")),
+                                new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active"))),
+                        new ArrayList<>()))))), OffsetDateTime.now().plusYears(1))));
         final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider,
                 new ConstraintCheckerService());
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
@@ -146,14 +145,14 @@ class SubmodelFacadeWiremockTest {
         // Arrange
         prepareNegotiation();
         givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(200)
-                                                                               .withHeader("Content-Type",
-                                                                                    "application/json;charset=UTF-8")
-                                                                               .withBodyFile(
-                                                                                    "singleLevelBomAsBuilt.json")));
+                                                                                   .withHeader("Content-Type",
+                                                                                           "application/json;charset=UTF-8")
+                                                                                   .withBodyFile(
+                                                                                           "singleLevelBomAsBuilt.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(), assetId)
-                                                 .get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+                assetId).get();
 
         // Assert
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
@@ -218,14 +217,14 @@ class SubmodelFacadeWiremockTest {
         // Arrange
         prepareNegotiation();
         givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(200)
-                                                                               .withHeader("Content-Type",
-                                                                                    "application/json;charset=UTF-8")
-                                                                               .withBodyFile(
-                                                                                    "materialForRecycling.json")));
+                                                                                   .withHeader("Content-Type",
+                                                                                           "application/json;charset=UTF-8")
+                                                                                   .withBodyFile(
+                                                                                           "materialForRecycling.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(), assetId)
-                                                 .get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+                assetId).get();
 
         // Assert
         assertThat(submodel).contains("\"materialName\": \"Cooper\",");
@@ -237,16 +236,42 @@ class SubmodelFacadeWiremockTest {
         // Arrange
         prepareNegotiation();
         givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(200)
-                                                                               .withHeader("Content-Type",
-                                                                                    "application/json;charset=UTF-8")
-                                                                               .withBody("test")));
+                                                                                   .withHeader("Content-Type",
+                                                                                           "application/json;charset=UTF-8")
+                                                                                   .withBody("test")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(), assetId)
-                                                 .get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+                assetId).get();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPoliciesAreNotAccepted() {
+        // Arrange
+        final List<Constraint> andConstraints = List.of(
+                new Constraint("Membership", OperatorType.EQ, List.of("active")));
+        final ArrayList<Constraint> orConstraints = new ArrayList<>();
+        final Permission permission = new Permission(PolicyType.USE,
+                List.of(new Constraints(andConstraints, orConstraints)));
+        final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
+                OffsetDateTime.now().plusYears(1));
+
+        when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(acceptedPolicy));
+
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(200)
+                                                                                   .withHeader("Content-Type",
+                                                                                           "application/json;charset=UTF-8")
+                                                                                   .withBody("test")));
+
+        // Act & Assert
+        final String errorMessage = "Consumption of asset '58505404-4da1-427a-82aa-b79482bcd1f0' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
+        assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
+                () -> edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(), assetId)
+                                       .get()).withMessageEndingWith(errorMessage);
     }
 
     @Test
@@ -254,9 +279,9 @@ class SubmodelFacadeWiremockTest {
         // Arrange
         prepareNegotiation();
         givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(400)
-                                                                               .withHeader("Content-Type",
-                                                                                    "application/json;charset=UTF-8")
-                                                                               .withBody("{ error: '400'}")));
+                                                                                   .withHeader("Content-Type",
+                                                                                           "application/json;charset=UTF-8")
+                                                                                   .withBody("{ error: '400'}")));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
@@ -272,9 +297,9 @@ class SubmodelFacadeWiremockTest {
         // Arrange
         prepareNegotiation();
         givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(500)
-                                                                               .withHeader("Content-Type",
-                                                                                    "application/json;charset=UTF-8")
-                                                                               .withBody("{ error: '500'}")));
+                                                                                   .withHeader("Content-Type",
+                                                                                           "application/json;charset=UTF-8")
+                                                                                   .withBody("{ error: '500'}")));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
@@ -288,16 +313,13 @@ class SubmodelFacadeWiremockTest {
     private String buildWiremockDataplaneUrl() {
         return buildApiMethodUrl() + submodelDataplanePath;
     }
+
     private String buildApiMethodUrl() {
         return String.format("http://localhost:%d", this.wireMockServer.port());
     }
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId, List<Permission> permissions) {
-        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(
-                policyId,
-                OffsetDateTime.now(),
-                OffsetDateTime.now().plusYears(1),
-                permissions
-        );
+        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(policyId, OffsetDateTime.now(),
+                OffsetDateTime.now().plusYears(1), permissions);
     }
 }
