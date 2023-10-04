@@ -111,7 +111,8 @@ public class TestMother {
             final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs,
             final Direction direction) {
         final RegisterJob registerJob = new RegisterJob();
-        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn("BPNL0000000001AA").build());
+        registerJob.setKey(
+                PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn("BPNL0000000001AA").build());
         registerJob.setDepth(depth);
         registerJob.setAspects(aspectTypes);
         registerJob.setCollectAspects(collectAspects);
@@ -197,17 +198,27 @@ public class TestMother {
                 RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT.name(), "BPN");
     }
 
-    public static Endpoint endpoint(String endpointAddress) {
+    public static Endpoint endpoint(final String endpointAddress) {
         return Endpoint.builder()
                        .protocolInformation(ProtocolInformation.builder()
                                                                .href(endpointAddress)
                                                                .subprotocolBody(
-                                                                       "other_id=fake-id;id=12345;idsEndpoint=http://edc.control.plane/")
+                                                                       "other_id=fake-id;id=12345;dspEndpoint=http://edc.control.plane/")
                                                                .build())
                        .build();
     }
 
-    public static SubmodelDescriptor submodelDescriptor(final String semanticId, final String endpointAddress) {
+    public static Endpoint endpoint(final String endpointAddress, final String dspEndpoint) {
+        return Endpoint.builder()
+                       .protocolInformation(ProtocolInformation.builder()
+                                                               .href(endpointAddress)
+                                                               .subprotocolBody("other_id=fake-id;id=12345;"
+                                                                       + dspEndpoint)
+                                                               .build())
+                       .build();
+    }
+
+    public static SubmodelDescriptor submodelDescriptorWithDspEndpoint(final String semanticId, final String endpointAddress) {
         final Reference semanticIdSerial = Reference.builder()
                                                     .keys(List.of(SemanticId.builder().value(semanticId).build()))
                                                     .build();
@@ -215,8 +226,16 @@ public class TestMother {
         return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
     }
 
-    public static SubmodelDescriptor submodelDescriptorWithoutEndpoint(final String semanticId) {
-        return submodelDescriptor(semanticId, null);
+    public static SubmodelDescriptor submodelDescriptor(final String semanticId, final String endpointAddress, final String dspEndpoint) {
+        final Reference semanticIdSerial = Reference.builder()
+                                                    .keys(List.of(SemanticId.builder().value(semanticId).build()))
+                                                    .build();
+        final List<Endpoint> endpointSerial = List.of(endpoint(endpointAddress, dspEndpoint));
+        return SubmodelDescriptor.builder().semanticId(semanticIdSerial).endpoints(endpointSerial).build();
+    }
+
+    public static SubmodelDescriptor submodelDescriptorWithoutHref(final String semanticId) {
+        return submodelDescriptorWithDspEndpoint(semanticId, null);
     }
 
     public static AssetAdministrationShellDescriptor shellDescriptor(
@@ -234,7 +253,7 @@ public class TestMother {
         return new AASTransferProcess(faker.lorem().characters(UUID_SIZE), faker.number().numberBetween(1, 100));
     }
 
-    public Job fakeJob(JobState state) {
+    public Job fakeJob(final JobState state) {
         return Job.builder()
                   .id(UUID.randomUUID())
                   .globalAssetId(GlobalAssetIdentification.of(UUID.randomUUID().toString()))
@@ -252,7 +271,7 @@ public class TestMother {
         return job(faker.options().option(JobState.class));
     }
 
-    public MultiTransferJob job(JobState jobState) {
+    public MultiTransferJob job(final JobState jobState) {
         return MultiTransferJob.builder().job(fakeJob(jobState)).build();
     }
 
@@ -265,7 +284,7 @@ public class TestMother {
         return response(ResponseStatus.OK);
     }
 
-    public TransferInitiateResponse response(ResponseStatus status) {
+    public TransferInitiateResponse response(final ResponseStatus status) {
         return TransferInitiateResponse.builder().transferId(UUID.randomUUID().toString()).status(status).build();
     }
 

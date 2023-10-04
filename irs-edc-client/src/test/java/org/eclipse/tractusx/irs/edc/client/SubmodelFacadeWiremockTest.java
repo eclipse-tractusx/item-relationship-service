@@ -96,7 +96,6 @@ class SubmodelFacadeWiremockTest {
         config.getControlplane().getEndpoint().setStateSuffix("/state");
         config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
         config.getControlplane().setProviderSuffix("/api/v1/dsp");
-        config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
 
         final RestTemplate restTemplate = new RestTemplateBuilder().build();

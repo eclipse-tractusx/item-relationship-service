@@ -63,7 +63,6 @@ class SubmodelExponentialRetryTest {
                 Executors.newSingleThreadScheduledExecutor());
         final EdcConfiguration config = new EdcConfiguration();
         config.getSubmodel().setUrnPrefix("/urn");
-        config.getSubmodel().setPath("/submodel");
         config.getControlplane().setProviderSuffix("/ids");
 
         final EdcControlPlaneClient controlPlaneClient = new EdcControlPlaneClient(restTemplate, pollingService, config,

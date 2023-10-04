@@ -139,7 +139,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EdcNotification'
+              $ref: '#/components/schemas/EdcNotificationResponseNotificationContent'
         required: true
       responses:
         "200":
@@ -1669,14 +1669,12 @@ components:
         - permissions
         - policyId
         - validUntil
-    EdcNotification:
+    EdcNotificationResponseNotificationContent:
       type: object
       additionalProperties: false
       properties:
         content:
-          type: object
-          additionalProperties:
-            type: object
+          $ref: '#/components/schemas/ResponseNotificationContent'
         header:
           $ref: '#/components/schemas/EdcNotificationHeader'
       required:
@@ -2266,6 +2264,7 @@ components:
       description: The requested job definition.
       properties:
         bomLifecycle:
+          example: asPlanned
           type: string
           description: The lifecycle context in which the child part was assembled
             into the parent part.
@@ -2281,13 +2280,13 @@ components:
           example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         key:
           $ref: '#/components/schemas/PartChainIdentificationKey'
-        incidentBpns:
+        incidentBPNSs:
           type: array
           items:
             type: string
           maxItems: 2147483647
       required:
-        - incidentBpns
+        - incidentBPNSs
         - key
     RegisterJob:
       type: object
@@ -2345,6 +2344,8 @@ components:
       properties:
         aspectType:
           type: string
+        bpn:
+          type: string
         catenaXId:
           type: string
           description: CATENA-X global asset id in the format urn:uuid:uuid4.
@@ -2354,6 +2355,12 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         linkedItem:
           $ref: '#/components/schemas/LinkedItem'
+    ResponseNotificationContent:
+      type: object
+      additionalProperties: false
+      properties:
+        result:
+          type: string
     SemanticId:
       type: object
       additionalProperties: false

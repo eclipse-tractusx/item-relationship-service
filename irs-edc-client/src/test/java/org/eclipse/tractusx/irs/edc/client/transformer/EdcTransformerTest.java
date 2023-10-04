@@ -337,7 +337,5 @@ class EdcTransformerTest {
         assertThat(optional).isPresent();
         assertThat(optional.get()).isNotEmpty();
         assertThat(optional.get()).contains(entry("@type", Json.createValue("edc:CatalogRequest")));
-        System.out.println(optional.get());
-        System.out.println(requestJson);
     }
 }

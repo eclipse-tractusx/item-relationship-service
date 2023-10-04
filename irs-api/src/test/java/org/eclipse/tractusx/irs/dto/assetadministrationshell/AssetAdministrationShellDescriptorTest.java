@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.dto.assetadministrationshell;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ class AssetAdministrationShellDescriptorTest {
     void shouldFilterByAssemblyPartRelationshipWhenEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(singleLevelBomAsBuiltIdWithAspectName)));
+                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltIdWithAspectName)));
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
                                                                .getSubmodelDescriptors();
@@ -58,7 +58,7 @@ class AssetAdministrationShellDescriptorTest {
     void shouldFilterByAssemblyPartRelationshipWhenNotEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(singleLevelBomAsBuiltId)));
+                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltId)));
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
                                                                .getSubmodelDescriptors();
@@ -72,7 +72,7 @@ class AssetAdministrationShellDescriptorTest {
     void shouldFilterByAspectTypeWhenEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(singleLevelBomAsBuiltIdWithAspectName)));
+                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltIdWithAspectName)));
         final List<String> aspectTypeFilter = List.of("SingleLevelBomAsBuilt");
 
         // Act
@@ -87,7 +87,7 @@ class AssetAdministrationShellDescriptorTest {
     void shouldFilterByAspectTypeWhenNotEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(serialPartId)));
+                List.of(submodelDescriptorWithoutHref(serialPartId)));
         final List<String> aspectTypeFilter = List.of("SerialPart");
 
         // Act
@@ -102,8 +102,8 @@ class AssetAdministrationShellDescriptorTest {
     void shouldFilterByAspectTypeWhenWithDifferentAspects() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(serialPartIdWithAspectName),
-                        submodelDescriptorWithoutEndpoint(singleLevelBomAsBuiltId)));
+                List.of(submodelDescriptorWithoutHref(serialPartIdWithAspectName),
+                        submodelDescriptorWithoutHref(singleLevelBomAsBuiltId)));
 
         final List<String> aspectTypeFilter = List.of("SerialPart");
 
@@ -119,8 +119,8 @@ class AssetAdministrationShellDescriptorTest {
     void shouldFilterByAspectTypeForUrnFormat() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(serialPartIdWithAspectName),
-                        submodelDescriptorWithoutEndpoint(singleLevelBomAsBuiltIdWithAspectName)));
+                List.of(submodelDescriptorWithoutHref(serialPartIdWithAspectName),
+                        submodelDescriptorWithoutHref(singleLevelBomAsBuiltIdWithAspectName)));
 
         final List<String> aspectTypeFilter = List.of(serialPartIdWithAspectName,
                 singleLevelBomAsBuiltIdWithAspectName);

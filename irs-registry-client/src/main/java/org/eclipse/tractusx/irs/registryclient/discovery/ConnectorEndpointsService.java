@@ -33,11 +33,11 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Connector Endpoints service to find connectors in Discovery Finder
  */
+@Getter
 @RequiredArgsConstructor
 @Slf4j
 public class ConnectorEndpointsService {
 
-    @Getter
     private final DiscoveryFinderClient discoveryFinderClient;
 
     public List<String> fetchConnectorEndpoints(final String bpn) {
@@ -61,7 +61,7 @@ public class ConnectorEndpointsService {
                                                                                                   .map(EdcDiscoveryResult::connectorEndpoint))
                                                 .flatMap(List::stream)
                                                 .toList();
-        log.info("Discovered the following endpoints for BPN {}: {}", bpn, String.join(", ", endpoints));
+        log.info("Discovered the following endpoints for BPN '{}': '{}'", bpn, String.join(", ", endpoints));
         return endpoints;
     }
 

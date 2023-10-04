@@ -30,7 +30,7 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
-import org.eclipse.tractusx.ess.service.NotificationSummary;
+import org.eclipse.tractusx.irs.ess.service.NotificationSummary;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
