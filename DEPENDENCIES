@@ -198,9 +198,9 @@ maven/mavencentral/net.java.dev.jna/jna/5.8.0, Apache-2.0 OR LGPL-2.1-or-later, 
 maven/mavencentral/net.javacrumbs.json-unit/json-unit-assertj/2.36.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/net.javacrumbs.json-unit/json-unit-core/2.36.0, Apache-2.0, approved, clearlydefined
 maven/mavencentral/net.javacrumbs.json-unit/json-unit-json-path/2.36.0, Apache-2.0, approved, clearlydefined
-maven/mavencentral/net.jimblackler.jsonschemafriend/core/0.11.4, Apache-2.0, approved, #3269
-maven/mavencentral/net.jimblackler.jsonschemafriend/extra/0.11.4, Apache-2.0, approved, #3270
-maven/mavencentral/net.jimblackler/jsonschemafriend/0.11.4, Apache-2.0, approved, #3271
+maven/mavencentral/net.jimblackler.jsonschemafriend/core/0.12.0, , restricted, clearlydefined
+maven/mavencentral/net.jimblackler.jsonschemafriend/extra/0.12.0, , restricted, clearlydefined
+maven/mavencentral/net.jimblackler/jsonschemafriend/0.12.0, , restricted, clearlydefined
 maven/mavencentral/net.jodah/typetools/0.6.3, Apache-2.0, approved, clearlydefined
 maven/mavencentral/net.minidev/accessors-smart/2.4.11, Apache-2.0, approved, #7515
 maven/mavencentral/net.minidev/accessors-smart/2.4.9, Apache-2.0, approved, #7515
