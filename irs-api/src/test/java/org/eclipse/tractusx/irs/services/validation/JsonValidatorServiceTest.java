@@ -41,7 +41,6 @@ class JsonValidatorServiceTest {
     private final JsonValidatorService testee = new JsonValidatorService(new JsonUtil());
 
     @Test
-    @Disabled
     void shouldValidateAssemblyPartRelationship() throws Exception {
         final String schema = readFile("/json-schema/assemblyPartRelationship-v1.1.0.json");
         final String payload = readFile("/__files/assemblyPartRelationship.json");
@@ -52,7 +51,6 @@ class JsonValidatorServiceTest {
     }
 
     @Test
-    @Disabled
     void shouldNotValidateEmptyString() throws Exception {
         final String schema = readFile("/json-schema/assemblyPartRelationship-v1.1.0.json");
         final String payload = "";
@@ -63,7 +61,6 @@ class JsonValidatorServiceTest {
     }
 
     @Test
-    @Disabled
     void shouldNotValidateEmptyJson() throws Exception {
         final String schema = readFile("/json-schema/assemblyPartRelationship-v1.1.0.json");
         final String payload = "{}";
@@ -75,7 +72,6 @@ class JsonValidatorServiceTest {
     }
 
     @Test
-    @Disabled
     void shouldThrowExceptionOnIllegalSchema() throws Exception {
         final String schema = readFile("/json-schema/invalid.json");
         final String payload = "{}";
