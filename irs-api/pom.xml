@@ -184,7 +184,7 @@
         <dependency>
             <groupId>net.jimblackler</groupId>
             <artifactId>jsonschemafriend</artifactId>
-            <version>0.11.4</version>
+            <version>0.12.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jsoup</groupId>
