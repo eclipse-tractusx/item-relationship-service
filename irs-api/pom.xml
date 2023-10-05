@@ -45,12 +45,8 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.5.4</version>
+            <version>${minio.version}</version>
             <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>org.bouncycastle</groupId>
                     <artifactId>bcprov-jdk15on</artifactId>
@@ -66,7 +62,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.10.0</version>
+            <version>${okhttp.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -86,7 +82,7 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>2.0</version>
+            <version>${snakeyaml.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -134,7 +130,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.14.0</version>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -166,7 +162,7 @@
         <dependency>
             <groupId>net.jimblackler</groupId>
             <artifactId>jsonschemafriend</artifactId>
-            <version>0.11.4</version>
+            <version>${jsonschemafriend.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jsoup</groupId>
@@ -177,12 +173,12 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.16.1</version>
+            <version>${jsoup.version}</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
             <artifactId>graal-sdk</artifactId>
-            <version>23.0.1</version>
+            <version>${graal-sdk.version}</version>
         </dependency>
 
         <dependency>
@@ -205,13 +201,13 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>4.2.0</version>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>2.2.16</version>
+            <version>${swagger-annotations.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.resilience4j</groupId>
@@ -221,13 +217,13 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-standalone</artifactId>
-            <version>2.27.2</version>
+            <version>${wiremock-standalone.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
-            <version>1.7</version>
+            <version>${commons-validator.version}</version>
         </dependency>
     </dependencies>
 
@@ -255,7 +251,7 @@
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <!-- RELEASE_VERSION -->
-                <version>7.0.1</version>
+                <version>${openapi-generator-maven-plugin.version}</version>
                 <!-- /RELEASE_VERSION -->
                 <executions>
                     <execution>
