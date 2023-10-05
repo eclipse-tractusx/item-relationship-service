@@ -215,7 +215,7 @@
             <version>${resilience4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tomakehurst</groupId>
+            <groupId>org.wiremock</groupId>
             <artifactId>wiremock-standalone</artifactId>
             <version>${wiremock-standalone.version}</version>
             <scope>test</scope>

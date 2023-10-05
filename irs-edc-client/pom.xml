@@ -136,7 +136,16 @@
                     <artifactId>jetty-xml</artifactId>
                     <groupId>org.eclipse.jetty</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>jetty-http</artifactId>
+                    <groupId>org.eclipse.jetty</groupId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <artifactId>jetty-http</artifactId>
+            <groupId>org.eclipse.jetty</groupId>
+            <version>11.0.16</version>
         </dependency>
         <dependency>
             <artifactId>jetty-xml</artifactId>
@@ -173,9 +182,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock-jre8-standalone</artifactId>
-            <version>${wiremock-jre8-standalone.version}</version>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>${wiremock-standalone.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
