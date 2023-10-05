@@ -61,7 +61,7 @@
         <wiremock-standalone.version>3.2.0</wiremock-standalone.version>
         <graal-sdk.version>23.1.0</graal-sdk.version>
         <jsoup.version>1.16.1</jsoup.version>
-        <jsonschemafriend.version>0.11.4</jsonschemafriend.version>
+        <jsonschemafriend.version>0.12.0</jsonschemafriend.version>
         <commons-io.version>2.14.0</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <okhttp.version>4.10.0</okhttp.version>
