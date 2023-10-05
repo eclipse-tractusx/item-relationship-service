@@ -352,7 +352,7 @@ class InvestigationJobProcessingEventListenerTest {
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobs, incindentBPNSs);
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
-        when(jobStore.find(eq(mockedJobId.toString()))).thenReturn(Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
+        when(jobStore.find(mockedJobId.toString())).thenReturn(Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
         when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(false))).thenReturn(jobs);
     }
 
@@ -373,7 +373,7 @@ class InvestigationJobProcessingEventListenerTest {
                 List.of("BPNS000000000DDD"));
 
         when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
-        when(jobStore.find(eq(mockedJobId.toString()))).thenReturn(Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
+        when(jobStore.find(mockedJobId.toString())).thenReturn(Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
         when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(false))).thenReturn(jobs);
     }
 

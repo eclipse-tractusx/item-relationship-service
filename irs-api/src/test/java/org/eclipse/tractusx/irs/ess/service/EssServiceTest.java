@@ -95,9 +95,8 @@ class EssServiceTest {
                                           .build();
 
         when(irsItemGraphQueryService.registerItemJob(any(RegisterJob.class), any(), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
-        when(jobStore.find(eq(createdJobId.toString()))).thenReturn(Optional.of(MultiTransferJob.builder().job(expectedResponse.getJob()).build()));
-        when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(true))).thenReturn(expectedResponse);
-        when(securityHelperService.isAdmin()).thenReturn(true);
+        when(jobStore.find(createdJobId.toString())).thenReturn(Optional.of(MultiTransferJob.builder().job(expectedResponse.getJob()).build()));
+        when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), true)).thenReturn(expectedResponse);        when(securityHelperService.isAdmin()).thenReturn(true);
 
         final JobHandle jobHandle = essService.startIrsJob(request);
         final Jobs jobs = essService.getIrsJob(jobHandle.getId().toString());
