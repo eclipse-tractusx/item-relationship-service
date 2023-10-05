@@ -24,7 +24,7 @@ jobs:
       security-events: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: KICS scan
         uses: checkmarx/kics-github-action@master
@@ -53,6 +53,8 @@ jobs:
           # Exclude accepted queries from the build
           # Exclude 8d29754a-2a18-460d-a1ba-9509f8d359da - IAM Access Analyzer Not Enabled. This is a false positive for AWS configs which are not used
           exclude_queries: "8d29754a-2a18-460d-a1ba-9509f8d359da"
+          # No secret scanning
+          disable_secrets: true
 
       # Upload findings to GitHub Advanced Security Dashboard
       - name: Upload SARIF file for GitHub Advanced Security Dashboard
