@@ -259,7 +259,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/../docs/src/api/irs-v1.0.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/../docs/src/api/irs-api.yaml</inputSpec>
                             <generatorName>html</generatorName>
                         </configuration>
                     </execution>
