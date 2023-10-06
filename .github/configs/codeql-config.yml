@@ -1,6 +1,9 @@
 name: "IRS CodeQL config"
 
-# Exclude "Unused classes and interfaces"
 query-filters:
+  # Exclude "Unused classes and interfaces"
   - exclude:
       id: java/unused-reference-type
+  # Exclude "Log Injection". This is a false positive, since IRS uses a log configuration which encodes all log messages in "irs-api/src/main/resources/log4j2.xml"
+  - exclude:
+      id: java/log-injection

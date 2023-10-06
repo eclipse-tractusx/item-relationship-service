@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.2] - 2023-10-06
+### Changed
+- Updated dependencies
+
+## [3.5.1] - 2023-10-05
+### Fixed
+- Fix json schema validation
+
 ## [3.5.0] - 2023-09-27
 ### Changed
 - IRS now makes use of the value `dspEndpoint` in `subprotocolBody` of the Asset Administration Shell to request submodel data directly.
@@ -350,7 +358,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.2...HEAD
+[3.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.1...3.5.2
+[3.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.0...3.5.1
 [3.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.1...3.5.0
 [3.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.5...3.4.0

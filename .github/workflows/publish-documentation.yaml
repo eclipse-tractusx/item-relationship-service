@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -44,7 +44,7 @@ jobs:
 
       - name: Build API documentation with Maven
         run: |
-          mvn clean package -pl irs-common,irs-models,irs-policy-store,irs-testing,irs-ess,irs-edc-client,irs-registry-client,irs-api -DskipTests --batch-mode
+          mvn clean package -pl irs-common,irs-models,irs-policy-store,irs-testing,irs-edc-client,irs-registry-client,irs-api -DskipTests --batch-mode
           cp irs-api/target/generated-sources/openapi/index.html docs/src/docs/api-specification/index.html
 
       - name: Build with Maven
