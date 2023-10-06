@@ -43,6 +43,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
@@ -71,10 +72,9 @@ class PolicyStoreServiceTest {
 
     @BeforeEach
     void setUp() {
-        final List<String> acceptedRightOperands = List.of();
-        final List<String> acceptedLeftOperands = List.of(EXAMPLE_ACCEPTED_LEFT_OPERAND);
-        testee = new PolicyStoreService(BPN, List.of(EXAMPLE_ALLOWED_NAME), persistence, clock, acceptedRightOperands,
-                acceptedLeftOperands);
+        final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
+        defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of());
+        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence, clock);
     }
 
     @Test
@@ -133,14 +133,27 @@ class PolicyStoreServiceTest {
     }
 
     @Test
-    void getStoredPoliciesWhenEmpty() {
+    void getDefaultStoredPoliciesWhenEmpty() {
+        // arrange
+        final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy1 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
+                EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
+        final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy2 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
+                EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
+        final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
+        defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of(acceptedPolicy1, acceptedPolicy2));
+        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence, clock);
+
         // act
         final var defaultPolicies = testee.getStoredPolicies();
 
         // assert
         assertThat(defaultPolicies).hasSize(1);
-        List<Permission> permissionList = defaultPolicies.get(0).getPermissions();
+        final List<Permission> permissionList = defaultPolicies.get(0).getPermissions();
         assertThat(permissionList).hasSize(1);
+        final List<Constraints> constraints = permissionList.get(0).getConstraints();
+        assertThat(constraints).hasSize(1);
+        assertThat(constraints.get(0).getOr()).hasSize(2);
+        assertThat(constraints.get(0).getAnd()).hasSize(2);
     }
 
     private Policy createPolicy(final String policyId) {

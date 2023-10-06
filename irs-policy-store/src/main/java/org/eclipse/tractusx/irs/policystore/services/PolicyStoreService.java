@@ -26,7 +26,6 @@ package org.eclipse.tractusx.irs.policystore.services;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +37,11 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -55,39 +54,21 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class PolicyStoreService implements AcceptedPoliciesProvider {
 
-    public static final int DEFAULT_POLICY_LIFETIME_YEARS = 100;
+    public static final int DEFAULT_POLICY_LIFETIME_YEARS = 5;
     private final String apiAllowedBpn;
     private final Clock clock;
     private final List<Policy> allowedPoliciesFromConfig;
     private final PolicyPersistence persistence;
 
     public PolicyStoreService(@Value("${apiAllowedBpn:}") final String apiAllowedBpn,
-            @Value("${irs-edc-client.catalog.policies.allowedNames}") final List<String> allowedPolicies,
-            final PolicyPersistence persistence, final Clock clock,
-            @Value("${irs-edc-client.catalog.policies.acceptedRightOperands:}") final List<String> acceptedRightOperands,
-            @Value("${irs-edc-client.catalog.policies.acceptedLeftOperands:}") final List<String> acceptedLeftOperands) {
+            final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig, final PolicyPersistence persistence,
+            final Clock clock) {
         this.apiAllowedBpn = apiAllowedBpn;
 
-        this.allowedPoliciesFromConfig = new ArrayList<>();
-        acceptedRightOperands.forEach(rightOperand -> allowedPoliciesFromConfig.addAll(
-                allowedPolicies.stream().map(policy -> createPolicy(policy, policy, rightOperand)).toList()));
-        acceptedLeftOperands.forEach(leftOperand -> allowedPoliciesFromConfig.addAll(
-                allowedPolicies.stream().map(policy -> createPolicy(policy, leftOperand, policy)).toList()));
+        this.allowedPoliciesFromConfig = createDefaultPolicyFromConfig(defaultAcceptedPoliciesConfig);
 
         this.persistence = persistence;
         this.clock = clock;
-    }
-
-    @NotNull
-    private Policy createPolicy(final String policyId, final String leftOperand, final String rightOperand) {
-        return new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now().plusYears(DEFAULT_POLICY_LIFETIME_YEARS),
-                createPermissionFrom(leftOperand, rightOperand));
-    }
-
-    private List<Permission> createPermissionFrom(final String leftExpression, final String rightExpression) {
-        return List.of(new Permission(PolicyType.USE, List.of(new Constraints(
-                List.of(new Constraint(leftExpression, OperatorType.EQ, List.of(rightExpression))),
-                Collections.emptyList()))));
     }
 
     public void registerPolicy(final CreatePolicyRequest request) {
@@ -138,6 +119,19 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     private AcceptedPolicy toAcceptedPolicy(final Policy policy) {
         return new AcceptedPolicy(policy, policy.getValidUntil());
+    }
+
+    private List<Policy> createDefaultPolicyFromConfig(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig) {
+        final List<Constraint> constraints = new ArrayList<>();
+        defaultAcceptedPoliciesConfig.getAcceptedPolicies()
+                                     .forEach(acceptedPolicy -> constraints.add(new Constraint(acceptedPolicy.getLeftOperand(),
+                                      OperatorType.fromValue(acceptedPolicy.getOperator()),
+                                      List.of(acceptedPolicy.getRightOperand()))));
+        final Policy policy = new Policy("default-policy", OffsetDateTime.now(),
+                OffsetDateTime.now().plusYears(DEFAULT_POLICY_LIFETIME_YEARS),
+                List.of(new Permission(PolicyType.USE, List.of(new Constraints(constraints, constraints)))));
+
+        return List.of(policy);
     }
 
 }

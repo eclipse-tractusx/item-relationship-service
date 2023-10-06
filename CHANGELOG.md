@@ -5,6 +5,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fixed default policy creation.
+
+### Changed
+- Changed configuration for default policies from:
+  ```
+  irs-edc-client:
+    catalog:
+      policies:
+        allowedNames: A, B
+        acceptedLeftOperands: X
+        acceptedRightOperands: Y
+  ```
+  to:
+  ```
+  irs-edc-client:
+    catalog:
+      acceptedPolicies:
+      - leftOperand: "X"
+        operator: "eq"
+        rightOperand: "A"
+      - leftOperand: "B"
+        operator: "eq"
+        rightOperand: Y"
+  ```
 
 ## [3.5.2] - 2023-10-06
 ### Changed
@@ -359,7 +384,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 [Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.2...HEAD
-[3.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.1...3.5.2
+[3.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.1...3.5.2
 [3.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.0...3.5.1
 [3.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.1...3.5.0
 [3.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.0...3.4.1

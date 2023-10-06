@@ -187,6 +187,32 @@ class PolicyCheckerServiceTest {
     }
 
     @Test
+    void shouldAcceptConstraintsWithDefaultPolicy() {
+        // given
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, OperatorType.EQ,
+                List.of(TestConstants.STATUS_ACTIVE));
+        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, OperatorType.EQ,
+                List.of(TestConstants.STATUS_ACTIVE));
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, OperatorType.EQ,
+                List.of(TestConstants.STATUS_ACTIVE));
+
+        final var policyList = List.of(new AcceptedPolicy(
+                policy("default-policy", List.of(constraint1, constraint2, constraint3),
+                        List.of(constraint1, constraint2, constraint3)), OffsetDateTime.now().plusYears(1)));
+        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+
+        Policy policy = createOrConstraintPolicy(
+                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                                TestConstants.STATUS_ACTIVE),
+                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
+        // when
+        boolean result = policyCheckerService.isValid(policy);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
     void shouldRejectOrConstraintsWhenNoneMatch() {
         // given
         final var policyList = List.of(
