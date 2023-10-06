@@ -487,6 +487,31 @@ grafana:
 
 The hostname where the IRS will be made available.
 
+#### ingress
+
+To expose the IRS service, you need to add an ingress for the default port 8080.
+You can do this by adding this to ingress:
+
+```yaml
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - host: "public.irs.hostname"
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 8080
+  tls:
+    - hosts:
+      - "public.irs.hostname"
+      secretName: tls-secret
+```
+
 ##### digital-twin-registry-url
 
 The URL of the Digital Twin Registry. The IRS uses this service to fetch AAS shells.
@@ -532,6 +557,34 @@ local models as a fallback.
 
 If you want to use local schema files, you need to provide them directly in the `values.yaml` file. Use the param `semanticsHub.localModels` to specify a map of all the local schemas.
 The **key** of each entry is the `Base64` encoded URN of the model. The **value** is the `Base64` encoded content of the schema file itself. The entries will then be mounted into the IRS container and used on demand. For reference, see the example comment in the default `values.yaml`.
+
+### Use existing EDC consumer
+
+If you want to use an existing EDC as consumer, you need to add the management endpoint URL of this edc to `edc.controlplane.endpoint.data`.
+You also have to add an ingress for the IRS EDC EDR Token callback endpoint (default port: 8181):
+
+```yaml
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - host: "public.irs.hostname"
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 8080
+        - path: /internal
+          port: 8181
+          pathType: Prefix
+  tls:
+    - hosts:
+      - "public.irs.hostname"
+      secretName: tls-secret
+```
 
 ### EDC consumer configuration
 

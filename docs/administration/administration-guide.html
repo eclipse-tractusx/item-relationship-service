@@ -669,6 +669,7 @@ pre.rouge {
 <ul class="sectlevel2">
 <li><a href="#_spring_configuration">Spring Configuration</a></li>
 <li><a href="#_helm_configuration_irs_values_yaml">Helm configuration IRS (values.yaml)</a></li>
+<li><a href="#_use_existing_edc_consumer">Use existing EDC consumer</a></li>
 <li><a href="#_edc_consumer_configuration">EDC consumer configuration</a></li>
 <li><a href="#_secrets">Secrets</a></li>
 </ul>
@@ -1220,6 +1221,34 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <p>The hostname where the IRS will be made available.</p>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_ingress">&lt;ingress&gt;</h4>
+<div class="paragraph">
+<p>To expose the IRS service, you need to add an ingress for the default port 8080.
+You can do this by adding this to ingress:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">ingress</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">className</span><span class="pi">:</span> <span class="s2">"</span><span class="s">nginx"</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="na">nginx.ingress.kubernetes.io/ssl-passthrough</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
+    <span class="na">nginx.ingress.kubernetes.io/backend-protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">HTTP"</span>
+    <span class="na">nginx.ingress.kubernetes.io/force-ssl-redirect</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
+  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">host</span><span class="pi">:</span> <span class="s2">"</span><span class="s">public.irs.hostname"</span>
+      <span class="na">paths</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
+          <span class="na">pathType</span><span class="pi">:</span> <span class="s">Prefix</span>
+          <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+  <span class="na">tls</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">public.irs.hostname"</span>
+      <span class="na">secretName</span><span class="pi">:</span> <span class="s">tls-secret</span></code></pre>
+</div>
+</div>
 <div class="sect4">
 <h5 id="_digital_twin_registry_url">&lt;digital-twin-registry-url&gt;</h5>
 <div class="paragraph">
@@ -1292,6 +1321,37 @@ local models as a fallback.</p>
 <div class="paragraph">
 <p>If you want to use local schema files, you need to provide them directly in the <code>values.yaml</code> file. Use the param <code>semanticsHub.localModels</code> to specify a map of all the local schemas.
 The <strong>key</strong> of each entry is the <code>Base64</code> encoded URN of the model. The <strong>value</strong> is the <code>Base64</code> encoded content of the schema file itself. The entries will then be mounted into the IRS container and used on demand. For reference, see the example comment in the default <code>values.yaml</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_existing_edc_consumer">Use existing EDC consumer</h3>
+<div class="paragraph">
+<p>If you want to use an existing EDC as consumer, you need to add the management endpoint URL of this edc to <code>edc.controlplane.endpoint.data</code>.
+You also have to add an ingress for the IRS EDC EDR Token callback endpoint (default port: 8181):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="na">ingress</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+  <span class="na">className</span><span class="pi">:</span> <span class="s2">"</span><span class="s">nginx"</span>
+  <span class="na">annotations</span><span class="pi">:</span>
+    <span class="na">nginx.ingress.kubernetes.io/ssl-passthrough</span><span class="pi">:</span> <span class="s2">"</span><span class="s">false"</span>
+    <span class="na">nginx.ingress.kubernetes.io/backend-protocol</span><span class="pi">:</span> <span class="s2">"</span><span class="s">HTTP"</span>
+    <span class="na">nginx.ingress.kubernetes.io/force-ssl-redirect</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
+  <span class="na">hosts</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">host</span><span class="pi">:</span> <span class="s2">"</span><span class="s">public.irs.hostname"</span>
+      <span class="na">paths</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">path</span><span class="pi">:</span> <span class="s">/</span>
+          <span class="na">pathType</span><span class="pi">:</span> <span class="s">Prefix</span>
+          <span class="na">port</span><span class="pi">:</span> <span class="m">8080</span>
+        <span class="pi">-</span> <span class="na">path</span><span class="pi">:</span> <span class="s">/internal</span>
+          <span class="na">port</span><span class="pi">:</span> <span class="m">8181</span>
+          <span class="na">pathType</span><span class="pi">:</span> <span class="s">Prefix</span>
+  <span class="na">tls</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">public.irs.hostname"</span>
+      <span class="na">secretName</span><span class="pi">:</span> <span class="s">tls-secret</span></code></pre>
 </div>
 </div>
 </div>
@@ -1459,7 +1519,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-28 13:11:49 UTC
+Last updated 2023-10-06 09:06:36 UTC
 </div>
 </div>
 </body>

@@ -456,6 +456,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_parallelization_and_threading">Parallelization and threading</a></li>
 <li><a href="#_plausibility_checks_and_validation">Plausibility checks and validation</a></li>
+<li><a href="#_policy_store">Policy Store</a></li>
 <li><a href="#_caching">Caching</a>
 <ul class="sectlevel2">
 <li><a href="#_bpdm">BPDM</a></li>
@@ -612,6 +613,17 @@ In the future, another approach or an additional way to to index the data might 
 </div>
 </div>
 <div class="sect1">
+<h2 id="_policy_store">Policy Store</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The IRS gives its users the ability to manage, create and delete complex policies containing permissions and constraints in order to obtain the most precise control over access and use of data received from the edc provider. Policies stored in Policy Store will serve as input with allowed restriction and will be checked against every item from EDC Catalog.</p>
+</div>
+<div class="paragraph">
+<p>The structure of a Policy that can be stored in storage can be easily viewed by using Policy Store endpoints in the published API documentation. Each policy may contain more than one permission, which in turn consists of constraints linked together by AND or OR relationships. This model provides full flexibility and control over stored access and use policies.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_caching">Caching</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -640,7 +652,7 @@ In the future, another approach or an additional way to to index the data might 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-28 13:11:49 UTC
+Last updated 2023-10-06 09:06:36 UTC
 </div>
 </div>
 </body>

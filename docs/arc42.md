@@ -849,6 +849,12 @@ Data validation happens at two points:
 * Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.
 * EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. IDs of so-called "Rahmenverträgen" or Framework-Agreements can be added to the IRS Policy Store to be accepted by the IRS. If a Contract Offer does not match any of the IDs store in Policy Store, the contract offer will be declined and no data will be consumed.
 
+### Policy Store
+
+The IRS gives its users the ability to manage, create and delete complex policies containing permissions and constraints in order to obtain the most precise control over access and use of data received from the edc provider. Policies stored in Policy Store will serve as input with allowed restriction and will be checked against every item from EDC Catalog.
+
+The structure of a Policy that can be stored in storage can be easily viewed by using Policy Store endpoints in the published API documentation. Each policy may contain more than one permission, which in turn consists of constraints linked together by AND or OR relationships. This model provides full flexibility and control over stored access and use policies.
+
 ### Caching
 
 The IRS caches data provided externally to avoid unnecessary requests and reduce execution time.
@@ -995,7 +1001,7 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | Eclipse Dataspace Connector (EDC) | For more information see: <https://github.com/eclipse-tractusx/tractusx-edc> |
 | Managed Identity Wallet (MIW) | For more information see: <https://github.com/eclipse-tractusx/managed-identity-wallet> |
 | Self-Sovereign Identity (SSI) | For more information see: <https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2> |
-| PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. |
+| PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by a admin user in order to be allowed to use in IRS use cases. |
 
 ### NOTICE
 

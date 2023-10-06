@@ -1422,7 +1422,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <h4 id="_component_diagram_2">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/level-1.svg" alt="level 1" width="1265" height="746">
+<img src="architecture-constraints/level-1.svg" alt="level 1" width="956" height="1103">
 </div>
 </div>
 </div>
@@ -1533,7 +1533,7 @@ A job is processed in this order:</p>
 <h5 id="_component_diagram_3">Component diagram</h5>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/level-2-controller.svg" alt="level 2 controller" width="659" height="421">
+<img src="architecture-constraints/level-2-controller.svg" alt="level 2 controller" width="659" height="445">
 </div>
 </div>
 </div>
@@ -2056,7 +2056,7 @@ The IRS Helm charts can be found here: <a href="https://github.com/eclipse-tract
 <h4 id="_job_response_datamodel">Job Response Datamodel</h4>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/job-response-model.svg" alt="job response model" width="3585" height="865">
+<img src="architecture-constraints/job-response-model.svg" alt="job response model" width="3585" height="866">
 </div>
 </div>
 </div>
@@ -2415,6 +2415,15 @@ In the future, another approach or an additional way to to index the data might 
 </div>
 </div>
 <div class="sect3">
+<h4 id="_policy_store">Policy Store</h4>
+<div class="paragraph">
+<p>The IRS gives its users the ability to manage, create and delete complex policies containing permissions and constraints in order to obtain the most precise control over access and use of data received from the edc provider. Policies stored in Policy Store will serve as input with allowed restriction and will be checked against every item from EDC Catalog.</p>
+</div>
+<div class="paragraph">
+<p>The structure of a Policy that can be stored in storage can be easily viewed by using Policy Store endpoints in the published API documentation. Each policy may contain more than one permission, which in turn consists of constraints linked together by AND or OR relationships. This model provides full flexibility and control over stored access and use policies.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_caching">Caching</h4>
 <div class="paragraph">
 <p>The IRS caches data provided externally to avoid unnecessary requests and reduce execution time.</p>
@@ -2719,7 +2728,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PolicyStore</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by a admin user in order to be allowed to use in IRS use cases.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2761,7 +2770,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-09-28 13:11:49 UTC
+Last updated 2023-10-06 09:06:36 UTC
 </div>
 </div>
 </body>
