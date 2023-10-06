@@ -1749,7 +1749,7 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        error: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned"
+        error: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned, asSpecified"
         messages: null
       headers:
         content-type: application/json
