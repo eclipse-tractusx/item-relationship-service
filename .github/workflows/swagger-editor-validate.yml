@@ -19,4 +19,4 @@ jobs:
       - name: Validate OpenAPI definition
         uses: char0n/swagger-editor-validate@v1
         with:
-          definition-file: docs/src/api/irs-v1.0.yaml
+          definition-file: docs/src/api/irs-api.yaml

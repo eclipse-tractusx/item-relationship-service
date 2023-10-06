@@ -9,7 +9,6 @@
         <version>${revision}</version>
     </parent>
 
-    <groupId>org.eclipse.tractusx.irs</groupId>
     <artifactId>irs-parent-spring-boot</artifactId>
     <packaging>pom</packaging>
 
@@ -25,16 +24,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-common</artifactId>
-                <version>${springdoc.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springdoc</groupId>
-                <artifactId>springdoc-openapi-ui</artifactId>
-                <version>${springdoc.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -44,7 +33,6 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${springboot.version}</version>
                     <configuration>
                         <excludes>
                             <exclude>
