@@ -19,7 +19,7 @@
         <dependency>
             <groupId>io.gatling</groupId>
             <artifactId>gatling-app</artifactId>
-            <version>3.9.5</version>
+            <version>${gatling.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -29,7 +29,7 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>4.3.0</version>
+                <version>${gatling-maven-plugin.version}</version>
                 <configuration>
                     <noReports>true</noReports>
                 </configuration>

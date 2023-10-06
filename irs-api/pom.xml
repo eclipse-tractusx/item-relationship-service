@@ -45,34 +45,24 @@
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>8.5.4</version>
+            <version>${minio.version}</version>
             <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>org.bouncycastle</groupId>
                     <artifactId>bcprov-jdk15on</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Update snappy-java manually to avoid vulnerability CVE-2023-34455; can be removed after Minio updates their dependency -->
+        <!-- Update snappy-java manually to avoid vulnerability CVE-2023-43642; can be removed after Minio updates their dependency -->
         <dependency>
             <groupId>org.xerial.snappy</groupId>
             <artifactId>snappy-java</artifactId>
-            <version>1.1.10.1</version>
-        </dependency>
-        <!-- Update jackson-databind manually to avoid vulnerability CVE-2022-42004; can be removed after Minio updates their dependency -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.14.2</version>
+            <version>1.1.10.5</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>4.10.0</version>
+            <version>${okhttp.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -92,13 +82,7 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <!-- Update as spring still uses older snakeyaml 1.33; can be removed with above snakeyaml override  -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>2.14.2</version>
+            <version>${snakeyaml.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -131,12 +115,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Update json-smart manually to avoid vulnerability CVE-2023-1370; can be removed after Spring updates their dependency -->
-        <dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>json-smart</artifactId>
-            <version>2.4.10</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -152,12 +130,12 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.2</version>
+            <version>${springdoc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -184,7 +162,7 @@
         <dependency>
             <groupId>net.jimblackler</groupId>
             <artifactId>jsonschemafriend</artifactId>
-            <version>0.12.0</version>
+            <version>${jsonschemafriend.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.jsoup</groupId>
@@ -195,12 +173,12 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.15.4</version>
+            <version>${jsoup.version}</version>
         </dependency>
         <dependency>
             <groupId>org.graalvm.sdk</groupId>
             <artifactId>graal-sdk</artifactId>
-            <version>23.0.1</version>
+            <version>${graal-sdk.version}</version>
         </dependency>
 
         <dependency>
@@ -223,14 +201,13 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>4.2.0</version>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.swagger</groupId>
+            <groupId>io.swagger.core.v3</groupId>
             <artifactId>swagger-annotations</artifactId>
-            <version>1.6.8</version>
-            <scope>compile</scope>
+            <version>${swagger-annotations.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.resilience4j</groupId>
@@ -238,15 +215,15 @@
             <version>${resilience4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.tomakehurst</groupId>
+            <groupId>org.wiremock</groupId>
             <artifactId>wiremock-standalone</artifactId>
-            <version>2.27.2</version>
+            <version>${wiremock-standalone.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
-            <version>1.7</version>
+            <version>${commons-validator.version}</version>
         </dependency>
     </dependencies>
 
@@ -274,7 +251,7 @@
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <!-- RELEASE_VERSION -->
-                <version>6.5.0</version>
+                <version>${openapi-generator-maven-plugin.version}</version>
                 <!-- /RELEASE_VERSION -->
                 <executions>
                     <execution>

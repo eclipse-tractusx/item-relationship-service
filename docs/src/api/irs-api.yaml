@@ -2284,6 +2284,7 @@ components:
           type: array
           items:
             type: string
+            pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
           maxItems: 2147483647
       required:
         - incidentBPNSs
