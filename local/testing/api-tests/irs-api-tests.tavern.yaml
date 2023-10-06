@@ -2321,3 +2321,46 @@ stages:
           amount_batches: 3
       headers:
         content-type: application/json
+
+
+---
+
+
+test_name: Make sure ESS batch-job with invalid request data has been responsed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation batch job with several valid globalAssetIds but invalid batchSize and check response
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+        incidentBPNSs:
+          - BPNS00000003B6LU
+        batchSize: 2
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 400
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:errors_for_invalid_batchSize_are_correct
+      json:
+        statusCode: BAD_REQUEST
+        error: Invalid Arguments.
+      headers:
+        content-type: application/json
