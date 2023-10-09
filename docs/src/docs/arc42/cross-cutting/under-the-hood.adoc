@@ -74,6 +74,14 @@ The IRS gives its users the ability to manage, create and delete complex policie
 
 The structure of a Policy that can be stored in storage can be easily viewed by using Policy Store endpoints in the published API documentation. Each policy may contain more than one permission, which in turn consists of constraints linked together by AND or OR relationships. This model provides full flexibility and control over stored access and use policies.
 
+== Digital Twin / EDC requirements
+
+In order to work with the decentral network approach, IRS requires the Digital Twin to contain a "subprotocolBody" in each of the submodelDescriptor endpoints. This "subprotocolBody" has to contain the "id" of the EDC asset, as well as the "dspEndpoint" of the EDC, separated by a semicolon (e.g. `"subprotocolBody": "id=123;dspEndpoint=http://edc.control.plane/api/v1/dsp"`).
+
+The "dspEndpoint" is used to request the EDC catalog of the dataprovider and the "id" to filter for the exact asset inside this catalog.
+
+If the "dspEndpoint" is not present, every available EDC endpoint in DiscoveryService will be queried until a asset with the "id" can be found.
+
 == Caching
 
 The IRS caches data provided externally to avoid unnecessary requests and reduce execution time.

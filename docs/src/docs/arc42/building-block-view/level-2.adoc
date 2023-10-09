@@ -86,7 +86,6 @@ include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-
 
 |SubmodelFacade
 |The SubmodelFacade handles EDC contract negotiation, calls the EDC dataplane to retrieve data from the submodel server and transforms the response to internal data models.
- In order to work with the decentral network approach, the SubmodelFacade requires the "subprotocolBody" to be present in each of the submodelDescriptor endpoints of the digital twin received by the digitalTwinRegistryFacade. This "subprotocolBody" has to contain the "id" of the EDC asset, as well as the "dspEndpoint" of the EDC, separated by a colon "semicolon" (e.g. `"subprotocolBody": "id=123;dspEndpoint=http://edc.control.plane/"`). If the "dspEndpoint" is not present, every available EDC endpoint in DiscoveryService will be queried until a asset with the "id" can be found.
 
 |BlobStore
 |The BlobStore is the database where the relationships and tombstones are stored for a requested item.
