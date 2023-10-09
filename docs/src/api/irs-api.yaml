@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: "2.0"
+  version: "2.1.0"
 servers:
   - url: http://localhost:8080
 security:
@@ -2401,6 +2401,7 @@ components:
           type: array
           items:
             type: string
+            pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
           maxItems: 2147483647
       required:
         - incidentBPNSs
