@@ -108,15 +108,12 @@ data:
         urn-prefix: {{ tpl (.Values.edc.submodel.urnprefix | default "/urn") . | quote }}
 
       catalog:
-        policies:
-          acceptedRightOperands: {{ .Values.edc.catalog.policies.acceptedRightOperands | default "" | quote }}
-          acceptedLeftOperands: {{ .Values.edc.catalog.policies.acceptedLeftOperands | default "" | quote }}
-
-    edc:
-      catalog:
-        policies:
-          allowedNames: {{ .Values.edc.catalog.policies.allowedNames | default "" | quote }}
-
+        acceptedPolicies:
+          {{- range .Values.edc.catalog.acceptedPolicies}}
+          - leftOperand: {{ .leftOperand | quote }}
+            operator: {{ .operator | quote }}
+            rightOperand: {{ .rightOperand | quote }}
+          {{- end }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
