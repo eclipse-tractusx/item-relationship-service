@@ -290,10 +290,12 @@ def order_informations_for_batchprocessing_are_given(response, amount_batches):
         assert batches.get("errors") is None
 
 
-def getBatchId(response):
+def getBatchId(response, batchId_number):
     batches_list = response.json().get("batches")
+    batchId_list = []
     for batches in batches_list:
-        return Box({"batch_id": batches.get("batchId")})
+        batchId_list.append(batches.get("batchId"))
+    return Box({"batch_id": batchId_list[batchId_number]})
 
 
 def check_batches_are_canceled_correctly(response):
