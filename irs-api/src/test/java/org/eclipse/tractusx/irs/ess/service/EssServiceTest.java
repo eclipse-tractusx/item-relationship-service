@@ -27,12 +27,14 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
@@ -45,6 +47,8 @@ import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.connector.job.JobStore;
+import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
@@ -60,10 +64,11 @@ class EssServiceTest {
     private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
 
     private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
+    private final JobStore jobStore = mock(JobStore.class);
     private final EssRecursiveNotificationHandler recursiveNotificationHandler = Mockito.mock(
             EssRecursiveNotificationHandler.class);
     private final EssService essService = new EssService(irsItemGraphQueryService, securityHelperService, bpnInvestigationJobCache,
-            recursiveNotificationHandler);
+            jobStore, recursiveNotificationHandler);
 
     @Test
     void shouldSuccessfullyStartJobAndReturnWithExtendedSubmodelList() {
@@ -89,8 +94,9 @@ class EssServiceTest {
                                           .shells(new ArrayList<>())
                                           .build();
 
-        when(irsItemGraphQueryService.registerItemJob(any(RegisterJob.class))).thenReturn(JobHandle.builder().id(createdJobId).build());
-        when(irsItemGraphQueryService.getJobForJobId(createdJobId, true)).thenReturn(expectedResponse);
+        when(irsItemGraphQueryService.registerItemJob(any(RegisterJob.class), any(), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
+        when(jobStore.find(createdJobId.toString())).thenReturn(Optional.of(MultiTransferJob.builder().job(expectedResponse.getJob()).build()));
+        when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(true))).thenReturn(expectedResponse);
         when(securityHelperService.isAdmin()).thenReturn(true);
 
         final JobHandle jobHandle = essService.startIrsJob(request);
@@ -129,7 +135,7 @@ class EssServiceTest {
                                                                                              .build();
 
         final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
-                                                                                   Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), owner, new ArrayList<>())
+                                                                                   Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), new ArrayList<>())
                                                                            .withNotifications(List.of(notificationId,
                                                                                    notificationId2));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
@@ -167,8 +173,9 @@ class EssServiceTest {
         final String owner = securityHelperService.getClientIdClaim();
         when(securityHelperService.isAdmin()).thenReturn(true);
 
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(job(jobId, owner), owner,
-                new ArrayList<>()).withNotifications(Collections.singletonList(notificationId));
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
+                                                                                   new ArrayList<>())
+                                                                           .withNotifications(Collections.singletonList(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
@@ -192,7 +199,7 @@ class EssServiceTest {
 
         final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId, owner);
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobSnapshot, owner, null)
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobSnapshot, null)
                                                                            .withAnsweredNotification(notificationId)
                                                                            .withNotifications(List.of());
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
@@ -214,7 +221,7 @@ class EssServiceTest {
         final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId, owner);
         final String notificationId = UUID.randomUUID().toString();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobSnapshot, owner, null)
+        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobSnapshot, null)
                                                                            .update(jobSnapshot, SupplyChainImpacted.NO)
                                                                            .withNotifications(List.of(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);

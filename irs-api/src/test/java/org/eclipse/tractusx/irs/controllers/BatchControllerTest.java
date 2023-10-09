@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.controllers;
 
 import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
+import static org.eclipse.tractusx.irs.util.TestMother.registerBpnInvestigationBatchOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -105,12 +106,23 @@ class BatchControllerTest {
 
     @Test
     @WithMockUser(authorities = IrsRoles.VIEW_IRS)
-    void shouldRegisterBatchOrder() throws Exception {
+    void shouldRegisterRegularJobBatchOrder() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(
                                                         registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                    .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
+    void shouldRegisterEssJobBatchOrder() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
+        this.mockMvc.perform(post("/irs/ess/orders").contentType(MediaType.APPLICATION_JSON)
+                                                .content(new ObjectMapper().writeValueAsString(
+                                                        registerBpnInvestigationBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
                     .andExpect(status().isCreated());
     }
 

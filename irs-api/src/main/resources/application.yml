@@ -229,4 +229,4 @@ ess:
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API

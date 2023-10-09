@@ -55,15 +55,10 @@ public class BpnInvestigationJob {
     private List<String> answeredNotifications;
     private JobState state;
 
-    public static BpnInvestigationJob create(final Jobs jobSnapshot, final String owner,
+    public static BpnInvestigationJob create(final Jobs jobSnapshot,
             final List<String> incidentBpns) {
-        return new BpnInvestigationJob(withOwner(jobSnapshot, owner), incidentBpns, new ArrayList<>(),
+        return new BpnInvestigationJob(jobSnapshot, incidentBpns, new ArrayList<>(),
                 new ArrayList<>(), JobState.RUNNING);
-    }
-
-    private static Jobs withOwner(final Jobs jobSnapshot, final String owner) {
-        final Job overrideOwner = jobSnapshot.getJob().toBuilder().owner(owner).build();
-        return jobSnapshot.toBuilder().job(overrideOwner).build();
     }
 
     private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob,
@@ -91,10 +86,8 @@ public class BpnInvestigationJob {
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
-        final String originalOwner = this.jobSnapshot.getJob().getOwner();
         this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
-        this.jobSnapshot = withOwner(this.jobSnapshot, originalOwner);
         this.jobSnapshot = updateLastModified(this.jobSnapshot, ZonedDateTime.now(ZoneOffset.UTC));
         return this;
     }

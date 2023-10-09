@@ -275,10 +275,8 @@ public class IrsController {
                explode = Explode.FALSE, array = @ArraySchema(schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE))
             @RequestParam(value = "states", required = false, defaultValue = "") final List<JobState> states,
             @Parameter(hidden = true)
-            @RequestParam(value = "jobStates", required = false, defaultValue = "") final List<JobState> jobStates,
-            @Parameter(hidden = true)
             @ParameterObject final Pageable pageable) {
-        return itemJobService.getJobsByState(states, jobStates, pageable);
+        return itemJobService.getJobsByState(states, pageable);
     }
 
     @Operation(operationId = "getAllAspectModels",

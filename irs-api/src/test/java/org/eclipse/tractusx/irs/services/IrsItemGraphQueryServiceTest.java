@@ -192,43 +192,13 @@ class IrsItemGraphQueryServiceTest {
     }
 
     @Test
-    void shouldTakeStatesInsteadOfDeprecatedParameter() {
-        final List<JobState> states = List.of(JobState.COMPLETED);
-        final List<JobState> jobStates = List.of(JobState.RUNNING);
-
-        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
-
-        verify(jobStore).findByStates(states);
-    }
-
-    @Test
-    void shouldTakeDeprecatedParameterWhenCorrectOneIsEmpty() {
-        final List<JobState> states = List.of();
-        final List<JobState> jobStates = List.of(JobState.RUNNING);
-
-        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
-
-        verify(jobStore).findByStates(jobStates);
-    }
-
-    @Test
     void shouldTakeAllJobsWhenBothListEmpty() {
         final List<JobState> states = List.of();
         final List<JobState> jobStates = List.of();
 
-        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
+        testee.getJobsByState(states, Pageable.ofSize(10));
 
         verify(jobStore).findAll();
-    }
-
-    @Test
-    void shouldTakeStatesInsteadOfEmptyDeprecatedParameter() {
-        final List<JobState> states = List.of(JobState.COMPLETED);
-        final List<JobState> jobStates = List.of();
-
-        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
-
-        verify(jobStore).findByStates(states);
     }
 
     @Test
@@ -258,8 +228,6 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldThrowExceptionWhenLookupBpnAndBpdmEndpointUrlIsMissing() throws SchemaNotFoundException {
-        when(semanticsHubFacade.getAllAspectModels()).thenReturn(AspectModels.builder().models(List.of(AspectModel.builder().name("SingleLevelBomAsBuilt").build())).build());
-
         final Executable executable = () -> testee.registerItemJob(registerJobWithLookupBPNs());
 
         assertThrows(ResponseStatusException.class, executable);

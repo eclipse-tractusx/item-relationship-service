@@ -185,7 +185,7 @@ class IrsControllerTest {
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
-        when(service.getJobsByState(any(), any(), any())).thenReturn(
+        when(service.getJobsByState(any(), any())).thenReturn(
                 new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
         this.mockMvc.perform(get("/irs/jobs"))
