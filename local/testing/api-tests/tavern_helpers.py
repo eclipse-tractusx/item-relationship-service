@@ -299,7 +299,6 @@ def getBatchId(response, batchId_number):
 
 
 def check_batches_are_canceled_correctly(response):
-    print(response.json())
     jobs_list = response.json().get("jobs")
     for jobs in jobs_list:
         assert jobs.get("state") == 'CANCELED'

@@ -2410,7 +2410,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/ess/orders/{job_id}"
+      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/orders/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -2549,7 +2549,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/ess/orders/{job_id}"
+      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/orders/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -2573,7 +2573,7 @@ stages:
 
   - name: cancel order job
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
       method: PUT
       headers:
         content-type: application/json
@@ -2586,7 +2586,7 @@ stages:
 
   - name: get batch response of desired batch
     request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders/{job_id}/batches/{batch_id}"
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}/batches/{batch_id}"
       params:
         returnUncompletedJob: true
       method: GET
