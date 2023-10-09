@@ -2085,6 +2085,7 @@ stages:
 
 ---
 
+############################## \/  Batch-Order tests for both irs/orders and irs/ess/orders  \/ ##############################
 
 test_name: Make sure batch-job with several valid globalAssetIds has been requested correctly
 
@@ -2230,7 +2231,7 @@ stages:
 ---
 
 
-test_name: Make sure cancelation of batch-job has been processed correctly
+test_name: Make sure cancellation of batch-job has been processed correctly
 
 strict:
   - headers:off
@@ -2334,7 +2335,7 @@ stages:
 ---
 
 
-test_name: Make sure investigation batch-job with valid globalAssetId and BPN has been requested correctly
+test_name: Make sure ESS-investigation batch-job with valid globalAssetId and BPN has been requested correctly
 
 strict:
   - headers:off
@@ -2430,7 +2431,7 @@ stages:
 ---
 
 
-test_name: Make sure ESS batch-job with invalid request data has been responsed correctly
+test_name: Make sure ESS-investigation batch-job with invalid request data has been responsed correctly
 
 strict:
   - headers:off
@@ -2473,7 +2474,7 @@ stages:
 ---
 
 
-test_name: Make sure cancelation of investigation batch-job has been processed correctly
+test_name: Make sure cancellation of ESS-investigation batch-job has been processed correctly
 
 strict:
   - headers:off
