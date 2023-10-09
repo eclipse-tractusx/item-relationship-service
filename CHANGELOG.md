@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Introduced new API endpoint to register ESS Jobs in Batch - POST {{IRS_HOST}}/irs/ess/orders
+
+### Changed
+- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint
 
 ## [3.5.2] - 2023-10-06
 ### Changed
