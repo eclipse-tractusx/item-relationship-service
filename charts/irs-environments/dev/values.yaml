@@ -40,7 +40,7 @@ irs-helm:
   edc:
     controlplane:
       apikey:
-        secret: "123456"
+        secret: <path:traceability-irs/data/dev/controlplane#apiKey>
 
   resources:
     limits:
