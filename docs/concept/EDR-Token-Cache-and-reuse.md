@@ -1,10 +1,17 @@
-# [Concept] EDC EDR Token negotiation and usage
+# \[Concept\] \[TRI-1604\] EDC EDR Token negotiation and usage
+
+## Glossary
+
+| Abbreviation | Name                         |
+|--------------|------------------------------|
+| EDR          | EndpointDataReference        |
+| EDR-Storage  | EndpointDataReferenceStorage |
 
 ## Existing flow - single use token
 
 The existing flow of token negotiation and usage only allows to use a negotiated contract and the resulting EDR (
 Endpoint Data Reference) Token to be used once.
-After the token is consumed, it is removed from the EndpointDataReferenceStorage.
+After the token is consumed, it is removed from the EDR-Storage (EndpointDataReferenceStorage).
 
 ```mermaid
 sequenceDiagram
@@ -70,9 +77,13 @@ flowchart LR
     A[EDR Token] --> B[extract authCode]
     B --> C[decode JWT]
     C --> D[get expiry date 'exp']
-    D --> E{isExpired}
-    E -->|Yes| F[Request new Token]
-    E -->|No| G[Reuse Token]
+    D --> E{isAvailable}
+    E -->|Yes| F{isValid}
+    E -->|No| H[Request new Token]
+    F -->|Yes| G{isExpired}
+    F -->|No| H
+    G -->|Yes| H
+    G -->|No| I[Reuse Token]
 ```
 
 ### Case: Token is expired
