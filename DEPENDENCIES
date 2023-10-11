@@ -420,7 +420,7 @@ maven/mavencentral/org.springdoc/springdoc-openapi-starter-webmvc-ui/2.2.0, Apac
 maven/mavencentral/org.springframework.boot/spring-boot-actuator-autoconfigure/3.1.4, Apache-2.0, approved, #9348
 maven/mavencentral/org.springframework.boot/spring-boot-actuator/3.1.4, Apache-2.0, approved, #9342
 maven/mavencentral/org.springframework.boot/spring-boot-autoconfigure/3.1.4, Apache-2.0, approved, #9341
-maven/mavencentral/org.springframework.boot/spring-boot-configuration-metadata/3.1.4, , restricted, clearlydefined
+maven/mavencentral/org.springframework.boot/spring-boot-configuration-metadata/3.1.4, Apache-2.0, approved, #11032
 maven/mavencentral/org.springframework.boot/spring-boot-properties-migrator/3.1.4, Apache-2.0, approved, #10675
 maven/mavencentral/org.springframework.boot/spring-boot-starter-actuator/3.1.4, Apache-2.0, approved, #9344
 maven/mavencentral/org.springframework.boot/spring-boot-starter-aop/3.1.4, Apache-2.0, approved, #9338
