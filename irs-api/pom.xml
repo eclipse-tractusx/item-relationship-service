@@ -161,15 +161,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- Update jsoup manually to avoid a vulnerability; can be removed after jsonschemafriend updates their dependency -->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.graalvm.sdk</groupId>
-            <artifactId>graal-sdk</artifactId>
-            <version>${graal-sdk.version}</version>
         </dependency>
 
         <dependency>
