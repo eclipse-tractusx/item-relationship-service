@@ -85,7 +85,7 @@ include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-
 |The DigitalTwinRegistryFacade calls the DigitalTwinRegistry to retrieve data form the AAS registry and transforms the response to internal data models.
 
 |SubmodelFacade
-|The SubmodelFacade calls the EDC to retrieve data from the submodel server and transforms the response to internal data models.
+|The SubmodelFacade handles EDC contract negotiations and is responsible for the EDC dataplane requests to retrieve data from the submodel servers.
 
 |BlobStore
 |The BlobStore is the database where the relationships and tombstones are stored for a requested item.
