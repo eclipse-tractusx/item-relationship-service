@@ -41,6 +41,7 @@ import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -122,16 +123,28 @@ public class TestMother {
         return registerJob;
     }
 
-    public static RegisterBatchOrder registerBatchOrder(final String... globalAssetId) {
+    public static RegisterBatchOrder registerBatchOrder(final String... globalAssetIds) {
         final RegisterBatchOrder registerBatchOrder = new RegisterBatchOrder();
-        registerBatchOrder.setKeys(Arrays.stream(globalAssetId)
-                                         .map(x -> PartChainIdentificationKey.builder()
-                                                                             .globalAssetId(x)
+        registerBatchOrder.setKeys(Arrays.stream(globalAssetIds)
+                                         .map(globalAssetId -> PartChainIdentificationKey.builder()
+                                                                             .globalAssetId(globalAssetId)
                                                                              .bpn("BPNL0000000001AA")
                                                                              .build())
                                          .collect(Collectors.toSet()));
 
         return registerBatchOrder;
+    }
+
+    public static RegisterBpnInvestigationBatchOrder registerBpnInvestigationBatchOrder(final String... globalAssetIds) {
+        final RegisterBpnInvestigationBatchOrder registerBpnInvestigationBatchOrder = new RegisterBpnInvestigationBatchOrder();
+        registerBpnInvestigationBatchOrder.setKeys(Arrays.stream(globalAssetIds)
+                                         .map(globalAssetId -> PartChainIdentificationKey.builder()
+                                                                             .globalAssetId(globalAssetId)
+                                                                             .bpn("BPNL0000000001AA")
+                                                                             .build())
+                                         .collect(Collectors.toSet()));
+        registerBpnInvestigationBatchOrder.setIncidentBPNSs(List.of("BPNL0000000002BB"));
+        return registerBpnInvestigationBatchOrder;
     }
 
     public static JobParameter jobParameter() {

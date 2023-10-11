@@ -130,7 +130,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     @Override
-    public PageResult getJobsByState(final @NonNull List<JobState> states, final Pageable pageable) {
+    public PageResult getJobsByState(@NonNull final List<JobState> states, final Pageable pageable) {
         final List<MultiTransferJob> jobs = filterJobs(states);
         final List<JobStatusResult> jobStatusResults = jobs.stream()
                                                            .map(job -> JobStatusResult.builder()
@@ -153,12 +153,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         } else {
             return jobs.stream().filter(multiJob -> multiJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())).toList();
         }
-    }
-
-    @Override
-    public PageResult getJobsByState(@NonNull final List<JobState> states, @NonNull final List<JobState> jobStates,
-            final Pageable pageable) {
-        return getJobsByState(states.isEmpty() ? jobStates : states, pageable);
     }
 
     private PagedListHolder<JobStatusResult> paginateAndSortResults(final Pageable pageable,
@@ -184,7 +178,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId, final String owner) {
-        final var params = buildJobParameter(request);
+        final var params = JobParameter.create(request);
         if (params.getDirection().equals(Direction.UPWARD) && !params.getBomLifecycle().equals(BomLifecycle.AS_BUILT)) {
             // Currently not supported variant
             throw new IllegalArgumentException("Upward direction is supported only for asBuilt bomLifecycle parameter!");
@@ -193,6 +187,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
                     "Can't start job with BPN lookup - configured bpdm endpoint is empty!");
         }
+        validateAspectTypeValues(params.getAspects());
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(),
                 params, batchId, owner);
@@ -206,33 +201,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         }
     }
 
-    private JobParameter buildJobParameter(final @NonNull RegisterJob request) {
-        final BomLifecycle bomLifecycle = Optional.ofNullable(request.getBomLifecycle()).orElse(BomLifecycle.AS_BUILT);
-        final List<String> aspectTypeValues = Optional.ofNullable(request.getAspects())
-                                                      .orElse(List.of(bomLifecycle.getDefaultAspect()));
-        validateAspectTypeValues(aspectTypeValues);
-        final Direction direction = Optional.ofNullable(request.getDirection()).orElse(Direction.DOWNWARD);
-
-        return JobParameter.builder()
-                           .depth(request.getDepth())
-                           .bomLifecycle(bomLifecycle)
-                           .bpn(request.getKey().getBpn())
-                           .direction(direction)
-                           .aspects(aspectTypeValues.isEmpty()
-                                   ? List.of(bomLifecycle.getDefaultAspect())
-                                   : aspectTypeValues)
-                           .collectAspects(request.isCollectAspects())
-                           .lookupBPNs(request.isLookupBPNs())
-                           .callbackUrl(request.getCallbackUrl())
-                           .build();
-    }
-
     private void validateAspectTypeValues(final List<String> aspectTypeValues) {
         try {
             final HashSet<AspectModel> availableModels = new HashSet<>(
                     semanticsHubFacade.getAllAspectModels().models());
-            log.info("Available AspectModels: '{}'", availableModels);
-            log.info("Provided AspectModels: '{}'", aspectTypeValues);
+            log.debug("Number of available AspectModels: '{}'", availableModels.size());
+            log.debug("Provided AspectModels: '{}'", aspectTypeValues);
             final Set<String> availableNames = new HashSet<>(availableModels.stream().map(AspectModel::name).toList());
             final Set<String> availableUrns = new HashSet<>(availableModels.stream().map(AspectModel::urn).toList());
 
@@ -281,47 +255,51 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access job with id " + jobId + " due to missing privileges.");
             }
 
-            final var relationships = new ArrayList<Relationship>();
-            final var tombstones = new ArrayList<Tombstone>();
-            final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
-            final var submodels = new ArrayList<Submodel>();
-            final var bpns = new ArrayList<Bpn>();
-
-            if (jobIsCompleted(multiJob)) {
-                final var container = retrieveJobResultRelationships(multiJob.getJob().getId());
-                relationships.addAll(container.getRelationships());
-                tombstones.addAll(container.getTombstones());
-                shells.addAll(container.getShells());
-                submodels.addAll(container.getSubmodels());
-                bpns.addAll(container.getBpns());
-            } else if (includePartialResults) {
-                final var container = retrievePartialResults(multiJob);
-                relationships.addAll(container.getRelationships());
-                tombstones.addAll(container.getTombstones());
-                shells.addAll(container.getShells());
-                submodels.addAll(container.getSubmodels());
-                bpns.addAll(container.getBpns());
-            }
-
-            log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", jobId,
-                    multiJob.getJob().getState(), relationships.size(), tombstones.size(), submodels.size());
-
-            return Jobs.builder()
-                       .job(multiJob.getJob()
-                                    .toBuilder()
-                                    .summary(buildSummary(multiJob.getCompletedTransfers().size(),
-                                            multiJob.getTransferProcessIds().size(), tombstones.size(),
-                                            retrievePartialResults(multiJob)))
-                                    .build())
-                       .relationships(relationships)
-                       .tombstones(tombstones)
-                       .shells(shells)
-                       .submodels(submodels)
-                       .bpns(bpns)
-                       .build();
+            return getJobForJobId(multiJob, includePartialResults);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId);
         }
+    }
+
+    public Jobs getJobForJobId(final MultiTransferJob multiJob, final boolean includePartialResults) {
+        final var relationships = new ArrayList<Relationship>();
+        final var tombstones = new ArrayList<Tombstone>();
+        final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
+        final var submodels = new ArrayList<Submodel>();
+        final var bpns = new ArrayList<Bpn>();
+
+        if (multiJob.jobIsCompleted()) {
+            final var container = retrieveJobResultRelationships(multiJob.getJob().getId());
+            relationships.addAll(container.getRelationships());
+            tombstones.addAll(container.getTombstones());
+            shells.addAll(container.getShells());
+            submodels.addAll(container.getSubmodels());
+            bpns.addAll(container.getBpns());
+        } else if (includePartialResults) {
+            final var container = retrievePartialResults(multiJob);
+            relationships.addAll(container.getRelationships());
+            tombstones.addAll(container.getTombstones());
+            shells.addAll(container.getShells());
+            submodels.addAll(container.getSubmodels());
+            bpns.addAll(container.getBpns());
+        }
+
+        log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", multiJob.getJob().getId(),
+                multiJob.getJob().getState(), relationships.size(), tombstones.size(), submodels.size());
+
+        return Jobs.builder()
+                   .job(multiJob.getJob()
+                                .toBuilder()
+                                .summary(buildSummary(multiJob.getCompletedTransfers().size(),
+                                        multiJob.getTransferProcessIds().size(), tombstones.size(),
+                                        retrievePartialResults(multiJob)))
+                                .build())
+                   .relationships(relationships)
+                   .tombstones(tombstones)
+                   .shells(shells)
+                   .submodels(submodels)
+                   .bpns(bpns)
+                   .build();
     }
 
     @Scheduled(cron = "${irs.job.jobstore.cron.expression}")
@@ -422,10 +400,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Could not load stored data for multiJob with id " + jobId, e);
         }
-    }
-
-    private boolean jobIsCompleted(final MultiTransferJob multiJob) {
-        return multiJob.getJob().getState().equals(JobState.COMPLETED);
     }
 
 }

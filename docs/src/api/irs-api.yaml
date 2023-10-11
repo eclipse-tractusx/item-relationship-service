@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: "2.0"
+  version: "2.1.0"
 servers:
   - url: http://localhost:8080
 security:
@@ -154,6 +154,61 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Notification malformed.
       summary: Accepts notifications sent via EDC.
+      tags:
+        - Environmental- and Social Standards
+  /irs/ess/orders:
+    post:
+      description: "Registers an order for an ESS investigation with an array of 
+      {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches."
+      operationId: registerESSInvestigationOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterBpnInvestigationBatchOrder'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              examples:
+                complete:
+                  $ref: '#/components/examples/job-handle'
+              schema:
+                $ref: '#/components/schemas/BatchOrderCreated'
+          description: Returns orderId of registered Batch order.
+        "400":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-400'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Batch Order registration failed.
+        "401":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-401'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: No valid authentication credentials.
+        "403":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-403'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Authorization refused by server.
+      security:
+        - oAuth2:
+            - profile email
+      summary: "Registers an order for an ESS investigation with an array of {globalAssetIds}. 
+      Each globalAssetId will be processed in an separate job, grouped in batches."
       tags:
         - Environmental- and Social Standards
   /irs/jobs:
@@ -759,7 +814,7 @@ paths:
       responses:
         "200":
           content:
-            'application/json':
+            application/json:
               schema:
                 type: array
                 items:
@@ -1155,8 +1210,8 @@ components:
               - language: en
                 text: The shell for a vehicle
             globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-            idShort: future concept x
             id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            idShort: future concept x
             specificAssetIds:
               - name: engineserialid
                 value: "12309481209312"
@@ -1186,13 +1241,13 @@ components:
                       href: https://catena-x.net/vehicle/partdetails/
                       endpointProtocol: HTTPS
                       endpointProtocolVersion: ["1.0"]
-                idShort: vehicle part details
                 id: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                idShort: vehicle part details
                 semanticId:
-                  type: ModelReference
                   keys:
                     - type: Submodel
                       value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+                  type: ModelReference
         submodels:
           - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
@@ -1335,8 +1390,8 @@ components:
               - language: en
                 text: The shell for a vehicle
             globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-            idShort: future concept x
             id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            idShort: future concept x
             specificAssetIds:
               - name: engineserialid
                 value: "12309481209312"
@@ -1350,8 +1405,8 @@ components:
                       href: https://catena-x.net/vehicle/basedetails/
                       endpointProtocol: HTTPS
                       endpointProtocolVersion: ["1.0"]
-                idShort: vehicle base details
                 id: 4a738a24-b7d8-4989-9cd6-387772f40565
+                idShort: vehicle base details
                 semanticId:
                   type: ModelReference
                   keys:
@@ -1366,8 +1421,8 @@ components:
                       href: https://catena-x.net/vehicle/partdetails/
                       endpointProtocol: HTTPS
                       endpointProtocolVersion: ["1.0"]
-                idShort: vehicle part details
                 id: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                idShort: vehicle part details
                 semanticId:
                   type: ModelReference
                   keys:
@@ -1468,9 +1523,9 @@ components:
           type: string
           description: Id of global asset.
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
-        idShort:
-          type: string
         id:
+          type: string
+        idShort:
           type: string
         specificAssetIds:
           type: array
@@ -1507,8 +1562,8 @@ components:
           minimum: 0
     BatchOrderCreated:
       type: object
-      description: Id of the created Batch order.
       additionalProperties: false
+      description: Id of the created Batch order.
       properties:
         id:
           type: string
@@ -2258,6 +2313,69 @@ components:
           minimum: 60
       required:
         - keys
+    RegisterBpnInvestigationBatchOrder:
+      type: object
+      additionalProperties: false
+      description: Request body for registering a new Batch Order for ESS Investigation
+        Job.
+      properties:
+        batchSize:
+          type: integer
+          format: int32
+          default: 20
+          description: Size of the batch.
+          maximum: 100
+          minimum: 10
+        batchStrategy:
+          type: string
+          description: The strategy how the batch is processed internally in IRS.
+          enum:
+            - PRESERVE_BATCH_JOB_ORDER
+            - PRESERVE_JOB_ORDER
+            - PRESERVE_BATCH_ORDER
+        bomLifecycle:
+          type: string
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
+          enum:
+            - asBuilt
+            - asPlanned
+            - asSpecified
+        callbackUrl:
+          type: string
+          description: "Callback url to notify requestor when job processing is finished.\
+                \ There are four uri variable placeholders that can be used: orderId,\
+                \ batchId, orderState and batchState."
+          example: "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}"
+        incidentBPNSs:
+          type: array
+          items:
+            type: string
+            pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
+          maxItems: 2147483647
+        jobTimeout:
+          type: integer
+          format: int32
+          default: 3600
+          description: Timeout in seconds for each job processing inside the complete
+            order.
+          maximum: 7200
+          minimum: 60
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartChainIdentificationKey'
+          maxItems: 2147483647
+        timeout:
+          type: integer
+          format: int32
+          default: 43200
+          description: Timeout in seconds for the complete batch order processing.
+          maximum: 86400
+          minimum: 60
+      required:
+        - incidentBPNSs
+        - keys
     RegisterBpnInvestigationJob:
       type: object
       additionalProperties: false
@@ -2284,6 +2402,7 @@ components:
           type: array
           items:
             type: string
+            pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
           maxItems: 2147483647
       required:
         - incidentBPNSs

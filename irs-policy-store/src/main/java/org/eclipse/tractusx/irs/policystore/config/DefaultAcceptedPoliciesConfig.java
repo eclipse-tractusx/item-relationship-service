@@ -21,30 +21,33 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.services;
+package org.eclipse.tractusx.irs.policystore.config;
 
 import java.util.List;
-import java.util.UUID;
 
-import lombok.NonNull;
-import org.eclipse.tractusx.irs.component.Job;
-import org.eclipse.tractusx.irs.component.JobHandle;
-import org.eclipse.tractusx.irs.component.Jobs;
-import org.eclipse.tractusx.irs.component.PageResult;
-import org.eclipse.tractusx.irs.component.RegisterJob;
-import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.springframework.data.domain.Pageable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * IIrsItemGraphQueryService interface
+ * Config for accepted EDC policies
  */
-public interface IIrsItemGraphQueryService {
+@Configuration
+@ConfigurationProperties(prefix = "irs-edc-client.catalog")
+@Data
+public class DefaultAcceptedPoliciesConfig {
+    private List<AcceptedPolicy> acceptedPolicies;
 
-    JobHandle registerItemJob(@NonNull RegisterJob request);
+    /**
+     * Accepted Policy for
+     */
+    @Data
+    @AllArgsConstructor
+    public static class AcceptedPolicy {
+        private String leftOperand;
+        private String operator;
+        private String rightOperand;
+    }
 
-    PageResult getJobsByState(@NonNull List<JobState> states, Pageable pageable);
-
-    Job cancelJobById(@NonNull UUID jobId);
-
-    Jobs getJobForJobId(UUID jobId, boolean includePartialResults);
 }

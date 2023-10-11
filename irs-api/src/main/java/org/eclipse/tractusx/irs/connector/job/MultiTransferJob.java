@@ -106,6 +106,10 @@ public class MultiTransferJob {
         return getJob().getParameter();
     }
 
+    public boolean jobIsCompleted() {
+        return this.getJob().getState().equals(JobState.COMPLETED);
+    }
+
     /**
      * Builder for {@link MultiTransferJob}.
      */
