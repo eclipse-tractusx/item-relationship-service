@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+skinparam shadowing false
+
+autonumber "<b>[000]"
+box "Consumer" #LightGrey
+participant IRS
+participant PolicyCheckerService
+participant PolicyStoreService
+participant ConstraintCheckerService
+
+
+IRS -> PolicyCheckerService: Validate Policy from asset
+PolicyCheckerService -> PolicyStoreService : Get stored policies
+note right
+    return Policies created by API
+    or default from Config
+end note
+PolicyCheckerService <-- PolicyStoreService : return Policies
+PolicyCheckerService -> ConstraintCheckerService : Check if accepted policies contain all constraints of validated Policy
+PolicyCheckerService <-- ConstraintCheckerService : return validation result
+IRS <-- PolicyCheckerService : return validation result
+
+@enduml
