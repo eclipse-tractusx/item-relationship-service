@@ -2344,7 +2344,7 @@ strict:
 stages:
   - name: register a BPN investigation batch job with valid globalAssetId
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/ess/orders"
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
       json:
         keys:
           - bpn: "BPNL00000003AYRE"
@@ -2410,7 +2410,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/orders/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
@@ -2483,7 +2483,7 @@ strict:
 stages:
   - name: register a BPN investigation batch job with valid globalAssetId
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/ess/orders"
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
       json:
         keys:
           - bpn: "BPNL00000003AYRE"
@@ -2549,7 +2549,7 @@ stages:
 
   - name: get response for created investigation
     request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/irs/orders/{job_id}"
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
       params:
         returnUncompletedJob: true
       method: GET
