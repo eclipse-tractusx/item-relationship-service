@@ -29,7 +29,9 @@ import java.time.Duration;
 import java.util.List;
 
 import org.eclipse.tractusx.irs.common.ApiConstants;
+import org.eclipse.tractusx.irs.configuration.converter.IrsTokenParser;
 import org.eclipse.tractusx.irs.configuration.converter.JwtAuthenticationConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -38,6 +40,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.PermissionsPolicyHeaderWriter;
@@ -76,7 +79,8 @@ public class SecurityConfiguration {
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
-    /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
+    /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity,
+            final JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
@@ -111,7 +115,7 @@ public class SecurityConfiguration {
 
         httpSecurity.oauth2ResourceServer(oauth2ResourceServer ->
                             oauth2ResourceServer.jwt(jwt ->
-                                    jwt.jwtAuthenticationConverter(new JwtAuthenticationConverter())))
+                                    jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
                     .oauth2Client(Customizer.withDefaults());
 
         return httpSecurity.build();
@@ -131,4 +135,15 @@ public class SecurityConfiguration {
         return source;
     }
 
+    @Bean
+    /* package */ IrsTokenParser irsTokenParser(@Value("${oauth.resourceClaim}") final String resourceAccessClaim,
+            @Value("${oauth.irsNamespace}") final String irsResourceAccess,
+            @Value("${oauth.roles}") final String roles) {
+        return new IrsTokenParser(resourceAccessClaim, irsResourceAccess, roles);
+    }
+
+    @Bean
+    /* package */ JwtAuthenticationConverter jwtAuthenticationConverter(final IrsTokenParser irsTokenParser) {
+        return new JwtAuthenticationConverter(new JwtGrantedAuthoritiesConverter(), irsTokenParser);
+    }
 }
