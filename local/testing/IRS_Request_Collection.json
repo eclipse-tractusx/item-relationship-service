@@ -2545,6 +2545,40 @@
 			"_type": "request"
 		},
 		{
+			"_id": "req_ee1cc65156a04cf3a3a07987e393df48",
+			"parentId": "fld_23fae21795994f76a61c93c8c8699b7d",
+			"modified": 1697020037992,
+			"created": 1697017836306,
+			"url": "{{IRS_HOST}}/irs/orders/{% prompt 'Job ID', '', '', '', false, true %}",
+			"name": "Cancel order job for given orderId",
+			"description": "Cancel either regular or ess order job",
+			"method": "PUT",
+			"body": {},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}"
+			},
+			"metaSortKey": -1680682418111.25,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
 			"_id": "req_daeca07fd8be473b9688e8653cf8940d",
 			"parentId": "fld_6bfeda181e9f46b4b85bb345457e97f9",
 			"modified": 1681717455311,
