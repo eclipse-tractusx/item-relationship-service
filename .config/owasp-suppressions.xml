@@ -42,4 +42,11 @@
         <gav regex="true">org\.eclipse\.jetty\.toolchain:jetty\-jakarta\-websocket\-api.*</gav>
         <vulnerabilityName regex="true">.*</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        This vulnerability does not apply to Java deployments, typically in servers, that load and run only trusted code. This is not exploitable in IRS.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
+        <vulnerabilityName>CVE-2023-22006</vulnerabilityName>
+    </suppress>
 </suppressions>
