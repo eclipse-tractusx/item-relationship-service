@@ -55,7 +55,7 @@ public class NotificationReceiverController {
     private final EssService essService;
 
     @Operation(operationId = "receiveEdcNotification", summary = "Accepts notifications sent via EDC.",
-               tags = { "Environmental- and Social Standards" },
+               tags = { "Environmental and Social Standards" },
                description = "Accepts notifications via EDC. Notifications are filtered by their type and processed accordingly.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Notification received successfully."),
                             @ApiResponse(responseCode = "400", description = "Notification malformed.",
