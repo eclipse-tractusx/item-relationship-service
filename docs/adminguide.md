@@ -217,16 +217,24 @@ irs-edc-client:
       connect: PT90S # HTTP connect timeout for the submodel client
 
   catalog:
-    policies:
-      acceptedRightOperands: active # List of comma separated names of the rightOperands to accept.
-      acceptedLeftOperands: PURPOSE # List of comma separated names of the leftOperands to accept.
-
-edc:
-  catalog:
-    policies:
-      # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
-      # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability # List of comma separated names of the policies to accept.
+    # IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.
+    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
+    acceptedPolicies:
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.0 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.1 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: R2_Traceability
+      - leftOperand: "FrameworkAgreement.traceability"
+        operator: "eq"
+        rightOperand: "active"
+      - leftOperand: "Membership"
+        operator: "eq"
+        rightOperand: "active"
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
@@ -287,7 +295,13 @@ ess:
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API
+
+# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
+oauth:
+  resourceClaim: "resource_access" # Name of the JWT claim for roles
+  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
+  roles: "roles" # Name of the list of roles within the IRS namespace
 ```
 
 ### Helm configuration IRS (values.yaml)
@@ -370,12 +384,24 @@ edc:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     urnprefix: /urn
   catalog:
-    policies:
-      # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
-      # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability, Membership  # List of comma separated names of the policies to accept.
-      acceptedRightOperands: active  # List of comma separated names of the rightOperands to accept.
-      acceptedLeftOperands: PURPOSE  # List of comma separated names of the leftOperands to accept.
+    # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
+    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
+    acceptedPolicies:
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.0 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.1 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: R2_Traceability
+      - leftOperand: "FrameworkAgreement.traceability"
+        operator: "eq"
+        rightOperand: "active"
+      - leftOperand: "Membership"
+        operator: "eq"
+        rightOperand: "active"
 
 discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
@@ -384,6 +410,11 @@ ess:
   mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
   mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
   managementPath: "/management/v2"  # EDC management API path - used for notification asset creation
+
+oauth:
+  resourceClaim: "resource_access"  # Name of the JWT claim for roles
+  irsNamespace: "Cl20-CX-IRS"  # Namespace for the IRS roles
+  roles: "roles"  # Name of the list of roles within the IRS namespace
 
 config:
   # If true, the config provided below will completely replace the configmap.
@@ -460,23 +491,6 @@ prometheus:
 
 
 #########################
-# Grafana Configuration #
-#########################
-grafana:
-  enabled: false  # ①
-  rbac:
-    create: false
-  persistence:
-    enabled: false
-
-  user:  # <grafana-username>
-  password:  # <grafana-password>
-
-  admin:
-    existingSecret: "{{ .Release.Name }}-irs-helm"
-    userKey: grafanaUser
-    passwordKey: grafanaPassword
-
 ```
 
 1. Use this to enable or disable the monitoring components

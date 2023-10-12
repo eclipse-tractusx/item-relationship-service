@@ -436,6 +436,221 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+pre.rouge table td { padding: 5px; }
+pre.rouge table pre { margin: 0; }
+pre.rouge .cm {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cp {
+  color: #999999;
+  font-weight: bold;
+}
+pre.rouge .c1 {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cs {
+  color: #999999;
+  font-weight: bold;
+  font-style: italic;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .err {
+  color: #a61717;
+  background-color: #e3d2d2;
+}
+pre.rouge .gd {
+  color: #000000;
+  background-color: #ffdddd;
+}
+pre.rouge .ge {
+  color: #000000;
+  font-style: italic;
+}
+pre.rouge .gr {
+  color: #aa0000;
+}
+pre.rouge .gh {
+  color: #999999;
+}
+pre.rouge .gi {
+  color: #000000;
+  background-color: #ddffdd;
+}
+pre.rouge .go {
+  color: #888888;
+}
+pre.rouge .gp {
+  color: #555555;
+}
+pre.rouge .gs {
+  font-weight: bold;
+}
+pre.rouge .gu {
+  color: #aaaaaa;
+}
+pre.rouge .gt {
+  color: #aa0000;
+}
+pre.rouge .kc {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kd {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kn {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kp {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kr {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kt {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .k, pre.rouge .kv {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .mf {
+  color: #009999;
+}
+pre.rouge .mh {
+  color: #009999;
+}
+pre.rouge .il {
+  color: #009999;
+}
+pre.rouge .mi {
+  color: #009999;
+}
+pre.rouge .mo {
+  color: #009999;
+}
+pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
+  color: #009999;
+}
+pre.rouge .sa {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .sb {
+  color: #d14;
+}
+pre.rouge .sc {
+  color: #d14;
+}
+pre.rouge .sd {
+  color: #d14;
+}
+pre.rouge .s2 {
+  color: #d14;
+}
+pre.rouge .se {
+  color: #d14;
+}
+pre.rouge .sh {
+  color: #d14;
+}
+pre.rouge .si {
+  color: #d14;
+}
+pre.rouge .sx {
+  color: #d14;
+}
+pre.rouge .sr {
+  color: #009926;
+}
+pre.rouge .s1 {
+  color: #d14;
+}
+pre.rouge .ss {
+  color: #990073;
+}
+pre.rouge .s, pre.rouge .dl {
+  color: #d14;
+}
+pre.rouge .na {
+  color: #008080;
+}
+pre.rouge .bp {
+  color: #999999;
+}
+pre.rouge .nb {
+  color: #0086B3;
+}
+pre.rouge .nc {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .no {
+  color: #008080;
+}
+pre.rouge .nd {
+  color: #3c5d5d;
+  font-weight: bold;
+}
+pre.rouge .ni {
+  color: #800080;
+}
+pre.rouge .ne {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nf, pre.rouge .fm {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nl {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nn {
+  color: #555555;
+}
+pre.rouge .nt {
+  color: #000080;
+}
+pre.rouge .vc {
+  color: #008080;
+}
+pre.rouge .vg {
+  color: #008080;
+}
+pre.rouge .vi {
+  color: #008080;
+}
+pre.rouge .nv, pre.rouge .vm {
+  color: #008080;
+}
+pre.rouge .ow {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .o {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .w {
+  color: #bbbbbb;
+}
+pre.rouge {
+  background-color: #f8f8f8;
+}
+</style>
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
@@ -446,6 +661,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_authentication_authorization">Authentication / Authorization</a>
 <ul class="sectlevel2">
 <li><a href="#_irs_api">IRS API</a></li>
+<li><a href="#_irs_oauth2_jwt_token">IRS OAuth2 JWT Token</a></li>
 <li><a href="#_irs_as_dtr_client">IRS as DTR client</a></li>
 <li><a href="#_irs_as_decentralized_dtr_client">IRS as decentralized DTR client</a></li>
 <li><a href="#_irs_as_edc_client">IRS as EDC client</a></li>
@@ -462,7 +678,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_irs_api">IRS API</h3>
 <div class="paragraph">
-<p>The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
+<p>The IRS is secured using OAuth2.0 / Open ID Connect.
+Every request to the IRS API requires a valid bearer token.
 JWT token should also contain two claims:</p>
 </div>
 <div class="ulist">
@@ -471,7 +688,11 @@ JWT token should also contain two claims:</p>
 <p>'bpn' which is equal to the configuration value from <code>API_ALLOWED_BPN</code> property</p>
 </li>
 <li>
-<p>'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. The list of values will be converted to roles by IRS. Currently, IRS API handles two roles: <strong>'admin_irs'</strong> and <strong>'view_irs'.</strong> A valid token with the <strong>'admin_irs'</strong> role can access any endpoint exposed by the IRS API, while a token with the <strong>'view_irs'</strong> role does not have access to policies endpoints and can operate only on resources it owns. That means that he only has access to the resources he has created, e.g. jobs and batches. This behavior is shown in the table below.</p>
+<p>'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. (The keys are configurable. For more details see chapter "IRS OAuth2 JWT Token").
+The list of values will be converted to roles by IRS.
+Currently, IRS API handles two roles: <strong>'admin_irs'</strong> and <strong>'view_irs'.</strong> A valid token with the <strong>'admin_irs'</strong> role can access any endpoint exposed by the IRS API, while a token with the <strong>'view_irs'</strong> role does not have access to policies endpoints and can operate only on resources it owns.
+That means that he only has access to the resources he has created, e.g. jobs and batches.
+This behavior is shown in the table below.</p>
 </li>
 </ul>
 </div>
@@ -609,26 +830,64 @@ Social Standards</p></td>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Legend: x  = full access to all resources, (x) = access to the resources he owns</p>
+<p>Legend: x = full access to all resources, (x) = access to the resources he owns</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_irs_oauth2_jwt_token">IRS OAuth2 JWT Token</h3>
+<div class="paragraph">
+<p>IRS expects the JWT access token to have the following structure to be able to extract role information:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+</span><span class="err">...</span><span class="w">
+  </span><span class="nl">"resource_access"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"Cl20-CX-IRS"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"roles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"view_irs"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"admin_irs"</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+</span><span class="err">...</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The field names can be configured via application.yaml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="yaml"><span class="c1"># OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.</span>
+<span class="na">oauth</span><span class="pi">:</span>
+  <span class="na">resourceClaim</span><span class="pi">:</span> <span class="s2">"</span><span class="s">resource_access"</span> <span class="c1"># Name of the JWT claim for roles</span>
+  <span class="na">irsNamespace</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Cl20-CX-IRS"</span> <span class="c1"># Namespace for the IRS roles</span>
+  <span class="na">roles</span><span class="pi">:</span> <span class="s2">"</span><span class="s">roles"</span> <span class="c1"># Name of the list of roles within the IRS namespace</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_irs_as_dtr_client">IRS as DTR client</h3>
 <div class="paragraph">
-<p>The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.</p>
+<p>The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect.
+The IRS uses client credentials to authenticate requests to the DTR.
+Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_irs_as_decentralized_dtr_client">IRS as decentralized DTR client</h3>
 <div class="paragraph">
-<p>In a decentralized network, IRS uses the EDC client to access the provider DTR. This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.</p>
+<p>In a decentralized network, IRS uses the EDC client to access the provider DTR.
+This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_irs_as_edc_client">IRS as EDC client</h3>
 <div class="paragraph">
-<p>The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a Verifiable Credential (VC), which is provided to the EDC via the Managed Identity Wallet.</p>
+<p>The IRS accesses the Catena-X network via the EDC consumer connector.
+This component requires authentication via a Verifiable Credential (VC), which is provided to the EDC via the Managed Identity Wallet.</p>
 </div>
 <div class="paragraph">
 <p>The VC identifies and authenticates the EDC and is used to acquire access permissions for the data transferred via EDC.</p>
@@ -647,7 +906,7 @@ Social Standards</p></td>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-06 09:06:36 UTC
+Last updated 2023-10-12 09:00:50 UTC
 </div>
 </div>
 </body>

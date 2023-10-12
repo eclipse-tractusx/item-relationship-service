@@ -659,6 +659,7 @@ font-style: italic;
   <li><a href="#getBPNInvestigation"><code><span class="http-method">get</span> /ess/bpn/investigations/{id}</code></a></li>
   <li><a href="#receiveEdcNotification"><code><span class="http-method">post</span> /ess/notification/receive</code></a></li>
   <li><a href="#registerBPNInvestigation"><code><span class="http-method">post</span> /ess/bpn/investigations</code></a></li>
+  <li><a href="#registerESSInvestigationOrder"><code><span class="http-method">post</span> /irs/ess/orders</code></a></li>
   </ul>
   <h4><a href="#ItemRelationshipService">ItemRelationshipService</a></h4>
   <ul>
@@ -4588,6 +4589,67 @@ font-style: italic;
         <a href="#JobHandle">JobHandle</a>
     <h4 class="field-label">400</h4>
     Job registration failed.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">401</h4>
+    No valid authentication credentials.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">403</h4>
+    Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="registerESSInvestigationOrder"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /irs/ess/orders</code></pre></div>
+    <div class="method-summary">Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches. (<span class="nickname">registerESSInvestigationOrder</span>)</div>
+    <div class="method-notes">Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">RegisterBpnInvestigationBatchOrder <a href="#RegisterBpnInvestigationBatchOrder">RegisterBpnInvestigationBatchOrder</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#BatchOrderCreated">BatchOrderCreated</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">201</h4>
+    Returns orderId of registered Batch order.
+        <a href="#BatchOrderCreated">BatchOrderCreated</a>
+    <h4 class="field-label">400</h4>
+    Batch Order registration failed.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">401</h4>
     No valid authentication credentials.
@@ -9638,6 +9700,7 @@ font-style: italic;
     <li><a href="#Quantity"><code>Quantity</code> - </a></li>
     <li><a href="#Reference"><code>Reference</code> - </a></li>
     <li><a href="#RegisterBatchOrder"><code>RegisterBatchOrder</code> - </a></li>
+    <li><a href="#RegisterBpnInvestigationBatchOrder"><code>RegisterBpnInvestigationBatchOrder</code> - </a></li>
     <li><a href="#RegisterBpnInvestigationJob"><code>RegisterBpnInvestigationJob</code> - </a></li>
     <li><a href="#RegisterJob"><code>RegisterJob</code> - </a></li>
     <li><a href="#Relationship"><code>Relationship</code> - </a></li>
@@ -9684,8 +9747,8 @@ font-style: italic;
       <div class="param">administration (optional)</div><div class="param-desc"><span class="param-type"><a href="#AdministrativeInformation">AdministrativeInformation</a></span>  </div>
 <div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#LangString">array[LangString]</a></span>  </div>
 <div class="param">globalAssetId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Id of global asset. </div>
-<div class="param">idShort (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">idShort (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">specificAssetIds (optional)</div><div class="param-desc"><span class="param-type"><a href="#IdentifierKeyValuePair">array[IdentifierKeyValuePair]</a></span>  </div>
 <div class="param">submodelDescriptors (optional)</div><div class="param-desc"><span class="param-type"><a href="#SubmodelDescriptor">array[SubmodelDescriptor]</a></span>  </div>
     </div>  <!-- field-items -->
@@ -10033,6 +10096,24 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
+    <h3><a name="RegisterBpnInvestigationBatchOrder"><code>RegisterBpnInvestigationBatchOrder</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>Request body for registering a new Batch Order for ESS Investigation Job.</div>
+    <div class="field-items">
+      <div class="param">batchSize (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Size of the batch. format: int32</div>
+<div class="param">batchStrategy (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The strategy how the batch is processed internally in IRS. </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">PRESERVE_BATCH_JOB_ORDER</div><div class="param-enum">PRESERVE_JOB_ORDER</div><div class="param-enum">PRESERVE_BATCH_ORDER</div>
+<div class="param">bomLifecycle (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The lifecycle context in which the child part was assembled into the parent part. </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div><div class="param-enum">asSpecified</div>
+<div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Callback url to notify requestor when job processing is finished. There are four uri variable placeholders that can be used: orderId, batchId, orderState and batchState. </div>
+<div class="param">incidentBPNSs </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">jobTimeout (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Timeout in seconds for each job processing inside the complete order. format: int32</div>
+<div class="param">keys </div><div class="param-desc"><span class="param-type"><a href="#PartChainIdentificationKey">array[PartChainIdentificationKey]</a></span>  </div>
+<div class="param">timeout (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Timeout in seconds for the complete batch order processing. format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
     <h3><a name="RegisterBpnInvestigationJob"><code>RegisterBpnInvestigationJob</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>The requested job definition.</div>
     <div class="field-items">
@@ -10139,7 +10220,7 @@ font-style: italic;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-06 09:06:36 UTC
+Last updated 2023-10-12 09:00:50 UTC
 </div>
 </div>
 </body>

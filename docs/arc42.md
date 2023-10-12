@@ -351,7 +351,7 @@ The TransferProcessManager creates executions and provides them to the executor 
 | --- | --- |
 | TransferProcessManager | The TransferProcessManager manages the requests to the EDC and DigitalTwinRegistry. |
 | DigitalTwinRegistryFacade | The DigitalTwinRegistryFacade calls the DigitalTwinRegistry to retrieve data form the AAS registry and transforms the response to internal data models. |
-| SubmodelFacade | The SubmodelFacade calls the EDC to retrieve data from the submodel server and transforms the response to internal data models. |
+| SubmodelFacade | The SubmodelFacade handles EDC contract negotiations and is responsible for the EDC dataplane requests to retrieve data from the submodel servers. |
 | BlobStore | The BlobStore is the database where the relationships and tombstones are stored for a requested item. |
 | DigitalTwinRegistry | The DigitalTwinRegistry is the central database of registered assets. In a decentralized network, the registry is no longer central, but every provider has its own registry. |
 | ExecutorService | The ExecutorService enables the simultaneous execution of requests of transfer processes. |
@@ -699,11 +699,16 @@ A job can be in one of the following states:
 
 #### IRS API
 
-The IRS is secured using OAuth2.0 / Open ID Connect. Every request to the IRS API requires a valid bearer token.
+The IRS is secured using OAuth2.0 / Open ID Connect.
+Every request to the IRS API requires a valid bearer token.
 JWT token should also contain two claims:
 
 * 'bpn' which is equal to the configuration value from `API_ALLOWED_BPN` property
-* 'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. The list of values will be converted to roles by IRS. Currently, IRS API handles two roles: ***'admin_irs'*** and ***'view_irs'.*** A valid token with the ***'admin_irs'*** role can access any endpoint exposed by the IRS API, while a token with the ***'view_irs'*** role does not have access to policies endpoints and can operate only on resources it owns. That means that he only has access to the resources he has created, e.g. jobs and batches. This behavior is shown in the table below.
+* 'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. (The keys are configurable. For more details see chapter "IRS OAuth2 JWT Token").
+The list of values will be converted to roles by IRS.
+Currently, IRS API handles two roles: ***'admin_irs'*** and ***'view_irs'.*** A valid token with the ***'admin_irs'*** role can access any endpoint exposed by the IRS API, while a token with the ***'view_irs'*** role does not have access to policies endpoints and can operate only on resources it owns.
+That means that he only has access to the resources he has created, e.g. jobs and batches.
+This behavior is shown in the table below.
 
 ##### Rights and Roles Matrix of IRS
 
@@ -726,19 +731,53 @@ JWT token should also contain two claims:
 | Environmental- and Social Standards | Register investigation job | POST /ess/bpn/investigations | (x) | x |
 |  | Get investigation job | GET /ess/bpn/investigations{id} | (x) | x |
 |  | Accept notifications | POST /ess/notification/receive | x | x |
-Legend: x  = full access to all resources, (x) = access to the resources he owns
+
+Legend: x = full access to all resources, (x) = access to the resources he owns
+
+#### IRS OAuth2 JWT Token
+
+IRS expects the JWT access token to have the following structure to be able to extract role information:
+
+```json
+{
+...
+  "resource_access": {
+    "Cl20-CX-IRS": {
+      "roles": [
+        "view_irs",
+        "admin_irs"
+      ]
+    }
+  },
+...
+}
+```
+
+The field names can be configured via application.yaml:
+
+```yaml
+# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
+oauth:
+  resourceClaim: "resource_access" # Name of the JWT claim for roles
+  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
+  roles: "roles" # Name of the list of roles within the IRS namespace
+```
 
 #### IRS as DTR client
 
-The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect. The IRS uses client credentials to authenticate requests to the DTR. Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
+The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect.
+The IRS uses client credentials to authenticate requests to the DTR.
+Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
 
 #### IRS as decentralized DTR client
 
-In a decentralized network, IRS uses the EDC client to access the provider DTR. This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.
+In a decentralized network, IRS uses the EDC client to access the provider DTR.
+This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.
 
 #### IRS as EDC client
 
-The IRS accesses the Catena-X network via the EDC consumer connector. This component requires authentication via a Verifiable Credential (VC), which is provided to the EDC via the Managed Identity Wallet.
+The IRS accesses the Catena-X network via the EDC consumer connector.
+This component requires authentication via a Verifiable Credential (VC), which is provided to the EDC via the Managed Identity Wallet.
 
 The VC identifies and authenticates the EDC and is used to acquire access permissions for the data transferred via EDC.
 
@@ -854,6 +893,14 @@ Data validation happens at two points:
 The IRS gives its users the ability to manage, create and delete complex policies containing permissions and constraints in order to obtain the most precise control over access and use of data received from the edc provider. Policies stored in Policy Store will serve as input with allowed restriction and will be checked against every item from EDC Catalog.
 
 The structure of a Policy that can be stored in storage can be easily viewed by using Policy Store endpoints in the published API documentation. Each policy may contain more than one permission, which in turn consists of constraints linked together by AND or OR relationships. This model provides full flexibility and control over stored access and use policies.
+
+### Digital Twin / EDC requirements
+
+In order to work with the decentral network approach, IRS requires the Digital Twin to contain a `"subprotocolBody"` in each of the submodelDescriptor endpoints. This `"subprotocolBody"` has to contain the `"id"` of the EDC asset, as well as the `"dspEndpoint"` of the EDC, separated by a semicolon (e.g. `"subprotocolBody": "id=123;dspEndpoint=http://edc.control.plane/api/v1/dsp"`).
+
+The `"dspEndpoint"` is used to request the EDC catalog of the dataprovider and the `"id"` to filter for the exact asset inside this catalog.
+
+If the `"dspEndpoint"` is not present, every available EDC endpoint in DiscoveryService will be queried until a asset with the `"id"` can be found.
 
 ### Caching
 
