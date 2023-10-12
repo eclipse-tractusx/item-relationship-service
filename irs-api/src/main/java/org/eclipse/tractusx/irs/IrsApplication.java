@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
 import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
@@ -36,25 +37,27 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * Application entry point.
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = WebSocketServletAutoConfiguration.class)
 @EnableScheduling
 @EnableCaching
 @EnableAsync
 @ComponentScan(
     basePackages = {
         "org.eclipse.tractusx.irs",
-        "org.eclipse.tractusx.ess",
-        "org.eclipse.tractusx.edc"
+        "org.eclipse.tractusx.irs.ess",
+        "org.eclipse.tractusx.irs.edc",
+        "org.eclipse.tractusx.irs.common.auth",
     },
     excludeFilters = {
         @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
         @ComponentScan.Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class)})
+@SuppressWarnings("PMD.UseUtilityClass")
 public class IrsApplication {
 
     /**
      * The IRS API version.
      */
-    public static final String API_VERSION = "2.0";
+    public static final String API_VERSION = "2.1.0";
 
     /**
      * The URL prefix for IRS API URLs.

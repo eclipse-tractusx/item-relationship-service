@@ -57,7 +57,7 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.IrsTimer;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
-import org.eclipse.tractusx.irs.services.AuthorizationService;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
@@ -275,10 +275,8 @@ public class IrsController {
                explode = Explode.FALSE, array = @ArraySchema(schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE))
             @RequestParam(value = "states", required = false, defaultValue = "") final List<JobState> states,
             @Parameter(hidden = true)
-            @RequestParam(value = "jobStates", required = false, defaultValue = "") final List<JobState> jobStates,
-            @Parameter(hidden = true)
             @ParameterObject final Pageable pageable) {
-        return itemJobService.getJobsByState(states, jobStates, pageable);
+        return itemJobService.getJobsByState(states, pageable);
     }
 
     @Operation(operationId = "getAllAspectModels",

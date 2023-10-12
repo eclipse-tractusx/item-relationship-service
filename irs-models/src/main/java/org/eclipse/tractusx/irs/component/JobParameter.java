@@ -24,13 +24,14 @@
 package org.eclipse.tractusx.irs.component;
 
 import java.util.List;
-
+import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
@@ -75,5 +76,26 @@ public class JobParameter {
     private boolean lookupBPNs;
 
     private String callbackUrl;
+
+    public static JobParameter create(final @NonNull RegisterJob request) {
+        final BomLifecycle bomLifecycle = Optional.ofNullable(request.getBomLifecycle()).orElse(BomLifecycle.AS_BUILT);
+        final List<String> aspectTypeValues = Optional.ofNullable(request.getAspects())
+                                                      .orElse(List.of(bomLifecycle.getDefaultAspect()));
+        final Direction direction = Optional.ofNullable(request.getDirection()).orElse(Direction.DOWNWARD);
+
+        return JobParameter.builder()
+                           .depth(request.getDepth())
+                           .bomLifecycle(bomLifecycle)
+                           .bpn(request.getKey().getBpn())
+                           .direction(direction)
+                           .aspects(aspectTypeValues.isEmpty()
+                                   ? List.of(bomLifecycle.getDefaultAspect())
+                                   : aspectTypeValues)
+                           .collectAspects(request.isCollectAspects())
+                           .integrityCheck(request.isIntegrityCheck())
+                           .lookupBPNs(request.isLookupBPNs())
+                           .callbackUrl(request.getCallbackUrl())
+                           .build();
+    }
 
 }

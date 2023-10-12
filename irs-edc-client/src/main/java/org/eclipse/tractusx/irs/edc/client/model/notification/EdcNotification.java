@@ -23,8 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model.notification;
 
-import java.util.Map;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -40,7 +38,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class EdcNotification {
+public class EdcNotification<T extends NotificationContent> {
 
     @Valid
     @NotNull
@@ -48,6 +46,6 @@ public class EdcNotification {
     private EdcNotificationHeader header;
 
     @NotNull
-    private Map<String, Object> content;
+    private T content;
 
 }

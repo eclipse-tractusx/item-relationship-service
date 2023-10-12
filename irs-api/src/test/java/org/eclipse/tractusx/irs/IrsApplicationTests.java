@@ -78,7 +78,7 @@ class IrsApplicationTests {
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml", String.class);
-        final InputStream fixedYaml = Files.newInputStream(Path.of("../docs/src/api/irs-v1.0.yaml"));
+        final InputStream fixedYaml = Files.newInputStream(Path.of("../docs/src/api/irs-api.yaml"));
 
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         final Map<String, Object> fixedYamlMap = mapper.readerForMapOf(Object.class).readValue(fixedYaml);
@@ -96,7 +96,8 @@ class IrsApplicationTests {
                                                       .aspects(List.of())
                                                       .build();
 
-        final JobInitiateResponse response = jobOrchestrator.startJob("rootitemid", jobParameter);
+        final JobInitiateResponse response = jobOrchestrator.startJob("rootitemid", jobParameter, null, "owner");
+
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

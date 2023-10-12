@@ -1,0 +1,134 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+| OEM  - IRS |
+start
+note left
+    request for bpnInvestigation
+    via api call
+
+end note
+:register investigation job;
+:process investigation job;
+:Build ItemGraph (OneLevelDown);
+note left
+    1. Request AAS in DT Registry for globalAssetId
+    2. Request Submodel for SingleLevelBoMAsPlanned
+    3. Request AAS in DT Registry for children (CXId)
+end note
+
+    if (BpnInvestigationCheck?) then (supplyChainImpacted)
+    note right
+        collect all childBPNs numbers
+    end note
+    :create Job and ess submodel;
+    note left
+        job {
+         //details
+        }
+        submodels: [
+         {
+              supplychain_impacted: yes|no|unknown
+            }
+         ]
+    end note
+    stop
+    note right
+         job with ess submodel is returned to api caller
+    end note
+    endif
+
+    :discoveryServiceLookup getEDCBaseUrl(BPN);
+
+    |DiscoveryService|
+    :return EDCBaseUrl for passed BPN;
+
+    | OEM  - IRS |
+    :create supplier-request;
+    :add all childCX_IDs with the same BPN the notification will be sent to as concernedCatenaXIds;
+    :add incidentBpn as incidentBpn;
+    note left
+    {
+        "header": {
+            "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+            "senderBpn": "BPNL00000003BW3S",
+            "recipientBpn": "BPNL00000003BV4H",
+            "senderEdc": "https://edc.company-xyz.io/BPNL00000003BW3S",
+            "replyAssetId": "ess-response-asset",
+            "replyAssetSubPath" : "optionalSubPath",
+            "notificationType": "ess-supplier-request"
+
+        },
+        "content": {
+            "incidentBpn" : "BPNS123456"
+            "concernedCatenaXIds" : ["CxUUID"]
+        }
+    }
+    end note
+
+    :send supplier-request notification;
+    note left
+     1. Send notification over EDC Consumer
+     2. EDC Consumer forwards notification to EDC Provider
+     3. EDC Provider to SubmodelServer
+
+    end note
+    | EDC Consumer |
+
+    | EDC Provider |
+
+    | Tier 1 - SubmodelServer |
+
+    :response 201 on success;
+    split
+    | OEM  - IRS |
+    :receive EDC response;
+    kill
+    split again
+    | Tier 1 - SubmodelServer |
+    note left
+        EDC Provider returns 201 (on success)
+        4xx in error case
+        Error handling required  4xx code (Retry mechanism)
+    end note
+
+
+    :process supplier-request notification;
+    :send supplier-response notification;
+    note left
+        {
+            "header": {
+                "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+                "senderBpn": "BPNL00000003BW3S",
+                "recipientBpn": "BPNL00000003BV4H",
+                "senderEdc": "https://edc.company-xyz.io/BPNL00000003BW3S",
+                "replyAssetId": "ess-response-asset",
+                "replyAssetSubPath" : "optionalSubPath",
+                "originalNotificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+                "notificationType": "ess-supplier-response"
+            },
+            "content": {
+                "result" : "yes"
+            }
+        }
+    end note
+
+| OEM  - IRS |
+:receive supplier-response over callbackUrl;
+:create Job and ess submodel;
+note left
+    job {
+     //details
+    }
+    submodels: [
+     {
+          supplychain_impacted: yes|no|unknown
+        }
+     ]
+end note
+stop
+note right
+    job with ess submodel is returned to api caller
+end note
+@enduml

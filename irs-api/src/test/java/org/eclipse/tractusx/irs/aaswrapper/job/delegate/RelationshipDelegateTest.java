@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterUpward;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -58,8 +58,8 @@ class RelationshipDelegateTest {
     final RelationshipDelegate relationshipDelegate = new RelationshipDelegate(null, submodelFacade,
             connectorEndpointsService, jsonUtil);
 
-    final String singleLevelBomAsBuiltAspectName = "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
-    final String singleLevelUsageAsBuiltAspectName = "urn:bamm:com.catenax.single_level_usage_as_built:1.0.0#SingleLevelUsageAsBuilt";
+    final String singleLevelBomAsBuiltAspectName = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt";
+    final String singleLevelUsageAsBuiltAspectName = "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
 
     private static PartChainIdentificationKey createKey() {
         return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
@@ -75,7 +75,7 @@ class RelationshipDelegateTest {
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
-                                                                                               List.of(submodelDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelBomAsBuiltAspectName,
                                                                                                        "address"))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
@@ -101,7 +101,7 @@ class RelationshipDelegateTest {
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
-                                                                                               List.of(submodelDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelUsageAsBuiltAspectName,
                                                                                                        "address"))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
@@ -122,7 +122,7 @@ class RelationshipDelegateTest {
     void shouldPutTombstoneForMissingBpn() {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
-                                                                                               List.of(submodelDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelBomAsBuiltAspectName,
                                                                                                        "address"))));
         // when
@@ -146,7 +146,7 @@ class RelationshipDelegateTest {
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
-                                                                                               List.of(submodelDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelBomAsBuiltAspectName,
                                                                                                        "address"))));
 
@@ -170,7 +170,7 @@ class RelationshipDelegateTest {
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
-                                                                                               List.of(submodelDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelBomAsBuiltAspectName,
                                                                                                        "address"))));
 

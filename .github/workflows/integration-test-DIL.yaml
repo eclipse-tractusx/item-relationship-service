@@ -13,8 +13,8 @@ jobs:
     uses: ./.github/workflows/xray-cucumber-integration.yaml
     secrets:
       keycloakTokenUrl: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
-      clientId: ${{ secrets.ORG_IRS_OAUTH2_CLIENT_ID_DIL }}
-      clientSecret: ${{ secrets.ORG_IRS_OAUTH2_CLIENT_SECRET_DIL }}
+      clientId: ${{ secrets.IRS_OAUTH2_CLIENT_ID_DIL }}
+      clientSecret: ${{ secrets.IRS_OAUTH2_CLIENT_SECRET_DIL }}
       jiraUser: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
       jiraPassword: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
     with:

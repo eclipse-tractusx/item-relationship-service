@@ -57,11 +57,11 @@ public class RegisterBpnInvestigationJob {
     private PartChainIdentificationKey key;
 
     @NotEmpty
-    @ArraySchema(schema = @Schema(description = "Array of BPN numbers.", example = "BPNS000000000DDD",
+    @ArraySchema(schema = @Schema(description = "Array of BPNS numbers.", example = "BPNS000000000DDD",
                                   implementation = String.class, pattern = BPN_REGEX), maxItems = Integer.MAX_VALUE)
-    private List<@Pattern(regexp = BPN_REGEX) String> incidentBpns;
+    private List<@Pattern(regexp = BPN_REGEX) String> incidentBPNSs;
 
-    @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
+    @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class, example = "asPlanned")
     private BomLifecycle bomLifecycle;
 
     @URL

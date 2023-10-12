@@ -20,7 +20,7 @@
 # * SPDX-License-Identifier: Apache-2.0
 
 # Dependencies
-FROM maven:3-openjdk-17-slim AS maven
+FROM maven:3-openjdk-18-slim AS maven
 ARG BUILD_TARGET=irs-api
 
 WORKDIR /build
@@ -29,7 +29,6 @@ COPY .config .config
 COPY .mvn .mvn
 COPY pom.xml .
 
-COPY irs-ess irs-ess
 COPY irs-policy-store irs-policy-store
 COPY irs-integration-tests irs-integration-tests
 COPY irs-api irs-api

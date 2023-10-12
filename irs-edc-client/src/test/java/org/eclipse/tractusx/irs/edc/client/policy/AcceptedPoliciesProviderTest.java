@@ -62,6 +62,6 @@ class AcceptedPoliciesProviderTest {
     }
     @NotNull
     private static AcceptedPolicy policy() {
-        return new AcceptedPolicy("", OffsetDateTime.now());
+        return new AcceptedPolicy(new Policy(), OffsetDateTime.now());
     }
 }

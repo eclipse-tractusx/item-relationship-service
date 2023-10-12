@@ -44,60 +44,41 @@ import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 @Jacksonized
 public class BatchOrder {
 
-    /**
-     * Batch Order Id
-     */
     private UUID batchOrderId;
 
-    /**
-     * Processing State of Batch Order
-     */
     @Setter
     private ProcessingState batchOrderState;
 
-    /**
-     * Bom Lifecycle requested in order
-     */
     private BomLifecycle bomLifecycle;
 
-    /**
-     * List of Aspects requested in order
-     */
     private List<String> aspects;
 
-    /**
-     * Depth requested in order
-     */
     private Integer depth;
 
-    /**
-     * Direction requested in order
-     */
     private Direction direction;
 
-    /**
-     * Needs of collect aspects
-     */
     private Boolean collectAspects;
 
-    /**
-     * Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL
-     */
     private Boolean lookupBPNs;
 
-    /**
-     * Timeout for Batch Order
-     */
     private Integer timeout;
 
-    /**
-     * Timeout for Job in Batch
-     */
     private Integer jobTimeout;
 
-    /**
-     * Callback Url to send results
-     */
     private String callbackUrl;
+
+    private String owner;
+
+    private List<String> incidentBPNSs;
+
+    private JobType jobType;
+
+    /**
+     * JobType to create batch
+     */
+    public enum JobType {
+        REGULAR,
+        ESS
+    }
 
 }

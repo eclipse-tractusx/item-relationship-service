@@ -5,6 +5,56 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Added configuration for IRS OAuth2 JWT token claim
+
+## [6.8.0] - 2023-10-09
+### Changed
+- Update IRS version to 3.5.3
+- Changed configuration for default policies from:
+  ```
+  edc:
+    catalog:
+      policies:
+        allowedNames: A, B
+        acceptedLeftOperands: X
+        acceptedRightOperands: Y
+  ```
+  to:
+  ```
+  edc:
+    catalog:
+      acceptedPolicies:
+      - leftOperand: "X"
+        operator: "eq"
+        rightOperand: "A"
+      - leftOperand: "B"
+        operator: "eq"
+        rightOperand: Y"
+  ```
+
+## [6.7.3] - 2023-10-06
+### Changed
+- Update IRS version to 3.5.2
+
+## [6.7.2] - 2023-10-05
+### Changed
+- Update IRS version to 3.5.1
+
+## [6.7.1] - 2023-09-29
+### Changed
+- Added toString template for `edc.controlplane.apikey.secret`
+
+## [6.7.0] - 2023-09-28
+### Changed
+- Update IRS version to 3.5.0
+
+### Removed
+- Removed unused configuration parameters `edc.submodel.path`,`discovery.endpoint`, `discovery.mockEdcAddres`
+
+## [6.6.1] - 2023-09-22
+### Changed
+- Update IRS version to 3.4.1
 
 ## [6.6.0] - 2023-09-01
 ### Changed

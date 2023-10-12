@@ -176,25 +176,39 @@ edc:
   submodel:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
-    path: /submodel
     urnprefix: /urn
   catalog:
-    policies:
-      # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
-      # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability, Membership  # List of comma separated names of the policies to accept.
-      acceptedRightOperands: active  # List of comma separated names of the rightOperands to accept.
-      acceptedLeftOperands: PURPOSE  # List of comma separated names of the leftOperands to accept.
+    # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
+    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
+    acceptedPolicies:
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.0 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.1 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: R2_Traceability
+      - leftOperand: "FrameworkAgreement.traceability"
+        operator: "eq"
+        rightOperand: "active"
+      - leftOperand: "Membership"
+        operator: "eq"
+        rightOperand: "active"
 
 discovery:
-  endpoint:  # EDC Discovery Service endpoint
-  mockEdcAddress:  # Map of BPNs and EDC Provider URLs - this overrides any real Discovery Service for the given BPN
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:
   mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
   mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
   managementPath: "/management/v2"  # EDC management API path - used for notification asset creation
+
+oauth:
+  resourceClaim: "resource_access"  # Name of the JWT claim for roles
+  irsNamespace: "Cl20-CX-IRS"  # Namespace for the IRS roles
+  roles: "roles"  # Name of the list of roles within the IRS namespace
 
 config:
   # If true, the config provided below will completely replace the configmap.

@@ -23,10 +23,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.DSP_ENDPOINT;
 import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractAssetId;
+import static org.eclipse.tractusx.irs.aaswrapper.job.ExtractDataFromProtocolInformation.extractDspEndpoint;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,6 @@ import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 
@@ -87,27 +88,33 @@ public abstract class AbstractDelegate {
     protected String requestSubmodelAsString(final EdcSubmodelFacade submodelFacade,
             final ConnectorEndpointsService connectorEndpointsService, final Endpoint endpoint, final String bpn)
             throws EdcClientException {
-        final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        final ArrayList<String> submodelPayload = new ArrayList<>();
-        for (final String connectorEndpoint : connectorEndpoints) {
-            addSubmodelToList(submodelFacade, endpoint, submodelPayload, connectorEndpoint);
+        final String subprotocolBody = endpoint.getProtocolInformation().getSubprotocolBody();
+        final Optional<String> dspEndpoint = extractDspEndpoint(subprotocolBody);
+        if (dspEndpoint.isPresent()) {
+            log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload", subprotocolBody);
+            return submodelFacade.getSubmodelRawPayload(dspEndpoint.get(), endpoint.getProtocolInformation().getHref(),
+                    extractAssetId(subprotocolBody));
+        } else {
+            log.info("SubprotocolBody does not contain '{}'. Using Discovery Service as fallback.", DSP_ENDPOINT);
+            final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            return getSubmodel(submodelFacade, endpoint, connectorEndpoints);
         }
-        return submodelPayload.stream()
-                              .findFirst()
-                              .orElseThrow(() -> new EdcClientException(String.format(
-                                      "Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
-                                      connectorEndpoints.size(), String.join(", ", connectorEndpoints))));
     }
 
-    private void addSubmodelToList(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
-            final List<String> submodelPayload, final String connectorEndpoint) throws EdcClientException {
-        try {
-            submodelPayload.add(
-                    submodelFacade.getSubmodelRawPayload(connectorEndpoint, endpoint.getProtocolInformation().getHref(),
-                            extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody())));
-        } catch (ItemNotFoundInCatalogException e) {
-            log.debug("Could not find asset in catalog. Requesting next endpoint.", e);
+    private String getSubmodel(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
+            final List<String> connectorEndpoints) throws EdcClientException {
+        for (final String connectorEndpoint : connectorEndpoints) {
+            try {
+                return submodelFacade.getSubmodelRawPayload(connectorEndpoint,
+                        endpoint.getProtocolInformation().getHref(),
+                        extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
+            } catch (EdcClientException e) {
+                log.info("EdcClientException while accessing endpoint '{}'", connectorEndpoint, e);
+            }
         }
+        throw new EdcClientException(
+                String.format("Called %s connectorEndpoints but did not get any submodels. Connectors: '%s'",
+                        connectorEndpoints.size(), String.join(", ", connectorEndpoints)));
     }
 
 }

@@ -5,12 +5,80 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Introduced new API endpoint to register ESS Jobs in Batch - POST {{IRS_HOST}}/irs/ess/orders
+
+### Changed
+- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint
+- Moved OAuth2 JWT token claim to configuration. The fields can be configured with `oauth.resourceClaim`, `oauth.irsNamespace`, `oauth.roles`.
+
+## [3.5.3] - 2023-10-09
+### Fixed
+- Fixed default policy creation.
+
+### Changed
+- Changed configuration for default policies from:
+  ```
+  irs-edc-client:
+    catalog:
+      policies:
+        allowedNames: A, B
+        acceptedLeftOperands: X
+        acceptedRightOperands: Y
+  ```
+  to:
+  ```
+  irs-edc-client:
+    catalog:
+      acceptedPolicies:
+      - leftOperand: "X"
+        operator: "eq"
+        rightOperand: "A"
+      - leftOperand: "B"
+        operator: "eq"
+        rightOperand: Y"
+  ```
+
+## [3.5.2] - 2023-10-06
+### Changed
+- Updated dependencies
+
+## [3.5.1] - 2023-10-05
+### Fixed
+- Fix json schema validation
+
+## [3.5.0] - 2023-09-27
+### Changed
+- IRS now makes use of the value `dspEndpoint` in `subprotocolBody` of the Asset Administration Shell to request submodel data directly.
+- Policy Store API is extended to handle:
+  - multi permissions per each allowed Policy in POST call to create Policy
+  - multi constraint per each permission in POST call to create Permission
+  - logical AndConstraint and OrConstraint to give possibility to create complex restriction
+
+### Fixed
+- Fixed a case where IRS submodel requests did not reuqest all EDC endpoints discovered by Discovery Finder
+- ESS
+  - Updated investigation request body field `incidentBPNs` to `incidentBPNSs`.
+  - Streamlined EDC notification flow and adjusted it to existing EDC client methods
+  - Changed investigation from BPNL to BPNS (`catenaXSiteId` of `PartSiteInformationAsPlanned`)
+  - Additional validation for `validityPeriod` of `PartAsPlanned`
+
+## [3.4.1] - 2023-09-22
+### Changed
+- Updated SingleLevelUsageAsBuilt schema to 2.0.0 version.
+
+### Fixed
+- Fixed missing access control for Batch and ESS API.
 
 ## [3.4.0] - 2023-09-01
 ### Added
 - Integrity chain validation based on DataIntegrity aspect
 - Added fetchCatalog to EDCCatalogFacade
 - Introduced new API endpoint to update 'validUntil' property of Policy - PUT {{IRS_HOST}}/irs/policies/{policyId}
+- Introduced new IRS role `admin_irs` which has unrestricted access to every API endpoint
+
+### Changed
+- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. PolicyStore API access is restricted to role `admin_irs`.
 
 ### Fixed
 - Fixed bug where BPN's were delivered without 'manufacturerName' property filled
@@ -324,8 +392,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.0...HEAD
-[3.3.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.5...3.4.0
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...HEAD
+[3.5.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.2...3.5.3
+[3.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.1...3.5.2
+[3.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.0...3.5.1
+[3.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.1...3.5.0
+[3.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.0...3.4.1
+[3.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.5...3.4.0
 [3.3.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.4...3.3.5
 [3.3.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.3...3.3.4
 [3.3.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.2...3.3.3

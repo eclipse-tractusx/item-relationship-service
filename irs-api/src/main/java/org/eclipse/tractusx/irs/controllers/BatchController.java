@@ -47,8 +47,9 @@ import org.eclipse.tractusx.irs.component.BatchOrderCreated;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
-import org.eclipse.tractusx.irs.services.AuthorizationService;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.eclipse.tractusx.irs.services.timeouts.CancelBatchProcessingService;
@@ -117,6 +118,45 @@ public class BatchController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderCreated registerBatchOrder(final @Valid @RequestBody RegisterBatchOrder request) {
+        final UUID batchOrderId = creationBatchService.create(request);
+        return BatchOrderCreated.builder().id(batchOrderId).build();
+    }
+
+    @Operation(operationId = "registerESSInvestigationOrder",
+               summary = "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.",
+               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               tags = { "Environmental- and Social Standards" },
+               description = "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns orderId of registered Batch order.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = BatchOrderCreated.class),
+                                                              examples = { @ExampleObject(name = "complete",
+                                                                                          ref = "#/components/examples/job-handle")
+                                                              })
+                                         }),
+                            @ApiResponse(responseCode = "400", description = "Batch Order registration failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
+    })
+    @PostMapping("/ess/orders")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
+    public BatchOrderCreated registerESSInvestigationOrder(final @Valid @RequestBody RegisterBpnInvestigationBatchOrder request) {
         final UUID batchOrderId = creationBatchService.create(request);
         return BatchOrderCreated.builder().id(batchOrderId).build();
     }

@@ -76,7 +76,7 @@ public class EndpointDataReferenceStorage {
      * Stores the data reference with its creation date.
      */
     @lombok.Value
-    private static class ExpiringContainer {
+    private static final class ExpiringContainer {
         private final Instant creationTimestamp;
         private final EndpointDataReference dataReference;
     }

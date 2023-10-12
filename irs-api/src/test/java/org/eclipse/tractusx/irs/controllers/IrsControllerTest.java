@@ -57,7 +57,7 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
-import org.eclipse.tractusx.irs.services.AuthorizationService;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.junit.jupiter.api.Test;
@@ -185,7 +185,7 @@ class IrsControllerTest {
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
-        when(service.getJobsByState(any(), any(), any())).thenReturn(
+        when(service.getJobsByState(any(), any())).thenReturn(
                 new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
         this.mockMvc.perform(get("/irs/jobs"))

@@ -28,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -66,6 +68,7 @@ import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,7 +117,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getControlplane().setProviderSuffix(PROVIDER_SUFFIX);
 
         config.setSubmodel(new EdcConfiguration.SubmodelConfig());
-        config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
@@ -144,21 +146,22 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldSendNotificationSuccessfully() throws Exception {
         // arrange
-        final EdcNotification notification = EdcNotification.builder().build();
-        when(catalogFacade.fetchCatalogById(any(), any())).thenReturn(
+        final EdcNotification<NotificationContent> notification = EdcNotification.builder().build();
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         endpointDataReferenceStorage.put("agreementId", ref);
-        when(edcDataPlaneClient.sendData(eq(ref), any(), eq(notification))).thenReturn(() -> true);
+        when(edcDataPlaneClient.sendData(ref, notification)).thenReturn(() -> true);
 
         // act
-        final var result = testee.sendNotification(ENDPOINT_ADDRESS, "notify-request-asset", notification);
+        final var result = testee.sendNotification(CONNECTOR_ENDPOINT, "notify-request-asset", notification);
         final EdcNotificationResponse response = result.get(5, TimeUnit.SECONDS);
 
         // assert
         assertThat(response.deliveredSuccessfully()).isTrue();
+        verify(contractNegotiationService, times(1)).negotiate(eq(CONNECTOR_ENDPOINT + PROVIDER_SUFFIX), any());
     }
 
     @Test
@@ -199,7 +202,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsBuilt() throws Exception {
-        final String existingCatenaXId = "urn:uuid:61c83b41-def0-4742-a1a8-e4e8a8cb210e";
+        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(existingCatenaXId).build()));
         prepareTestdata(existingCatenaXId, "_singleLevelBomAsBuilt");
@@ -225,7 +228,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsSpecified() throws Exception {
-        final String catenaXId = "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e";
+        final String catenaXId = "urn:uuid:644c0988-6949-4586-b304-7f46f412a5cc";
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelBomAsSpecified");
@@ -233,7 +236,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
                                               .get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse).contains("urn:uuid:7eeeac86-7b69-444d-81e6-655d0f1513bd");
+        assertThat(submodelResponse).contains("urn:uuid:2afbac90-a662-4f16-9058-4f030e692631");
     }
 
     @Test
@@ -265,7 +268,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnRawSerialPartWhenExisting() throws Exception {
-        final String existingCatenaXId = "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e";
+        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
         when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
                 "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID)).thenReturn(createCatalog(ASSET_ID, 3));
         prepareTestdata(existingCatenaXId, "_serialPart");
@@ -279,7 +282,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldUseDecodedTargetId() throws Exception {
-        final String existingCatenaXId = "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e";
+        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
         prepareTestdata(existingCatenaXId, "_serialPart");
         final String target = URLEncoder.encode(ASSET_ID, StandardCharsets.UTF_8);
         when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
@@ -294,7 +297,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnSameRelationshipsForDifferentDirections() throws Exception {
-        final String parentCatenaXId = "urn:uuid:61c83b41-def0-4742-a1a8-e4e8a8cb210e";
+        final String parentCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
         final BomLifecycle asBuilt = BomLifecycle.AS_BUILT;
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(parentCatenaXId).build()));

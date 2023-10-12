@@ -36,8 +36,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -60,6 +62,7 @@ class CreationBatchServiceTest {
     private BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener = mock(JobEventLinkedQueueListener.class);
+    private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
     private final IrsConfiguration irsConfiguration = mock(IrsConfiguration.class);
     private final static String EXAMPLE_URL = "https://exampleUrl.com";
     private CreationBatchService service;
@@ -69,13 +72,33 @@ class CreationBatchServiceTest {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
         service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher,
-                jobEventLinkedQueueListener, irsConfiguration);
+                jobEventLinkedQueueListener, securityHelperService, irsConfiguration);
     }
 
     @Test
-    void shouldStoreBatchOrder() throws MalformedURLException {
+    void shouldStoreRegularBatchOrder() throws MalformedURLException {
         // given
         final RegisterBatchOrder registerBatchOrder = exampleBatchRequest();
+        given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
+
+        // when
+        final UUID batchOrderId = service.create(registerBatchOrder);
+
+        // then
+        assertThat(batchOrderId).isNotNull();
+        assertThat(batchOrderStore.findAll()).hasSize(1);
+        assertThat(batchStore.findAll()).hasSize(1);
+
+        Batch actual = batchStore.findAll().stream().findFirst().orElseThrow();
+        assertThat(actual.getJobProgressList().stream().map(JobProgress::getIdentificationKey).map(
+                PartChainIdentificationKey::getGlobalAssetId).collect(
+                Collectors.toList())).containsOnly(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID);
+    }
+
+    @Test
+    void shouldStoreESSBatchOrder() throws MalformedURLException {
+        // given
+        final RegisterBpnInvestigationBatchOrder registerBatchOrder = exampleESSBatchRequest();
         given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
 
         // when
@@ -104,7 +127,7 @@ class CreationBatchServiceTest {
         given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
 
         // when
-        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID());
+        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID(), securityHelperService.getClientIdClaim());
 
         // then
         assertThat(batches).hasSize(7);
@@ -128,6 +151,19 @@ class CreationBatchServiceTest {
                                  .depth(1)
                                  .direction(Direction.DOWNWARD)
                                  .collectAspects(true)
+                                 .timeout(1000)
+                                 .jobTimeout(500)
+                                 .batchStrategy(BatchStrategy.PRESERVE_JOB_ORDER)
+                                 .callbackUrl(EXAMPLE_URL)
+                                 .batchSize(10)
+                                 .build();
+    }
+
+    private static RegisterBpnInvestigationBatchOrder exampleESSBatchRequest() {
+        return RegisterBpnInvestigationBatchOrder.builder()
+                                 .keys(Set.of(PartChainIdentificationKey.builder().globalAssetId(FIRST_GLOBAL_ASSET_ID).build(),
+                                         PartChainIdentificationKey.builder().globalAssetId(SECOND_GLOBAL_ASSET_ID).build()))
+                                 .bomLifecycle(BomLifecycle.AS_PLANNED)
                                  .timeout(1000)
                                  .jobTimeout(500)
                                  .batchStrategy(BatchStrategy.PRESERVE_JOB_ORDER)
