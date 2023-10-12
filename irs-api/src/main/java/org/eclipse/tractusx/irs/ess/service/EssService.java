@@ -73,7 +73,8 @@ public class EssService {
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(createdJobId.toString());
         multiTransferJob.ifPresent(job -> {
             final Jobs createdJob = irsItemGraphQueryService.getJobForJobId(job, true);
-            bpnInvestigationJobCache.store(createdJobId, BpnInvestigationJob.create(createdJob, request.getIncidentBPNSs()));
+            bpnInvestigationJobCache.store(createdJobId,
+                    new BpnInvestigationJob(createdJob, request.getIncidentBPNSs()));
         });
 
         return jobHandle;
