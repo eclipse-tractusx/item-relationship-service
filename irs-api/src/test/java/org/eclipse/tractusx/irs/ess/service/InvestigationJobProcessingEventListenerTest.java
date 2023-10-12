@@ -336,10 +336,10 @@ class InvestigationJobProcessingEventListenerTest {
                 }
                 """;
         final Submodel partAsPlanned = Submodel.from("test1", "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
-                StringMapper.mapFromString(partAsPlannedRaw, Map.class));
+                StringMapper.mapFromString(partAsPlannedRaw, Map.class), "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e");
         final Submodel partSiteInformationAsPlanned = Submodel.from("test2",
                 "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
-                StringMapper.mapFromString(partSiteInformationAsPlannedRaw, Map.class));
+                StringMapper.mapFromString(partSiteInformationAsPlannedRaw, Map.class), "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e");
         final Jobs jobs = Jobs.builder()
                               .job(Job.builder()
                                       .id(mockedJobId)

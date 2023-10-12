@@ -26,10 +26,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.aaswrapper.job.delegate.IntegrityDelegate.DATA_INTEGRITY_ASPECT;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,16 +38,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
-import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
-import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -78,7 +73,7 @@ class IntegrityDelegateTest {
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
-                                                                                               List.of(submodelDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        DATA_INTEGRITY_ASPECT,
                                                                                                        "address"))));
 
@@ -101,7 +96,7 @@ class IntegrityDelegateTest {
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
-                                                                                               List.of(submodelDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        DATA_INTEGRITY_ASPECT,
                                                                                                        "address"))));
 
@@ -121,7 +116,7 @@ class IntegrityDelegateTest {
     void shouldPutTombstoneForMissingBpn() {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
                                                                                        .shell(shellDescriptor(
-                                                                                               List.of(submodelDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        DATA_INTEGRITY_ASPECT,
                                                                                                        "address"))));
         // when
