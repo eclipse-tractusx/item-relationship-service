@@ -905,7 +905,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:0ce413e9-4e3a-4040-a529-7e10d7c61b93"
+          globalAssetId: "urn:uuid:a6a2cacc-29c5-4f07-96f8-76e4a80f7b48"
           bpn: "BPNL00000003AYRE"
         aspects:
           - MaterialForRecycling
@@ -1130,7 +1130,6 @@ stages:
           - IdConversion
           - MarketplaceOffer
           - MaterialForRecycling
-          - PhysicalDimension
           - ReturnRequest
           - CertificateOfDestruction
           - CertificateOfDismantler
@@ -1234,14 +1233,12 @@ stages:
           - IdConversion
           - MarketplaceOffer
           - MaterialForRecycling
-          - PhysicalDimension
           - ReturnRequest
           - CertificateOfDestruction
           - CertificateOfDismantler
           - EndOfLife
           - EsrCertificate
           - EsrCertificateStateStatistic
-          - ChargingProcess
           - AddressAspect
           - ClaimData
           - BatteryPass
@@ -1749,7 +1746,7 @@ stages:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        error: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned"
+        error: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned, asSpecified"
         messages: null
       headers:
         content-type: application/json
@@ -2085,6 +2082,7 @@ stages:
 
 ---
 
+############################## \/  Batch-Order tests for both irs/orders and irs/ess/orders  \/ ##############################
 
 test_name: Make sure batch-job with several valid globalAssetIds has been requested correctly
 
@@ -2223,5 +2221,379 @@ stages:
       json:
         statusCode: BAD_REQUEST
         error: Invalid Arguments.
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure cancellation of batch-job has been processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: create a batch job with several valid globalAssetIds
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
+        aspects:
+          - "SingleLevelBomAsBuilt"
+          - "SerialPart"
+        collectAspects: true
+        lookupBPNs: true
+        batchSize: 10
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+        depth: 1
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - name: verify job response with desired test steps and get batchId
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:order_informations_for_batchprocessing_are_given
+        extra_kwargs:
+          amount_batches: 1
+      headers:
+        content-type: application/json
+      save:
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:getBatchId
+          extra_kwargs:
+            batchId_number: 0
+
+  - name: cancel order job
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      method: PUT
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+
+  - name: get batch response of desired batch
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}/batches/{batch_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:check_batches_are_canceled_correctly
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure ESS-investigation batch-job with valid globalAssetId and BPN has been requested correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation batch job with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1e35e091-3d3d-421e-9c7e-14cf1c9442a6
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:61a22b1c-5725-41fb-8e1e-dccaaba83838
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8914a66e-b59b-405f-afff-b97d71ebece3
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:7b87f5d6-f75e-40f1-a439-779ae9f57a21
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8f9d8c7f-6d7a-48f1-9959-9fa3a1a7a891
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:b21cfd5b-dcf4-46fa-9227-3eb693567dd8
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a1082992-cc3b-4da1-af6b-aa692ed71461
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
+        incidentBPNSs:
+          - BPNS00000003B6LU
+        batchSize: 10
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:order_informations_for_batchprocessing_are_given
+        extra_kwargs:
+          amount_batches: 3
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure ESS-investigation batch-job with invalid request data has been responsed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation batch job with several valid globalAssetIds but invalid batchSize and check response
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+        incidentBPNSs:
+          - BPNS00000003B6LU
+        batchSize: 2
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 400
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:errors_for_invalid_batchSize_are_correct
+      json:
+        statusCode: BAD_REQUEST
+        error: Invalid Arguments.
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure cancellation of ESS-investigation batch-job has been processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation batch job with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1e35e091-3d3d-421e-9c7e-14cf1c9442a6
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:61a22b1c-5725-41fb-8e1e-dccaaba83838
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8914a66e-b59b-405f-afff-b97d71ebece3
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:7b87f5d6-f75e-40f1-a439-779ae9f57a21
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8f9d8c7f-6d7a-48f1-9959-9fa3a1a7a891
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:b21cfd5b-dcf4-46fa-9227-3eb693567dd8
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a1082992-cc3b-4da1-af6b-aa692ed71461
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
+        incidentBPNSs:
+          - BPNS00000003B6LU
+        batchSize: 10
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:order_informations_for_batchprocessing_are_given
+        extra_kwargs:
+          amount_batches: 3
+      headers:
+        content-type: application/json
+      save:
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:getBatchId
+          extra_kwargs:
+            batchId_number: 1
+
+  - name: cancel order job
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      method: PUT
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+
+  - name: get batch response of desired batch
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}/batches/{batch_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:check_batches_are_canceled_correctly
       headers:
         content-type: application/json
