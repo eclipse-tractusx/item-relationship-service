@@ -38,6 +38,8 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
 import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
+import org.eclipse.tractusx.irs.connector.job.JobStore;
+import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -70,6 +72,7 @@ class InvestigationJobProcessingEventListener {
     private final ConnectorEndpointsService connectorEndpointsService;
     private final EdcSubmodelFacade edcSubmodelFacade;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
+    private final JobStore jobStore;
     private final String localBpn;
     private final String localEdcEndpoint;
     private final List<String> mockRecursiveEdcAssets;
@@ -77,7 +80,8 @@ class InvestigationJobProcessingEventListener {
 
     /* package */ InvestigationJobProcessingEventListener(final IrsItemGraphQueryService irsItemGraphQueryService,
             final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade edcSubmodelFacade,
-            final BpnInvestigationJobCache bpnInvestigationJobCache, @Value("${ess.localBpn}") final String localBpn,
+            final BpnInvestigationJobCache bpnInvestigationJobCache, final JobStore jobStore,
+            @Value("${ess.localBpn}") final String localBpn,
             @Value("${ess.localEdcEndpoint}") final String localEdcEndpoint,
             @Value("${ess.discovery.mockRecursiveEdcAsset}") final List<String> mockRecursiveEdcAssets,
             final EssRecursiveNotificationHandler recursiveNotificationHandler) {
@@ -85,6 +89,7 @@ class InvestigationJobProcessingEventListener {
         this.connectorEndpointsService = connectorEndpointsService;
         this.edcSubmodelFacade = edcSubmodelFacade;
         this.bpnInvestigationJobCache = bpnInvestigationJobCache;
+        this.jobStore = jobStore;
         this.localBpn = localBpn;
         this.localEdcEndpoint = localEdcEndpoint;
         this.mockRecursiveEdcAssets = mockRecursiveEdcAssets;
@@ -168,31 +173,35 @@ class InvestigationJobProcessingEventListener {
         bpnInvestigationJob.ifPresent(investigationJob -> {
             log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", completedJobId);
 
-            final Jobs completedJob = irsItemGraphQueryService.getJobForJobId(completedJobId, false);
-            final SupplyChainImpacted partAsPlannedValidity = validatePartAsPlanned(completedJob);
-            log.info("Local validation of PartAsPlanned Validity was done for job {}. with result {}.", completedJobId,
-                    partAsPlannedValidity);
-            final SupplyChainImpacted partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(
-                    investigationJob, completedJob);
-            log.info("Local validation of PartSiteInformationAsPlanned Validity was done for job {}. with result {}.",
-                    completedJobId, partSiteInformationAsPlannedValidity);
+            final Optional<MultiTransferJob> multiTransferJob = jobStore.find(completedJobId.toString());
+            multiTransferJob.ifPresent(job -> {
+                final Jobs completedJob = irsItemGraphQueryService.getJobForJobId(job, false);
+                final SupplyChainImpacted partAsPlannedValidity = validatePartAsPlanned(completedJob);
+                log.info("Local validation of PartAsPlanned Validity was done for job {}. with result {}.", completedJobId,
+                        partAsPlannedValidity);
+                final SupplyChainImpacted partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(
+                        investigationJob, completedJob);
+                log.info("Local validation of PartSiteInformationAsPlanned Validity was done for job {}. with result {}.",
+                        completedJobId, partSiteInformationAsPlannedValidity);
 
-            final SupplyChainImpacted supplyChainImpacted = partAsPlannedValidity.or(
-                    partSiteInformationAsPlannedValidity);
-            log.debug("Supply Chain Validity result of {} and {} resulted in {}", partAsPlannedValidity,
-                    partSiteInformationAsPlannedValidity, supplyChainImpacted);
+                final SupplyChainImpacted supplyChainImpacted = partAsPlannedValidity.or(
+                        partSiteInformationAsPlannedValidity);
+                log.debug("Supply Chain Validity result of {} and {} resulted in {}", partAsPlannedValidity,
+                        partSiteInformationAsPlannedValidity, supplyChainImpacted);
 
-            final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob,
-                    supplyChainImpacted);
-
-            if (leafNodeIsReached(completedJob) || supplyChainIsImpacted(supplyChainImpacted)) {
-                bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate.complete());
-                recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
+                final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob,
                         supplyChainImpacted);
-            } else {
-                triggerInvestigationOnNextLevel(completedJob, investigationJobUpdate);
-                bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
-            }
+
+                if (leafNodeIsReached(completedJob) || supplyChainIsImpacted(supplyChainImpacted)) {
+                    bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate.complete());
+                    recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
+                            supplyChainImpacted);
+                } else {
+                    triggerInvestigationOnNextLevel(completedJob, investigationJobUpdate);
+                    bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
+                }
+            });
+
         });
     }
 

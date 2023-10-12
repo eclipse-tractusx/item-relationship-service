@@ -133,6 +133,11 @@ data:
 
     apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
 
+    oauth:
+      resourceClaim: {{ tpl (.Values.oauth.resourceClaim | default "resource_access") . | quote }}
+      irsNamespace: {{ tpl (.Values.oauth.irsNamespace | default "") . | quote }}
+      roles: {{ tpl (.Values.oauth.roles | default "roles") . | quote }}
+
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}
     {{- end }}

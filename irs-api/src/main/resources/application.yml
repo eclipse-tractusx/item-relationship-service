@@ -229,4 +229,10 @@ ess:
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API
+
+# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
+oauth:
+  resourceClaim: "resource_access" # Name of the JWT claim for roles
+  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
+  roles: "roles" # Name of the list of roles within the IRS namespace

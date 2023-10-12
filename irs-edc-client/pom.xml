@@ -133,23 +133,14 @@
                     <groupId>org.eclipse.edc</groupId>
                 </exclusion>
                 <exclusion>
-                    <artifactId>jetty-xml</artifactId>
-                    <groupId>org.eclipse.jetty</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jetty-http</artifactId>
-                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>websocket-jakarta-server</artifactId>
+                    <groupId>org.eclipse.jetty.websocket</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
-            <artifactId>jetty-http</artifactId>
-            <groupId>org.eclipse.jetty</groupId>
-            <version>11.0.16</version>
-        </dependency>
-        <dependency>
-            <artifactId>jetty-xml</artifactId>
-            <groupId>org.eclipse.jetty</groupId>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-jakarta-server</artifactId>
             <version>11.0.16</version>
         </dependency>
         <dependency>

@@ -190,7 +190,7 @@ class IrsFunctionalTest {
 
     Jwt jwt() {
         return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
-                Map.of(SUB, "sub", "clientId", "clientId", "bpn", "BPNL00000003CRHK"));
+                Map.of(SUB, "sub", "clientId", "clientId", "bpn", "BPNL00000001CRHK"));
     }
 
     @NotNull
