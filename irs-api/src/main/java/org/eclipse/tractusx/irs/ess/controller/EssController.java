@@ -78,7 +78,7 @@ class EssController {
     @Operation(operationId = "registerBPNInvestigation",
                summary = "Registers an IRS job to start an investigation if a given bpn is contained in a part chain of a given globalAssetId.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
-               tags = { "Environmental- and Social Standards" },
+               tags = { "Environmental and Social Standards" },
                description = "Registers an IRS job to start an investigation if a given bpn is contained in a part chain of a given globalAssetId.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns id of registered job.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -117,7 +117,7 @@ class EssController {
                operationId = "getBPNInvestigation",
                summary = "Return job with additional supplyChainImpacted information.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
-               tags = { "Environmental- and Social Standards" })
+               tags = { "Environmental and Social Standards" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Return job with item graph for the requested id.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,

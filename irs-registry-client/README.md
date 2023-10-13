@@ -17,7 +17,7 @@ Include the library into your project:
     <dependency>
         <groupId>org.eclipse.tractusx.irs</groupId>
         <artifactId>irs-registry-client</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <version>1.3.0-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
@@ -57,15 +57,28 @@ irs-edc-client:
 
   submodel:
     request-ttl: PT10M # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
-    path: /submodel # The path to append to the submodel data reference endpoint
     urn-prefix: /urn # A prefix used to identify URNs correctly in the submodel endpoint address
 
 
   catalog:
-    policies:
-    # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
+    # IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.
     # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-    allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability # List of comma separated names of the policies to accept.
+    acceptedPolicies:
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.0 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.1 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: R2_Traceability
+      - leftOperand: "FrameworkAgreement.traceability"
+        operator: "eq"
+        rightOperand: "active"
+      - leftOperand: "Membership"
+        operator: "eq"
+        rightOperand: "active"
 
 ```
 
