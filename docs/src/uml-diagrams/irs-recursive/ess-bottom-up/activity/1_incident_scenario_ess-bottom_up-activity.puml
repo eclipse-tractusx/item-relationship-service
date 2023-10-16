@@ -42,9 +42,12 @@ else (yes)
 endif
 
 : ValidityPeriodChecker in own aas;
-if(PartAsPlanned.validityPeriod.validFrom
-           >= validityTimestamp
-           >= PartAsPlanned.validityPeriod.validTo) then (yes)
+if(timestamp is in validity period) then (yes)
+note left
+    PartAsPlanned.validityPeriod.validFrom
+               >= validityTimestamp
+               >= PartAsPlanned.validityPeriod.validTo
+end note
     : add twin;
 else (no)
     : skip twin;
