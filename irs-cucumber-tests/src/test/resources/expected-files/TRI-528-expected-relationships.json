@@ -1,7 +1,7 @@
 {
     "relationships" : [
         {
-            "catenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3 ",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 2.5,
@@ -18,7 +18,7 @@
             "aspectType": "SingleLevelBomAsBuilt"
         },
         {
-            "catenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3 ",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 0.2341,
@@ -35,7 +35,7 @@
             "aspectType": "SingleLevelBomAsBuilt"
         },
         {
-            "catenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3 ",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 0.2014,
