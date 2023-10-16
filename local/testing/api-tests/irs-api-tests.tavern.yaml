@@ -964,7 +964,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd"
+          globalAssetId: "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5"
           bpn: "BPNL00000003B0Q0"
         aspects:
           - Batch
