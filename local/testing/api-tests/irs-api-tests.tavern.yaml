@@ -905,8 +905,8 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:a6a2cacc-29c5-4f07-96f8-76e4a80f7b48"
-          bpn: "BPNL00000003AYRE"
+          globalAssetId: "urn:uuid:6d505432-8b31-4966-9514-4b753372683f"
+          bpn: "BPNL00000003AVTH"
         aspects:
           - MaterialForRecycling
         collectAspects: true
