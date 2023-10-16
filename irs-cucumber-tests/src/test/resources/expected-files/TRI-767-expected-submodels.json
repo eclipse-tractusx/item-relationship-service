@@ -4,33 +4,28 @@
             "identification": "urn:uuid:169d880a-67e7-438a-af1b-d812c88280c9",
             "aspectType": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
             "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AYRE",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "VK-94",
-                        "key": "manufacturerPartId"
-                    },
-                    {
-                        "value": "OMAGCJCBDQGPYRQCS",
-                        "key": "partInstanceId"
-                    },
-                    {
-                        "value": "OMAGCJCBDQGPYRQCS",
-                        "key": "van"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2017-05-26T07:06:51.000Z",
-                    "country": "DEU"
+                "localIdentifiers" : [ {
+                    "value" : "BPNL00000003AVTH",
+                    "key" : "manufacturerId"
+                }, {
+                    "value" : "QH-62",
+                    "key" : "manufacturerPartId"
+                }, {
+                    "value" : "OMBMXMEHXROOFMPTW",
+                    "key" : "partInstanceId"
+                }, {
+                    "value" : "OMBMXMEHXROOFMPTW",
+                    "key" : "van"
+                } ],
+                "manufacturingInformation" : {
+                    "date" : "2020-08-19T11:21:15.000Z",
+                    "country" : "DEU"
                 },
-                "catenaXId": "urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb",
-                "partTypeInformation": {
-                    "manufacturerPartId": "VK-94",
-                    "classification": "product",
-                    "nameAtManufacturer": "Vehicle Combustion"
+                "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+                "partTypeInformation" : {
+                    "manufacturerPartId" : "QH-62",
+                    "classification" : "product",
+                    "nameAtManufacturer" : "Vehicle Fully Electric"
                 }
             }
         },
@@ -38,7 +33,7 @@
             "identification": "urn:uuid:f0f3448f-5bbc-4b80-b398-b0dab7843de1",
             "aspectType": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
             "payload": {
-                "catenaXId": "urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb",
+                "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
                 "childItems": [
                     {
                         "catenaXId": "urn:uuid:f449ed2f-92cf-40ce-a5b8-e6098ae5bb52",

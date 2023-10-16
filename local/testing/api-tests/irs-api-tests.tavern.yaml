@@ -1187,8 +1187,8 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
-          bpn: "BPNL00000003AYRE"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: -10
         direction: "downward"

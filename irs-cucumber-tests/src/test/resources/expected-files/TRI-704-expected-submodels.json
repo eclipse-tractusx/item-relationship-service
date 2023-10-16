@@ -4,49 +4,49 @@
       "identification": "urn:uuid:86d6036d-c78d-4310-999b-9eb1d963c699",
       "aspectType": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
       "payload": {
-        "parentParts": [
-          {
-            "parentCatenaXId": "urn:uuid:d70b0211-7f09-4ab6-9ef3-966f49eca90b",
-            "quantity": {
-              "quantityNumber": 1,
-              "measurementUnit": "unit:piece"
-            },
-            "createdOn": "2022-02-03T14:48:54.709Z",
-            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
-          }
-        ],
-        "catenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b"
+        "parentItems" : [ {
+          "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+          "quantity" : {
+            "quantityNumber" : 2.5,
+            "measurementUnit" : "unit:litre"
+          },
+          "createdOn" : "2022-02-03T14:48:54.709Z",
+          "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
+        } ],
+        "catenaXId": "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc"
       }
     },
     {
       "identification": "urn:uuid:ccba3440-483c-4666-800f-5146c640cb98",
       "aspectType": "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart",
       "payload": {
-        "localIdentifiers": [
-          {
-            "value": "BPNL00000003B2OM",
-            "key": "manufacturerId"
-          },
-          {
-            "value": "1O222E8-43",
-            "key": "manufacturerPartId"
-          },
-          {
-            "value": "NO-236938603963731348901239",
-            "key": "partInstanceId"
-          }
-        ],
-        "manufacturingInformation": {
-          "date": "2022-02-04T14:48:54",
-          "country": "DEU"
+        "localIdentifiers" : [ {
+          "value" : "BPNL00000003B2OM",
+          "key" : "manufacturerId"
+        }, {
+          "value" : "1O222E8-43",
+          "key" : "manufacturerPartId"
+        }, {
+          "value" : "NO-223043329736843650243373",
+          "key" : "partInstanceId"
+        }, {
+          "value" : "Company 2",
+          "key" : "company"
+        }, {
+          "value" : "Brand 2",
+          "key" : "brand"
+        } ],
+        "manufacturingInformation" : {
+          "date" : "2022-02-04T14:48:54",
+          "country" : "DEU"
         },
-        "catenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
-        "partTypeInformation": {
-          "manufacturerPartId": "1O222E8-43",
-          "customerPartId": "1O222E8-43",
-          "classification": "component",
-          "nameAtManufacturer": "Transmission",
-          "nameAtCustomer": "Transmission"
+        "catenaXId" : "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc",
+        "partTypeInformation" : {
+          "manufacturerPartId" : "1O222E8-43",
+          "customerPartId" : "1O222E8-43",
+          "classification" : "component",
+          "nameAtManufacturer" : "Transmission",
+          "nameAtCustomer" : "Transmission"
         }
       }
     },
@@ -54,70 +54,64 @@
       "identification": "urn:uuid:e119c962-393f-4b5b-97bc-d89806bfb9fa",
       "aspectType": "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
       "payload": {
-        "diameter": 380,
-        "length": 810,
-        "width": 590,
-        "weight": 85,
-        "height": 610
+        "diameter" : 380,
+        "width" : 590,
+        "length" : 810,
+        "weight" : 85,
+        "height" : 610
       }
     },
     {
       "identification": "urn:uuid:a1018f5d-e9a3-4052-8dd3-3cb22f7dd602",
       "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
       "payload": {
-        "component": [
-          {
-            "materialName": "Carbon Steel",
-            "recycledContent": 79,
-            "materialClass": "1.1.2",
-            "quantity": {
-              "unit": "unit:kilogram",
-              "value": 72.843
-            },
-            "aggregateState": "solid",
-            "materialAbbreviation": "CS2"
+        "component" : [ {
+          "materialName" : "Carbon Steel",
+          "recycledContent" : 33,
+          "materialClass" : "1.1.2",
+          "quantity" : {
+            "unit" : "unit:kilogram",
+            "value" : 72.843
           },
-          {
-            "materialName": "Oil",
-            "recycledContent": 21,
-            "materialClass": "9.2",
-            "quantity": {
-              "unit": "unit:kilogram",
-              "value": 6.9
-            },
-            "aggregateState": "liquid",
-            "materialAbbreviation": "SAE40"
+          "aggregateState" : "solid",
+          "materialAbbreviation" : "CS2"
+        }, {
+          "materialName" : "Oil",
+          "recycledContent" : 4,
+          "materialClass" : "9.2",
+          "quantity" : {
+            "unit" : "unit:kilogram",
+            "value" : 6.9
           },
-          {
-            "materialName": "Copper",
-            "recycledContent": 24,
-            "materialClass": "3.1",
-            "quantity": {
-              "unit": "unit:kilogram",
-              "value": 1.2
-            },
-            "aggregateState": "solid",
-            "materialAbbreviation": "CO7"
-          }
-        ]
+          "aggregateState" : "liquid",
+          "materialAbbreviation" : "SAE40"
+        }, {
+          "materialName" : "Copper",
+          "recycledContent" : 37,
+          "materialClass" : "3.1",
+          "quantity" : {
+            "unit" : "unit:kilogram",
+            "value" : 1.2
+          },
+          "aggregateState" : "solid",
+          "materialAbbreviation" : "CO7"
+        } ]
       }
     },
     {
       "identification": "urn:uuid:89ca0bcf-ea56-4e5e-bc97-ce0e8127d265",
       "aspectType": "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt",
       "payload": {
-        "parentParts": [
-          {
-            "parentCatenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
-            "quantity": {
-              "quantityNumber": 1,
-              "measurementUnit": "unit:piece"
-            },
-            "createdOn": "2022-02-03T14:48:54.709Z",
-            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
-          }
-        ],
-        "catenaXId": "urn:uuid:2c74b701-0d31-4977-be94-42aae3b1ccde"
+        "parentParts": [ {
+          "catenaXId" : "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc",
+          "quantity" : {
+            "quantityNumber" : 2.5,
+            "measurementUnit" : "unit:litre"
+          },
+          "createdOn" : "2022-02-03T14:48:54.709Z",
+          "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
+        } ],
+        "catenaXId": "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5"
       }
     },
     {
@@ -158,7 +152,7 @@
       "payload": {
         "parentParts": [
           {
-            "parentCatenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+            "parentCatenaXId": "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc",
             "quantity": {
               "quantityNumber": 1,
               "measurementUnit": "unit:piece"
@@ -238,7 +232,7 @@
       "payload": {
         "parentParts": [
           {
-            "parentCatenaXId": "urn:uuid:cce2c864-0e42-4695-ba16-e34fa092906b",
+            "parentCatenaXId": "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc",
             "quantity": {
               "quantityNumber": 1,
               "measurementUnit": "unit:piece"
