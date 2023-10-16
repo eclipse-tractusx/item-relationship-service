@@ -1,0 +1,27 @@
+{
+    "submodels" : [
+        {
+            "identification": "urn:uuid:1448a9ca-4faa-44b6-a018-b2d148d65ed1",
+            "aspectType": "urn:bamm:io.catenax.batch:2.0.0#Batch",
+            "payload": {
+                "localIdentifiers" : [ {
+                    "value" : "BPNL00000003AXS3",
+                    "key" : "manufacturerId"
+                }, {
+                    "value" : "BID12345678",
+                    "key" : "batchId"
+                } ],
+                "manufacturingInformation" : {
+                    "date" : "2022-02-04T14:48:54",
+                    "country" : "HUR"
+                },
+                "catenaXId" : "urn:uuid:1448a9ca-4faa-44b6-a018-b2d148d65ed1",
+                "partTypeInformation" : {
+                    "manufacturerPartId" : "123-0.740-3434-A",
+                    "classification" : "product",
+                    "nameAtManufacturer" : "Glue"
+                }
+            }
+        }
+    ]
+}
