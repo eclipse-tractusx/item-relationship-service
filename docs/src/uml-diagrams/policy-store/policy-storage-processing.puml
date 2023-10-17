@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+skinparam shadowing false
+
+autonumber "<b>[000]"
+box "Consumer" #LightGrey
+participant PolicyStoreController
+participant PolicyStoreService
+participant BlobPersistence
+
+
+PolicyStoreController -> PolicyStoreService: CRUD Policy resource
+PolicyStoreService -> BlobPersistence : CRUD policy for API BPN
+PolicyStoreService <-- BlobPersistence : return result from blob store
+PolicyStoreController <-- PolicyStoreService : return http result to requestor
+
+@enduml

@@ -3,6 +3,7 @@ from datetime import datetime
 
 import requests
 import os
+from box import Box
 
 
 def supplyChainImpacted_is_Yes(response):
@@ -287,6 +288,20 @@ def order_informations_for_batchprocessing_are_given(response, amount_batches):
         assert ('https://irs.dev.demo.catena-x.net/irs/orders' in batches.get("batchUrl")) or ('https://irs.int.demo.catena-x.net/irs/orders' in batches.get("batchUrl"))
         assert batches.get("batchProcessingState") == 'INITIALIZED'
         assert batches.get("errors") is None
+
+
+def getBatchId(response, batchId_number):
+    batches_list = response.json().get("batches")
+    batchId_list = []
+    for batches in batches_list:
+        batchId_list.append(batches.get("batchId"))
+    return Box({"batch_id": batchId_list[batchId_number]})
+
+
+def check_batches_are_canceled_correctly(response):
+    jobs_list = response.json().get("jobs")
+    for jobs in jobs_list:
+        assert jobs.get("state") == 'CANCELED'
 
 
 def job_parameter_are_as_requested(response):

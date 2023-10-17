@@ -64,7 +64,7 @@ paths:
       summary: Registers an IRS job to start an investigation if a given bpn is contained
         in a part chain of a given globalAssetId.
       tags:
-        - Environmental- and Social Standards
+        - Environmental and Social Standards
   /ess/bpn/investigations/{id}:
     get:
       description: Return job with additional supplyChainImpacted information.
@@ -129,7 +129,7 @@ paths:
             - profile email
       summary: Return job with additional supplyChainImpacted information.
       tags:
-        - Environmental- and Social Standards
+        - Environmental and Social Standards
   /ess/notification/receive:
     post:
       description: Accepts notifications via EDC. Notifications are filtered by their
@@ -155,7 +155,7 @@ paths:
           description: Notification malformed.
       summary: Accepts notifications sent via EDC.
       tags:
-        - Environmental- and Social Standards
+        - Environmental and Social Standards
   /irs/ess/orders:
     post:
       description: "Registers an order for an ESS investigation with an array of 
@@ -210,7 +210,7 @@ paths:
       summary: "Registers an order for an ESS investigation with an array of {globalAssetIds}. 
       Each globalAssetId will be processed in an separate job, grouped in batches."
       tags:
-        - Environmental- and Social Standards
+        - Environmental and Social Standards
   /irs/jobs:
     get:
       description: Returns paginated jobs with state and execution times.

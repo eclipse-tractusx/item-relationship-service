@@ -55,10 +55,8 @@ public class BpnInvestigationJob {
     private List<String> answeredNotifications;
     private JobState state;
 
-    public static BpnInvestigationJob create(final Jobs jobSnapshot,
-            final List<String> incidentBpns) {
-        return new BpnInvestigationJob(jobSnapshot, incidentBpns, new ArrayList<>(),
-                new ArrayList<>(), JobState.RUNNING);
+    public BpnInvestigationJob(final Jobs jobSnapshot, final List<String> incidentBpns) {
+        this(jobSnapshot, incidentBpns, new ArrayList<>(), new ArrayList<>(), JobState.RUNNING);
     }
 
     private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob,

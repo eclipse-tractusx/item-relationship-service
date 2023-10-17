@@ -8,7 +8,7 @@ If you are using an HTTP(S) proxy for outgoing connections, you need to configur
 JAVA_TOOL_OPTIONS=-Dhttps.proxyHost=X.X.X.X -Dhttps.proxyPort=XXXX
 ----
 
-You might need to specify both `http` and `https` options, dependending on your configuration.
+You might need to specify both `http` and `https` options, depending on your configuration.
 
 If your proxy is requiring authentication, you can use the `.proxyUser` and `.proxyPassword` properties in addition.
 
