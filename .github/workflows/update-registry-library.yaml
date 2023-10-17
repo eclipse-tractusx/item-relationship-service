@@ -59,11 +59,11 @@ jobs:
           if [ $IS_RELEASE_VERSION = 'true' ]; then
             new_version="${major}.${minor}.${patch}"
           fi
-          echo "$new_version"
+          echo NEXT_VERSION="$new_version" >> $GITHUB_ENV
 
       - name: Update irs-registry-client version
         env:
-          VERSION: ${{ inputs.next-version }}
+          VERSION: ${{ env.NEXT_VERSION }}
         run: |-
           sed -i -e 's#<irs-registry-client\.version>.*</irs-registry-client\.version>#<irs-registry-client\.version>'$VERSION'</irs-registry-client\.version>#g' pom.xml
 
@@ -72,10 +72,10 @@ jobs:
         env:
           VERSION: ${{ inputs.next-version }}
         with:
-          commit-message: "chore(dependencies): Update irs-registry-client to $VERSION"
-          branch: chore/update-irs-registry-client-$VERSION
+          commit-message: "chore(dependencies): Update irs-registry-client to ${{ env.NEXT_VERSION }}"
+          branch: chore/update-irs-registry-client-${{ env.NEXT_VERSION }}
           base: main
           delete-branch: true
-          title: Update irs-registry-client to $VERSION
+          title: Update irs-registry-client to ${{ env.NEXT_VERSION }}
           body: |
-            This PR updates the irs-registry-client version to $VERSION.
+            This PR updates the irs-registry-client version to ${{ env.NEXT_VERSION }}.
