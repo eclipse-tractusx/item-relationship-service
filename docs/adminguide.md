@@ -572,6 +572,23 @@ local models as a fallback.
 If you want to use local schema files, you need to provide them directly in the `values.yaml` file. Use the param `semanticsHub.localModels` to specify a map of all the local schemas.
 The **key** of each entry is the `Base64` encoded URN of the model. The **value** is the `Base64` encoded content of the schema file itself. The entries will then be mounted into the IRS container and used on demand. For reference, see the example comment in the default `values.yaml`.
 
+#### Policy store configuration
+
+The IRS is exposing REST API to store Policies definitions.
+Storage details can be configured in `application.yml` file with below fields:
+
+```yaml
+policystore:
+  persistence:
+    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
+    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
+```
+
+If no custom policies are registered via REST API, IRS will use the default one configured with `irs-edc-client.catalog.acceptedPolicies` property. IRS will only negotiate contracts for offers with policies found in Policy Store.
+
 ### Use existing EDC consumer
 
 If you want to use an existing EDC as consumer, you need to add the management endpoint URL of this edc to `edc.controlplane.endpoint.data`.
@@ -653,7 +670,7 @@ If you are using an HTTP(S) proxy for outgoing connections, you need to configur
 JAVA_TOOL_OPTIONS=-Dhttps.proxyHost=X.X.X.X -Dhttps.proxyPort=XXXX
 ```
 
-You might need to specify both `http` and `https` options, dependending on your configuration.
+You might need to specify both `http` and `https` options, depending on your configuration.
 
 If your proxy is requiring authentication, you can use the `.proxyUser` and `.proxyPassword` properties in addition.
 

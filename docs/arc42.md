@@ -390,11 +390,23 @@ This section describes the job orchestration in IRS.
 
 ![arc42_010](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_010.png)
 
+### Policy store flow
+
+This section describes the policy store in IRS.
+
+![arc42_011](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_011.png)
+
+### Policy check procedure
+
+This section describes the way IRS is validating policies found in assets.
+
+![arc42_012](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_012.png)
+
 ## Scenario 1: Create job
 
 This section describes what happens when user creates a new job.
 
-![arc42_011](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_011.png)
+![arc42_013](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_013.png)
 
 ### Overview
 
@@ -409,7 +421,7 @@ The input provided by the caller determines how the job will operate (starting p
 
 This section describes how a job is asynchronously executed inside the IRS.
 
-![arc42_012](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_012.png)
+![arc42_014](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_014.png)
 
 ### Overview
 
@@ -424,7 +436,7 @@ As soon as all transfers are finished, the results will be combined and stored i
 
 ## Scenario 3: Request for JobResponse
 
-![arc42_013](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_013.png)
+![arc42_015](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_015.png)
 
 ### Overview
 
@@ -435,7 +447,7 @@ This will then be passed to the caller.
 
 ## Scenario 4: Cancel job execution
 
-![arc42_014](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_014.png)
+![arc42_016](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_016.png)
 
 ### Overview
 
@@ -447,7 +459,7 @@ Afterwards, the IRS will return the updated job details of the canceled job to t
 
 The deployment view shows the IRS application on ArgoCD, which is a continuous delivery tool for Kubernetes. Kubernetes manifests are specified using Helm charts. Helm is a package manager for Kubernetes. IRS is developed in a cloud-agnostic manner, so the application could be installed in any cloud infrastructure (on-premises, hybrid, or public cloud infrastructure).
 
-![arc42_015](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_015.png)
+![arc42_017](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_017.png)
 
 ### Operator
 
@@ -489,25 +501,25 @@ For information on how to run the application locally, please check the README d
 
 The isolated environment contains the IRS as well as all surrounding services.
 
-![arc42_016](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_016.png)
+![arc42_018](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_018.png)
 
 ### Development environment
 
 The development environment contains the IRS as well as the essential surrounding services, excluding the external IAM.
 
-![arc42_017](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_017.png)
+![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
 
 ### Integrated environment
 
 The integrated environment contains the IRS and is integrated with the rest of the Catena-X network.
 
-![arc42_018](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_018.png)
+![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
 
 ## Level 1 - IRS application
 
 This section focuses only on the IRS itself, detached from its neighbors. It shows the resources deployed in Kubernetes for the IRS.
 
-![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
+![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
 
 ### Pod
 
@@ -531,11 +543,11 @@ The ingress uses a reverse proxy to provide specified Service ports to the inter
 
 ### Domain entity model
 
-![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
+![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
 
 ### Domain model
 
-![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
+![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
 
 ### API Model
 
@@ -554,15 +566,15 @@ A job can be in one of the following states:
 | COMPLETED | The job has completed. See the job response for details on the data. |
 | ERROR | The job could not be processed correctly by the IRS due to a technical problem. |
 
-![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
+![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
 
 ### Job Store Datamodel
 
-![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
+![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
 
 ### Job Response Datamodel
 
-![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
+![arc42_026](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_026.png)
 
 ```json
 {
@@ -804,7 +816,7 @@ The hexagonal architecture divides a system into several loosely-coupled interch
 
 For the IRS, this means decoupling the application logic from components like the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (so-called port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic will be necessary.
 
-![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
+![arc42_027](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_027.png)
 
 ## "Under-the-hood" concepts
 
@@ -1048,7 +1060,7 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | Eclipse Dataspace Connector (EDC) | For more information see: <https://github.com/eclipse-tractusx/tractusx-edc> |
 | Managed Identity Wallet (MIW) | For more information see: <https://github.com/eclipse-tractusx/managed-identity-wallet> |
 | Self-Sovereign Identity (SSI) | For more information see: <https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2> |
-| PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by a admin user in order to be allowed to use in IRS use cases. |
+| PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: <https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction> |
 
 ### NOTICE
 

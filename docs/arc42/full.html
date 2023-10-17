@@ -1491,7 +1491,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <h4 id="_component_diagram">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/whitebox-overview.svg" alt="whitebox overview" width="1974" height="1060">
+<img src="architecture-constraints/whitebox-overview.svg" alt="whitebox overview" width="2129" height="871">
 </div>
 </div>
 </div>
@@ -1950,6 +1950,28 @@ A job is processed in this order:</p>
 <div class="imageblock">
 <div class="content">
 <img src="architecture-constraints/job-orchestration.svg" alt="job orchestration" width="2804" height="1441">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_policy_store_flow">Policy store flow</h4>
+<div class="paragraph">
+<p>This section describes the policy store in IRS.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/policy-store.svg" alt="policy store" width="664" height="233">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_policy_check_procedure">Policy check procedure</h4>
+<div class="paragraph">
+<p>This section describes the way IRS is validating policies found in assets.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/policy-check.svg" alt="policy check" width="854" height="312">
 </div>
 </div>
 </div>
@@ -2998,7 +3020,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PolicyStore</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by a admin user in order to be allowed to use in IRS use cases.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: <a href="https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction" class="bare">https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -3040,7 +3062,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-10-12 09:00:50 UTC
+Last updated 2023-10-17 13:51:42 UTC
 </div>
 </div>
 </body>
