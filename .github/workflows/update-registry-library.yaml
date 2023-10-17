@@ -10,7 +10,7 @@ on:
         options:
           - 'major'
           - 'minor'
-          - 'path'
+          - 'patch'
       is-release-version:
         type: boolean
         required: true
@@ -21,8 +21,6 @@ jobs:
   open-pr-with-version-update:
     name: "Open a Pull Request with the updated version of irs-registry-client."
     runs-on: ubuntu-latest
-    needs:
-      - validate-input-version
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
