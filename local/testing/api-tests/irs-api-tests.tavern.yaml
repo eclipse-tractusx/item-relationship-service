@@ -1148,7 +1148,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 60
+    delay_after: 30
 
   - name: fetch response for running job and check existence of submodels and relationships
     request:
