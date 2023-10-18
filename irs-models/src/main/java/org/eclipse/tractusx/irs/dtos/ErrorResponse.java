@@ -40,6 +40,7 @@ import org.springframework.http.HttpStatus;
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ErrorResponse.ErrorResponseBuilder.class)
 public class ErrorResponse {
+
     @Schema(description = "Error code.")
     private HttpStatus statusCode;
 
@@ -48,4 +49,9 @@ public class ErrorResponse {
 
     @ArraySchema(arraySchema = @Schema(description = "List of error messages.", implementation = String.class), maxItems = Integer.MAX_VALUE)
     private List<String> messages;
+
+    /**
+     * ErrorResponse builder class
+     */
+    public static class ErrorResponseBuilder { }
 }
