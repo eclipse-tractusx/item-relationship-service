@@ -21,7 +21,8 @@
 
     <scm>
         <connection>scm:git:git://github.com/eclipse-tractusx/item-relationship-service.git</connection>
-        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git</developerConnection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git
+        </developerConnection>
         <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
     </scm>
 
@@ -398,6 +399,31 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <version>1.18.20.0</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>1.18.30</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                            <outputDirectory>${delombok.output}</outputDirectory>
+                            <addOutputDirectory>false</addOutputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>delombok</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
                         <version>1.6.13</version>
@@ -446,6 +472,9 @@
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <sourcepath>${project.build.directory}/generated-sources/delombok</sourcepath>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

@@ -49,9 +49,4 @@ public class ErrorResponse {
 
     @ArraySchema(arraySchema = @Schema(description = "List of error messages.", implementation = String.class), maxItems = Integer.MAX_VALUE)
     private List<String> messages;
-
-    /**
-     * ErrorResponse builder class
-     */
-    public static class ErrorResponseBuilder { }
 }

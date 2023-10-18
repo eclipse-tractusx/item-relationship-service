@@ -51,10 +51,4 @@ public class GenericDescription {
 
     @Schema(description = "Description")
     private List<Description> descriptions;
-
-    /**
-     * GenericDescription builder class
-     */
-    public static class GenericDescriptionBuilder { }
-
 }

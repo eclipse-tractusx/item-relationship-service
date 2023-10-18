@@ -86,10 +86,4 @@ public class PollingJob<T> {
         }
         return actionToUse;
     }
-
-
-    /**
-     * PollingJob builder class
-     */
-    public static class PollingJobBuilder<T> { }
 }
