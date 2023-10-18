@@ -2386,7 +2386,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n    \"key\": { \"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\", \"bpn\": \"BPNL00000003CRHK\" },\n    \"incidentBpns\": [\"BPNL00000003B6LU\"],\n    \"bomLifecycle\": \"asPlanned\"\n}"
+				"text": "{\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\",\n\t\t\"bpn\": \"BPNL00000003CRHK\"\n\t},\n\t\"incidentBPNSs\": [\n\t\t\"BPNL00000003B6LU\"\n\t],\n\t\"bomLifecycle\": \"asPlanned\"\n}"
 			},
 			"parameters": [],
 			"headers": [
