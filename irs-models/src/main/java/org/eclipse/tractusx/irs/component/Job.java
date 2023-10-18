@@ -26,7 +26,6 @@ package org.eclipse.tractusx.irs.component;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +34,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.ToString;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -46,7 +44,6 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@ToString
 @Jacksonized
 @SuppressWarnings({"PMD.ShortClassName", "PMD.ShortVariable"})
 public class Job {
