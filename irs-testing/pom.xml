@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>irs-testing</artifactId>
-
+    <version>${irs-registry-client.version}</version>
     <name>IRS Testing Utilities</name>
     <description>Item Relationship Service Testing Utilities</description>
 
