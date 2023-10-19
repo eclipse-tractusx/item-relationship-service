@@ -10,6 +10,14 @@
         <relativePath>../irs-parent-spring-boot</relativePath>
     </parent>
 
+    <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-tractusx/item-relationship-service.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git
+        </developerConnection>
+        <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    </scm>
+
     <artifactId>irs-testing</artifactId>
     <version>${irs-registry-client.version}</version>
     <name>IRS Testing Utilities</name>
