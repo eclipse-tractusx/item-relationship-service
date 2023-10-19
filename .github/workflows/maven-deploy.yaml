@@ -77,4 +77,5 @@ jobs:
       # publish snapshots or releases
       - name: Publish version
         run: |-
-          mvn clean deploy -s $HOME/.m2/settings.xml --batch-mode -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -DskipTests -Prelease -pl irs-testing,irs-models,irs-edc-client,irs-registry-client
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl irs-registry-client)
+          mvn clean deploy -s $HOME/.m2/settings.xml --batch-mode -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -Prelease -pl irs-testing,irs-models,irs-edc-client,irs-registry-client -Drevision=$VERSION
