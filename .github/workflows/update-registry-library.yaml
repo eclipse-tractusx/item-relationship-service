@@ -1,0 +1,79 @@
+name: Update irs-registry-client Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      version-type:
+        type: choice
+        description: Type of version increment
+        required: true
+        options:
+          - 'major'
+          - 'minor'
+          - 'patch'
+      is-release-version:
+        type: boolean
+        required: true
+        default: false
+        description: Select this if you want to create a release version (x.x.x) instead of a SNAPSHOT.
+
+jobs:
+  open-pr-with-version-update:
+    name: "Open a Pull Request with the updated version of irs-registry-client."
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Create new version
+        env:
+          TYPE: ${{ inputs.version-type }}
+          IS_RELEASE_VERSION: ${{ inputs.is-release-version }}
+        run: |
+          CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl irs-registry-client)
+          IFS='.' read -ra version_parts <<<"$CURRENT_VERSION"
+          major="${version_parts[0]}"
+          minor="${version_parts[1]}"
+          patch="${version_parts[2]}"
+          # Increment the version based on the increment type
+          if [ "$TYPE" == "major" ]; then
+            major=$((major + 1))
+            minor=0
+            patch=0
+          elif [ "$TYPE" == "minor" ]; then
+            minor=$((minor + 1))
+            patch=0
+          elif [ "$TYPE" == "patch" ]; then
+            patch=$((patch + 1))
+          else
+            echo "Invalid increment type. Use 'major', 'minor', or 'patch'."
+            exit 1
+          fi
+          new_version="${major}.${minor}.${patch}-SNAPSHOT"
+          if [ $IS_RELEASE_VERSION = 'true' ]; then
+            new_version="${major}.${minor}.${patch}"
+          fi
+          echo NEXT_VERSION="$new_version" >> $GITHUB_ENV
+
+      - name: Update irs-registry-client version
+        env:
+          VERSION: ${{ env.NEXT_VERSION }}
+        run: |-
+          sed -i -e 's#<irs-registry-client\.version>.*</irs-registry-client\.version>#<irs-registry-client\.version>'$VERSION'</irs-registry-client\.version>#g' pom.xml
+
+      - name: Create PR for irs-registry-client version update
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "chore(dependencies): Update irs-registry-client to ${{ env.NEXT_VERSION }}"
+          branch: chore/update-irs-registry-client-${{ env.NEXT_VERSION }}
+          base: main
+          delete-branch: true
+          title: Update irs-registry-client to ${{ env.NEXT_VERSION }}
+          body: |
+            This PR updates the irs-registry-client version to ${{ env.NEXT_VERSION }}.
