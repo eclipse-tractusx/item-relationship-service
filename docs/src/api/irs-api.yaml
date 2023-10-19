@@ -1522,7 +1522,6 @@ components:
         globalAssetId:
           type: string
           description: Id of global asset.
-          example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
         id:
           type: string
         idShort:
@@ -1583,6 +1582,21 @@ components:
           description: Array of batches.
           items:
             $ref: '#/components/schemas/BatchResponse'
+          example:
+            - batchTotal: 1
+              orderId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              batchProcessingState: PARTIAL
+              completedOn: 2000-01-23704:56:07.000+00:00
+              totalJobs: 5
+              jobsInBatchChecksum: 5
+              batchId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+              startedOn: 2000-01-23T04:56:07.000+00:00
+              batchNumber: 6
+              jobs:
+                - id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+                  completedOn: 2000-01-23T04:56:07.000+00:00
+                  state: UNSAVED
+                  startedOn: 2000-01-23T04:56:07.000+00:00
           maxItems: 2147483647
         orderId:
           type: string
@@ -2018,6 +2032,9 @@ components:
           description: Collection of bpn mappings
           items:
             $ref: '#/components/schemas/Bpn'
+          example:
+            - manufacturerName: AB CD
+              manufacturerId: BPNL00000003AAXX
           maxItems: 2147483647
           uniqueItems: true
         job:
@@ -2027,18 +2044,65 @@ components:
           description: Relationships between parent and child items.
           items:
             $ref: '#/components/schemas/Relationship'
+          example:
+            - aspectType: aspectType
+              bpn: bpn
+              catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+              linkedItem:
+                assembledOn: 2022-02-03T14:48:54.709Z
+                childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+                lastModifiedOn: 2022-02-03T14:48:54.709Z
+                lifecycleContext: asBuilt
+                quantity:
+                  measurementUnit:
+                    datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
+                    lexicalValue: piece
+                  quantityNumber: 1
           maxItems: 2147483647
         shells:
           type: array
           description: AAS shells.
           items:
             $ref: '#/components/schemas/AssetAdministrationShellDescriptor'
+          example:
+            idShort: future concept x
+            specificAssetsIds:
+              - name: engineserialid
+                value: 12309481209312
+            id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+            description:
+              - language: en
+                text: The shell for a vehicle
+            submodelDescriptors:
+              description:
+                - language: en
+                  text: Provides base vehicle information
+              endpoints:
+                - interface: HTTP
+                  protocolInformation:
+                    endpointProtocol: HTTPS
+                    endpointProtocolVersion:
+                      - 1.0
+                    href: https://catena-x.net/vehicle/basedetails/
+              idShort: vehicle base details
+              id: 4a738a24-b7d8-4989-9cd6-387772f40565
+              semanticsId:
+                keys:
+                  - type: Submodel
+                    value: urn:bamm:com.catenax.vehicle:0.1.1
+                type: ModelReference
           maxItems: 2147483647
         submodels:
           type: array
           description: Collection of requested Submodels
           items:
             $ref: '#/components/schemas/Submodel'
+          example:
+            - identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
+              aspectType: supply_chain_impacted
+              payload:
+                supplyChainImpacted: YES
           maxItems: 2147483647
         tombstones:
           type: array
@@ -2046,6 +2110,14 @@ components:
             cause of error and endpoint URL.
           items:
             $ref: '#/components/schemas/Tombstone'
+          example:
+            - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
+              endpointURL: https://catena-x.net/vehicle/partdetails/
+              processingError:
+                errorDetail: Details to reason of failure
+                lastAttempt: 2022-02-03T14:48:54.709Z
+                processStep: SchemaValidation
+                retryCounter: 0
           maxItems: 2147483647
     LangString:
       type: object
@@ -2166,6 +2238,23 @@ components:
         validUntil:
           type: string
           format: date-time
+      example:
+        createdOn: 2023-10-19T10:59:56.368Z
+        permissions:
+          - action: ACCESS
+            constraints:
+              - and:
+                  - leftOperand: string
+                    operator: eq
+                    rightOperand:
+                      - string
+                or:
+                  - leftOperand: string
+                    operator: eq
+                    rightOperand:
+                      - string
+        policyId: string
+        validUntil: 2023-10-19T10:59:56.369Z
     ProcessingError:
       type: object
       additionalProperties: false
