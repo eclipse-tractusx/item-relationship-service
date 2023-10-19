@@ -26,6 +26,14 @@
         <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
     </scm>
 
+    <developers>
+        <developer>
+            <id>ds-jhartmann</id>
+            <name>Jaro Hartmann</name>
+            <email>jaro.hartmann@doubleslash.de</email>
+        </developer>
+    </developers>
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
