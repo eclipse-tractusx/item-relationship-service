@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -38,12 +39,14 @@ public class SemanticId {
     /**
      * value
      */
+    @Schema(implementation = String.class, example = "Submodel")
     private String value;
 
 
     /**
      * type
      */
+    @Schema(implementation = String.class, example = "urn:bamm:com.catenax.vehicle:0.1.1")
     private String type;
 
 }

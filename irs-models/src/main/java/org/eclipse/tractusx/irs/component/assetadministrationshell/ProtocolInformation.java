@@ -25,6 +25,8 @@ package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -40,14 +42,17 @@ public class ProtocolInformation {
     /**
      * endpointAddress
      */
+    @Schema(implementation = String.class, example = "https://catena-x.net/vehicle/basedetails")
     private String href;
     /**
      * endpointProtocol
      */
+    @Schema(implementation = String.class, example = "HTTPS")
     private String endpointProtocol;
     /**
      * endpointProtocolVersion
      */
+    @ArraySchema(arraySchema = @Schema(implementation = String.class, example = "[\"1.0\"]"))
     private List<String> endpointProtocolVersion;
     /**
      * subprotocol

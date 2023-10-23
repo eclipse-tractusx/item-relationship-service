@@ -55,7 +55,8 @@ public class Job {
     @Size(min = JOB_ID_FIELD_MAX_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Id of the job.", minLength = JOB_ID_FIELD_MAX_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class,
-            pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i")
+            pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i",
+            example = "e5347c88-a921-11ec-b909-0242ac120002")
     @JsonAlias("jobId")
     private UUID id;
 
@@ -67,6 +68,7 @@ public class Job {
 
     @NotBlank
     @JsonAlias("jobState")
+    @Schema(implementation = JobState.class, example = "COMPLETED")
     private JobState state;
 
     @Schema(description = "Job error details.", implementation = JobErrorDetails.class)
@@ -75,25 +77,25 @@ public class Job {
     /**
      * Timestamp when the job was created
      */
-    @Schema(implementation = ZonedDateTime.class)
+    @Schema(implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
     private ZonedDateTime createdOn;
 
     /**
      * Timestamp when the job was started
      */
-    @Schema(implementation = ZonedDateTime.class)
+    @Schema(implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
     private ZonedDateTime startedOn;
 
     /**
      * Last time job was modified
      */
-    @Schema(implementation = ZonedDateTime.class)
+    @Schema(implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
     private ZonedDateTime lastModifiedOn;
 
     /**
      * Mark the time the was completed
      */
-    @Schema(implementation = ZonedDateTime.class)
+    @Schema(implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
     @JsonAlias("jobCompleted")
     private ZonedDateTime completedOn;
 

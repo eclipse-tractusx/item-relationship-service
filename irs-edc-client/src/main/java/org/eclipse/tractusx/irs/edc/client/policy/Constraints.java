@@ -25,7 +25,9 @@ package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,10 +37,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @SuppressWarnings("PMD.ShortVariable")
 public class Constraints {
 
+    @ArraySchema
     private List<Constraint> and;
+    @ArraySchema
     private List<Constraint> or;
 
 }

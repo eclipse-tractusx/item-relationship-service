@@ -48,30 +48,31 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 @Jacksonized
 public class JobParameter {
 
-    @Schema(implementation = BomLifecycle.class)
+    @Schema(implementation = BomLifecycle.class, example = "asBuilt")
     private BomLifecycle bomLifecycle;
 
-    @Schema(implementation = String.class)
+    @Schema(implementation = String.class, example = "SerialPart")
     @Singular
     private List<String> aspects;
 
-    @Schema(implementation = Integer.class)
+    @Schema(implementation = Integer.class, example = "1")
     @Min(0)
     @Max(Integer.MAX_VALUE)
     private Integer depth;
 
-    @Schema(implementation = String.class)
+    @Schema(implementation = String.class, example = "BPNL00000003AYRE")
     private String bpn;
 
-    @Schema(implementation = Direction.class)
+    @Schema(implementation = Direction.class, example = "upward")
     private Direction direction;
 
-    @Schema(implementation = Boolean.class)
+    @Schema(implementation = Boolean.class, example = "false")
     private boolean collectAspects;
 
-    @Schema(implementation = Boolean.class)
+    @Schema(implementation = Boolean.class, example = "false")
     private boolean lookupBPNs;
 
+    @Schema(implementation = String.class, example = "https://hostname.com/callback?jobId={jobId}")
     private String callbackUrl;
 
     public static JobParameter create(final @NonNull RegisterJob request) {
