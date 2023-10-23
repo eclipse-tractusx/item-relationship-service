@@ -49,17 +49,18 @@ public final class IncidentValidation {
      * Investigates the Incident based on a {@link Jobs}.
      *
      * @param investigationJob the {@link BpnInvestigationJob} where
-     * @param completedJob     the {@link Jobs} Job where aspect models are extracted from
+     * @param job              the {@link Jobs} Job where aspect models are extracted from
      * @param completedJobId   id of the completed Job
      * @return {@link InvestigationResult} containing the {@link SupplyChainImpacted} as well as the
      * completed {@link Jobs} filled with potential tombstones.
      */
-    public static InvestigationResult getResult(final BpnInvestigationJob investigationJob, Jobs completedJob,
+    public static InvestigationResult getResult(final BpnInvestigationJob investigationJob, final Jobs job,
             final UUID completedJobId) {
         SupplyChainImpacted partAsPlannedValidity;
+        Jobs completedJob = job;
         try {
             partAsPlannedValidity = validatePartAsPlanned(completedJob);
-        } catch (AspectTypeNotFoundException e) {
+        } catch (final AspectTypeNotFoundException e) {
             completedJob = createTombstone(e, completedJob);
             partAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
         }
@@ -69,7 +70,7 @@ public final class IncidentValidation {
         SupplyChainImpacted partSiteInformationAsPlannedValidity;
         try {
             partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(investigationJob, completedJob);
-        } catch (AspectTypeNotFoundException e) {
+        } catch (final AspectTypeNotFoundException e) {
             completedJob = createTombstone(e, completedJob);
             partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
         }
@@ -118,9 +119,9 @@ public final class IncidentValidation {
                                            .getPayload());
     }
 
-    private static Jobs createTombstone(final AspectTypeNotFoundException e, final Jobs completedJob) {
-        log.warn("Aspect not found. {}", e.getMessage());
-        final Tombstone tombstone = Tombstone.from(completedJob.getJob().getGlobalAssetId().getGlobalAssetId(), null, e,
+    private static Jobs createTombstone(final AspectTypeNotFoundException exception, final Jobs completedJob) {
+        log.warn("Aspect not found. {}", exception.getMessage());
+        final Tombstone tombstone = Tombstone.from(completedJob.getJob().getGlobalAssetId().getGlobalAssetId(), null, exception,
                 0, ProcessStep.ESS_VALIDATION);
         return completedJob.toBuilder().tombstone(tombstone).build();
     }

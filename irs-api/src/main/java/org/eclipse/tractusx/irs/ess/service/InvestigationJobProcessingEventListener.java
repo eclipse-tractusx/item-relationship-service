@@ -104,9 +104,9 @@ class InvestigationJobProcessingEventListener {
 
             final Optional<MultiTransferJob> multiTransferJob = jobStore.find(completedJobId.toString());
             multiTransferJob.ifPresent(job -> {
-                Jobs completedJob = irsItemGraphQueryService.getJobForJobId(job, false);
+                final Jobs completedJob = irsItemGraphQueryService.getJobForJobId(job, false);
 
-                InvestigationResult investigationResult = IncidentValidation.getResult(investigationJob, completedJob,
+                final InvestigationResult investigationResult = IncidentValidation.getResult(investigationJob, completedJob,
                         completedJobId);
 
                 final BpnInvestigationJob investigationJobUpdate = investigationJob.update(
