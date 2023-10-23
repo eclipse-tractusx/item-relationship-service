@@ -165,8 +165,7 @@ public class PolicyStoreController {
         service.deletePolicy(policyId);
     }
 
-    @Operation(operationId = "updateAllowedPolicy",
-               summary = "Updates an existing policy with new validUntil value.",
+    @Operation(operationId = "updateAllowedPolicy", summary = "Updates an existing policy with new validUntil value.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" },
                description = "Updates an existing policy with new validUntil value.")

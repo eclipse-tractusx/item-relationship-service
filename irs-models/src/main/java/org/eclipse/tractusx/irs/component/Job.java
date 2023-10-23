@@ -50,6 +50,7 @@ public class Job {
 
     private static final int JOB_ID_FIELD_MAX_LENGTH = 36;
     private static final int GLOBAL_ASSET_ID_LENGTH = 45;
+    private static final String EXAMPLE_DATE_TIME = "2022-02-03T14:48:54.709Z";
 
     @NotNull
     @Size(min = JOB_ID_FIELD_MAX_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
@@ -77,25 +78,25 @@ public class Job {
     /**
      * Timestamp when the job was created
      */
-    @Schema(implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
+    @Schema(implementation = ZonedDateTime.class, example = EXAMPLE_DATE_TIME)
     private ZonedDateTime createdOn;
 
     /**
      * Timestamp when the job was started
      */
-    @Schema(implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
+    @Schema(implementation = ZonedDateTime.class, example = EXAMPLE_DATE_TIME)
     private ZonedDateTime startedOn;
 
     /**
      * Last time job was modified
      */
-    @Schema(implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
+    @Schema(implementation = ZonedDateTime.class, example = EXAMPLE_DATE_TIME)
     private ZonedDateTime lastModifiedOn;
 
     /**
      * Mark the time the was completed
      */
-    @Schema(implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
+    @Schema(implementation = ZonedDateTime.class, example = EXAMPLE_DATE_TIME)
     @JsonAlias("jobCompleted")
     private ZonedDateTime completedOn;
 

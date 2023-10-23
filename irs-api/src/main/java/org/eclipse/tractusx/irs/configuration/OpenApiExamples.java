@@ -82,8 +82,8 @@ import org.springframework.http.HttpStatus;
 public class OpenApiExamples {
     private static final ZonedDateTime EXAMPLE_ZONED_DATETIME = ZonedDateTime.parse("2022-02-03T14:48:54.709Z");
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
-    private static final String ID = "f253718e-a270-4367-901b-9d50d9bd8462";
-    private static final UUID UUID_ID = UUID.fromString(ID);
+    private static final String EXAMPLE_ID = "f253718e-a270-4367-901b-9d50d9bd8462";
+    private static final UUID UUID_ID = UUID.fromString(EXAMPLE_ID);
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";
