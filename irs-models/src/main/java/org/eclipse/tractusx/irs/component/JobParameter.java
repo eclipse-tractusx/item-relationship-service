@@ -72,7 +72,7 @@ public class JobParameter {
     @Schema(implementation = Boolean.class, example = "false")
     private boolean lookupBPNs;
 
-    @Schema(implementation = String.class, example = "https://hostname.com/callback?jobId={jobId}")
+    @Schema(implementation = String.class, example = "https://hostname.com/callback?id={id}&state={state}")
     private String callbackUrl;
 
     public static JobParameter create(final @NonNull RegisterJob request) {

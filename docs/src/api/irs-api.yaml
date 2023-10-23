@@ -1992,7 +1992,7 @@ components:
           example: BPNL00000003AYRE
         callbackUrl:
           type: string
-          example: https://hostname.com/callback?jobId={jobId}
+          example: https://hostname.com/callback?id={id}&state={state}
         collectAspects:
           type: boolean
           example: false
@@ -2231,7 +2231,7 @@ components:
       additionalProperties: false
       properties:
         href:
-          example: https://catena-x.net/vehicle/basedetails
+          example: https://eclipse-tractusx.github.io/docs-kits/kits/Traceability%20Kit/Software%20Development%20View/Specification%20Traceability%20Kit#submodel-descriptors
           type: string
         endpointProtocol:
           example: HTTPS
@@ -2503,7 +2503,7 @@ components:
       properties:
         aspectType:
           type: string
-          example: supply_chain_impacted
+          example: SingleLevelBomAsBuilt
         bpn:
           type: string
           example: BPNL00000003AYRE
