@@ -35,7 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
+import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
 import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
@@ -135,29 +137,15 @@ class InvestigationJobProcessingEventListener {
     }
 
     private static SupplyChainImpacted validatePartSiteInformationAsPlanned(final BpnInvestigationJob investigationJob,
-            final Jobs completedJob) {
-        SupplyChainImpacted partSiteInformationAsPlannedValidity;
-        try {
-            final PartSiteInformationAsPlanned partSiteInformation = getPartSiteInformationAsPlanned(completedJob);
-            partSiteInformationAsPlannedValidity = BPNIncidentValidation.jobContainsIncidentBPNSs(partSiteInformation,
-                    investigationJob.getIncidentBpns());
-        } catch (AspectTypeNotFoundException e) {
-            log.warn("Aspect not found.", e);
-            partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
-        }
-        return partSiteInformationAsPlannedValidity;
+            final Jobs completedJob) throws AspectTypeNotFoundException {
+        final PartSiteInformationAsPlanned partSiteInformation = getPartSiteInformationAsPlanned(completedJob);
+        return BPNIncidentValidation.jobContainsIncidentBPNSs(partSiteInformation, investigationJob.getIncidentBpns());
     }
 
-    private static SupplyChainImpacted validatePartAsPlanned(final Jobs completedJob) {
-        SupplyChainImpacted partAsPlannedValidity;
-        try {
-            final PartAsPlanned partAsPlanned = getPartAsPlanned(completedJob);
-            partAsPlannedValidity = BPNIncidentValidation.partAsPlannedValidity(partAsPlanned);
-        } catch (AspectTypeNotFoundException e) {
-            log.warn("Aspect not found.", e);
-            partAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
-        }
-        return partAsPlannedValidity;
+    private static SupplyChainImpacted validatePartAsPlanned(final Jobs completedJob)
+            throws AspectTypeNotFoundException {
+        final PartAsPlanned partAsPlanned = getPartAsPlanned(completedJob);
+        return BPNIncidentValidation.partAsPlannedValidity(partAsPlanned);
     }
 
     private static boolean anyBpnIsMissingFromRelationship(final Jobs completedJob) {
@@ -175,13 +163,28 @@ class InvestigationJobProcessingEventListener {
 
             final Optional<MultiTransferJob> multiTransferJob = jobStore.find(completedJobId.toString());
             multiTransferJob.ifPresent(job -> {
-                final Jobs completedJob = irsItemGraphQueryService.getJobForJobId(job, false);
-                final SupplyChainImpacted partAsPlannedValidity = validatePartAsPlanned(completedJob);
-                log.info("Local validation of PartAsPlanned Validity was done for job {}. with result {}.", completedJobId,
-                        partAsPlannedValidity);
-                final SupplyChainImpacted partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(
-                        investigationJob, completedJob);
-                log.info("Local validation of PartSiteInformationAsPlanned Validity was done for job {}. with result {}.",
+                Jobs completedJob = irsItemGraphQueryService.getJobForJobId(job, false);
+
+                SupplyChainImpacted partAsPlannedValidity;
+                try {
+                    partAsPlannedValidity = validatePartAsPlanned(completedJob);
+                } catch (AspectTypeNotFoundException e) {
+                    completedJob = createTombstone(e, completedJob);
+                    partAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
+                }
+                log.info("Local validation of PartAsPlanned Validity was done for job {}. with result {}.",
+                        completedJobId, partAsPlannedValidity);
+
+                SupplyChainImpacted partSiteInformationAsPlannedValidity;
+                try {
+                    partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(investigationJob,
+                            completedJob);
+                } catch (AspectTypeNotFoundException e) {
+                    completedJob = createTombstone(e, completedJob);
+                    partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
+                }
+                log.info(
+                        "Local validation of PartSiteInformationAsPlanned Validity was done for job {}. with result {}.",
                         completedJobId, partSiteInformationAsPlannedValidity);
 
                 final SupplyChainImpacted supplyChainImpacted = partAsPlannedValidity.or(
@@ -203,6 +206,13 @@ class InvestigationJobProcessingEventListener {
             });
 
         });
+    }
+
+    private static Jobs createTombstone(final AspectTypeNotFoundException e, final Jobs completedJob) {
+        log.warn("Aspect not found. {}", e.getMessage());
+        final Tombstone tombstone = Tombstone.from(completedJob.getJob().getGlobalAssetId().getGlobalAssetId(), null, e,
+                0, ProcessStep.ESS_VALIDATION);
+        return completedJob.toBuilder().tombstone(tombstone).build();
     }
 
     private boolean leafNodeIsReached(final Jobs completedJob) {
@@ -250,7 +260,8 @@ class InvestigationJobProcessingEventListener {
         bpns.forEach((bpn, globalAssetIds) -> {
             final List<String> edcBaseUrl = connectorEndpointsService.fetchConnectorEndpoints(bpn);
             if (edcBaseUrl.isEmpty()) {
-                log.warn("No EDC URL found for BPN '{}'. Setting investigation result to '{}'", bpn, SupplyChainImpacted.UNKNOWN);
+                log.warn("No EDC URL found for BPN '{}'. Setting investigation result to '{}'", bpn,
+                        SupplyChainImpacted.UNKNOWN);
                 investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN);
             }
             edcBaseUrl.forEach(url -> {

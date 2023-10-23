@@ -72,7 +72,6 @@ class InvestigationJobProcessingEventListenerTest {
 
     private final IrsItemGraphQueryService irsItemGraphQueryService = mock(IrsItemGraphQueryService.class);
     private final EdcSubmodelFacade edcSubmodelFacade = mock(EdcSubmodelFacade.class);
-    private final BpnInvestigationJobCache bpnInvestigationJobCache = Mockito.mock(BpnInvestigationJobCache.class);
     private final JobStore jobStore = Mockito.mock(JobStore.class);
     private final EssRecursiveNotificationHandler recursiveNotificationHandler = Mockito.mock(
             EssRecursiveNotificationHandler.class);
@@ -80,7 +79,7 @@ class InvestigationJobProcessingEventListenerTest {
     private final UUID recursiveJobId = UUID.randomUUID();
 
     private final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
-
+    final InMemoryBpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
     private final InvestigationJobProcessingEventListener jobProcessingEventListener = new InvestigationJobProcessingEventListener(
             irsItemGraphQueryService, connectorEndpointsService, edcSubmodelFacade, bpnInvestigationJobCache, jobStore,
             "", "", List.of(), recursiveNotificationHandler);
@@ -131,7 +130,6 @@ class InvestigationJobProcessingEventListenerTest {
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
                 any(EdcNotification.class));
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
     @Test
@@ -151,7 +149,6 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.UNKNOWN));
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
     @Test
@@ -173,7 +170,6 @@ class InvestigationJobProcessingEventListenerTest {
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
                 any(EdcNotification.class));
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
     @Test
@@ -200,7 +196,6 @@ class InvestigationJobProcessingEventListenerTest {
                                                                                                                  .getContent();
         assertThat(content.getIncidentBPNSs()).containsAll(List.of("BPNS000000000DDD"));
         assertThat(content.getConcernedCatenaXIds()).containsAll(List.of("childId1"));
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
     @Test
@@ -215,7 +210,6 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
     @Test
@@ -231,7 +225,6 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
         verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO));
     }
 
@@ -250,7 +243,6 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
     }
 
     @Test
@@ -275,7 +267,6 @@ class InvestigationJobProcessingEventListenerTest {
                 edcNotificationCaptor.capture());
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(recursiveJobId), any(BpnInvestigationJob.class));
     }
 
     @Test
@@ -302,8 +293,25 @@ class InvestigationJobProcessingEventListenerTest {
                 "ess-supplier-request");
         assertThat(content.getIncidentBPNSs()).containsAll(List.of("BPN1", "BPN2"));
         assertThat(content.getConcernedCatenaXIds()).containsAll(List.of("childId1"));
-        verify(this.bpnInvestigationJobCache, times(1)).store(eq(jobId), any(BpnInvestigationJob.class));
         verify(this.edcSubmodelFacade, times(1)).sendNotification(any(), any(), any(EdcNotification.class));
+    }
+
+    @Test
+    void shouldCreateTombstoneWhenAspectModelsMissing() throws EdcClientException {
+        // given
+        final var jobId = UUID.randomUUID();
+        createMockForJobIdAndShells(jobId, List.of("BPN123"));
+        final var finishedEvent = new JobProcessingFinishedEvent(jobId.toString(), JobState.COMPLETED.name(), null,
+                Optional.empty());
+
+        // when
+        jobProcessingEventListener.handleJobProcessingFinishedEvent(finishedEvent);
+
+        // then
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(jobId);
+        assertThat(job).isPresent();
+        assertThat(job.get().getJobSnapshot().getTombstones()).hasSize(2);
     }
 
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
@@ -351,8 +359,9 @@ class InvestigationJobProcessingEventListenerTest {
                               .build();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobs, incindentBPNSs);
 
-        when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
-        when(jobStore.find(mockedJobId.toString())).thenReturn(Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
+        bpnInvestigationJobCache.store(mockedJobId, bpnInvestigationJob);
+        when(jobStore.find(mockedJobId.toString())).thenReturn(
+                Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
         when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(false))).thenReturn(jobs);
     }
 
@@ -370,9 +379,9 @@ class InvestigationJobProcessingEventListenerTest {
                               .shells(bpns.stream().map(bpn -> createShell(UUID.randomUUID().toString(), bpn)).toList())
                               .build();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobs, List.of("BPNS000000000DDD"));
-
-        when(bpnInvestigationJobCache.findByJobId(mockedJobId)).thenReturn(Optional.of(bpnInvestigationJob));
-        when(jobStore.find(mockedJobId.toString())).thenReturn(Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
+        bpnInvestigationJobCache.store(mockedJobId, bpnInvestigationJob);
+        when(jobStore.find(mockedJobId.toString())).thenReturn(
+                Optional.of(MultiTransferJob.builder().job(jobs.getJob()).build()));
         when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(false))).thenReturn(jobs);
     }
 
