@@ -74,6 +74,17 @@ jobs:
             </servers>
           </settings>" > $HOME/.m2/settings.xml
 
+      - name: Copy License information
+        run: |
+          mkdir -p irs-registry-client/src/main/resources/META-INF/
+          mkdir -p irs-edc-client/src/main/resources/META-INF/
+          mkdir -p irs-models/src/main/resources/META-INF/
+          mkdir -p irs-testing/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-registry-client/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-edc-client/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-models/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-testing/src/main/resources/META-INF/
+
       # publish snapshots or releases
       - name: Publish version
         run: |-
