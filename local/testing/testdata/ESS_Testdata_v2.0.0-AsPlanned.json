@@ -906,6 +906,201 @@
           ]
         }
       ]
+    },
+    {
+      "catenaXId": "urn:uuid:b0faace3-d41f-45b8-9573-175a33efbaaf",
+      "bpnl": "BPNL00ARBITRARY8",
+      "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2013-09-21T23:24:07.000Z",
+            "validTo": "2026-11-22T17:35:54.000Z"
+          },
+          "catenaXId": "urn:uuid:b0faace3-d41f-45b8-9573-175a33efbaaf",
+          "partTypeInformation": {
+            "manufacturerPartId": "FJ-87",
+            "classification": "product",
+            "nameAtManufacturer": "Vehicle Model E"
+          }
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:b0faace3-d41f-45b8-9573-175a33efbaaf",
+          "childItems": [
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNL0ARBITRARY10",
+              "catenaXId": "urn:uuid:1d12d050-d388-4f3d-a880-c9ec4ac84786"
+            },
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNL00ARBITRARY9",
+              "catenaXId": "urn:uuid:ec759282-e8fb-4a94-aafe-71585a3f2948"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:ec759282-e8fb-4a94-aafe-71585a3f2948",
+      "bpnl": "BPNL00ARBITRARY9",
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:ec759282-e8fb-4a94-aafe-71585a3f2948",
+          "childItems": []
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:1d12d050-d388-4f3d-a880-c9ec4ac84786",
+      "bpnl": "BPNL0ARBITRARY10",
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:1d12d050-d388-4f3d-a880-c9ec4ac84786",
+          "childItems": [
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNL0ARBITRARY11",
+              "catenaXId": "urn:uuid:b636c28a-6924-4498-88f9-5d073f16ed65"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:b636c28a-6924-4498-88f9-5d073f16ed65",
+      "bpnl": "BPNL0ARBITRARY11",
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:b636c28a-6924-4498-88f9-5d073f16ed65",
+          "childItems": []
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:f5024c70-6c4f-4ec5-b23b-aa6a91110611",
+      "bpnl": "BPNL00ARBITRARY8",
+      "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f",
+          "sites": [
+            {
+              "functionValidUntil": "2025-03-23T05:10:13.000Z",
+              "function": "production",
+              "functionValidFrom": "2018-12-09T05:11:28.000Z",
+              "catenaXSiteId": "BPNS00ARBITRARY8"
+            }
+          ]
+        }
+      ],
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:f5024c70-6c4f-4ec5-b23b-aa6a91110611",
+          "childItems": [
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNL0ARBITRARY10",
+              "catenaXId": "urn:uuid:5d827e81-ac88-4acb-8a0e-8565ddd729b1"
+            },
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNL00ARBITRARY9",
+              "catenaXId": "urn:uuid:51eeafa1-a7a5-4f2d-8c7a-15036eb43553"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:51eeafa1-a7a5-4f2d-8c7a-15036eb43553",
+      "bpnl": "BPNL00ARBITRARY9",
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:51eeafa1-a7a5-4f2d-8c7a-15036eb43553",
+          "childItems": []
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:5d827e81-ac88-4acb-8a0e-8565ddd729b1",
+      "bpnl": "BPNL0ARBITRARY10",
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:5d827e81-ac88-4acb-8a0e-8565ddd729b1",
+          "childItems": [
+            {
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "quantityNumber": 1,
+                "measurementUnit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+              "businessPartner": "BPNL0ARBITRARY11",
+              "catenaXId": "urn:uuid:31557090-b504-41a2-8f13-e0e2c2c16932"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:31557090-b504-41a2-8f13-e0e2c2c16932",
+      "bpnl": "BPNL0ARBITRARY11",
+      "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:31557090-b504-41a2-8f13-e0e2c2c16932",
+          "childItems": []
+        }
+      ]
     }
   ]
 }
