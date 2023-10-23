@@ -2185,6 +2185,7 @@ components:
             - BpdmRequest
             - BpdmValidation
             - UsagePolicyValidation
+            - EssValidation
         retryCounter:
           type: integer
           format: int32

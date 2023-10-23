@@ -35,14 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
-import org.eclipse.tractusx.irs.component.enums.ProcessStep;
-import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
-import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
-import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
@@ -50,7 +44,8 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHea
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
-import org.eclipse.tractusx.irs.ess.bpn.validation.BPNIncidentValidation;
+import org.eclipse.tractusx.irs.ess.bpn.validation.IncidentValidation;
+import org.eclipse.tractusx.irs.ess.bpn.validation.InvestigationResult;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.jetbrains.annotations.NotNull;
@@ -98,6 +93,39 @@ class InvestigationJobProcessingEventListener {
         this.recursiveNotificationHandler = recursiveNotificationHandler;
     }
 
+    @Async
+    @EventListener
+    public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
+        final UUID completedJobId = UUID.fromString(jobProcessingFinishedEvent.jobId());
+        final Optional<BpnInvestigationJob> bpnInvestigationJob = bpnInvestigationJobCache.findByJobId(completedJobId);
+
+        bpnInvestigationJob.ifPresent(investigationJob -> {
+            log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", completedJobId);
+
+            final Optional<MultiTransferJob> multiTransferJob = jobStore.find(completedJobId.toString());
+            multiTransferJob.ifPresent(job -> {
+                Jobs completedJob = irsItemGraphQueryService.getJobForJobId(job, false);
+
+                InvestigationResult investigationResult = IncidentValidation.getResult(investigationJob, completedJob,
+                        completedJobId);
+
+                final BpnInvestigationJob investigationJobUpdate = investigationJob.update(
+                        investigationResult.completedJob(), investigationResult.supplyChainImpacted());
+
+                if (leafNodeIsReached(investigationResult.completedJob()) || supplyChainIsImpacted(
+                        investigationResult.supplyChainImpacted())) {
+                    bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate.complete());
+                    recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
+                            investigationResult.supplyChainImpacted());
+                } else {
+                    triggerInvestigationOnNextLevel(investigationResult.completedJob(), investigationJobUpdate);
+                    bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
+                }
+            });
+
+        });
+    }
+
     private static Map<String, List<String>> getBPNsFromRelationships(final List<Relationship> relationships) {
         return relationships.stream()
                             .filter(relationship -> relationship.getBpn() != null)
@@ -112,107 +140,8 @@ class InvestigationJobProcessingEventListener {
         return edcAddresses.entrySet().stream().filter(t -> t.getValue().isEmpty()).toList();
     }
 
-    private static PartSiteInformationAsPlanned getPartSiteInformationAsPlanned(final Jobs job)
-            throws AspectTypeNotFoundException {
-        final String value = getAspectTypeFromJob(job, AspectType.PART_SITE_INFORMATION_AS_PLANNED);
-        return StringMapper.mapFromString(value, PartSiteInformationAsPlanned.class);
-    }
-
-    private static PartAsPlanned getPartAsPlanned(final Jobs job) throws AspectTypeNotFoundException {
-        final String value = getAspectTypeFromJob(job, AspectType.PART_AS_PLANNED);
-        return StringMapper.mapFromString(value, PartAsPlanned.class);
-    }
-
-    private static String getAspectTypeFromJob(final Jobs job, final AspectType aspectType)
-            throws AspectTypeNotFoundException {
-        log.debug("Searching for AspectType '{}'", aspectType.toString());
-        return StringMapper.mapToString(job.getSubmodels()
-                                           .stream()
-                                           .filter(submodel -> submodel.getAspectType().endsWith(aspectType.toString()))
-                                           .findFirst()
-                                           .orElseThrow(() -> new AspectTypeNotFoundException(
-                                                   "AspectType '%s' not found in Job.".formatted(
-                                                           aspectType.toString())))
-                                           .getPayload());
-    }
-
-    private static SupplyChainImpacted validatePartSiteInformationAsPlanned(final BpnInvestigationJob investigationJob,
-            final Jobs completedJob) throws AspectTypeNotFoundException {
-        final PartSiteInformationAsPlanned partSiteInformation = getPartSiteInformationAsPlanned(completedJob);
-        return BPNIncidentValidation.jobContainsIncidentBPNSs(partSiteInformation, investigationJob.getIncidentBpns());
-    }
-
-    private static SupplyChainImpacted validatePartAsPlanned(final Jobs completedJob)
-            throws AspectTypeNotFoundException {
-        final PartAsPlanned partAsPlanned = getPartAsPlanned(completedJob);
-        return BPNIncidentValidation.partAsPlannedValidity(partAsPlanned);
-    }
-
     private static boolean anyBpnIsMissingFromRelationship(final Jobs completedJob) {
         return completedJob.getRelationships().stream().anyMatch(relationship -> relationship.getBpn() == null);
-    }
-
-    @Async
-    @EventListener
-    public void handleJobProcessingFinishedEvent(final JobProcessingFinishedEvent jobProcessingFinishedEvent) {
-        final UUID completedJobId = UUID.fromString(jobProcessingFinishedEvent.jobId());
-        final Optional<BpnInvestigationJob> bpnInvestigationJob = bpnInvestigationJobCache.findByJobId(completedJobId);
-
-        bpnInvestigationJob.ifPresent(investigationJob -> {
-            log.info("Job is completed. Starting SupplyChainImpacted processing for job {}.", completedJobId);
-
-            final Optional<MultiTransferJob> multiTransferJob = jobStore.find(completedJobId.toString());
-            multiTransferJob.ifPresent(job -> {
-                Jobs completedJob = irsItemGraphQueryService.getJobForJobId(job, false);
-
-                SupplyChainImpacted partAsPlannedValidity;
-                try {
-                    partAsPlannedValidity = validatePartAsPlanned(completedJob);
-                } catch (AspectTypeNotFoundException e) {
-                    completedJob = createTombstone(e, completedJob);
-                    partAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
-                }
-                log.info("Local validation of PartAsPlanned Validity was done for job {}. with result {}.",
-                        completedJobId, partAsPlannedValidity);
-
-                SupplyChainImpacted partSiteInformationAsPlannedValidity;
-                try {
-                    partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(investigationJob,
-                            completedJob);
-                } catch (AspectTypeNotFoundException e) {
-                    completedJob = createTombstone(e, completedJob);
-                    partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
-                }
-                log.info(
-                        "Local validation of PartSiteInformationAsPlanned Validity was done for job {}. with result {}.",
-                        completedJobId, partSiteInformationAsPlannedValidity);
-
-                final SupplyChainImpacted supplyChainImpacted = partAsPlannedValidity.or(
-                        partSiteInformationAsPlannedValidity);
-                log.debug("Supply Chain Validity result of {} and {} resulted in {}", partAsPlannedValidity,
-                        partSiteInformationAsPlannedValidity, supplyChainImpacted);
-
-                final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob,
-                        supplyChainImpacted);
-
-                if (leafNodeIsReached(completedJob) || supplyChainIsImpacted(supplyChainImpacted)) {
-                    bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate.complete());
-                    recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
-                            supplyChainImpacted);
-                } else {
-                    triggerInvestigationOnNextLevel(completedJob, investigationJobUpdate);
-                    bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
-                }
-            });
-
-        });
-    }
-
-    private static Jobs createTombstone(final AspectTypeNotFoundException e, final Jobs completedJob) {
-        log.warn("Aspect not found. {}", e.getMessage());
-        final Tombstone tombstone = Tombstone.from(completedJob.getJob().getGlobalAssetId().getGlobalAssetId(), null, e,
-                0, ProcessStep.ESS_VALIDATION);
-        return completedJob.toBuilder().tombstone(tombstone).build();
     }
 
     private boolean leafNodeIsReached(final Jobs completedJob) {
