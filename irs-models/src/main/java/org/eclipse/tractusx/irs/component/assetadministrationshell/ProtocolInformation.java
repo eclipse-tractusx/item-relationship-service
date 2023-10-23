@@ -42,7 +42,7 @@ public class ProtocolInformation {
     /**
      * endpointAddress
      */
-    @Schema(implementation = String.class, example = "https://eclipse-tractusx.github.io/docs-kits/kits/Traceability%20Kit/Software%20Development%20View/Specification%20Traceability%20Kit#submodel-descriptors")
+    @Schema(implementation = String.class, example = "https://edc.data.plane/{path}/submodel")
     private String href;
     /**
      * endpointProtocol

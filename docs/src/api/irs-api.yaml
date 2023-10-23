@@ -2231,7 +2231,7 @@ components:
       additionalProperties: false
       properties:
         href:
-          example: https://eclipse-tractusx.github.io/docs-kits/kits/Traceability%20Kit/Software%20Development%20View/Specification%20Traceability%20Kit#submodel-descriptors
+          example: https://edc.data.plane/{path}/submodel
           type: string
         endpointProtocol:
           example: HTTPS
