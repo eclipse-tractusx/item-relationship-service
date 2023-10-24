@@ -61,6 +61,27 @@ def ESS_job_parameter_are_as_requested(response):
     assert 'PartSiteInformationAsPlanned' in aspects_list
     assert 'PartAsPlanned' in aspects_list
 
+def tombstone_for_EssValidation_are_correct(response, expectedTombstone):
+    error_list = response.json().get("tombstones")
+
+    for i in error_list:
+        print("Given tombstone: ", i)
+        catenaXId = i.get("catenaXId")
+        print("Given catenaXID: ", catenaXId)
+        processingErrorStep = i.get("processingError").get("processStep")
+        print("Processstep in ProcessingError: ", processingErrorStep)
+        processingErrorDetail = i.get("processingError").get("errorDetail")
+        print("ErrorMessage: ", processingErrorDetail)
+        processingErrorLastAttempt = i.get("processingError").get("lastAttempt")
+        print("LastAttempt: ", processingErrorLastAttempt)
+        processingErrorRetryCounter = i.get("processingError").get("retryCounter")
+        print("RetryCounter: ", processingErrorRetryCounter)
+        #assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
+        assert 'EssValidation' in processingErrorStep
+        assert expectedTombstone in processingErrorDetail
+        assert processingErrorLastAttempt is not None
+        assert 0 is processingErrorRetryCounter
+
 
 ############################## /\ ESS helpers /\ ##############################
 
