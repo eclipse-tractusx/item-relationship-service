@@ -33,7 +33,6 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
 import org.eclipse.tractusx.irs.component.partsiteinformationasplanned.PartSiteInformationAsPlanned;
 import org.eclipse.tractusx.irs.data.StringMapper;
-import org.eclipse.tractusx.irs.ess.service.AspectTypeNotFoundException;
 import org.eclipse.tractusx.irs.ess.service.BpnInvestigationJob;
 import org.eclipse.tractusx.irs.ess.service.SupplyChainImpacted;
 
@@ -70,7 +69,7 @@ public final class IncidentValidation {
         SupplyChainImpacted partSiteInformationAsPlannedValidity;
         try {
             partSiteInformationAsPlannedValidity = validatePartSiteInformationAsPlanned(investigationJob, completedJob);
-        } catch (final AspectTypeNotFoundException e) {
+        } catch (final ValidationException e) {
             completedJob = createTombstone(e, completedJob);
             partSiteInformationAsPlannedValidity = SupplyChainImpacted.UNKNOWN;
         }
@@ -84,7 +83,7 @@ public final class IncidentValidation {
     }
 
     private static SupplyChainImpacted validatePartSiteInformationAsPlanned(final BpnInvestigationJob investigationJob,
-            final Jobs completedJob) throws AspectTypeNotFoundException {
+            final Jobs completedJob) throws AspectTypeNotFoundException, InvalidAspectTypeFormatException {
         final PartSiteInformationAsPlanned partSiteInformation = getPartSiteInformationAsPlanned(completedJob);
         return BPNIncidentValidation.jobContainsIncidentBPNSs(partSiteInformation, investigationJob.getIncidentBpns());
     }
@@ -119,8 +118,8 @@ public final class IncidentValidation {
                                            .getPayload());
     }
 
-    private static Jobs createTombstone(final AspectTypeNotFoundException exception, final Jobs completedJob) {
-        log.warn("Aspect not found. {}", exception.getMessage());
+    private static Jobs createTombstone(final ValidationException exception, final Jobs completedJob) {
+        log.warn("Validation failed. {}", exception.getMessage());
         final Tombstone tombstone = Tombstone.from(completedJob.getJob().getGlobalAssetId().getGlobalAssetId(), null, exception,
                 0, ProcessStep.ESS_VALIDATION);
         return completedJob.toBuilder().tombstone(tombstone).build();
