@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -38,6 +39,7 @@ public class IdentifierKeyValuePair {
     /**
      * name
      */
+    @Schema(implementation = String.class, example = "engineserialid")
     private String name;
     /**
      * subjectId
@@ -46,6 +48,7 @@ public class IdentifierKeyValuePair {
     /**
      * value
      */
+    @Schema(implementation = String.class, example = "12309481209312")
     private String value;
     /**
      * semanticId

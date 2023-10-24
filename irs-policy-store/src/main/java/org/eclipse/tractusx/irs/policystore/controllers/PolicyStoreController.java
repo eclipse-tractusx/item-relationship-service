@@ -165,8 +165,7 @@ public class PolicyStoreController {
         service.deletePolicy(policyId);
     }
 
-    @Operation(operationId = "updateAllowedPolicy",
-               summary = "Updates an existing policy with new validUntil value.",
+    @Operation(operationId = "updateAllowedPolicy", summary = "Updates an existing policy with new validUntil value.",
                security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
                tags = { "Item Relationship Service" },
                description = "Updates an existing policy with new validUntil value.")
@@ -193,7 +192,8 @@ public class PolicyStoreController {
     @PutMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void updateAllowedPolicy(@PathVariable("policyId") final String policyId, final @Valid @RequestBody UpdatePolicyRequest request) {
+    public void updateAllowedPolicy(@PathVariable("policyId") final String policyId,
+            final @Valid @RequestBody UpdatePolicyRequest request) {
         service.updatePolicy(policyId, request);
     }
 }
