@@ -384,6 +384,62 @@ stages:
         content-type: application/json
 
 
+---
+
+
+test_name: Make sure investigation job for globalAssetId with missing PartSiteInformationAsPlanned is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          globalAssetId: uurn:uuid:b0faace3-d41f-45b8-9573-175a33efbaaf
+          bpn: BPNL00ARBITRARY8
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNL0ARBITRARY11
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
+          extra_kwargs:
+            expectedTombstone: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
+      headers:
+        content-type: application/json
+
 ############################### \/ ESS Tests with T-Systems and submodel servers \/ ##############################
 ####### !!!!!! Commented out since there is no testdata available for the moment !!!!!! ######
 #---
