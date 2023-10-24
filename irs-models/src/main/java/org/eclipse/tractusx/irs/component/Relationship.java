@@ -51,8 +51,10 @@ public class Relationship {
 
     private LinkedItem linkedItem;
 
+    @Schema(implementation = String.class, example = "SingleLevelBomAsBuilt")
     private String aspectType;
 
+    @Schema(implementation = String.class, example = "BPNL00000003AYRE")
     private String bpn;
 
 }

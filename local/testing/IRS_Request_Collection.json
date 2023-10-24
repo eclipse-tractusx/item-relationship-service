@@ -1292,7 +1292,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"aspects\": [\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\",\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -1329,7 +1329,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"aspects\": [\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:05abf6ff-8c78-4b72-948b-40e08e9b83f3\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:05abf6ff-8c78-4b72-948b-40e08e9b83f3\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -1403,7 +1403,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"aspects\": [\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:5672e8ff-8a73-425e-b2a5-5561b5b21d7a\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\",\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:5672e8ff-8a73-425e-b2a5-5561b5b21d7a\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
