@@ -1008,15 +1008,28 @@
     {
       "catenaXId": "urn:uuid:f5024c70-6c4f-4ec5-b23b-aa6a91110611",
       "bpnl": "BPNL00ARBITRARY8",
+      "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned": [
+        {
+          "validityPeriod": {
+            "validFrom": "2013-09-21T23:24:07.000Z",
+            "validTo": "2026-11-22T17:35:54.000Z"
+          },
+          "catenaXId": "urn:uuid:f5024c70-6c4f-4ec5-b23b-aa6a91110611",
+          "partTypeInformation": {
+            "manufacturerPartId": "FJ-87",
+            "classification": "product",
+            "nameAtManufacturer": "Vehicle Model F"
+          }
+        }
+      ],
       "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned": [
         {
-          "catenaXId": "urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f",
+          "catenaXId": "urn:uuid:f5024c70-6c4f-4ec5-b23b-aa6a91110611",
           "sites": [
             {
               "functionValidUntil": "2025-03-23T05:10:13.000Z",
               "function": "production",
-              "functionValidFrom": "2018-12-09T05:11:28.000Z",
-              "catenaXSiteId": "BPNS00ARBITRARY8"
+              "functionValidFrom": "2018-12-09T05:11:28.000Z"
             }
           ]
         }
