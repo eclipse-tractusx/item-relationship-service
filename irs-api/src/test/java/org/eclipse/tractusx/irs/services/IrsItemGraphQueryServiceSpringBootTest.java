@@ -302,7 +302,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     private static void setSecurityContext() {
         JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
         Jwt token = mock(Jwt.class);
-        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("admin_irs")));
+        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority("view_irs")));
         when(jwtAuthenticationToken.getToken()).thenReturn(token);
         when(token.getClaim("clientId")).thenReturn("test-client-id");
         SecurityContext securityContext = mock(SecurityContext.class);

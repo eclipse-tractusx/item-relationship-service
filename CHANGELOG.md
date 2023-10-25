@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.4] - 2023-10-25
+### Changed
+- removed role "admin_irs"
+
 ## [3.5.3] - 2023-10-09
 ### Fixed
 - Fixed default policy creation.
@@ -385,7 +389,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.4...HEAD
+[3.5.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...3.5.4
 [3.5.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.2...3.5.3
 [3.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.1...3.5.2
 [3.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.0...3.5.1

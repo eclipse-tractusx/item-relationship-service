@@ -98,7 +98,7 @@ class IrsItemGraphQueryServiceTest {
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() throws Exception {
         // given
-        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
+        setupSecurityContextWithRole(IrsRoles.VIEW_IRS);
         final var jobId = UUID.randomUUID();
         final AASTransferProcess transfer1 = generate.aasTransferProcess();
         givenTransferResultIsStored(transfer1);
@@ -135,7 +135,7 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void cancelJobById() {
-        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
+        setupSecurityContextWithRole(IrsRoles.VIEW_IRS);
 
         final Job job = generate.fakeJob(JobState.CANCELED);
 
@@ -150,7 +150,7 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldThrowForbiddenExceptionWhenCancelingAnotherOwnerJob() {
-        setupSecurityContextWithRole(IrsRoles.VIEW_IRS);
+        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
 
         final Job job = generate.fakeJob(JobState.CANCELED);
 
@@ -170,7 +170,7 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldReturnFoundJobs() {
-        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
+        setupSecurityContextWithRole(IrsRoles.VIEW_IRS);
         final List<JobState> states = List.of(JobState.COMPLETED);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
                                                                   .job(generate.fakeJob(JobState.COMPLETED))

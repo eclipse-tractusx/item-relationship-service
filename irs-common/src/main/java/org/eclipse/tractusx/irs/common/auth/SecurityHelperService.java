@@ -53,7 +53,7 @@ public final class SecurityHelperService {
     }
 
     public boolean isAdmin() {
-        return getIrsRoles().contains(IrsRoles.ADMIN_IRS);
+        return getIrsRoles().contains(IrsRoles.VIEW_IRS);
     }
 
     public String getClientIdForViewIrs() {
