@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added configuration for IRS OAuth2 JWT token claim
 
+## [6.8.1] - 2023-10-25
+### Changed
+- Update IRS version to 3.5.4
+
 ## [6.8.0] - 2023-10-09
 ### Changed
 - Update IRS version to 3.5.3
