@@ -1,7 +1,7 @@
 {
     "relationships" : [
         {
-            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3 ",
+            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 2.5,
@@ -13,12 +13,13 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:2c74b701-0d31-4977-be94-42aae3b1ccde"
+                "childCatenaXId": "urn:uuid:d57a0374-45bc-4d9e-b44c-e6e75cfe84c0"
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "aspectType": "SingleLevelBomAsBuilt",
+            "bpn": "BPNL00000003B3NX"
         },
         {
-            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3 ",
+            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 0.2341,
@@ -30,12 +31,13 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:13931e36-2319-4c18-896d-c99ac9fd5b9f"
+                "childCatenaXId": "urn:uuid:098d565e-915a-4794-a60a-d92a8391bdde"
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "aspectType": "SingleLevelBomAsBuilt",
+            "bpn": "BPNL00000003AZQP"
         },
         {
-            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3 ",
+            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 0.2014,
@@ -47,12 +49,13 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:9a852ada-7d42-4a85-8a19-300503e234ae"
+                "childCatenaXId": "urn:uuid:aa42c959-a79c-4350-8ff8-3126a9e984a0"
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "aspectType": "SingleLevelBomAsBuilt",
+            "bpn": "BPNL00000003AYRE"
         },
         {
-            "catenaXId": "urn:uuid:2c74b701-0d31-4977-be94-42aae3b1ccde",
+            "catenaXId": "urn:uuid:d57a0374-45bc-4d9e-b44c-e6e75cfe84c0",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 0.1908,
@@ -64,9 +67,10 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:abce35f9-22c7-4a3b-b897-6f866a8039b7"
+                "childCatenaXId": "urn:uuid:6cae0932-05e2-467d-98d0-7d580938a23e"
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "aspectType": "SingleLevelBomAsBuilt",
+            "bpn": "BPNL00000003B0Q0"
         }
     ]
 }
