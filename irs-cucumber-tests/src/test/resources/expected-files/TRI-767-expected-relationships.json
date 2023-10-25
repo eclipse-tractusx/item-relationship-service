@@ -1,752 +1,2961 @@
 {
-    "relationships" : [
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:28aeca09-a251-4629-820d-eb047addc9c7"
+    "relationships" : [ {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:f45fd8ed-b726-4ecd-8fd9-20c238d66b90"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:1a067f63-ebbe-4be9-95df-239068ba98d1"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:a2eeceb4-60fc-463b-8627-fa0969031294"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:4079114c-10d4-42dc-8de5-7637698c2ad8"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:16a8d652-0f37-4bde-96bc-83618c3b256a"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:c5f253e2-f813-43c9-b889-00f78922d315"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003CSGV"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:eca9d287-af07-4f69-82f0-956a53eb1661"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:7d17ab0d-d879-4bae-bada-c65adf834dc7"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:b245732f-b37b-482f-9177-a8a9c56e8e1e"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:736ca592-a0b0-4394-b538-f251a4224125"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:a7aeb5e5-4350-4c3a-baf8-2f2482ef1477"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:18fc5f13-ae4c-4dcf-9a0d-ca8897ead240"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:821e04e4-7aa5-4bfd-918b-db272d7c24c9"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:94165d74-1014-4a92-9798-2caa308e3eec"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:c4d01eb2-2b5f-403e-9b92-9460273b778c"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:f449ed2f-92cf-40ce-a5b8-e6098ae5bb52"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:868135f9-d084-4f55-b58a-27d918bf8850"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:18dee324-3016-4968-bdce-a1338fec49c1"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:ebf46c60-7bb4-4cd2-9bf5-229a2f4e2495"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:7a9adc73-f408-4800-820d-0c82a6bb6b53"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:4cd0a7ce-5d0b-4717-8577-b2719871ee65"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:979818ab-6f5d-42d9-84aa-5fcbf69a06aa"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e4a153f3-a729-49d8-930c-211315da5408"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:bdb24ca0-906c-42f8-8be1-82f4411cc501"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:668d2112-0c1a-4803-8adb-efb3e038f811"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:540c139b-826e-458e-a536-d6a6d3d01d5e"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e8e5628c-5965-4860-91c0-2bc597680b92"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:24e65ea5-e0fd-4f55-b884-8526887a8dd1"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:de28a7b9-0e01-4d7d-8e10-b4eed42cf480"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B2OM"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:a1b9e6d8-f045-4f2d-b9f6-e10370ca596d"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:bea00d04-4430-464e-9eb0-ee28f0573bcc"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:dbe29e2e-2b18-4a0d-892b-9232ad4efea4"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:df82b2ff-d9ea-4b63-acb6-b2d82d1de603"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:7a73e310-3e08-47ce-9b3e-cbe59bbbd23d"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:7167ecf4-73f6-4c22-ad40-9cf0d5ee2372"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:03958eb2-501d-4356-a03e-e85da90c1f92"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:78a27700-13eb-4ccc-8095-cf35742900f9"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:21429e22-60e8-4e2a-9f15-73e1aa0a5f1f"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:5c08a8b4-ce61-4b2c-9df5-5df8e4e1e59b"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:fbbb255c-d02f-4d6a-8851-dd00130ed020"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:145d41b2-d6b9-4bc6-87ef-993e32341601"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:3a49690c-8af4-458a-bd37-0fa5a0519d0f"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003CSGV"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:36f4e2f7-2026-43bb-add2-3ad6f3871bce"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:9f8be7fc-b402-41c7-8d8d-7a527c217a4f"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:48953c6b-c644-4860-8ea9-e193066447d0"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:bfa5bc25-e7d3-41b3-9af7-9ba085fed120"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:9ea87074-6736-489b-a2fd-b696eb090fdb"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:702f242d-0697-4f83-bdfb-e598b36ac10e"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:a5659907-467f-454a-928f-31b4f00aad28"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:60bef7ae-f873-40e4-a824-1d0b66a1e19f"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d6294cf7-9e86-4737-8aa3-e45c03a7d493"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:57850083-6bc9-4a83-b3d3-ca72d4420d07"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:bb3284c3-593e-4c2b-b275-2dfccee2501b"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:a112ccd8-1476-455d-936b-783b951667ec"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B5MJ"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:23f27c5a-3edb-409d-a676-0e8615396aa9"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:3ad6542d-c83e-4250-b3e3-bcfd52c2a0ac"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:741a23d3-5749-40d5-b821-6048fbd84d14"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e7cb0fdc-2a5f-4d3d-9cf5-a963aad642a3"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:b890a234-d184-4315-be96-64d72b7c2425"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:b31969df-5274-44fc-a2f3-46eab5162718"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:655df4b0-bb83-4512-aa8f-caff64d32b15"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:00c8de5a-b6bd-4061-88c1-2484ea3d3090"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:16a8d652-0f37-4bde-96bc-83618c3b256a",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:805daf66-3f24-4fa8-9b00-f940fb0b3f19"
         },
-        {
-            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:0789ef4c-dab5-4caf-a0a6-d49bede78019"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000000BJTL"
+    }, {
+        "catenaXId" : "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e47f0639-8e20-4ae5-bd4a-6a07e2f106d9"
         },
-        {
-            "catenaXId": "urn:uuid:7d17ab0d-d879-4bae-bada-c65adf834dc7",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:66980e76-b79b-4fcf-9111-5b56261d42bb"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B3NX"
+    }, {
+        "catenaXId" : "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.2014,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5"
         },
-        {
-            "catenaXId": "urn:uuid:fbbb255c-d02f-4d6a-8851-dd00130ed020",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:7625422f-9504-4525-96c4-902cf81613e3"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.2341,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e0390640-5d3f-4e30-bfb8-05e7e802fcb0"
         },
-        {
-            "catenaXId": "urn:uuid:7a73e310-3e08-47ce-9b3e-cbe59bbbd23d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:d5b90624-e0cb-4b30-a307-28cf1f73c6c9"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AZQP"
+    }, {
+        "catenaXId" : "urn:uuid:e47f0639-8e20-4ae5-bd4a-6a07e2f106d9",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.1908,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:kilogram"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:f3964e8b-dd90-4748-bfeb-53f523b03052"
         },
-        {
-            "catenaXId": "urn:uuid:7a73e310-3e08-47ce-9b3e-cbe59bbbd23d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2341,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:eb1de933-0041-4a9b-943f-8d9383c913dc"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5"
         },
-        {
-            "catenaXId": "urn:uuid:7a73e310-3e08-47ce-9b3e-cbe59bbbd23d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2014,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:09eb595f-5e15-497a-ab9a-4b1ccef5bbcc"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3"
         },
-        {
-            "catenaXId": "urn:uuid:a1b9e6d8-f045-4f2d-b9f6-e10370ca596d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2001,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:669ac9ac-af10-494e-8512-a43230da6f7a"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1"
         },
-        {
-            "catenaXId": "urn:uuid:a1b9e6d8-f045-4f2d-b9f6-e10370ca596d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.3301,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:7f6360cf-26bc-4b52-a6ac-24ca1f4b1633"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2"
         },
-        {
-            "catenaXId": "urn:uuid:a1b9e6d8-f045-4f2d-b9f6-e10370ca596d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:861fd784-7c99-4a97-8838-6d2881ff1dd5"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c"
         },
-        {
-            "catenaXId": "urn:uuid:d5b90624-e0cb-4b30-a307-28cf1f73c6c9",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.1908,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:a2f52182-a9eb-414d-a3ab-35e9724fc75b"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef"
         },
-        {
-            "catenaXId": "urn:uuid:861fd784-7c99-4a97-8838-6d2881ff1dd5",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.1908,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:8b808b9d-6e56-4a16-b523-95ee1596d97d"
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AVTH"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
             },
-            "aspectType": "SingleLevelBomAsBuilt"
-        }
-    ]
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:533543fb-5d09-4270-b4d5-0323de239d9a"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AXS3"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:ca8f4933-b62e-40c1-b587-998edd5056f7"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:03ef68ec-225f-4a40-bbe4-b8e01d9a1556"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:8615eae2-6d30-43b2-af48-2440f5f1882d"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:5e53acc4-9e53-47c1-bf3a-2b9b943d5fc1"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:4a81499e-217e-4db4-af6d-f4cf5460d35e"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:bc2095c0-fc67-4789-96a6-2d3cd6a52eb8"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d128f21a-470c-4e91-86de-f7ec2fa70e98"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d997bd22-7d6f-4682-a834-d0c222006302"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:717a3353-d3e0-4a50-9b02-cd6d351cc2fe"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:82b2eac2-a016-479a-812b-403361ba3ed4"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:ca8f4933-b62e-40c1-b587-998edd5056f7",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:03ef68ec-225f-4a40-bbe4-b8e01d9a1556",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:8615eae2-6d30-43b2-af48-2440f5f1882d",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:5e53acc4-9e53-47c1-bf3a-2b9b943d5fc1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:4a81499e-217e-4db4-af6d-f4cf5460d35e",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:bc2095c0-fc67-4789-96a6-2d3cd6a52eb8",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:d128f21a-470c-4e91-86de-f7ec2fa70e98",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:d997bd22-7d6f-4682-a834-d0c222006302",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:717a3353-d3e0-4a50-9b02-cd6d351cc2fe",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:82b2eac2-a016-479a-812b-403361ba3ed4",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:533543fb-5d09-4270-b4d5-0323de239d9a"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AXS3"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:35af75da-bdfa-49ce-82a5-c6e820f8f6b9"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:2e5d7196-8b89-487a-b32b-dddb02dde8df"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:3137f97e-e491-401f-9e0a-1a228ed2e82e"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:8642a39c-fb2c-4f62-9e24-3084d84b8cde"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e0e5f8da-a96e-48b7-be61-ec095e908e6d"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:2d1b9029-6f99-4ec2-9c73-61b6fdb8c46f"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:a77a6b9a-8c15-46e2-aff4-64ea911473cc"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:b7e53300-e7d4-4f8d-b573-d15e97d723f8"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e8f81ac1-9567-4e46-ac6c-47f49100a70f"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:74cdf13c-a1db-4281-a4b7-ab4bb0abbcf3",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:b2bc89b4-8561-409b-bc97-5ad8bdb5aec0"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35af75da-bdfa-49ce-82a5-c6e820f8f6b9",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:2e5d7196-8b89-487a-b32b-dddb02dde8df",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:3137f97e-e491-401f-9e0a-1a228ed2e82e",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:8642a39c-fb2c-4f62-9e24-3084d84b8cde",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:e0e5f8da-a96e-48b7-be61-ec095e908e6d",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:2d1b9029-6f99-4ec2-9c73-61b6fdb8c46f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:a77a6b9a-8c15-46e2-aff4-64ea911473cc",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:b7e53300-e7d4-4f8d-b573-d15e97d723f8",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:e8f81ac1-9567-4e46-ac6c-47f49100a70f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:b2bc89b4-8561-409b-bc97-5ad8bdb5aec0",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:7ca976d7-7222-49f6-afd4-77344db82576"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:7ca43d7b-620e-4b03-8464-62aadf96f91e"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:3927a152-dd87-4eae-a52c-caec50c9bdf7"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e85e136c-966a-4d5e-9665-d71fba485ed8"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:eeeddc84-3f30-4571-a8ed-200b6948c12b"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:b38663d0-68f0-4d16-a73f-ca6dbbd84780"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:5ecb3cd3-fe55-4c53-a4a2-60fef5c79318"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:aca74f12-3e7f-4b27-b0d9-4392f4740a38"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:8efaad10-5f1c-445f-8faf-3381c5c29608"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3b2f5e2-5be5-4ea6-98f0-6876de0fca4f"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AXS3"
+    }, {
+        "catenaXId" : "urn:uuid:6ebaa472-3f9d-4c80-bcaa-2cee3eaf3fb1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:3970962c-e369-4559-bab7-1cbe26b0a6b6"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:7ca976d7-7222-49f6-afd4-77344db82576",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:7ca43d7b-620e-4b03-8464-62aadf96f91e",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:3927a152-dd87-4eae-a52c-caec50c9bdf7",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:e85e136c-966a-4d5e-9665-d71fba485ed8",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:eeeddc84-3f30-4571-a8ed-200b6948c12b",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:b38663d0-68f0-4d16-a73f-ca6dbbd84780",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:5ecb3cd3-fe55-4c53-a4a2-60fef5c79318",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:aca74f12-3e7f-4b27-b0d9-4392f4740a38",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:8efaad10-5f1c-445f-8faf-3381c5c29608",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:3970962c-e369-4559-bab7-1cbe26b0a6b6",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:533543fb-5d09-4270-b4d5-0323de239d9a"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AXS3"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d0297eed-e5e4-4f4f-9dcd-6c18848c6358"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:60a522d7-5b7d-420a-80a3-b196afba3f18"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:26c8944d-6641-4ea2-be39-f8b3c470369a"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:53c3aa46-9dcc-45ae-bcf5-5c7ea1e6ab28"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:9dbc8565-8eaa-433b-b618-4942a7137d56"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:1c7f8ce4-273b-4e4f-99d3-6b7e27780f78"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:8442b1ca-88be-4de6-82bb-81a67b98ae96"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d5a07cc2-eeab-464f-b4bc-2776aefac9c2"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:3b2a4ea2-c158-47b9-86dc-4815034a4efa"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:4aa5c9da-a53b-4a8a-a3b8-fb6d50e328e2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:71f11591-3394-4ca7-a7da-8fc36dd0519c"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:d0297eed-e5e4-4f4f-9dcd-6c18848c6358",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:60a522d7-5b7d-420a-80a3-b196afba3f18",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:26c8944d-6641-4ea2-be39-f8b3c470369a",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:53c3aa46-9dcc-45ae-bcf5-5c7ea1e6ab28",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:9dbc8565-8eaa-433b-b618-4942a7137d56",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:1c7f8ce4-273b-4e4f-99d3-6b7e27780f78",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:8442b1ca-88be-4de6-82bb-81a67b98ae96",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:d5a07cc2-eeab-464f-b4bc-2776aefac9c2",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:3b2a4ea2-c158-47b9-86dc-4815034a4efa",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:71f11591-3394-4ca7-a7da-8fc36dd0519c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:1f8f62d7-214f-45cd-8ebf-10c65aec0e56"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:d006e247-d28a-425c-b135-5e41b2686c5e"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e8e746e9-1a2c-490a-8887-fa2c745c4730"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:6cbbc979-2131-4018-a2c7-a3524f9b2c9e"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:f4ff2137-8f91-403a-98ae-d03279d828ea"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:f7817a1f-11ca-40e0-abd8-25a4c2dfb5c1"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:0a6cdb07-774e-4598-9c5d-b763e409a922"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:7a2857ee-cca8-4c53-9179-85f64cba99bf"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3b2f5e2-5be5-4ea6-98f0-6876de0fca4f"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AXS3"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:57536826-9412-4605-b05f-1824ca63ec29"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:35e09b92-b06d-4d2d-b412-d342c0315b0c",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:dee1c53a-c476-4356-ab7f-24b2a4d83b24"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:1f8f62d7-214f-45cd-8ebf-10c65aec0e56",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:d006e247-d28a-425c-b135-5e41b2686c5e",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:e8e746e9-1a2c-490a-8887-fa2c745c4730",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:6cbbc979-2131-4018-a2c7-a3524f9b2c9e",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:f4ff2137-8f91-403a-98ae-d03279d828ea",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:f7817a1f-11ca-40e0-abd8-25a4c2dfb5c1",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:0a6cdb07-774e-4598-9c5d-b763e409a922",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:7a2857ee-cca8-4c53-9179-85f64cba99bf",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:57536826-9412-4605-b05f-1824ca63ec29",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:dee1c53a-c476-4356-ab7f-24b2a4d83b24",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:533543fb-5d09-4270-b4d5-0323de239d9a"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AXS3"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:47f3d860-27c4-414f-909c-eb9bee5d527f"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:18e8a869-e179-49db-8ff7-5fdb0cc7cb40"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:76920e1c-7621-46e0-9c5f-782d6faae99b"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:c9a2a270-2005-44fe-b66e-4f9124b692ac"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:c493dac0-eb37-4027-b588-a48a77aac102"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:87e935cb-8f24-4841-9a21-0dca1504bb2f"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:f420664b-46b4-4b5e-905c-eeaa8f802918"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:7b7e35f0-a630-4de7-9219-d88c415f4856"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:73b09688-d4b9-48eb-baad-d06bd503580d"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:dad101a2-b874-472b-8367-35f0bdf13cef",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:f2b7288c-790f-42ed-a4d5-632943f45305"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AYRE"
+    }, {
+        "catenaXId" : "urn:uuid:47f3d860-27c4-414f-909c-eb9bee5d527f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:18e8a869-e179-49db-8ff7-5fdb0cc7cb40",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:76920e1c-7621-46e0-9c5f-782d6faae99b",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:c9a2a270-2005-44fe-b66e-4f9124b692ac",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:c493dac0-eb37-4027-b588-a48a77aac102",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:87e935cb-8f24-4841-9a21-0dca1504bb2f",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:f420664b-46b4-4b5e-905c-eeaa8f802918",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:7b7e35f0-a630-4de7-9219-d88c415f4856",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:73b09688-d4b9-48eb-baad-d06bd503580d",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:f2b7288c-790f-42ed-a4d5-632943f45305",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:145d41b2-d6b9-4bc6-87ef-993e32341601",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:a0d06bda-9c15-4f15-9bfa-e84679894e6e"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000000BJTL"
+    }, {
+        "catenaXId" : "urn:uuid:bb3284c3-593e-4c2b-b275-2dfccee2501b",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 2.5,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:litre"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:6e0ba792-cd80-47c2-8990-e5776935285e"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B3NX"
+    }, {
+        "catenaXId" : "urn:uuid:bb3284c3-593e-4c2b-b275-2dfccee2501b",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.2001,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:kilogram"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:566df99c-77a4-445b-87ab-6ae6f057ba3f"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    }, {
+        "catenaXId" : "urn:uuid:bb3284c3-593e-4c2b-b275-2dfccee2501b",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.3301,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:kilogram"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:ba78a74a-367c-4243-af47-7789d275b525"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003AXS3"
+    }, {
+        "catenaXId" : "urn:uuid:6e0ba792-cd80-47c2-8990-e5776935285e",
+        "linkedItem" : {
+            "quantity" : {
+                "quantityNumber" : 0.1908,
+                "measurementUnit" : {
+                    "datatypeURI" : null,
+                    "lexicalValue" : "unit:kilogram"
+                }
+            },
+            "lifecycleContext" : "asBuilt",
+            "assembledOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
+            "childCatenaXId" : "urn:uuid:5e452e92-94f8-46bf-8b11-5ee6359f7184"
+        },
+        "aspectType" : "SingleLevelBomAsBuilt",
+        "bpn" : "BPNL00000003B0Q0"
+    } ]
 }
