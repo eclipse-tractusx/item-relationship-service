@@ -76,7 +76,6 @@ def tombstone_for_EssValidation_are_correct(response, expectedTombstone):
         print("LastAttempt: ", processingErrorLastAttempt)
         processingErrorRetryCounter = i.get("processingError").get("retryCounter")
         print("RetryCounter: ", processingErrorRetryCounter)
-        #assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
         assert 'EssValidation' in processingErrorStep
         assert expectedTombstone in processingErrorDetail
         assert processingErrorLastAttempt is not None
