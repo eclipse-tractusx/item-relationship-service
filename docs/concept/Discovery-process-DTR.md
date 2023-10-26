@@ -1,9 +1,5 @@
 # \[TRI-1576\] \[CONCEPT\] Handling of assets provided by multiple Digital Twin Registries
 
-## TODO
-
-1. Same procedure for Notifications?
-
 ## Glossary
 
 | Abbreviation | Name                        |
@@ -41,7 +37,7 @@ sequenceDiagram
 
 ### Multiple EDCs with one DTR
 
-IRS stars a contract negotiation for all registry contract offers and queries the DTRs for all successful
+IRS starts a contract negotiation for all registry contract offers and queries the DTRs for all successful
 negotiations.  
 The first registry which responds with a result will be the one used by IRS.
 
@@ -136,6 +132,16 @@ If no DT could be found in any of the DTRs, IRS will create a tombstone.
 
 ### Multiple DTs (with the same globalAssetId) in one DTRs
 
-IRS uses the /query endpoint of the DTR to get the DT id based on the globalAssetId. If more than one id are present for a globalAssetId, IRS will use the first of the list.
+IRS uses the /query endpoint of the DTR to get the DT id based on the globalAssetId. If more than one id are present for
+a globalAssetId, IRS will use the first of the list.
 
+````mermaid
+sequenceDiagram
+    IRS ->> DTR: /query for globalAssetId
+    DTR ->> IRS: return list of two results
+    IRS ->> IRS: use first
+````
 
+## To be clarified
+
+1. How should the procedure look like for Notifications?
