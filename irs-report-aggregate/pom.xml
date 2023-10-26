@@ -22,7 +22,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>irs-models</artifactId>
-            <version>${project.version}</version>
+            <version>${irs-registry-client.version}</version>
         </dependency>
     </dependencies>
     <build>
