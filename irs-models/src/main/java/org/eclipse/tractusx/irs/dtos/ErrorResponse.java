@@ -40,6 +40,7 @@ import org.springframework.http.HttpStatus;
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ErrorResponse.ErrorResponseBuilder.class)
 public class ErrorResponse {
+
     @Schema(description = "Error code.")
     private HttpStatus statusCode;
 

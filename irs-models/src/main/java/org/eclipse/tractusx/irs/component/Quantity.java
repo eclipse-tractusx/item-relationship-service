@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
@@ -39,6 +40,7 @@ public class Quantity {
 
     @Min(0)
     @Max(Integer.MAX_VALUE)
+    @Schema(implementation = Double.class, example = "1.0")
     private Double quantityNumber;
 
     private MeasurementUnit measurementUnit;

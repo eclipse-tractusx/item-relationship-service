@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -38,10 +39,12 @@ public class LangString {
     /**
      * language
      */
+    @Schema(implementation = String.class, example = "en")
     private String language;
     /**
      * text
      */
+    @Schema(implementation = String.class, example = "The shell for a vehicle")
     private String text;
 
 }

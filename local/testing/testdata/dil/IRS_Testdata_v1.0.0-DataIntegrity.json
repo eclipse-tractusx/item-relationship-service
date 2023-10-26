@@ -16,7 +16,7 @@
               "odrl:or": [
                 {
                   "@type": "Constraint",
-                  "odrl:leftOperand": "idsc:PURPOSE",
+                  "odrl:leftOperand": "PURPOSE",
                   "odrl:operator": {
                     "@id": "odrl:eq"
                   },
@@ -28,7 +28,7 @@
         ]
       }
     }
-  },
+  },		
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
     {
       "urn:bamm:io.catenax.vehicle.product_description:1.0.0#ProductDescription": [

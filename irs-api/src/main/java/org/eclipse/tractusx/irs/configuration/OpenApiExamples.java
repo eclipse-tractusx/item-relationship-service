@@ -30,10 +30,9 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
-import org.eclipse.tractusx.irs.ess.service.NotificationSummary;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
-import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
+import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.FetchedItems;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
@@ -67,6 +66,7 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.ess.service.NotificationSummary;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -82,8 +82,8 @@ import org.springframework.http.HttpStatus;
 public class OpenApiExamples {
     private static final ZonedDateTime EXAMPLE_ZONED_DATETIME = ZonedDateTime.parse("2022-02-03T14:48:54.709Z");
     private static final String JOB_ID = "e5347c88-a921-11ec-b909-0242ac120002";
-
-    private static final UUID UUID_ID = UUID.fromString("f253718e-a270-4367-901b-9d50d9bd8462");
+    private static final String EXAMPLE_ID = "f253718e-a270-4367-901b-9d50d9bd8462";
+    private static final UUID UUID_ID = UUID.fromString(EXAMPLE_ID);
     private static final String GLOBAL_ASSET_ID = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0";
     private static final String SUBMODEL_IDENTIFICATION = "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff";
     private static final String JOB_HANDLE_ID_1 = "6c311d29-5753-46d4-b32c-19b918ea93b0";

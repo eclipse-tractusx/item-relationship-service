@@ -48,14 +48,14 @@ public class JobErrorDetails implements Serializable {
     public static final int ERROR_DETAIL_MAX_LENGTH = 4000;
 
     @Schema(description = "Exception name.", implementation = String.class,
-            maxLength = EXCEPTION_NAME_MAX_LENGTH)
+            maxLength = EXCEPTION_NAME_MAX_LENGTH, example = "IrsTimeoutException")
     private String exception;
 
     @Schema(description = "Detailed exception information.", implementation = String.class,
-            maxLength = ERROR_DETAIL_MAX_LENGTH)
+            maxLength = ERROR_DETAIL_MAX_LENGTH, example = "Timeout while requesting Digital Registry")
     private String errorDetail;
 
-    @Schema(description = "Datetime error occurs.", implementation = ZonedDateTime.class)
+    @Schema(description = "Datetime error occurs.", implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
     private ZonedDateTime exceptionDate;
 
 }
