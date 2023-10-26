@@ -37,7 +37,7 @@ sequenceDiagram
 
 ### Multiple EDCs with one DTR
 
-IRS starts a contract negotiation for all registry contract offers and queries the DTRs for all successful
+IRS starts a contract negotiation for all registry contract offers in parallel and queries the DTRs for all successful
 negotiations.  
 The first registry which responds with a result will be the one used by IRS.
 
@@ -132,7 +132,7 @@ If no DT could be found in any of the DTRs, IRS will create a tombstone.
 
 ### Multiple DTs (with the same globalAssetId) in one DTRs
 
-IRS uses the /query endpoint of the DTR to get the DT id based on the globalAssetId. If more than one id are present for
+IRS uses the /query endpoint of the DTR to get the DT id based on the globalAssetId. If more than one id is present for
 a globalAssetId, IRS will use the first of the list.
 
 ````mermaid
