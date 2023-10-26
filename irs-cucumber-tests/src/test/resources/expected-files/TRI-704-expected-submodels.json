@@ -105,19 +105,7 @@
         "materialAbbreviation" : "CO7"
       } ]
     }
-  }, {
-    "identification" : "77d1ada6-d1d3-4d20-bbfe-b42e9da8243a",
-    "aspectType" : "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension",
-    "payload" : {
-      "physicalDimensionsProperty" : {
-        "diameter" : 380,
-        "width" : 590,
-        "length" : 810,
-        "weight" : 85,
-        "height" : 610
-      }
-    }
-  }, {
+  },  {
     "identification" : "1e3766ab-79a0-4592-a708-c5579ca8ac04",
     "aspectType" : "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt",
     "payload" : {
