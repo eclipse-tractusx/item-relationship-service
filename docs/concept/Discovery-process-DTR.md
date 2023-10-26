@@ -8,10 +8,14 @@
 | DTR          | Digital Twin Registry       |
 | DT           | Digital Twin                |
 
+
+## Out of scope
+This concept does not include the discovery process for EDC notifications. This will be done in a separate concept.
+
 ## Scenarios
 
 IRS is not able to validate if a certain data offer is correct or outdated. IRS will take the first responding offer
-which is available.
+which is available, all other requests are disregarded after that and the responses are ignored.
 
 ### EDC with multiple DTRs
 
@@ -39,7 +43,7 @@ sequenceDiagram
 
 IRS starts a contract negotiation for all registry contract offers in parallel and queries the DTRs for all successful
 negotiations.  
-The first registry which responds with a result will be the one used by IRS.
+The first registry which responds with a DT will be the one used by IRS.
 
 ````mermaid
 sequenceDiagram
@@ -141,7 +145,3 @@ sequenceDiagram
     DTR ->> IRS: return list of two results
     IRS ->> IRS: use first
 ````
-
-## To be clarified
-
-1. How should the procedure look like for Notifications?
