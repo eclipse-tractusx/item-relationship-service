@@ -21,27 +21,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.enums;
-
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package org.eclipse.tractusx.irs.ess.bpn.validation;
 
 /**
- * Process step information
+ * Exception thrown if ESS Validation could not find a mandatory field in an aspect model.
  */
-@Getter
-@AllArgsConstructor
-public enum ProcessStep {
-    SUBMODEL_REQUEST("SubmodelRequest"),
-    DIGITAL_TWIN_REQUEST("DigitalTwinRequest"),
-    SCHEMA_VALIDATION("SchemaValidation"),
-    SCHEMA_REQUEST("SchemaRequest"),
-    BPDM_REQUEST("BpdmRequest"),
-    BPDM_VALIDATION("BpdmValidation"),
-    USAGE_POLICY_VALIDATION("UsagePolicyValidation"),
-    ESS_VALIDATION("EssValidation");
-
-    @JsonValue
-    private final String value;
+public class InvalidAspectTypeFormatException extends ValidationException {
+    public InvalidAspectTypeFormatException(final String message) {
+        super(message);
+    }
 }
