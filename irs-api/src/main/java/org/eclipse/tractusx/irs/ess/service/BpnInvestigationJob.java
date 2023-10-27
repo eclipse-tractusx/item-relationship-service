@@ -54,7 +54,7 @@ public class BpnInvestigationJob {
 
     private Jobs jobSnapshot;
     private List<String> incidentBpns;
-    private List<String> unansweredNotifications;
+    private List<String> unansweredNotificationIds;
     private List<EdcNotification<ResponseNotificationContent>> answeredNotifications;
     private JobState state;
 
@@ -112,19 +112,19 @@ public class BpnInvestigationJob {
         final Summary oldSummary = Optional.ofNullable(irsJob.getJob().getSummary()).orElse(Summary.builder().build());
         final NotificationSummary newSummary = new NotificationSummary(oldSummary.getAsyncFetchedItems(),
                 oldSummary.getBpnLookups(),
-                new NotificationItems(unansweredNotifications.size() + answeredNotifications.size(),
+                new NotificationItems(unansweredNotificationIds.size() + answeredNotifications.size(),
                         answeredNotifications.size()));
         final Job job = irsJob.getJob().toBuilder().summary(newSummary).build();
         return irsJob.toBuilder().job(job).build();
     }
 
-    public BpnInvestigationJob withNotifications(final List<String> notifications) {
-        this.unansweredNotifications.addAll(notifications);
+    public BpnInvestigationJob withUnansweredNotificationIds(final List<String> notifications) {
+        this.unansweredNotificationIds.addAll(notifications);
         return this;
     }
 
     public BpnInvestigationJob withAnsweredNotification(final EdcNotification<ResponseNotificationContent> notification) {
-        this.unansweredNotifications.remove(notification.getHeader().getOriginalNotificationId());
+        this.unansweredNotificationIds.remove(notification.getHeader().getOriginalNotificationId());
         notification.getContent().incrementHops();
         this.answeredNotifications.add(notification);
         return this;

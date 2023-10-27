@@ -40,4 +40,8 @@ public class ResponseNotificationContent implements NotificationContent {
     public void incrementHops() {
         hops += 1;
     }
+
+    public boolean thereIsIncident() {
+        return this.getResult().equalsIgnoreCase("Yes");
+    }
 }

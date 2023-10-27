@@ -257,7 +257,7 @@ class InvestigationJobProcessingEventListener {
                 try {
                     final String notificationId = sendEdcNotification(bpn, url,
                             investigationJobUpdate.getIncidentBpns(), globalAssetIds);
-                    investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
+                    investigationJobUpdate.withUnansweredNotificationIds(Collections.singletonList(notificationId));
                 } catch (final EdcClientException e) {
                     log.error("Exception during sending EDC notification.", e);
                     investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0);

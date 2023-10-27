@@ -51,6 +51,8 @@ import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
@@ -136,7 +138,7 @@ class EssServiceTest {
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
                 Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
-                new ArrayList<>()).withNotifications(List.of(notificationId, notificationId2));
+                new ArrayList<>()).withUnansweredNotificationIds(List.of(notificationId, notificationId2));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
@@ -174,7 +176,7 @@ class EssServiceTest {
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
                 Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
-                new ArrayList<>()).withNotifications(Collections.singletonList(notificationId));
+                new ArrayList<>()).withUnansweredNotificationIds(Collections.singletonList(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
@@ -198,8 +200,19 @@ class EssServiceTest {
 
         final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId, owner);
+        final EdcNotification<ResponseNotificationContent> answeredNotification = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                  .header(EdcNotificationHeader.builder()
+                                                                                                               .notificationId(
+                                                                                                                       notificationId)
+                                                                                                               .build())
+                                                                                  .content(
+                                                                                          ResponseNotificationContent.builder()
+                                                                                                                     .result(SupplyChainImpacted.YES.getDescription())
+                                                                                                                     .hops(0)
+                                                                                                                     .build())
+                                                                                  .build();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot,
-                null)/*.withAnsweredNotification(notificationId)*/.withNotifications(List.of());
+                null).withAnsweredNotification(answeredNotification).withUnansweredNotificationIds(List.of());
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         // Act
@@ -220,7 +233,7 @@ class EssServiceTest {
         final Jobs jobSnapshot = job(jobId, owner);
         final String notificationId = UUID.randomUUID().toString();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot, null).update(jobSnapshot,
-                SupplyChainImpacted.NO, 0).withNotifications(List.of(notificationId));
+                SupplyChainImpacted.NO, 0).withUnansweredNotificationIds(List.of(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
         final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()

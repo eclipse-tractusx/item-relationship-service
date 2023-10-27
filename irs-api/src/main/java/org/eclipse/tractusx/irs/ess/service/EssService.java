@@ -118,21 +118,22 @@ public class EssService {
                                                                               .orElse(SupplyChainImpacted.UNKNOWN);
             log.debug("Received answer for Notification with id '{}' and investigation result '{}'.",
                     originalNotificationId, supplyChainImpacted);
-            log.debug("Unanswered notifications left: '{}'", job.getUnansweredNotifications());
+            log.debug("Unanswered notifications left: '{}'", job.getUnansweredNotificationIds());
             final UUID jobId = job.getJobSnapshot().getJob().getId();
 
-            if (job.getUnansweredNotifications().isEmpty()) {
+            if (job.getUnansweredNotificationIds().isEmpty()) {
                 job = job.complete();
             }
 
-            final Optional<ResponseNotificationContent> minHops = job.getAnsweredNotifications()
+            final Optional<ResponseNotificationContent> minHopsWithIncident = job.getAnsweredNotifications()
                                                                      .stream()
                                                                      .map(EdcNotification::getContent)
+                                                                     .filter(ResponseNotificationContent::thereIsIncident)
                                                                      .min(Comparator.comparing(
                                                                              ResponseNotificationContent::getHops));
-            final Integer hops = minHops.map(ResponseNotificationContent::getHops).orElse(0);
+            final Integer minHops = minHopsWithIncident.map(ResponseNotificationContent::getHops).orElse(0);
 
-            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted, hops));
+            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted, minHops));
             recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
 
         });
@@ -140,7 +141,7 @@ public class EssService {
 
     private Jobs updateState(final BpnInvestigationJob investigationJob) {
         final Jobs jobSnapshot = investigationJob.getJobSnapshot();
-        log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotifications());
+        log.debug("Unanswered Notifications '{}'", investigationJob.getUnansweredNotificationIds());
         log.debug("Answered Notifications '{}'", investigationJob.getAnsweredNotifications());
 
         final JobState jobState = updateJobState(investigationJob);
@@ -163,12 +164,12 @@ public class EssService {
     }
 
     private boolean hasUnansweredNotifications(final BpnInvestigationJob job) {
-        return !job.getUnansweredNotifications().isEmpty();
+        return !job.getUnansweredNotificationIds().isEmpty();
     }
 
     private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(
             final EdcNotification<ResponseNotificationContent> notification) {
-        return investigationJob -> investigationJob.getUnansweredNotifications()
+        return investigationJob -> investigationJob.getUnansweredNotificationIds()
                                                    .contains(notification.getHeader().getOriginalNotificationId());
     }
 
