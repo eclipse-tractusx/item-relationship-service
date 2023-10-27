@@ -2520,6 +2520,9 @@ components:
       type: object
       additionalProperties: false
       properties:
+        hops:
+          type: integer
+          format: int32
         result:
           type: string
     SemanticId:
@@ -2562,9 +2565,9 @@ components:
           items:
             $ref: '#/components/schemas/Endpoint'
           maxItems: 2147483647
-        idShort:
-          type: string
         id:
+          type: string
+        idShort:
           type: string
         semanticId:
           $ref: '#/components/schemas/Reference'
