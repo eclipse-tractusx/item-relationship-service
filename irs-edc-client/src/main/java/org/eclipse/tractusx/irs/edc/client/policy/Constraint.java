@@ -25,6 +25,8 @@ package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,8 +39,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Constraint {
 
+    @Schema(implementation = String.class, example = "string")
     private String leftOperand;
+    @Schema(implementation = OperatorType.class, example = "eq")
     private OperatorType operator;
+    @ArraySchema(arraySchema = @Schema(example = "[\"string\"]", implementation = String.class))
     private List<String> rightOperand;
 
 }

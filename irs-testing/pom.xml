@@ -10,8 +10,16 @@
         <relativePath>../irs-parent-spring-boot</relativePath>
     </parent>
 
-    <artifactId>irs-testing</artifactId>
+    <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-tractusx/item-relationship-service.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git
+        </developerConnection>
+        <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    </scm>
 
+    <artifactId>irs-testing</artifactId>
+    <version>${irs-registry-client.version}</version>
     <name>IRS Testing Utilities</name>
     <description>Item Relationship Service Testing Utilities</description>
 
@@ -65,7 +73,7 @@
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-models</artifactId>
-            <version>${revision}</version>
+            <version>${irs-registry-client.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>

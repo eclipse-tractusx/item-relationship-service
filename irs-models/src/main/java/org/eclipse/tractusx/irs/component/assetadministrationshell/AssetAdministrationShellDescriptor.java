@@ -69,11 +69,13 @@ public class AssetAdministrationShellDescriptor {
     /**
      * idShort
      */
+    @Schema(implementation = String.class, example = "future concept x")
     private String idShort;
     /**
      * id
      */
     @SuppressWarnings("PMD.ShortVariable")
+    @Schema(implementation = String.class, example = "882fc530-b69b-4707-95f6-5dbc5e9baaa8")
     private String id;
     /**
      * specificAssetIds
