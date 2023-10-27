@@ -53,6 +53,6 @@ public class ResponseNotificationContent implements NotificationContent {
      * @return true if the result is Yes
      */
     public boolean thereIsIncident() {
-        return "yes".equalsIgnoreCase(this.getResult().toLowerCase(Locale.ROOT));
+        return "yes".equals(this.getResult().toLowerCase(Locale.ROOT));
     }
 }
