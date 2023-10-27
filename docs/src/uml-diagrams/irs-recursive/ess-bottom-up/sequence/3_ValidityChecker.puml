@@ -1,0 +1,32 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+participant IRS
+participant ValidityPeriodChecker
+
+
+IRS --> IRS: Request for Submodel PartAsPlanned
+IRS --> IRS: Get attributes PartAsPlanned.validityPeriod.validFrom
+IRS --> IRS: Get attributes PartAsPlanned.validityPeriod.validT
+IRS --> ValidityPeriodChecker: check validity of twin
+opt (isNullOrEmpty(validFrom) || isNullOrEmpty(validFrom) ) then
+    ValidityPeriodChecker --> ValidityPeriodChecker :  log warning and create Tombstone (Warning)
+    note left
+        twin is not skipped because of missing attributes
+    end note
+end opt
+
+opt (isValid) then
+    IRS <-- ValidityPeriodChecker : false
+    IRS --> IRS : skip twin;
+else
+    IRS <-- ValidityPeriodChecker : true
+    IRS --> IRS: process twin.
+end opt;
+
+
+@enduml

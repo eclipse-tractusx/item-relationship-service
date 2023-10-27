@@ -1,7 +1,7 @@
 {
     "relationships": [
         {
-            "catenaXId": "urn:uuid:0b45c63b-0e5e-4232-9074-a05607783c33",
+            "catenaXId": "urn:uuid:6d505432-8b31-4966-9514-4b753372683f",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 2.5,
@@ -11,26 +11,9 @@
                     }
                 },
                 "lifecycleContext": "asBuilt",
-                "assembledOn" : "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:29fa531a-1482-4040-8e09-e60be826fc1e"
-            },
-            "aspectType": "SingleLevelUsageAsBuilt"
-        },
-        {
-            "catenaXId": "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn" : "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:0b45c63b-0e5e-4232-9074-a05607783c33"
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c"
             },
             "aspectType": "SingleLevelUsageAsBuilt"
         }

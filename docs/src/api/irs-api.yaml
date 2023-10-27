@@ -2177,7 +2177,7 @@ components:
       properties:
         action:
           type: string
-          example: ACCESS
+          example: USE
           enum:
             - ACCESS
             - USE
@@ -2221,6 +2221,7 @@ components:
             - BpdmRequest
             - BpdmValidation
             - UsagePolicyValidation
+            - EssValidation
         retryCounter:
           type: integer
           format: int32

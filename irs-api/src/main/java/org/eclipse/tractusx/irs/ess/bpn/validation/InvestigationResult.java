@@ -21,27 +21,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component.enums;
+package org.eclipse.tractusx.irs.ess.bpn.validation;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.ess.service.SupplyChainImpacted;
 
 /**
- * Process step information
+ * @param completedJob completed {@link Jobs} which will be filled with tombstones in case of errors.
+ * @param supplyChainImpacted Result of the supplyChainImpacted investigation.
  */
-@Getter
-@AllArgsConstructor
-public enum ProcessStep {
-    SUBMODEL_REQUEST("SubmodelRequest"),
-    DIGITAL_TWIN_REQUEST("DigitalTwinRequest"),
-    SCHEMA_VALIDATION("SchemaValidation"),
-    SCHEMA_REQUEST("SchemaRequest"),
-    BPDM_REQUEST("BpdmRequest"),
-    BPDM_VALIDATION("BpdmValidation"),
-    USAGE_POLICY_VALIDATION("UsagePolicyValidation"),
-    ESS_VALIDATION("EssValidation");
-
-    @JsonValue
-    private final String value;
+public record InvestigationResult(Jobs completedJob, SupplyChainImpacted supplyChainImpacted) {
 }

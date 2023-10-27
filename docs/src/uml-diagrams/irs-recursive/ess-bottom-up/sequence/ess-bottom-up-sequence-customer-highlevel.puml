@@ -1,0 +1,67 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+box Incident Originator Company (Tier 4)
+    participant "Incident App" as BusinessApp_Tier_4
+end box
+
+participant EDC
+
+box Customer Company (Tier 3)
+participant "Incident App" as BusinessApp_Tier_3
+
+
+BusinessApp_Tier_4 -> BusinessApp_Tier_3 : notification
+BusinessApp_Tier_4 <-- BusinessApp_Tier_3 : 200 ack
+note left
+{
+    "header": {
+        "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
+         ...
+    },
+    "content": {
+        "incidentBPNSs" : ["BPNS123456"]
+        "concernedCatenaXIds" : [ {
+            globalAssetId : <globalAssetId>,
+            hopsCount: <hopsCount>,
+            bpns: [
+                <bpns>
+            ]
+         }
+    }
+}
+end note
+
+    BusinessApp_Tier_3 --> IRS_Tier_3 :  POST /irs/orders/
+    note left
+        {
+          "aspects": [
+            "PartAsPlanned"
+          ],
+          "bomLifecycle": "asPlannned",
+          "collectAspects": true,
+          "depth": 1,
+          "direction": "upwards",
+          "keys": [
+            {
+              "bpn": "BPNL0123456789XX",
+              "globalAssetId": "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0"
+            }
+          ],
+          "timeout": 43200
+        }
+
+    end note
+    BusinessApp_Tier_3 --> IRS_Tier_3 :  GET /irs/orders/{orderId}
+    ref over IRS_Tier_3
+        process batch order request
+    end ref
+    BusinessApp_Tier_3 <-- IRS_Tier_3 : Return job with item graph for the requested id.
+
+
+
+@enduml
