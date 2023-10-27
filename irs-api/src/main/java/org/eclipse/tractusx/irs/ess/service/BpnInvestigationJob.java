@@ -28,8 +28,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -39,6 +39,9 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 
 /**
  * Object to store in cache
@@ -52,7 +55,7 @@ public class BpnInvestigationJob {
     private Jobs jobSnapshot;
     private List<String> incidentBpns;
     private List<String> unansweredNotifications;
-    private List<String> answeredNotifications;
+    private List<EdcNotification<ResponseNotificationContent>> answeredNotifications;
     private JobState state;
 
     public BpnInvestigationJob(final Jobs jobSnapshot, final List<String> incidentBpns) {
@@ -60,11 +63,14 @@ public class BpnInvestigationJob {
     }
 
     private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob,
-            final SupplyChainImpacted supplyChainImpacted) {
+            final SupplyChainImpacted supplyChainImpacted, final Integer hops) {
+        final SupplyChainImpactedAspect supplyChainImpactedAspect = SupplyChainImpactedAspect.builder()
+                .supplyChainImpacted(supplyChainImpacted)
+                .impactedSuppliersOnFirstTier(Set.of(new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel("", hops)))
+                                                                                       .build();
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
                                                              .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
-                                                             .payload(Map.of("supplyChainImpacted",
-                                                                     supplyChainImpacted.getDescription()))
+                                                             .payload(new JsonUtil().asMap(supplyChainImpactedAspect))
                                                              .build();
 
         return irsJob.toBuilder()
@@ -78,13 +84,14 @@ public class BpnInvestigationJob {
         return irsJob.toBuilder().job(job).build();
     }
 
-    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
+    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain,
+            final Integer hops) {
         final Optional<SupplyChainImpacted> previousSupplyChain = getSupplyChainImpacted();
 
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
-        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
+        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted, hops);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
         this.jobSnapshot = updateLastModified(this.jobSnapshot, ZonedDateTime.now(ZoneOffset.UTC));
         return this;
@@ -116,9 +123,10 @@ public class BpnInvestigationJob {
         return this;
     }
 
-    public BpnInvestigationJob withAnsweredNotification(final String notificationId) {
-        this.unansweredNotifications.remove(notificationId);
-        this.answeredNotifications.add(notificationId);
+    public BpnInvestigationJob withAnsweredNotification(final EdcNotification<ResponseNotificationContent> notification) {
+        this.unansweredNotifications.remove(notification.getHeader().getOriginalNotificationId());
+        notification.getContent().incrementHops();
+        this.answeredNotifications.add(notification);
         return this;
     }
 

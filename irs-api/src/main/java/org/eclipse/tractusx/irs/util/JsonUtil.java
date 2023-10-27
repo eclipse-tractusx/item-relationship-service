@@ -23,7 +23,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.util;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -73,6 +76,16 @@ public class JsonUtil {
             log.error("Error serializing payload", e);
             throw new JsonParseException(e);
         }
+    }
+
+    /**
+     * Serialize an object as a Map {@link Map}.
+     *
+     * @param input the object to serialize.
+     * @return the Map representation of the object
+     */
+    public Map<String, Object> asMap(final Object input) {
+        return MAPPER.convertValue(input, new TypeReference<>() { });
     }
 
     /**

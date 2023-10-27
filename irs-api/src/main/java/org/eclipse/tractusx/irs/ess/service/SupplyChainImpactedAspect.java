@@ -23,43 +23,29 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.service;
 
-import java.util.Locale;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Return value indicates if supply chain is impacted. The supply chain contains the passed BPN.
+ * Supply Chain Impacted aspect representation
  */
-public enum SupplyChainImpacted {
-    YES("Yes"),
-    NO("No"),
-    UNKNOWN("Unknown");
+@Value
+@Builder(toBuilder = true)
+@Jacksonized
+public class SupplyChainImpactedAspect {
+    private final SupplyChainImpacted supplyChainImpacted;
+    private final Set<ImpactedSupplierFirstLevel> impactedSuppliersOnFirstTier;
 
-    @Getter
-    @JsonValue
-    private final String description;
-
-    SupplyChainImpacted(final String description) {
-        this.description = description;
-    }
-
-    static SupplyChainImpacted fromString(final String name) {
-        return SupplyChainImpacted.valueOf(name.toUpperCase(Locale.ROOT));
-    }
-
-    @SuppressWarnings("PMD.ShortMethodName")
-    public SupplyChainImpacted or(final SupplyChainImpacted newSupplyChainImpacted) {
-        if (this.equals(YES)) {
-            return this;
-        } else if (this.equals(UNKNOWN)) {
-            if (newSupplyChainImpacted.equals(NO)) {
-                return this;
-            } else {
-                return newSupplyChainImpacted;
-            }
-        }
-
-        return newSupplyChainImpacted;
+    /**
+     * BPNLs on first tier level where infection was detected
+     * @param bpnl
+     * @param hops
+     */
+    @Builder(toBuilder = true)
+    @Jacksonized
+    record ImpactedSupplierFirstLevel(String bpnl, Integer hops) {
     }
 }

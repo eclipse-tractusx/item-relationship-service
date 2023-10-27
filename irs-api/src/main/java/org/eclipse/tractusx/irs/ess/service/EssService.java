@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -109,7 +110,7 @@ public class EssService {
 
         investigationJob.ifPresent(job -> {
             final String originalNotificationId = notification.getHeader().getOriginalNotificationId();
-            job.withAnsweredNotification(originalNotificationId);
+            job.withAnsweredNotification(notification);
             final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().getResult())
                                                                 .map(Object::toString);
 
@@ -124,7 +125,14 @@ public class EssService {
                 job = job.complete();
             }
 
-            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
+            final Optional<ResponseNotificationContent> minHops = job.getAnsweredNotifications()
+                                                                     .stream()
+                                                                     .map(EdcNotification::getContent)
+                                                                     .min(Comparator.comparing(
+                                                                             ResponseNotificationContent::getHops));
+            final Integer hops = minHops.map(ResponseNotificationContent::getHops).orElse(0);
+
+            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted, hops));
             recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
 
         });
