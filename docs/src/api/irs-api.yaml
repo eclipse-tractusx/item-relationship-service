@@ -2177,7 +2177,7 @@ components:
       properties:
         action:
           type: string
-          example: ACCESS
+          example: USE
           enum:
             - ACCESS
             - USE
