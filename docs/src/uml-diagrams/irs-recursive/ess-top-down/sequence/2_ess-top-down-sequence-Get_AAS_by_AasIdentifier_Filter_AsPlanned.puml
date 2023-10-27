@@ -8,22 +8,13 @@ autonumber "<b>[000]"
 participant "Client App (Script)" as Client
 
 box "OEM" #LightGrey
-    participant IRS as IRS
     participant SubmodelServer as SubmodelServer
     participant dDTR as dDTR
-    participant EDC as EDC #99FF99
 end box
-
-
-box SharedServices
-    participant DiscoveryFinder as DiscoveryFinder
-    participant EDCDiscoveryService as EDCDiscoveryService
-end box
-
 
 loop array of aasIdentifier
-    Client -> IRS : [hidden] GET /irs/proxy/registry/shell-descriptors/{aasIdentifier}/{bpn}
-    ref over IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
+    Client -> dDTR : /shell-descriptors/{aasIdentifier}/{bpn}
+    ref over dDTR
         create collection of {aasIdentifier}
 
         registry/shell-descriptors/{aasIdentifier} for given BPN
@@ -32,7 +23,7 @@ loop array of aasIdentifier
 end loop
 
 
-Client <-- IRS : return array of {aasIdentifier}
+Client <-- dDTR : return array of {aasIdentifier}
 
 Client -> Client :  filter aas for submodelDescriptor  (asPlanned)
         note right
@@ -53,6 +44,5 @@ opt aas is asPlanned
 end opt
 
 Client <-- Client : aasResultSet
-
 
 @enduml
