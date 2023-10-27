@@ -37,11 +37,17 @@ public class ResponseNotificationContent implements NotificationContent {
     private final String result;
     private Integer hops;
 
+    /**
+     * Incrementing hops value
+     */
     public void incrementHops() {
         hops += 1;
     }
 
+    /**
+     * @return true if the result is Yes
+     */
     public boolean thereIsIncident() {
-        return this.getResult().equalsIgnoreCase("Yes");
+        return "Yes".equalsIgnoreCase(this.getResult());
     }
 }
