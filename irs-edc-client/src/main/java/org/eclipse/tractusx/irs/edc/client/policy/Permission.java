@@ -41,7 +41,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Permission {
 
-    @Schema(implementation = PolicyType.class, example = "ACCESS")
+    @Schema(implementation = PolicyType.class, example = "USE")
     private PolicyType action;
     @ArraySchema
     private List<Constraints> constraints;
