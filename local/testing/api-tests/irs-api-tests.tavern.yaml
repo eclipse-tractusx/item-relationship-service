@@ -905,8 +905,8 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:a6a2cacc-29c5-4f07-96f8-76e4a80f7b48"
-          bpn: "BPNL00000003AYRE"
+          globalAssetId: "urn:uuid:6d505432-8b31-4966-9514-4b753372683f"
+          bpn: "BPNL00000003AVTH"
         aspects:
           - MaterialForRecycling
         collectAspects: true
@@ -964,7 +964,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:40e21864-ac54-43e1-98ac-9acfddb42ddd"
+          globalAssetId: "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5"
           bpn: "BPNL00000003B0Q0"
         aspects:
           - Batch
@@ -1187,8 +1187,8 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
-          bpn: "BPNL00000003AYRE"
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: -10
         direction: "downward"
