@@ -23,8 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model.notification;
 
-import java.util.Locale;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
@@ -53,6 +51,6 @@ public class ResponseNotificationContent implements NotificationContent {
      * @return true if the result is Yes
      */
     public boolean thereIsIncident() {
-        return "yes".equals(this.getResult().toLowerCase(Locale.ROOT));
+        return "Yes".equals(this.getResult());
     }
 }
