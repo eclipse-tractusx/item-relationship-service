@@ -233,7 +233,7 @@ class EssServiceTest {
         final Jobs jobSnapshot = job(jobId, owner);
         final String notificationId = UUID.randomUUID().toString();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot, null).update(jobSnapshot,
-                SupplyChainImpacted.NO, 0).withUnansweredNotificationIds(List.of(notificationId));
+                SupplyChainImpacted.NO).withUnansweredNotificationIds(List.of(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
         final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()

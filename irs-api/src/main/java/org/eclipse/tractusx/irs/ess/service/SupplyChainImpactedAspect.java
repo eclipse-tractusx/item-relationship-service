@@ -46,6 +46,6 @@ public class SupplyChainImpactedAspect {
      */
     @Builder(toBuilder = true)
     @Jacksonized
-    record ImpactedSupplierFirstLevel(String bpnl, Integer hops) {
+    public record ImpactedSupplierFirstLevel(String bpnl, Integer hops) {
     }
 }

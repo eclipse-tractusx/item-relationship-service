@@ -23,7 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -125,15 +124,7 @@ public class EssService {
                 job = job.complete();
             }
 
-            final Optional<ResponseNotificationContent> minHopsWithIncident = job.getAnsweredNotifications()
-                                                                     .stream()
-                                                                     .map(EdcNotification::getContent)
-                                                                     .filter(ResponseNotificationContent::thereIsIncident)
-                                                                     .min(Comparator.comparing(
-                                                                             ResponseNotificationContent::getHops));
-            final Integer minHops = minHopsWithIncident.map(ResponseNotificationContent::getHops).orElse(0);
-
-            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted, minHops));
+            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
             recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
 
         });
