@@ -50,7 +50,11 @@ public class JsonUtil {
      * JSON object mapper implementation.
      */
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final class MapTypeReference extends TypeReference<Map<String, Object>> {};
+
+    /**
+     * Map Type Reference helper
+     */
+    private static final class MapTypeReference extends TypeReference<Map<String, Object>> { }
 
     static {
         final SimpleModule simpleModule = new SimpleModule().addAbstractTypeMapping(TransferProcess.class,
