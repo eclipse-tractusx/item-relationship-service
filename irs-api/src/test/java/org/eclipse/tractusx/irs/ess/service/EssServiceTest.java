@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,9 +56,11 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationRes
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.server.ResponseStatusException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 class EssServiceTest {
 
@@ -146,25 +149,25 @@ class EssServiceTest {
 
         final BpnInvestigationJob job = bpnInvestigationJobCache.findAll().get(0);
         final String supplyChainImpacted = (String) job.getJobSnapshot()
-                                                       .getSubmodels()
-                                                       .get(0)
-                                                       .getPayload()
-                                                       .get("supplyChainImpacted");
+                                                      .getSubmodels()
+                                                      .get(0)
+                                                      .getPayload()
+                                                      .get("supplyChainImpacted");
         assertThat(supplyChainImpacted).isEqualTo("No");
         assertThat(job.getState()).isEqualTo(JobState.RUNNING);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification2));
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+
         final BpnInvestigationJob job2 = bpnInvestigationJobCache.findAll().get(0);
         assertThat(job2.getJobSnapshot().getSubmodels()).hasSize(1);
-        final String supplyChainImpacted2 = (String) job.getJobSnapshot()
-                                                        .getSubmodels()
-                                                        .get(0)
-                                                        .getPayload()
-                                                        .get("supplyChainImpacted");
-        assertThat(supplyChainImpacted2).isEqualTo("Yes");
-        assertThat(job.getState()).isEqualTo(JobState.COMPLETED);
 
+        final Map<String, Object> supplyChainPayload = job2.getJobSnapshot().getSubmodels().get(0).getPayload();
+        final SupplyChainImpactedAspect supplyChainImpactedAspect = new ObjectMapper().convertValue(supplyChainPayload, SupplyChainImpactedAspect.class);
+        assertThat(supplyChainImpactedAspect.getSupplyChainImpacted()).isEqualTo(SupplyChainImpacted.YES);
+        assertThat(supplyChainImpactedAspect.getImpactedSuppliersOnFirstTier()).isNotEmpty();
+        assertThat(supplyChainImpactedAspect.getImpactedSuppliersOnFirstTier().stream().findAny().get().getHops()).isPositive();
+        assertThat(job.getState()).isEqualTo(JobState.COMPLETED);
     }
 
     @Test

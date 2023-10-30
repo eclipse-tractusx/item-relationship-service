@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.ess.service;
 
 import java.util.Locale;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
@@ -44,7 +45,8 @@ public enum SupplyChainImpacted {
         this.description = description;
     }
 
-    static SupplyChainImpacted fromString(final String name) {
+    @JsonCreator
+    public static SupplyChainImpacted fromString(final String name) {
         return SupplyChainImpacted.valueOf(name.toUpperCase(Locale.ROOT));
     }
 
