@@ -21,32 +21,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.dtos;
-
-import java.util.List;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Value;
-import org.springframework.http.HttpStatus;
+package org.eclipse.tractusx.irs.ess.bpn.validation;
 
 /**
- * API error response.
+ * Exception thrown if ESS Validation could not find a mandatory field in an aspect model.
  */
-@Schema(description = "Error response.")
-@Value
-@Builder(toBuilder = true, setterPrefix = "with")
-@JsonDeserialize(builder = ErrorResponse.ErrorResponseBuilder.class)
-public class ErrorResponse {
-
-    @Schema(description = "Error code.")
-    private HttpStatus statusCode;
-
-    @Schema(description = "Error.")
-    private String error;
-
-    @ArraySchema(arraySchema = @Schema(description = "List of error messages.", implementation = String.class), maxItems = Integer.MAX_VALUE)
-    private List<String> messages;
+public class InvalidAspectTypeFormatException extends ValidationException {
+    public InvalidAspectTypeFormatException(final String message) {
+        super(message);
+    }
 }

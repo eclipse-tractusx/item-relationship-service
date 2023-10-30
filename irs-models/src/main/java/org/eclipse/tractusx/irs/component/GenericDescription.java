@@ -39,6 +39,7 @@ import lombok.Value;
 @Builder(toBuilder = true)
 @JsonDeserialize(builder = GenericDescription.GenericDescriptionBuilder.class)
 public class GenericDescription {
+
     @Schema(description = "Identification string")
     private String identification;
 
@@ -50,5 +51,4 @@ public class GenericDescription {
 
     @Schema(description = "Description")
     private List<Description> descriptions;
-
 }

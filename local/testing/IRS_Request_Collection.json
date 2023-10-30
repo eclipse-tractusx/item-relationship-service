@@ -144,7 +144,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"permissions\": [\n    {\n      \"action\": \"ACCESS\",\n      \"constraints\": [\n        {\n          \"and\": [\n            {\n              \"leftOperand\": \"FrameworkAgreement.traceability\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            },\n            {\n              \"leftOperand\": \"Membership\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"policyId\": \"traceability-test\",\n  \"validUntil\": \"2024-12-12T23:59:59.999Z\"\n}"
+				"text": "{\n  \"permissions\": [\n    {\n      \"action\": \"USE\",\n      \"constraints\": [\n        {\n          \"and\": [\n            {\n              \"leftOperand\": \"FrameworkAgreement.traceability\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            },\n            {\n              \"leftOperand\": \"Membership\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"policyId\": \"traceability-test\",\n  \"validUntil\": \"2024-12-12T23:59:59.999Z\"\n}"
 			},
 			"parameters": [],
 			"headers": [

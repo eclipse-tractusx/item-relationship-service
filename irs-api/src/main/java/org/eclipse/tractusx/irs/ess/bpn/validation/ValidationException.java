@@ -21,13 +21,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.ess.service;
+package org.eclipse.tractusx.irs.ess.bpn.validation;
 
 /**
- * Exception thrown if ESS Validation could not find the requested aspect model in the job.
+ * Parent Exception for ESS Validation.
  */
-public class AspectTypeNotFoundException extends Exception {
-    public AspectTypeNotFoundException(final String message) {
+public class ValidationException extends Exception {
+    public ValidationException(final String message) {
         super(message);
     }
 }

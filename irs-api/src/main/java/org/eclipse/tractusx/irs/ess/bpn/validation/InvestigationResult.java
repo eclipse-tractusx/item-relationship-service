@@ -21,32 +21,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.dtos;
+package org.eclipse.tractusx.irs.ess.bpn.validation;
 
-import java.util.List;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Value;
-import org.springframework.http.HttpStatus;
+import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.ess.service.SupplyChainImpacted;
 
 /**
- * API error response.
+ * @param completedJob completed {@link Jobs} which will be filled with tombstones in case of errors.
+ * @param supplyChainImpacted Result of the supplyChainImpacted investigation.
  */
-@Schema(description = "Error response.")
-@Value
-@Builder(toBuilder = true, setterPrefix = "with")
-@JsonDeserialize(builder = ErrorResponse.ErrorResponseBuilder.class)
-public class ErrorResponse {
-
-    @Schema(description = "Error code.")
-    private HttpStatus statusCode;
-
-    @Schema(description = "Error.")
-    private String error;
-
-    @ArraySchema(arraySchema = @Schema(description = "List of error messages.", implementation = String.class), maxItems = Integer.MAX_VALUE)
-    private List<String> messages;
+public record InvestigationResult(Jobs completedJob, SupplyChainImpacted supplyChainImpacted) {
 }

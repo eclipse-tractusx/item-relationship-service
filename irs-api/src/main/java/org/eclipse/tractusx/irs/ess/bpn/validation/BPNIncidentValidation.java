@@ -77,9 +77,14 @@ public final class BPNIncidentValidation {
      * @return Yes, if one or more of the siteIds of PartAsPlanned matches the incident BPNs.
      * No, if none of the job siteIds matches the incident BPNs.
      * Unknown if PartAsPlanned contains no siteIds.
+     * @throws InvalidAspectTypeFormatException if any of the sites does not contain a catenaXSiteId
      */
     public static SupplyChainImpacted jobContainsIncidentBPNSs(
-            final PartSiteInformationAsPlanned partSiteInformationAsPlanned, final List<String> incidentBPNs) {
+            final PartSiteInformationAsPlanned partSiteInformationAsPlanned, final List<String> incidentBPNs)
+            throws InvalidAspectTypeFormatException {
+        if (partSiteInformationAsPlanned.sites().stream().anyMatch(site -> site.catenaXSiteId() == null)) {
+            throw new InvalidAspectTypeFormatException("Site does not contain catenaXSiteId.");
+        }
         final List<String> siteIds = partSiteInformationAsPlanned.getCatenaXSiteId();
         try {
             if (siteIds.isEmpty()) {

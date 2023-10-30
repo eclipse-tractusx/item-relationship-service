@@ -1,12 +1,12 @@
 {
     "submodels": [
         {
-            "identification": "urn:uuid:2dbc1dcf-e4a8-47e9-8a59-f325cb0cd196",
+            "identification": "urn:uuid:e336fdab-1c22-4968-ba91-a5b011ed0e9b",
             "aspectType": "urn:bamm:io.catenax.just_in_sequence_part:1.0.0#JustInSequencePart",
             "payload": {
                 "localIdentifiers": [
                     {
-                        "value": "57465959HRT",
+                        "value": "59144578DSQ",
                         "key": "jisNumber"
                     }
                 ],
@@ -14,7 +14,7 @@
                     "date": "2022-02-04T14:48:54",
                     "country": "HUR"
                 },
-                "catenaXId": "urn:uuid:af04a881-0784-44d5-89e4-bee3835a7d56",
+                "catenaXId": "urn:uuid:805daf66-3f24-4fa8-9b00-f940fb0b3f19",
                 "partTypeInformation": {
                     "manufacturerPartId": "123-0.740-3434-A",
                     "customerPartId": "PRT-12345",

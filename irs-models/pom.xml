@@ -10,8 +10,16 @@
         <relativePath>../irs-parent-spring-boot</relativePath>
     </parent>
 
-    <artifactId>irs-models</artifactId>
+    <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-tractusx/item-relationship-service.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git
+        </developerConnection>
+        <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    </scm>
 
+    <artifactId>irs-models</artifactId>
+    <version>${irs-registry-client.version}</version>
     <name>IRS Models</name>
     <description>Data Transfer Object definitions shared between controllers and clients. Part of OpenAPI definition.
     </description>
