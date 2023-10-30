@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
@@ -189,8 +190,9 @@ class InvestigationJobProcessingEventListener {
                 log.debug("Supply Chain Validity result of {} and {} resulted in {}", partAsPlannedValidity,
                         partSiteInformationAsPlannedValidity, supplyChainImpacted);
 
+                //todo przekazać id joba startującego
                 final BpnInvestigationJob investigationJobUpdate = investigationJob.update(completedJob,
-                        supplyChainImpacted, 0);
+                        supplyChainImpacted, 0, null);
 
                 if (leafNodeIsReached(completedJob) || supplyChainIsImpacted(supplyChainImpacted)) {
                     bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate.complete());
@@ -214,7 +216,7 @@ class InvestigationJobProcessingEventListener {
         log.debug("Triggering investigation on the next level.");
         if (anyBpnIsMissingFromRelationship(completedJob)) {
             log.error("One or more Relationship items did not contain a BPN.");
-            investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0);
+            investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0, null);
         }
         // Map<BPN, List<GlobalAssetID>>
         final Map<String, List<String>> bpns = getBPNsFromRelationships(completedJob.getRelationships());
@@ -231,12 +233,12 @@ class InvestigationJobProcessingEventListener {
             log.debug("BPNs '{}' could not be resolved to an EDC address using DiscoveryService.", unresolvedBPNs);
             log.info("Some EDC addresses could not be resolved with DiscoveryService. "
                     + "Updating SupplyChainImpacted to {}", SupplyChainImpacted.UNKNOWN);
-            investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0);
+            investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0, null);
             recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
                     SupplyChainImpacted.UNKNOWN);
         } else if (resolvedBPNs.isEmpty()) {
             log.info("No BPNs could not be found. Updating SupplyChainImpacted to {}", SupplyChainImpacted.UNKNOWN);
-            investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0);
+            investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0, null);
             recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
                     SupplyChainImpacted.UNKNOWN);
         } else {
@@ -251,16 +253,18 @@ class InvestigationJobProcessingEventListener {
             final List<String> edcBaseUrl = connectorEndpointsService.fetchConnectorEndpoints(bpn);
             if (edcBaseUrl.isEmpty()) {
                 log.warn("No EDC URL found for BPN '{}'. Setting investigation result to '{}'", bpn, SupplyChainImpacted.UNKNOWN);
-                investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0);
+                investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0, null);
             }
             edcBaseUrl.forEach(url -> {
                 try {
                     final String notificationId = sendEdcNotification(bpn, url,
                             investigationJobUpdate.getIncidentBpns(), globalAssetIds);
-                    investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
+//                    investigationJobUpdate.withNotifications(Collections.singletonList(notificationId));
+                    //todo store bpn here (if this is yes in another step (callback) we will use this bpn number)
+                    investigationJobUpdate.withNotifications(Collections.singletonList(new Notification(notificationId, bpn)));
                 } catch (final EdcClientException e) {
                     log.error("Exception during sending EDC notification.", e);
-                    investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0);
+                    investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, 0, null);
                 }
             });
         });

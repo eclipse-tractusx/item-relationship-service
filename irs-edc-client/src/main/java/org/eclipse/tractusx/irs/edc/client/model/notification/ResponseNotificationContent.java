@@ -35,6 +35,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public class ResponseNotificationContent implements NotificationContent {
     private final String result;
+    private final String bpnl;
     private Integer hops;
 
     public void incrementHops() {

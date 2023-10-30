@@ -36,6 +36,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -54,7 +55,8 @@ public class BpnInvestigationJob {
 
     private Jobs jobSnapshot;
     private List<String> incidentBpns;
-    private List<String> unansweredNotifications;
+    //todo request notification content?
+    private List<Notification> unansweredNotifications;
     private List<EdcNotification<ResponseNotificationContent>> answeredNotifications;
     private JobState state;
 
@@ -63,10 +65,11 @@ public class BpnInvestigationJob {
     }
 
     private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob,
-            final SupplyChainImpacted supplyChainImpacted, final Integer hops) {
+            final SupplyChainImpacted supplyChainImpacted, final Integer hops,
+            final String bpnlOfFirstLevelSupplyChainImpacted) {
         final SupplyChainImpactedAspect supplyChainImpactedAspect = SupplyChainImpactedAspect.builder()
                 .supplyChainImpacted(supplyChainImpacted)
-                .impactedSuppliersOnFirstTier(Set.of(new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel("", hops)))
+                .impactedSuppliersOnFirstTier(Set.of(new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpnlOfFirstLevelSupplyChainImpacted, hops)))
                                                                                        .build();
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
                                                              .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
@@ -85,13 +88,13 @@ public class BpnInvestigationJob {
     }
 
     public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain,
-            final Integer hops) {
+            final Integer hops, final String bpnlOfFirstLevelSuppyChainImpacted) {
         final Optional<SupplyChainImpacted> previousSupplyChain = getSupplyChainImpacted();
 
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
-        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted, hops);
+        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted, hops, bpnlOfFirstLevelSuppyChainImpacted);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
         this.jobSnapshot = updateLastModified(this.jobSnapshot, ZonedDateTime.now(ZoneOffset.UTC));
         return this;
@@ -118,13 +121,13 @@ public class BpnInvestigationJob {
         return irsJob.toBuilder().job(job).build();
     }
 
-    public BpnInvestigationJob withNotifications(final List<String> notifications) {
+    public BpnInvestigationJob withNotifications(final List<Notification> notifications) {
         this.unansweredNotifications.addAll(notifications);
         return this;
     }
 
     public BpnInvestigationJob withAnsweredNotification(final EdcNotification<ResponseNotificationContent> notification) {
-        this.unansweredNotifications.remove(notification.getHeader().getOriginalNotificationId());
+        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.getNotificationId().equals(notification.getHeader().getOriginalNotificationId()));
         notification.getContent().incrementHops();
         this.answeredNotifications.add(notification);
         return this;

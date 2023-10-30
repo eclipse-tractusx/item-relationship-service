@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.RegisterJob;
@@ -114,8 +115,10 @@ public class EssService {
             final Optional<String> notificationResult = Optional.ofNullable(notification.getContent().getResult())
                                                                 .map(Object::toString);
 
+            //todo tutaj update, jezeli jest NO to ma wjechać bpn przekazany wcześniej
             final SupplyChainImpacted supplyChainImpacted = notificationResult.map(SupplyChainImpacted::fromString)
                                                                               .orElse(SupplyChainImpacted.UNKNOWN);
+            final String bpnlOfFirstLevelSupplyChainImpacted = notification.getContent().getBpnl();
             log.debug("Received answer for Notification with id '{}' and investigation result '{}'.",
                     originalNotificationId, supplyChainImpacted);
             log.debug("Unanswered notifications left: '{}'", job.getUnansweredNotifications());
@@ -132,7 +135,7 @@ public class EssService {
                                                                              ResponseNotificationContent::getHops));
             final Integer hops = minHops.map(ResponseNotificationContent::getHops).orElse(0);
 
-            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted, hops));
+            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted, hops, bpnlOfFirstLevelSupplyChainImpacted));
             recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
 
         });
@@ -168,8 +171,9 @@ public class EssService {
 
     private Predicate<BpnInvestigationJob> investigationJobNotificationPredicate(
             final EdcNotification<ResponseNotificationContent> notification) {
-        return investigationJob -> investigationJob.getUnansweredNotifications()
-                                                   .contains(notification.getHeader().getOriginalNotificationId());
+        return investigationJob -> investigationJob.getUnansweredNotifications().stream()
+                                                   .map(Notification::getNotificationId)
+                                                   .anyMatch(notificationId -> notificationId.equals(notification.getHeader().getOriginalNotificationId()));
     }
 
     private RegisterJob bpnInvestigations(final PartChainIdentificationKey key, final BomLifecycle bomLifecycle) {

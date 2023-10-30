@@ -43,6 +43,7 @@ import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.RegisterJob;
@@ -115,7 +116,7 @@ class EssServiceTest {
         final UUID jobId = UUID.randomUUID();
         final String owner = securityHelperService.getClientIdClaim();
 
-        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).build();
+        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
                                                                    .notificationId(notificationId)
                                                                    .originalNotificationId(notificationId)
@@ -124,7 +125,7 @@ class EssServiceTest {
                                                                                             .header(header1)
                                                                                             .content(resultNo)
                                                                                             .build();
-        final ResponseNotificationContent resultYes = ResponseNotificationContent.builder().result("Yes").hops(0).build();
+        final ResponseNotificationContent resultYes = ResponseNotificationContent.builder().result("Yes").build();
         final EdcNotificationHeader header2 = EdcNotificationHeader.builder()
                                                                    .notificationId(notificationId2)
                                                                    .originalNotificationId(notificationId2)
@@ -136,7 +137,7 @@ class EssServiceTest {
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
                 Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
-                new ArrayList<>()).withNotifications(List.of(notificationId, notificationId2));
+                new ArrayList<>()).withNotifications(List.of(new Notification(notificationId, "test-bpn-1"), new Notification(notificationId2, "test-bpn-2")));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
@@ -174,7 +175,7 @@ class EssServiceTest {
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
                 Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
-                new ArrayList<>()).withNotifications(Collections.singletonList(notificationId));
+                new ArrayList<>()).withNotifications(Collections.singletonList(new Notification(notificationId, "test-bpn")));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
@@ -220,9 +221,9 @@ class EssServiceTest {
         final Jobs jobSnapshot = job(jobId, owner);
         final String notificationId = UUID.randomUUID().toString();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot, null).update(jobSnapshot,
-                SupplyChainImpacted.NO, 0).withNotifications(List.of(notificationId));
+                SupplyChainImpacted.NO, 0, null).withNotifications(List.of(new Notification(notificationId, "test-bpn")));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
-        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).build();
+        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").bpnl("test-bpnl").hops(0).build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
                                                                    .notificationId(notificationId)
                                                                    .originalNotificationId(notificationId)
@@ -241,6 +242,56 @@ class EssServiceTest {
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
         assertThat(jobBeforeNotificationReceive.getJob().getState()).isEqualTo(JobState.RUNNING);
         assertThat(jobAfterNotificationReceive.getJob().getState()).isEqualTo(JobState.COMPLETED);
+    }
+
+    @Test
+    void test() {
+        // given
+        final String owner = securityHelperService.getClientIdClaim();
+        when(securityHelperService.isAdmin()).thenReturn(true);
+
+        final UUID job1Id = UUID.randomUUID();
+        final Jobs job1Snapshot = job(job1Id, owner);
+        final String notification1Id = UUID.randomUUID().toString();
+        final String bpnFirstLevel = "test-bpn";
+        final BpnInvestigationJob bpnInvestigationJob1 = new BpnInvestigationJob(job1Snapshot, null).update(job1Snapshot,
+                SupplyChainImpacted.NO, 0, null).withNotifications(List.of(new Notification(notification1Id, bpnFirstLevel)));
+        bpnInvestigationJobCache.store(job1Id, bpnInvestigationJob1);
+
+        final UUID job2Id = UUID.randomUUID();
+        final Jobs job2Snapshot = job(job1Id, owner);
+        final String notification2Id = UUID.randomUUID().toString();
+        final BpnInvestigationJob bpnInvestigationJob2 = new BpnInvestigationJob(job2Snapshot, null).update(job2Snapshot,
+                SupplyChainImpacted.YES, 0, null).withNotifications(List.of(new Notification(notification1Id, bpnFirstLevel)));
+        bpnInvestigationJobCache.store(job1Id, bpnInvestigationJob2);
+
+
+        final ResponseNotificationContent responseNotificationContent1 = ResponseNotificationContent.builder().result("No").bpnl(bpnFirstLevel).hops(0).build();
+        final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notification1Id)
+                                                                   .originalNotificationId(notification1Id)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> edcNotification1 = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                             .header(header1)
+                                                                                             .content(responseNotificationContent1)
+                                                                                             .build();
+
+        final ResponseNotificationContent responseNotificationContent2 = ResponseNotificationContent.builder().result("Yes").bpnl(bpnFirstLevel).hops(0).build();
+        final EdcNotificationHeader header2 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notification2Id)
+                                                                   .originalNotificationId(notification1Id)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> edcNotification2 = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                             .header(header2)
+                                                                                             .content(responseNotificationContent2)
+                                                                                             .build();
+
+        // then
+        essService.handleNotificationCallback(edcNotification1);
+        final Jobs jobAfterNotificationReceive = essService.getIrsJob(job1Id.toString());
+
+        int a = 7;
+
     }
 
     private Jobs job(final UUID jobId, final String owner) {
