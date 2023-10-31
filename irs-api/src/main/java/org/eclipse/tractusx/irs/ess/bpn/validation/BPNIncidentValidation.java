@@ -83,7 +83,7 @@ public final class BPNIncidentValidation {
             final PartSiteInformationAsPlanned partSiteInformationAsPlanned, final List<String> incidentBPNs)
             throws InvalidAspectTypeFormatException {
         if (partSiteInformationAsPlanned.sites().stream().anyMatch(site -> site.catenaXSiteId() == null)) {
-            throw new InvalidAspectTypeFormatException("Site does not contain catenaXSiteId.");
+            throw new InvalidAspectTypeFormatException("'PartSiteInformationAsPlanned' exists, but catenaXSiteId could not be found.");
         }
         final List<String> siteIds = partSiteInformationAsPlanned.getCatenaXSiteId();
         try {
