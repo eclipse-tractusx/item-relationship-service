@@ -68,9 +68,9 @@ import org.springframework.web.client.RestTemplate;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class RestTemplateConfig {
 
-    public static final String DTR_REST_TEMPLATE = "oAuthRestTemplate";
-    public static final String BPDM_REST_TEMPLATE = "oAuthRestTemplate";
-    public static final String SEMHUB_REST_TEMPLATE = "oAuthRestTemplate";
+    public static final String DTR_REST_TEMPLATE = "dtrRestTemplate";
+    public static final String BPDM_REST_TEMPLATE = "bpdmRestTemplate";
+    public static final String SEMHUB_REST_TEMPLATE = "semhubRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
     public static final String DISCOVERY_REST_TEMPLATE = "discoveryRestTemplate";
     public static final String EDC_REST_TEMPLATE = "edcClientRestTemplate";

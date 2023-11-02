@@ -38,7 +38,7 @@ jobs:
       - name: Build with Maven
         if: ${{ steps.download.outputs.http_response == '200' }}
         env:
-          KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET_BETA }}
+          OAUTH2_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET_BETA }}
         run: |
           unzip -o features.zip -d irs-cucumber-tests/src/test/resources/features
           mvn --batch-mode clean install -pl irs-cucumber-tests,irs-models -D"cucumber.filter.tags"="not @Ignore and @INTEGRATION_TEST"

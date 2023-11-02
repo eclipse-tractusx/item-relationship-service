@@ -5,10 +5,10 @@ spring:
     oauth2:
       client:
         registration:
-          keycloak:
+          common:
             authorization-grant-type: client_credentials
-            client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID}
-            client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET}
+            client-id: ${COMMON_OAUTH2_CLIENT_ID}
+            client-secret: ${COMMON_OAUTH2_CLIENT_SECRET}
   config:
     activate:
       on-profile: int

@@ -17,9 +17,9 @@ import io.gatling.javaapi.http.HttpProtocolBuilder;
 
 public class IRSLoadTestSimulation extends Simulation {
     {
-        final String keycloak_host = System.getenv("KEYCLOAK_HOST");
-        final String clientSecret = System.getenv("KEYCLOAK_CLIENT_SECRET");
-        final String clientId = System.getenv("KEYCLOAK_CLIENT_ID");
+        final String oauth2_host = System.getenv("OAUTH2_HOST");
+        final String clientSecret = System.getenv("OAUTH2_CLIENT_SECRET");
+        final String clientId = System.getenv("OAUTH2_CLIENT_ID");
         String body = "grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret;
         final String irsUrl = System.getenv("IRS_HOST");
         final int testCycles = Integer.parseInt(System.getenv("TEST_CYCLES"));
@@ -36,7 +36,7 @@ public class IRSLoadTestSimulation extends Simulation {
 
         ScenarioBuilder scn = scenario("IRS Load Test")
                 .exec(http("Get access token")
-                        .post(keycloak_host)
+                        .post(oauth2_host)
                         .body(StringBody(body))
                         .asFormUrlEncoded()
                         .headers(headers_0)
