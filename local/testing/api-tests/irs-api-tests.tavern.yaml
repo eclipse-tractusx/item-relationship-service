@@ -493,7 +493,7 @@ stages:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
         - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
           extra_kwargs:
-            expectedTombstone: "Site does not contain catenaXSiteId."
+            expectedTombstone: "'PartSiteInformationAsPlanned' exists, but catenaXSiteId could not be found."
       headers:
         content-type: application/json
 
