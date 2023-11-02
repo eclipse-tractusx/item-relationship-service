@@ -60,7 +60,7 @@ public class EdcNotificationSender {
     }
 
     public void sendEdcNotification(final EdcNotification<InvestigationNotificationContent> originalEdcNotification,
-            final SupplyChainImpacted supplyChainImpacted) {
+            final SupplyChainImpacted supplyChainImpacted, final Integer hops) {
         final String notificationId = UUID.randomUUID().toString();
         final String originalNotificationId = originalEdcNotification.getHeader().getNotificationId();
         final String recipientBpn = originalEdcNotification.getHeader().getSenderBpn();
@@ -69,6 +69,7 @@ public class EdcNotificationSender {
                 log.info("Edc Notification will be send to connector endpoint: {}", connectorEndpoint);
                 final NotificationContent notificationContent = ResponseNotificationContent.builder()
                                                                                            .result(supplyChainImpacted.getDescription())
+                                                                                           .hops(hops)
                                                                                            .build();
                 final EdcNotification<NotificationContent> responseNotification = edcRequest(notificationId,
                         originalNotificationId, essLocalEdcEndpoint, localBpn, recipientBpn, notificationContent);

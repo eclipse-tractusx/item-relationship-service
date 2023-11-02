@@ -126,7 +126,6 @@ public class EssService {
 
             bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
             recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
-
         });
     }
 

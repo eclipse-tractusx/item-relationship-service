@@ -23,12 +23,15 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
 import org.springframework.stereotype.Service;
 
 /**
@@ -38,6 +41,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class EssRecursiveNotificationHandler {
+
+    private static final Integer FIRST_HOP = 0;
 
     private final RelatedInvestigationJobsCache relatedInvestigationJobsCache;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
@@ -51,7 +56,7 @@ public class EssRecursiveNotificationHandler {
         relatedJobsId.ifPresentOrElse(relatedJobs -> {
             if (SupplyChainImpacted.YES.equals(supplyChainImpacted)) {
                 log.debug("SupplyChain is impacted. Sending notification back to requestor.");
-                edcNotificationSender.sendEdcNotification(relatedJobs.originalNotification(), supplyChainImpacted);
+                edcNotificationSender.sendEdcNotification(relatedJobs.originalNotification(), supplyChainImpacted, FIRST_HOP);
                 relatedInvestigationJobsCache.remove(
                         relatedJobs.originalNotification().getHeader().getNotificationId());
             } else {
@@ -75,9 +80,19 @@ public class EssRecursiveNotificationHandler {
                                                                         .flatMap(Optional::stream)
                                                                         .reduce(SupplyChainImpacted.NO,
                                                                                 SupplyChainImpacted::or);
-            edcNotificationSender.sendEdcNotification(relatedInvestigationJobs.originalNotification(), finalResult);
+            edcNotificationSender.sendEdcNotification(relatedInvestigationJobs.originalNotification(), finalResult, getMinHops(allInvestigationJobs));
         }
+    }
 
+    private Integer getMinHops(final List<BpnInvestigationJob> allInvestigationJobs) {
+        return allInvestigationJobs
+                .stream()
+                .flatMap(investigationJobs -> investigationJobs.getAnsweredNotifications().stream())
+                .map(EdcNotification::getContent)
+                .filter(ResponseNotificationContent::thereIsIncident)
+                .min(Comparator.comparing(ResponseNotificationContent::getHops))
+                .map(ResponseNotificationContent::getHops)
+                .orElse(FIRST_HOP);
     }
 
     private boolean checkAllFinished(final List<BpnInvestigationJob> allInvestigationJobs) {
