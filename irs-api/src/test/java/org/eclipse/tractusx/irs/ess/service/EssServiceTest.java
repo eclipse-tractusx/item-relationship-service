@@ -120,7 +120,7 @@ class EssServiceTest {
         final UUID jobId = UUID.randomUUID();
         final String owner = securityHelperService.getClientIdClaim();
 
-        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).build();
+        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).bpn("bot-impacted-bpn").build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
                                                                    .notificationId(notificationId)
                                                                    .originalNotificationId(notificationId)
@@ -129,7 +129,7 @@ class EssServiceTest {
                                                                                             .header(header1)
                                                                                             .content(resultNo)
                                                                                             .build();
-        final ResponseNotificationContent resultYes = ResponseNotificationContent.builder().result("Yes").hops(0).build();
+        final ResponseNotificationContent resultYes = ResponseNotificationContent.builder().result("Yes").hops(0).bpn("impacted-bpn").build();
         final EdcNotificationHeader header2 = EdcNotificationHeader.builder()
                                                                    .notificationId(notificationId2)
                                                                    .originalNotificationId(notificationId2)
@@ -236,7 +236,7 @@ class EssServiceTest {
         final Jobs jobSnapshot = job(jobId, owner);
         final String notificationId = UUID.randomUUID().toString();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot, null).update(jobSnapshot,
-                SupplyChainImpacted.NO).withUnansweredNotificationIds(List.of(notificationId));
+                SupplyChainImpacted.NO, "bpn").withUnansweredNotificationIds(List.of(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
         final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()

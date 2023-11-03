@@ -57,7 +57,7 @@ class EssRecursiveNotificationHandlerTest {
     @Test
     void shouldDoNothingWhenThereIsNoInvestigationJob() {
         // when
-        cut.handleNotification(UUID.randomUUID(), SupplyChainImpacted.UNKNOWN);
+        cut.handleNotification(UUID.randomUUID(), SupplyChainImpacted.UNKNOWN, "");
 
         // then
         verifyNoInteractions(edcNotificationSender);
@@ -70,10 +70,10 @@ class EssRecursiveNotificationHandlerTest {
         relatedInvestigationJobsCache.store("notification-id", createRelatedJobsWith(List.of(jobId)));
 
         // when
-        cut.handleNotification(jobId, SupplyChainImpacted.YES);
+        cut.handleNotification(jobId, SupplyChainImpacted.YES, "bpn");
 
         // then
-        verify(edcNotificationSender).sendEdcNotification(any(), eq(SupplyChainImpacted.YES), eq(hops));
+        verify(edcNotificationSender).sendEdcNotification(any(), eq(SupplyChainImpacted.YES), eq(hops), eq("bpn"));
     }
 
     @Test
@@ -81,6 +81,7 @@ class EssRecursiveNotificationHandlerTest {
         // given
         final UUID anotherJobId = UUID.randomUUID();
         final int hops = 0;
+        final String bpn = "bpn";
         relatedInvestigationJobsCache.store("notification-id", createRelatedJobsWith(List.of(jobId, anotherJobId)));
         bpnInvestigationJobCache.store(jobId, currentBpnInvestigationJob);
         bpnInvestigationJobCache.store(anotherJobId, pastBpnInvestigationJob);
@@ -89,10 +90,10 @@ class EssRecursiveNotificationHandlerTest {
         when(pastBpnInvestigationJob.getSupplyChainImpacted()).thenReturn(Optional.of(SupplyChainImpacted.NO));
 
         // when
-        cut.handleNotification(jobId, SupplyChainImpacted.NO);
+        cut.handleNotification(jobId, SupplyChainImpacted.NO, bpn);
 
         // then
-        verify(edcNotificationSender, times(1)).sendEdcNotification(any(), eq(SupplyChainImpacted.NO), eq(hops));
+        verify(edcNotificationSender, times(1)).sendEdcNotification(any(), eq(SupplyChainImpacted.NO), eq(hops), eq(bpn));
     }
 
     private RelatedInvestigationJobs createRelatedJobsWith(List<UUID> uuids) {

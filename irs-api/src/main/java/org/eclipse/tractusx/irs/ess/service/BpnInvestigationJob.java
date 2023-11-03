@@ -63,13 +63,13 @@ public class BpnInvestigationJob {
         this(jobSnapshot, incidentBpns, new ArrayList<>(), new ArrayList<>(), JobState.RUNNING);
     }
 
-    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
+    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain, final String bpn) {
         final Optional<SupplyChainImpacted> previousSupplyChain = getSupplyChainImpacted();
 
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
-        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
+        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted, bpn);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
         this.jobSnapshot = updateLastModified(this.jobSnapshot, ZonedDateTime.now(ZoneOffset.UTC));
         return this;
@@ -103,7 +103,8 @@ public class BpnInvestigationJob {
                    .findFirst();
     }
 
-    private Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted) {
+    private Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted,
+            final String bpn) {
         final SupplyChainImpactedAspect.SupplyChainImpactedAspectBuilder supplyChainImpactedAspectBuilder = SupplyChainImpactedAspect.builder()
                                                                                                                                      .supplyChainImpacted(
                                                                                                                                              supplyChainImpacted);
@@ -116,7 +117,7 @@ public class BpnInvestigationJob {
                                                                                                                      ResponseNotificationContent::getHops));
 
             final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.map(
-                                                                                                               min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel("", min.getHops()))
+                                                                                                               min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpn, min.getHops()))
                                                                                                        .stream()
                                                                                                        .toList();
             supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(Set.copyOf(suppliersFirstLevel));

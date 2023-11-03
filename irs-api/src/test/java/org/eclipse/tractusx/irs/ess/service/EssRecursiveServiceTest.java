@@ -67,7 +67,7 @@ class EssRecursiveServiceTest {
         EdcNotification<InvestigationNotificationContent> edcNotification = EdcNotification.<InvestigationNotificationContent>builder()
                                                                                            .content(notificationContent)
                                                                                            .build();
-        Mockito.doNothing().when(edcNotificationSender).sendEdcNotification(any(), supplyChainCaptor.capture(), eq(0));
+        Mockito.doNothing().when(edcNotificationSender).sendEdcNotification(any(), supplyChainCaptor.capture(), eq(0), eq(localBpn));
 
         // when
         essRecursiveService.handleNotification(edcNotification);

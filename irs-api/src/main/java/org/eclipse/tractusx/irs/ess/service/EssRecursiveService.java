@@ -67,7 +67,7 @@ public class EssRecursiveService {
                 notification.getContent().getConcernedCatenaXIds());
 
         if (incidentBPNSs.isPresent() && incidentBPNSs.get().contains(localBpn)) {
-            edcNotificationSender.sendEdcNotification(notification, SupplyChainImpacted.YES, FIRST_HOP);
+            edcNotificationSender.sendEdcNotification(notification, SupplyChainImpacted.YES, FIRST_HOP, localBpn);
         } else if (concernedCatenaXIdsNotification.isPresent() && incidentBPNSs.isPresent()) {
             final List<String> bpns = incidentBPNSs.get();
             final List<String> concernedCatenaXIds = concernedCatenaXIdsNotification.get();

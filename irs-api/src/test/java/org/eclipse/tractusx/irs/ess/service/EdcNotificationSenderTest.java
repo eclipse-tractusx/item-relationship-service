@@ -69,7 +69,7 @@ class EdcNotificationSenderTest {
         when(connectorEndpointsService.fetchConnectorEndpoints("senderBpn")).thenReturn(List.of("senderEdc"));
 
         // when
-        sender.sendEdcNotification(edcNotification, SupplyChainImpacted.NO, 1);
+        sender.sendEdcNotification(edcNotification, SupplyChainImpacted.NO, 1, "senderBpn");
 
         // then
         final ResponseNotificationContent content = (ResponseNotificationContent) notificationCaptor.getValue()

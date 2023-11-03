@@ -124,8 +124,8 @@ public class EssService {
                 job = job.complete();
             }
 
-            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted));
-            recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted);
+            bpnInvestigationJobCache.store(jobId, job.update(job.getJobSnapshot(), supplyChainImpacted, notification.getContent().getBpn()));
+            recursiveNotificationHandler.handleNotification(jobId, supplyChainImpacted, notification.getContent().getBpn());
         });
     }
 
