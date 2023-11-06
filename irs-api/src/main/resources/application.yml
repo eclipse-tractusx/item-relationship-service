@@ -19,12 +19,12 @@ spring:
             client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
         provider:
           common:
-            token-uri: ${COMMON_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+            token-uri: ${OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           portal:
             token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
       resourceserver:
         jwt:
-          jwk-set-uri: ${COMMON_OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
+          jwk-set-uri: ${OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:

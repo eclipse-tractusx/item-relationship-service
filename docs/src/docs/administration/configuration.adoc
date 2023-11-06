@@ -61,10 +61,10 @@ The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas f
 ==== <bpdm-url>
 The URL of the BPDM service. The IRS uses this service to fetch business partner information based on BPNs.
 
-==== <common-token-uri>
+==== <oauth2-token-uri>
 The URL of the OAuth2 token API. Used by the IRS for token creation to authenticate with other services.
 
-==== <common-jwkset-uri>
+==== <oauth2-jwkset-uri>
 The URL of the OAuth2 JWK Set. Used by the IRS to validate tokens when the IRS API is called.
 
 ==== <grafana-url>
@@ -139,11 +139,11 @@ This is a list of all secrets used in the deployment.
 
 WARNING: Keep the values for these settings safe and do not publish them!
 
-=== <keycloak-client-id>
-Client ID for Keycloak. Request this from your Keycloak operator.
+=== <common-client-id>
+Client ID for OAuth2 provider. Request this from your OAuth2 operator.
 
-=== <keycloak-client-secret>
-Client secret for Keycloak. Request this from your Keycloak operator.
+=== <common-client-secret>
+Client secret for OAuth2 provider. Request this from your OAuth2 operator.
 
 === <minio-username>
 Login username for Minio. To be defined by you.

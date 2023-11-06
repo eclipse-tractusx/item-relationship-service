@@ -146,8 +146,8 @@ common:
   oauth2:
     clientId:  # <common-client-id>
     clientSecret:  # <common-client-secret>
-    clientTokenUri:  # <common-token-uri>
-    jwkSetUri:  # <common-jwkset-uri>
+    clientTokenUri:  # <oauth2-token-uri>
+    jwkSetUri:  # <oauth2-jwkset-uri>
 portal:
   oauth2:
     clientId:  # <portal-client-id>
