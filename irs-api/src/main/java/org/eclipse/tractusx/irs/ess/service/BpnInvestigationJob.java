@@ -84,15 +84,16 @@ public class BpnInvestigationJob {
 
     public BpnInvestigationJob withAnsweredNotification(
             final EdcNotification<ResponseNotificationContent> notification) {
-        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId()
-                                                                                              .equals(notification.getHeader()
-                                                                                                                  .getOriginalNotificationId()));
         final Optional<String> parentBpn = this.unansweredNotifications.stream()
                                                                        .filter(unansweredNotification -> unansweredNotification.notificationId()
                                                                                                                                .equals(notification.getHeader()
                                                                                                                                                    .getOriginalNotificationId()))
                                                                        .map(Notification::bpn)
                                                                        .findAny();
+
+        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId()
+                                                                                              .equals(notification.getHeader()
+                                                                                                                  .getOriginalNotificationId()));
 
         notification.getContent().setParentBpn(parentBpn.orElse(null));
         notification.getContent().incrementHops();

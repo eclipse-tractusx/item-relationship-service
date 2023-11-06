@@ -129,7 +129,7 @@ class EssServiceTest {
                                                                                             .build();
         final ResponseNotificationContent resultYes = ResponseNotificationContent.builder().result("Yes").hops(0).parentBpn("impacted-bpn").build();
         final EdcNotificationHeader header2 = EdcNotificationHeader.builder()
-                                                                   .notificationId(notificationId2)
+                                                                   .notificationId(notificationId)
                                                                    .originalNotificationId(notificationId2)
                                                                    .build();
         final EdcNotification<ResponseNotificationContent> edcNotification2 = EdcNotification.<ResponseNotificationContent>builder()
