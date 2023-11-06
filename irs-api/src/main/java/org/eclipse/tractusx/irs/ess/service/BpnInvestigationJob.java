@@ -64,7 +64,8 @@ public class BpnInvestigationJob {
         this(jobSnapshot, incidentBpns, new ArrayList<>(), new ArrayList<>(), JobState.RUNNING);
     }
 
-    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain, final String bpn) {
+    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain,
+            final String bpn) {
         final Optional<SupplyChainImpacted> previousSupplyChain = getSupplyChainImpacted();
 
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
@@ -81,19 +82,22 @@ public class BpnInvestigationJob {
         return this;
     }
 
-    public BpnInvestigationJob withAnsweredNotification(final EdcNotification<ResponseNotificationContent> notification) {
-        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId().equals(notification.getHeader().getOriginalNotificationId()));
-                final Optional<String> parentBpn = this.unansweredNotifications.stream()
-                                                                               .filter(unansweredNotification -> unansweredNotification.notificationId()
-                                                                                                                                       .equals(notification.getHeader()
-                                                                                                                                                           .getOriginalNotificationId()))
-                                                                               .map(Notification::bpn)
-                                                                               .findAny();
+    public BpnInvestigationJob withAnsweredNotification(
+            final EdcNotification<ResponseNotificationContent> notification) {
+        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId()
+                                                                                              .equals(notification.getHeader()
+                                                                                                                  .getOriginalNotificationId()));
+        final Optional<String> parentBpn = this.unansweredNotifications.stream()
+                                                                       .filter(unansweredNotification -> unansweredNotification.notificationId()
+                                                                                                                               .equals(notification.getHeader()
+                                                                                                                                                   .getOriginalNotificationId()))
+                                                                       .map(Notification::bpn)
+                                                                       .findAny();
 
-                notification.getContent().setParentBpn(parentBpn.orElse(null));
-                notification.getContent().incrementHops();
-                this.answeredNotifications.add(notification);
-                return this;
+        notification.getContent().setParentBpn(parentBpn.orElse(null));
+        notification.getContent().incrementHops();
+        this.answeredNotifications.add(notification);
+        return this;
     }
 
     public BpnInvestigationJob complete() {
@@ -126,15 +130,16 @@ public class BpnInvestigationJob {
                                                                                                                      ResponseNotificationContent::getHops));
 
             final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.map(
-                                                                                                               min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpn, min.getHops()))
-                                                                                                       .stream()
-                                                                                                       .toList();
+                                                                                                                                   min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpn, min.getHops()))
+                                                                                                                           .stream()
+                                                                                                                           .toList();
             supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(Set.copyOf(suppliersFirstLevel));
         }
 
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
                                                              .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
-                                                             .payload(new JsonUtil().asMap(supplyChainImpactedAspectBuilder.build()))
+                                                             .payload(new JsonUtil().asMap(
+                                                                     supplyChainImpactedAspectBuilder.build()))
                                                              .build();
 
         return irsJob.toBuilder()
