@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
@@ -196,7 +197,7 @@ class InvestigationJobProcessingEventListener {
                 try {
                     final String notificationId = sendEdcNotification(bpn, url,
                             investigationJobUpdate.getIncidentBpns(), globalAssetIds);
-                    investigationJobUpdate.withUnansweredNotificationIds(Collections.singletonList(notificationId));
+                    investigationJobUpdate.withUnansweredNotifications(Collections.singletonList(new Notification(notificationId, bpn)));
                 } catch (final EdcClientException e) {
                     log.error("Exception during sending EDC notification.", e);
                     investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, bpn);

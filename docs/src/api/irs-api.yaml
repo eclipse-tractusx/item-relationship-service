@@ -2524,7 +2524,7 @@ components:
         hops:
           type: integer
           format: int32
-        bpn:
+        parentBpn:
           type: string
         result:
           type: string

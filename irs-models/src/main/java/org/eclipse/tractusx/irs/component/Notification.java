@@ -21,40 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.model.notification;
+package org.eclipse.tractusx.irs.component;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.extern.jackson.Jacksonized;
-
-/**
- * ESS Response notification content for {@link EdcNotification}.
- */
-@Data
-@Builder
-@Jacksonized
-public class ResponseNotificationContent implements NotificationContent {
-
-    private static final String INFECTED_SUPPLY_CHAIN_RESULT = "Yes";
-
-    private final String result;
-    private Integer hops;
-    private String parentBpn;
-
-    /**
-     * Incrementing hops value
-     *
-     * @return updated object
-     */
-    public ResponseNotificationContent incrementHops() {
-        this.hops += 1;
-        return this;
-    }
-
-    /**
-     * @return true if the result is Yes
-     */
-    public boolean thereIsIncident() {
-        return INFECTED_SUPPLY_CHAIN_RESULT.equals(this.getResult());
-    }
+public record Notification(String notificationId, String bpn) {
 }

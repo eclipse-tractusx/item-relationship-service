@@ -37,6 +37,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -55,7 +56,7 @@ public class BpnInvestigationJob {
 
     private Jobs jobSnapshot;
     private List<String> incidentBpns;
-    private List<String> unansweredNotificationIds;
+    private List<Notification> unansweredNotifications;
     private List<EdcNotification<ResponseNotificationContent>> answeredNotifications;
     private JobState state;
 
@@ -75,16 +76,24 @@ public class BpnInvestigationJob {
         return this;
     }
 
-    public BpnInvestigationJob withUnansweredNotificationIds(final List<String> notifications) {
-        this.unansweredNotificationIds.addAll(notifications);
+    public BpnInvestigationJob withUnansweredNotifications(final List<Notification> notifications) {
+        this.unansweredNotifications.addAll(notifications);
         return this;
     }
 
     public BpnInvestigationJob withAnsweredNotification(final EdcNotification<ResponseNotificationContent> notification) {
-        this.unansweredNotificationIds.remove(notification.getHeader().getOriginalNotificationId());
-        notification.getContent().incrementHops();
-        this.answeredNotifications.add(notification);
-        return this;
+        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId().equals(notification.getHeader().getOriginalNotificationId()));
+                final Optional<String> parentBpn = this.unansweredNotifications.stream()
+                                                                               .filter(unansweredNotification -> unansweredNotification.notificationId()
+                                                                                                                                       .equals(notification.getHeader()
+                                                                                                                                                           .getOriginalNotificationId()))
+                                                                               .map(Notification::bpn)
+                                                                               .findAny();
+
+                notification.getContent().setParentBpn(parentBpn.orElse(null));
+                notification.getContent().incrementHops();
+                this.answeredNotifications.add(notification);
+                return this;
     }
 
     public BpnInvestigationJob complete() {
@@ -109,7 +118,7 @@ public class BpnInvestigationJob {
                                                                                                                                      .supplyChainImpacted(
                                                                                                                                              supplyChainImpacted);
 
-        if (getUnansweredNotificationIds().isEmpty()) {
+        if (getUnansweredNotifications().isEmpty()) {
             final Optional<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
                                                                                                              .map(EdcNotification::getContent)
                                                                                                              .filter(ResponseNotificationContent::thereIsIncident)
@@ -143,7 +152,7 @@ public class BpnInvestigationJob {
         final Summary oldSummary = Optional.ofNullable(irsJob.getJob().getSummary()).orElse(Summary.builder().build());
         final NotificationSummary newSummary = new NotificationSummary(oldSummary.getAsyncFetchedItems(),
                 oldSummary.getBpnLookups(),
-                new NotificationItems(unansweredNotificationIds.size() + answeredNotifications.size(),
+                new NotificationItems(unansweredNotifications.size() + answeredNotifications.size(),
                         answeredNotifications.size()));
         final Job job = irsJob.getJob().toBuilder().summary(newSummary).build();
         return irsJob.toBuilder().job(job).build();
