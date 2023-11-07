@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - ESS
   - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
+  - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
 
 ## [4.0.0] - 2023-10-27
 ### Added

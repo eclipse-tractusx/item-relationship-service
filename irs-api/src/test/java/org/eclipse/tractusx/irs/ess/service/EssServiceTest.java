@@ -169,6 +169,58 @@ class EssServiceTest {
     }
 
     @Test
+    void shouldReturnFirstImpactedSupplierWhenNotificationFound() {
+        // given
+        final String notificationId = UUID.randomUUID().toString();
+        final String notificationId2 = UUID.randomUUID().toString();
+        final UUID jobId = UUID.randomUUID();
+        final String owner = securityHelperService.getClientIdClaim();
+
+        final String bpnLevel0 = "bpn-level-0";
+        final String bpnLevel1 = "bpn-level-1";
+
+        final ResponseNotificationContent responseNotificationContentLevel1 = ResponseNotificationContent.builder().result("No").hops(0).parentBpn(bpnLevel0).build();
+        final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notificationId)
+                                                                   .originalNotificationId(notificationId)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> responseNotificationLevel1 = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                            .header(header1)
+                                                                                            .content(responseNotificationContentLevel1)
+                                                                                            .build();
+
+
+        final ResponseNotificationContent impactedResponseNotificationContent = ResponseNotificationContent.builder().result("Yes").hops(0).parentBpn(bpnLevel1).build();
+        final EdcNotificationHeader header2 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notificationId)
+                                                                   .originalNotificationId(notificationId2)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> responseNotificationLevel2 = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                             .header(header2)
+                                                                                             .content(impactedResponseNotificationContent)
+                                                                                             .build();
+
+        final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
+                Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
+                new ArrayList<>()).withUnansweredNotifications(List.of(new Notification(notificationId, bpnLevel0), new Notification(notificationId2, bpnLevel1)));
+        bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
+
+        // when
+        essService.handleNotificationCallback(responseNotificationLevel1);
+        essService.handleNotificationCallback(responseNotificationLevel2);
+
+        // then
+        final BpnInvestigationJob job2 = bpnInvestigationJobCache.findAll().get(0);
+        final List<Map<String, Object>> supplyChainImpacted2 = (List<Map<String, Object>>) job2.getJobSnapshot()
+                                                .getSubmodels()
+                                                .get(0)
+                                                .getPayload()
+                                                .get("impactedSuppliersOnFirstTier");
+
+        assertThat(supplyChainImpacted2.get(0).get("bpnl").toString()).isEqualTo(bpnLevel1);
+    }
+
+    @Test
     void shouldKeepJobInRunningIfNotificationIsOpen() {
         final String notificationId = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();

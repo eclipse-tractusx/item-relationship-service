@@ -84,21 +84,26 @@ public class BpnInvestigationJob {
 
     public BpnInvestigationJob withAnsweredNotification(
             final EdcNotification<ResponseNotificationContent> notification) {
-        final Optional<String> parentBpn = this.unansweredNotifications.stream()
-                                                                       .filter(unansweredNotification -> unansweredNotification.notificationId()
-                                                                                                                               .equals(notification.getHeader()
-                                                                                                                                                   .getOriginalNotificationId()))
-                                                                       .map(Notification::bpn)
-                                                                       .findAny();
-
-        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId()
-                                                                                              .equals(notification.getHeader()
-                                                                                                                  .getOriginalNotificationId()));
-
+        final Optional<String> parentBpn = getParentBpn(notification);
+        removeFromUnansweredNotification(notification);
         notification.getContent().setParentBpn(parentBpn.orElse(null));
         notification.getContent().incrementHops();
         this.answeredNotifications.add(notification);
+
         return this;
+    }
+
+    private Optional<String> getParentBpn(final EdcNotification<ResponseNotificationContent> notification) {
+        return this.unansweredNotifications.stream()
+                                           .filter(unansweredNotification -> unansweredNotification.notificationId()
+                                                                                                   .equals(notification.getHeader().getOriginalNotificationId()))
+                                           .map(Notification::bpn)
+                                           .findAny();
+    }
+
+    private void removeFromUnansweredNotification(final EdcNotification<ResponseNotificationContent> notification) {
+        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId()
+                                                                                              .equals(notification.getHeader().getOriginalNotificationId()));
     }
 
     public BpnInvestigationJob complete() {

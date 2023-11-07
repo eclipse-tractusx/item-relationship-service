@@ -57,7 +57,7 @@ class EssRecursiveNotificationHandlerTest {
     @Test
     void shouldDoNothingWhenThereIsNoInvestigationJob() {
         // when
-        cut.handleNotification(UUID.randomUUID(), SupplyChainImpacted.UNKNOWN, "");
+        cut.handleNotification(UUID.randomUUID(), SupplyChainImpacted.UNKNOWN, "bpn");
 
         // then
         verifyNoInteractions(edcNotificationSender);
