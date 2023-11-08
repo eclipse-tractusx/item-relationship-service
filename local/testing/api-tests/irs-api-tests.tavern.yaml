@@ -498,6 +498,351 @@ stages:
         content-type: application/json
 
 
+---
+
+
+test_name: Make sure first level supplier BPNL in investigation job with four level request has been detected correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          # Tested with Vehicle A
+          globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          bpn: BPNL00000003AYRE
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNS00000003B6LU
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation and check results
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+        - function: local.testing.api-tests.tavern_helpers:supplyChainFirstLevelBpn_is_as_expected
+          extra_kwargs:
+            expectedBpnl: BPNL00ARBITRARY1
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure first level supplier bpnl in investigation job with three level request has been detected correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          # Tested with Vehicle C
+          globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
+          bpn: BPNL00ARBITRARY4
+        incidentBPNSs:
+          - BPNS00ARBITRARY7
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation and check results
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+        - function: local.testing.api-tests.tavern_helpers:supplyChainFirstLevelBpn_is_as_expected
+          extra_kwargs:
+            expectedBpnl: BPNL00ARBITRARY5
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure first level supplier bpnl in investigation job with one level request has been detected correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          #tested with Vehicle D
+          globalAssetId: urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f
+          bpn: BPNL00ARBITRARY8
+        incidentBPNSs:
+          - BPNS0ARBITRARY10
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation and check results
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+        - function: local.testing.api-tests.tavern_helpers:supplyChainFirstLevelBpn_is_as_expected
+          extra_kwargs:
+            expectedBpnl: BPNL00ARBITRARY10
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure four hops in supplyChain impacted investigation job has been detected correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          # Tested with Vehicle A
+          globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          bpn: BPNL00000003AYRE
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNS00000003B6LU
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation and check results
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+        - function: local.testing.api-tests.tavern_helpers:supplyChainhops_is_as_expected
+          extra_kwargs:
+            expectedHops: 4
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure three hops in supplyChain impacted investigation job has been detected correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          # Tested with Vehicle C
+          globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
+          bpn: BPNL00ARBITRARY4
+        incidentBPNSs:
+          - BPNS00ARBITRARY7
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation and check results
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+        - function: local.testing.api-tests.tavern_helpers:supplyChainhops_is_as_expected
+          extra_kwargs:
+            expectedHops: 3
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure one hops in supplyChain impacted investigation job has been detected correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          #tested with Vehicle D
+          globalAssetId: urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f
+          bpn: BPNL00ARBITRARY8
+        incidentBPNSs:
+          - BPNS0ARBITRARY10
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation and check results
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+        - function: local.testing.api-tests.tavern_helpers:supplyChainhops_is_as_expected
+          extra_kwargs:
+            expectedHops: 1
+      headers:
+        content-type: application/json
+
 ############################### \/ ESS Tests with T-Systems and submodel servers \/ ##############################
 ####### !!!!!! Commented out since there is no testdata available for the moment !!!!!! ######
 #---

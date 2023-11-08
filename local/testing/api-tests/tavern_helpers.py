@@ -15,6 +15,22 @@ def supplyChainImpacted_is_Yes(response):
         assert 'Yes' in i.get("payload").get('supplyChainImpacted')
 
 
+def supplyChainFirstLevelBpn_is_as_expected(response, expectedBpnl):
+    submodels = response.json().get("submodels")
+    for i in submodels:
+        impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
+        for ii in impactedSuppliersOnFirstTier:
+            assert expectedBpnl in ii.get('bpnl')
+
+
+def supplyChainhops_is_as_expected(response, expectedHops):
+    submodels = response.json().get("submodels")
+    for i in submodels:
+        impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
+        for ii in impactedSuppliersOnFirstTier:
+            assert ii.get('hops') == expectedHops
+
+
 def supplyChainImpacted_is_No(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
