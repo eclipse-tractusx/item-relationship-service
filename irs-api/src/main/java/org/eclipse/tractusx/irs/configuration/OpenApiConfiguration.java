@@ -79,7 +79,8 @@ public class OpenApiConfiguration {
             final Components components = openApi.getComponents();
             components.addSecuritySchemes("oAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
                                                                         .flows(new OAuthFlows().clientCredentials(
-                                                                                new OAuthFlow()
+                                                                                new OAuthFlow().scopes(
+                                                                                                       new Scopes())
                                                                                                .tokenUrl(tokenUri))));
             openApi.getComponents().getSchemas().values().forEach(s -> s.setAdditionalProperties(false));
             new OpenApiExamples().createExamples(components);
