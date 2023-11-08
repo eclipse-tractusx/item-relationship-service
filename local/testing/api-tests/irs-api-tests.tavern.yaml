@@ -97,7 +97,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
@@ -153,7 +155,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_No
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "No"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
@@ -206,7 +210,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Unknown"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
@@ -262,7 +268,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
@@ -319,7 +327,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Unknown"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
@@ -373,7 +383,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:relationships_for_BPN_investigations_contains_several_childs
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
@@ -433,7 +445,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Unknown"
         - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
           extra_kwargs:
             expectedTombstone: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
@@ -490,7 +504,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Unknown"
         - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
           extra_kwargs:
             expectedTombstone: "'PartSiteInformationAsPlanned' exists, but catenaXSiteId could not be found."
@@ -548,7 +564,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:supplyChainFirstLevelBpn_is_as_expected
           extra_kwargs:
@@ -605,7 +623,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:supplyChainFirstLevelBpn_is_as_expected
           extra_kwargs:
@@ -662,7 +682,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:supplyChainFirstLevelBpn_is_as_expected
           extra_kwargs:
@@ -721,7 +743,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:supplyChainhops_is_as_expected
           extra_kwargs:
@@ -778,7 +802,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:supplyChainhops_is_as_expected
           extra_kwargs:
@@ -835,7 +861,9 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+          extra_kwargs:
+            expectedSupplyChainImpacted: "Yes"
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:supplyChainhops_is_as_expected
           extra_kwargs:
@@ -894,7 +922,9 @@ stages:
 #    response:
 #      status_code: 200
 #      verify_response_with:
-#        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+#        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
+#          extra_kwargs:
+#            expectedSupplyChainImpacted: "Yes"
 #        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
 #      headers:
 #        content-type: application/json
