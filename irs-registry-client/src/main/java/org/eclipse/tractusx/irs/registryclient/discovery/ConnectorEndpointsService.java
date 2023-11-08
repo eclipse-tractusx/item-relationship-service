@@ -29,6 +29,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  * Connector Endpoints service to find connectors in Discovery Finder
@@ -39,7 +42,9 @@ import org.apache.commons.lang3.StringUtils;
 public class ConnectorEndpointsService {
 
     private final DiscoveryFinderClient discoveryFinderClient;
+    private static final String CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME = "connector_endpoint_service_cache";
 
+    @Cacheable(CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME)
     public List<String> fetchConnectorEndpoints(final String bpn) {
         if (StringUtils.isBlank(bpn)) {
             log.warn("BPN was null, cannot search for any connector endpoints. Returning empty list.");
@@ -65,4 +70,9 @@ public class ConnectorEndpointsService {
         return endpoints;
     }
 
+    @CacheEvict(value = CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME, allEntries = true)
+    @Scheduled(fixedRateString = "${irs-edc-client.connectorEndpointService.cacheTTL}")
+    public void evictCachesValues() {
+        log.debug("Clearing \"{}\" cache.", CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME);
+    }
 }

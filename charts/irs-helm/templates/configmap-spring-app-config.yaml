@@ -114,6 +114,8 @@ data:
             operator: {{ .operator | quote }}
             rightOperand: {{ .rightOperand | quote }}
           {{- end }}
+      connectorEndpointService:
+        cacheTTL: {{ tpl(.Values) }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
