@@ -59,7 +59,7 @@ class DependenciesHealthIndicatorTest {
 
         // then
         assertThat(health.getStatus()).isEqualTo(Status.UP);
-        assertThat(health.getDetails().size()).isEqualTo(externalServicesHealthUrls.size());
+        assertThat(health.getDetails()).hasSameSizeAs(externalServicesHealthUrls);
         verify(restTemplate, times(externalServicesHealthUrls.size())).getForEntity(anyString(), eq(Void.class));
     }
 
@@ -77,7 +77,7 @@ class DependenciesHealthIndicatorTest {
 
         // then
         assertThat(health.getStatus()).isEqualTo(Status.DOWN);
-        assertThat(health.getDetails().size()).isEqualTo(externalServicesHealthUrls.size());
+        assertThat(health.getDetails()).hasSameSizeAs(externalServicesHealthUrls);
         verify(restTemplate, times(externalServicesHealthUrls.size())).getForEntity(anyString(), eq(Void.class));
     }
 
@@ -95,7 +95,7 @@ class DependenciesHealthIndicatorTest {
 
         // then
         assertThat(health.getStatus()).isEqualTo(Status.DOWN);
-        assertThat(health.getDetails().size()).isEqualTo(externalServicesHealthUrls.size());
+        assertThat(health.getDetails()).hasSameSizeAs(externalServicesHealthUrls);
         verify(restTemplate, times(externalServicesHealthUrls.size())).getForEntity(anyString(), eq(Void.class));
     }
 
