@@ -7,8 +7,7 @@ info:
 servers:
   - url: http://localhost:8080
 security:
-  - oAuth2:
-      - profile email
+  - oAuth2: []
 paths:
   /ess/bpn/investigations:
     post:
@@ -59,8 +58,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2: []
       summary: Registers an IRS job to start an investigation if a given bpn is contained
         in a part chain of a given globalAssetId.
       tags:
@@ -125,8 +123,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job with the requested jobId not found.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2: []
       summary: Return job with additional supplyChainImpacted information.
       tags:
         - Environmental and Social Standards
@@ -205,8 +202,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2: []
       summary: "Registers an order for an ESS investigation with an array of {globalAssetIds}. 
       Each globalAssetId will be processed in an separate job, grouped in batches."
       tags:
@@ -296,8 +292,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2: []
       summary: Returns paginated jobs with state and execution times.
       tags:
         - Item Relationship Service
@@ -348,8 +343,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2: []
       summary: "Register an IRS job to retrieve an item graph for given {globalAssetId}."
       tags:
         - Item Relationship Service
@@ -433,8 +427,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job with the requested jobId not found.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2: []
       summary: Return job with optional item graph result for requested id.
       tags:
         - Item Relationship Service
@@ -499,8 +492,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Job for requested jobId not found.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Cancel job for requested jobId.
       tags:
         - Item Relationship Service
@@ -537,8 +529,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Get all available aspect models from semantic hub or local models.
       tags:
         - Aspect Models
@@ -591,8 +582,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: "Registers an IRS order with an array of {globalAssetIds}.\
       \ Each globalAssetId will be processed in an IRS Job, grouped in batches."
       tags:
@@ -659,8 +649,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Batch Order with the requested orderId not found.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Get a batch order for a given orderId.
       tags:
         - Item Relationship Service
@@ -725,8 +714,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Batch Order with the requested orderId not found.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Cancel a batch order for a given orderId.
       tags:
         - Item Relationship Service
@@ -802,8 +790,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Batch with the requested orderId and batchId not found.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Get a batch with a given batchId for a given orderId.
       tags:
         - Item Relationship Service
@@ -839,8 +826,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Lists the registered policies that should be accepted in EDC negotiation.
       tags:
         - Item Relationship Service
@@ -884,8 +870,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Register a policy that should be accepted in EDC negotiation.
       tags:
         - Item Relationship Service
@@ -930,8 +915,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Removes a policy that should no longer be accepted in EDC negotiation.
       tags:
         - Item Relationship Service
@@ -981,8 +965,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - oAuth2:
-            - profile email
+        - oAuth2:[]
       summary: Updates an existing policy with new validUntil value.
       tags:
         - Item Relationship Service
@@ -2635,6 +2618,5 @@ components:
       flows:
         clientCredentials:
           scopes:
-            profile email: ""
           tokenUrl: https://localhost
       type: oauth2
