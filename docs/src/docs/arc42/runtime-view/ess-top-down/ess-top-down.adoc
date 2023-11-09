@@ -1,0 +1,12 @@
+= Use Case: ESS (Environmental and Social Standards) Top-Down Approach
+
+With the entry into force of the German Supply Chain Due Diligence Act as from January 1st, 2023, German companies are obliged to implement the corresponding requirements of this law. In addition, the following European directives on this subject have also been adopted: EU regulation 2018/858. This regulation is legally binding to all EU member states.
+
+== Specification
+This component enables data providers to provide the BoM as planned aspect models via the Catena-X defined solution stack (i.e. EDC). The BoM as planned aspect models consists of three aspect models:
+
+- PartAsPlanned - Masterdata of a Part Type incl. location related data (e.g. production sites)
+- SingleLevelBomAsPlanned - The relation to child part types provided by the supplier of the given company
+- PartSiteInformationAsPlanned - Relation to Sites in order to resemble the flow of the specific part/material
+
+

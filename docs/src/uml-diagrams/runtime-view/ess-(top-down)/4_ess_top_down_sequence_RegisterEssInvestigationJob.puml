@@ -83,28 +83,37 @@ loop  childCXIds
         IRS -> IRS : Extract **catenaXsiteId** from PartSiteInformationAsPlanned
 
         alt Match of "incidentBpns" and catenaXsiteId
-            IRS -> IRS:
+            IRS --> IRS: detect the supplyChainImpacted on first tier level
+            note left
+                detect which subtree identified by BPN is infected on first tier level.
+                This information is only present on first tier level.
+            end note
             Requestor <-- IRS: Respond part-chain infected
             note left
-                    {
-                        "header": {
-                            "notificationId": "e0f8c1b9-ba5a-4b7e-a431-b2d03d129705",
-                            "senderBpn": "BPNL00000003BW3S",
-                            "recipientBpn": "BPNL00000003BV4H",
-                            ...
-                        },
-                        "content": {
-                            "result" : "yes"
-                        }
-                    }
+		            job {
+		               "jobId": "b516599a-9565-45d3-b1e1-792591471aba",
+		                "globalAssetId": "urn:uuid:88f51be1-3771-4335-8b5c-4c5050123123",
+		                "jobState": "COMPLETED",
+		                "exception": null,
+		                "createdOn": "2023-01-19T09:38:58.154121732Z",
+		                "startedOn": "2023-01-19T09:38:58.154307233Z",
+		            }
+		            submodels: [
+		                {
+			                "supplyChainImpacted": "YES",
+			                "impactedSuppliersOnFirstTier": [
+				                {<BPNL>, hops},
+			                ],
+		                }
+		            ]
               end note
          else
             ref over IRS, IRSTier1
-                : Send ess-request notification
+                : Send ess-request notification to next tier level
             end ref
             IRSTier1 -> IRSTier1 : Receiver ess-request notification
 
-            IRS <-- IRSTier1: Response ess-response notification
+            IRS <-- IRSTier1: Return ess-response notification
         end
     else -
         IRS -> IRS: continue  loop
