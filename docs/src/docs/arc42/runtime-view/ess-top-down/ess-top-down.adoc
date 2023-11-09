@@ -48,8 +48,6 @@ Note: ESS supplier responses are involved in each step of the process.
 
 == Flow on company level
 
-== Overall flow
-
 [plantuml, target=submodel-processing, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/1_ess-top-down-sequence-highlevel.puml[]
