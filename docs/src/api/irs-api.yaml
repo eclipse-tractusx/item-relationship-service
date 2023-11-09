@@ -2024,6 +2024,7 @@ components:
             - downward
         integrityCheck:
           type: boolean
+          example: false
         lookupBPNs:
           type: boolean
           example: false
