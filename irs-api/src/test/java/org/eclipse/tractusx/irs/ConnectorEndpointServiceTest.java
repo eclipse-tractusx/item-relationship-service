@@ -43,7 +43,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith({ MockitoExtension.class,
               SpringExtension.class
 })
-public class ConnectorEndpointServiceTest {
+class ConnectorEndpointServiceTest {
 
     @Autowired
     ConnectorEndpointsService connectorEndpointsService;
@@ -52,7 +52,7 @@ public class ConnectorEndpointServiceTest {
     CacheManager cacheManager;
 
     @Test
-    public void shouldGenerateCacheRecordWhenFetchConnectorEndpointsCalled() {
+    void shouldGenerateCacheRecordWhenFetchConnectorEndpointsCalled() {
         // given
         final String bpnRecord = "";
 
