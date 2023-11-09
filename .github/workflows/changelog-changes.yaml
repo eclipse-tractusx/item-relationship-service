@@ -2,7 +2,7 @@
 
 on:
   pull_request:
-    branches: main
+#    branches: main
 #    paths-ignore:
 #      - '**/*.txt'
 #      - '.config/**'
@@ -13,6 +13,8 @@ jobs:
   analyze:
     runs-on: ubuntu-latest
     permissions:
+      actions: read
+      contents: read
       pull-requests: write
 
     name: changelog-check
