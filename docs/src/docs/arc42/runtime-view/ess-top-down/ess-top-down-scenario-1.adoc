@@ -5,7 +5,7 @@ This section describes what happens when user creates an ess order.
 == Register an Ess-Investigation-Order
 [plantuml, target=submodel-processing, format=svg]
 ....
-include::../../../../uml-diagrams/runtime-view/ess-(top-down)/3_ess_top_down_sequence-RegisterEssInvestigationOrder.puml[]
+include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/3_ess_top_down_sequence-RegisterEssInvestigationOrder.puml[]
 ....
 
 
@@ -20,7 +20,7 @@ include::../../../../uml-diagrams/runtime-view/ess-(top-down)/3_ess_top_down_seq
 | [001]
 | IRS
 | Initiates initial order processing
-| Begins asynchronous processing of ESS process for "incidentBPNSs" and tuples of "globalAssetid" and "BPN."
+| Begins asynchronous processing of ESS process for "incidentBPNSs" and tuples of "globalAssetId" and "BPN."
 
 | [002]
 | IRS
@@ -64,11 +64,3 @@ include::../../../../uml-diagrams/runtime-view/ess-(top-down)/3_ess_top_down_seq
 
 |===
 
-== Overview
-
-If a job is registered via the IRS API, it will be persisted (with its parameters) in the JobStore, where it can be retrieved by further calls and processes.
-Then, the starting item ID is extracted, and a new transfer process is handed to the ExecutorService, which will process it asynchronously (see Scenario 2: Job Execution).
-
-In the meantime, the JobOrchestrator returns a response to the API caller, which contains the UUID of the new job.
-This UUID can then be used by the caller to retrieve information about the job via the API.
-The input provided by the caller determines how the job will operate (starting point, recursion depth, aspect filter, ...).

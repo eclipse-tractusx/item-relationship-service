@@ -115,7 +115,7 @@ loop  childCXIds
 
             IRS <-- IRSTier1: Return ess-response notification
         end
-    else -
+    else
         IRS -> IRS: continue  loop
     end
 end loop

@@ -8,7 +8,6 @@ autonumber "<b>[000]"
 participant "Client App (Script)" as Client
 
 box "OEM" #LightGrey
-    participant IRS as IRS
     participant decentralDigitalTwinRegistry as dDTR
 end box
 
