@@ -64,7 +64,7 @@ paths:
       summary: Registers an IRS job to start an investigation if a given bpn is contained
         in a part chain of a given globalAssetId.
       tags:
-        - Environmental- and Social Standards
+        - Environmental and Social Standards
   /ess/bpn/investigations/{id}:
     get:
       description: Return job with additional supplyChainImpacted information.
@@ -129,7 +129,7 @@ paths:
             - profile email
       summary: Return job with additional supplyChainImpacted information.
       tags:
-        - Environmental- and Social Standards
+        - Environmental and Social Standards
   /ess/notification/receive:
     post:
       description: Accepts notifications via EDC. Notifications are filtered by their
@@ -155,7 +155,7 @@ paths:
           description: Notification malformed.
       summary: Accepts notifications sent via EDC.
       tags:
-        - Environmental- and Social Standards
+        - Environmental and Social Standards
   /irs/ess/orders:
     post:
       description: "Registers an order for an ESS investigation with an array of 
@@ -210,7 +210,7 @@ paths:
       summary: "Registers an order for an ESS investigation with an array of {globalAssetIds}. 
       Each globalAssetId will be processed in an separate job, grouped in batches."
       tags:
-        - Environmental- and Social Standards
+        - Environmental and Social Standards
   /irs/jobs:
     get:
       description: Returns paginated jobs with state and execution times.
@@ -1531,8 +1531,10 @@ components:
           example: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
         id:
           type: string
+          example: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
         idShort:
           type: string
+          example: future concept x
         specificAssetIds:
           type: array
           items:
@@ -1669,16 +1671,20 @@ components:
       properties:
         manufacturerId:
           type: string
+          example: BPNL00000003AYRE
         manufacturerName:
           type: string
+          example: OEM A
     Constraint:
       type: object
       additionalProperties: false
       properties:
         leftOperand:
           type: string
+          example: string
         operator:
           type: string
+          example: eq
           enum:
             - eq
             - neq
@@ -1697,6 +1703,7 @@ components:
           type: array
           items:
             type: string
+          example: [string]
     Constraints:
       type: object
       additionalProperties: false
@@ -1773,6 +1780,7 @@ components:
       properties:
         interface:
           type: string
+          example: HTTP
         protocolInformation:
           $ref: '#/components/schemas/ProtocolInformation'
     ErrorResponse:
@@ -1868,12 +1876,14 @@ components:
       properties:
         name:
           type: string
+          example: engineserialid
         semanticId:
           $ref: '#/components/schemas/Reference'
         subjectId:
           $ref: '#/components/schemas/Reference'
         value:
           type: string
+          example: "12309481209312"
     Job:
       type: object
       additionalProperties: false
@@ -1882,9 +1892,11 @@ components:
         completedOn:
           type: string
           format: date-time
+          example: 2022-02-03T14:48:54.709Z
         createdOn:
           type: string
           format: date-time
+          example: 2022-02-03T14:48:54.709Z
         exception:
           $ref: '#/components/schemas/JobErrorDetails'
         globalAssetId:
@@ -1897,6 +1909,7 @@ components:
         id:
           type: string
           format: uuid
+          example: e5347c88-a921-11ec-b909-0242ac120002
           description: Id of the job.
           maxLength: 36
           minLength: 36
@@ -1911,6 +1924,7 @@ components:
         lastModifiedOn:
           type: string
           format: date-time
+          example: 2022-02-03T14:48:54.709Z
         owner:
           type: string
           description: The IRS api consumer.
@@ -1919,8 +1933,10 @@ components:
         startedOn:
           type: string
           format: date-time
+          example: 2022-02-03T14:48:54.709Z
         state:
           type: string
+          example: COMPLETED
           enum:
             - UNSAVED
             - INITIAL
@@ -1942,16 +1958,19 @@ components:
       properties:
         errorDetail:
           type: string
+          example: Timeout while requesting Digital Registry
           description: Detailed exception information.
           maxLength: 4000
         exception:
           type: string
           description: Exception name.
+          example: IrsTimeoutException
           maxLength: 100
         exceptionDate:
           type: string
           format: date-time
           description: Datetime error occurs.
+          example: 2022-02-03T14:48:54.709Z
     JobHandle:
       type: object
       additionalProperties: false
@@ -1971,8 +1990,10 @@ components:
       properties:
         aspects:
           type: string
+          example: SerialPart
         bomLifecycle:
           type: string
+          example: asBuilt
           description: The lifecycle context in which the child part was assembled
             into the parent part.
           enum:
@@ -1981,17 +2002,22 @@ components:
             - asSpecified
         bpn:
           type: string
+          example: BPNL00000003AYRE
         callbackUrl:
           type: string
+          example: https://hostname.com/callback?id={id}&state={state}
         collectAspects:
           type: boolean
+          example: false
         depth:
           type: integer
           format: int32
+          example: 1
           maximum: 2147483647
           minimum: 0
         direction:
           type: string
+          example: upward
           description: Item graph traversal direction.
           enum:
             - upward
@@ -2000,6 +2026,7 @@ components:
           type: boolean
         lookupBPNs:
           type: boolean
+          example: false
     JobStatusResult:
       type: object
       additionalProperties: false
@@ -2068,8 +2095,10 @@ components:
       properties:
         language:
           type: string
+          example: en
         text:
           type: string
+          example: The shell for a vehicle
     LinkedItem:
       type: object
       additionalProperties: false
@@ -2080,6 +2109,7 @@ components:
           type: string
           format: date-time
           description: Datetime of assembly.
+          example: 2022-02-03T14:48:54.709Z
         childCatenaXId:
           type: string
           description: CatenaX child global asset id in the format urn:uuid:uuid4.
@@ -2089,10 +2119,12 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         lastModifiedOn:
           type: string
+          example: 2022-02-03T14:48:54.709Z
           format: date-time
           description: Last datetime item was modified.
         lifecycleContext:
           type: string
+          example: asBuilt
           description: The lifecycle context in which the child part was assembled
             into the parent part.
           enum:
@@ -2107,8 +2139,10 @@ components:
       properties:
         datatypeURI:
           type: string
+          example: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
         lexicalValue:
           type: string
+          example: piece
     PageResult:
       type: object
       additionalProperties: false
@@ -2158,6 +2192,7 @@ components:
       properties:
         action:
           type: string
+          example: USE
           enum:
             - ACCESS
             - USE
@@ -2178,6 +2213,7 @@ components:
             $ref: '#/components/schemas/Permission'
         policyId:
           type: string
+          example: f253718e-a270-4367-901b-9d50d9bd8462
         validUntil:
           type: string
           format: date-time
@@ -2201,6 +2237,7 @@ components:
             - BpdmValidation
             - UsagePolicyValidation
             - DataIntegrityCheck
+            - EssValidation
         retryCounter:
           type: integer
           format: int32
@@ -2210,14 +2247,17 @@ components:
       type: object
       additionalProperties: false
       properties:
+        href:
+          example: https://edc.data.plane/{path}/submodel
+          type: string
         endpointProtocol:
+          example: HTTPS
           type: string
         endpointProtocolVersion:
           type: array
+          example: ["1.0"]
           items:
             type: string
-        href:
-          type: string
         subprotocol:
           type: string
         subprotocolBody:
@@ -2233,6 +2273,7 @@ components:
           $ref: '#/components/schemas/MeasurementUnit'
         quantityNumber:
           type: number
+          example: 1.0
           format: double
           maximum: 2147483647
           minimum: 0
@@ -2483,8 +2524,10 @@ components:
       properties:
         aspectType:
           type: string
+          example: SingleLevelBomAsBuilt
         bpn:
           type: string
+          example: BPNL00000003AYRE
         catenaXId:
           type: string
           description: CATENA-X global asset id in the format urn:uuid:uuid4.
@@ -2506,8 +2549,10 @@ components:
       properties:
         type:
           type: string
+          example: urn:bamm:com.catenax.vehicle:0.1.1
         value:
           type: string
+          example: Submodel
     Submodel:
       type: object
       additionalProperties: false

@@ -40,7 +40,8 @@ public enum ProcessStep {
     BPDM_REQUEST("BpdmRequest"),
     BPDM_VALIDATION("BpdmValidation"),
     USAGE_POLICY_VALIDATION("UsagePolicyValidation"),
-    DATA_INTEGRITY_CHECK("DataIntegrityCheck");
+    DATA_INTEGRITY_CHECK("DataIntegrityCheck"),
+    ESS_VALIDATION("EssValidation");
 
     @JsonValue
     private final String value;

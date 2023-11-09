@@ -25,7 +25,10 @@ package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,10 +38,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Permission {
 
+    @Schema(implementation = PolicyType.class, example = "USE")
     private PolicyType action;
+    @ArraySchema
     private List<Constraints> constraints;
-
 
 }

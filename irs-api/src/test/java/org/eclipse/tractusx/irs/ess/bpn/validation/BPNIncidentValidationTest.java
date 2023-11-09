@@ -174,7 +174,7 @@ class BPNIncidentValidationTest {
     }
 
     @Test
-    void shouldReturnNoWhenPartSideInformationDoesNotContainBPNS() {
+    void shouldReturnNoWhenPartSideInformationDoesNotContainBPNS() throws InvalidAspectTypeFormatException {
         // Arrange
         final List<String> bpns = List.of("BPNS00000003B0Q0");
         final PartSiteInformationAsPlanned partSiteInformation = PartSiteInformationAsPlanned.builder()
@@ -193,7 +193,7 @@ class BPNIncidentValidationTest {
     }
 
     @Test
-    void shouldReturnYesWhenPartSideInformationContainBPNS() {
+    void shouldReturnYesWhenPartSideInformationContainBPNS() throws InvalidAspectTypeFormatException {
         // Arrange
         final List<String> incidentBPNSs = List.of("BPNS00000003B0Q0");
         final PartSiteInformationAsPlanned partSiteInformation = PartSiteInformationAsPlanned.builder()
@@ -213,7 +213,7 @@ class BPNIncidentValidationTest {
     }
 
     @Test
-    void shouldReturnUnknownWhenPartSideInformationContainNoSites() {
+    void shouldReturnUnknownWhenPartSideInformationContainNoSites() throws InvalidAspectTypeFormatException {
         // Arrange
         final List<String> incidentBPNSs = List.of("BPNS00000003B0Q0");
         final PartSiteInformationAsPlanned partSiteInformation = PartSiteInformationAsPlanned.builder()

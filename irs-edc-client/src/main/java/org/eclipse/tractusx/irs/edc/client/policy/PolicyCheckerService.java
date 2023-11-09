@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -75,7 +76,7 @@ public class PolicyCheckerService {
     }
 
     private Stream<String> addEncodedVersion(final String original) {
-        return Stream.of(original, UriUtils.encode(original, "UTF-8"));
+        return Stream.of(original, UriUtils.encode(original, StandardCharsets.UTF_8));
     }
 
 }

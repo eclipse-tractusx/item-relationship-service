@@ -1,0 +1,64 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+title "ESS Bottom-Up from Incident Level"
+
+
+| OEM  - IRS Incident Tier Level |
+start
+:Incident BPNS is identified;
+:Get all AAS for from dDTR;
+note left
+   Requesting all AAS  from dDTR
+end note
+if(aas.isEmpty?) then (yes)
+    stop
+endif
+
+: Filter for asPlanned twins (aas);
+note left
+               semanticId/
+                    ["type"="ExternalReference"]/
+                        keys["type"="GlobalReference"]/
+                            ["value".contains("SingleLevelBomAsPlanned")]
+               SingleLevelBomAsPlanned (only downwards supported!!)
+end note
+if(twinsAsPlanned.isEmpty?) then (yes)
+    stop
+endif
+
+: Extract and collect globalAssetIds for own twins (AsPlanned);
+: Request batch call for globalAssetIds
+POST /ess/customers/investigations/orders;
+
+: Filter for incident BPNS
+in PartSiteInformationAsPlanned;
+
+if(!twin.contains(incidentBpns)) then (no)
+    : skip twin;
+else (yes)
+    : add twin;
+endif
+
+: ValidityPeriodChecker in own aas;
+if(timestamp is in validity period) then (yes)
+note left
+    PartAsPlanned.validityPeriod.validFrom
+               >= validityTimestamp
+               >= PartAsPlanned.validityPeriod.validTo
+end note
+    : add twin;
+else (no)
+    : skip twin;
+endif
+
+
+: Determining relationships one
+ tier level upwards;
+
+: aggregateBPNLs Aggregate bpns numbers for each bpnl;
+: increment hops count for each twin ;
+stop
+
+@enduml

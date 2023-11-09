@@ -1,0 +1,61 @@
+name: "Update DEPENDENCIES file"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: Cache maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Generate Dependencies file
+        run: mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES
+
+      - name: Check if file was changed
+        run: |
+          if git diff --name-only ${{ github.base_ref }}...${{ github.sha }} | grep -e 'DEPENDENCIES'; then
+            echo "The file was changed"
+            echo "was_file_changed=true" >> "$GITHUB_ENV"
+            git
+          else
+            echo "The file was not changed"
+            echo "was_file_changed=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Configure Git
+        if: ${{ env.was_file_changed }} == 'true'
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Create pull request
+        if: ${{ env.was_file_changed }} == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          add-paths: |
+            DEPENDENCIES
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/update-DEPENDENCIES
+          commit-message: "chore(dependencies): Update DEPENDENCIES"
+          delete-branch: true
+          title: Update DEPENDENCIES
+          body: |
+            This PR updates the DEPENDENCIES

@@ -36,7 +36,9 @@ import lombok.Getter;
 @SuppressWarnings("PMD.ShortClassName")
 public class Bpn {
 
+    @Schema(implementation = String.class, example = "BPNL00000003AYRE")
     private String manufacturerId;
+    @Schema(implementation = String.class, example = "OEM A")
     private String manufacturerName;
 
     public static Bpn withManufacturerId(final String manufacturerId) {

@@ -134,10 +134,9 @@ class EssServiceTest {
                                                                                              .content(resultYes)
                                                                                              .build();
 
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(
-                                                                                   Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(), new ArrayList<>())
-                                                                           .withNotifications(List.of(notificationId,
-                                                                                   notificationId2));
+        final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
+                Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
+                new ArrayList<>()).withNotifications(List.of(notificationId, notificationId2));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
@@ -173,9 +172,9 @@ class EssServiceTest {
         final String owner = securityHelperService.getClientIdClaim();
         when(securityHelperService.isAdmin()).thenReturn(true);
 
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
-                                                                                   new ArrayList<>())
-                                                                           .withNotifications(Collections.singletonList(notificationId));
+        final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
+                Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
+                new ArrayList<>()).withNotifications(Collections.singletonList(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
@@ -199,9 +198,8 @@ class EssServiceTest {
 
         final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId, owner);
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobSnapshot, null)
-                                                                           .withAnsweredNotification(notificationId)
-                                                                           .withNotifications(List.of());
+        final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot,
+                null).withAnsweredNotification(notificationId).withNotifications(List.of());
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         // Act
@@ -221,9 +219,8 @@ class EssServiceTest {
         final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId, owner);
         final String notificationId = UUID.randomUUID().toString();
-        final BpnInvestigationJob bpnInvestigationJob = BpnInvestigationJob.create(jobSnapshot, null)
-                                                                           .update(jobSnapshot, SupplyChainImpacted.NO)
-                                                                           .withNotifications(List.of(notificationId));
+        final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot, null).update(jobSnapshot,
+                SupplyChainImpacted.NO).withNotifications(List.of(notificationId));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
         final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()

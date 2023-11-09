@@ -144,7 +144,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"permissions\": [\n    {\n      \"action\": \"ACCESS\",\n      \"constraints\": [\n        {\n          \"and\": [\n            {\n              \"leftOperand\": \"FrameworkAgreement.traceability\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            },\n            {\n              \"leftOperand\": \"Membership\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"policyId\": \"traceability-test\",\n  \"validUntil\": \"2024-12-12T23:59:59.999Z\"\n}"
+				"text": "{\n  \"permissions\": [\n    {\n      \"action\": \"USE\",\n      \"constraints\": [\n        {\n          \"and\": [\n            {\n              \"leftOperand\": \"FrameworkAgreement.traceability\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            },\n            {\n              \"leftOperand\": \"Membership\",\n              \"operator\": \"eq\",\n              \"rightOperand\": [\n                \"active\"\n              ]\n            }\n          ]\n        }\n      ]\n    }\n  ],\n  \"policyId\": \"traceability-test\",\n  \"validUntil\": \"2024-12-12T23:59:59.999Z\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -1292,7 +1292,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"aspects\": [\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\",\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -1329,7 +1329,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"aspects\": [\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:05abf6ff-8c78-4b72-948b-40e08e9b83f3\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:05abf6ff-8c78-4b72-948b-40e08e9b83f3\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -1403,7 +1403,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"aspects\": [\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:5672e8ff-8a73-425e-b2a5-5561b5b21d7a\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
+				"text": "{\n\t\"aspects\": [\n\t\t\"SerialPart\",\n\t\t\"SingleLevelBomAsBuilt\"\n\t],\n\t\"bomLifecycle\": \"asBuilt\",\n\t\"collectAspects\": true,\n\t\"direction\": \"downward\",\n\t\"depth\": 10,\n  \"integrityCheck\": true,\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:5672e8ff-8a73-425e-b2a5-5561b5b21d7a\",\n\t\t\"bpn\": \"BPNL00000003AZQP\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2386,7 +2386,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n    \"key\": { \"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\", \"bpn\": \"BPNL00000003CRHK\" },\n    \"incidentBpns\": [\"BPNL00000003B6LU\"],\n    \"bomLifecycle\": \"asPlanned\"\n}"
+				"text": "{\n\t\"key\": {\n\t\t\"globalAssetId\": \"urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7\",\n\t\t\"bpn\": \"BPNL00000003CRHK\"\n\t},\n\t\"incidentBPNSs\": [\n\t\t\"BPNL00000003B6LU\"\n\t],\n\t\"bomLifecycle\": \"asPlanned\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2512,7 +2512,7 @@
 			"parentId": "fld_6bfeda181e9f46b4b85bb345457e97f9",
 			"modified": 1696342658242,
 			"created": 1696342619602,
-			"url": "{{IRS_HOST}}/irs/orders",
+			"url": "{{IRS_HOST}}/irs/ess/orders",
 			"name": "Register ESS Batch Order",
 			"description": "",
 			"method": "POST",
@@ -2535,6 +2535,40 @@
 				"clientSecret": "{{ _.CLIENT_SECRET }}"
 			},
 			"metaSortKey": -1680682418113.5,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_ee1cc65156a04cf3a3a07987e393df48",
+			"parentId": "fld_23fae21795994f76a61c93c8c8699b7d",
+			"modified": 1697020037992,
+			"created": 1697017836306,
+			"url": "{{IRS_HOST}}/irs/orders/{% prompt 'Job ID', '', '', '', false, true %}",
+			"name": "Cancel order job for given orderId",
+			"description": "Cancel either regular or ess order job",
+			"method": "PUT",
+			"body": {},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "oauth2",
+				"grantType": "client_credentials",
+				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
+				"clientId": "{{ _.CLIENT_ID }}",
+				"clientSecret": "{{ _.CLIENT_SECRET }}"
+			},
+			"metaSortKey": -1680682418111.25,
 			"isPrivate": false,
 			"settingStoreCookies": true,
 			"settingSendCookies": true,

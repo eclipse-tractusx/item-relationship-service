@@ -55,9 +55,6 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build with Maven
-        run: mvn package -pl irs-testing,irs-models,irs-common,irs-edc-client,irs-registry-client --batch-mode
-
       # Import GPG Key
       - uses: ./.github/actions/import-gpg-key
         name: "Import GPG Key"
@@ -77,14 +74,19 @@ jobs:
             </servers>
           </settings>" > $HOME/.m2/settings.xml
 
+      - name: Copy License information
+        run: |
+          mkdir -p irs-registry-client/src/main/resources/META-INF/
+          mkdir -p irs-edc-client/src/main/resources/META-INF/
+          mkdir -p irs-models/src/main/resources/META-INF/
+          mkdir -p irs-testing/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-registry-client/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-edc-client/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-models/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-testing/src/main/resources/META-INF/
+
       # publish snapshots or releases
       - name: Publish version
         run: |-
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl irs-registry-client)
-          REPOSITORY_URL="https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-          if [[ $VERSION == *"-SNAPSHOT"* ]]; then
-            echo "Using snapshot repository"
-            REPOSITORY_URL="https://oss.sonatype.org/content/repositories/snapshots"
-          fi
-          echo "Publishing Version $VERSION to Sonatype Repository $REPOSITORY_URL"
-          mvn -s $HOME/.m2/settings.xml --batch-mode gpg:sign-and-deploy-file -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -Durl=$REPOSITORY_URL -DrepositoryId=ossrh -Dfile=irs-registry-client/target/irs-registry-client-$VERSION-jar-with-dependencies.jar -DgroupId=org.eclipse.tractusx.irs -DartifactId=irs-registry-client -Dversion=$VERSION -Dpackaging=jar
+          mvn clean deploy -s $HOME/.m2/settings.xml --batch-mode -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -Prelease -pl irs-testing,irs-models,irs-edc-client,irs-registry-client -Drevision=$VERSION
