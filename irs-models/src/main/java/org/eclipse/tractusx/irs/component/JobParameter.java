@@ -41,7 +41,7 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 /**
  * Job parameter of job processing
  */
-@Schema(description = "Job parameter of job processing. Test")
+@Schema(description = "Job parameter of job processing.")
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
