@@ -491,7 +491,7 @@ stages:
 
   - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
 
-  - name: get response for created investigation
+  - name: get response for created investigation and check results
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
       params:
