@@ -5,7 +5,7 @@ This section covers the main processes of the IRS and explains how data is trans
 Please see the subpages for the relevant scenarios:
 
 - xref:overall.adoc[Overall]
-- xref:scenario-1.adoc[Scenario 1: Create Job]
-- xref:scenario-2.adoc[Scenario 2: Job Execution]
-- xref:scenario-3.adoc[Scenario 3: Request for JobResponse]
-- xref:scenario-4.adoc[Scenario 4: Cancel job execution]
+- xref:irs-iterative/scenario-1.adoc[Scenario 1: Create Job]
+- xref:irs-iterative/scenario-2.adoc[Scenario 2: Job Execution]
+- xref:irs-iterative/scenario-3.adoc[Scenario 3: Request for JobResponse]
+- xref:irs-iterative/scenario-4.adoc[Scenario 4: Cancel job execution]

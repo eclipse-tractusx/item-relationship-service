@@ -7,6 +7,10 @@ This section describes the overall flow of the IRS
 include::../../../uml-diagrams/runtime-view/api-call-asynchrous-sequence.puml[]
 ....
 
+
+== ESS (Top-Down)
+
+
 == Submodel
 
 This section describes how the IRS fetches submodel payload.
