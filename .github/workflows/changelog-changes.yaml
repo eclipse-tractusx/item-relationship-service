@@ -1,13 +1,13 @@
--name: "Check if CHANGELOG file was modified in PR"
+name: "Check if CHANGELOG file was modified in PR"
 
 on:
   pull_request:
-#    branches: main
-#    paths-ignore:
-#      - '**/*.txt'
-#      - '.config/**'
-#      - 'docs/**'
-#      - 'local/**'
+    branches: main
+    paths-ignore:
+      - '**/*.txt'
+      - '.config/**'
+      - 'docs/**'
+      - 'local/**'
 
 jobs:
   analyze:
