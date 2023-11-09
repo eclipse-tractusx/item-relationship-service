@@ -3,11 +3,11 @@
 on:
   pull_request:
     branches: main
-    paths-ignore:
-      - '**/*.txt'
-      - '.config/**'
-      - 'docs/**'
-      - 'local/**'
+#    paths-ignore:
+#      - '**/*.txt'
+#      - '.config/**'
+#      - 'docs/**'
+#      - 'local/**'
 
 jobs:
   analyze:
