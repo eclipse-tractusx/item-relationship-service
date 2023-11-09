@@ -16,19 +16,21 @@ def supplyChainImpacted_is_as_expected(response, expectedSupplyChainImpacted):
 
 
 def supplyChainFirstLevelBpn_is_as_expected(response, expectedBpnl):
-    submodels = response.json().get("submodels")
-    for i in submodels:
-        impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
-        for ii in impactedSuppliersOnFirstTier:
-            assert expectedBpnl in ii.get('bpnl')
+    bpnl = response.json().get("submodels").get("payload").get("impactedSuppliersOnFirstTier").get("bpnl")
+    assert expectedBpnl == bpnl
+    # for i in submodels:
+    #     impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
+    #     for ii in impactedSuppliersOnFirstTier:
+    #         assert expectedBpnl in ii.get('bpnl')
 
 
 def supplyChainhops_is_as_expected(response, expectedHops):
-    submodels = response.json().get("submodels")
-    for i in submodels:
-        impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
-        for ii in impactedSuppliersOnFirstTier:
-            assert ii.get('hops') == expectedHops
+    hops = response.json().get("submodels").get("payload").get("impactedSuppliersOnFirstTier").get("hops")
+    assert expectedHops == hops
+    # for i in submodels:
+    #     impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
+    #     for ii in impactedSuppliersOnFirstTier:
+    #         assert ii.get('hops') == expectedHops
 
 
 def errors_for_invalid_investigation_request_are_correct(response):
