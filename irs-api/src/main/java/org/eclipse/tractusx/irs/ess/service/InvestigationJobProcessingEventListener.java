@@ -117,7 +117,7 @@ class InvestigationJobProcessingEventListener {
                         investigationResult.supplyChainImpacted())) {
                     bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate.complete());
                     recursiveNotificationHandler.handleNotification(investigationJob.getJobSnapshot().getJob().getId(),
-                            investigationResult.supplyChainImpacted(), job.getJobParameter().getBpn());
+                            investigationResult.supplyChainImpacted(), job.getJobParameter().getBpn(), 0);
                 } else {
                     triggerInvestigationOnNextLevel(investigationResult.completedJob(), investigationJobUpdate, job.getJobParameter().getBpn());
                     bpnInvestigationJobCache.store(completedJobId, investigationJobUpdate);
@@ -172,12 +172,12 @@ class InvestigationJobProcessingEventListener {
                     + "Updating SupplyChainImpacted to {}", SupplyChainImpacted.UNKNOWN);
             investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, jobBpn);
             recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
-                    SupplyChainImpacted.UNKNOWN, jobBpn);
+                    SupplyChainImpacted.UNKNOWN, jobBpn, 0);
         } else if (resolvedBPNs.isEmpty()) {
             log.info("No BPNs could not be found. Updating SupplyChainImpacted to {}", SupplyChainImpacted.UNKNOWN);
             investigationJobUpdate.update(completedJob, SupplyChainImpacted.UNKNOWN, jobBpn);
             recursiveNotificationHandler.handleNotification(investigationJobUpdate.getJobSnapshot().getJob().getId(),
-                    SupplyChainImpacted.UNKNOWN, jobBpn);
+                    SupplyChainImpacted.UNKNOWN, jobBpn, 0);
         } else {
             log.debug("Sending notification for BPNs '{}'", bpns);
             sendNotifications(completedJob, investigationJobUpdate, bpns);

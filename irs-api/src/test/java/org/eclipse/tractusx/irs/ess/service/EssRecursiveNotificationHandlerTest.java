@@ -57,7 +57,7 @@ class EssRecursiveNotificationHandlerTest {
     @Test
     void shouldDoNothingWhenThereIsNoInvestigationJob() {
         // when
-        cut.handleNotification(UUID.randomUUID(), SupplyChainImpacted.UNKNOWN, "bpn");
+        cut.handleNotification(UUID.randomUUID(), SupplyChainImpacted.UNKNOWN, "bpn", 0);
 
         // then
         verifyNoInteractions(edcNotificationSender);
@@ -70,7 +70,7 @@ class EssRecursiveNotificationHandlerTest {
         relatedInvestigationJobsCache.store("notification-id", createRelatedJobsWith(List.of(jobId)));
 
         // when
-        cut.handleNotification(jobId, SupplyChainImpacted.YES, "bpn");
+        cut.handleNotification(jobId, SupplyChainImpacted.YES, "bpn", 0);
 
         // then
         verify(edcNotificationSender).sendEdcNotification(any(), eq(SupplyChainImpacted.YES), eq(hops), eq("bpn"));
@@ -90,7 +90,7 @@ class EssRecursiveNotificationHandlerTest {
         when(pastBpnInvestigationJob.getSupplyChainImpacted()).thenReturn(Optional.of(SupplyChainImpacted.NO));
 
         // when
-        cut.handleNotification(jobId, SupplyChainImpacted.NO, bpn);
+        cut.handleNotification(jobId, SupplyChainImpacted.NO, bpn, 0);
 
         // then
         verify(edcNotificationSender, times(1)).sendEdcNotification(any(), eq(SupplyChainImpacted.NO), eq(hops), eq(bpn));

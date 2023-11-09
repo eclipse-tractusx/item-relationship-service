@@ -48,7 +48,7 @@ public class EssRecursiveNotificationHandler {
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final EdcNotificationSender edcNotificationSender;
 
-    /* package */ void handleNotification(final UUID finishedJobId, final SupplyChainImpacted supplyChainImpacted, final String bpn) {
+    /* package */ void handleNotification(final UUID finishedJobId, final SupplyChainImpacted supplyChainImpacted, final String bpn, final int hops) {
 
         final Optional<RelatedInvestigationJobs> relatedJobsId = relatedInvestigationJobsCache.findByRecursiveRelatedJobId(
                 finishedJobId);
@@ -56,7 +56,7 @@ public class EssRecursiveNotificationHandler {
         relatedJobsId.ifPresentOrElse(relatedJobs -> {
             if (SupplyChainImpacted.YES.equals(supplyChainImpacted)) {
                 log.debug("SupplyChain is impacted. Sending notification back to requestor.");
-                edcNotificationSender.sendEdcNotification(relatedJobs.originalNotification(), supplyChainImpacted, FIRST_HOP, bpn);
+                edcNotificationSender.sendEdcNotification(relatedJobs.originalNotification(), supplyChainImpacted, hops, bpn);
                 relatedInvestigationJobsCache.remove(
                         relatedJobs.originalNotification().getHeader().getNotificationId());
             } else {
