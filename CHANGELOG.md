@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.1] - 2023-11-10
+### Changed
+- Added state `STARTED` as acceptable state to complete the EDC transfer process to be compatible with EDC 0.5.1
+
 ## [4.0.0] - 2023-10-27
 ### Added
 - Introduced new API endpoint to register ESS Jobs in Batch - POST {{IRS_HOST}}/irs/ess/orders
@@ -401,7 +405,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...HEAD
+[4.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.4...4.0.0
 [3.5.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...3.5.4
 [3.5.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.2...3.5.3
