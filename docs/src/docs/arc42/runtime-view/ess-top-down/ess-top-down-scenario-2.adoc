@@ -1,0 +1,106 @@
+= Scenario 1: Register an Ess-Investigation-Job
+
+This section describes what happens when user creates an ess job.
+
+== Register an Ess-Investigation Job
+
+[plantuml,target=submodel-processing,format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/4_ess_top_down_sequence_RegisterEssInvestigationJob.puml[]
+....
+
+|===
+| Step | Actor | Action | Details
+
+| [000]
+| Requestor
+| Sends a POST request to `/ess/bpn/investigations`
+| Includes JSON payload with parameters such as "bomLifecycle," "callbackUrl," "incidentBpns," and "key" containing "bpn" and "globalAssetId."
+
+| [001]
+| IRS
+| Registers an IRS ess incident job
+| Initiates the registration of an IRS ess incident job based on the received request.
+
+| [002]
+| IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR
+| Look up shells for the given globalAssetId
+| Conducts a lookup and retrieves AAS (Asset Administration Shell) for the specified globalAssetId.
+
+| [003]
+| IRS -> SubmodelServer
+| Sends a GET request for SingleLevelBomAsPlanned
+| Initiates a request to the SubmodelServer for the SingleLevelBomAsPlanned.
+
+| [004]
+| SubmodelServer -> IRS
+| Receives SingleLevelBomAsPlanned
+| Sends back the SingleLevelBomAsPlanned data to the IRS.
+
+| [005]
+| IRS
+| Extracts childCXIds from SingleLevelBomAsPlanned
+| Processes and extracts childCXIds from the received SingleLevelBomAsPlanned.
+
+| [006]
+| Loop (for each childCXId)
+| IRS, DiscoveryFinder, EDCDiscoveryService
+| Get EDC endpoint for Tier1, Retrieves the EDC endpoint for Tier1 based on the childCXId.
+
+| [007]
+| IRS, EDCTier1, dDTRTier1
+| Look up shells for the given globalAssetId
+| Conducts a lookup and retrieves AAS for the specified globalAssetId in Tier1.
+
+| [008]
+| IRS -> SubmodelServer
+| Sends a request to get PartAsPlanned
+| Initiates a request to the SubmodelServer to get PartAsPlanned.
+
+| [009]
+| SubmodelServer <- IRS
+| Receives PartAsPlanned
+| Gets PartAsPlanned data from the SubmodelServer.
+
+| [010]
+| IRS
+| Validity Check on PartAsPlanned validityPeriod
+| Checks the validity period of PartAsPlanned.
+
+| [011]
+| IRS -> SubmodelServer
+| Sends a GET request for PartSiteInformationAsPlanned
+| Requests PartSiteInformationAsPlanned from the SubmodelServer.
+
+| [012]
+| IRS -> IRS
+| Extracts catenaXsiteId from PartSiteInformationAsPlanned
+| Processes and extracts catenaXsiteId from PartSiteInformationAsPlanned.
+
+| [013]
+| IRS
+| Matches "incidentBpns" and catenaXsiteId
+| Checks for a match between "incidentBpns" and catenaXsiteId.
+
+| [014]
+| IRS
+| Detects the supplyChainImpacted on the first tier level
+| Identifies the supply chain impacted on the first tier level and provides information.
+
+| [015]
+| Requestor <- IRS
+| Responds part-chain infected
+| Receives the response indicating the part-chain infection.
+
+| [016]
+| IRS
+| Continues the loop
+| Continues the loop for the remaining childCXIds.
+
+| [017]
+| Loop (end)
+| IRS
+| Loop completion
+| Completes the loop for all childCXIds.
+
+|===

@@ -2,7 +2,7 @@
 
 [plantuml, target=cancel-job, format=svg]
 ....
-include::../../../uml-diagrams/runtime-view/cancel-job.puml[]
+include::../../../../uml-diagrams/runtime-view/cancel-job.puml[]
 ....
 
 == Overview
