@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- IRS can now check the readiness of external services. Use the new ``management.health.dependencies.enabled`` config entry to determine if external dependencies health checks should be checked (false by default).
+  - The map of external services healthcheck endpoints can be configured with ``management.health.dependencies.urls`` property, eg. ``service_name: http://service_name_host/health``
+
 ## [4.0.0] - 2023-10-27
 ### Added
 - Introduced new API endpoint to register ESS Jobs in Batch - POST {{IRS_HOST}}/irs/ess/orders
