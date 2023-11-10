@@ -81,16 +81,16 @@ spec:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: minioPassword
-            - name: COMMON_OAUTH2_CLIENT_ID
+            - name: OAUTH2_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
-                  key: commonClientId
-            - name: COMMON_OAUTH2_CLIENT_SECRET
+                  key: clientId
+            - name: OAUTH2_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
-                  key: commonClientSecret
+                  key: clientSecret
             - name: PORTAL_OAUTH2_CLIENT_ID
               valueFrom:
                 secretKeyRef:

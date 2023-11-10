@@ -11,8 +11,8 @@ spring:
         registration:
           common:
             authorization-grant-type: client_credentials
-            client-id: ${COMMON_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
-            client-secret: ${COMMON_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
+            client-id: ${OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
           portal:
             authorization-grant-type: client_credentials
             client-id: ${PORTAL_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
