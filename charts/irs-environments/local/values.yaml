@@ -13,12 +13,11 @@ irs-helm:
     url: https://partners-pool.int.demo.catena-x.net
   minioUser: testtest
   minioPassword: testtest
-  keycloak:
-    oauth2:
-      clientId:
-      clientSecret:
-      clientTokenUri:
-      jwkSetUri:
+  oauth2:
+    clientId:
+    clientSecret:
+    clientTokenUri:
+    jwkSetUri:
   edc:
     controlplane:
       apikey:
