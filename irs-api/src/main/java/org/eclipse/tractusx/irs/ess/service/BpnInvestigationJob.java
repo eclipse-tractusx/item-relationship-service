@@ -129,17 +129,27 @@ public class BpnInvestigationJob {
                                                                                                                                              supplyChainImpacted);
 
         if (getUnansweredNotifications().isEmpty()) {
-            final Optional<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
-                                                                                                             .map(EdcNotification::getContent)
-                                                                                                             .filter(ResponseNotificationContent::thereIsIncident)
-                                                                                                             .min(Comparator.comparing(
-                                                                                                                     ResponseNotificationContent::getHops));
+//            final Optional<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
+//                                                                                                             .map(EdcNotification::getContent)
+//                                                                                                             .filter(ResponseNotificationContent::thereIsIncident)
+//                                                                                                             .min(Comparator.comparing(
+//                                                                                                                     ResponseNotificationContent::getHops));
+//
+//            final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.map(
+//                                                                                                                                   min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpn, min.getHops()))
+//                                                                                                                           .stream()
+//                                                                                                                           .toList();
 
-            final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.map(
-                                                                                                                                   min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpn, min.getHops()))
-                                                                                                                           .stream()
-                                                                                                                           .toList();
-            supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(Set.copyOf(suppliersFirstLevel));
+            final List<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
+                                                                                                         .map(EdcNotification::getContent)
+                                                                                                         .filter(ResponseNotificationContent::thereIsIncident)
+                                                                                                         .toList();
+
+            final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.stream()
+                    .map(impacted -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(impacted.getParentBpn(), impacted.getHops()))
+                    .toList();
+
+                    supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(Set.copyOf(suppliersFirstLevel));
         }
 
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
