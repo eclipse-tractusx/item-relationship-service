@@ -4,7 +4,7 @@ This section describes how a job is asynchronously executed inside the IRS.
 
 [plantuml, target=execute-job, format=svg]
 ....
-include::../../../uml-diagrams/runtime-view/job-execution.puml[]
+include::../../../../uml-diagrams/runtime-view/job-execution.puml[]
 ....
 
 

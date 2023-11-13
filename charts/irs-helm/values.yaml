@@ -202,7 +202,8 @@ edc:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
-
+  connectorEndpointService:
+    cacheTTL: 86400000
 discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 

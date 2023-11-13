@@ -172,6 +172,8 @@ irs-edc-client:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
+  connectorEndpointService:
+    cacheTTL: 86400000
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.

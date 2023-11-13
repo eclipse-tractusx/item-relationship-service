@@ -2,7 +2,7 @@
 
 [plantuml, target=request-job, format=svg]
 ....
-include::../../../uml-diagrams/runtime-view/request-job-details.puml[]
+include::../../../../uml-diagrams/runtime-view/request-job-details.puml[]
 ....
 
 == Overview
