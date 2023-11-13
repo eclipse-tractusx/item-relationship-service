@@ -33,6 +33,39 @@ include::../../../uml-diagrams/building-block-view/level-2-int.puml[]
 |===
 
 
+== ESS controller
+
+The ESS REST controller is used to provide a RESTful web service to related Environmental and Social Standards functionalities.
+
+=== Component diagram
+
+[plantuml, target=level-2-ess-controller, format=svg]
+....
+include::../../../uml-diagrams/building-block-view/level-2-int-ess.puml[]
+....
+
+=== Component description
+
+|===
+|Components |Description
+
+|EssController
+|Application REST controller.
+
+|EssService
+|Service contains business logic for investigation if part is inside supply chain.
+
+|IrsItemGraphQueryService
+|Service for retrieving item graph.
+
+|BpnInvestigationJobCache
+|Interface for storing incident data blobs.
+
+|EssRecursiveNotificationHandler
+|Business logic handling recursive investigation and calculating results.
+|===
+
+
 == RecursiveJobHandler
 
 The *RecursiveJobHandler* component provide the logic to build jobs with recursive logic to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.
@@ -62,6 +95,7 @@ include::../../../uml-diagrams/building-block-view/level-2-int-recursive-job-han
 |BlobPersistence
 |Interface for storing data blobs.
 |===
+
 
 == TransferProcessManagement
 

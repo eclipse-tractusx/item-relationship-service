@@ -8,9 +8,15 @@ skinparam defaultFontName "Architects daughter"
  component [**IRS-Application**] <<System>> as IRS {
     component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
     component [**IrsController**] <<Component>> as IrsController
+    component [**PolicyStoreController**] <<Component>> as PolicyStoreController
+    component [**EssController**] <<Component>> as EssController
+    component [**IrsItemGraphQueryService**] <<Component>> as IrsItemGraphQueryService
     component [**JobOrchestrator**] <<Component>> as JobOrchestrator
-    component [**TransferProcessManagment**] <<Component>> as TransferProcessManagement
-    component [**Policy Store**] <<Component>> as PolicyStore
+    component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement
+    component [**PolicyStore**] <<Component>> as PolicyStore
+    component [**EssService**] <<Component>> as EssService
+    component [**EssRecursiveNotificationHandler**] <<Component>> as EssRecursiveNotificationHandler
+
 
     port "IRS API" as API_PORT
     port "Digital Twin Client" as AAS_PORT
@@ -19,14 +25,16 @@ skinparam defaultFontName "Architects daughter"
     () "BlobStore\nInterface" as StoreInterface
 
 
-    IrsController <..> JobOrchestrator
+    IrsController <..> IrsItemGraphQueryService
+    IrsItemGraphQueryService <..> JobOrchestrator
     JobOrchestrator <..> TransferProcessManagement
     JobOrchestrator <..> RecursiveJobHandler
     TransferProcessManagement --( StoreInterface
-    PolicyStore --( StoreInterface
-    PolicyStore <..> TransferProcessManagement
-    IrsController <..> PolicyStore
-
+    PolicyStore -( StoreInterface
+    PolicyStoreController <.> PolicyStore
+    EssController <..> EssService
+    EssService <..> IrsItemGraphQueryService
+    EssService <..> EssRecursiveNotificationHandler
 
 }
 component [**Digital Twin Registry**] <<System>> as DTR
@@ -34,6 +42,7 @@ component [**EDC**] <<System>> as EDC
 actor IrsApiConsumer
 IrsController -up- API_PORT
 PolicyStoreController -down- API_PORT
+EssController -down- API_PORT
 IrsApiConsumer -(0- API_PORT
 
 

@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam linetype ortho
+skinparam defaultFontName "Architects daughter"
+
+ component [**Controller**] <<System>> as Controller {
+    component [**EssController**] <<Component>> as EssController
+    component [**EssService**] <<Component>> as EssService
+        port "ESS API" as API_PORT
+    EssController .> EssService
+    interface BpnInvestigationJobCache
+    interface IrsItemGraphQueryService
+    interface EssRecursiveNotificationHandler
+
+    }
+
+    actor EssApiConsumer
+        EssController -up- API_PORT
+        EssApiConsumer -(0- API_PORT
+
+        EssService -down-( BpnInvestigationJobCache
+        EssService -left-( IrsItemGraphQueryService
+        EssService -up--( EssRecursiveNotificationHandler
+
+@enduml
