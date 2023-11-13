@@ -27,7 +27,6 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -96,14 +95,16 @@ public class BpnInvestigationJob {
     private Optional<String> getParentBpn(final EdcNotification<ResponseNotificationContent> notification) {
         return this.unansweredNotifications.stream()
                                            .filter(unansweredNotification -> unansweredNotification.notificationId()
-                                                                                                   .equals(notification.getHeader().getOriginalNotificationId()))
+                                                                                                   .equals(notification.getHeader()
+                                                                                                                       .getOriginalNotificationId()))
                                            .map(Notification::bpn)
                                            .findAny();
     }
 
     private void removeFromUnansweredNotification(final EdcNotification<ResponseNotificationContent> notification) {
         this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId()
-                                                                                              .equals(notification.getHeader().getOriginalNotificationId()));
+                                                                                              .equals(notification.getHeader()
+                                                                                                                  .getOriginalNotificationId()));
     }
 
     public BpnInvestigationJob complete() {
@@ -129,16 +130,16 @@ public class BpnInvestigationJob {
                                                                                                                                              supplyChainImpacted);
 
         if (getUnansweredNotifications().isEmpty()) {
-//            final Optional<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
-//                                                                                                             .map(EdcNotification::getContent)
-//                                                                                                             .filter(ResponseNotificationContent::thereIsIncident)
-//                                                                                                             .min(Comparator.comparing(
-//                                                                                                                     ResponseNotificationContent::getHops));
-//
-//            final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.map(
-//                                                                                                                                   min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpn, min.getHops()))
-//                                                                                                                           .stream()
-//                                                                                                                           .toList();
+            //            final Optional<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
+            //                                                                                                             .map(EdcNotification::getContent)
+            //                                                                                                             .filter(ResponseNotificationContent::thereIsIncident)
+            //                                                                                                             .min(Comparator.comparing(
+            //                                                                                                                     ResponseNotificationContent::getHops));
+            //
+            //            final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.map(
+            //                                                                                                                                   min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpn, min.getHops()))
+            //                                                                                                                           .stream()
+            //                                                                                                                           .toList();
 
             final List<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
                                                                                                          .map(EdcNotification::getContent)
@@ -146,10 +147,12 @@ public class BpnInvestigationJob {
                                                                                                          .toList();
 
             final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.stream()
-                    .map(impacted -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(impacted.getParentBpn(), impacted.getHops()))
-                    .toList();
+                                                                                                                           .map(impacted -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(
+                                                                                                                                   impacted.getParentBpn(),
+                                                                                                                                   impacted.getHops()))
+                                                                                                                           .toList();
 
-                    supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(Set.copyOf(suppliersFirstLevel));
+            supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(Set.copyOf(suppliersFirstLevel));
         }
 
         final Submodel supplyChainImpactedSubmodel = Submodel.builder()
