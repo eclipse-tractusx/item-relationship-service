@@ -44,6 +44,9 @@ management: # Spring management API config, see https://spring.io/guides/gs/cent
       enabled: true
     readinessstate:
       enabled: true
+    dependencies:
+      enabled: false
+      urls: { }
   metrics:
     distribution:
       percentiles-histogram:
