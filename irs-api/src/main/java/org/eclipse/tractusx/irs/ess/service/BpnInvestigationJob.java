@@ -34,6 +34,7 @@ import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Notification;
@@ -49,6 +50,7 @@ import org.eclipse.tractusx.irs.util.JsonUtil;
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class BpnInvestigationJob {
 
     private static final String SUPPLY_CHAIN_ASPECT_TYPE = "supply_chain_impacted";
@@ -125,22 +127,12 @@ public class BpnInvestigationJob {
 
     private Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted,
             final String bpn) {
+        log.debug(bpn);
         final SupplyChainImpactedAspect.SupplyChainImpactedAspectBuilder supplyChainImpactedAspectBuilder = SupplyChainImpactedAspect.builder()
                                                                                                                                      .supplyChainImpacted(
                                                                                                                                              supplyChainImpacted);
 
         if (getUnansweredNotifications().isEmpty()) {
-            //            final Optional<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
-            //                                                                                                             .map(EdcNotification::getContent)
-            //                                                                                                             .filter(ResponseNotificationContent::thereIsIncident)
-            //                                                                                                             .min(Comparator.comparing(
-            //                                                                                                                     ResponseNotificationContent::getHops));
-            //
-            //            final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.map(
-            //                                                                                                                                   min -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(bpn, min.getHops()))
-            //                                                                                                                           .stream()
-            //                                                                                                                           .toList();
-
             final List<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
                                                                                                          .map(EdcNotification::getContent)
                                                                                                          .filter(ResponseNotificationContent::thereIsIncident)
