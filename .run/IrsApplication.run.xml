@@ -2,7 +2,7 @@
   <configuration default="false" name="IrsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="local" />
     <envs>
-      <env name="SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI" value="https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/certs" />
+      <env name="SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI" value="http://localhost/pathToJwkSet" />
     </envs>
     <module name="irs-api" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.eclipse.tractusx.irs.IrsApplication" />
