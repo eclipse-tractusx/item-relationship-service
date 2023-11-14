@@ -14,14 +14,13 @@ box "OEM" #LightGrey
     participant EDC as EDC #99FF99
 end box
 
-
 participant EDC as EDCTier1
 
 box "Tier 1"
-     participant IRS as IRSTier1
-     participant SubmodelServer as SubmodelServerTier1
-     participant dDTR as dDTRTier1
-     participant EDC as EDCConsumerTier1 #99FF99
+    participant IRS as IRSTier1
+    participant SubmodelServer as SubmodelServerTier1
+    participant dDTR as dDTRTier1
+    participant EDC as EDCConsumerTier1 #99FF99
 end box
 
 box SharedServices
@@ -32,12 +31,10 @@ end box
 Client -> IRS : /ess/bpn/investigation/orders
 note left
     {
-      "bomLifecycle": "asPlanned","batchSize": 20,
-        "callbackUrl": "https://hostname.com/callback?orderId={orderId}&batchId={batchId}",
-      ...
-      "incidentBPNSs": [
-        "BPNS666666666666","BPNS666666666667"
-      ],
+      "bomLifecycle": "asPlanned",
+      "batchSize": 20,
+      "callbackUrl": "https://hostname.com/callback?orderId={orderId}&batchId={batchId}",
+      "incidentBPNSs": ["BPNS666666666666","BPNS666666666667"],
       "keys": [
         {
           "bpn": "BPNL0123456789XX",
@@ -51,20 +48,21 @@ note left
       "timeout": 43200
     }
 end note
-IRS --> IRS : initale order processing
-    ref over EDC, EDCTier1, SubmodelServerTier1, dDTRTier1, EDCConsumerTier1, DiscoveryFinder, EDCDiscoveryService
-        asyn processing of ess process for incidentBPNSs
-        and tuples of globalAssetid and BPN
-    end ref
+IRS --> IRS : initial order processing
+ref over IRS, EDC, EDCTier1, SubmodelServerTier1, dDTRTier1, EDCConsumerTier1, DiscoveryFinder, EDCDiscoveryService
+    asynchronous processing of ess process for incidentBPNSs and tuples of globalAssetid and BPN
+end ref
 IRS --> IRS : register callback
-IRS <-- IRS : 201 success
-IRS <-- IRS : orderId {"6c311d29-5753-46d4-b32c-19b918ea93b0"}
-Client <-- IRS : 201 orderId {"6c311d29-5753-46d4-b32c-19b918ea93b0"}
+IRS <-- Client : 201 success
+IRS <-- Client : GET /irs/orders/{orderId}
+note left
+    orderId {"6c311d29-5753-46d4-b32c-19b918ea93b0"}
+end note
+Client <-- IRS : 200 order payload
 
 opt batch complete
     Client <-- IRS : Callback order with orderId completed
 end opt
-    Client --> IRS : /irs/orders/{orderId}/batches/{batchId}
-    Client <-- IRS : BatchShell with jobs
-
+Client --> IRS : /irs/orders/{orderId}/batches/{batchId}
+Client <-- IRS : BatchShell with jobs
 @enduml

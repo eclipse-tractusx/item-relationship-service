@@ -1,0 +1,57 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+actor IncidentManager
+participant "Inquiring OEM Company" as OEM
+participant "Tier N+1 Supplier" as Tier_1
+participant "Tier N+n Supplier" as Tier_2
+
+IncidentManager -> OEM: request ESS Incident investigation
+
+
+  activate OEM
+  OEM -> OEM: check direct suppliers
+  OEM -> OEM: check BPNS in direct suppliers
+  OEM -> Tier_1: forward incident
+  deactivate OEM
+  activate Tier_1
+
+
+
+  activate Tier_1
+  Tier_1 -> Tier_1: check direct suppliers
+  Tier_1 -> Tier_1: check BPNS in direct suppliers
+  Tier_1 --> Tier_2: forward incident
+  deactivate Tier_1
+
+  activate Tier_2
+  Tier_2 -> Tier_2: check direct suppliers
+  Tier_2 -> Tier_2: Check BPNS in direct suppliers
+  Tier_2 --> Tier_1: return responses (inc. hops)
+  note left
+    ESS supplier response
+  end note
+  deactivate Tier_2
+
+
+  activate Tier_1
+  Tier_1 -> Tier_1 : aggregate results
+
+
+ Tier_1 --> OEM: return responses (inc. hops)
+  note left
+    ESS supplier response
+  end note
+  deactivate Tier_1
+
+  activate OEM
+  OEM -> OEM : aggregate results
+  OEM -> OEM : check subgraph infected on first tier level
+
+IncidentManager <- OEM: return incident report
+
+@enduml
