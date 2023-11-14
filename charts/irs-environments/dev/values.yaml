@@ -20,6 +20,19 @@ irs-helm:
       - hosts:
           - "irs.dev.demo.catena-x.net"
         secretName: tls-secret
+  management:
+    health:
+      dependencies:
+        enabled: true
+        urls:
+          bpdmService: https://partners-pool.int.demo.catena-x.net/ui/swagger-ui/index.html
+          dtrService: http://cx-irs-registry-registry:4243/actuator/health/liveness
+          controlPlane: http://irs-provider-controlplane:8080/api/check/liveness
+          dataPlane: http://irs-provider-dataplane:8080/api/check/liveness
+          controlPlane2: http://irs-provider2-controlplane:8080/api/check/liveness
+          dataPlane2: http://irs-provider2-dataplane:8080/api/check/liveness
+          controlPlane3: http://irs-provider3-controlplane:8080/api/check/liveness
+          dataPlane3: http://irs-provider3-dataplane:8080/api/check/liveness
   digitalTwinRegistry:
     url: https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0
     discoveryFinderUrl: https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search
