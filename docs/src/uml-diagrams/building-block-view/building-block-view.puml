@@ -10,40 +10,38 @@ skinparam defaultFontName "Architects daughter"
     component [**IrsController**] <<Component>> as IrsController
     component [**PolicyStoreController**] <<Component>> as PolicyStoreController
     component [**EssController**] <<Component>> as EssController
-    component [**IrsItemGraphQueryService**] <<Component>> as IrsItemGraphQueryService
     component [**JobOrchestrator**] <<Component>> as JobOrchestrator
     component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement
     component [**PolicyStore**] <<Component>> as PolicyStore
-    component [**EssService**] <<Component>> as EssService
-    component [**EssRecursiveNotificationHandler**] <<Component>> as EssRecursiveNotificationHandler
 
 
-    port "IRS API" as API_PORT
+    port "API" as API_PORT
     port "Digital Twin Client" as AAS_PORT
     port "EDC Client" as EDC_PORT
 
     () "BlobStore\nInterface" as StoreInterface
 
 
-    IrsController <..> IrsItemGraphQueryService
-    IrsItemGraphQueryService <..> JobOrchestrator
+    IrsController <..> JobOrchestrator
     JobOrchestrator <..> TransferProcessManagement
     JobOrchestrator <..> RecursiveJobHandler
     TransferProcessManagement --( StoreInterface
     PolicyStore -( StoreInterface
     PolicyStoreController <.> PolicyStore
-    EssController <..> EssService
-    EssService <..> IrsItemGraphQueryService
-    EssService <..> EssRecursiveNotificationHandler
+    EssController <..> JobOrchestrator
 
 }
 component [**Digital Twin Registry**] <<System>> as DTR
 component [**EDC**] <<System>> as EDC
 actor IrsApiConsumer
+actor EssApiConsumer
+actor PolicyStoreApiConsumer
 IrsController -up- API_PORT
 PolicyStoreController -down- API_PORT
 EssController -down- API_PORT
 IrsApiConsumer -(0- API_PORT
+EssApiConsumer -(0- API_PORT
+PolicyStoreApiConsumer -(0- API_PORT
 
 
 TransferProcessManagement --- AAS_PORT

@@ -58,6 +58,12 @@ A job is processed in this order:
 |*EDC Client*
 |The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data.
 
+|*EssController*
+|The *EssController* provides a REST Interface to perform BPN investigations of supply chain.
+
+|*EssService*
+|The *EssService* implements the REST Interface of the EssController and handles recursive investigation with results calculations.
+
 |*PolicyStoreController*
 |The *PolicyStoreController* provides a REST Interface for creating and retrieving policies that should be accepted in EDC negotiations.
 

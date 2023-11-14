@@ -4,23 +4,21 @@ skinparam shadowing false
 skinparam linetype ortho
 skinparam defaultFontName "Architects daughter"
 
- component [**Controller**] <<System>> as Controller {
-    component [**EssController**] <<Component>> as EssController
+ component [**EssController**] <<System>> as EssController {
     component [**EssService**] <<Component>> as EssService
+    component [**EssRecursiveNotificationHandler**] <<Component>> as EssRecursiveNotificationHandler
+    component [**IrsItemGraphQueryService**] <<Component>> as IrsItemGraphQueryService
         port "ESS API" as API_PORT
-    EssController .> EssService
     interface BpnInvestigationJobCache
-    interface IrsItemGraphQueryService
-    interface EssRecursiveNotificationHandler
+
+    EssService <.> IrsItemGraphQueryService
+    EssService <..> EssRecursiveNotificationHandler
+    EssService --( BpnInvestigationJobCache
 
     }
 
     actor EssApiConsumer
-        EssController -up- API_PORT
+        EssService -up- API_PORT
         EssApiConsumer -(0- API_PORT
-
-        EssService -down-( BpnInvestigationJobCache
-        EssService -left-( IrsItemGraphQueryService
-        EssService -up--( EssRecursiveNotificationHandler
 
 @enduml
