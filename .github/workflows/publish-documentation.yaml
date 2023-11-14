@@ -72,7 +72,6 @@ jobs:
         with:
           path: plantuml.jar
           key: ${{ runner.os }}-file-${{ hashFiles('plantuml.jar') }}
-          restore-keys: ${{ runner.os }}-files
 
       - name: Download PlantUML jar
         run: |
