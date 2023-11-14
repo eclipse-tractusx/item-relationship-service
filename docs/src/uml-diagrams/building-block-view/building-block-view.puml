@@ -33,14 +33,14 @@ component [**Digital Twin Registry**] <<System>> as DTR
 component [**EDC**] <<System>> as EDC
 actor IrsApiConsumer
 IrsController -up- API_PORT
-PolicyStoreController -up- API_PORT
+PolicyStoreController -down- API_PORT
 IrsApiConsumer -(0- API_PORT
 
 
 TransferProcessManagement --- AAS_PORT
 TransferProcessManagement --- EDC_PORT
-AAS_PORT -(0 DTR
-EDC_PORT -(0 EDC
+AAS_PORT --right-(0 DTR
+EDC_PORT --right-(0 EDC
 
 database "BlobStore" as BlobStore
 StoreInterface -down- BlobStore

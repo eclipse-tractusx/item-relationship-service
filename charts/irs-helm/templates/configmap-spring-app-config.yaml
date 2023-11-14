@@ -114,6 +114,8 @@ data:
             operator: {{ .operator | quote }}
             rightOperand: {{ .rightOperand | quote }}
           {{- end }}
+      connectorEndpointService:
+        cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | int64 }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
@@ -129,6 +131,14 @@ data:
         {{- if .Values.ess.mockRecursiveEdcAsset }}
         mockRecursiveEdcAsset: {{ tpl (.Values.ess.mockRecursiveEdcAsset) . | quote }}
         {{- end }}
+    {{- if .Values.management.health.dependencies.enabled }}
+    management:
+      health:
+        dependencies:
+          enabled: {{ tpl (.Values.management.health.dependencies.enabled | default "false") . | quote }}
+          urls:
+            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 10 }}
+    {{- end }}
     {{- end }}
 
     apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
