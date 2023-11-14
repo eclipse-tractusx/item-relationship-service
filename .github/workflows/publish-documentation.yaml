@@ -12,7 +12,7 @@ on:
       - 'docs/**'
 
 jobs:
-  publish:
+  lint-and-publish:
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
     # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
     permissions:
@@ -67,6 +67,13 @@ jobs:
             asciidoctor-reducer -o docs/target/adminguide.adoc docs/src/docs/administration/administration-guide.adoc
             asciidoctor-reducer -o docs/target/arc42.adoc docs/src/docs/arc42/full.adoc
 
+      - name: Cache plantuml jar
+        uses: actions/cache@v3
+        with:
+          path: plantuml.jar
+          key: ${{ runner.os }}-file-${{ hashFiles('plantuml.jar') }}
+          restore-keys: ${{ runner.os }}-files
+
       - name: Download PlantUML jar
         run: |
           wget -O plantuml.jar https://sourceforge.net/projects/plantuml/files/plantuml.jar/download
@@ -106,7 +113,7 @@ jobs:
         run: |
           mv docs/src/diagram-replacer/assets/ docs/target/generated-docs/assets/
 
-      - name: GitHub Pages action
+      - name: Update documentation on GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3.9.3
         with:
