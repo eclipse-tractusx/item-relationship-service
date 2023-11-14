@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+participant "Client App (Script)" as Client
+
+box "OEM" #LightGrey
+    participant decentralDigitalTwinRegistry as dDTR
+end box
+
+    Client -> dDTR :  GET lookup/shells/{searchBpn} for given BPN
+    note left
+        request body
+             {providerBpnl="BPNL0123456789XX"};
+             {limit=50}
+    end note
+
+     Client <-- dDTR: return 200 [array of {aasIdentifier}
+     note left
+        number of aasIdentifier is limited by given limit
+     end note
+
+@enduml

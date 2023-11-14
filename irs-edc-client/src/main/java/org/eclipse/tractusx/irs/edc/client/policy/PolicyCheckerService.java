@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,17 +23,15 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.policy.model.AtomicConstraint;
-import org.eclipse.dataspaceconnector.policy.model.Constraint;
-import org.eclipse.dataspaceconnector.policy.model.Operator;
-import org.eclipse.dataspaceconnector.policy.model.Permission;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
-import org.eclipse.tractusx.irs.edc.client.StringMapper;
-import org.springframework.beans.factory.annotation.Value;
+import org.eclipse.edc.policy.model.Permission;
+import org.eclipse.edc.policy.model.Policy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriUtils;
 
@@ -40,59 +39,44 @@ import org.springframework.web.util.UriUtils;
  * Check and validate Policy in Catalog fetch from EDC providers.
  */
 @Slf4j
-@Service
+@Service("irsEdcClientPolicyCheckerService")
+@RequiredArgsConstructor
 public class PolicyCheckerService {
 
-    private final List<String> allowedPolicies;
-
-    public PolicyCheckerService(@Value("${edc.catalog.policies.allowedNames}") final List<String> allowedPolicies) {
-        this.allowedPolicies = allowedPolicies;
-    }
+    private final AcceptedPoliciesProvider policyStore;
+    private final ConstraintCheckerService constraintCheckerService;
 
     public boolean isValid(final Policy policy) {
-        final List<PolicyDefinition> policyList = allowedPolicies.stream()
-                                                                 .flatMap(this::addEncodedVersion)
-                                                                 .map(this::createPolicy)
-                                                                 .toList();
-        log.info("Checking policy {} against allowed policies: {}", StringMapper.mapToString(policy),
-                String.join(",", allowedPolicies));
-        return policy.getPermissions()
-                     .stream()
-                     .anyMatch(permission -> policyList.stream()
-                                                       .anyMatch(allowedPolicy -> isValid(permission, allowedPolicy)));
-    }
-
-    private boolean isValid(final Permission permission, final PolicyDefinition policyDefinition) {
-        return permission.getAction().getType().equals(policyDefinition.getPermissionActionType())
-                && permission.getConstraints().stream().anyMatch(constraint -> isValid(constraint, policyDefinition));
-    }
-
-    private boolean isValid(final Constraint constraint, final PolicyDefinition policyDefinition) {
-        if (constraint instanceof AtomicConstraint atomicConstraint) {
-            return AtomicConstraintValidator.builder()
-                                            .atomicConstraint(atomicConstraint)
-                                            .leftExpressionValue(policyDefinition.getLeftExpressionValue())
-                                            .rightExpressionValue(policyDefinition.getRightExpressionValue())
-                                            .expectedOperator(
-                                                    Operator.valueOf(policyDefinition.getConstraintOperator()))
-                                            .build()
-                                            .isValid();
+        if (getValidStoredPolicyIds().contains("*")) {
+            return true;
         }
-        return false;
+
+        return policy.getPermissions().stream().allMatch(permission -> isValid(permission, getValidStoredPolicies()));
     }
 
-    private PolicyDefinition createPolicy(final String policyName) {
-        return PolicyDefinition.builder()
-                               .permissionActionType("USE")
-                               .constraintType("AtomicConstraint")
-                               .leftExpressionValue("idsc:PURPOSE")
-                               .rightExpressionValue(policyName)
-                               .constraintOperator("EQ")
-                               .build();
+    private boolean isValid(final Permission permission, final List<AcceptedPolicy> validStoredPolicies) {
+        return validStoredPolicies.stream().anyMatch(acceptedPolicy ->
+                constraintCheckerService.hasAllConstraint(acceptedPolicy.policy(), permission.getConstraints()));
+    }
+
+    private List<String> getValidStoredPolicyIds() {
+        return policyStore.getAcceptedPolicies()
+                          .stream()
+                          .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
+                          .map(acceptedPolicy -> acceptedPolicy.policy().getPolicyId())
+                          .flatMap(this::addEncodedVersion)
+                          .toList();
+    }
+
+    private List<AcceptedPolicy> getValidStoredPolicies() {
+        return policyStore.getAcceptedPolicies()
+                          .stream()
+                          .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
+                          .toList();
     }
 
     private Stream<String> addEncodedVersion(final String original) {
-        return Stream.of(original, UriUtils.encode(original, "UTF-8"));
+        return Stream.of(original, UriUtils.encode(original, StandardCharsets.UTF_8));
     }
 
 }

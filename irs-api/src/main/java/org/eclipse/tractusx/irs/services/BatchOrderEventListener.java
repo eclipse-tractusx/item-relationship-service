@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.component.enums.ProcessingState;
@@ -38,6 +40,7 @@ import org.eclipse.tractusx.irs.connector.batch.BatchOrder;
 import org.eclipse.tractusx.irs.connector.batch.BatchOrderStore;
 import org.eclipse.tractusx.irs.connector.batch.BatchStore;
 import org.eclipse.tractusx.irs.connector.batch.JobProgress;
+import org.eclipse.tractusx.irs.ess.service.EssService;
 import org.eclipse.tractusx.irs.services.events.BatchOrderProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.services.events.BatchOrderRegisteredEvent;
 import org.eclipse.tractusx.irs.services.events.BatchProcessingFinishedEvent;
@@ -58,6 +61,7 @@ public class BatchOrderEventListener {
     private final BatchOrderStore batchOrderStore;
     private final BatchStore batchStore;
     private final IrsItemGraphQueryService irsItemGraphQueryService;
+    private final EssService essService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final TimeoutSchedulerBatchProcessingService timeoutScheduler;
 
@@ -108,34 +112,46 @@ public class BatchOrderEventListener {
     }
 
     private void startBatch(final BatchOrder batchOrder, final Batch batch) {
-        final List<JobProgress> createdJobIds = batch.getJobProgressList()
-                                                     .stream()
-                                                     .map(JobProgress::getGlobalAssetId)
-                                                     .map(globalAssetId -> createRegisterJob(batchOrder, globalAssetId))
-                                                     .map(registerJob -> createJobProgress(
-                                                             irsItemGraphQueryService.registerItemJob(registerJob,
-                                                                     batch.getBatchId()),
-                                                             registerJob.getKey().getGlobalAssetId()))
-                                                     .toList();
-        batch.setJobProgressList(createdJobIds);
+        final List<PartChainIdentificationKey> keyStream = batch.getJobProgressList()
+                                                                                         .stream()
+                                                                                         .map(JobProgress::getIdentificationKey)
+                                                                  .toList();
+        if (batchOrder.getJobType().equals(BatchOrder.JobType.REGULAR)) {
+            batch.setJobProgressList(keyStream.stream()
+                    .map(identificationKey -> createRegisterJob(batchOrder, identificationKey))
+                    .map(registerJob -> createJobProgress(
+                            irsItemGraphQueryService.registerItemJob(registerJob,
+                                    batch.getBatchId(), batch.getOwner()),
+                            registerJob.getKey()))
+                    .toList());
+        } else if (batchOrder.getJobType().equals(BatchOrder.JobType.ESS)) {
+            batch.setJobProgressList(keyStream.stream()
+                    .map(identificationKey -> createRegisterBpnInvestigationBatchOrder(
+                            batchOrder, identificationKey))
+                    .map(registerJob -> createJobProgress(
+                            essService.startIrsJob(registerJob, batch.getBatchId(),
+                                    batch.getOwner()), registerJob.getKey()))
+                    .toList());
+        }
+
         batch.setStartedOn(ZonedDateTime.now(ZoneOffset.UTC));
         batchStore.save(batch.getBatchId(), batch);
         timeoutScheduler.registerBatchTimeout(batch.getBatchId(), batchOrder.getTimeout());
-        timeoutScheduler.registerJobsTimeout(createdJobIds.stream().map(JobProgress::getJobId).toList(),
+        timeoutScheduler.registerJobsTimeout(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList(),
                 batchOrder.getJobTimeout());
     }
 
-    private JobProgress createJobProgress(final JobHandle jobHandle, final String globalAssetId) {
+    private JobProgress createJobProgress(final JobHandle jobHandle, final PartChainIdentificationKey identificationKey) {
         return JobProgress.builder()
                           .jobId(jobHandle.getId())
                           .jobState(JobState.INITIAL)
-                          .globalAssetId(globalAssetId)
+                          .identificationKey(identificationKey)
                           .build();
     }
 
-    private RegisterJob createRegisterJob(final BatchOrder batchOrder, final String globalAssetId) {
+    private RegisterJob createRegisterJob(final BatchOrder batchOrder, final PartChainIdentificationKey identificationKey) {
         return RegisterJob.builder()
-                          .key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).build())
+                          .key(identificationKey)
                           .bomLifecycle(batchOrder.getBomLifecycle())
                           .aspects(batchOrder.getAspects())
                           .depth(batchOrder.getDepth())
@@ -143,6 +159,15 @@ public class BatchOrderEventListener {
                           .collectAspects(batchOrder.getCollectAspects())
                           .lookupBPNs(batchOrder.getLookupBPNs())
                           .callbackUrl(batchOrder.getCallbackUrl())
+                          .build();
+    }
+
+    private RegisterBpnInvestigationJob createRegisterBpnInvestigationBatchOrder(final BatchOrder batchOrder, final PartChainIdentificationKey identificationKey) {
+        return RegisterBpnInvestigationJob.builder()
+                          .key(identificationKey)
+                          .bomLifecycle(batchOrder.getBomLifecycle())
+                          .callbackUrl(batchOrder.getCallbackUrl())
+                          .incidentBPNSs(List.of())
                           .build();
     }
 

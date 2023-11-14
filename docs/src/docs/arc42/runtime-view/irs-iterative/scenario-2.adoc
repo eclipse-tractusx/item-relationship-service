@@ -1,0 +1,20 @@
+= Scenario 2: Job execution
+
+This section describes how a job is asynchronously executed inside the IRS.
+
+[plantuml, target=execute-job, format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/job-execution.puml[]
+....
+
+
+== Overview
+
+After a job has been created (see Scenario 1: Create Job), the first transfer containing the root item ID is passed to the ExecutorService. The transfer is then started asynchronously and retrieves the necessary information from the Catena-X network, first by fetching the AAS information from the DigitalTwin registry and then calling the SubmodelProviders for the submodel payload.
+
+At least the aspect SingleLevelBomAsBuilt is required for the tree to be built. If the customer that started the job provided more aspects to be fetched, they will be retrieved here too.
+The result of each transfer is stored in the BlobStore.
+
+After the transfer process has finished, any subsequent child IDs will be extracted and new transfer processes will be scheduled for those via the ExecutorService. This cycle repeats until all leafs were reached, the specified max depth has been reached, or the job was canceled externally.
+
+As soon as all transfers are finished, the results will be combined and stored in the BlobStore again. The job itself will be marked as completed.

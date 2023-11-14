@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -28,6 +29,8 @@ import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithLookupBPNs
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,6 +42,7 @@ import java.util.UUID;
 
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PageResult;
@@ -46,8 +50,8 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
@@ -63,6 +67,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,6 +98,7 @@ class IrsItemGraphQueryServiceTest {
     @Test
     void registerItemJobWithoutDepthShouldBuildFullTree() throws Exception {
         // given
+        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
         final var jobId = UUID.randomUUID();
         final AASTransferProcess transfer1 = generate.aasTransferProcess();
         givenTransferResultIsStored(transfer1);
@@ -125,6 +135,8 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void cancelJobById() {
+        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
+
         final Job job = generate.fakeJob(JobState.CANCELED);
 
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(job).build();
@@ -137,6 +149,18 @@ class IrsItemGraphQueryServiceTest {
     }
 
     @Test
+    void shouldThrowForbiddenExceptionWhenCancelingAnotherOwnerJob() {
+        setupSecurityContextWithRole(IrsRoles.VIEW_IRS);
+
+        final Job job = generate.fakeJob(JobState.CANCELED);
+
+        final MultiTransferJob multiTransferJob = MultiTransferJob.builder().job(job).build();
+        when(jobStore.cancelJob(jobId.toString())).thenReturn(Optional.ofNullable(multiTransferJob));
+
+        assertThrows(ResponseStatusException.class, () -> testee.cancelJobById(jobId));
+    }
+
+    @Test
     void cancelJobById_throwEntityNotFoundException() {
         when(jobStore.cancelJob(jobId.toString())).thenThrow(
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId));
@@ -146,6 +170,7 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldReturnFoundJobs() {
+        setupSecurityContextWithRole(IrsRoles.ADMIN_IRS);
         final List<JobState> states = List.of(JobState.COMPLETED);
         final MultiTransferJob multiTransferJob = MultiTransferJob.builder()
                                                                   .job(generate.fakeJob(JobState.COMPLETED))
@@ -167,43 +192,13 @@ class IrsItemGraphQueryServiceTest {
     }
 
     @Test
-    void shouldTakeStatesInsteadOfDeprecatedParameter() {
-        final List<JobState> states = List.of(JobState.COMPLETED);
-        final List<JobState> jobStates = List.of(JobState.RUNNING);
-
-        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
-
-        verify(jobStore).findByStates(states);
-    }
-
-    @Test
-    void shouldTakeDeprecatedParameterWhenCorrectOneIsEmpty() {
-        final List<JobState> states = List.of();
-        final List<JobState> jobStates = List.of(JobState.RUNNING);
-
-        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
-
-        verify(jobStore).findByStates(jobStates);
-    }
-
-    @Test
     void shouldTakeAllJobsWhenBothListEmpty() {
         final List<JobState> states = List.of();
         final List<JobState> jobStates = List.of();
 
-        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
+        testee.getJobsByState(states, Pageable.ofSize(10));
 
         verify(jobStore).findAll();
-    }
-
-    @Test
-    void shouldTakeStatesInsteadOfEmptyDeprecatedParameter() {
-        final List<JobState> states = List.of(JobState.COMPLETED);
-        final List<JobState> jobStates = List.of();
-
-        testee.getJobsByState(states, jobStates, Pageable.ofSize(10));
-
-        verify(jobStore).findByStates(states);
     }
 
     @Test
@@ -233,11 +228,20 @@ class IrsItemGraphQueryServiceTest {
 
     @Test
     void shouldThrowExceptionWhenLookupBpnAndBpdmEndpointUrlIsMissing() throws SchemaNotFoundException {
-        when(semanticsHubFacade.getAllAspectModels()).thenReturn(AspectModels.builder().models(List.of(AspectModel.builder().name("AssemblyPartRelationship").build())).build());
-
         final Executable executable = () -> testee.registerItemJob(registerJobWithLookupBPNs());
 
         assertThrows(ResponseStatusException.class, executable);
+    }
+
+    private static void setupSecurityContextWithRole(final String irsRole) {
+        JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
+        Jwt token = mock(Jwt.class);
+        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority(irsRole)));
+        lenient().when(jwtAuthenticationToken.getToken()).thenReturn(token);
+        lenient().when(token.getClaim("clientId")).thenReturn("test-client-id");
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
+        SecurityContextHolder.setContext(securityContext);
     }
 
 }

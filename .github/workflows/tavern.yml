@@ -1,25 +1,37 @@
-name: Tavern IRS API test
+name: Tavern IRS API test on DEV
 
 on:
   workflow_dispatch: # Trigger manually
     inputs:
       irs-host:
-        type: choice
-        description: IRS environment to test
-        default: 'https://irs.int.demo.catena-x.net'
+        type: string
+        description: IRS environment to test.
+        default: 'https://irs.dev.demo.catena-x.net'
         required: true
-        options:
-          - 'https://irs.int.demo.catena-x.net'
-          - 'https://irs.dev.demo.catena-x.net'
       irs-ess-host:
         type: string
-        description: IRS-ESS environment to test
+        description: IRS-ESS environment to test.
         default: 'https://irs-ess.int.demo.catena-x.net'
         required: true
-      global-asset-id:
+      global-asset-id-asPlanned:
         type: string
-        description: Global Asset ID to use for the tests
-        default: 'urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454'
+        description: Global-asset-id to use for the asPlanned tests.
+        default: 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e'
+        required: true
+      bpn-asPlanned:
+        type: string
+        description: BPN to use for the asPlanned global-asset-id.
+        default: 'BPNL00000003AYRE'
+        required: true
+      global-asset-id-asBuilt:
+        type: string
+        description: Global-asset-id to use for the asBuilt tests.
+        default: 'urn:uuid:6d505432-8b31-4966-9514-4b753372683f'
+        required: true
+      bpn-asBuilt:
+        type: string
+        description: BPN to use for the asBuilt global-asset-id.
+        default: 'BPNL00000003AVTH'
         required: true
       execution-ticket:
         type: string
@@ -33,7 +45,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup python
         uses: actions/setup-python@v4
@@ -49,12 +61,15 @@ jobs:
 
       - name: Run tests
         env:
-          IRS_HOST: ${{ github.event.inputs.irs-host || 'https://irs.int.demo.catena-x.net' }}
+          IRS_HOST: ${{ 'https://irs.dev.demo.catena-x.net' }}
           IRS_ESS_HOST: ${{ github.event.inputs.irs-ess-host || 'https://irs-ess.int.demo.catena-x.net' }}
           KEYCLOAK_HOST: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
           KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_ID }}
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_SECRET }}
-          GLOBAL_ASSET_ID: ${{ github.event.inputs.global-asset-id || 'urn:uuid:513d7be8-e7e4-49f4-a22b-8cd31317e454' }}
+          GLOBAL_ASSET_ID_AS_PLANNED: ${{ github.event.inputs.global-asset-id-asPlanned || 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e' }}
+          BPN_AS_PLANNED: ${{ github.event.inputs.bpn-asPlanned || 'BPNL00000003AYRE' }}
+          GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:6d505432-8b31-4966-9514-4b753372683f' }}
+          BPN_AS_BUILT: ${{ github.event.inputs.bpn-asBuilt || 'BPNL00000003AVTH' }}
         run: |
           python -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
 

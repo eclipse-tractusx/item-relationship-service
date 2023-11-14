@@ -1,0 +1,12 @@
+= Scenario 4: Cancel job execution
+
+[plantuml, target=cancel-job, format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/cancel-job.puml[]
+....
+
+== Overview
+
+When a user wants to cancel a job execution, the IRS will lookup that job in the persistent job store and transition it to the CANCELED state, if it exists. If a job is canceled, no further requests to the Catena-X network will be performed.
+
+Afterwards, the IRS will return the updated job details of the canceled job to the user.

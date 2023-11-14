@@ -1,164 +1,28 @@
-test_name: Make sure investigation job with valid globalAssetId and BPN is processed correctly with MOCK
+test_name: Make sure investigation job with invalid request is handled correctly
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - &authenticate_and_fetch_token
-    name: authenticate and fetch access token
-    request:
-      url: "{tavern.env_vars.KEYCLOAK_HOST}"
-      method: POST
-      data:
-        grant_type: client_credentials
-        client_id: "{tavern.env_vars.KEYCLOAK_CLIENT_ID}"
-        client_secret: "{tavern.env_vars.KEYCLOAK_CLIENT_SECRET}"
-    response:
-      status_code: 200
-      json:
-        token_type: Bearer
-      headers:
-        content-type: application/json
-      save:
-        json:
-          access_token: access_token
-
-  - name: register a BPN investigation with valid globalAssetId
-    request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
-      json:
-        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-        bomLifecycle: asPlanned
-        callbackUrl: http://testikus.com
-        incidentBpns:
-          - BPNL00000003B6LU
-      method: POST
-      headers:
-        content-type: application/json
-        Authorization: "Bearer {access_token:s}"
-    response:
-      status_code: 201
-      headers:
-        content-type: application/json
-      save:
-        json:
-          job_id: id
-
-  - &verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
-    name: verify job response with desired test steps and wait for desired job status
-    max_retries: 90
-    request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
-      params:
-        returnUncompletedJob: true
-      method: GET
-      headers:
-        content-type: application/json
-        Authorization: "Bearer {access_token:s}"
-    response:
-      status_code: 200
-      json:
-        job:
-          state: COMPLETED
-    delay_after: 10
-
-  - name: get response for created investigation
-    request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
-      params:
-        returnUncompletedJob: true
-      method: GET
-      headers:
-        content-type: application/json
-        Authorization: "Bearer {access_token:s}"
-    response:
-      status_code: 200
-      verify_response_with:
-        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
-      headers:
-        content-type: application/json
-
-
----
-
-
-test_name: Make sure investigation job with valid globalAssetId for unknown BPN is processed correctly with MOCK
-
-strict:
-  - headers:off
-  - json:off
-
-stages:
-  - *authenticate_and_fetch_token
-
-  - name: register a BPN investigation with valid globalAssetId for unknown BPN
-    request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
-      json:
-        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-        bomLifecycle: asPlanned
-        callbackUrl: http://testikus.com
-        incidentBpns:
-          - BPNL00ARBITRARY1
-      method: POST
-      headers:
-        content-type: application/json
-        Authorization: "Bearer {access_token:s}"
-    response:
-      status_code: 201
-      headers:
-        content-type: application/json
-      save:
-        json:
-          job_id: id
-
-  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
-
-  - name: get response for created investigation
-    request:
-      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
-      params:
-        returnUncompletedJob: true
-      method: GET
-      headers:
-        content-type: application/json
-        Authorization: "Bearer {access_token:s}"
-    response:
-      status_code: 200
-      verify_response_with:
-        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN
-      headers:
-        content-type: application/json
-
-
----
-
-
-test_name: Make sure investigation job with invalid request is handled correctly with MOCK
-
-strict:
-  - headers:off
-  - json:off
-
-stages:
-  - *authenticate_and_fetch_token
-
   - name: register a BPN investigation with invalid request
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-        incidentBpns11:
-          - BPNL00000003B6LU
+        key:
+          globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
+          bpn111: BPNL00000003CRHK
+        incidentBPNSs111:
+          - BPNS00000003B6LU
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 400
       verify_response_with:
-        function: api-tests.tavern_helpers:errors_for_invalid_investigation_request_are_correct
+        function: local.testing.api-tests.tavern_helpers:errors_for_invalid_investigation_request_are_correct
       json:
         statusCode: BAD_REQUEST
         error: "Invalid Arguments."
@@ -169,26 +33,30 @@ stages:
 ---
 
 
-test_name: Make sure investigation job with unknown globalAssetId and BPN is processed correctly with MOCK
+test_name: Make sure investigation job with valid globalAssetId and BPN is processed correctly
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
-  - name: register a BPN investigation with unknown globalAssetId
+  - name: register a BPN investigation with valid globalAssetId
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
-        incidentBpns:
-          - BPNL00000003B6LU
+        key:
+          # Tested with Vehicle A
+          globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          bpn: BPNL00000003AYRE
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNS00000003B6LU
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -196,9 +64,10 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 5
 
-  - name: get response for created investigation
+  - &verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+    name: verify job response with desired test steps and wait for desired job status
+    max_retries: 30
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
       params:
@@ -206,14 +75,30 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       json:
         job:
           state: COMPLETED
+    delay_after: 30
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_unknown_ID
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
       headers:
         content-type: application/json
 
@@ -221,26 +106,250 @@ stages:
 ---
 
 
-test_name: Make sure investigation job with several relationships for valid globalAssetId and BPN is processed correctly with MOCK
+test_name: Make sure investigation job with valid globalAssetId for unknown BPN is processed correctly
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
+  - name: register a BPN investigation with valid globalAssetId for unknown BPN
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          # Tested with Vehicle A
+          globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          bpn: BPNL00000003AYRE
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNS00ARBITRARY9
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
 
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_No
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with unknown globalAssetId and valid BPN is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with unknown globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          globalAssetId: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e955555
+          bpn: BPNL00000003AYRE
+        incidentBPNSs:
+          - BPNS00000003B6LU
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with valid globalAssetId and valid BPN but partial supply chain is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId and valid BPN
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          #tested with Vehicle D
+          globalAssetId: urn:uuid:3a2a1ca9-c6c1-49c7-a7ae-1dfc5fb9881f
+          bpn: BPNL00ARBITRARY8
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNS0ARBITRARY11
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+      headers:
+        content-type: application/json
+
+
+
+---
+
+
+test_name: Make sure investigation job with valid globalAssetId and valid BPN but not reachable incidentBPN is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation with valid globalAssetId and valid BPN but not reachable incidentBPN
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+      json:
+        key:
+          #tested with Vehicle B
+          globalAssetId: urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b
+          bpn: BPNL00000003B6LU
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNS00000003AXS3
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure investigation job with several relationships for valid globalAssetId and BPN is processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
   - name: register a BPN investigation with valid globalAssetId with several relationships
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c
-        incidentBpns:
-          - BPNL00ARBITRARY1
+        key:
+          # Tested with Vehicle C
+          globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
+          bpn: BPNL00ARBITRARY4
+        incidentBPNSs:
+          - BPNS00ARBITRARY7
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -259,12 +368,18 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
-        - function: api-tests.tavern_helpers:relationships_for_BPN_investigations_contains_several_childs
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+        - function: local.testing.api-tests.tavern_helpers:relationships_for_BPN_investigations_contains_several_childs
+        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+        - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
@@ -272,28 +387,29 @@ stages:
 ---
 
 
-test_name: Make sure investigation job with valid globalAssetId and BPN is processed correctly in T-Systems
+test_name: Make sure investigation job for globalAssetId with missing PartSiteInformationAsPlanned is processed correctly
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
-  - name: register a BPN investigation with valid globalAssetId to T-Systems
+  - name: register a BPN investigation with valid globalAssetId
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        globalAssetId: urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9
+        key:
+          globalAssetId: urn:uuid:b0faace3-d41f-45b8-9573-175a33efbaaf
+          bpn: BPNL00ARBITRARY8
         bomLifecycle: asPlanned
         callbackUrl: http://testikus.com
-        incidentBpns:
-          - BPNL00000003B0Q0
+        incidentBPNSs:
+          - BPNL0ARBITRARY11
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -312,11 +428,15 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
+          extra_kwargs:
+            expectedTombstone: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
       headers:
         content-type: application/json
 
@@ -324,26 +444,29 @@ stages:
 ---
 
 
-test_name: Make sure investigation job with valid globalAssetId and BPN is processed in submodel servers correctly in MOCK
+test_name: Make sure investigation job for globalAssetId with missing BPNS in PartSiteInformationAsPlanned is processed correctly
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
-  - name: register a BPN investigation with valid globalAssetId for processing in submodel servers in MOCK
+  - name: register a BPN investigation with valid globalAssetId
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
-        globalAssetId: urn:uuid:1c7a25ea-0490-4944-b9c9-d8c666d47958
-        incidentBpns:
-          - BPNL00ARBITRARY7
+        key:
+          globalAssetId: urn:uuid:f5024c70-6c4f-4ec5-b23b-aa6a91110611
+          bpn: BPNL00ARBITRARY8
+        bomLifecycle: asPlanned
+        callbackUrl: http://testikus.com
+        incidentBPNSs:
+          - BPNL0ARBITRARY11
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -362,19 +485,78 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:supplyChainImpacted_is_correct_in_submodels_for_valid_ID
-        - function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Unknown
+        - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
+          extra_kwargs:
+            expectedTombstone: "'PartSiteInformationAsPlanned' exists, but catenaXSiteId could not be found."
       headers:
         content-type: application/json
 
-############################## /\ ESS Tests /\ ##############################
+
+############################### \/ ESS Tests with T-Systems and submodel servers \/ ##############################
+####### !!!!!! Commented out since there is no testdata available for the moment !!!!!! ######
+#---
+#
+#
+#test_name: Make sure investigation job with valid globalAssetId and BPN is processed correctly in T-Systems
+#
+#strict:
+#  - headers:off
+#  - json:off
+#
+#stages:
+#  - name: register a BPN investigation with valid globalAssetId to T-Systems
+#    request:
+#      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
+#      json:
+#        key:
+#          globalAssetId: urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9
+#          bpn: BPNL00000003B0Q0
+#        bomLifecycle: asPlanned
+#        callbackUrl: http://testikus.com
+#        incidentBPNSs:
+#          - BPNL00000003B0Q0
+#      method: POST
+#      headers:
+#        content-type: application/json
+#        $ext:
+#          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+#    response:
+#      status_code: 201
+#      headers:
+#        content-type: application/json
+#      save:
+#        json:
+#          job_id: id
+#
+#  - *verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+#
+#  - name: get response for created investigation
+#    request:
+#      url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
+#      params:
+#        returnUncompletedJob: true
+#      method: GET
+#      headers:
+#        content-type: application/json
+#        $ext:
+#          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+#    response:
+#      status_code: 200
+#      verify_response_with:
+#        - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_Yes
+#        - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
+#      headers:
+#        content-type: application/json
+#
+
+############################## /\ ESS Tests with T-Systems and submodel servers /\ ##############################
+###### !!!!!! Commented out since there is no testdata available for the moment !!!!!! ######
 ---
 
 
@@ -385,17 +567,18 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -403,7 +586,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 3
+    delay_after: 1
 
   - name: verify job response with desired test steps
     request:
@@ -413,35 +596,42 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       headers:
         content-type: application/json
 
+
 ---
 
-test_name: Make sure job with submodels process with status COMPLETED
+
+test_name: Make sure job with submodels process with status COMPLETED with asPlanned-id
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         collectAspects: true
-        depth: 1
+        bomLifecycle: asPlanned
+        depth: 2
+        aspects:
+          - SingleLevelUsageAsPlanned
         direction: "downward"
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -450,9 +640,9 @@ stages:
         json:
           job_id: id
 
-  - &verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
-    name: verify job response with desired test steps and wait for desired job status
-    max_retries: 90
+  - &verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+    name: verify job is running and wait for desired job status
+    max_retries: 30
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -460,13 +650,14 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       json:
         job:
           state: COMPLETED
-    delay_after: 10
+    delay_after: 30
 
   - name: verify job response with desired test steps
     request:
@@ -476,16 +667,78 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
+
 ---
+
+
+test_name: Make sure job with submodels process with status COMPLETED with asBuilt-id
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
+        collectAspects: true
+        depth: 2
+        aspects:
+          - ProductDescription
+          - CertificateOfDestruction
+          - SerialPart
+          - SingleLevelUsageAsBuilt
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+      headers:
+        content-type: application/json
+
+
+---
+
 
 test_name: Make sure job without submodels process with status COMPLETED
 
@@ -494,20 +747,21 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         collectAspects: false
         depth: 1
         direction: "downward"
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -516,7 +770,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -526,14 +780,16 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:submodels_are_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
+
 
 ---
 
@@ -545,31 +801,34 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check errors in response
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+        key:
+          globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+          bpn: "BPNL00000003AYRE"
         collectAspects: true
         depth: 1
         direction: "downward"
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 400
       verify_response_with:
-        function: api-tests.tavern_helpers:errors_for_invalid_globalAssetId_are_correct
+        function: local.testing.api-tests.tavern_helpers:errors_for_invalid_globalAssetId_are_correct
       json:
         statusCode: BAD_REQUEST
         error: Invalid Arguments.
       headers:
         content-type: application/json
 
+
 ---
+
 
 test_name: Make sure job with depth and bomLifecycle is processed (1.2.0)
 
@@ -578,20 +837,21 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
-        bomLifecycle: "asBuilt"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
+        bomLifecycle: "asPlanned"
         depth: 2
         collectAspects: true
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       json:
@@ -602,7 +862,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -612,42 +872,45 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        #  - function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        #  - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
 
 ---
 
-test_name: Make sure job with aspect serialPartTypization is processed (1.3.0)
+
+test_name: Make sure job with aspect SerialPart is processed (1.3.0)
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPartTypization
+          - SerialPart
         collectAspects: true
         depth: 1
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       json:
@@ -658,7 +921,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -668,41 +931,46 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        #- function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        #- function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
+
 ---
 
-test_name: Make sure job with aspects SerialPartTypization and AssemblyPartRelationship is processed (1.3.1)
+
+test_name: Make sure job with aspects SerialPart and ProductDescription is processed (1.3.1)
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPartTypization
-          - AssemblyPartRelationship
+          - SerialPart
+          - ProductDescription
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       json:
@@ -713,9 +981,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
-
-  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -725,42 +991,45 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        #- function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        #- function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
 
 ---
 
-test_name: Make sure job with aspects BatteryPass and MaterialForRecycling is processed (1.3.2)
+
+test_name: Make sure job with aspects MaterialForRecycling is processed (1.3.2)
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "urn:uuid:6d505432-8b31-4966-9514-4b753372683f"
+          bpn: "BPNL00000003AVTH"
         aspects:
-          - BatteryPass
           - MaterialForRecycling
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       json:
@@ -771,7 +1040,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -781,42 +1050,46 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        #- function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        #- function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
 
 ---
 
-test_name: Make sure job with aspects Batch and CertificateOfDestruction is processed (1.3.3)
+
+test_name: Make sure job with aspect Batch is processed (1.3.3)
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5"
+          bpn: "BPNL00000003B0Q0"
         aspects:
           - Batch
-          - CertificateOfDestruction
         collectAspects: true
+        bomLifecycle: "asBuilt"
+        depth: 2
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       json:
@@ -827,7 +1100,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -837,42 +1110,46 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        #- function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        #- function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
 
 ---
 
-test_name: Make sure job with aspects SerialPartTypization and DiagnosticData is processed (1.3.4)
+
+test_name: Make sure job with aspects SerialPart and CertificateOfDestruction is processed (1.3.4)
 
 strict:
   - headers:off
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPartTypization
-          - DiagnosticData
+          - SerialPart
+          - CertificateOfDestruction
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       json:
@@ -883,7 +1160,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -893,19 +1170,21 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        # - function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        # - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
 
 ---
+
 
 test_name: Make sure job with invalid aspects is giving the correct error message (1.4.1)
 
@@ -914,20 +1193,21 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         aspects:
           - UnknownAspect
         collectAspects: true
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 400
       json:
@@ -948,22 +1228,22 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPartTypization
-          - AssemblyPartRelationship
-          - Batch
           - ProductDescription
+          - CertificateOfDestruction
+          - SerialPart
+          - SingleLevelUsageAsBuilt
+          - BatteryPass
           - IdConversion
           - MarketplaceOffer
           - MaterialForRecycling
-          - PhysicalDimension
           - ReturnRequest
           - CertificateOfDestruction
           - CertificateOfDismantler
@@ -971,7 +1251,8 @@ stages:
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       json:
@@ -981,7 +1262,7 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 100
+    delay_after: 60
 
   - name: fetch response for running job and check existence of submodels and relationships
     request:
@@ -991,15 +1272,16 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       json:
         job:
           state: RUNNING
       verify_response_with:
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
       headers:
         content-type: application/json
 
@@ -1014,24 +1296,25 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check errors in response
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:4ad4a1ce-beb2-42d2-bfe7c6xyz009123452
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: -10
         direction: "downward"
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 400
       verify_response_with:
-        function: api-tests.tavern_helpers:errors_for_invalid_depth_are_correct
+        function: local.testing.api-tests.tavern_helpers:errors_for_invalid_depth_are_correct
       json:
         statusCode: BAD_REQUEST
         error: Invalid Arguments.
@@ -1049,29 +1332,27 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPartTypization
-          - AssemblyPartRelationship
+          - SerialPart
+          - SingleLevelBomAsBuilt
           - Batch
           - ProductDescription
           - IdConversion
           - MarketplaceOffer
           - MaterialForRecycling
-          - PhysicalDimension
           - ReturnRequest
           - CertificateOfDestruction
           - CertificateOfDismantler
           - EndOfLife
           - EsrCertificate
           - EsrCertificateStateStatistic
-          - ChargingProcess
           - AddressAspect
           - ClaimData
           - BatteryPass
@@ -1079,10 +1360,12 @@ stages:
           - MaterialForHomologation
           - PartAsPlanned
         collectAspects: true
+        depth: 2
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       json:
@@ -1092,10 +1375,9 @@ stages:
       save:
         json:
           job_id: id
+    delay_after: 300
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
-
-  - *authenticate_and_fetch_token
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps and check details
     request:
@@ -1105,19 +1387,21 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        # - function: api-tests.tavern_helpers:tombstones_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_not_empty
-        - function: api-tests.tavern_helpers:submodels_are_not_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        # - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
 
 
   #---
+  #
   #
   #test_name: Make sure job with DEPRECATED Catena-X semantichub aspect is processed as expected
   #
@@ -1137,20 +1421,21 @@ stages:
   #        - ContactInformation
   #
   #stages:
-  #  - *authenticate_and_fetch_token
-  #
   #  - name: create a job and check for success
   #    request:
   #      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
   #      json:
-  #        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+  #        key:
+  #          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+  #          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
   #        aspects:
   #          - "{deprecated_aspect}"
   #        collectAspects: true
   #      method: POST
   #      headers:
   #        content-type: application/json
-  #        Authorization: "Bearer {access_token:s}"
+  #        $ext:
+  #          function: local.testing.api-tests.tavern_helpers:create_bearer_token
   #    response:
   #      status_code: 400
   #      json:
@@ -1159,6 +1444,7 @@ stages:
   ##        messages: null
   #     headers:
   #       content-type: application/json
+
 
 ---
 
@@ -1170,19 +1456,18 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all COMPLETED jobs
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:status_of_jobs_are_as_expected
+        function: local.testing.api-tests.tavern_helpers:status_of_jobs_are_as_expected
         extra_kwargs:
           expected_status: COMPLETED
       headers:
@@ -1199,19 +1484,18 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all ERROR jobs
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=ERROR"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:status_of_jobs_are_as_expected
+        function: local.testing.api-tests.tavern_helpers:status_of_jobs_are_as_expected
         extra_kwargs:
           expected_status: ERROR
       headers:
@@ -1228,28 +1512,25 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all INITIAL jobs
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=INITIAL"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:status_of_jobs_are_as_expected
+        function: local.testing.api-tests.tavern_helpers:status_of_jobs_are_as_expected
         extra_kwargs:
           expected_status: INITIAL
       headers:
         content-type: application/json
 
 
-
 ---
-
 
 
 test_name: Make sure search for RUNNING jobs only returns RUNNING status (2.1.0)
@@ -1259,21 +1540,21 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job for the next step
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPartTypization
-          - DiagnosticData
+          - SerialPart
         collectAspects: true
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -1285,11 +1566,12 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:status_of_jobs_are_as_expected
+        function: local.testing.api-tests.tavern_helpers:status_of_jobs_are_as_expected
         extra_kwargs:
           expected_status: RUNNING
       headers:
@@ -1299,7 +1581,6 @@ stages:
 ---
 
 
-
 test_name: Make sure search for all jobs returns all status (2.0.3)
 
 strict:
@@ -1307,22 +1588,20 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all jobs
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:status_of_all_jobs_are_given
+        function: local.testing.api-tests.tavern_helpers:status_of_all_jobs_are_given
       headers:
         content-type: application/json
-
 
 
 ---
@@ -1335,15 +1614,14 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get job for unknown globalAssetId
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/bc1b4f4f-aa00-4296-8738-e7913c95f2d99"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 400
       json:
@@ -1363,24 +1641,24 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get job for unknown globalAssetId
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/bc1b4f4f-aa00-4296-8738-e7913c95f2d9"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 404
       json:
         statusCode: NOT_FOUND
         error: Not Found
       verify_response_with:
-        function: api-tests.tavern_helpers:errors_for_unknown_requested_globalAssetId_are_correct
+        function: local.testing.api-tests.tavern_helpers:errors_for_unknown_requested_globalAssetId_are_correct
       headers:
         content-type: application/json
+
 
 ---
 
@@ -1392,19 +1670,18 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all jobs
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
+        function: local.testing.api-tests.tavern_helpers:check_startedOn_timestamp_exists
       headers:
         content-type: application/json
 
@@ -1419,17 +1696,18 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -1437,7 +1715,6 @@ stages:
       save:
         json:
           job_id: id
-    delay_after: 3
 
   - name: cancel the job
     request:
@@ -1445,7 +1722,8 @@ stages:
       method: PUT
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       headers:
@@ -1459,7 +1737,8 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       json:
@@ -1479,20 +1758,19 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all jobs with status UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED and CANCELED
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=UNSAVED, INITIAL, RUNNING, TRANSFERS_FINISHED, CANCELED"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
-        - function: api-tests.tavern_helpers:check_completedOn_timestamp_not_exists
+        - function: local.testing.api-tests.tavern_helpers:check_startedOn_timestamp_exists
+        - function: local.testing.api-tests.tavern_helpers:check_completedOn_timestamp_not_exists
       headers:
         content-type: application/json
 
@@ -1507,20 +1785,19 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all jobs with status COMPLETED and ERROR
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED, ERROR"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
-        - function: api-tests.tavern_helpers:check_completedOn_timestamp_exists
+        - function: local.testing.api-tests.tavern_helpers:check_startedOn_timestamp_exists
+        - function: local.testing.api-tests.tavern_helpers:check_completedOn_timestamp_exists
       headers:
         content-type: application/json
 
@@ -1535,21 +1812,20 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all jobs with status COMPLETED and ERROR
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?states=COMPLETED, ERROR"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:check_startedOn_timestamp_exists
-        - function: api-tests.tavern_helpers:check_completedOn_timestamp_exists
-        - function: api-tests.tavern_helpers:check_startedOn_is_smaller_than_completedOn
+        - function: local.testing.api-tests.tavern_helpers:check_startedOn_timestamp_exists
+        - function: local.testing.api-tests.tavern_helpers:check_completedOn_timestamp_exists
+        - function: local.testing.api-tests.tavern_helpers:check_startedOn_is_smaller_than_completedOn
       headers:
         content-type: application/json
 
@@ -1564,13 +1840,13 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check error in response
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: 1
         direction: "downward"
@@ -1578,12 +1854,13 @@ stages:
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 400
       json:
         statusCode: BAD_REQUEST
-        error: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned"
+        error: "NoSuchElementException: Unsupported BomLifecycle: asPlanned, asBuilt. Must be one of: asBuilt, asPlanned, asSpecified"
         messages: null
       headers:
         content-type: application/json
@@ -1599,20 +1876,21 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job with unknown globalAssetId
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa
+        key:
+          globalAssetId: urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa
+          bpn: "BPNL00000003AYRE"
         collectAspects: true
         depth: 1
         direction: "downward"
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -1621,7 +1899,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1631,14 +1909,15 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:submodels_are_empty
-        - function: api-tests.tavern_helpers:relationships_are_empty
-        - function: api-tests.tavern_helpers:check_timestamps_for_completed_jobs
-        - function: api-tests.tavern_helpers:errors_for_unknown_globalAssetId_are_correct
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_empty
+        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+        - function: local.testing.api-tests.tavern_helpers:errors_for_unknown_globalAssetId_are_correct
       headers:
         content-type: application/json
 
@@ -1653,19 +1932,18 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all jobs
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:check_pagination_details_exists
+        function: local.testing.api-tests.tavern_helpers:check_pagination_details_exists
       headers:
         content-type: application/json
 
@@ -1680,19 +1958,76 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: get all jobs with requested pagination settings
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs?page=1&size=3&sort=jobCompleted,asc"
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:check_pagination_is_requested_correctly
+        function: local.testing.api-tests.tavern_helpers:check_pagination_is_requested_correctly
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure requested parameter has been set correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
+          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
+        collectAspects: true
+        depth: 2
+        direction: "downward"
+        bomLifecycle: "asPlanned"
+        lookupBPNs: true
+        callbackUrl: "https://www.check123.com"
+        aspects:
+          - SerialPart
+          - PartAsPlanned
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+    delay_after: 1
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:job_parameter_are_as_requested
       headers:
         content-type: application/json
 
@@ -1707,20 +2042,21 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job and check for success
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: false
         depth: 1
         direction: "downward"
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -1729,7 +2065,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1739,11 +2075,12 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:bpns_are_empty
+        - function: local.testing.api-tests.tavern_helpers:bpns_are_empty
       headers:
         content-type: application/json
 
@@ -1758,13 +2095,13 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job with lookupBPNs = true and wait
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: false
         lookupBPNs: true
         depth: 1
@@ -1772,7 +2109,8 @@ stages:
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -1781,7 +2119,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1791,11 +2129,12 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:bpns_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:bpns_are_not_empty
       headers:
         content-type: application/json
 
@@ -1810,13 +2149,13 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a job with lookupBPNs = true and wait
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
-        globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID}"
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: false
         lookupBPNs: true
         depth: 1
@@ -1824,7 +2163,8 @@ stages:
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -1833,7 +2173,7 @@ stages:
         json:
           job_id: id
 
-  - *verify_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
 
   - name: verify job response with desired test steps
     request:
@@ -1843,18 +2183,20 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        - function: api-tests.tavern_helpers:bpns_are_not_empty
-        - function: api-tests.tavern_helpers:summary_for_bpns_is_given
+        - function: local.testing.api-tests.tavern_helpers:bpns_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:summary_for_bpns_is_given
       headers:
         content-type: application/json
 
 
 ---
 
+############################## \/  Batch-Order tests for both irs/orders and irs/ess/orders  \/ ##############################
 
 test_name: Make sure batch-job with several valid globalAssetIds has been requested correctly
 
@@ -1863,37 +2205,58 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a batch job with several valid globalAssetIds
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/orders"
       json:
-        globalAssetIds:
-          - urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
-          - urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
-          - urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
-          - urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355
-          - urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127
-          - urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
-          - urn:uuid:a1082992-cc3b-4da1-af6b-aa692ed71461
-          - urn:uuid:b21cfd5b-dcf4-46fa-9227-3eb693567dd8
-          - urn:uuid:8f9d8c7f-6d7a-48f1-9959-9fa3a1a7a891
-          - urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd
-          - urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0
-          - urn:uuid:7b87f5d6-f75e-40f1-a439-779ae9f57a21
-          - urn:uuid:8914a66e-b59b-405f-afff-b97d71ebece3
-          - urn:uuid:61a22b1c-5725-41fb-8e1e-dccaaba83838
-          - urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163
-          - urn:uuid:1e35e091-3d3d-421e-9c7e-14cf1c9442a6
-          - urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
-          - urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758
-          - urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
-          - urn:uuid:492781f5-62ff-4fb2-876c-3498e2844d13
-          - urn:uuid:d6142601-5e09-45fe-9b42-e53cf8cd458c
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1e35e091-3d3d-421e-9c7e-14cf1c9442a6
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:61a22b1c-5725-41fb-8e1e-dccaaba83838
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8914a66e-b59b-405f-afff-b97d71ebece3
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:7b87f5d6-f75e-40f1-a439-779ae9f57a21
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8f9d8c7f-6d7a-48f1-9959-9fa3a1a7a891
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:b21cfd5b-dcf4-46fa-9227-3eb693567dd8
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a1082992-cc3b-4da1-af6b-aa692ed71461
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
         aspects:
-          - "AssemblyPartRelationship"
-          - "SerialPartTypization"
+          - "SingleLevelBomAsBuilt"
+          - "SerialPart"
         collectAspects: true
         lookupBPNs: true
         batchSize: 10
@@ -1903,7 +2266,8 @@ stages:
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 201
       headers:
@@ -1920,11 +2284,12 @@ stages:
       method: GET
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 200
       verify_response_with:
-        function: api-tests.tavern_helpers:order_informations_for_batchprocessing_are_given
+        function: local.testing.api-tests.tavern_helpers:order_informations_for_batchprocessing_are_given
         extra_kwargs:
           amount_batches: 3
       headers:
@@ -1941,8 +2306,6 @@ strict:
   - json:off
 
 stages:
-  - *authenticate_and_fetch_token
-
   - name: create a batch job with several valid globalAssetIds but invalid batchSize and check response
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/orders"
@@ -1952,8 +2315,8 @@ stages:
           - urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
           - urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
         aspects:
-          - "AssemblyPartRelationship"
-          - "SerialPartTypization"
+          - "SingleLevelBomAsBuilt"
+          - "SerialPart"
         collectAspects: true
         lookupBPNs: true
         batchSize: 2
@@ -1963,13 +2326,388 @@ stages:
       method: POST
       headers:
         content-type: application/json
-        Authorization: "Bearer {access_token:s}"
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
       status_code: 400
       verify_response_with:
-        function: api-tests.tavern_helpers:errors_for_invalid_batchSize_are_correct
+        function: local.testing.api-tests.tavern_helpers:errors_for_invalid_batchSize_are_correct
       json:
         statusCode: BAD_REQUEST
         error: Invalid Arguments.
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure cancellation of batch-job has been processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: create a batch job with several valid globalAssetIds
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
+        aspects:
+          - "SingleLevelBomAsBuilt"
+          - "SerialPart"
+        collectAspects: true
+        lookupBPNs: true
+        batchSize: 10
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+        depth: 1
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - name: verify job response with desired test steps and get batchId
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:order_informations_for_batchprocessing_are_given
+        extra_kwargs:
+          amount_batches: 1
+      headers:
+        content-type: application/json
+      save:
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:getBatchId
+          extra_kwargs:
+            batchId_number: 0
+
+  - name: cancel order job
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      method: PUT
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+
+  - name: get batch response of desired batch
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}/batches/{batch_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:check_batches_are_canceled_correctly
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure ESS-investigation batch-job with valid globalAssetId and BPN has been requested correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation batch job with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1e35e091-3d3d-421e-9c7e-14cf1c9442a6
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:61a22b1c-5725-41fb-8e1e-dccaaba83838
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8914a66e-b59b-405f-afff-b97d71ebece3
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:7b87f5d6-f75e-40f1-a439-779ae9f57a21
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8f9d8c7f-6d7a-48f1-9959-9fa3a1a7a891
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:b21cfd5b-dcf4-46fa-9227-3eb693567dd8
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a1082992-cc3b-4da1-af6b-aa692ed71461
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
+        incidentBPNSs:
+          - BPNS00000003B6LU
+        batchSize: 10
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:order_informations_for_batchprocessing_are_given
+        extra_kwargs:
+          amount_batches: 3
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure ESS-investigation batch-job with invalid request data has been responsed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation batch job with several valid globalAssetIds but invalid batchSize and check response
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+        incidentBPNSs:
+          - BPNS00000003B6LU
+        batchSize: 2
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 400
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:errors_for_invalid_batchSize_are_correct
+      json:
+        statusCode: BAD_REQUEST
+        error: Invalid Arguments.
+      headers:
+        content-type: application/json
+
+
+---
+
+
+test_name: Make sure cancellation of ESS-investigation batch-job has been processed correctly
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: register a BPN investigation batch job with valid globalAssetId
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/ess/orders"
+      json:
+        keys:
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1b17682e-5e2a-4913-aa1b-7d59a072a3cb
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a0f6803c-e4dc-4cda-8ad2-91cc57868449
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:fa5804f1-8d4e-437c-aca2-a5491be61758
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:1e35e091-3d3d-421e-9c7e-14cf1c9442a6
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:0ea1aa79-10d4-4df1-8a5a-5b7eafd26163
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:61a22b1c-5725-41fb-8e1e-dccaaba83838
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8914a66e-b59b-405f-afff-b97d71ebece3
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:7b87f5d6-f75e-40f1-a439-779ae9f57a21
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:a4a26b9c-9460-4cc5-8645-85916b86adb0
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:ceb6b964-5779-49c1-b5e9-0ee70528fcbd
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:8f9d8c7f-6d7a-48f1-9959-9fa3a1a7a891
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:b21cfd5b-dcf4-46fa-9227-3eb693567dd8
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:a1082992-cc3b-4da1-af6b-aa692ed71461
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:88f51be1-3771-4335-8b5c-4c5050123127
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:07e0997f-4212-4456-8f27-164b30fc8355
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
+          - bpn: "BPNL00000003AVTH"
+            globalAssetId: urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
+          - bpn: "BPNL00000003AYRE"
+            globalAssetId: urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
+        incidentBPNSs:
+          - BPNS00000003B6LU
+        batchSize: 10
+        batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - name: get response for created investigation
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:order_informations_for_batchprocessing_are_given
+        extra_kwargs:
+          amount_batches: 3
+      headers:
+        content-type: application/json
+      save:
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:getBatchId
+          extra_kwargs:
+            batchId_number: 1
+
+  - name: cancel order job
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}"
+      method: PUT
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      headers:
+        content-type: application/json
+
+  - name: get batch response of desired batch
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/orders/{job_id}/batches/{batch_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 200
+      verify_response_with:
+        function: local.testing.api-tests.tavern_helpers:check_batches_are_canceled_correctly
       headers:
         content-type: application/json

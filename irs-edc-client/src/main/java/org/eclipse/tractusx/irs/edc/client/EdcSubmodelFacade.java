@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,23 +23,21 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
-import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.springframework.stereotype.Service;
 
 /**
  * Public API Facade for submodel domain
  */
-@Service
+@Service("irsEdcClientEdcSubmodelFacade")
 @Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -47,30 +46,16 @@ public class EdcSubmodelFacade {
     private final EdcSubmodelClient client;
 
     @SuppressWarnings("PMD.PreserveStackTrace")
-    public List<Relationship> getRelationships(final String submodelEndpointAddress,
-            final RelationshipAspect traversalAspectType) throws EdcClientException {
+    public String getSubmodelRawPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
+            final String assetId) throws EdcClientException {
         try {
-            return client.getRelationships(submodelEndpointAddress, traversalAspectType).get();
+            return client.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get();
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return Collections.emptyList();
-        } catch (ExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof EdcClientException exceptionCause) {
-                throw exceptionCause;
-            }
-            throw new EdcClientException(cause);
-        }
-    }
-
-    @SuppressWarnings("PMD.PreserveStackTrace")
-    public String getSubmodelRawPayload(final String submodelEndpointAddress) throws EdcClientException {
-        try {
-            return client.getSubmodelRawPayload(submodelEndpointAddress).get();
-        } catch (InterruptedException e) {
+            log.debug("InterruptedException occurred.", e);
             Thread.currentThread().interrupt();
             return null;
         } catch (ExecutionException e) {
+            log.debug("ExecutionException occurred.", e);
             final Throwable cause = e.getCause();
             if (cause instanceof EdcClientException exceptionCause) {
                 throw exceptionCause;
@@ -81,8 +66,9 @@ public class EdcSubmodelFacade {
 
     @SuppressWarnings("PMD.PreserveStackTrace")
     public EdcNotificationResponse sendNotification(final String submodelEndpointAddress, final String assetId,
-            final EdcNotification notification) throws EdcClientException {
+            final EdcNotification<NotificationContent> notification) throws EdcClientException {
         try {
+            log.debug("Sending EDC Notification '{}'", notification);
             return client.sendNotification(submodelEndpointAddress, assetId, notification).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

@@ -14,23 +14,19 @@
 
     <name>IRS Cucumber</name>
 
-    <properties>
-        <cucumber.version>7.11.1</cucumber.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>io.cucumber</groupId>
                 <artifactId>cucumber-bom</artifactId>
-                <version>${cucumber.version}</version>
+                <version>${cucumber-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.9.2</version>
+                <version>${junit-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -38,6 +34,18 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
             <artifactId>json-unit-assertj</artifactId>
@@ -67,7 +75,7 @@
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-models</artifactId>
-            <version>${project.version}</version>
+            <version>${irs-registry-client.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.yaml</groupId>
@@ -78,18 +86,18 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>2.0</version>
+            <version>${snakeyaml.version}</version>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>5.2.1</version>
+            <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>4.2.0</version>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -105,7 +113,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <source>${maven.compiler.source}</source>
@@ -115,7 +122,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M8</version>
                 <configuration>
                     <properties>
                         <configurationParameters>

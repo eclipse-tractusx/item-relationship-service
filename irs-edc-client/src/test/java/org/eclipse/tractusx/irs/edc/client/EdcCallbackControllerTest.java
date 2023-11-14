@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -25,9 +26,8 @@ package org.eclipse.tractusx.irs.edc.client;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
-import java.util.Map;
 
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.junit.jupiter.api.Test;
 
 class EdcCallbackControllerTest {
@@ -40,7 +40,9 @@ class EdcCallbackControllerTest {
         // arrange
         final var ref = EndpointDataReference.Builder.newInstance()
                                                      .endpoint("test")
-                                                     .properties(Map.of("cid", "testId"))
+                                                     .authKey("Authorization")
+                                                     .authCode(
+                                                             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODkwODA5OTEsImRhZCI6InRlc3QiLCJjaWQiOiJ0ZXN0SWQiLCJpYXQiOjE2ODkwODI2ODF9.62AIg-k8Yz6xLUBPblv2AtA5fuhoBnm9KMxhdCUunhA")
                                                      .build();
 
         // act
@@ -49,5 +51,18 @@ class EdcCallbackControllerTest {
         // assert
         final var result = storage.remove("testId");
         assertThat(result).isNotNull().contains(ref);
+    }
+
+    @Test
+    void shouldDoNothingWhenEDRTokenIsInvalid() {
+        // arrange
+        final var ref = EndpointDataReference.Builder.newInstance().endpoint("test").build();
+
+        // act
+        testee.receiveEdcCallback(ref);
+
+        // assert
+        final var result = storage.remove("testId");
+        assertThat(result).isNotNull().isEmpty();
     }
 }

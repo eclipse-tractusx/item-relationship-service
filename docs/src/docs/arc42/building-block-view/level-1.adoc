@@ -21,7 +21,7 @@ The result is an item graph in which each node represents a digital item of the 
 |The *IRS API* is the Interface over which the Data Consumer is communicating.
 
 |*IrsController*
-|The *IrsController* provides an REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process.
+|The *IrsController* provides a REST Interface for retrieving IRS processed data and job details of the current item graph retrieval process.
 
 |*IrsItemGraphQueryService*
 |The *IrsItemGraphQueryService* implements the REST Interface of the IrsController.
@@ -57,4 +57,11 @@ A job is processed in this order:
 
 |*EDC Client*
 |The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data.
+
+|*EssController*
+|The *EssController* provides a REST Interface to perform BPN investigations of supply chain.
+
+|*PolicyStoreController*
+|The *PolicyStoreController* provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.
+
 |===

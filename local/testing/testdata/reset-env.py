@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import argparse
-
+import base64
 import requests
 from requests.adapters import HTTPAdapter, Retry
 
@@ -14,6 +14,22 @@ def delete_shells(url_, headers_):
         for item in items:
             global_asset_id = item["identification"]
             delete_response = session.request(method="DELETE", url=url_ + "/" + global_asset_id, headers=headers_)
+            print(delete_response)
+            if delete_response.status_code > 205:
+                print(global_asset_id)
+
+
+def delete_shells_aas_3(url_, headers_):
+    while session.request(method="GET", url=url_, headers=headers_).json()["result"]:
+        response = session.request(method="GET", url=url_, headers=headers_)
+        response_json = response.json()
+        items = response_json["result"]
+        for item in items:
+            global_asset_id = item["id"]
+            global_asset_id_bytes = global_asset_id.encode('ascii')
+            base64_global_asset_id_bytes = base64.b64encode(global_asset_id_bytes)
+            base64_global_asset_id = base64_global_asset_id_bytes.decode('ascii')
+            delete_response = session.request(method="DELETE", url=url_ + "/" + base64_global_asset_id, headers=headers_)
             print(delete_response)
             if delete_response.status_code > 205:
                 print(global_asset_id)
@@ -58,12 +74,18 @@ if __name__ == "__main__":
     parser.add_argument("-edc", "--edc", type=str, nargs="*", help="EDC provider control plane display URLs",
                         required=True)
     parser.add_argument("-k", "--apikey", type=str, help="edc api key", required=True)
+    parser.add_argument("--aas3", help="Create AAS assets in version 3.0", action='store_true', required=False)
 
     args = parser.parse_args()
     config = vars(args)
     edc_api_key = config.get("apikey")
-    registry_url = config.get("aas") + "/registry/shell-descriptors"
     edc_urls = config.get("edc")
+    is_aas3 = config.get("aas3")
+
+    if is_aas3:
+        registry_url = config.get("aas") + "/shell-descriptors"
+    else:
+        registry_url = config.get("aas") + "/registry/shell-descriptors"
 
     headers = {
         'X-Api-Key': edc_api_key,
@@ -75,12 +97,15 @@ if __name__ == "__main__":
     session = requests.Session()
     session.mount('https://', HTTPAdapter(max_retries=retries))
 
-    delete_shells(registry_url, headers)
+    if is_aas3:
+        delete_shells_aas_3(registry_url, headers)
+    else:
+        delete_shells(registry_url, headers)
 
     for edc_url in edc_urls:
-        controlplane_data_contracts = edc_url + "/api/v1/management/contractdefinitions"
-        controlplane_data_policies = edc_url + "/api/v1/management/policydefinitions"
-        controlplane_data_assets = edc_url + "/api/v1/management/assets"
+        controlplane_data_contracts = edc_url + "/management/v2/contractdefinitions"
+        controlplane_data_policies = edc_url + "/management/v2/policydefinitions"
+        controlplane_data_assets = edc_url + "/management/v2/assets"
 
         delete_contracts(controlplane_data_contracts, headers)
 

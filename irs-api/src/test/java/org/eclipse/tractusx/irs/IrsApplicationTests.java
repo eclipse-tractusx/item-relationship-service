@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -44,7 +45,7 @@ import org.eclipse.tractusx.irs.connector.job.JobInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -77,11 +78,11 @@ class IrsApplicationTests {
     @Test
     void generatedOpenApiMatchesContract() throws Exception {
         final String generatedYaml = this.restTemplate.getForObject("http://localhost:" + port + "/api/api-docs.yaml", String.class);
-        final InputStream fixedYaml = Files.newInputStream(Path.of("../docs/src/api/irs-v1.0.yaml"));
+        final InputStream fixedYaml = Files.newInputStream(Path.of("../docs/src/api/irs-api.yaml"));
 
         final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        final Map<String, Object> fixedYamlMap = mapper.readValue(fixedYaml, Map.class);
-        final Map<String, Object> generatedYamlMap = mapper.readValue(generatedYaml, Map.class);
+        final Map<String, Object> fixedYamlMap = mapper.readerForMapOf(Object.class).readValue(fixedYaml);
+        final Map<String, Object> generatedYamlMap = mapper.readerForMapOf(Object.class).readValue(generatedYaml);
 
         assertThat(generatedYamlMap).isEqualTo(fixedYamlMap);
     }
@@ -95,7 +96,8 @@ class IrsApplicationTests {
                                                       .aspects(List.of())
                                                       .build();
 
-        final JobInitiateResponse response = jobOrchestrator.startJob("rootitemid", jobParameter);
+        final JobInitiateResponse response = jobOrchestrator.startJob("rootitemid", jobParameter, null, "owner");
+
 
         assertThat(response.getStatus()).isEqualTo(ResponseStatus.OK);
 

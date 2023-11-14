@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -33,19 +34,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 
 /**
  * InMemory storage for endpoint data references.
  */
-@Service
+@Service("irsEdcClientEndpointDataReferenceStorage")
 public class EndpointDataReferenceStorage {
 
     private final Map<String, ExpiringContainer> storageMap = new ConcurrentHashMap<>();
     private final Duration storageDuration;
 
     public EndpointDataReferenceStorage(
-            @Value("${edc.controlplane.datareference.storage.duration}") final Duration storageDuration) {
+            @Value("${irs-edc-client.controlplane.datareference.storage.duration}") final Duration storageDuration) {
         this.storageDuration = storageDuration;
     }
 
@@ -75,7 +76,7 @@ public class EndpointDataReferenceStorage {
      * Stores the data reference with its creation date.
      */
     @lombok.Value
-    private static class ExpiringContainer {
+    private static final class ExpiringContainer {
         private final Instant creationTimestamp;
         private final EndpointDataReference dataReference;
     }

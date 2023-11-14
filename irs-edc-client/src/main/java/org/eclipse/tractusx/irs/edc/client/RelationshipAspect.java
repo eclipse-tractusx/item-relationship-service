@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -40,7 +41,9 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 public enum RelationshipAspect {
     SINGLE_LEVEL_BOM_AS_PLANNED("SingleLevelBomAsPlanned", SingleLevelBomAsPlanned.class, BomLifecycle.AS_PLANNED,
             Direction.DOWNWARD),
-    ASSEMBLY_PART_RELATIONSHIP("AssemblyPartRelationship", AssemblyPartRelationship.class, BomLifecycle.AS_BUILT,
+    SINGLE_LEVEL_BOM_AS_BUILT("SingleLevelBomAsBuilt", SingleLevelBomAsBuilt.class, BomLifecycle.AS_BUILT,
+            Direction.DOWNWARD),
+    SINGLE_LEVEL_BOM_AS_SPECIFIED("SingleLevelBomAsSpecified", SingleLevelBomAsSpecified.class, BomLifecycle.AS_SPECIFIED,
             Direction.DOWNWARD),
     SINGLE_LEVEL_USAGE_AS_BUILT("SingleLevelUsageAsBuilt", SingleLevelUsageAsBuilt.class, BomLifecycle.AS_BUILT,
             Direction.UPWARD);
@@ -54,8 +57,9 @@ public enum RelationshipAspect {
      * @param bomLifecycle lifecycle
      * @param direction    direction
      * @return Returns traversal aspect type
-     * asBuilt + downward => AssemblyPartRelationship
+     * asBuilt + downward => SingleLevelBomAsBuilt
      * asPlanned + downward => SingleLevelBomAsPlanned
+     * asSpecified + downward => SingleLevelBomAsSpecified
      * asBuilt + upward => SingleLevelUsageAsBuilt
      * asPlanned + upward => SingleLevelXXXAsPlanned
      */

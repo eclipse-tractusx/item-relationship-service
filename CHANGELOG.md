@@ -6,15 +6,195 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- IRS can now check the readiness of external services. Use the new ``management.health.dependencies.enabled`` config entry to determine if external dependencies health checks should be checked (false by default).
+  - The map of external services healthcheck endpoints can be configured with ``management.health.dependencies.urls`` property, eg. ``service_name: http://service_name_host/health``
+  
+## [4.0.1] - 2023-11-10
+### Changed
+- Added state `STARTED` as acceptable state to complete the EDC transfer process to be compatible with EDC 0.5.1
+
+## [4.0.0] - 2023-10-27
+### Added
+- Introduced new API endpoint to register ESS Jobs in Batch - POST {{IRS_HOST}}/irs/ess/orders
+- Added role "admin_irs" again
+
+### Changed
+- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint
+- Moved OAuth2 JWT token claim to configuration. The fields can be configured with `oauth.resourceClaim`, `oauth.irsNamespace`, `oauth.roles`.
+- ESS
+  - Added Tombstone to ESS investigation in case required aspect models "PartAsPlanned" or "PartSiteInformationAsPlanned" are missing
+- Update dependencies to mitigate third party vulnerabilities
+
+## [3.5.4] - 2023-10-25
+### Changed
+- removed role "admin_irs"
+
+## [3.5.3] - 2023-10-09
+### Fixed
+- Fixed default policy creation.
+
+### Changed
+- Changed configuration for default policies from:
+  ```
+  irs-edc-client:
+    catalog:
+      policies:
+        allowedNames: A, B
+        acceptedLeftOperands: X
+        acceptedRightOperands: Y
+  ```
+  to:
+  ```
+  irs-edc-client:
+    catalog:
+      acceptedPolicies:
+      - leftOperand: "X"
+        operator: "eq"
+        rightOperand: "A"
+      - leftOperand: "B"
+        operator: "eq"
+        rightOperand: Y"
+  ```
+
+## [3.5.2] - 2023-10-06
+### Changed
+- Updated dependencies
+
+## [3.5.1] - 2023-10-05
+### Fixed
+- Fix json schema validation
+
+## [3.5.0] - 2023-09-27
+### Changed
+- IRS now makes use of the value `dspEndpoint` in `subprotocolBody` of the Asset Administration Shell to request submodel data directly.
+- Policy Store API is extended to handle:
+  - multi permissions per each allowed Policy in POST call to create Policy
+  - multi constraint per each permission in POST call to create Permission
+  - logical AndConstraint and OrConstraint to give possibility to create complex restriction
+
+### Fixed
+- Fixed a case where IRS submodel requests did not reuqest all EDC endpoints discovered by Discovery Finder
+- ESS
+  - Updated investigation request body field `incidentBPNs` to `incidentBPNSs`.
+  - Streamlined EDC notification flow and adjusted it to existing EDC client methods
+  - Changed investigation from BPNL to BPNS (`catenaXSiteId` of `PartSiteInformationAsPlanned`)
+  - Additional validation for `validityPeriod` of `PartAsPlanned`
+
+## [3.4.1] - 2023-09-22
+### Changed
+- Updated SingleLevelUsageAsBuilt schema to 2.0.0 version.
+
+### Fixed
+- Fixed missing access control for Batch and ESS API.
+
+## [3.4.0] - 2023-09-01
+### Added
+- Added fetchCatalog to EDCCatalogFacade
+- Introduced new API endpoint to update 'validUntil' property of Policy - PUT {{IRS_HOST}}/irs/policies/{policyId}
+- Introduced new IRS role `admin_irs` which has unrestricted access to every API endpoint
+
+### Changed
+- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. PolicyStore API access is restricted to role `admin_irs`.
+
+### Fixed
+- Fixed bug where BPN's were delivered without 'manufacturerName' property filled
+
+## [3.3.5] - 2023-08-30
+### Changed
+- Updated IRS Digital Twin Registry Client to support latest version 0.3.14-M1
+
+## [3.3.4] - 2023-08-24
+### Fixed
+- Added missing license information to documentation and docker image
+
+## [3.3.3] - 2023-08-11
+### Changed
+- IRS now calls the entire dataplane URL retrieved from the registry href instead of building it from the URL of the EDC token and the path
+
+### Fixed
+- Switched to POST for DTR lookup request
+- Added Base64 encoding to identifier for DTR shell-descriptor request 
+- Fixed an issue where IRS did not pass the BPN correctly for the ESS use-case
+
+## [3.3.2] - 2023-07-31
+### Fixed
+- BPN is now passed on correctly when traversing the item graph
+- EDC Policies now get validated regardless of the type of constraint.
+- EDC Policies of type FrameworkAgreement are now validated correctly.
+- Fixed error in BPN handling for IRS Batch requests
+
+## [3.3.1] - 2023-07-24
+### Fixed
+- Added missing field `businessPartner` for relationship aspect SingleLevelUsageAsBuilt
+
+## [3.3.0] - 2023-07-20
+### Changed
+- BPN is now taken from the submodel data while traversing the item graph
+- Tombstone is created if no BPN is available for a child item
+
+## [3.2.1] - 2023-07-19
+### Fixed
+- EDC Policies now get validated regardless of the type of constraint.
+- EDC Policies of type `FrameworkAgreement` are now validated correctly.
+- Fixed error in BPN handling for IRS Batch requests
+
+## [3.2.0] - 2023-07-14
+### Changed
+- The client code for accessing the Digital Twin Registry (central and decentral) is now available as a spring boot maven library. See the README in the irs-registry-client module for more information.
+- Update EDC dependencies to 0.1.3
+- Add Transformer to support new EDC constraint operator format
+- IRS now supports the AAS API 3.0 and its updated models. **Note**: this also reflects in the Job response shells, please check the new schema.
+
+### Known knowns
+- [TRI-1460] ESS Notifications endpoints are not working in the decentral Digital Twin Registry scenario because endpoints does not provide bpn as a parameter. 
+- [TRI-1096] No limiting of requests in parallel - IRS allows sending API requests unlimited
+- [TRI-1100] Potential denial-of-service (DoS) attack - IRS allows to enter a large number of characters, which are reflected in the response of the server
+- [TRI-1098] Software related information disclosure - IRS returns redundant information about the type and version of used software
+- [TRI-793] Misconfigured Access-Control-Allow- Origin Header - by intercepting network traffic it could be possible to read and modify any messages that are exchanged with server
+- [TRI-1095] HTTP security headers configuration could be improved and allow for additional protection against some web application attacks
+- [TRI-1441] Synchronous communication with shared C-X services without circuit breaker pattern - potentially could affect IRS resilience when other services becomes non-responsive.
+- [TRI-1441] Cascading effects of failure when Digital Twin Registry becomes non-responsive - potentially bulkhead pattern could improve IRS resilience
+- [TRI-1477] Retry mechanism used inside IRS could potentially affect IRS resilience - DDOS other services on which IRS is dependent, exhaustion of resources and available threads, etc.
+- [TRI-1478] Lack of resources management - thread pooling, heap limitation etc.
+- [TRI-1024] IRS does not support scale out on multiple instances
+
+## [3.1.0] - 2023-07-07
+### Changed
+- Removed catalog cache
+- Changed EDC catalog retrieval from pagination to filter
+- Item graphs with asBuilt lifecycle & downward direction are now built with usage of SingleLevelBomAsBuilt aspect, instead of AssemblyPartRelationship aspect
+- Changed retrieval of BPN value from AAS Shell to SingleLevelBomAsBuilt
+- Renamed SerialPartTypization to SerialPart aspect
+- ESS
+  - Update ESS notification asset creation to new EDC DSP protocol
+  - Include DiscoveryFinder into ESS flow
+
+## [3.0.1] - 2023-06-28
+### Fixed
+- Added missing participantId to contract negotiation for decentral DTR contract negotiation
+- Fixed default value for contract negotiation and transfer process state-suffix
+
+## [3.0.0] - 2023-06-26
+### Added
 - Handling of Decentral Digital Twin Registry as a way of request AAS for identifier
   - Extend Register Job with key field that contain BPN and globalAssetId
   - Requesting BPN endpoint catalog over Discrovery Finder
   - Requesting EDC endpoint addresses for BPN over EDC Discovery Finder
   - Add filter for catalog item search in EDC
   - Authorize Digital Twin client with EDC Endpoint Reference
+- Added new Policy Store API to manage acceptable EDC policies
+  - `GET /irs/policies`
+  - `POST /irs/policies`
+  - `DELETE /irs/policies/{policyId}`
 
-### Known knowns
-- PLACEHOLDER REMOVE IF EMPTY: risks that were introduced or discovered in the release and are known but not resolved
+### Changed
+- Updated EDC Client to use version 0.4.1
+  - Adjusted Protocol from IDS to DSP
+  - Paths for catalog, contract negotiation and transfer process are now configurable via properties
+    - `edc.controlplane.endpoint.catalog`
+    - `edc.controlplane.endpoint.contract-negotiation` 
+    - `edc.controlplane.endpoint.transfer-process`
+- EDR Callback is now configurable via property `edc.callback-url`
 
 ## [2.6.1] - 2023-05-15
 ### Added
@@ -228,7 +408,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...HEAD
+[4.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...4.0.1
+[4.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.4...4.0.0
+[3.5.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...3.5.4
+[3.5.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.2...3.5.3
+[3.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.1...3.5.2
+[3.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.0...3.5.1
+[3.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.1...3.5.0
+[3.4.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.4.0...3.4.1
+[3.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.5...3.4.0
+[3.3.5]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.4...3.3.5
+[3.3.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.3...3.3.4
+[3.3.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.2...3.3.3
+[3.3.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.1...3.3.2
+[3.3.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.3.0...3.3.1
+[3.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.2.1...3.3.0
+[3.2.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.2.0...3.2.1
+[3.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.1.0...3.2.0
+[3.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.1...3.1.0
+[3.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.1...3.0.0
 [2.6.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.6.0...2.6.1
 [2.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.1...2.6.0
 [2.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/2.5.0...2.5.1

@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -39,7 +40,6 @@ import lombok.NoArgsConstructor;
 @SuppressWarnings("PMD.ShortMethodName")
 public enum AspectType {
     ADDRESS_ASPECT(AspectTypesConstants.ADDRESS_ASPECT),
-    ASSEMBLY_PART_RELATIONSHIP(AspectTypesConstants.ASSEMBLY_PART_RELATIONSHIP),
     BATCH(AspectTypesConstants.BATCH),
     BATTERY_PASS(AspectTypesConstants.BATTERY_PASS),
     CERTIFICATE_OF_DESTRUCTION(AspectTypesConstants.CERTIFICATE_OF_DESTRUCTION),
@@ -55,11 +55,15 @@ public enum AspectType {
     MATERIAL_FOR_HOMOLOGATION(AspectTypesConstants.MATERIAL_FOR_HOMOLOGATION),
     MATERIAL_FOR_RECYCLING(AspectTypesConstants.MATERIAL_FOR_RECYCLING),
     PART_AS_PLANNED(AspectTypesConstants.PART_AS_PLANNED),
+    PART_AS_SPECIFIED(AspectTypesConstants.PART_AS_SPECIFIED),
     PHYSICAL_DIMENSION(AspectTypesConstants.PHYSICAL_DIMENSION),
     PRODUCT_DESCRIPTION(AspectTypesConstants.PRODUCT_DESCRIPTION),
     RETURN_REQUEST(AspectTypesConstants.RETURN_REQUEST),
-    SERIAL_PART_TYPIZATION(AspectTypesConstants.SERIAL_PART_TYPIZATION),
+    SERIAL_PART(AspectTypesConstants.SERIAL_PART),
+    PART_SITE_INFORMATION_AS_PLANNED(AspectTypesConstants.PART_SITE_INFORMATION_AS_PLANNED),
+    SINGLE_LEVEL_BOM_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT),
     SINGLE_LEVEL_BOM_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_PLANNED),
+    SINGLE_LEVEL_BOM_AS_SPECIFIED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_SPECIFIED),
     SINGLE_LEVEL_USAGE_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_USAGE_AS_BUILT);
 
     private final String name;
@@ -105,7 +109,6 @@ public enum AspectType {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class AspectTypesConstants {
         public static final String ADDRESS_ASPECT = "AddressAspect";
-        public static final String ASSEMBLY_PART_RELATIONSHIP = "AssemblyPartRelationship";
         public static final String BATCH = "Batch";
         public static final String BATTERY_PASS = "BatteryPass";
         public static final String CERTIFICATE_OF_DESTRUCTION = "CertificateOfDestruction";
@@ -121,11 +124,15 @@ public enum AspectType {
         public static final String MATERIAL_FOR_HOMOLOGATION = "MaterialForHomologation";
         public static final String MATERIAL_FOR_RECYCLING = "MaterialForRecycling";
         public static final String PART_AS_PLANNED = "PartAsPlanned";
+        public static final String PART_AS_SPECIFIED = "PartAsSpecified";
         public static final String PHYSICAL_DIMENSION = "PhysicalDimension";
         public static final String PRODUCT_DESCRIPTION = "ProductDescription";
         public static final String RETURN_REQUEST = "ReturnRequest";
-        public static final String SERIAL_PART_TYPIZATION = "SerialPartTypization";
+        public static final String SERIAL_PART = "SerialPart";
+        public static final String PART_SITE_INFORMATION_AS_PLANNED = "PartSiteInformationAsPlanned";
+        public static final String SINGLE_LEVEL_BOM_AS_BUILT = "SingleLevelBomAsBuilt";
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
+        public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED = "SingleLevelBomAsSpecified";
         public static final String SINGLE_LEVEL_USAGE_AS_BUILT = "SingleLevelUsageAsBuilt";
     }
 }

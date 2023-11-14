@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -27,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -42,34 +45,30 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import io.github.resilience4j.retry.RetryRegistry;
-import org.eclipse.dataspaceconnector.policy.model.Policy;
-import org.eclipse.dataspaceconnector.spi.types.domain.asset.Asset;
-import org.eclipse.dataspaceconnector.spi.types.domain.catalog.Catalog;
-import org.eclipse.dataspaceconnector.spi.types.domain.contract.offer.ContractOffer;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
+import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TimeoutException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,8 +81,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
-    private static final String ENDPOINT_ADDRESS = "http://localhost/urn:123456/submodel";
+    private static final String ENDPOINT_ADDRESS = "http://localhost/d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4/submodel";
+    private static final String ASSET_ID = "d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4";
     private static final String PROVIDER_SUFFIX = "/test";
+
+    private final static String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
+    private final static String SUBMODEL_SUFIX = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
+
     private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
             Duration.ofMinutes(1));
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -97,19 +101,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Mock
     private EdcDataPlaneClient edcDataPlaneClient;
     @Mock
-    private EdcControlPlaneClient edcControlPlaneClient;
-    @Mock
-    private CatalogCache catalogCache;
+    private EDCCatalogFacade catalogFacade;
     private EdcSubmodelClient testee;
-    @Mock
-    private OutboundMeterRegistryService meterRegistry;
 
     EdcSubmodelClientTest() throws IOException {
         super();
-    }
-
-    private static Asset createAsset(final String assetId) {
-        return Asset.Builder.newInstance().id(assetId).property("asset:prop:id", assetId).build();
     }
 
     @BeforeEach
@@ -121,66 +117,63 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.getControlplane().setProviderSuffix(PROVIDER_SUFFIX);
 
         config.setSubmodel(new EdcConfiguration.SubmodelConfig());
-        config.getSubmodel().setPath("/submodel");
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
         testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, meterRegistry, retryRegistry, catalogCache,
-                edcControlPlaneClient);
+                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade);
     }
 
     @Test
     void shouldRetrieveValidRelationship() throws Exception {
         // arrange
-        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
-                Optional.of(CatalogItem.builder().itemId("itemId").build()));
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         endpointDataReferenceStorage.put("agreementId", ref);
-        final String assemblyPartRelationshipJson = readAssemblyPartRelationshipData();
-        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(assemblyPartRelationshipJson);
+        final String singleLevelBomAsBuiltJson = readSingleLevelBomAsBuiltData();
+        when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(singleLevelBomAsBuiltJson);
 
         // act
-        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP);
-        final List<Relationship> resultingRelationships = result.get(5, TimeUnit.SECONDS);
+        final var result = testee.getSubmodelRawPayload(ENDPOINT_ADDRESS, "suffix", "assetId");
+        final String resultingRelationships = result.get(5, TimeUnit.SECONDS);
 
         // assert
-        final List<Relationship> expectedRelationships = StringMapper.mapFromString(assemblyPartRelationshipJson,
-                RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP.getSubmodelClazz()).asRelationships();
-        assertThat(resultingRelationships).isNotNull().containsAll(expectedRelationships);
+        assertThat(resultingRelationships).isNotNull().isEqualTo(singleLevelBomAsBuiltJson);
     }
 
     @Test
     void shouldSendNotificationSuccessfully() throws Exception {
         // arrange
-        final EdcNotification notification = EdcNotification.builder().build();
-        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
-                Optional.of(CatalogItem.builder().itemId("itemId").build()));
+        final EdcNotification<NotificationContent> notification = EdcNotification.builder().build();
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         endpointDataReferenceStorage.put("agreementId", ref);
-        when(edcDataPlaneClient.sendData(eq(ref), any(), eq(notification))).thenReturn(() -> true);
+        when(edcDataPlaneClient.sendData(ref, notification)).thenReturn(() -> true);
 
         // act
-        final var result = testee.sendNotification(ENDPOINT_ADDRESS, "notify-request-asset", notification);
+        final var result = testee.sendNotification(CONNECTOR_ENDPOINT, "notify-request-asset", notification);
         final EdcNotificationResponse response = result.get(5, TimeUnit.SECONDS);
 
         // assert
         assertThat(response.deliveredSuccessfully()).isTrue();
+        verify(contractNegotiationService, times(1)).negotiate(eq(CONNECTOR_ENDPOINT + PROVIDER_SUFFIX), any());
     }
 
     @Test
     void shouldTimeOut() throws Exception {
         // arrange
-        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
-                Optional.of(CatalogItem.builder().itemId("itemId").build()));
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
 
         // act
-        final var result = testee.getRelationships(ENDPOINT_ADDRESS, RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP);
+        final var result = testee.getSubmodelRawPayload(ENDPOINT_ADDRESS, "suffix", "ID");
         clock.travelToFuture(Duration.ofMinutes(20));
 
         // assert
@@ -189,19 +182,16 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldThrowErrorWhenCatalogItemCouldNotBeFound() throws Exception {
-        // arrange
-        when(catalogCache.getCatalogItem(any(), any())).thenReturn(Optional.empty());
-
+    void shouldThrowErrorWhenCatalogItemCouldNotBeFound() {
         // act & assert
-        assertThatThrownBy(() -> testee.getSubmodelRawPayload(ENDPOINT_ADDRESS)).isInstanceOf(EdcClientException.class)
-                                                                                .hasMessageContaining(
-                                                                                        "No value present");
+        assertThatThrownBy(
+                () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID)).isInstanceOf(
+                ItemNotFoundInCatalogException.class);
     }
 
     @NotNull
-    private String readAssemblyPartRelationshipData() throws IOException {
-        final URL resourceAsStream = getClass().getResource("/__files/assemblyPartRelationship.json");
+    private String readSingleLevelBomAsBuiltData() throws IOException {
+        final URL resourceAsStream = getClass().getResource("/__files/singleLevelBomAsBuilt.json");
         Objects.requireNonNull(resourceAsStream);
         try {
             return Files.readString(Paths.get(resourceAsStream.toURI()), StandardCharsets.UTF_8);
@@ -211,113 +201,129 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndAssemblyPartRelationship() throws Exception {
-        final String existingCatenaXId = "urn:uuid:15090ed9-0b5c-4761-ad71-c085cf84fa63";
-        prepareTestdata(existingCatenaXId, "_assemblyPartRelationship");
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsBuilt() throws Exception {
+        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId(existingCatenaXId).build()));
+        prepareTestdata(existingCatenaXId, "_singleLevelBomAsBuilt");
 
-        final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + existingCatenaXId + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
-                                                          .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse).isNotEmpty();
-        assertThat(submodelResponse.get(0).getCatenaXId().getGlobalAssetId()).isEqualTo(existingCatenaXId);
-        assertThat(submodelResponse).hasSize(32);
+        assertThat(submodelResponse).contains(existingCatenaXId);
     }
 
     @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsPlanned() throws Exception {
         final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelBomAsPlanned");
 
-        final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)
-                                                          .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse).isNotEmpty();
-        final List<String> childIds = submodelResponse.stream()
-                                                      .map(Relationship::getLinkedItem)
-                                                      .map(LinkedItem::getChildCatenaXId)
-                                                      .map(GlobalAssetIdentification::getGlobalAssetId)
-                                                      .collect(Collectors.toList());
-        assertThat(childIds).containsAnyOf("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
+        assertThat(submodelResponse).contains("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
+    }
+
+    @Test
+    void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsSpecified() throws Exception {
+        final String catenaXId = "urn:uuid:644c0988-6949-4586-b304-7f46f412a5cc";
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId(catenaXId).build()));
+        prepareTestdata(catenaXId, "_singleLevelBomAsSpecified");
+
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
+
+        assertThat(submodelResponse).contains("urn:uuid:2afbac90-a662-4f16-9058-4f030e692631");
     }
 
     @Test
     void shouldReturnEmptyRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelUsageAsBuilt() throws Exception {
-        final String catenaXId = "urn:uuid:d7977805-ef52-43c4-9e1d-2f7f0e82c17c";
+        final String catenaXId = "urn:uuid:61c83b41-def0-4742-a1a8-e4e8a8cb210e";
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
 
-        final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.SINGLE_LEVEL_USAGE_AS_BUILT)
-                                                          .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).isNotEmpty();
     }
 
     @Test
-    void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndAssemblyPartRelationship()
+    void shouldReturnEmptyRelationshipsWhenRequestingWithNotExistingCatenaXIdAndSingleLevelBomAsBuilt()
             throws Exception {
         final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        prepareTestdata(catenaXId, "_assemblyPartRelationship");
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId(catenaXId).build()));
+        prepareTestdata(catenaXId, "_singleLevelBomAsBuilt");
 
-        final List<Relationship> submodelResponse = testee.getRelationships(
-                                                                  "http://localhost/" + catenaXId + "/submodel", RelationshipAspect.ASSEMBLY_PART_RELATIONSHIP)
-                                                          .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS);
 
-        assertThat(submodelResponse).isEmpty();
+        assertThat(submodelResponse).isEqualTo("{}");
     }
 
     @Test
-    void shouldReturnRawSerialPartTypizationWhenExisting() throws Exception {
-        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
-        prepareTestdata(existingCatenaXId, "_serialPartTypization");
+    void shouldReturnRawSerialPartWhenExisting() throws Exception {
+        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
+        when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
+                "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID)).thenReturn(createCatalog(ASSET_ID, 3));
+        prepareTestdata(existingCatenaXId, "_serialPart");
 
-        final String submodelResponse = testee.getSubmodelRawPayload(
-                "http://localhost/" + existingCatenaXId + "/submodel").get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
-                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
     }
 
     @Test
     void shouldUseDecodedTargetId() throws Exception {
-        final String existingCatenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
-        prepareTestdata(existingCatenaXId, "_serialPartTypization");
-        final String target = URLEncoder.encode(existingCatenaXId, StandardCharsets.UTF_8);
+        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
+        prepareTestdata(existingCatenaXId, "_serialPart");
+        final String target = URLEncoder.encode(ASSET_ID, StandardCharsets.UTF_8);
+        when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
+                "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID)).thenReturn(createCatalog(target, 3));
 
-        final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/" + target + "/submodel")
-                                              .get(5, TimeUnit.SECONDS);
+        final String submodelResponse = testee.getSubmodelRawPayload("https://connector.endpoint.com",
+                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID).get(5, TimeUnit.SECONDS);
 
         assertThat(submodelResponse).startsWith(
-                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
     }
 
     @Test
     void shouldReturnSameRelationshipsForDifferentDirections() throws Exception {
-        final String parentCatenaXId = "urn:uuid:bd661150-8491-4442-943b-3e6e96fb0049";
+        final String parentCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
         final BomLifecycle asBuilt = BomLifecycle.AS_BUILT;
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId(parentCatenaXId).build()));
+        prepareTestdata(parentCatenaXId, "_singleLevelBomAsBuilt");
+        final String relationshipsJson = testee.getSubmodelRawPayload("http://localhost/", "_singleLevelBomAsBuilt",
+                ASSET_ID).get(5, TimeUnit.SECONDS);
 
-        prepareTestdata(parentCatenaXId, "_assemblyPartRelationship");
-        final List<Relationship> assemblyPartRelationships = testee.getRelationships(
-                "http://localhost/" + parentCatenaXId + "/submodel",
-                RelationshipAspect.from(asBuilt, Direction.DOWNWARD)).get(5, TimeUnit.SECONDS);
+        final var relationships = StringMapper.mapFromString(relationshipsJson,
+                RelationshipAspect.from(asBuilt, Direction.DOWNWARD).getSubmodelClazz()).asRelationships();
 
-        final GlobalAssetIdentification childCatenaXId = assemblyPartRelationships.stream()
-                                                                                  .findAny()
-                                                                                  .map(Relationship::getLinkedItem)
-                                                                                  .map(LinkedItem::getChildCatenaXId)
-                                                                                  .orElseThrow();
+        final GlobalAssetIdentification childCatenaXId = relationships.stream()
+                                                                      .findAny()
+                                                                      .map(Relationship::getLinkedItem)
+                                                                      .map(LinkedItem::getChildCatenaXId)
+                                                                      .orElseThrow();
 
         prepareTestdata(childCatenaXId.getGlobalAssetId(), "_singleLevelUsageAsBuilt");
-        final List<Relationship> singleLevelUsageRelationships = testee.getRelationships(
-                "http://localhost/" + childCatenaXId.getGlobalAssetId() + "/submodel",
-                RelationshipAspect.from(asBuilt, Direction.UPWARD)).get(5, TimeUnit.SECONDS);
+        final String singleLevelUsageRelationshipsJson = testee.getSubmodelRawPayload("http://localhost/",
+                "_singleLevelUsageAsBuilt", ASSET_ID).get(5, TimeUnit.SECONDS);
+        final var singleLevelUsageRelationships = StringMapper.mapFromString(singleLevelUsageRelationshipsJson,
+                RelationshipAspect.from(asBuilt, Direction.UPWARD).getSubmodelClazz()).asRelationships();
 
-        assertThat(assemblyPartRelationships).isNotEmpty();
+        assertThat(relationships).isNotNull();
         assertThat(singleLevelUsageRelationships).isNotEmpty();
-        assertThat(assemblyPartRelationships.get(0).getCatenaXId()).isEqualTo(
-                singleLevelUsageRelationships.get(0).getCatenaXId());
-        assertThat(assemblyPartRelationships.get(0).getLinkedItem().getChildCatenaXId()).isEqualTo(
+        assertThat(relationships.get(0).getCatenaXId()).isEqualTo(singleLevelUsageRelationships.get(0).getCatenaXId());
+        assertThat(relationships.get(0).getLinkedItem().getChildCatenaXId()).isEqualTo(
                 singleLevelUsageRelationships.get(0).getLinkedItem().getChildCatenaXId());
     }
 
@@ -326,8 +332,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         final String filterKey = "filter-key";
         final String filterValue = "filter-value";
-        when(edcControlPlaneClient.getCatalogWithFilter(ENDPOINT_ADDRESS + PROVIDER_SUFFIX, filterKey, filterValue)).thenReturn(
-                createCatalog("asset-id", 3));
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId("asset-id").build()));
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference expected = mock(EndpointDataReference.class);
@@ -342,9 +348,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
-            throws ContractNegotiationException, IOException, UsagePolicyException {
-        when(catalogCache.getCatalogItem(any(), any())).thenReturn(
-                Optional.of(CatalogItem.builder().itemId(catenaXId).build()));
+            throws ContractNegotiationException, IOException, UsagePolicyException, TransferProcessException {
+
         when(contractNegotiationService.negotiate(any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
@@ -356,18 +361,17 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(data);
     }
 
-    private Catalog createCatalog(final String assetId, final int numberOfOffers) {
+    private List<CatalogItem> createCatalog(final String assetId, final int numberOfOffers) {
         final Policy policy = mock(Policy.class);
 
-        final List<ContractOffer> contractOffers = IntStream.range(0, numberOfOffers)
-                                                            .boxed()
-                                                            .map(i -> ContractOffer.Builder.newInstance()
-                                                                                           .id("offer" + i)
-                                                                                           .asset(createAsset(assetId))
-                                                                                           .policy(policy)
-                                                                                           .build())
-                                                            .toList();
-        return Catalog.Builder.newInstance().id("default").contractOffers(contractOffers).build();
+        return IntStream.range(0, numberOfOffers)
+                        .boxed()
+                        .map(i -> CatalogItem.builder()
+                                             .offerId("offer" + i)
+                                             .assetPropId(assetId)
+                                             .policy(policy)
+                                             .build())
+                        .toList();
     }
 }
 

@@ -6,7 +6,7 @@
 Take the following template and adjust the configuration parameters (<placeholders> mark the relevant spots).
 You can define the URLs as well as most of the secrets yourself.
 
-The Keycloak, DAPS and Vault configuration / secrets depend on your setup and might need to be provided externally.
+The Keycloak, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
 include::irs-spring-config.adoc[leveloffset=+1]
 
@@ -23,6 +23,31 @@ include::../../../../charts/irs-helm/values.yaml[lines=104..287]
 === Values explained
 ==== <irs-url>
 The hostname where the IRS will be made available.
+
+=== <ingress>
+To expose the IRS service, you need to add an ingress for the default port 8080.
+You can do this by adding this to ingress:
+
+[source,yaml]
+----
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - host: "public.irs.hostname"
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 8080
+  tls:
+    - hosts:
+      - "public.irs.hostname"
+      secretName: tls-secret
+----
 
 ==== <digital-twin-registry-url>
 The URL of the Digital Twin Registry. The IRS uses this service to fetch AAS shells.
@@ -61,66 +86,58 @@ local models as a fallback.
 If you want to use local schema files, you need to provide them directly in the `values.yaml` file. Use the param `semanticsHub.localModels` to specify a map of all the local schemas.
 The *key* of each entry is the `Base64` encoded URN of the model. The *value* is the `Base64` encoded content of the schema file itself. The entries will then be mounted into the IRS container and used on demand. For reference, see the example comment in the default `values.yaml`.
 
-
-== EDC consumer configuration
-If you want to provide your own EDC consumer, add the following entries to your values.yaml:
+=== Policy store configuration
+The IRS is exposing REST API to store Policies definitions.
+Storage details can be configured in `application.yml` file with below fields:
 
 [source,yaml]
 ----
-include::../../../../charts/edc-consumer/values.yaml[]
+policystore:
+  persistence:
+    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
+    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
 ----
 
-=== Values explained
-EDC requires a DAPS instance to function correctly. For more information on this, please refer to the https://github.com/catenax-ng/product-DAPS[DAPS] or the https://github.com/catenax-ng/product-edc[EDC] documentation.
+If no custom policies are registered via REST API, IRS will use the default one configured with `irs-edc-client.catalog.acceptedPolicies` property. IRS will only negotiate contracts for offers with policies found in Policy Store.
 
-==== <controlplane-url>
-The hostname where the EDC consumer controlplane will be made available.
+== Use existing EDC consumer
+If you want to use an existing EDC as consumer, you need to add the management endpoint URL of this edc to `edc.controlplane.endpoint.data`.
+You also have to add an ingress for the IRS EDC EDR Token callback endpoint (default port: 8181):
 
-==== <dataplane-url>
-The hostname where the EDC consumer dataplane will be made available.
+[source,yaml]
+----
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - host: "public.irs.hostname"
+      paths:
+        - path: /
+          pathType: Prefix
+          port: 8080
+        - path: /internal
+          port: 8181
+          pathType: Prefix
+  tls:
+    - hosts:
+      - "public.irs.hostname"
+      secretName: tls-secret
+----
 
-==== <vault-url>
-The base URL of the Vault instance.
-EDC requires a running instance of HashiCorp Vault to store the DAPS certificate and private key.
-
-==== <vault-secret-store-path>
-The path to the secret store in Vault where the DAPS certificate and key can be found.
-
-_Example: /v1/team-name_
-
-==== <daps-certificate-name>
-The name of the DAPS certificate in the Vault.
-
-_Example: irs-daps-certificate_
-
-==== <daps-privatekey-name>
-The name of the DAPS private key in the Vault.
-
-_Example: irs-daps-private-key_
-
-==== <daps-client-id>
-The DAPS client ID.
-
-==== <daps-jwks-url>
-The URL of the DAPS JWK Set.
-
-_Example: https://daps-hostname/.well-known/jwks.json_
-
-==== <daps-token-url>
-The URL of the DAPS token API.
-
-_Example: https://daps-hostname/token_
+== EDC consumer configuration
+If you want to provide your own EDC consumer, add the EDC Helm Chart as dependency to your Chart.yaml. The helm chart and documentation can be found here: https://github.com/eclipse-tractusx/tractusx-edc/tree/main/charts/tractusx-connector[tractusx-connector]
 
 == Secrets
 This is a list of all secrets used in the deployment.
 
 WARNING: Keep the values for these settings safe and do not publish them!
-
-=== <postgres-admin-password>
-Database password for the *postgres* user. To be defined by you.
-
-=== <postgres-password>
-Database password for the application user (default username: *edc*). To be defined by you.
 
 === <keycloak-client-id>
 Client ID for Keycloak. Request this from your Keycloak operator.

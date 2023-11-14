@@ -1,0 +1,98 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/object1691069539.json",
+  "title": "Root",
+  "type": "object",
+  "required": [
+    "catenaXId",
+    "childParts"
+  ],
+  "properties": {
+    "catenaXId": {
+      "$id": "#root/catenaXId",
+      "title": "Catenaxid",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "urn:uuid:a1fa0f85-697d-4c9d-982f-2501af8e8636"
+      ],
+      "pattern": "^.*$"
+    },
+    "childParts": {
+      "$id": "#root/childParts",
+      "title": "Childparts",
+      "type": "array",
+      "default": [],
+      "items": {
+        "$id": "#root/childParts/items",
+        "title": "Items",
+        "type": "object",
+        "required": [
+          "catenaXId",
+          "references"
+        ],
+        "properties": {
+          "catenaXId": {
+            "$id": "#root/childParts/items/catenaXId",
+            "title": "Catenaxid",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "urn:uuid:f7a5885a-05f0-4418-bff9-f904847ef6cd"
+            ],
+            "pattern": "^.*$"
+          },
+          "references": {
+            "$id": "#root/childParts/items/references",
+            "title": "References",
+            "type": "array",
+            "default": [],
+            "items": {
+              "$id": "#root/childParts/items/references/items",
+              "title": "Items",
+              "type": "object",
+              "required": [
+                "semanticModelUrn",
+                "hash",
+                "signature"
+              ],
+              "properties": {
+                "semanticModelUrn": {
+                  "$id": "#root/childParts/items/references/items/semanticModelUrn",
+                  "title": "Semanticmodelurn",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "urn:bamm:io.catenax.single_level_usage_as_built:1.0.1#SingleLevelUsageAsBuilt"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "hash": {
+                  "$id": "#root/childParts/items/references/items/hash",
+                  "title": "Hash",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "348aa5b2a7288674b3e35265fe3d2d0885973708335155e73a29a7e883db8e1e"
+                  ],
+                  "pattern": "^.*$"
+                },
+                "signature": {
+                  "$id": "#root/childParts/items/references/items/signature",
+                  "title": "Signature",
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "3ba9c8cd2c39292f315cce2564fa8cc477d1accb685a4056053d97c8e204da904c9c7ae041498f75d8076e9f22ec5039c5a59f767b2a333d393200257696a64c35e1435f6cfdd4045fcf8d31f666fac663a9f9c6345cb22bb0aac0700b761f62ce0e27e0d8648f7205fd149cac19d6bb7fc409579b32c6494a91f10fcf60db3af49eb493fa020eeb2aac4929cb4b6aa3c384ec1744aaf854af30dc184bf3bf3376944f3aaea0ae9a2d3a7e78c3d03c6f2dfc4fb4582e805b5da450d93a832b4b2c8047acae14450b275cbda5869a2c1c1994107e964b7914165c2fb5c02c3129b84e20c82feffbee4b2976a39144816a1495f55b326b96e257fe29f5a611faae"
+                  ],
+                  "pattern": "^.*$"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

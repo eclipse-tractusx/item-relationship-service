@@ -1,0 +1,71 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+
+autonumber "<b>[000]"
+
+participant "IRS" as IRS
+participant "Discovery Finder" as DCF
+participant "EDC Discovery Finder" as EDCDF
+participant "EDC Consumer" as CONSUMER_EDC
+participant "EDC Provider" as PROVIDER_EDC
+participant "Decentral Twin Registry" as DTR
+
+IRS -> DCF: POST /api/administration/connectors/search {"types":"bpn"}
+IRS <-- DCF: array of endpoints
+note left
+    In case of error.
+    Retry counter: Repeat call 3 times.
+    If call not succeed create a tombstone.
+end note
+loop for each $endpoints
+    IRS -> EDCDF : POST /api/administration/connectory/discovery {"BPNL":"urn:..."}
+
+         IRS <-- EDCDF : array of connectorEndpoints
+
+         loop for each $connectorEndpoints
+             IRS -> CONSUMER_EDC: Request Contract Offers {filter": "asset:prop:type=data.core.digitalTwinRegistry"}
+             note left
+                GET /api/v1/management/catalog
+             end note
+             IRS <-- CONSUMER_EDC: Contract Offers
+             IRS -> CONSUMER_EDC: Negotiate Contract for Offers
+             IRS <-- CONSUMER_EDC: Contract Negotiation (Contract Agreement ID))
+             IRS -> CONSUMER_EDC: Initiate Transfer with Agreement ID
+             IRS <-- CONSUMER_EDC: Transfer Process ID
+             CONSUMER_EDC -> PROVIDER_EDC: IDS Data Transfer
+             CONSUMER_EDC <-- PROVIDER_EDC: Data Plane Endpoint + Token
+             note left
+                  Token contains baseUrl to aas registry
+             end note
+             IRS <-- CONSUMER_EDC : Data Plane Endpoint + Token
+             IRS --> CONSUMER_EDC: Lookup Shells
+             note left
+                GET /api/public/lookup/shells/{globalAssetId}
+                Header: Token
+                Parameter: globalAssetId
+             end note
+             IRS <-- CONSUMER_EDC: aas identifier for globalAssetId (urn:uuid)
+             IRS -> CONSUMER_EDC: GET aas shell by identifier
+             note left
+                GET  /api/public/registry/shell-descriptors/{identifier}
+                Header: Token
+             end note
+            CONSUMER_EDC -> DTR : GET aas shell by identifier
+            CONSUMER_EDC <-- DTR: aas payload
+            IRS <-- CONSUMER_EDC: aas payload for identifier
+
+         end loop
+
+
+
+end loop
+
+
+
+
+
+
+@enduml

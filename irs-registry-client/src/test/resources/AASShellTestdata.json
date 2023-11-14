@@ -1,0 +1,50 @@
+{
+  "description": [
+    {
+      "language": "en",
+      "text": ""
+    }
+  ],
+  "globalAssetId": "urn:uuid:fb774862-44f8-44fd-a794-7368a9038d38",
+  "idShort": "",
+  "id": "urn:uuid:fb774862-44f8-44fd-a794-7368a9038d38",
+  "specificAssetIds": [
+    {
+      "value": "BPNLTIERAZZ",
+      "name": "ManufacturerID"
+    },
+    {
+      "value": "1O222E8-43",
+      "name": "ManufacturerPartID"
+    },
+    {
+      "value": "NO-612632984474248940327249",
+      "name": "PartInstanceID"
+    }
+  ],
+  "submodelDescriptors": [
+    {
+      "id": "urn:uuid:53125dc3-5e6f-4f4b-838d-447432b97918",
+      "idShort": "serialPartTypization",
+      "semanticId": {
+        "type": "ModelReference",
+        "keys": [
+          {
+            "type": "Submodel",
+            "value": "urn:bamm:com.catenax.serial_part_typization:1.0.0"
+          }
+        ]
+      },
+      "endpoints": [
+        {
+          "interface": "EDC",
+          "protocolInformation": {
+            "href": "http://provider.connector:port/<BPN>/urn%3Auuid%3Afb774862-44f8-44fd-a794-7368a9038d38-urn%3Auuid%3A53125dc3-5e6f-4f4b-838d-447432b97918/submodel?content=value&extent=WithBLOBValue",
+            "endpointProtocol": "IDS/ECLIPSE DATASPACE CONNECTOR",
+            "endpointProtocolVersion": ["0.0.1-SNAPSHOT"]
+          }
+        }
+      ]
+    }
+  ]
+}

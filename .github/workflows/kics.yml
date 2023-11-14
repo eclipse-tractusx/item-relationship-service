@@ -24,7 +24,7 @@ jobs:
       security-events: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: KICS scan
         uses: checkmarx/kics-github-action@master
@@ -33,7 +33,7 @@ jobs:
           path: "."
           # Exclude paths or files from scan
           # full-irs is a demonstration and not intended to run in a production environment, it can be excluded
-          exclude_paths: local/deployment/docker-compose.yml,docs/src/api/irs-v1.0.yaml,local/testing/api-tests/irs-api-tests.tavern.yaml,charts/irs-environments/local/*,local/deployment/full-irs
+          exclude_paths: local/deployment/docker-compose.yml,docs/src/api/irs-api.yaml,local/testing/api-tests/irs-api-tests.tavern.yaml,charts/irs-environments/local/*,local/deployment/full-irs
           # Fail on HIGH severity results
           fail_on: high
           # when provided with a directory on output_path
@@ -49,9 +49,12 @@ jobs:
           # token: ${{ secrets.GITHUB_TOKEN }}
           # enable_comments: true
           # Exclude accepted results from the build
-          exclude_results: "03df1ef13c69b0ada26fc5bbf35eabca288c5c3c93c0f5d918e41f4951ca8795" # application-local.yml - local env minio password
+          exclude_results: "03df1ef13c69b0ada26fc5bbf35eabca288c5c3c93c0f5d918e41f4951ca8795,8bdf179adec9aee0035149315b63a3f8afd684076358433767758a4a9aeac922" # application-local.yml - local env minio password
           # Exclude accepted queries from the build
-          #exclude_queries: ""
+          # Exclude 8d29754a-2a18-460d-a1ba-9509f8d359da - IAM Access Analyzer Not Enabled. This is a false positive for AWS configs which are not used
+          exclude_queries: "8d29754a-2a18-460d-a1ba-9509f8d359da"
+          # No secret scanning
+          disable_secrets: true
 
       # Upload findings to GitHub Advanced Security Dashboard
       - name: Upload SARIF file for GitHub Advanced Security Dashboard

@@ -1,10 +1,14 @@
 {
+	"key":
+	{
+		"globalAssetId": "urn:uuid:ed333e9a-5afa-40b2-99da-bae2fd21501e",
+		"bpn": "BPNL00000003AVTH"
+	},
 	"bomLifecycle": "asBuilt",
 	"aspects": [
-		"AssemblyPartRelationship"
+		"SingleLevelBomAsBuilt"
 	],
 	"depth": 10,
 	"direction": "downward",
-	"collectAspects": true,
-	"globalAssetId": "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6"
+	"collectAspects": true
 }

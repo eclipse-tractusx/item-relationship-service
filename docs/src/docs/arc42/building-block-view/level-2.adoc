@@ -63,6 +63,7 @@ include::../../../uml-diagrams/building-block-view/level-2-int-recursive-job-han
 |Interface for storing data blobs.
 |===
 
+
 == TransferProcessManagement
 
 The TransferProcessManager creates executions and provides them to the executor service. Each execution contains HTTP requests to the asset administration shell registry and to the submodel interface.
@@ -85,7 +86,7 @@ include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-
 |The DigitalTwinRegistryFacade calls the DigitalTwinRegistry to retrieve data form the AAS registry and transforms the response to internal data models.
 
 |SubmodelFacade
-|The SubmodelFacade calls the EDC to retrieve data from the submodel server and transforms the response to internal data models.
+|The SubmodelFacade handles EDC contract negotiations and is responsible for the EDC dataplane requests to retrieve data from the submodel servers.
 
 |BlobStore
 |The BlobStore is the database where the relationships and tombstones are stored for a requested item.
@@ -95,4 +96,33 @@ include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-
 
 |ExecutorService
 |The ExecutorService enables the simultaneous execution of requests of transfer processes.
+|===
+
+== ESS controller
+
+The ESS REST controller is used to provide a RESTful web service to related Environmental and Social Standards functionalities.
+
+=== Component diagram
+
+[plantuml, target=level-2-ess-controller, format=svg]
+....
+include::../../../uml-diagrams/building-block-view/level-2-int-ess.puml[]
+....
+
+=== Component description
+
+|===
+|Components |Description
+
+|EssService
+|Service contains business logic for investigation if part is inside supply chain.
+
+|IrsItemGraphQueryService
+|Service for retrieving item graph.
+
+|BpnInvestigationJobCache
+|Interface for storing incident data blobs.
+
+|EssRecursiveNotificationHandler
+|Business logic handling recursive investigation and results calculation. Responsible for sending and receiving EDC notifications.
 |===

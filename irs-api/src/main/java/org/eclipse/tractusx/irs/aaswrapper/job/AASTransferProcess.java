@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -29,6 +30,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 
 /**
@@ -40,12 +42,12 @@ import org.eclipse.tractusx.irs.connector.job.TransferProcess;
 @ToString
 public class AASTransferProcess implements TransferProcess {
 
-    private final List<String> idsToProcess = new ArrayList<>();
+    private final List<PartChainIdentificationKey> idsToProcess = new ArrayList<>();
     @SuppressWarnings("PMD.ShortVariable")
     private String id;
     private Integer depth;
 
-    public void addIdsToProcess(final List<String> childIds) {
+    public void addIdsToProcess(final List<PartChainIdentificationKey> childIds) {
         idsToProcess.addAll(childIds);
     }
 

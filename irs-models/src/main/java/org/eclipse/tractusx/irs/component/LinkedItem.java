@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -46,13 +47,13 @@ public class LinkedItem {
     private Quantity quantity;
 
     @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.",
-            implementation = BomLifecycle.class)
+            implementation = BomLifecycle.class, example = "asBuilt")
     private BomLifecycle lifecycleContext;
 
-    @Schema(description = "Datetime of assembly.", implementation = ZonedDateTime.class)
+    @Schema(description = "Datetime of assembly.", implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
     private ZonedDateTime assembledOn;
 
-    @Schema(description = "Last datetime item was modified.", implementation = ZonedDateTime.class)
+    @Schema(description = "Last datetime item was modified.", implementation = ZonedDateTime.class, example = "2022-02-03T14:48:54.709Z")
     private ZonedDateTime lastModifiedOn;
 
     @Schema(implementation = String.class, description = "CatenaX child global asset id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",

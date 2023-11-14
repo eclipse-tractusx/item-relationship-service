@@ -51,33 +51,30 @@ An example policy can look like this:
 {
   "policies": {
     "ID 3.0 Trace": {
-      "id": "id-3.0-trace",
-      "policy": {
-        "prohibitions": [],
-        "obligations": [],
-        "permissions": [
-          {
-            "edctype": "dataspaceconnector:permission",
-            "action": {
-              "type": "USE"
-            },
-            "constraints": [
-              {
-                "edctype": "AtomicConstraint",
-                "leftExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "idsc:PURPOSE"
-                },
-                "rightExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "ID 3.0 Trace"
-                },
-                "operator": "EQ"
-              }
-            ]
-          }
-        ]
-      }
+       "@context": {
+          "odrl": "http://www.w3.org/ns/odrl/2/"
+       },
+       "@type": "PolicyDefinitionRequestDto",
+       "@id": "id-3.0-trace",
+       "policy": {
+          "@type": "Policy",
+          "odrl:permission": [
+             {
+                "odrl:action": "USE",
+                "odrl:constraint": {
+                   "@type": "AtomicConstraint",
+                   "odrl:or": [
+                      {
+                         "@type": "Constraint",
+                         "odrl:leftOperand": "idsc:PURPOSE",
+                         "odrl:operator": "EQ",
+                         "odrl:rightOperand": "ID 3.0 Trace"
+                      }
+                   ]
+                }
+             }
+          ]
+       }
     }
   },
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
@@ -143,8 +140,17 @@ twin with this BPN will be created with an invalid endpointAddress.
 the testdata file and pass the id with this parameter. If nothing is provided, the default policy will be empty with the
 id "default-policy".
 
-**-bpns, --bpns <[BPNS ...] >**  
+**-bpns, --bpns <[BPN ...] >**  
 (Optional) A list of BPNs Filter upload to upload only specific BPNs
+
+**-d, --dataplane <[URL ...] >**  
+(Optional) If specified, these public dataplane URLs will be displayed in the digital twin in attribute 'href'
+
+**--aas3 <[BPN ...] >**  
+(Optional) Flag to create AAS assets according to version 3.0.1
+
+**--allowedBPNs <[BPN ...] >**  
+(Optional) (Required for --aas3) A list of allowed BPNs which will be added to the specificAssetIds when creating DTR assets
 
 **-h, --help**  
 Usage help. This lists all current command line options with a short description.

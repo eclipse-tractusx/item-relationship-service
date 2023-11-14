@@ -6,8 +6,8 @@
                 "quantity": {
                     "quantityNumber": 1.0,
                     "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -23,8 +23,8 @@
                 "quantity": {
                     "quantityNumber": 1.0,
                     "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -35,36 +35,19 @@
             "aspectType": "SingleLevelBomAsPlanned"
         },
         {
-            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+            "catenaXId": "urn:uuid:68904173-ad59-4a77-8412-3e73fcafbd8b",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 1.0,
                     "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
                     }
                 },
                 "lifecycleContext": "asPlanned",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc"
-            },
-            "aspectType": "SingleLevelBomAsPlanned"
-        },
-        {
-            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.3301,
-                    "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asPlanned",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301"
+                "childCatenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8"
             },
             "aspectType": "SingleLevelBomAsPlanned"
         },
@@ -74,8 +57,8 @@
                 "quantity": {
                     "quantityNumber": 1.0,
                     "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -91,8 +74,59 @@
                 "quantity": {
                     "quantityNumber": 1.0,
                     "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc"
+            },
+            "aspectType": "SingleLevelBomAsPlanned"
+        },
+        {
+            "catenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 1580.0,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:gram"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:94d086c6-0124-4f2c-86b2-1d419e47499d"
+            },
+            "aspectType": "SingleLevelBomAsPlanned"
+        },
+        {
+            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 0.3301,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:kilogram"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301"
+            },
+            "aspectType": "SingleLevelBomAsPlanned"
+        },
+        {
+            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 1.0,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -108,14 +142,31 @@
                 "quantity": {
                     "quantityNumber": 1.0,
                     "measurementUnit": {
-                        "datatypeURI": "urn:bamm:io.openmanufacturing:meta-model:1.0.0#curie",
-                        "lexicalValue": "unit:piece"
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
                     }
                 },
                 "lifecycleContext": "asPlanned",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
                 "childCatenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e"
+            },
+            "aspectType": "SingleLevelBomAsPlanned"
+        },
+        {
+            "catenaXId": "urn:uuid:94d086c6-0124-4f2c-86b2-1d419e47499d",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 1.0,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:litre"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:b0926d3c-6a8f-4fc7-81a4-88c50817358a"
             },
             "aspectType": "SingleLevelBomAsPlanned"
         }

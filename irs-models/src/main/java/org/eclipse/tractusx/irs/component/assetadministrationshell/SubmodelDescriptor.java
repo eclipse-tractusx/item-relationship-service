@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -36,6 +37,7 @@ import lombok.extern.jackson.Jacksonized;
 @Data
 @Builder
 @Jacksonized
+@SuppressWarnings("PMD.ShortVariable")
 public class SubmodelDescriptor {
 
     /**
@@ -54,7 +56,7 @@ public class SubmodelDescriptor {
     /**
      * identification
      */
-    private String identification;
+    private String id;
     /**
      * semanticId
      */
@@ -70,7 +72,7 @@ public class SubmodelDescriptor {
      */
     @JsonIgnore
     public String getAspectType() {
-        return this.getSemanticId().getValue().stream().findFirst().orElse(null);
+        return this.getSemanticId().getKeys().stream().findFirst().map(SemanticId::getValue).orElse(null);
     }
 
 }

@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.common.JsonParseException;
+import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import net.jimblackler.jsonschemafriend.GenerationException;
 import net.jimblackler.jsonschemafriend.Schema;

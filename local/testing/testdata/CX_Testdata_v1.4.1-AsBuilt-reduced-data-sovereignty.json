@@ -1,163 +1,154 @@
 {
   "policies": {
     "ID 3.0 Trace": {
-      "id": "id-3.0-trace",
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "id-3.0-trace",
       "policy": {
-        "prohibitions": [],
-        "obligations": [],
-        "permissions": [
+        "@type": "Policy",
+        "odrl:permission": [
           {
-            "edctype": "dataspaceconnector:permission",
-            "action": {
-              "type": "USE"
-            },
-            "constraints": [
-              {
-                "edctype": "AtomicConstraint",
-                "leftExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "idsc:PURPOSE"
-                },
-                "rightExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "ID 3.0 Trace"
-                },
-                "operator": "EQ"
-              }
-            ]
+            "odrl:action": "USE",
+            "odrl:constraint": {
+              "@type": "AtomicConstraint",
+              "odrl:or": [
+                {
+                  "@type": "Constraint",
+                  "odrl:leftOperand": "idsc:PURPOSE",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "ID 3.0 Trace"
+                }
+              ]
+            }
           }
         ]
       }
     },
     "ID 3.1 Trace": {
-      "id": "id-3.1-trace",
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "id-3.1-trace",
       "policy": {
-        "prohibitions": [],
-        "obligations": [],
-        "permissions": [
+        "@type": "Policy",
+        "odrl:permission": [
           {
-            "edctype": "dataspaceconnector:permission",
-            "action": {
-              "type": "USE"
-            },
-            "constraints": [
-              {
-                "edctype": "AtomicConstraint",
-                "leftExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "idsc:PURPOSE"
-                },
-                "rightExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "ID 3.1 Trace"
-                },
-                "operator": "EQ"
-              }
-            ]
+            "odrl:action": "USE",
+            "odrl:constraint": {
+              "@type": "AtomicConstraint",
+              "odrl:or": [
+                {
+                  "@type": "Constraint",
+                  "odrl:leftOperand": "idsc:PURPOSE",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "ID 3.1 Trace"
+                }
+              ]
+            }
           }
         ]
       }
     },
     "R2_Traceability": {
-      "id": "r2_traceability",
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "r2_traceability",
       "policy": {
-        "prohibitions": [],
-        "obligations": [],
-        "permissions": [
+        "@type": "Policy",
+        "odrl:permission": [
           {
-            "edctype": "dataspaceconnector:permission",
-            "action": {
-              "type": "USE"
-            },
-            "constraints": [
-              {
-                "edctype": "AtomicConstraint",
-                "leftExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "idsc:PURPOSE"
-                },
-                "rightExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "R2_Traceability"
-                },
-                "operator": "EQ"
-              }
-            ]
+            "odrl:action": "USE",
+            "odrl:constraint": {
+              "@type": "AtomicConstraint",
+              "odrl:or": [
+                {
+                  "@type": "Constraint",
+                  "odrl:leftOperand": "idsc:PURPOSE",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "R2_Traceability"
+                }
+              ]
+            }
           }
         ]
       }
     },
     "invalid1": {
-      "id": "invalid1",
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "invalid1",
       "policy": {
-        "prohibitions": [],
-        "obligations": [],
-        "permissions": [
+        "@type": "Policy",
+        "odrl:permission": [
           {
-            "edctype": "dataspaceconnector:permission",
-            "action": {
-              "type": "USE"
-            },
-            "constraints": [
-              {
-                "edctype": "AtomicConstraint",
-                "leftExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "idsc:PURPOSE"
-                },
-                "rightExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "invalid1"
-                },
-                "operator": "EQ"
-              }
-            ]
+            "odrl:action": "USE",
+            "odrl:constraint": {
+              "@type": "AtomicConstraint",
+              "odrl:or": [
+                {
+                  "@type": "Constraint",
+                  "odrl:leftOperand": "idsc:PURPOSE",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "invalid1"
+                }
+              ]
+            }
           }
         ]
       }
     },
     "invalid2": {
-      "id": "invalid2",
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "invalid2",
       "policy": {
-        "prohibitions": [],
-        "obligations": [],
-        "permissions": [
+        "@type": "Policy",
+        "odrl:permission": [
           {
-            "edctype": "dataspaceconnector:permission",
-            "action": {
-              "type": "USE"
-            },
-            "constraints": [
-              {
-                "edctype": "AtomicConstraint",
-                "leftExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "idsc:PURPOSE"
-                },
-                "rightExpression": {
-                  "edctype": "dataspaceconnector:literalexpression",
-                  "value": "invalid2"
-                },
-                "operator": "EQ"
-              }
-            ]
+            "odrl:action": "USE",
+            "odrl:constraint": {
+              "@type": "AtomicConstraint",
+              "odrl:or": [
+                {
+                  "@type": "Constraint",
+                  "odrl:leftOperand": "idsc:PURPOSE",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "invalid2"
+                }
+              ]
+            }
           }
         ]
       }
     },
     "default": {
-      "id": "default-policy",
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "default-policy",
       "policy": {
-        "prohibitions": [],
-        "obligations": [],
-        "permissions": [
-          {
-            "edctype": "dataspaceconnector:permission",
-            "action": {
-              "type": "USE"
-            }
-          }
-        ]
+        "@type": "Policy",
+        "odrl:permission": []
       }
     }
   },

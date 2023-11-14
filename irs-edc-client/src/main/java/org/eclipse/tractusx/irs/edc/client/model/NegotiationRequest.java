@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,9 +23,15 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 
 /**
  * EDC negotiation request.
@@ -33,10 +40,27 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class NegotiationRequest {
+    public static final String NEGOTIATION_CONNECTOR_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/connectorAddress";
+    public static final String NEGOTIATION_PROTOCOL = "https://w3id.org/edc/v0.0.1/ns/protocol";
+    public static final String NEGOTIATION_CONNECTOR_ID = "https://w3id.org/edc/v0.0.1/ns/connectorId";
+    public static final String NEGOTIATION_PROVIDER_ID = "https://w3id.org/edc/v0.0.1/ns/providerId";
+    public static final String NEGOTIATION_CONSUMER_ID = "https://w3id.org/edc/v0.0.1/ns/consumerId";
+    public static final String NEGOTIATION_OFFER = "https://w3id.org/edc/v0.0.1/ns/offer";
+    public static final String NEGOTIATION_CALLBACK_ADDRESSES = "https://w3id.org/edc/v0.0.1/ns/callbackAddresses";
+    public static final String NEGOTIATION_OFFER_ID = "https://w3id.org/edc/v0.0.1/ns/offerId";
+    public static final String NEGOTIATION_ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
+    public static final String NEGOTIATION_POLICY = "https://w3id.org/edc/v0.0.1/ns/policy";
 
-    private String connectorId;
+    @NotBlank(message = "connectorAddress is mandatory")
     private String connectorAddress;
-    private ContractOfferRequest offer;
-
-
+    @NotBlank(message = "protocol is mandatory")
+    private String protocol;
+    @NotBlank(message = "connectorId is mandatory")
+    private String connectorId;
+    @NotNull(message = "offer cannot be null")
+    private ContractOfferDescription offer;
+    private String providerId;
+    private String consumerId;
+    private List<CallbackAddress> callbackAddresses = new ArrayList<>();
 }
+

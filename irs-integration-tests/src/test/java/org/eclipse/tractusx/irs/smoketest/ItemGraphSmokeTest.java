@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -67,7 +68,7 @@ class ItemGraphSmokeTest {
 
     private static final String GLOBAL_ASSET_ID = "urn:uuid:5e3e9060-ba73-4d5d-a6c8-dfd5123f4d99";
     private static final int TREE_DEPTH = 2;
-    private static final List<String> ASPECTS = List.of(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
+    private static final List<String> ASPECTS = List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
     private static RequestSpecification authenticationRequest;
 
     private static RegisterJob registerJob() {

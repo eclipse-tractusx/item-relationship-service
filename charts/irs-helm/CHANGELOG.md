@@ -5,11 +5,138 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [6.9.1]
+### Changed
+- Update IRS version to 4.0.1
+
+## [6.9.0]
+### Changed
+- Update IRS version to 4.0.0
+
+### Added
+- Added configuration for IRS OAuth2 JWT token claim
+
+## [6.8.1] - 2023-10-25
+### Changed
+- Update IRS version to 3.5.4
+
+## [6.8.0] - 2023-10-09
+### Changed
+- Update IRS version to 3.5.3
+- Changed configuration for default policies from:
+  ```
+  edc:
+    catalog:
+      policies:
+        allowedNames: A, B
+        acceptedLeftOperands: X
+        acceptedRightOperands: Y
+  ```
+  to:
+  ```
+  edc:
+    catalog:
+      acceptedPolicies:
+      - leftOperand: "X"
+        operator: "eq"
+        rightOperand: "A"
+      - leftOperand: "B"
+        operator: "eq"
+        rightOperand: Y"
+  ```
+
+## [6.7.3] - 2023-10-06
+### Changed
+- Update IRS version to 3.5.2
+
+## [6.7.2] - 2023-10-05
+### Changed
+- Update IRS version to 3.5.1
+
+## [6.7.1] - 2023-09-29
+### Changed
+- Added toString template for `edc.controlplane.apikey.secret`
+
+## [6.7.0] - 2023-09-28
+### Changed
+- Update IRS version to 3.5.0
+
+### Removed
+- Removed unused configuration parameters `edc.submodel.path`,`discovery.endpoint`, `discovery.mockEdcAddres`
+
+## [6.6.1] - 2023-09-22
+### Changed
+- Update IRS version to 3.4.1
+
+## [6.6.0] - 2023-09-01
+### Changed
+- Update IRS version to 3.4.0
+
+## [6.5.0] - 2023-08-30
+### Added
+- Added configurable values for `digitalTwinRegistry.shellDescriptorTemplate` and `digitalTwinRegistry.lookupShellsTemplate`
+
+### Changed
+- Update IRS version to 3.3.5
+
+## [6.4.2] - 2023-08-11
+### Added
+- Added entry to .helmignore to only accept values.yaml
+
+### Changed
+- Update IRS version to 3.3.4
+ 
+## [6.4.1] - 2023-08-11
+### Changed
+- Update IRS version to 3.3.3
+
+## [6.4.0] - 2023-07-31
+### Added
+- New option to configure accepted operands for policy checks via `edc.catalog.policies.acceptedRightOperands` and `edc.catalog.policies.acceptedLeftOperands`
+
+### Changed
+- Update IRS version to 3.3.2
+
+## [6.3.1] - 2023-07-24
+### Changed
+- Update IRS version to 3.3.1
+
+## [6.3.0] - 2023-07-20
+### Changed
+- Update IRS version to 3.3.0
+
+## [6.2.1] - 2023-07-19
+### Changed
+- Update IRS version to 3.2.1
+- Removed path segment `/registry` from default template for `digitalTwinRegistry.descriptorEndpoint` 
+
+## [6.2.0] - 2023-07-14
+### Changed
+- Update IRS version to 3.2.0
+
+## [6.1.0] - 2023-07-07
+### Changed
+- Remove EDC Catalog cache configuration
+
+### Added
+- New configuration for ess asset creation EDC management API path `ess.managementPath`
+
+## [6.0.1] - 2023-06-26
+### Changed
+- Update IRS to version 3.0.1
+- Disable EDC Catalog caching by default. You can enable it again by setting `edc.catalog.cache.enabled` to true
+
+## [6.0.0] - 2023-06-26
 ### Added
 - Add parameter for `digitalTwinRegistry.type` and `digitalTwinRegistry.discoveryFinderUrl`
+- Added new configmap values for policy store blobstore connection
+- Callback url parameter so set the EDC EDR callback for IRS `edc.callbackurl`
+- EDC endpoints for catalog, contractnegotiation, transferprocess and state are now configurable via edc.controlplane.endpoint 
 
 ### Changed
 - Minio is deployed by default with non-root rights
+- Update to IRS 3.0.0
 
 ## [5.3.1] - 2023-05-15
 ### Fixed

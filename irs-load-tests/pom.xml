@@ -17,9 +17,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.gatling.highcharts</groupId>
-            <artifactId>gatling-charts-highcharts</artifactId>
-            <version>3.9.2</version>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-app</artifactId>
+            <version>${gatling.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -29,7 +29,10 @@
             <plugin>
                 <groupId>io.gatling</groupId>
                 <artifactId>gatling-maven-plugin</artifactId>
-                <version>4.3.0</version>
+                <version>${gatling-maven-plugin.version}</version>
+                <configuration>
+                    <noReports>true</noReports>
+                </configuration>
             </plugin>
         </plugins>
     </build>

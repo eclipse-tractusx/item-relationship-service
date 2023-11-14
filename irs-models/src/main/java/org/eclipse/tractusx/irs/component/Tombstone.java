@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -44,8 +45,8 @@ public class Tombstone {
     public static final int CATENA_X_ID_LENGTH = 45;
 
     @Schema(description = "CATENA-X global asset id in the format urn:uuid:uuid4.",
-            example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = CATENA_X_ID_LENGTH, maxLength = CATENA_X_ID_LENGTH,
+            example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = CATENA_X_ID_LENGTH,
+            maxLength = CATENA_X_ID_LENGTH,
             pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     private final String catenaXId;
     private final String endpointURL;
@@ -53,11 +54,17 @@ public class Tombstone {
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep) {
+        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep);
+    }
+
+    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
+            final int retryCount, final ProcessStep processStep) {
+
         final ProcessingError processingError = ProcessingError.builder()
                                                                .withProcessStep(processStep)
                                                                .withRetryCounter(retryCount)
                                                                .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                                               .withErrorDetail(exception.getMessage())
+                                                               .withErrorDetail(errorDetails)
                                                                .build();
         return Tombstone.builder()
                         .endpointURL(endpointURL)

@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -23,6 +24,7 @@
 package org.eclipse.tractusx.irs.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -32,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.common.JsonParseException;
+import org.eclipse.tractusx.irs.data.JsonParseException;
 
 /**
  * JSON object mapper.
@@ -54,6 +56,7 @@ public class JsonUtil {
         MAPPER.registerModule(new Jdk8Module());
         MAPPER.registerModule(new JavaTimeModule());
         MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /**

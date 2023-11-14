@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.tractusx.irs</groupId>
+        <artifactId>irs-parent-spring-boot</artifactId>
+        <version>${revision}</version>
+        <relativePath>../irs-parent-spring-boot</relativePath>
+    </parent>
+
+    <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-tractusx/item-relationship-service.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git
+        </developerConnection>
+        <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    </scm>
+
+    <artifactId>irs-registry-client</artifactId>
+    <name>Digital Twin Registry Client</name>
+    <version>${irs-registry-client.version}</version>
+    <description>Client library to easily talk to the DTR</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-edc-client</artifactId>
+            <version>${irs-registry-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-models</artifactId>
+            <version>${irs-registry-client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-annotations</artifactId>
+            <version>${resilience4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-testing</artifactId>
+            <version>${irs-registry-client.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -28,7 +29,9 @@ import java.time.Duration;
 import java.util.List;
 
 import org.eclipse.tractusx.irs.common.ApiConstants;
+import org.eclipse.tractusx.irs.configuration.converter.IrsTokenParser;
 import org.eclipse.tractusx.irs.configuration.converter.JwtAuthenticationConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -37,7 +40,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.PermissionsPolicyHeaderWriter;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -67,10 +74,13 @@ public class SecurityConfiguration {
         "/ess/notification/receive-recursive"
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
+    private static final String ONLY_SELF_SCRIPT_SRC = "script-src 'self'";
+    private static final String PERMISSION_POLICY = "microphone=(), geolocation=(), camera=()";
 
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
-    /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
+    /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity,
+            final JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
@@ -87,7 +97,12 @@ public class SecurityConfiguration {
         httpSecurity.headers(headers -> headers.xssProtection(xXssConfig ->
                 xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
 
+        httpSecurity.headers(headers -> headers.addHeaderWriter(new ContentSecurityPolicyHeaderWriter(ONLY_SELF_SCRIPT_SRC)));
+
         httpSecurity.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+        httpSecurity.headers(headers -> headers.addHeaderWriter(new ReferrerPolicyHeaderWriter(
+                ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)));
+        httpSecurity.headers(headers -> headers.addHeaderWriter(new PermissionsPolicyHeaderWriter(PERMISSION_POLICY)));
 
         httpSecurity.sessionManagement(sessionManagement -> sessionManagement
                 .sessionCreationPolicy(STATELESS));
@@ -100,7 +115,7 @@ public class SecurityConfiguration {
 
         httpSecurity.oauth2ResourceServer(oauth2ResourceServer ->
                             oauth2ResourceServer.jwt(jwt ->
-                                    jwt.jwtAuthenticationConverter(new JwtAuthenticationConverter())))
+                                    jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
                     .oauth2Client(Customizer.withDefaults());
 
         return httpSecurity.build();
@@ -120,4 +135,15 @@ public class SecurityConfiguration {
         return source;
     }
 
+    @Bean
+    /* package */ IrsTokenParser irsTokenParser(@Value("${oauth.resourceClaim}") final String resourceAccessClaim,
+            @Value("${oauth.irsNamespace}") final String irsResourceAccess,
+            @Value("${oauth.roles}") final String roles) {
+        return new IrsTokenParser(resourceAccessClaim, irsResourceAccess, roles);
+    }
+
+    @Bean
+    /* package */ JwtAuthenticationConverter jwtAuthenticationConverter(final IrsTokenParser irsTokenParser) {
+        return new JwtAuthenticationConverter(new JwtGrantedAuthoritiesConverter(), irsTokenParser);
+    }
 }

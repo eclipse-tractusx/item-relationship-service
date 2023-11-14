@@ -1,20 +1,20 @@
 @startuml
 skinparam monochrome true
 skinparam shadowing false
+skinparam linetype ortho
+skinparam defaultFontName "Architects daughter"
+
 
  component [**IRS-Application**] <<System>> as IRS {
     component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
     component [**IrsController**] <<Component>> as IrsController
+    component [**PolicyStoreController**] <<Component>> as PolicyStoreController
+    component [**EssController**] <<Component>> as EssController
     component [**JobOrchestrator**] <<Component>> as JobOrchestrator
-    component [**TransferProcessManagment**] <<Component>> as TransferProcessManagement
+    component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement
 
 
-    'component [**AASClient**] <<Subsystem>> as AASClient
-    'component [**AASFacade**] <<Subsystem>> as AASFacade
-    'component [**SubmodelClient**] <<Subsystem>> as SubmodelClient
-    'component [**SubmodelFacade**] <<Subsystem>> as SubmodelFacade ' --> Level2 View
-
-    port "IRS API" as API_PORT
+    port "API" as API_PORT
     port "Digital Twin Client" as AAS_PORT
     port "EDC Client" as EDC_PORT
 
@@ -25,20 +25,27 @@ skinparam shadowing false
     JobOrchestrator <..> TransferProcessManagement
     JobOrchestrator <..> RecursiveJobHandler
     TransferProcessManagement --( StoreInterface
-
+    PolicyStoreController -( StoreInterface
+    EssController <..> JobOrchestrator
 
 }
 component [**Digital Twin Registry**] <<System>> as DTR
 component [**EDC**] <<System>> as EDC
 actor IrsApiConsumer
+actor EssApiConsumer
+actor PolicyStoreApiConsumer
 IrsController -up- API_PORT
+PolicyStoreController -down- API_PORT
+EssController -down- API_PORT
 IrsApiConsumer -(0- API_PORT
+EssApiConsumer -(0- API_PORT
+PolicyStoreApiConsumer -(0- API_PORT
 
 
 TransferProcessManagement --- AAS_PORT
 TransferProcessManagement --- EDC_PORT
-AAS_PORT -(0 DTR
-EDC_PORT -(0 EDC
+AAS_PORT --right-(0 DTR
+EDC_PORT --right-(0 EDC
 
 database "BlobStore" as BlobStore
 StoreInterface -down- BlobStore

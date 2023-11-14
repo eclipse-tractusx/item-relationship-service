@@ -1,0 +1,44 @@
+= IRS iterative
+
+This section describes the iterative flow of the IRS
+
+[plantuml, target=overall, format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/api-call-asynchrous-sequence.puml[]
+....
+
+== Submodel
+
+This section describes how the IRS fetches submodel payload.
+
+[plantuml, target=submodel-processing, format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/aas-shell-and submodel-processing.puml[]
+....
+
+== Job orchestration flow
+
+This section describes the job orchestration in IRS.
+
+[plantuml, target=job-orchestration, format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/job-orchestration-sequence.puml[]
+....
+
+== Policy store flow
+
+This section describes the policy store in IRS.
+
+[plantuml, target=policy-store, format=svg]
+....
+include::../../../../uml-diagrams/policy-store/policy-storage-processing.puml[]
+....
+
+== Policy check procedure
+
+This section describes the way IRS is validating policies found in assets.
+
+[plantuml, target=policy-check, format=svg]
+....
+include::../../../../uml-diagrams/policy-store/policy-validation-processing.puml[]
+....

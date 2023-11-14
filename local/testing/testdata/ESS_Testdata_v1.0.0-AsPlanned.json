@@ -1,4 +1,34 @@
 {
+  "policies": {
+    "ID 3.0 Trace": {
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "id-3.0-trace",
+      "policy": {
+        "@type": "Policy",
+        "odrl:permission": [
+          {
+            "odrl:action": "USE",
+            "odrl:constraint": {
+              "@type": "AtomicConstraint",
+              "odrl:or": [
+                {
+                  "@type": "Constraint",
+                  "odrl:leftOperand": "idsc:PURPOSE",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "ID 3.0 Trace"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
     {
       "catenaXId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e",

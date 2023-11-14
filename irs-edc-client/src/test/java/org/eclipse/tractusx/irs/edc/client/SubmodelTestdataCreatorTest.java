@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -42,23 +43,23 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipWithoutChildrenWhenRequestingWithTestId() {
-        final AssemblyPartRelationship dummyAssemblyPartRelationshipForId = submodelTestdataCreator.createSubmodelForId(
-                "test", AssemblyPartRelationship.class);
-        assertThat(dummyAssemblyPartRelationshipForId.getCatenaXId()).isNull();
-        assertThat(dummyAssemblyPartRelationshipForId.getChildParts()).isNull();
+    void shouldReturnSingleLevelBomAsBuiltWithoutChildrenWhenRequestingWithTestId() {
+        final SingleLevelBomAsBuilt dummySingleLevelBomAsBuiltForId = submodelTestdataCreator.createSubmodelForId(
+                "test", SingleLevelBomAsBuilt.class);
+        assertThat(dummySingleLevelBomAsBuiltForId.getCatenaXId()).isNull();
+        assertThat(dummySingleLevelBomAsBuiltForId.getChildItems()).isNull();
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b";
-        final AssemblyPartRelationship assemblyPartRelationship = submodelTestdataCreator.createSubmodelForId(
-                catenaXId + "_assemblyPartRelationship", AssemblyPartRelationship.class);
+    void shouldReturnSingleLevelBomAsBuiltWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
+        final String catenaXId = "urn:uuid:9da45c9a-9052-494c-8328-28e474ee8ae2";
+        final SingleLevelBomAsBuilt singleLevelBomAsBuilt = submodelTestdataCreator.createSubmodelForId(
+                catenaXId + "_singleLevelBomAsBuilt", SingleLevelBomAsBuilt.class);
 
-        final Set<AssemblyPartRelationship.ChildData> childParts = assemblyPartRelationship.getChildParts();
-        assertThat(childParts).hasSize(1);
-        final List<String> childIDs = List.of("urn:uuid:10bba299-87d1-4335-90d5-a48015de7a32");
-        childParts.forEach(childData -> assertThat(childIDs).contains(childData.getChildCatenaXId()));
+        final Set<SingleLevelBomAsBuilt.ChildData> childItems = singleLevelBomAsBuilt.getChildItems();
+        assertThat(childItems).isNotEmpty();
+        final List<String> childIDs = List.of("urn:uuid:abd54850-bd69-434e-b357-d121a9e0874b");
+        childItems.forEach(childData -> assertThat(childIDs).contains(childData.getCatenaXId()));
     }
 
 }

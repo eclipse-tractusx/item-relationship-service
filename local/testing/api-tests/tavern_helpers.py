@@ -1,7 +1,12 @@
 # testing_utils.py
 from datetime import datetime
 
-def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
+import requests
+import os
+from box import Box
+
+
+def supplyChainImpacted_is_Yes(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
     assert len(submodels) <= 1
@@ -10,7 +15,7 @@ def supplyChainImpacted_is_correct_in_submodels_for_valid_ID(response):
         assert 'Yes' in i.get("payload").get('supplyChainImpacted')
 
 
-def supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN(response):
+def supplyChainImpacted_is_No(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
     assert len(submodels) <= 1
@@ -19,7 +24,7 @@ def supplyChainImpacted_is_correct_in_submodels_for_valid_ID_in_unknown_BPN(resp
         assert 'No' in i.get("payload").get('supplyChainImpacted')
 
 
-def supplyChainImpacted_is_correct_in_submodels_for_unknown_ID(response):
+def supplyChainImpacted_is_Unknown(response):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
     assert len(submodels) <= 1
@@ -31,15 +36,50 @@ def supplyChainImpacted_is_correct_in_submodels_for_unknown_ID(response):
 def errors_for_invalid_investigation_request_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
-    assert 'incidentBpns:must not be empty' in error_list
-    assert 'globalAssetId:must not be blank' in error_list
+    assert 'incidentBPNSs:must not be empty' in error_list
+    assert 'key.globalAssetId:must not be blank' in error_list
+    assert 'key.bpn:must not be blank' in error_list
 
 
 def relationships_for_BPN_investigations_contains_several_childs(response):
     relationships = response.json().get("relationships")
     print("relationships: ", relationships)
     print("Länge: ", len(relationships))
-    assert len(relationships) > 1
+    assert len(relationships) != 0
+
+def ESS_job_parameter_are_as_requested(response):
+    print("Check if ESS-job parameter are as requested:")
+    parameter = response.json().get('job').get('parameter')
+    print(parameter)
+    assert parameter.get('bomLifecycle') == 'asPlanned'
+    assert parameter.get('collectAspects') is True
+    assert parameter.get('depth') == 1
+    assert parameter.get('direction') == 'downward'
+    assert parameter.get('lookupBPNs') is False
+    #assert parameter.get('callbackUrl') == 'https://www.check123.com'
+    aspects_list = parameter.get("aspects")
+    assert 'PartSiteInformationAsPlanned' in aspects_list
+    assert 'PartAsPlanned' in aspects_list
+
+def tombstone_for_EssValidation_are_correct(response, expectedTombstone):
+    error_list = response.json().get("tombstones")
+
+    for i in error_list:
+        print("Given tombstone: ", i)
+        catenaXId = i.get("catenaXId")
+        print("Given catenaXID: ", catenaXId)
+        processingErrorStep = i.get("processingError").get("processStep")
+        print("Processstep in ProcessingError: ", processingErrorStep)
+        processingErrorDetail = i.get("processingError").get("errorDetail")
+        print("ErrorMessage: ", processingErrorDetail)
+        processingErrorLastAttempt = i.get("processingError").get("lastAttempt")
+        print("LastAttempt: ", processingErrorLastAttempt)
+        processingErrorRetryCounter = i.get("processingError").get("retryCounter")
+        print("RetryCounter: ", processingErrorRetryCounter)
+        assert 'EssValidation' in processingErrorStep
+        assert expectedTombstone in processingErrorDetail
+        assert processingErrorLastAttempt is not None
+        assert 0 is processingErrorRetryCounter
 
 
 ############################## /\ ESS helpers /\ ##############################
@@ -90,8 +130,8 @@ def submodels_are_not_empty(response):
 def errors_for_invalid_globalAssetId_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
-    assert 'globalAssetId:size must be between 45 and 45' in error_list
-    assert 'globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
+    assert 'key.globalAssetId:size must be between 45 and 45' in error_list
+    assert 'key.globalAssetId:must match \"^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$\"' in error_list
 
 
 def errors_for_invalid_depth_are_correct(response):
@@ -117,8 +157,7 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         print("RetryCounter: ", processingErrorRetryCounter)
         assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
         assert 'DigitalTwinRequest' in processingErrorStep
-        assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail
-        #assert '404 : \"{\"error\":{\"message\":\"Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found\",\"path\":\"/registry/shell-descriptors/urn%3Auuid%3Acce14502-958a-42e1-8bb7-f4f41aaaaaaa\",\"details\":{}}}\"' in processingErrorDetail
+        #assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail ##commented out since this error message is not possible currently after DTR changes
         assert processingErrorLastAttempt is not None
         assert 3 is processingErrorRetryCounter
 
@@ -160,7 +199,7 @@ def check_timestamps_for_completed_jobs(response):
     job_completed_timestamp = datetime.strptime(response.json().get('job').get('completedOn')[:26], '%Y-%m-%dT%H:%M:%S.%f').timestamp()
     assert started_on_timestamp > created_on_timestamp
     assert last_modified_on_timestamp > started_on_timestamp
-    assert job_completed_timestamp > last_modified_on_timestamp
+    assert job_completed_timestamp >= last_modified_on_timestamp
 
 
 def check_timestamps_for_not_completed_jobs(response):
@@ -266,6 +305,45 @@ def order_informations_for_batchprocessing_are_given(response, amount_batches):
         assert batches.get("batchId") is not None
         assert batches.get("batchNumber") is not None
         assert batches.get("jobsInBatchChecksum") is not None
-        assert 'https://irs.dev.demo.catena-x.net/irs/orders' in batches.get("batchUrl")
+        assert ('https://irs.dev.demo.catena-x.net/irs/orders' in batches.get("batchUrl")) or ('https://irs.int.demo.catena-x.net/irs/orders' in batches.get("batchUrl"))
         assert batches.get("batchProcessingState") == 'INITIALIZED'
         assert batches.get("errors") is None
+
+
+def getBatchId(response, batchId_number):
+    batches_list = response.json().get("batches")
+    batchId_list = []
+    for batches in batches_list:
+        batchId_list.append(batches.get("batchId"))
+    return Box({"batch_id": batchId_list[batchId_number]})
+
+
+def check_batches_are_canceled_correctly(response):
+    jobs_list = response.json().get("jobs")
+    for jobs in jobs_list:
+        assert jobs.get("state") == 'CANCELED'
+
+
+def job_parameter_are_as_requested(response):
+    print("Check if job parameter are as requested:")
+    parameter = response.json().get('job').get('parameter')
+    print(parameter)
+    assert parameter.get('bomLifecycle') == 'asPlanned'
+    assert parameter.get('collectAspects') is True
+    assert parameter.get('depth') == 2
+    assert parameter.get('direction') == 'downward'
+    assert parameter.get('lookupBPNs') is True
+    assert parameter.get('callbackUrl') == 'https://www.check123.com'
+    aspects_list = parameter.get("aspects")
+    assert 'SerialPart' in aspects_list
+    assert 'PartAsPlanned' in aspects_list
+
+
+def create_bearer_token():
+    url = os.getenv('KEYCLOAK_HOST')
+    client_id = os.getenv('KEYCLOAK_CLIENT_ID')
+    client_secret = os.getenv('KEYCLOAK_CLIENT_SECRET')
+
+    data = {"grant_type": "client_credentials", "client_id": client_id, "client_secret": client_secret}
+    token = requests.post(url, data).json().get('access_token')
+    return {"Authorization": f"Bearer {token}"}

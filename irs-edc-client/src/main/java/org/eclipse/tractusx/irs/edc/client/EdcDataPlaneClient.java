@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -26,11 +27,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.dataspaceconnector.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,30 +46,23 @@ import org.springframework.web.client.RestTemplate;
  * Communicates with the EDC DataPlane.
  */
 @Slf4j
-@Service
-@RequiredArgsConstructor
+@Service("irsEdcClientEdcDataPlaneClient")
 public class EdcDataPlaneClient {
 
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("\\{\"data\":\"(?<embeddedData>.*)\"\\}");
     private final RestTemplate edcRestTemplate;
 
-    public String getData(final EndpointDataReference dataReference, final String subUrl) {
+    public EdcDataPlaneClient(@Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate) {
+        this.edcRestTemplate = edcRestTemplate;
+    }
 
-        final String url = getUrl(dataReference.getEndpoint(), subUrl);
+    public String getData(final EndpointDataReference dataReference, final String submodelDataplaneUrl) {
 
-        final String response = edcRestTemplate.exchange(url, HttpMethod.GET,
+        final String response = edcRestTemplate.exchange(submodelDataplaneUrl, HttpMethod.GET,
                 new HttpEntity<>(null, headers(dataReference)), String.class).getBody();
 
         log.info("Extracting raw embeddedData from EDC data plane response");
         return extractData(response);
-    }
-
-    private String getUrl(final String connectorUrl, final String subUrl) {
-        var url = connectorUrl;
-        if (subUrl != null && !subUrl.isEmpty()) {
-            url = url.endsWith("/") ? url + subUrl : url + "/" + subUrl;
-        }
-        return url;
     }
 
     private HttpHeaders headers(final EndpointDataReference dataReference) {
@@ -90,9 +86,9 @@ public class EdcDataPlaneClient {
         return modifiedResponse;
     }
 
-    public EdcNotificationResponse sendData(final EndpointDataReference dataReference, final String subUrl,
-            final EdcNotification notification) {
-        final String url = getUrl(dataReference.getEndpoint(), subUrl);
+    public EdcNotificationResponse sendData(final EndpointDataReference dataReference,
+            final EdcNotification<NotificationContent> notification) {
+        final String url = dataReference.getEndpoint();
         final HttpHeaders headers = headers(dataReference);
         headers.setContentType(MediaType.APPLICATION_JSON);
 

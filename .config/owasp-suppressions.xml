@@ -2,23 +2,30 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
         <notes><![CDATA[
-        Transitive dependency of OkHttp. CVE is only relevant for Gradle builds, not relevant for IRS.
+        Vulnerability is a false positive.
         ]]></notes>
-        <gav regex="true">org\.jetbrains\.kotlin:.*</gav>
-        <vulnerabilityName>CVE-2022-24329</vulnerabilityName>
+        <gav regex="true">com\.fasterxml\.jackson\.core:jackson\-databind.*</gav>
+        <vulnerabilityName>CVE-2023-35116</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
-        Vulnerability method not in IRS codebase (Files.createTempDir from guava).
+        Pulled in by EDC client - needs to be accepted for now.
         ]]></notes>
-        <gav regex="true">com\.google\.guava:guava.*</gav>
-        <vulnerabilityName>CVE-2020-8908</vulnerabilityName>
+        <gav regex="true">org\.eclipse\.edc:jetty\-core.*</gav>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
     </suppress>
     <suppress>
         <notes><![CDATA[
-        Vulnerability method not in IRS codebase (Files.createTempDir from guava).
+        Pulled in by EDC client - needs to be accepted for now.
         ]]></notes>
-        <gav regex="true">com\.google\.guava:guava.*</gav>
-        <vulnerabilityName>CVE-2023-2976</vulnerabilityName>
+        <gav regex="true">org\.eclipse\.jetty\.toolchain:jetty\-jakarta\-websocket\-api.*</gav>
+        <vulnerabilityName regex="true">.*</vulnerabilityName>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        This vulnerability does not apply to Java deployments, typically in servers, that load and run only trusted code. This is not exploitable in IRS.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
+        <vulnerabilityName>CVE-2023-22006</vulnerabilityName>
     </suppress>
 </suppressions>

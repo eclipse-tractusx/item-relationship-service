@@ -1,55 +1,72 @@
 {
-  "id": "default",
-  "contractOffers": [
-    {
-      "id": "3:afb3dca6-e7cc-42b6-98bb-c6f948121c7a",
-      "policy": {
-        "permissions": [
-          {
-            "edctype": "dataspaceconnector:permission",
-            "uid": null,
-            "target": "urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7",
-            "action": {
-              "type": "USE",
-              "includedIn": null,
-              "constraint": null
+  "@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
+  "@type": "dcat:Catalog",
+  "dcat:dataset": {
+    "@id": "58505404-4da1-427a-82aa-b79482bcd1f0",
+    "@type": "dcat:Dataset",
+    "odrl:hasPolicy": {
+      "@id": "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:66131c58-32af-4df0-825d-77f7df6017c1",
+      "@type": "odrl:Set",
+      "odrl:permission": {
+        "odrl:target": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7",
+        "odrl:action": {
+          "odrl:type": "USE"
+        },
+        "odrl:constraint": {
+          "odrl:and": [
+            {
+              "odrl:leftOperand": "Membership",
+              "odrl:operator": {
+                "@id": "odrl:eq"
+              },
+              "odrl:rightOperand": "active"
             },
-            "assignee": null,
-            "assigner": null,
-            "constraints": [],
-            "duties": []
-          }
-        ],
-        "prohibitions": [],
-        "obligations": [],
-        "extensibleProperties": {},
-        "inheritsFrom": null,
-        "assigner": null,
-        "assignee": null,
-        "target": "urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7",
-        "@type": {
-          "@policytype": "set"
+            {
+              "odrl:leftOperand": "FrameworkAgreement.traceability",
+              "odrl:operator": {
+                "@id": "odrl:eq"
+              },
+              "odrl:rightOperand": "active"
+            }
+          ]
         }
       },
-      "asset": {
-        "id": "urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7",
-        "createdAt": 1669196292759,
-        "properties": {
-          "asset:prop:byteSize": null,
-          "asset:prop:description": "product description",
-          "asset:prop:contenttype": "application/json",
-          "asset:prop:policy-id": "use-eu",
-          "asset:prop:id": "urn:uuid:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-urn:uuid:31b614f5-ec14-4ed2-a509-e7b7780083e7",
-          "asset:prop:fileName": null
-        }
+      "odrl:prohibition": [],
+      "odrl:obligation": [],
+      "odrl:target": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7"
+    },
+    "dcat:distribution": [
+      {
+        "@type": "dcat:Distribution",
+        "dct:format": {
+          "@id": "HttpProxy"
+        },
+        "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
       },
-      "assetId": null,
-      "provider": "urn:connector:provider",
-      "consumer": "urn:connector:consumer",
-      "offerStart": null,
-      "offerEnd": null,
-      "contractStart": null,
-      "contractEnd": null
-    }
-  ]
+      {
+        "@type": "dcat:Distribution",
+        "dct:format": {
+          "@id": "AmazonS3"
+        },
+        "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
+      }
+    ],
+    "edc:description": "IRS EDC Demo Asset",
+    "edc:id": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7"
+  },
+  "dcat:service": {
+    "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
+    "@type": "dcat:DataService",
+    "dct:terms": "connector",
+    "dct:endpointUrl": "http://edc.io/api/v1/dsp"
+  },
+  "edc:participantId": "BPNL00000003CRHK",
+  "@context": {
+    "dct": "https://purl.org/dc/terms/",
+    "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+    "edc": "https://w3id.org/edc/v0.0.1/ns/",
+    "dcat": "https://www.w3.org/ns/dcat/",
+    "odrl": "http://www.w3.org/ns/odrl/2/",
+    "dspace": "https://w3id.org/dspace/v0.8/"
+  }
 }

@@ -1,0 +1,17 @@
+= Scenario 1: Create job
+
+This section describes what happens when user creates a new job.
+
+[plantuml, target=create-job, format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/create-job.puml[]
+....
+
+== Overview
+
+If a job is registered via the IRS API, it will be persisted (with its parameters) in the JobStore, where it can be retrieved by further calls and processes.
+Then, the starting item ID is extracted, and a new transfer process is handed to the ExecutorService, which will process it asynchronously (see Scenario 2: Job Execution).
+
+In the meantime, the JobOrchestrator returns a response to the API caller, which contains the UUID of the new job.
+This UUID can then be used by the caller to retrieve information about the job via the API.
+The input provided by the caller determines how the job will operate (starting point, recursion depth, aspect filter, ...).

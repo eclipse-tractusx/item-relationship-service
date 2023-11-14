@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -23,6 +24,7 @@
 package org.eclipse.tractusx.irs.controllers;
 
 import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
+import static org.eclipse.tractusx.irs.util.TestMother.registerBpnInvestigationBatchOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,15 +36,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
-import org.eclipse.tractusx.irs.services.AuthorizationService;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.eclipse.tractusx.irs.services.timeouts.CancelBatchProcessingService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -72,7 +74,6 @@ class BatchControllerTest {
     private AuthorizationService authorizationService;
 
     @Test
-    @Disabled("Disabled - failing on pipeline")
     void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(
@@ -81,7 +82,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestWhenGlobalAssetIdWithWrongFormat() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
@@ -92,7 +93,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestWhenBatchSizeNotMod10Compliant() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
@@ -104,8 +105,8 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
-    void shouldRegisterBatchOrder() throws Exception {
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
+    void shouldRegisterRegularJobBatchOrder() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
@@ -115,7 +116,18 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
+    void shouldRegisterEssJobBatchOrder() throws Exception {
+        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
+        this.mockMvc.perform(post("/irs/ess/orders").contentType(MediaType.APPLICATION_JSON)
+                                                .content(new ObjectMapper().writeValueAsString(
+                                                        registerBpnInvestigationBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                    .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBatchOrder() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
@@ -128,7 +140,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBatch() throws Exception {
         final UUID orderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
@@ -143,7 +155,7 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
+    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldCancelBatchOrder() throws Exception {
         when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 

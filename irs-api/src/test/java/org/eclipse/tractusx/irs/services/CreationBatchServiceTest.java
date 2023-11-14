@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -32,10 +33,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -58,6 +62,7 @@ class CreationBatchServiceTest {
     private BatchStore batchStore;
     private final ApplicationEventPublisher applicationEventPublisher = mock(ApplicationEventPublisher.class);
     private final JobEventLinkedQueueListener jobEventLinkedQueueListener = mock(JobEventLinkedQueueListener.class);
+    private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
     private final IrsConfiguration irsConfiguration = mock(IrsConfiguration.class);
     private final static String EXAMPLE_URL = "https://exampleUrl.com";
     private CreationBatchService service;
@@ -67,11 +72,11 @@ class CreationBatchServiceTest {
         batchOrderStore = new InMemoryBatchOrderStore();
         batchStore = new InMemoryBatchStore();
         service = new CreationBatchService(batchOrderStore, batchStore, applicationEventPublisher,
-                jobEventLinkedQueueListener, irsConfiguration);
+                jobEventLinkedQueueListener, securityHelperService, irsConfiguration);
     }
 
     @Test
-    void shouldStoreBatchOrder() throws MalformedURLException {
+    void shouldStoreRegularBatchOrder() throws MalformedURLException {
         // given
         final RegisterBatchOrder registerBatchOrder = exampleBatchRequest();
         given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
@@ -85,26 +90,51 @@ class CreationBatchServiceTest {
         assertThat(batchStore.findAll()).hasSize(1);
 
         Batch actual = batchStore.findAll().stream().findFirst().orElseThrow();
-        assertThat(actual.getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
+        assertThat(actual.getJobProgressList().stream().map(JobProgress::getIdentificationKey).map(
+                PartChainIdentificationKey::getGlobalAssetId).collect(
                 Collectors.toList())).containsOnly(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID);
     }
 
     @Test
-    void shouldSplitGlobalAssetIdIntoBatches() throws MalformedURLException {
+    void shouldStoreESSBatchOrder() throws MalformedURLException {
         // given
-        final List<String> globalAssetIds = List.of("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18" , "19" , "20");
+        final RegisterBpnInvestigationBatchOrder registerBatchOrder = exampleESSBatchRequest();
+        given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
+
+        // when
+        final UUID batchOrderId = service.create(registerBatchOrder);
+
+        // then
+        assertThat(batchOrderId).isNotNull();
+        assertThat(batchOrderStore.findAll()).hasSize(1);
+        assertThat(batchStore.findAll()).hasSize(1);
+
+        Batch actual = batchStore.findAll().stream().findFirst().orElseThrow();
+        assertThat(actual.getJobProgressList().stream().map(JobProgress::getIdentificationKey).map(
+                PartChainIdentificationKey::getGlobalAssetId).collect(
+                Collectors.toList())).containsOnly(FIRST_GLOBAL_ASSET_ID, SECOND_GLOBAL_ASSET_ID);
+    }
+
+    @Test
+    void shouldSplitIdentificationKeysIdIntoBatches() throws MalformedURLException {
+        // given
+        final List<PartChainIdentificationKey> globalAssetIds = IntStream.range(1, 21)
+                                                                         .mapToObj(i -> PartChainIdentificationKey.builder()
+                                                                                                                  .globalAssetId(String.valueOf(i))
+                                                                                 .bpn("BPN" + i).build()
+                                                                         ).toList();
         final int batchSize = 3;
         given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
 
         // when
-        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID());
+        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID(), securityHelperService.getClientIdClaim());
 
         // then
         assertThat(batches).hasSize(7);
-        assertThat(batches.get(0).getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
-                Collectors.toList())).containsExactly("1", "2", "3");
-        assertThat(batches.get(6).getJobProgressList().stream().map(JobProgress::getGlobalAssetId).collect(
-                Collectors.toList())).containsExactly("19", "20");
+        assertThat(batches.get(0).getJobProgressList().stream().map(JobProgress::getIdentificationKey).map(
+                PartChainIdentificationKey::getGlobalAssetId).toList()).containsExactly("1", "2", "3");
+        assertThat(batches.get(6).getJobProgressList().stream().map(JobProgress::getIdentificationKey).map(
+                PartChainIdentificationKey::getGlobalAssetId).toList()).containsExactly("19", "20");
         assertThat(batches.get(0).getBatchUrl()).isEqualTo(
                 EXAMPLE_URL + "/" + IrsApplication.API_PREFIX +
                         "/orders/" + batches.get(0).getBatchOrderId() + "/batches/" + batches.get(0).getBatchId()
@@ -121,6 +151,19 @@ class CreationBatchServiceTest {
                                  .depth(1)
                                  .direction(Direction.DOWNWARD)
                                  .collectAspects(true)
+                                 .timeout(1000)
+                                 .jobTimeout(500)
+                                 .batchStrategy(BatchStrategy.PRESERVE_JOB_ORDER)
+                                 .callbackUrl(EXAMPLE_URL)
+                                 .batchSize(10)
+                                 .build();
+    }
+
+    private static RegisterBpnInvestigationBatchOrder exampleESSBatchRequest() {
+        return RegisterBpnInvestigationBatchOrder.builder()
+                                 .keys(Set.of(PartChainIdentificationKey.builder().globalAssetId(FIRST_GLOBAL_ASSET_ID).build(),
+                                         PartChainIdentificationKey.builder().globalAssetId(SECOND_GLOBAL_ASSET_ID).build()))
+                                 .bomLifecycle(BomLifecycle.AS_PLANNED)
                                  .timeout(1000)
                                  .jobTimeout(500)
                                  .batchStrategy(BatchStrategy.PRESERVE_JOB_ORDER)

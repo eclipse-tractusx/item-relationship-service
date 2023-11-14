@@ -14,5 +14,10 @@
 |PRS |Formerly known Service Name: Parts Relationship Service
 |Traversal Aspect |aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship.
 
-Samples: SingleLevelBomAsPlanned, AssemblyPartRelationship and SingleLevelUsageAsBuilt
+Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt
+|Verifiable Credential (VC) | For more information see: https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2/3.%20Verifiable%20Credentials[Verifiable Credentials]
+|Eclipse Dataspace Connector (EDC) | For more information see: https://github.com/eclipse-tractusx/tractusx-edc
+|Managed Identity Wallet (MIW) | For more information see: https://github.com/eclipse-tractusx/managed-identity-wallet
+|Self-Sovereign Identity (SSI) | For more information see: https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2
+|PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction
 |===

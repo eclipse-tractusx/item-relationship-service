@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -30,7 +31,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.tractusx.irs.common.CxTestDataContainer;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 
 /**
  * Class to create Submodel Testdata
@@ -54,12 +55,14 @@ class SubmodelTestdataCreator {
     @SuppressWarnings({ "PMD.CyclomaticComplexity" })
     public Map<String, Object> createSubmodelForId(final String endpointAddress) {
         final String catenaXId = StringUtils.substringBefore(endpointAddress, "_");
-        if (endpointAddress.contains("assemblyPartRelationship")) {
-            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getAssemblyPartRelationship).orElse(Map.of());
+        if (endpointAddress.contains("singleLevelBomAsBuilt")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt).orElse(Map.of());
         } else if (endpointAddress.contains("singleLevelUsageAsBuilt")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelUsageAsBuilt).orElse(Map.of());
-        } else if (endpointAddress.contains("serialPartTypization")) {
-            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSerialPartTypization).orElse(Map.of());
+        } else if (endpointAddress.contains("singleLevelBomAsSpecified")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsSpecified).orElse(Map.of());
+        } else if (endpointAddress.contains("serialPart")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSerialPart).orElse(Map.of());
         } else if (endpointAddress.contains("singleLevelBomAsPlanned")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned).orElse(Map.of());
         } else if (endpointAddress.contains("partAsPlanned")) {
@@ -72,6 +75,8 @@ class SubmodelTestdataCreator {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getProductDescription).orElse(Map.of());
         } else if (endpointAddress.contains("physicalDimension")) {
             return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension).orElse(Map.of());
+        } else if (endpointAddress.contains("partAsSpecified")) {
+            return this.cxTestDataContainer.getByCatenaXId(catenaXId).flatMap(CxTestDataContainer.CxTestData::getPartAsSpecified).orElse(Map.of());
         }
         return Map.of();
     }

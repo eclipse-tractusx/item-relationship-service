@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -28,6 +29,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 
 /**
@@ -40,9 +42,9 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 public class JobProgress {
 
     /**
-     * Global Asset Id that was requested by Batch Order
+     * Key object contains required attributes for identify part chain entry node
      */
-    private String globalAssetId;
+    private PartChainIdentificationKey identificationKey;
 
     /**
      * Job Id that was registered by Batch Order process

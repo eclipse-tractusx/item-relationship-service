@@ -44,6 +44,9 @@ management: # Spring management API config, see https://spring.io/guides/gs/cent
       enabled: true
     readinessstate:
       enabled: true
+    dependencies:
+      enabled: false
+      urls: { }
   metrics:
     distribution:
       percentiles-histogram:
@@ -100,6 +103,14 @@ blobstore:
   secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
   bucketName: irsbucket # the name of the S3 bucket to be created / used by the IRS
 
+policystore:
+  persistence:
+    endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
+    accessKey: "${MINIO_ACCESS_KEY}" # S3 access key
+    secretKey: "${MINIO_SECRET_KEY}" # S3 secret key
+    bucketName: irs-policy-bucket # the name of the S3 bucket to be created / used by the policy store
+    daysToLive: -1 # number of days to keep policies in the store, use -1 to disable cleanup
+
 resilience4j:
   retry: # REST client retry configuration
     configs:
@@ -110,16 +121,22 @@ resilience4j:
         exponentialBackoffMultiplier: 2 # Multiplier for the exponential delay
         ignore-exceptions: # Do not retry on the listed exceptions
           - org.springframework.web.client.HttpClientErrorException.NotFound
+          - org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException
     instances:
       registry:
         baseConfig: default
 
-edc:
+irs-edc-client:
+  callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
       data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
-    provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/ids/data} # Suffix to add to data requests to the EDC provider controlplane
+      catalog: ${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request} # EDC consumer controlplane catalog path
+      contract-negotiation: ${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations} # EDC consumer controlplane contract negotiation path
+      transfer-process: ${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses} # EDC consumer controlplane transfer process path
+      state-suffix: ${EDC_CONTROLPLANE_ENDPOINT_DATA:/state} # Path of the state suffix for contract negotiation and transfer process
+    provider-suffix: ${EDC_CONTROLPLANE_PROVIDER_SUFFIX:/api/v1/dsp} # Suffix to add to data requests to the EDC provider controlplane
     catalog-limit: ${EDC_CONTROLPLANE_CATALOG_LIMIT:1000} # Max number of items to fetch from the EDC provider catalog
     catalog-page-size: ${EDC_CONTROLPLANE_CATALOG_PAGE_SIZE:50} # Number of items to fetch at one page from the EDC provider catalog when using pagination
     api-key:
@@ -131,26 +148,39 @@ edc:
 
   submodel:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M} # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
-    path: ${EDC_SUBMODEL_PATH:/submodel} # The path to append to the submodel data reference endpoint
     urn-prefix: ${EDC_SUBMODEL_URN_PREFIX:/urn} # A prefix used to identify URNs correctly in the submodel endpoint address
     timeout:
       read: PT90S # HTTP read timeout for the submodel client
       connect: PT90S # HTTP connect timeout for the submodel client
 
   catalog:
-    cache:
-      enabled: true # Set to false to disable caching
-      ttl: P1D # Time after which a cached Item is no longer valid and the real catalog is called instead
-      maxCachedItems: 64000 # Maximum amount of cached catalog items
-    policies:
-      # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
-      # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
-      allowedNames: ID 3.0 Trace, ID 3.1 Trace, R2_Traceability # List of comma separated names of the policies to accept.
+    # IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.
+    # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
+    acceptedPolicies:
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.0 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: "ID 3.1 Trace"
+      - leftOperand: "PURPOSE"
+        operator: "eq"
+        rightOperand: R2_Traceability
+      - leftOperand: "FrameworkAgreement.traceability"
+        operator: "eq"
+        rightOperand: "active"
+      - leftOperand: "Membership"
+        operator: "eq"
+        rightOperand: "active"
+  connectorEndpointService:
+    cacheTTL: 86400000
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
   descriptorEndpoint: ${DIGITALTWINREGISTRY_DESCRIPTOR_URL:} # The endpoint to retrieve AAS descriptors from the DTR, must contain the placeholder {aasIdentifier}
   shellLookupEndpoint: ${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:} # The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}
+  shellDescriptorTemplate: ${DIGITALTWINREGISTRY_SHELL_DESCRIPTOR_TEMPLATE:/shell-descriptors/{aasIdentifier}} # The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}
+  lookupShellsTemplate: ${DIGITALTWINREGISTRY_QUERY_SHELLS_PATH:/lookup/shells?assetIds={assetIds}} # The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}
   oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
   timeout:
@@ -175,7 +205,7 @@ semanticshub:
     #          │ │ │  │ │ │          (or MON-SUN -- 0 or 7 is Sunday)
     #          │ │ │  │ │ │
     scheduler: 0 0 23 * * * # How often to clear the semantic model cache
-  defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization}" # IDs of models to cache at IRS startup
+  defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part:1.0.0#SerialPart}" # IDs of models to cache at IRS startup
   oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the semantic hub client
@@ -193,16 +223,21 @@ bpdm:
 ess:
   localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
   localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
+  managementPath: ${EDC_MANAGEMENT_PATH:/management/v2} # EDC management API path - used for notification asset creation
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
-    endpoint: "${DISCOVERY_URL:}" # Endpoint to retrieve EDC base url address for BPN
     oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
     timeout:
       read: PT90S # HTTP read timeout for the discovery client
       connect: PT90S # HTTP connect timeout for the discovery client
-    mockEdcAddress: {} # Mocked EDC BPN Addresses
-    mockEdcResult: {} # Mocked BPN Investigation results
+    mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000003CRHK} # BPN value that is allowed to access IRS API
+apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API
+
+# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
+oauth:
+  resourceClaim: "resource_access" # Name of the JWT claim for roles
+  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
+  roles: "roles" # Name of the list of roles within the IRS namespace

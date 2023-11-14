@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -43,8 +44,8 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
-import org.eclipse.tractusx.irs.persistence.MinioBlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -94,7 +95,7 @@ class PersistentJobStoreTest {
     @BeforeEach
     void setUp() throws BlobPersistenceException {
         final MinioBlobPersistence blobStore = new MinioBlobPersistence("http://" + minioContainer.getHostAddress(),
-                ACCESS_KEY, SECRET_KEY, "testbucket");
+                ACCESS_KEY, SECRET_KEY, "testbucket", 1);
         blobStoreSpy = Mockito.spy(blobStore);
         sut = new PersistentJobStore(blobStoreSpy, meterRegistryService);
     }

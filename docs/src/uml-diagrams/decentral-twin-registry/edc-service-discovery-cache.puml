@@ -1,0 +1,23 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+
+autonumber "<b>[000]"
+
+participant "IRS" as IRS
+participant "EDC Discovery Finder Cache" as CACHE
+participant "EDC Discovery Finder" as EDCDF
+
+    IRS -> CACHE : lookup endpoints for BPNL
+    alt cache contains endpoints for BPNL
+        IRS <-- CACHE: array of endpoints from cache
+    else
+         IRS -> EDCDF : POST /api/administration/connectors/discovery [ "BPNL..." ]
+         IRS -> CACHE: add connectorEndpoints to cache (TTL 24h)
+         IRS <-- CACHE: OK
+         IRS <-- EDCDF: array of endpoints from service
+     end alt
+
+@enduml

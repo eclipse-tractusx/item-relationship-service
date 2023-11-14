@@ -2,51 +2,71 @@
 skinparam monochrome true
 skinparam shadowing false
 skinparam spacing 50
+skinparam linetype ortho
+skinparam nodesep 150
+skinparam ranksep 150
+skinparam defaultFontName "Architects daughter"
 
 
-component [**IRSApplication**] <<System>> {
-	component [**IRS**] <<System>> as IRS
-	component [**EDC Consumer**] <<System>> as EDC
+package [**OEM**] <<CatenaX Company>> as consumer {
+
+    package [**IRS-Application**] <<IRS System>> as irs_component {
+	    component [**IRS**] <<System>> as IRS
+	    component [**EDC (Consumer)**] <<System>> as EDC
+    }
+
+    package [**OEM-Tier**] <<OEM Data Provider>> as oem_provider {
+        component [**EDC (Provider)**] <<System>> as EDCProviderOEM
+        component [**SubmodelServer**] <<System>> as SubmodelServerOEM
+        component [**decentral Digital Twin Registry**] <<System>> as DT_REG_OEM
+        }
 
 }
 
-component [**CatenaX-Network**] <<CX-Environment>> {
-    component [**IAM/KeyCloak**] <<System>> as IAM_IRS
-    component [**IAM/DAPS**] <<System>> as IAM_DAPS
+package [**CatenaX-Network**] as network {
+    component [**Managed Identity Wallet**] <<System>> as miw
+    component [**Portal Application**] <<System>> as IAM_IRS
+    component [**Portal (IAM/IdP/KeyCloak)**] <<System>> as Portal_IdP
+    component [**EDC Discovery Service**] <<System>> as edc_discovery
+    component [**Discovery Finder**] <<System>> as discovery_finder
+    component [**Semantic Hub**] <<System>> as semantic_hub
+    component [**BPDM**] <<System>> as bpdm
 }
 
-component [**Tier/OEM**] <<Tier/OEM-Environment>> {
-
-    component [**EDC_Provider_OEM**] <<System>> as EDCProviderOEM
-    component [**EDC_Provider_Tier1**] <<System>> as EDCProviderTier1
-    component [**EDC_Provider_Tier1.1**] <<System>> as EDCProviderTier11
-    component [**SubmodelServer_OEM**] <<System>> as SubmodelServerOEM
-    component [**SubmodelServer_Tier1**] <<System>> as SubmodelServerTier1
-    component [**SubmodelServer_Tier1.1**] <<System>> as SubmodelServerTier11
-    component [**Digital Twin Registry_OEM**] <<System>> as DT_REGOEM
-    component [**Digital Twin Registry_Tier1**] <<System>> as DT_REG1
-    component [**Digital Twin Registry_Tier1.1**] <<System>> as DT_REG11
+package [**N-Tier**] <<CatenaX Data Provider Company>> as provider {
+    component [**EDC (Provider)**] <<System>> as EDCProvider
+    component [**SubmodelServer**] <<System>> as SubmodelServer
+    component [**decentral Digital Twin Registry**] <<System>> as DT_REG
 }
-
 
 actor IrsApiConsumer
 
-IrsApiConsumer -right(0- IRS
-IrsApiConsumer <.r.> IAM_IRS
-IRS <.d.> EDC
-IRS <.l.> IAM_IRS
-EDC <..> IAM_DAPS
-EDC <..> EDCProviderOEM
-EDC <...> EDCProviderTier1
-EDC <....> EDCProviderTier11
-IAM_DAPS <..> EDCProviderOEM
-IAM_DAPS <...> EDCProviderTier1
-IAM_DAPS <....> EDCProviderTier11
-EDCProviderOEM <..> SubmodelServerOEM
-EDCProviderTier1 <..> SubmodelServerTier1
-EDCProviderTier11 <..> SubmodelServerTier11
-EDCProviderOEM <..> DT_REGOEM
-EDCProviderTier1 <..> DT_REG1
-EDCProviderTier11 <..> DT_REG11
+IrsApiConsumer -l(0- IRS : **[01]**
+IrsApiConsumer <.r.> IAM_IRS  : **[02]**
+IAM_IRS  <..> Portal_IdP  : **[03]**
+
+EDCProviderOEM <-> SubmodelServerOEM : **[04]**
+EDCProviderOEM <--> DT_REG_OEM : **[05]**
+miw <..> EDCProviderOEM  : **[12]**
+
+IRS <.d.> EDC  : **[06]**
+IRS <..> IAM_IRS : **[07]**
+IRS <..> edc_discovery  : **[08]**
+
+IRS <..> discovery_finder  : **[09]**
+IRS <..> semantic_hub  : **[10]**
+IRS <..> bpdm  : **[11]**
+EDC <..> miw  : **[12]**
+EDC <..> EDCProvider  : **[13]**
+EDC <..> EDCProviderOEM  : **[13]**
+
+miw <..> EDCProvider  : **[14]**
+EDCProvider <--> SubmodelServer : **[15]**
+EDCProvider <--> DT_REG : **[16]**
+
+miw -[hidden]d- IAM_IRS
+miw -[hidden]r- discovery_finder
+discovery_finder -[hidden]d- edc_discovery
+bpdm -[hidden]d- semantic_hub
 
 @enduml

@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -26,19 +27,20 @@ import java.time.Duration;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * EDC configuration settings. Automatically populated by Spring from application.yml
  * and other configuration sources.
  */
-@Component
-@ConfigurationProperties(prefix = "edc")
+@Configuration("irsEdcClientEdcConfiguration")
+@ConfigurationProperties(prefix = "irs-edc-client")
 @Data
 public class EdcConfiguration {
 
     private ControlplaneConfig controlplane = new ControlplaneConfig();
     private SubmodelConfig submodel = new SubmodelConfig();
+    private String callbackUrl;
 
     /**
      * Container for controlplane config
@@ -63,6 +65,10 @@ public class EdcConfiguration {
         @Data
         public static class EndpointConfig {
             private String data;
+            private String catalog;
+            private String contractNegotiation;
+            private String transferProcess;
+            private String stateSuffix;
 
         }
 
@@ -84,8 +90,6 @@ public class EdcConfiguration {
     public static class SubmodelConfig {
 
         private Duration requestTtl;
-
-        private String path;
 
         private String urnPrefix;
     }

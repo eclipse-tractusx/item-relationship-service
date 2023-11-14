@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -91,8 +92,10 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
         return List.of(
                 new AspectModel("urn:bamm:com.catenax.esr_certificates.esr_certificate:1.0.0#EsrCertificate", "1.0.0",
                         "EsrCertificate", MODEL_TYPE, MODEL_STATUS),
-                new AspectModel("urn:bamm:io.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
-                        "1.0.0", "AssemblyPartRelationship", MODEL_TYPE, MODEL_STATUS),
+                new AspectModel("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                        "1.0.0", "SingleLevelBomAsBuilt", MODEL_TYPE, MODEL_STATUS),
+                new AspectModel("urn:bamm:io.catenax.part_as_specified:2.0.0#PartAsSpecified",
+                        "2.0.0", "PartAsSpecified", MODEL_TYPE, MODEL_STATUS),
                 new AspectModel("urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
                         "1.0.1", "PartAsPlanned", MODEL_TYPE, MODEL_STATUS));
     }
@@ -244,8 +247,8 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
             try {
                 final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(
                         config.getModelJsonSchemaEndpoint());
-                final Map<String, String> values = Map.of(PLACEHOLDER_URN, urn);
-                return Optional.ofNullable(restTemplate.getForObject(uriBuilder.build(values), String.class));
+                uriBuilder.uriVariables(Map.of(PLACEHOLDER_URN, urn));
+                return Optional.ofNullable(restTemplate.getForObject(uriBuilder.build().toUri(), String.class));
             } catch (final RestClientException e) {
                 log.error("Unable to retrieve schema from semantic hub for urn '{}'", urn, e);
             }

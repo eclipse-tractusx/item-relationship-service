@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -24,7 +25,7 @@ package org.eclipse.tractusx.irs.dto.assetadministrationshell;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
 
 import java.util.List;
 
@@ -34,103 +35,103 @@ import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellDescriptorTest {
 
-    final String assemblyPartRelationshipId = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0";
-    final String assemblyPartRelationshipIdWithAspectName = "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship";
-    final String serialPartTypizationId = "urn:bamm:com.catenax.serial_part_typization:1.0.0";
-    final String serialPartTypizationIdWithAspectName = "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization";
+    final String singleLevelBomAsBuiltId = "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0";
+    final String singleLevelBomAsBuiltIdWithAspectName = "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
+    final String serialPartId = "urn:bamm:com.catenax.serial_part:1.0.0";
+    final String serialPartIdWithAspectName = "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart";
 
     @Test
     void shouldFilterByAssemblyPartRelationshipWhenEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
+                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltIdWithAspectName)));
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
                                                                .getSubmodelDescriptors();
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
     }
 
     @Test
     void shouldFilterByAssemblyPartRelationshipWhenNotEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(assemblyPartRelationshipId)));
+                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltId)));
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
                                                                .getSubmodelDescriptors();
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipId);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltId);
     }
 
     @Test
     void shouldFilterByAspectTypeWhenEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
-        final List<String> aspectTypeFilter = List.of("AssemblyPartRelationship");
+                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltIdWithAspectName)));
+        final List<String> aspectTypeFilter = List.of("SingleLevelBomAsBuilt");
 
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.filterDescriptorsByAspectTypes(aspectTypeFilter);
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
     }
 
     @Test
     void shouldFilterByAspectTypeWhenNotEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(serialPartTypizationId)));
-        final List<String> aspectTypeFilter = List.of("SerialPartTypization");
+                List.of(submodelDescriptorWithoutHref(serialPartId)));
+        final List<String> aspectTypeFilter = List.of("SerialPart");
 
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.filterDescriptorsByAspectTypes(aspectTypeFilter);
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationId);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartId);
     }
 
     @Test
     void shouldFilterByAspectTypeWhenWithDifferentAspects() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(serialPartTypizationIdWithAspectName),
-                        submodelDescriptorWithoutEndpoint(assemblyPartRelationshipId)));
+                List.of(submodelDescriptorWithoutHref(serialPartIdWithAspectName),
+                        submodelDescriptorWithoutHref(singleLevelBomAsBuiltId)));
 
-        final List<String> aspectTypeFilter = List.of("SerialPartTypization");
+        final List<String> aspectTypeFilter = List.of("SerialPart");
 
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.filterDescriptorsByAspectTypes(aspectTypeFilter);
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartIdWithAspectName);
     }
 
     @Test
     void shouldFilterByAspectTypeForUrnFormat() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint(serialPartTypizationIdWithAspectName),
-                        submodelDescriptorWithoutEndpoint(assemblyPartRelationshipIdWithAspectName)));
+                List.of(submodelDescriptorWithoutHref(serialPartIdWithAspectName),
+                        submodelDescriptorWithoutHref(singleLevelBomAsBuiltIdWithAspectName)));
 
-        final List<String> aspectTypeFilter = List.of(serialPartTypizationIdWithAspectName,
-                assemblyPartRelationshipIdWithAspectName);
+        final List<String> aspectTypeFilter = List.of(serialPartIdWithAspectName,
+                singleLevelBomAsBuiltIdWithAspectName);
 
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.filterDescriptorsByAspectTypes(aspectTypeFilter);
 
         // Assert
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getSemanticId().getValue().get(0)).isEqualTo(serialPartTypizationIdWithAspectName);
-        assertThat(result.get(1).getSemanticId().getValue().get(0)).isEqualTo(assemblyPartRelationshipIdWithAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartIdWithAspectName);
+        assertThat(result.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
     }
 
 }

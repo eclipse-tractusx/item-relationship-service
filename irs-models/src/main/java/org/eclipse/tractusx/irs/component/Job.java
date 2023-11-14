@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -25,7 +26,6 @@ package org.eclipse.tractusx.irs.component;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,7 +34,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.ToString;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -45,19 +44,20 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@ToString
 @Jacksonized
 @SuppressWarnings({"PMD.ShortClassName", "PMD.ShortVariable"})
 public class Job {
 
     private static final int JOB_ID_FIELD_MAX_LENGTH = 36;
     private static final int GLOBAL_ASSET_ID_LENGTH = 45;
+    private static final String EXAMPLE_DATE_TIME = "2022-02-03T14:48:54.709Z";
 
     @NotNull
     @Size(min = JOB_ID_FIELD_MAX_LENGTH, max = JOB_ID_FIELD_MAX_LENGTH)
     @Schema(description = "Id of the job.", minLength = JOB_ID_FIELD_MAX_LENGTH,
             maxLength = JOB_ID_FIELD_MAX_LENGTH, implementation = UUID.class,
-            pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i")
+            pattern = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i",
+            example = "e5347c88-a921-11ec-b909-0242ac120002")
     @JsonAlias("jobId")
     private UUID id;
 
@@ -69,6 +69,7 @@ public class Job {
 
     @NotBlank
     @JsonAlias("jobState")
+    @Schema(implementation = JobState.class, example = "COMPLETED")
     private JobState state;
 
     @Schema(description = "Job error details.", implementation = JobErrorDetails.class)
@@ -77,25 +78,25 @@ public class Job {
     /**
      * Timestamp when the job was created
      */
-    @Schema(implementation = ZonedDateTime.class)
+    @Schema(implementation = ZonedDateTime.class, example = EXAMPLE_DATE_TIME)
     private ZonedDateTime createdOn;
 
     /**
      * Timestamp when the job was started
      */
-    @Schema(implementation = ZonedDateTime.class)
+    @Schema(implementation = ZonedDateTime.class, example = EXAMPLE_DATE_TIME)
     private ZonedDateTime startedOn;
 
     /**
      * Last time job was modified
      */
-    @Schema(implementation = ZonedDateTime.class)
+    @Schema(implementation = ZonedDateTime.class, example = EXAMPLE_DATE_TIME)
     private ZonedDateTime lastModifiedOn;
 
     /**
      * Mark the time the was completed
      */
-    @Schema(implementation = ZonedDateTime.class)
+    @Schema(implementation = ZonedDateTime.class, example = EXAMPLE_DATE_TIME)
     @JsonAlias("jobCompleted")
     private ZonedDateTime completedOn;
 

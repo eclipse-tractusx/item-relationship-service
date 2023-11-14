@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -41,12 +42,14 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.BatchOrderCreated;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
+import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
-import org.eclipse.tractusx.irs.services.AuthorizationService;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.eclipse.tractusx.irs.services.timeouts.CancelBatchProcessingService;
@@ -81,7 +84,7 @@ public class BatchController {
     @Operation(operationId = "registerOrder",
                summary = "Registers an IRS order with an array of {globalAssetIds}. "
                        + "Each globalAssetId will be processed in an IRS Job, grouped in batches.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" },
                description = "Registers an IRS order with an array of {globalAssetIds}. "
                        + "Each globalAssetId will be processed in an IRS Job, grouped in batches.")
@@ -113,8 +116,47 @@ public class BatchController {
     })
     @PostMapping("/orders")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderCreated registerBatchOrder(final @Valid @RequestBody RegisterBatchOrder request) {
+        final UUID batchOrderId = creationBatchService.create(request);
+        return BatchOrderCreated.builder().id(batchOrderId).build();
+    }
+
+    @Operation(operationId = "registerESSInvestigationOrder",
+               summary = "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.",
+               security = @SecurityRequirement(name = "oAuth2"),
+               tags = { "Environmental and Social Standards" },
+               description = "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns orderId of registered Batch order.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = BatchOrderCreated.class),
+                                                              examples = { @ExampleObject(name = "complete",
+                                                                                          ref = "#/components/examples/job-handle")
+                                                              })
+                                         }),
+                            @ApiResponse(responseCode = "400", description = "Batch Order registration failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
+    })
+    @PostMapping("/ess/orders")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
+    public BatchOrderCreated registerESSInvestigationOrder(final @Valid @RequestBody RegisterBpnInvestigationBatchOrder request) {
         final UUID batchOrderId = creationBatchService.create(request);
         return BatchOrderCreated.builder().id(batchOrderId).build();
     }
@@ -122,7 +164,7 @@ public class BatchController {
     @Operation(description = "Get a batch order for a given orderId.",
                operationId = "getBatchOrder",
                summary = "Get a batch order for a given orderId.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Get a batch order for a given orderId.",
@@ -157,7 +199,7 @@ public class BatchController {
                                          }),
     })
     @GetMapping("/orders/{orderId}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderResponse getBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -168,7 +210,7 @@ public class BatchController {
     @Operation(description = "Get a batch with a given batchId for a given orderId.",
                operationId = "getBatch",
                summary = "Get a batch with a given batchId for a given orderId.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Get a batch with a given batchId for a given orderId.",
@@ -203,7 +245,7 @@ public class BatchController {
                                          }),
     })
     @GetMapping("/orders/{orderId}/batches/{batchId}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchResponse getBatch(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
@@ -217,7 +259,7 @@ public class BatchController {
     @Operation(description = "Cancel a batch order for a given orderId.",
                operationId = "cancelBatchOrder",
                summary = "Cancel a batch order for a given orderId.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Cancel a batch order for a given orderId.",
@@ -252,7 +294,7 @@ public class BatchController {
                                          }),
     })
     @PutMapping("/orders/{orderId}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('view_irs')")
+    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderResponse cancelBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class), name = "orderId",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,

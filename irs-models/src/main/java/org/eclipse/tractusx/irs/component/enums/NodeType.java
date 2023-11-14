@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -30,8 +31,8 @@ import lombok.Getter;
 @Getter
 public enum NodeType {
     ROOT("Root Node of the tree - the initial C-X ID"),
-    NODE("Node of the tree with children - further AssemblyPartRelationShip aspects"),
-    LEAF("Leaf node of the tree - No further AssemblyPartRelationShip aspects"),
+    NODE("Node of the tree with children - further SingleLevelBomAsBuilt aspects"),
+    LEAF("Leaf node of the tree - No further SingleLevelBomAsBuilt aspects"),
     TOMBSTONE("Exceptional state - transient exception");
 
     private final String description;

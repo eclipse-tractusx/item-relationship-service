@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -41,13 +42,19 @@ public class Relationship {
 
     private static final int GLOBAL_ASSET_ID_LENGTH = 45;
 
-    @Schema(implementation = String.class, description = "CATENA-X global asset id in the format urn:uuid:uuid4.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-            minLength = GLOBAL_ASSET_ID_LENGTH, maxLength = GLOBAL_ASSET_ID_LENGTH, pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+    @Schema(implementation = String.class, description = "CATENA-X global asset id in the format urn:uuid:uuid4.",
+            example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0", minLength = GLOBAL_ASSET_ID_LENGTH,
+            maxLength = GLOBAL_ASSET_ID_LENGTH,
+            pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     @JsonUnwrapped
     private GlobalAssetIdentification catenaXId;
 
     private LinkedItem linkedItem;
 
-    private String  aspectType;
+    @Schema(implementation = String.class, example = "SingleLevelBomAsBuilt")
+    private String aspectType;
+
+    @Schema(implementation = String.class, example = "BPNL00000003AYRE")
+    private String bpn;
 
 }

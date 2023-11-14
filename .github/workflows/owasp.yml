@@ -24,7 +24,7 @@ jobs:
 
     name: owasp-check
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -40,7 +40,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: run maven owasp plugin
-        run: mvn --batch-mode install -Pdependency-check -DskipTests
+        run: mvn --batch-mode clean package dependency-check:aggregate -Pdependency-check -DskipTests
 
       - name: upload results
         if: always()

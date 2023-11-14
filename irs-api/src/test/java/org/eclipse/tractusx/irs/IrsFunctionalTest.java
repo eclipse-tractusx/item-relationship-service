@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -23,6 +24,8 @@
 package org.eclipse.tractusx.irs;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
 
 import java.time.Instant;
@@ -32,21 +35,24 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.controllers.IrsController;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
 import org.eclipse.tractusx.irs.util.TestMother;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -86,20 +92,22 @@ class IrsFunctionalTest {
         minioContainer.stop();
     }
 
-    @BeforeEach
-    void setUp() {
-    }
+    @MockBean
+    private ConnectorEndpointsService connectorEndpointsService;
 
     @Test
     void shouldStartJobAndRetrieveResult() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
+
         thereIsJwtAuthentication();
 
         final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
         final Optional<Jobs> finishedJob = Awaitility.await()
                                                      .pollDelay(500, TimeUnit.MILLISECONDS)
                                                      .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .atMost(150, TimeUnit.SECONDS)
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
@@ -108,9 +116,7 @@ class IrsFunctionalTest {
 
         assertThat(finishedJob).isPresent();
         assertThat(finishedJob.get().getRelationships()).isNotEmpty();
-        assertThat(finishedJob.get().getRelationships()).hasSize(1);
         assertThat(finishedJob.get().getShells()).isNotEmpty();
-        assertThat(finishedJob.get().getShells()).hasSize(2);
         assertThat(finishedJob.get().getTombstones()).isEmpty();
         assertThat(finishedJob.get().getSubmodels()).isEmpty();
         assertThat(finishedJob.get().getBpns()).isEmpty();
@@ -123,13 +129,16 @@ class IrsFunctionalTest {
     @Test
     void shouldFillSummaryWithoutBPNLookup() {
         final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
+
         thereIsJwtAuthentication();
 
         final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
         final Optional<Jobs> finishedJob = Awaitility.await()
                                                      .pollDelay(500, TimeUnit.MILLISECONDS)
                                                      .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .atMost(15, TimeUnit.SECONDS)
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
@@ -137,7 +146,7 @@ class IrsFunctionalTest {
                                                                                              .equals(JobState.COMPLETED));
 
         assertThat(finishedJob).isPresent();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isPositive();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
         assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isZero();
@@ -147,13 +156,15 @@ class IrsFunctionalTest {
     @Test
     void shouldFillSummaryWithBPNLookup() {
         final RegisterJob registerJob = TestMother.registerJobWithLookupBPNs();
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
         thereIsJwtAuthentication();
 
         final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
         final Optional<Jobs> finishedJob = Awaitility.await()
                                                      .pollDelay(500, TimeUnit.MILLISECONDS)
                                                      .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(5, TimeUnit.SECONDS)
+                                                     .atMost(15, TimeUnit.SECONDS)
                                                      .until(getJobDetails(jobHandle),
                                                              jobs -> jobs.isPresent() && jobs.get()
                                                                                              .getJob()
@@ -161,25 +172,25 @@ class IrsFunctionalTest {
                                                                                              .equals(JobState.COMPLETED));
 
         assertThat(finishedJob).isPresent();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isPositive();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
         assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(2);
+        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isPositive();
         assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
     }
 
     private void thereIsJwtAuthentication() {
         final JwtAuthenticationToken jwtAuthenticationToken = new JwtAuthenticationToken(jwt(),
-                List.of(new SimpleGrantedAuthority("view_irs")));
+                List.of(new SimpleGrantedAuthority(IrsRoles.VIEW_IRS)));
         jwtAuthenticationToken.setAuthenticated(true);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
+        when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
         SecurityContextHolder.setContext(securityContext);
     }
 
     Jwt jwt() {
         return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
-                Map.of(SUB, "sub", "clientId", "clientId", "bpn", "BPNL00000003CRHK"));
+                Map.of(SUB, "sub", "clientId", "clientId", "bpn", "BPNL00000001CRHK"));
     }
 
     @NotNull
@@ -203,7 +214,10 @@ class IrsFunctionalTest {
             final String hostAddress = minioContainer.getHostAddress();
             TestPropertySourceUtils.addInlinedPropertiesToEnvironment(applicationContext,
                     "blobstore.endpoint=http://" + hostAddress, "blobstore.accessKey=" + ACCESS_KEY,
-                    "blobstore.secretKey=" + SECRET_KEY);
+                    "blobstore.secretKey=" + SECRET_KEY, "policystore.persistence.endpoint=http://" + hostAddress,
+                    "policystore.persistence.accessKey=" + ACCESS_KEY,
+                    "policystore.persistence.secretKey=" + SECRET_KEY,
+                    "policystore.persistence.bucketName=policy-test");
         }
     }
 

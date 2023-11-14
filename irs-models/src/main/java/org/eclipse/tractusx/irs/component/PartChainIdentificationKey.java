@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -55,9 +56,11 @@ public class PartChainIdentificationKey {
             implementation = String.class, minLength = GLOBAL_ASSET_ID_SIZE, maxLength = GLOBAL_ASSET_ID_SIZE)
     private String globalAssetId;
 
-    @Pattern(regexp = BPN_REGEX)
+    // The BPN validation can be activated once all partners follow the pattern correctly
+    //@Pattern(regexp = BPN_REGEX)
     @Size(min = BPN_SIZE, max = BPN_SIZE)
-    @Schema(description = "BPN for part chain identification needed in decentral registry approach", example = "BPNL0123456789XX",
+    @NotBlank
+    @Schema(description = "BPN of partner providing the initial asset", example = "BPNL0123456789XX",
             implementation = String.class, minLength = BPN_SIZE, maxLength = BPN_SIZE)
     private String bpn;
 }

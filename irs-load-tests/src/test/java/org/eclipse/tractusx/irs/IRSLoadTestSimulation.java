@@ -52,6 +52,10 @@ public class IRSLoadTestSimulation extends Simulation {
                                 .saveAs("id")))
                 .exec(http("Get Job")
                         .get("/irs/jobs/#{id}?returnUncompletedJob=true")
+                        .check(status().is(200))
+                        .check(jsonPath(
+                                "$..state")
+                                .is("RUNNING"))
                         .headers(headers_1));
 
         setUp(scn.injectOpen(atOnceUsers(testCycles))).protocols(httpProtocol);

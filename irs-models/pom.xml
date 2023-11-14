@@ -10,8 +10,16 @@
         <relativePath>../irs-parent-spring-boot</relativePath>
     </parent>
 
-    <artifactId>irs-models</artifactId>
+    <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-tractusx/item-relationship-service.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git
+        </developerConnection>
+        <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    </scm>
 
+    <artifactId>irs-models</artifactId>
+    <version>${irs-registry-client.version}</version>
     <name>IRS Models</name>
     <description>Data Transfer Object definitions shared between controllers and clients. Part of OpenAPI definition.
     </description>
@@ -34,6 +42,7 @@
                     <artifactId>snakeyaml</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -44,22 +53,29 @@
                     <artifactId>snakeyaml</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-common</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.yaml</groupId>
                     <artifactId>snakeyaml</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
         </dependency>
         <!-- Update snakeyaml manually to avoid vulnerability CVE-2020-13936; can be removed after Spring updates their dependency -->
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>2.0</version>
+            <version>${snakeyaml.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -67,12 +83,13 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.6.8</version>
-            <scope>compile</scope>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

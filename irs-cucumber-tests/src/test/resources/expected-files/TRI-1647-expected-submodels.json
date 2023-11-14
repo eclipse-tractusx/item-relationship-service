@@ -1,0 +1,88 @@
+{
+    "submodels": [
+        {
+            "identification": "urn:uuid:06564726-8032-417f-9583-5385632c980e",
+            "aspectType": "urn:bamm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
+            "payload": {
+                "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                "subcomponents": [
+                    {
+                        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                        "productType": "pack"
+                    }
+                ],
+                "productType": "pack"
+            }
+        },
+        {
+            "identification": "urn:uuid:2dc2f65e-e2e5-4939-9624-3d2be4c76884",
+            "aspectType": "urn:bamm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
+            "payload": {
+                "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                "subcomponents": [
+                    {
+                        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                        "productType": "module"
+                    }
+                ],
+                "productType": "module"
+            }
+        },
+        {
+            "identification": "urn:uuid:76fe719c-cfc9-4247-9882-4460fe0166f0",
+            "aspectType": "urn:bamm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
+            "payload": {
+                "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                "subcomponents": [
+                    {
+                        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                        "productType": "module"
+                    }
+                ],
+                "productType": "module"
+            }
+        },
+        {
+            "identification": "urn:uuid:edb31207-09b1-4570-b5d4-f753d8463915",
+            "aspectType": "urn:bamm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
+            "payload": {
+                "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                "subcomponents": [
+                    {
+                        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                        "productType": "module"
+                    }
+                ],
+                "productType": "module"
+            }
+        },
+        {
+            "identification": "urn:uuid:987c584b-afa7-4ace-9a00-d63867a781e9",
+            "aspectType": "urn:bamm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
+            "payload": {
+                "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                "subcomponents": [
+                    {
+                        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                        "productType": "module"
+                    }
+                ],
+                "productType": "module"
+            }
+        },
+        {
+            "identification": "urn:uuid:003c7b24-5860-4b47-87f9-bb5366c237c0",
+            "aspectType": "urn:bamm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
+            "payload": {
+                "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                "subcomponents": [
+                    {
+                        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
+                        "productType": "module"
+                    }
+                ],
+                "productType": "module"
+            }
+        }
+    ]
+}

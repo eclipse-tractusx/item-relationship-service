@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,8 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job;
 
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -34,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.eclipse.tractusx.irs.InMemoryBlobStore;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.util.TestMother;
@@ -49,12 +51,14 @@ class AASTransferProcessManagerTest {
     DigitalTwinDelegate digitalTwinProcessor = mock(DigitalTwinDelegate.class);
     ExecutorService pool = mock(ExecutorService.class);
 
-    final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinProcessor, pool, new InMemoryBlobStore());
+    final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinProcessor, pool,
+            new InMemoryBlobStore());
 
     @Test
     void shouldExecuteThreadForProcessing() {
         // given
-        final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
+        final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(
+                PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).bpn("bpn123").build());
 
         // when
         manager.initiateRequest(itemDataRequest, s -> {
@@ -68,7 +72,8 @@ class AASTransferProcessManagerTest {
     @Test
     void shouldInitiateProcessingAndReturnOkStatus() {
         // given
-        final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(UUID.randomUUID().toString());
+        final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(
+                PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).bpn("bpn123").build());
 
         // when
         final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {

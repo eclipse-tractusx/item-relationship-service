@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,10 +23,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutEndpoint;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,8 +36,10 @@ import java.util.List;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
-import org.eclipse.tractusx.irs.aaswrapper.registry.domain.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
+import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
 
@@ -46,29 +49,36 @@ class DigitalTwinDelegateTest {
     final DigitalTwinDelegate digitalTwinDelegate = new DigitalTwinDelegate(null, digitalTwinRegistryService);
 
     @Test
-    void shouldFillItemContainerWithShell() {
+    void shouldFillItemContainerWithShell() throws RegistryServiceException {
         // given
-        when(digitalTwinRegistryService.getAAShellDescriptor(any())).thenReturn(shellDescriptor(
-                List.of(submodelDescriptorWithoutEndpoint("any"))));
+        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
+                List.of(shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), createKey());
 
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
     }
 
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
+    }
+    private static PartChainIdentificationKey createKeyWithoutBpn() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").build();
+    }
+
     @Test
-    void shouldCatchRestClientExceptionAndPutTombstone() {
+    void shouldCatchRestClientExceptionAndPutTombstone() throws RegistryServiceException {
         // given
-        when(digitalTwinRegistryService.getAAShellDescriptor(any())).thenThrow(
+        when(digitalTwinRegistryService.fetchShells(any())).thenThrow(
                 new RestClientException("Unable to call endpoint"));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
-                new AASTransferProcess(), "itemId");
+                new AASTransferProcess("id", 0), createKey());
 
         // then
         assertThat(result).isNotNull();
@@ -76,6 +86,21 @@ class DigitalTwinDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getRetryCounter()).isEqualTo(
                 RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts());
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.DIGITAL_TWIN_REQUEST);
+    }
+
+    @Test
+    void shouldCreateTombstoneIfBPNEmpty() {
+        // when
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
+                new AASTransferProcess("id", 0), createKeyWithoutBpn());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo("Can't get relationship without a BPN");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.DIGITAL_TWIN_REQUEST);
     }

@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -35,35 +35,9 @@ jobs:
           echo "::set-output name=current_version::$chartVersion"
           echo "Exported $chartVersion helm charts version"
 
-  get-helm-charts-versions-edc:
-    outputs:
-      latest_version: ${{ steps.step1.outputs.latest_version }}
-      current_version: ${{ steps.step2.outputs.current_version }}
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Get helm charts latest tag version
-        id: step1
-        run: |
-          latestVersion=$(git tag | grep "irs-edc-consumer-[1-9]" | tail -1)
-          echo "::set-output name=latest_version::$latestVersion"
-          echo "Exported $latestVersion latest helm charts version"
-      - name: Get helm charts current version
-        id: step2
-        run: |
-          chartVersion=irs-edc-consumer-$(cat ./charts/edc-consumer/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
-          echo "::set-output name=current_version::$chartVersion"
-          echo "Exported $chartVersion helm charts version"
-
   release:
-    needs: ["get-helm-charts-versions-irs", "get-helm-charts-versions-edc"]
-    if: needs.get-helm-charts-versions-irs.outputs.latest_version != needs.get-helm-charts-versions-irs.outputs.current_version || needs.get-helm-charts-versions-edc.outputs.latest_version != needs.get-helm-charts-versions-edc.outputs.current_version
+    needs: "get-helm-charts-versions-irs"
+    if: needs.get-helm-charts-versions-irs.outputs.latest_version != needs.get-helm-charts-versions-irs.outputs.current_version
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
     # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
     permissions:
@@ -71,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -86,15 +60,31 @@ jobs:
           version: v3.8.1
 
       - name: Update helm dependencies for irs
+        working-directory: charts/irs-helm/
         run: |
-          cd charts/irs-helm
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo add grafana https://grafana.github.io/helm-charts
           helm dependency update
 
+      - name: Create temporary CHANGELOG file for helm release
+        working-directory: charts/irs-helm/
+        run: |
+          touch CHANGELOG-temp.md
+          
+          currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^irs-helm-//" )
+          echo currentVersionNumber=$currentVersionNumber
+          
+          sed -n -e '/## \['"${currentVersionNumber}"'\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> CHANGELOG-temp.md
+          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ needs.get-helm-charts-versions-irs.outputs.latest_version }}...${{ needs.get-helm-charts-versions-irs.outputs.current_version }} >> CHANGELOG-temp.md
+          
+          echo "cat CHANGELOG-temp.md"
+          cat CHANGELOG-temp.md
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
+        with:
+          config: ./.github/configs/cr-config.yml
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

@@ -1,0 +1,48 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+autonumber "<b>[000]"
+
+participant "Client App (Script)" as Client
+
+box "OEM" #LightGrey
+    participant SubmodelServer as SubmodelServer
+    participant dDTR as dDTR
+end box
+
+loop array of aasIdentifier
+    Client -> dDTR : /shell-descriptors/{aasIdentifier}/{bpn}
+    ref over dDTR
+        create collection of {aasIdentifier}
+
+        registry/shell-descriptors/{aasIdentifier} for given BPN
+        collection.add({aasIdentifier})
+    end
+end loop
+
+
+Client <-- dDTR : return array of {aasIdentifier}
+
+Client -> Client :  filter aas for submodelDescriptor  (asPlanned)
+        note right
+               semanticId/
+                    ["type"="ExternalReference"]/
+                        keys["type"="GlobalReference"]/
+                            ["value".contains("SingleLevelBomAsPlanned")]
+               SingleLevelBomAsPlanned (only downwards supported!!)
+        end note
+
+opt aas is asPlanned
+
+     Client -> Client : add aas to aasResultSet
+     note right
+                 Requesting all twins for a given "bomLifecycle"
+     end note
+
+end opt
+
+Client <-- Client : aasResultSet
+
+@enduml

@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.connector.job;
 
+import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,14 +33,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.common.JsonParseException;
-import org.eclipse.tractusx.irs.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.data.JsonParseException;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -45,7 +48,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class PersistentJobStore extends BaseJobStore {
 
     /**
@@ -58,6 +60,13 @@ public class PersistentJobStore extends BaseJobStore {
     private final JsonUtil json = new JsonUtil();
 
     private final MeterRegistryService meterService;
+
+    public PersistentJobStore(@Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
+            final MeterRegistryService meterService) {
+        super();
+        this.blobStore = blobStore;
+        this.meterService = meterService;
+    }
 
     @Override
     protected Optional<MultiTransferJob> get(final String jobId) {

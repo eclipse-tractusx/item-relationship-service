@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,26 +23,36 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
 /**
  * EDC negotiation response.
  */
-@Value
+@Data
 @Builder(toBuilder = true)
 @Jacksonized
 public class NegotiationResponse {
 
-    @JsonProperty("id")
+    @JsonProperty("@id")
     private String responseId;
+    @JsonProperty("edc:contractAgreementId")
     private String contractAgreementId;
+    @JsonProperty("edc:counterPartyAddress")
     private String counterPartyAddress;
+    @JsonProperty("edc:errorDetail")
     private String errorDetail;
+    @JsonProperty("edc:protocol")
     private String protocol;
+    @JsonProperty("edc:state")
     private String state;
+    @JsonProperty("edc:type")
     private String type;
+    @JsonProperty("edc:callbackAddresses")
+    private List<String> callbackAddresses;
 
 }

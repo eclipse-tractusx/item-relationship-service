@@ -1,0 +1,20 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+entity  Customers {
+     businessPartnerNumberLegalEntity : string
+}
+entity  CustomerParts{
+    globalAssetId : string
+}
+entity  Sites{
+    businessPartnerNumberSite : string
+}
+
+Customers "0..*" - "1..*" CustomerParts
+
+CustomerParts "0..*" - "1..*" Sites
+
+@enduml

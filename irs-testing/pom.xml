@@ -10,8 +10,16 @@
         <relativePath>../irs-parent-spring-boot</relativePath>
     </parent>
 
-    <artifactId>irs-testing</artifactId>
+    <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-tractusx/item-relationship-service.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git
+        </developerConnection>
+        <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    </scm>
 
+    <artifactId>irs-testing</artifactId>
+    <version>${irs-registry-client.version}</version>
     <name>IRS Testing Utilities</name>
     <description>Item Relationship Service Testing Utilities</description>
 
@@ -20,7 +28,7 @@
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
-                <version>1.17.6</version>
+                <version>${testcontainers-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -49,13 +57,13 @@
         <dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
-            <version>2.4.10</version>
+            <version>${json-smart.version}</version>
         </dependency>
         <!-- Update snakeyaml manually to avoid vulnerability CVE-2020-13936; can be removed after Spring updates their dependency -->
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>2.0</version>
+            <version>${snakeyaml.version}</version>
         </dependency>
         <dependency>
             <groupId>net.datafaker</groupId>
@@ -65,16 +73,15 @@
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-models</artifactId>
-            <version>${revision}</version>
+            <version>${irs-registry-client.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.tractusx.irs</groupId>
-            <artifactId>irs-common</artifactId>
-            <version>${revision}</version>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>

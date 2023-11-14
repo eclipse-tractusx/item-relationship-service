@@ -11,7 +11,8 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0. *
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -23,10 +24,10 @@
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -62,15 +63,20 @@ public class AssetAdministrationShellDescriptor {
     /**
      * globalAssetId
      */
-    private Reference globalAssetId;
+    @Schema(description = "Id of global asset.", example = "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
+            implementation = String.class)
+    private String globalAssetId;
     /**
      * idShort
      */
+    @Schema(implementation = String.class, example = "future concept x")
     private String idShort;
     /**
-     * identification
+     * id
      */
-    private String identification;
+    @SuppressWarnings("PMD.ShortVariable")
+    @Schema(implementation = String.class, example = "882fc530-b69b-4707-95f6-5dbc5e9baaa8")
+    private String id;
     /**
      * specificAssetIds
      */
@@ -87,7 +93,7 @@ public class AssetAdministrationShellDescriptor {
      */
     public Optional<String> findManufacturerId() {
         return this.specificAssetIds.stream()
-                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getKey()))
+                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getName()))
                                     .map(IdentifierKeyValuePair::getValue)
                                     .findFirst();
     }
@@ -99,8 +105,8 @@ public class AssetAdministrationShellDescriptor {
     public AssetAdministrationShellDescriptor withFilteredSubmodelDescriptors(final List<String> aspectTypes) {
         final List<String> filterAspectTypes = new ArrayList<>(aspectTypes);
 
-        if (notContainsAssemblyPartRelationship(filterAspectTypes)) {
-            filterAspectTypes.add(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
+        if (notContainsSingleLevelBomAsBuilt(filterAspectTypes)) {
+            filterAspectTypes.add(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
             log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
         }
 
@@ -112,15 +118,13 @@ public class AssetAdministrationShellDescriptor {
      * @param relationshipAspect filter for aspect type
      * @return The filtered list of submodel addresses
      */
-    public List<String> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
+    public List<Endpoint> findRelationshipEndpointAddresses(final AspectType relationshipAspect) {
         final List<SubmodelDescriptor> filteredSubmodelDescriptors = filterDescriptorsByAspectTypes(
                 List.of(relationshipAspect.toString()));
         return filteredSubmodelDescriptors.stream()
                                           .map(SubmodelDescriptor::getEndpoints)
-                                          .flatMap(endpoints -> endpoints.stream()
-                                                                         .map(Endpoint::getProtocolInformation)
-                                                                         .map(ProtocolInformation::getEndpointAddress))
-                                          .collect(Collectors.toList());
+                                          .flatMap(Collection::stream)
+                                          .toList();
     }
 
     /**
@@ -138,7 +142,9 @@ public class AssetAdministrationShellDescriptor {
     }
 
     private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {
-        final Optional<String> submodelAspectType = submodelDescriptor.getSemanticId().getValue().stream().findFirst();
+        final Optional<String> submodelAspectType = Optional.ofNullable(submodelDescriptor.getSemanticId().getKeys())
+                                                            .flatMap(key -> key.stream().findFirst())
+                                                            .map(SemanticId::getValue);
         return submodelAspectType.map(
                 semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter)
                         || semanticId.equals(aspectTypeFilter)).orElse(false);
@@ -152,7 +158,7 @@ public class AssetAdministrationShellDescriptor {
         return semanticId.contains(join);
     }
 
-    private boolean notContainsAssemblyPartRelationship(final List<String> filterAspectTypes) {
-        return !filterAspectTypes.contains(AspectType.ASSEMBLY_PART_RELATIONSHIP.toString());
+    private boolean notContainsSingleLevelBomAsBuilt(final List<String> filterAspectTypes) {
+        return !filterAspectTypes.contains(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
     }
 }
