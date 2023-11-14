@@ -12,7 +12,6 @@ skinparam defaultFontName "Architects daughter"
     component [**EssController**] <<Component>> as EssController
     component [**JobOrchestrator**] <<Component>> as JobOrchestrator
     component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement
-    component [**PolicyStore**] <<Component>> as PolicyStore
 
 
     port "API" as API_PORT
@@ -26,8 +25,7 @@ skinparam defaultFontName "Architects daughter"
     JobOrchestrator <..> TransferProcessManagement
     JobOrchestrator <..> RecursiveJobHandler
     TransferProcessManagement --( StoreInterface
-    PolicyStore -( StoreInterface
-    PolicyStoreController <.> PolicyStore
+    PolicyStoreController -( StoreInterface
     EssController <..> JobOrchestrator
 
 }
