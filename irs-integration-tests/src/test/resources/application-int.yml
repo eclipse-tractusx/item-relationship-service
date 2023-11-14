@@ -7,8 +7,8 @@ spring:
         registration:
           common:
             authorization-grant-type: client_credentials
-            client-id: ${COMMON_OAUTH2_CLIENT_ID}
-            client-secret: ${COMMON_OAUTH2_CLIENT_SECRET}
+            client-id: ${OAUTH2_CLIENT_ID}
+            client-secret: ${OAUTH2_CLIENT_SECRET}
   config:
     activate:
       on-profile: int
