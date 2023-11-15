@@ -1080,7 +1080,7 @@ components:
               - language: en
                 text: The shell for a vehicle
             globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-            id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            id: urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8
             idShort: future concept x
             specificAssetIds:
               - name: engineserialid
@@ -1096,12 +1096,15 @@ components:
                       endpointProtocolVersion:
                         - "1.0"
                       href: https://catena-x.net/vehicle/basedetails/
-                id: 4a738a24-b7d8-4989-9cd6-387772f40565
-                idShort: vehicle base details
+                      subprotocol: DSP
+                      subprotocolBody: id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net
+                      subprotocolBodyEncoding: plain
+                id: urn:uuid:5d25a897-6571-4800-b98c-a3352fbf996d
+                idShort: SingleLevelBomAsPlanned
                 semanticId:
                   keys:
-                    - type: Submodel
-                      value: urn:bamm:com.catenax.vehicle:0.1.1
+                    - type: ExternalReference
+                      value: urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned
                   type: ModelReference
               - description:
                   - language: en
@@ -1113,7 +1116,10 @@ components:
                       endpointProtocolVersion:
                         - "1.0"
                       href: https://catena-x.net/vehicle/partdetails/
-                id: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                      subprotocol: DSP
+                      subprotocolBody: id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net
+                      subprotocolBodyEncoding: plain
+                id: urn:uuid:dae4d249-6d66-4818-b576-bf52f3b9ae90
                 idShort: vehicle part details
                 semanticId:
                   keys:
@@ -1193,7 +1199,7 @@ components:
               - language: en
                 text: The shell for a vehicle
             globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-            id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            id: urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8
             idShort: future concept x
             specificAssetIds:
               - name: engineserialid
@@ -1205,16 +1211,20 @@ components:
                 endpoints:
                   - interface: HTTP
                     protocolInformation:
-                      href: https://catena-x.net/vehicle/basedetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: ["1.0"]
-                idShort: vehicle base details
-                id: 4a738a24-b7d8-4989-9cd6-387772f40565
+                      endpointProtocolVersion:
+                        - "1.0"
+                      href: https://catena-x.net/vehicle/basedetails/
+                      subprotocol: DSP
+                      subprotocolBody: id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net
+                      subprotocolBodyEncoding: plain
+                idShort: SingleLevelBomAsPlanned
+                id: urn:uuid:5d25a897-6571-4800-b98c-a3352fbf996d
                 semanticId:
                   type: ModelReference
                   keys:
-                    - type: Submodel
-                      value: urn:bamm:com.catenax.vehicle:0.1.1
+                    - type: ExternalReference
+                      value: urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned
               - description:
                   - language: en
                     text: Provides base vehicle information
@@ -1223,8 +1233,12 @@ components:
                     protocolInformation:
                       href: https://catena-x.net/vehicle/partdetails/
                       endpointProtocol: HTTPS
-                      endpointProtocolVersion: ["1.0"]
-                id: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                      endpointProtocolVersion:
+                        - "1.0"
+                      subprotocol: DSP
+                      subprotocolBody: id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net
+                      subprotocolBodyEncoding: plain
+                id: urn:uuid:dae4d249-6d66-4818-b576-bf52f3b9ae90
                 idShort: vehicle part details
                 semanticId:
                   keys:
@@ -1373,7 +1387,7 @@ components:
               - language: en
                 text: The shell for a vehicle
             globalAssetId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
-            id: 882fc530-b69b-4707-95f6-5dbc5e9baaa8
+            id: urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8
             idShort: future concept x
             specificAssetIds:
               - name: engineserialid
@@ -1385,16 +1399,19 @@ components:
                 endpoints:
                   - interface: HTTP
                     protocolInformation:
-                      href: https://catena-x.net/vehicle/basedetails/
                       endpointProtocol: HTTPS
                       endpointProtocolVersion: ["1.0"]
-                id: 4a738a24-b7d8-4989-9cd6-387772f40565
-                idShort: vehicle base details
+                      href: https://catena-x.net/vehicle/basedetails/
+                      subprotocol: DSP
+                      subprotocolBody: id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net
+                      subprotocolBodyEncoding: plain
+                id: urn:uuid:5d25a897-6571-4800-b98c-a3352fbf996d
+                idShort: SingleLevelBomAsPlanned
                 semanticId:
                   type: ModelReference
                   keys:
-                    - type: Submodel
-                      value: urn:bamm:com.catenax.vehicle:0.1.1
+                    - type: ExternalReference
+                      value: urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned
               - description:
                   - language: en
                     text: Provides base vehicle information
@@ -1404,7 +1421,10 @@ components:
                       href: https://catena-x.net/vehicle/partdetails/
                       endpointProtocol: HTTPS
                       endpointProtocolVersion: ["1.0"]
-                id: dae4d249-6d66-4818-b576-bf52f3b9ae90
+                      subprotocol: DSP
+                      subprotocolBody: id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net
+                      subprotocolBodyEncoding: plain
+                id: urn:uuid:dae4d249-6d66-4818-b576-bf52f3b9ae90
                 idShort: vehicle part details
                 semanticId:
                   type: ModelReference

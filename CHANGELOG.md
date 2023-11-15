@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
             common:
               token-uri:
   ```
+- Update IRS API Swagger documentation to match AAS 3.0.0
   
 ## [4.0.1] - 2023-11-10
 ### Changed
