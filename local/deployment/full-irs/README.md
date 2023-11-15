@@ -25,6 +25,11 @@
 
 Check out the project [Item Relationship Service](https://github.com/eclipse-tractusx/item-relationship-service) or download a [released version](https://github.com/eclipse-tractusx/item-relationship-service/releases) of the Item Relationship Service
 
+> 👉 Please use the [tag 2.6.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/2.6.0) for uploading test data
+>
+> ```git clone -b 2.6.0 https://github.com/catenax-ng/tx-item-relationship-service```
+
+
 ### Step 3: Installing the services
 
 #### 1. Start the cluster
