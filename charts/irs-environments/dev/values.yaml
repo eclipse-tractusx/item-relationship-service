@@ -23,7 +23,7 @@ irs-helm:
   management:
     health:
       dependencies:
-        enabled: true
+        enabled: "true"
         urls:
           bpdmService: https://partners-pool.int.demo.catena-x.net/ui/swagger-ui/index.html
           dtrService: http://cx-irs-registry-registry:4243/actuator/health/liveness
