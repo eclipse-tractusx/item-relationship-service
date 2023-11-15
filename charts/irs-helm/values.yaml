@@ -148,12 +148,11 @@ bpdm:
 minioUser: "minio"  # <minio-username>
 minioPassword:  # <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
-keycloak:
-  oauth2:
-    clientId:  # <keycloak-client-id>
-    clientSecret:  # <keycloak-client-secret>
-    clientTokenUri:  # <keycloak-token-uri>
-    jwkSetUri:  # <keycloak-jwkset-uri>
+oauth2:
+  clientId:  # <oauth2-client-id>
+  clientSecret:  # <oauth2-client-secret>
+  clientTokenUri:  # <oauth2-token-uri>
+  jwkSetUri:  # <oauth2-jwkset-uri>
 portal:
   oauth2:
     clientId:  # <portal-client-id>
