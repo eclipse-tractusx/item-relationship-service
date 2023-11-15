@@ -44,12 +44,11 @@ irs-helm:
     url: https://partners-pool.int.demo.catena-x.net
   minioUser: <path:traceability-irs/data/dev/minio#minioUser>
   minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
-  keycloak:
-    oauth2:
-      clientId: <path:traceability-irs/data/dev/keycloak/oauth2#clientId>
-      clientSecret: <path:traceability-irs/data/dev/keycloak/oauth2#clientSecret>
-      clientTokenUri: <path:traceability-irs/data/dev/keycloak/oauth2#tokenUri>
-      jwkSetUri: <path:traceability-irs/data/dev/keycloak/oauth2#jwkSetUri>
+  oauth2:
+    clientId: <path:traceability-irs/data/dev/oauth2#clientId>
+    clientSecret: <path:traceability-irs/data/dev/oauth2#clientSecret>
+    clientTokenUri: <path:traceability-irs/data/dev/oauth2#tokenUri>
+    jwkSetUri: <path:traceability-irs/data/dev/oauth2#jwkSetUri>
   edc:
     controlplane:
       apikey:

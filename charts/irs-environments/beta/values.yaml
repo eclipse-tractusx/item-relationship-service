@@ -27,12 +27,11 @@ irs-helm:
     url: https://partners-pool.beta.demo.catena-x.net
   minioUser: secret-placeholder
   minioPassword: secret-placeholder
-  keycloak:
-    oauth2:
-      clientId: secret-placeholder
-      clientSecret: secret-placeholder
-      clientTokenUri: secret-placeholder
-      jwkSetUri: secret-placeholder
+  oauth2:
+    clientId: secret-placeholder
+    clientSecret: secret-placeholder
+    clientTokenUri: secret-placeholder
+    jwkSetUri: secret-placeholder
   edc:
     controlplane:
       apikey:

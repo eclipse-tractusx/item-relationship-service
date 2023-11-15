@@ -34,12 +34,11 @@ irs-helm:
     url: https://partners-pool.int.demo.catena-x.net
   minioUser: <path:traceability-irs/data/dev/minio#minioUser>
   minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
-  keycloak:
-    oauth2:
-      clientId: <path:traceability-irs/data/dil/keycloak/oauth2#clientId>
-      clientSecret: <path:traceability-irs/data/dil/keycloak/oauth2#clientSecret>
-      clientTokenUri: <path:traceability-irs/data/dil/keycloak/oauth2#tokenUri>
-      jwkSetUri: <path:traceability-irs/data/dil/keycloak/oauth2#jwkSetUri>
+  oauth2:
+    clientId: <path:traceability-irs/data/dil/oauth2#clientId>
+    clientSecret: <path:traceability-irs/data/dil/oauth2#clientSecret>
+    clientTokenUri: <path:traceability-irs/data/dil/oauth2#tokenUri>
+    jwkSetUri: <path:traceability-irs/data/dil/oauth2#jwkSetUri>
   edc:
     controlplane:
       apikey:
@@ -70,20 +69,20 @@ irs-helm:
           oauth2:
             client:
               registration:
-                keycloak:
-                  client-id: "${KEYCLOAK_OAUTH2_CLIENT_ID}" # taken from secret ENV
-                  client-secret: "${KEYCLOAK_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+                common:
+                  client-id: "${OAUTH2_CLIENT_ID}" # taken from secret ENV
+                  client-secret: "${OAUTH2_CLIENT_SECRET}" # taken from secret ENV
                 portal:
                   client-id: ${PORTAL_OAUTH2_CLIENT_ID} # taken from secret ENV
                   client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # taken from secret ENV
               provider:
-                keycloak:
-                  token-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#tokenUri>"
+                common:
+                  token-uri: "<path:traceability-irs/data/dil/oauth2#tokenUri>"
                 portal:
-                  token-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#tokenUri>"
+                  token-uri: "<path:traceability-irs/data/dil/oauth2#tokenUri>"
             resourceserver:
               jwt:
-                jwk-set-uri: "<path:traceability-irs/data/dil/keycloak/oauth2#jwkSetUri>"
+                jwk-set-uri: "<path:traceability-irs/data/dil/oauth2#jwkSetUri>"
 
       digitalTwinRegistry:
         descriptorEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/shell-descriptors/{aasIdentifier}"
