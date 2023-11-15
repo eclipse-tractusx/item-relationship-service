@@ -39,8 +39,8 @@ irs-helm:
     jwkSetUri: <path:traceability-irs/data/int/oauth2#jwkSetUri>
   portal:
     oauth2:
-      clientId: <path:traceability-irs/data/int/keycloak/dataspacediscovery#clientId>
-      clientSecret: <path:traceability-irs/data/int/keycloak/dataspacediscovery#clientSecret>
+      clientId: <path:traceability-irs/data/int/dataspacediscovery#clientId>
+      clientSecret: <path:traceability-irs/data/int/dataspacediscovery#clientSecret>
   edc:
     controlplane:
       apikey:
