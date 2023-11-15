@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
   - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
 
+### Known knowns
+- [#253] Cancelation of order jobs is not working stable
+
 ## [4.0.0] - 2023-10-27
 ### Added
 - Introduced new API endpoint to register ESS Jobs in Batch - POST {{IRS_HOST}}/irs/ess/orders
