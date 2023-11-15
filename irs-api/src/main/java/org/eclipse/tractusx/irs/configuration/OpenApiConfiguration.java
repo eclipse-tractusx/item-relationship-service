@@ -69,12 +69,12 @@ public class OpenApiConfiguration {
     /**
      * Generates example values in Swagger
      *
-     * @param tokenUri the keycloak token uri loaded from application.yaml
+     * @param tokenUri the OAuth2 token uri loaded from application.yaml
      * @return the customizer
      */
     @Bean
     public OpenApiCustomizer customizer(
-            @Value("${spring.security.oauth2.client.provider.keycloak.token-uri}") final String tokenUri) {
+            @Value("${spring.security.oauth2.client.provider.common.token-uri}") final String tokenUri) {
         return openApi -> {
             final Components components = openApi.getComponents();
             components.addSecuritySchemes("oAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
