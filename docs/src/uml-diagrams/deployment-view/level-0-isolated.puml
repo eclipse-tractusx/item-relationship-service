@@ -21,7 +21,7 @@ node "Kubernetes Cluster" as k8s {
         component "Decentral Registry" as dtr
     }
 
-    component Keycloak
+    component OAuth2
     component "Managed IdentityWallet" as MIW
 
     component "Discovery Service" as ds
@@ -40,9 +40,9 @@ node "Kubernetes Cluster" as k8s {
     provider -- submodel
     provider -- dtr
 
-    Keycloak ---> ds
-    Keycloak ---> IRS
-    Keycloak ---> semHub
+    OAuth2 ---> ds
+    OAuth2 ---> IRS
+    OAuth2 ---> semHub
 
     IRS -> semHub
     IRS -> frontend

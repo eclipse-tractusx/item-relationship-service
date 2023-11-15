@@ -7,7 +7,7 @@ skinparam defaultFontName "Architects daughter"
 
 cloud "Digital Twin Registry" as dtr
 cloud "EDC Providers" as providers
-cloud Keycloak
+cloud OAuth2
 cloud "HashiCorp Vault" as vault
 
 node "IRS Kubernetes Cluster" as k8s {
@@ -23,7 +23,7 @@ node "IRS Kubernetes Cluster" as k8s {
 
 }
 
-IRS -> Keycloak
+IRS -> OAuth2
 providers -- dtr
 consumer -- providers
 consumer -- vault

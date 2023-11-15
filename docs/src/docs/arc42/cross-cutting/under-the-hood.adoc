@@ -20,7 +20,7 @@ There currently is no transaction management in the IRS.
 There is no session handling in the IRS, access is solely based on bearer tokens, the API is stateless.
 
 == Communication and integration
-All interfaces to other systems are using RESTful calls over HTTP(S). Where central authentication is required, a common Keycloak instance is used.
+All interfaces to other systems are using RESTful calls over HTTP(S). Where central authentication is required, a common OAuth2 provider is used.
 
 For outgoing calls, the Spring RestTemplate mechanism is used and separate RestTemplates are created for the different ways of authentication.
 

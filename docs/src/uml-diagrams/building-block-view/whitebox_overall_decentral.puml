@@ -26,7 +26,7 @@ package [**OEM**] <<CatenaX Company>> as consumer {
 package [**CatenaX-Network**] as network {
     component [**Managed Identity Wallet**] <<System>> as miw
     component [**Portal Application**] <<System>> as IAM_IRS
-    component [**Portal (IAM/IdP/KeyCloak)**] <<System>> as Portal_IdP
+    component [**Portal (IAM/IdP/OAuth2)**] <<System>> as Portal_IdP
     component [**EDC Discovery Service**] <<System>> as edc_discovery
     component [**Discovery Finder**] <<System>> as discovery_finder
     component [**Semantic Hub**] <<System>> as semantic_hub

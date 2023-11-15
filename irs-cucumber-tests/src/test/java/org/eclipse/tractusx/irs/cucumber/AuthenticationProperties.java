@@ -37,16 +37,16 @@ import lombok.Builder;
     private final String uri;
     private final String clientId;
     private final String clientSecret;
-    private final String keycloakUrl;
+    private final String oauth2Url;
     private final String grantType;
     private final String tokenPath;
 
     /* package */ AuthenticationProperties(final String uri, final String clientId, final String clientSecret,
-            final String keycloakUrl, final String grantType, final String tokenPath) {
+            final String oauth2Url, final String grantType, final String tokenPath) {
         this.uri = uri;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
-        this.keycloakUrl = keycloakUrl;
+        this.oauth2Url = oauth2Url;
         this.grantType = grantType;
         this.tokenPath = tokenPath;
     }
@@ -57,7 +57,7 @@ import lombok.Builder;
         oauth2Payload.put("client_id", clientId);
         oauth2Payload.put("client_secret", clientSecret);
 
-        return given().params(oauth2Payload).post(keycloakUrl).then().extract().jsonPath().getString(tokenPath);
+        return given().params(oauth2Payload).post(oauth2Url).then().extract().jsonPath().getString(tokenPath);
     }
 
     /* package */ RequestSpecification getNewAuthenticationRequestSpecification() {

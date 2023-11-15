@@ -103,18 +103,18 @@ public class E2ETestStepDefinitions {
     @And("the user {string} with authentication")
     public void theUser(String clientId) throws PropertyNotFoundException {
         authenticationPropertiesBuilder.clientId(clientId);
-        final String keycloakClientSecretKey = "KEYCLOAK_CLIENT_SECRET";
-        String clientSecret = System.getenv(keycloakClientSecretKey);
+        final String oauth2UrlClientSecretKey = "OAUTH2_CLIENT_SECRET";
+        String clientSecret = System.getenv(oauth2UrlClientSecretKey);
         if (clientSecret != null) {
             authenticationPropertiesBuilder.clientSecret(clientSecret);
         } else {
-            throw new PropertyNotFoundException("Environment Variable missing: " + keycloakClientSecretKey);
+            throw new PropertyNotFoundException("Environment Variable missing: " + oauth2UrlClientSecretKey);
         }
     }
 
-    @And("the keycloak token url {string}")
-    public void theKeycloakTokenUrl(String tokenUrl) {
-        authenticationPropertiesBuilder.keycloakUrl(tokenUrl);
+    @And("the OAuth2 token url {string}")
+    public void theOAuth2TokenUrl(String tokenUrl) {
+        authenticationPropertiesBuilder.oauth2Url(tokenUrl);
     }
 
     @Given("I register an IRS job for globalAssetId {string}")

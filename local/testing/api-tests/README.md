@@ -12,9 +12,9 @@
 export IRS_HOST="http://localhost:8080"
 export GLOBAL_ASSET_ID=urn:uuid:a4a2ba57-1c50-48ad-8981-7a0ef032146b
 # cannot put secrets here, please set it manually
-export KEYCLOAK_HOST=""
-export KEYCLOAK_CLIENT_ID=
-export KEYCLOAK_CLIENT_SECRET=
+export OAUTH2_HOST=""
+export OAUTH2_CLIENT_ID=
+export OAUTH2_CLIENT_SECRET=
 ```
 * Execute command 
 ```console
