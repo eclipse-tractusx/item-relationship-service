@@ -673,22 +673,22 @@ pre.rouge {
     <span class="na">oauth2</span><span class="pi">:</span>
       <span class="na">client</span><span class="pi">:</span>
         <span class="na">registration</span><span class="pi">:</span>
-          <span class="na">keycloak</span><span class="pi">:</span>
+          <span class="na">common</span><span class="pi">:</span>
             <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
-            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${KEYCLOAK_OAUTH2_CLIENT_ID}</span> <span class="c1"># OAuth2 client ID used to authenticate with the IAM</span>
-            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${KEYCLOAK_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># OAuth2 client secret used to authenticate with the IAM</span>
+            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${OAUTH2_CLIENT_ID}</span> <span class="c1"># OAuth2 client ID used to authenticate with the IAM</span>
+            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${OAUTH2_CLIENT_SECRET}</span> <span class="c1"># OAuth2 client secret used to authenticate with the IAM</span>
           <span class="na">portal</span><span class="pi">:</span>
             <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
             <span class="na">client-id</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_ID}</span> <span class="c1"># OAuth2 client ID used to authenticate with the IAM</span>
             <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># OAuth2 client secret used to authenticate with the IAM</span>
         <span class="na">provider</span><span class="pi">:</span>
-          <span class="na">keycloak</span><span class="pi">:</span>
-            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
+          <span class="na">common</span><span class="pi">:</span>
+            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
           <span class="na">portal</span><span class="pi">:</span>
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
       <span class="na">resourceserver</span><span class="pi">:</span>
         <span class="na">jwt</span><span class="pi">:</span>
-          <span class="na">jwk-set-uri</span><span class="pi">:</span> <span class="s">${KEYCLOAK_OAUTH2_JWK_SET_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request the JWK set</span>
+          <span class="na">jwk-set-uri</span><span class="pi">:</span> <span class="s">${OAUTH2_JWK_SET_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request the JWK set</span>
 
 <span class="na">management</span><span class="pi">:</span> <span class="c1"># Spring management API config, see https://spring.io/guides/gs/centralized-configuration/</span>
   <span class="na">endpoints</span><span class="pi">:</span>
@@ -708,6 +708,9 @@ pre.rouge {
       <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
     <span class="na">readinessstate</span><span class="pi">:</span>
       <span class="na">enabled</span><span class="pi">:</span> <span class="no">true</span>
+    <span class="na">dependencies</span><span class="pi">:</span>
+      <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
+      <span class="na">urls</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span>
   <span class="na">metrics</span><span class="pi">:</span>
     <span class="na">distribution</span><span class="pi">:</span>
       <span class="na">percentiles-histogram</span><span class="pi">:</span>
@@ -833,6 +836,8 @@ pre.rouge {
       <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Membership"</span>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
         <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
+  <span class="na">connectorEndpointService</span><span class="pi">:</span>
+    <span class="na">cacheTTL</span><span class="pi">:</span> <span class="m">86400000</span>
 
 <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
   <span class="na">type</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_TYPE:decentral}</span> <span class="c1"># The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.</span>
@@ -840,7 +845,7 @@ pre.rouge {
   <span class="na">shellLookupEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:}</span> <span class="c1"># The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}</span>
   <span class="na">shellDescriptorTemplate</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_SHELL_DESCRIPTOR_TEMPLATE:/shell-descriptors/{aasIdentifier}}</span> <span class="c1"># The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}</span>
   <span class="na">lookupShellsTemplate</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_QUERY_SHELLS_PATH:/lookup/shells?assetIds={assetIds}}</span> <span class="c1"># The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}</span>
-  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">keycloak</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
+  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">common</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">discoveryFinderUrl</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:}</span> <span class="c1"># The endpoint to discover EDC endpoints to a particular BPN.</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the digital twin registry client</span>
@@ -865,7 +870,7 @@ pre.rouge {
     <span class="c1">#          │ │ │  │ │ │</span>
     <span class="na">scheduler</span><span class="pi">:</span> <span class="s">0 0 23 * * *</span> <span class="c1"># How often to clear the semantic model cache</span>
   <span class="na">defaultUrns</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part:1.0.0#SerialPart}"</span> <span class="c1"># IDs of models to cache at IRS startup</span>
-  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">keycloak</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
+  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">common</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the semantic hub client</span>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the semantic hub client</span>
@@ -873,7 +878,7 @@ pre.rouge {
 
 <span class="na">bpdm</span><span class="pi">:</span>
   <span class="na">bpnEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${BPDM_URL:}"</span> <span class="c1"># Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}</span>
-  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">keycloak</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
+  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">common</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the bpdm client</span>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the bpdm client</span>
@@ -905,7 +910,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-08 13:03:45 UTC
+Last updated 2023-11-15 13:20:24 UTC
 </div>
 </div>
 </body>

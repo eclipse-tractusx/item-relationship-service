@@ -119,9 +119,9 @@ As of now, the IRS uses its own IAM credentials to gather the required data. Thi
 
 #### IRS-API
 
-We provide a REST API that can be consumed by any system registered in the Catena-X Keycloak, e.g. the Dismantler Dashboard. The development of such a consumer service is not part of the IRS application. Each system that acts as a client to the Restful application IRS can be used instead, if it supports any REST call of the designed REST endpoints in the REST Controller of the IRS application. For communication, the transport protocol HTTP(S) should be established.
+We provide a REST API that can be consumed by any system registered in the Catena-X OAuth2 protocol provider, e.g. the Dismantler Dashboard. The development of such a consumer service is not part of the IRS application. Each system that acts as a client to the Restful application IRS can be used instead, if it supports any REST call of the designed REST endpoints in the REST Controller of the IRS application. For communication, the transport protocol HTTP(S) should be established.
 
-In order to consume the Restful application IRS, the security aspect should be taken in consideration. IRS is a Spring Boot based application and is secured with the OpenID connector provider Keycloak and the OAuth2. This means for the consumers (users) that they need to authenticate themselves in order to be authorized to get access to the IRS. They generate a bearer token that they get from Keycloak and attach it to the HTTP header parameter Authorization. Certainly, both a consumer and the IRS should use the same configured Keycloak Realm.
+In order to consume the Restful application IRS, the security aspect should be taken in consideration. IRS is a Spring Boot based application and is secured with the OpenID connector provider with OAuth2 protocol. This means for the consumers (users) that they need to authenticate themselves in order to be authorized to get access to the IRS. They generate a bearer token that they get from OAuth2 provider and attach it to the HTTP header parameter Authorization.
 
 #### Registry API
 
@@ -259,22 +259,22 @@ The interfaces show how the components interact with each other and which interf
 
 | Number | Description |
 | --- | --- |
-| 01 | IrsApiConsumer calls the ***IRS*** public ***API*** |
-| 02 | IrsApiConsumer must authorize using ***technical C-X User*** |
-| 03 | Delegate authorization request to ***IdP*** |
-| 04 | IRS requesting for ***SubmodelAspects*** using ***EDC*** |
-| 05 | IRS requesting the ***decentral DigitalTwinRegistry*** over ***EDC*** and service discovery flow |
+| 01 | IrsApiConsumer calls the **IRS** public **API** |
+| 02 | IrsApiConsumer must authorize using **technical C-X User** |
+| 03 | Delegate authorization request to **IdP** |
+| 04 | IRS requesting for **SubmodelAspects** using **EDC** |
+| 05 | IRS requesting the **decentral DigitalTwinRegistry** over **EDC** and service discovery flow |
 | 06 | IRS uses EDC to ensure sovereign data consumption |
 | 07 | IRS MUST authorize at central IAM |
-| 08 | IRS lookup for EDC Provider by given BPNs over the ***EDC Discovery Service*** |
-| 09 | IRS lookup for ***EDC Discovery Services*** by given type &lt;BPN> over the ***Discovery Finder*** |
-| 10 | IRS uses ***Semantic Hub*** to validate of ***SubmodelAspects*** payloads agains the schema provided in ***Semantic Hub*** |
+| 08 | IRS lookup for EDC Provider by given BPNs over the **EDC Discovery Service** |
+| 09 | IRS lookup for **EDC Discovery Services** by given type &lt;BPN> over the **Discovery Finder** |
+| 10 | IRS uses **Semantic Hub** to validate of **SubmodelAspects** payloads agains the schema provided in **Semantic Hub** |
 | 11 | In case "lookupBPNs" is active IRS provides a lookup of company for given BPN |
-| 12 | ***EDC*** is connected to ***Managed Identity Wallet*** for access policy check for data offers |
-| 13 | ***EDC*** communication covering negotiation and data consumption |
-| 14 | ***EDC*** is connected to ***Managed Identity Wallet*** for access policy check for data offers |
-| 15 | ***IRS*** accessing to ***SubmodelServer*** on Tier Level using the ***EDC*** |
-| 16 | ***IRS*** accessing the ***decentral DigitalTwinRegistry*** on Tier Level using the ***EDC*** |
+| 12 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers |
+| 13 | **EDC** communication covering negotiation and data consumption |
+| 14 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers |
+| 15 | **IRS** accessing to **SubmodelServer** on Tier Level using the **EDC** |
+| 16 | **IRS** accessing the **decentral DigitalTwinRegistry** on Tier Level using the **EDC** |
 
 ## Level 1
 
@@ -293,12 +293,13 @@ The interfaces show how the components interact with each other and which interf
 | **JobOrchestrator** | The **JobOrchestrator** is a component which manages (start, end, cancel, resume) the jobs which execute the item graph retrieval process. |
 | **RecursiveJobHandler** | The **RecursiveJobHandler** handles the job execution recursively until a given abort criteria is reached or the complete item graph is build. |
 | **TransferProcessManager** | The TransferProcessManager handles the outgoing requests to the various data services. A job is processed in this order: 1. Initiation of the job and preparation of the stream of **DataRequests** 2. **RecursiveJobHandler** requesting for AAS via the Digital Twin registry. 3. Analyzing the structure of the AAS response by collecting the traversal aspect. 4. Requesting submodel data for given items of next level. 5. Recursively iteration over step 2-4 until an abort criterion is reached. 6. Assembles the complete item graph. |
-| **Policy Store** | The **Policy Store** provides an Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. |
 | **BlobStore** | The BlobStore is the database where the relationships and tombstones are stored for a requested item. |
 | **JobStore** | The JobStore is the database where the jobs with the information about the requested item are stored. |
 | **Digital Twin Client** | The Digital Twin Client is the interface to the Digital Twin Registry. It provides an interface for the Asset Administration Shells. |
 | **Decentralized Digital Twin Client** | In a decentralized network, the Digital Twin Client connects to the EDC which then proxies the requests to the digital twin registry on provider side. |
 | **EDC Client** | The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data. |
+| **EssController** | The **EssController** provides a REST Interface to perform BPN investigations of supply chain. |
+| **PolicyStoreController** | The **PolicyStoreController** provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. |
 
 ## Level 2
 
@@ -356,6 +357,23 @@ The TransferProcessManager creates executions and provides them to the executor 
 | DigitalTwinRegistry | The DigitalTwinRegistry is the central database of registered assets. In a decentralized network, the registry is no longer central, but every provider has its own registry. |
 | ExecutorService | The ExecutorService enables the simultaneous execution of requests of transfer processes. |
 
+### ESS controller
+
+The ESS REST controller is used to provide a RESTful web service to related Environmental and Social Standards functionalities.
+
+#### Component diagram
+
+![arc42_007](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_007.png)
+
+#### Component description
+
+| Components | Description |
+| --- | --- |
+| EssService | Service contains business logic for investigation if part is inside supply chain. |
+| IrsItemGraphQueryService | Service for retrieving item graph. |
+| BpnInvestigationJobCache | Interface for storing incident data blobs. |
+| EssRecursiveNotificationHandler | Business logic handling recursive investigation and results calculation. Responsible for sending and receiving EDC notifications. |
+
 ## IRS API
 
 ### References
@@ -366,47 +384,53 @@ Since we cannot rely on synchronous responses regarding the requests of submodel
 
 ### IRS interaction diagram
 
-![arc42_007](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_007.png)
+![arc42_008](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_008.png)
+
+### ESS Investigation interaction diagram
+
+![arc42_009](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_009.png)
 
 ## Runtime view
 
-This section covers the main processes of the IRS and explains how data is transfered and processed when a job is executed.
+### IRS Iterative
 
-## Overall
+This section covers the main processes of the IRS and explains how data is transferred and processed when a job is executed.
 
-This section describes the overall flow of the IRS
+## IRS iterative
 
-![arc42_008](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_008.png)
+This section describes the iterative flow of the IRS
+
+![arc42_010](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_010.png)
 
 ### Submodel
 
 This section describes how the IRS fetches submodel payload.
 
-![arc42_009](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_009.png)
+![arc42_011](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_011.png)
 
 ### Job orchestration flow
 
 This section describes the job orchestration in IRS.
 
-![arc42_010](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_010.png)
+![arc42_012](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_012.png)
 
 ### Policy store flow
 
 This section describes the policy store in IRS.
 
-![arc42_011](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_011.png)
+![arc42_013](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_013.png)
 
 ### Policy check procedure
 
 This section describes the way IRS is validating policies found in assets.
 
-![arc42_012](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_012.png)
+![arc42_014](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_014.png)
 
 ## Scenario 1: Create job
 
 This section describes what happens when user creates a new job.
 
-![arc42_013](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_013.png)
+![arc42_015](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_015.png)
 
 ### Overview
 
@@ -421,7 +445,7 @@ The input provided by the caller determines how the job will operate (starting p
 
 This section describes how a job is asynchronously executed inside the IRS.
 
-![arc42_014](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_014.png)
+![arc42_016](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_016.png)
 
 ### Overview
 
@@ -436,7 +460,7 @@ As soon as all transfers are finished, the results will be combined and stored i
 
 ## Scenario 3: Request for JobResponse
 
-![arc42_015](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_015.png)
+![arc42_017](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_017.png)
 
 ### Overview
 
@@ -447,7 +471,7 @@ This will then be passed to the caller.
 
 ## Scenario 4: Cancel job execution
 
-![arc42_016](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_016.png)
+![arc42_018](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_018.png)
 
 ### Overview
 
@@ -455,11 +479,182 @@ When a user wants to cancel a job execution, the IRS will lookup that job in the
 
 Afterwards, the IRS will return the updated job details of the canceled job to the user.
 
+### IRS Recursive
+
+This section covers the main processes of the IRS in a recursive scenario in a network.
+This recursive scenario is illustrated using the various use cases realized in the scenario.
+
+#### Use Case: ESS (Environmental and Social Standards) Top-Down approach
+
+## Use Case: ESS (Environmental and Social Standards) Top-Down Approach
+
+With the entry into force of the German Supply Chain Due Diligence Act as from January 1st, 2023, German companies are obliged to implement the corresponding requirements of this law.
+In addition, the following European directives on this subject have also been adopted: EU regulation 2018/858. This regulation is legally binding to all EU member states.
+
+### Specification
+
+This component enables data providers to provide the BoM as planned aspect models via the Catena-X defined solution stack (i.e. EDC).
+The BoM as planned aspect models consists of three aspect models:
+
+* PartAsPlanned - Masterdata of a Part Type incl. location related data (e.g. production sites)
+* SingleLevelBomAsPlanned - The relation to child part types provided by the supplier of the given company
+* PartSiteInformationAsPlanned - Relation to Sites in order to resemble the flow of the specific part/material
+
+### Overall flow
+
+| Step | Actor | Action | Details |
+| --- | --- | --- | --- |
+| **[000]** | IncidentManager | Request ESS Incident investigation | - |
+| **[001]** | Inquiring OEM Company | Check direct suppliers | - |
+|  | Inquiring OEM Company | Check BPNS in direct suppliers | - |
+| **[002]** | Inquiring OEM Company | Forward incident to Tier N+1 Supplier | - |
+| **[003]** | Tier N+1 Supplier | Check direct suppliers | - |
+|  | Tier N+1 Supplier | Check BPNS in direct suppliers | - |
+|  | Tier N+1 Supplier | Forward incident to Tier N+n Supplier | - |
+| **[004]** | Tier N+n Supplier | Check direct suppliers | - |
+|  | Tier N+n Supplier | Check BPNS in direct suppliers | - |
+|  | Tier N+n Supplier | Return responses (including hops) to Tier N+1 Supplier | ESS supplier response |
+| **[005]** | Tier N+1 Supplier | Aggregate results | - |
+|  | Tier N+1 Supplier | Return responses (including hops) to Inquiring OEM Company | ESS supplier response |
+| **[006]** | Inquiring OEM Company | Aggregate results | - |
+|  | Inquiring OEM Company | Check subgraph infection on first tier level | - |
+| **[007]** | IncidentManager | Receive incident report from Inquiring OEM Company | - |
+
+Note: ESS supplier responses are involved in each step of the process.
+
+### Flow on company level
+
+#### Step 0: Process initiation
+
+The process is initiated by an ESS incident, that is received by (or created within) the inquiring company.
+This ESS incident acts as the root incident for the overall process The incident contains a company name (incl. address) and a valid BPN exists for that company.
+The BPN (a BPNL or BPNS) can be looked up in BPDM.
+
+#### Step 1: Check direct suppliers
+
+The inquiring company checks, if the company of the incident is a direct supplier of them.
+In order to perform this check, the following data must be available in the inquiring company:
+
+* Full list of direct suppliers
+* Full list of parts supplied by those direct suppliers
+
+In case the company of the incident is a direct supplier of the inquiring company, the process ends.
+In case the company of the incident is not a direct supplier of the inquiring company, Step 2 is executed.
+
+#### Step 2: Forward Incident
+
+The incident is forwarded to all direct suppliers.
+Each direct supplier is sent a "personalized" request to evaluate, if the inquiring company is impacted by the incident.
+The incident is enhanced with additional data by the inquiring company:
+
+* List of parts, that are supplied to the inquiring company by their direct supplier.
+
+Each direct supplier executes Step 1.
+
+#### Step 3: Gather Responses
+
+The inquiring company collects the (asynchronous) responses.
+The response of each direct supplier may contain the following results;
+
+* YES → The company of the incident was found in the supply chain of the given list of parts
+* NO → The company of the incident was not found in the supply chain of the given list of parts
+* UNKNOWN → The query timed out or some other error occurred
+
+In case at least one "YES" is received, the process step 3 ends
+
+### Application Functionality Overview
+
+### Register an Ess-Investigation-Order
+
+### 1. Client Request
+
+The _Client App (Script)_ initiates a request to the IRS (Item Relationship Service) by sending a GET request for shell lookup based on a specific BPN (Business Partner Number).
+
+### 2. Shell Lookup
+
+IRS, along with other services like DiscoveryFinder, EDCDiscoveryService, and Digital Twin Registry, collaborates to look up shells for the given BPN, returning an array of AAS identifiers.
+
+### 3. AAS Descriptor Retrieval
+
+For each AAS identifier, the client requests the IRS for the corresponding shell descriptors, adding them to a collection.
+
+### 4. Filtering AAS
+
+The _Client App (Script)_ filters the AAS collection for SubmodelDescriptors marked _asPlanned_, based on certain criteria.
+
+### 5. Incident Registration
+
+The client then initiates an IRS incident registration by sending a POST request with specific parameters, including bomLifecycle and callback URL.
+
+### 6. Incident Handling Loop
+
+IRS proceeds to handle the incident by iterating through AAS identifiers, extracting child CXIds, and performing checks on associated data.
+
+### 7. Data Validation
+
+The system checks the validity period of the received data and, if valid, proceeds to extract additional information.
+
+### 8. Incident Response
+
+If certain conditions are met (e.g., incidentBpns contain catenaXsiteId), the system responds to the client indicating a part-chain infection.
+
+### 9. Notification Handling
+
+Otherwise, the system sends an ess-request notification to the next tier level IRS, and after processing the request on the next tier level, receives an ess-response notification.
+
+## Scenario 1: Register an Ess-Investigation-Order
+
+This section describes what happens when user creates an ess order.
+
+### Register an Ess-Investigation-Order
+
+| Step | Actor | Action | Details |
+| --- | --- | --- | --- |
+| [000] | Client | Sends a POST request to `/ess/bpn/investigation/orders` | Includes JSON payload with parameters like "bomLifecycle," "batchSize," "callbackUrl," "incidentBPNSs," "keys," and "timeout." |
+| [001] | IRS | Initiates initial order processing | Begins asynchronous processing of ESS process for "incidentBPNSs" and tuples of "globalAssetId" and "BPN." |
+| [002] | IRS | Registers callback | Establishes a callback mechanism with the provided callback URL. |
+| [003] | Client | Receives 201 success response | Indicates successful registration of the order. |
+| [004] | Client | Sends a GET request to `/irs/orders/{orderId}` | Requests information for a specific orderId. |
+| [005] | IRS | Processes GET request | Initiates processing of the requested orderId. |
+| [006] | IRS | Sends a 200 response with order payload | Returns the details of the processed order. |
+| [007] | Client | Optionally initiates batch completion | Completes the batch processing if required. |
+| [008] | Client | Sends a POST request to `/irs/orders/{orderId}/batches/'{batchId}'` | Initiates batch processing for a specific orderId and batchId. |
+| [009] | IRS | Sends BatchShell with jobs | Returns details of the batch with associated jobs. |
+
+## Scenario 1: Register an Ess-Investigation-Job
+
+This section describes what happens when user creates an ess job.
+
+### Register an Ess-Investigation Job
+
+| Step | Actor | Action | Details |
+| --- | --- | --- | --- |
+| [000] | Requestor | Sends a POST request to `/ess/bpn/investigations` | Includes JSON payload with parameters such as "bomLifecycle," "callbackUrl," "incidentBpns," and "key" containing "bpn" and "globalAssetId." |
+| [001] | IRS | Registers an IRS ess incident job | Initiates the registration of an IRS ess incident job based on the received request. |
+| [002] | IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR | Look up shells for the given globalAssetId | Conducts a lookup and retrieves AAS (Asset Administration Shell) for the specified globalAssetId. |
+| [003] | IRS -> SubmodelServer | Sends a GET request for SingleLevelBomAsPlanned | Initiates a request to the SubmodelServer for the SingleLevelBomAsPlanned. |
+| [004] | SubmodelServer -> IRS | Receives SingleLevelBomAsPlanned | Sends back the SingleLevelBomAsPlanned data to the IRS. |
+| [005] | IRS | Extracts childCXIds from SingleLevelBomAsPlanned | Processes and extracts childCXIds from the received SingleLevelBomAsPlanned. |
+| [006] | Loop (for each childCXId) | IRS, DiscoveryFinder, EDCDiscoveryService | Get EDC endpoint for Tier1, Retrieves the EDC endpoint for Tier1 based on the childCXId. |
+| [007] | IRS, EDCTier1, dDTRTier1 | Look up shells for the given globalAssetId | Conducts a lookup and retrieves AAS for the specified globalAssetId in Tier1. |
+| [008] | IRS -> SubmodelServer | Sends a request to get PartAsPlanned | Initiates a request to the SubmodelServer to get PartAsPlanned. |
+| [009] | SubmodelServer &lt;- IRS | Receives PartAsPlanned | Gets PartAsPlanned data from the SubmodelServer. |
+| [010] | IRS | Validity Check on PartAsPlanned validityPeriod | Checks the validity period of PartAsPlanned. |
+| [011] | IRS -> SubmodelServer | Sends a GET request for PartSiteInformationAsPlanned | Requests PartSiteInformationAsPlanned from the SubmodelServer. |
+| [012] | IRS -> IRS | Extracts catenaXsiteId from PartSiteInformationAsPlanned | Processes and extracts catenaXsiteId from PartSiteInformationAsPlanned. |
+| [013] | IRS | Matches "incidentBpns" and catenaXsiteId | Checks for a match between "incidentBpns" and catenaXsiteId. |
+| [014] | IRS | Detects the supplyChainImpacted on the first tier level | Identifies the supply chain impacted on the first tier level and provides information. |
+| [015] | Requestor &lt;- IRS | Responds part-chain infected | Receives the response indicating the part-chain infection. |
+| [016] | IRS | Continues the loop | Continues the loop for the remaining childCXIds. |
+| [017] | Loop (end) | IRS | Loop completion |
+
+Unresolved directive in runtime-view/full.adoc - include::ess-top-down/ess-top-down-scenario-3.adoc[leveloffset=+1]
+
 ## Deployment view
 
 The deployment view shows the IRS application on ArgoCD, which is a continuous delivery tool for Kubernetes. Kubernetes manifests are specified using Helm charts. Helm is a package manager for Kubernetes. IRS is developed in a cloud-agnostic manner, so the application could be installed in any cloud infrastructure (on-premises, hybrid, or public cloud infrastructure).
 
-![arc42_017](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_017.png)
+![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
 
 ### Operator
 
@@ -501,25 +696,25 @@ For information on how to run the application locally, please check the README d
 
 The isolated environment contains the IRS as well as all surrounding services.
 
-![arc42_018](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_018.png)
+![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
 
 ### Development environment
 
 The development environment contains the IRS as well as the essential surrounding services, excluding the external IAM.
 
-![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
+![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
 
 ### Integrated environment
 
 The integrated environment contains the IRS and is integrated with the rest of the Catena-X network.
 
-![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
+![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
 
 ## Level 1 - IRS application
 
 This section focuses only on the IRS itself, detached from its neighbors. It shows the resources deployed in Kubernetes for the IRS.
 
-![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
+![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
 
 ### Pod
 
@@ -543,11 +738,11 @@ The ingress uses a reverse proxy to provide specified Service ports to the inter
 
 ### Domain entity model
 
-![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
+![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
 
 ### Domain model
 
-![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
+![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
 
 ### API Model
 
@@ -566,15 +761,15 @@ A job can be in one of the following states:
 | COMPLETED | The job has completed. See the job response for details on the data. |
 | ERROR | The job could not be processed correctly by the IRS due to a technical problem. |
 
-![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
+![arc42_026](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_026.png)
 
 ### Job Store Datamodel
 
-![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
+![arc42_027](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_027.png)
 
 ### Job Response Datamodel
 
-![arc42_026](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_026.png)
+![arc42_028](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_028.png)
 
 ```json
 {
@@ -718,7 +913,7 @@ JWT token should also contain two claims:
 * 'bpn' which is equal to the configuration value from `API_ALLOWED_BPN` property
 * 'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. (The keys are configurable. For more details see chapter "IRS OAuth2 JWT Token").
 The list of values will be converted to roles by IRS.
-Currently, IRS API handles two roles: ***'admin_irs'*** and ***'view_irs'.*** A valid token with the ***'admin_irs'*** role can access any endpoint exposed by the IRS API, while a token with the ***'view_irs'*** role does not have access to policies endpoints and can operate only on resources it owns.
+Currently, IRS API handles two roles: **'admin_irs'** and **'view_irs'.** A valid token with the **'admin_irs'** role can access any endpoint exposed by the IRS API, while a token with the **'view_irs'** role does not have access to policies endpoints and can operate only on resources it owns.
 That means that he only has access to the resources he has created, e.g. jobs and batches.
 This behavior is shown in the table below.
 
@@ -816,7 +1011,7 @@ The hexagonal architecture divides a system into several loosely-coupled interch
 
 For the IRS, this means decoupling the application logic from components like the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (so-called port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic will be necessary.
 
-![arc42_027](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_027.png)
+![arc42_029](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_029.png)
 
 ## "Under-the-hood" concepts
 
@@ -844,7 +1039,7 @@ There is no session handling in the IRS, access is solely based on bearer tokens
 
 ### Communication and integration
 
-All interfaces to other systems are using RESTful calls over HTTP(S). Where central authentication is required, a common Keycloak instance is used.
+All interfaces to other systems are using RESTful calls over HTTP(S). Where central authentication is required, a common OAuth2 provider is used.
 
 For outgoing calls, the Spring RestTemplate mechanism is used and separate RestTemplates are created for the different ways of authentication.
 

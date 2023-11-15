@@ -460,12 +460,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_irs_controller">IRS controller</a></li>
 <li><a href="#_recursivejobhandler">RecursiveJobHandler</a></li>
 <li><a href="#_transferprocessmanagement">TransferProcessManagement</a></li>
+<li><a href="#_ess_controller">ESS controller</a></li>
 </ul>
 </li>
 <li><a href="#_irs_api">IRS API</a>
 <ul class="sectlevel2">
 <li><a href="#_references">References</a></li>
 <li><a href="#_irs_interaction_diagram">IRS interaction diagram</a></li>
+<li><a href="#_ess_investigation_interaction_diagram">ESS Investigation interaction diagram</a></li>
 </ul>
 </li>
 </ul>
@@ -630,7 +632,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_component_diagram_2">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
-<img src="level-1.svg" alt="level 1" width="956" height="1103">
+<img src="level-1.svg" alt="level 1" width="1019" height="1001">
 </div>
 </div>
 </div>
@@ -703,10 +705,6 @@ A job is processed in this order:</p>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Policy Store</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>Policy Store</strong> provides an Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>BlobStore</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The BlobStore is the database where the relationships and tombstones are stored for a requested item.</p></td>
 </tr>
@@ -725,6 +723,14 @@ A job is processed in this order:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC Client</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EssController</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>EssController</strong> provides a REST Interface to perform BPN investigations of supply chain.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PolicyStoreController</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>PolicyStoreController</strong> provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.</p></td>
 </tr>
 </tbody>
 </table>
@@ -887,6 +893,53 @@ A job is processed in this order:</p>
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_ess_controller">ESS controller</h3>
+<div class="paragraph">
+<p>The ESS REST controller is used to provide a RESTful web service to related Environmental and Social Standards functionalities.</p>
+</div>
+<div class="sect3">
+<h4 id="_component_diagram_6">Component diagram</h4>
+<div class="imageblock">
+<div class="content">
+<img src="level-2-ess-controller.svg" alt="level 2 ess controller" width="627" height="445">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_component_description_6">Component description</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Components</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EssService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service contains business logic for investigation if part is inside supply chain.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IrsItemGraphQueryService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service for retrieving item graph.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BpnInvestigationJobCache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interface for storing incident data blobs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EssRecursiveNotificationHandler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Business logic handling recursive investigation and results calculation. Responsible for sending and receiving EDC notifications.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -909,12 +962,20 @@ A job is processed in this order:</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_ess_investigation_interaction_diagram">ESS Investigation interaction diagram</h3>
+<div class="imageblock">
+<div class="content">
+<img src="ess-api.svg" alt="ess api" width="779" height="471">
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-08 13:03:45 UTC
+Last updated 2023-11-15 13:20:24 UTC
 </div>
 </div>
 </body>

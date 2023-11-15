@@ -695,11 +695,16 @@ pre.rouge {
 </li>
 <li><a href="#_runtime_view">Runtime view</a>
 <ul class="sectlevel2">
-<li><a href="#_overall">Overall</a></li>
+<li><a href="#_irs_iterative">IRS Iterative</a></li>
+<li><a href="#_irs_iterative_2">IRS iterative</a></li>
 <li><a href="#_scenario_1_create_job">Scenario 1: Create job</a></li>
 <li><a href="#_scenario_2_job_execution">Scenario 2: Job execution</a></li>
 <li><a href="#_scenario_3_request_for_jobresponse">Scenario 3: Request for JobResponse</a></li>
 <li><a href="#_scenario_4_cancel_job_execution">Scenario 4: Cancel job execution</a></li>
+<li><a href="#_irs_recursive">IRS Recursive</a></li>
+<li><a href="#_use_case_ess_environmental_and_social_standards_top_down_approach_2">Use Case: ESS (Environmental and Social Standards) Top-Down Approach</a></li>
+<li><a href="#_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</a></li>
+<li><a href="#_scenario_1_register_an_ess_investigation_job">Scenario 1: Register an Ess-Investigation-Job</a></li>
 </ul>
 </li>
 <li><a href="#_deployment_view">Deployment view</a>
@@ -1132,10 +1137,10 @@ The following table entries define overall IRS quality goals. The order of the t
 <div class="sect4">
 <h5 id="_irs_api">IRS-API</h5>
 <div class="paragraph">
-<p>We provide a REST API that can be consumed by any system registered in the Catena-X Keycloak, e.g. the Dismantler Dashboard. The development of such a consumer service is not part of the IRS application. Each system that acts as a client to the Restful application IRS can be used instead, if it supports any REST call of the designed REST endpoints in the REST Controller of the IRS application. For communication, the transport protocol HTTP(S) should be established.</p>
+<p>We provide a REST API that can be consumed by any system registered in the Catena-X OAuth2 protocol provider, e.g. the Dismantler Dashboard. The development of such a consumer service is not part of the IRS application. Each system that acts as a client to the Restful application IRS can be used instead, if it supports any REST call of the designed REST endpoints in the REST Controller of the IRS application. For communication, the transport protocol HTTP(S) should be established.</p>
 </div>
 <div class="paragraph">
-<p>In order to consume the Restful application IRS, the security aspect should be taken in consideration. IRS is a Spring Boot based application and is secured with the OpenID connector provider Keycloak and the OAuth2. This means for the consumers (users) that they need to authenticate themselves in order to be authorized to get access to the IRS. They generate a bearer token that they get from Keycloak and attach it to the HTTP header parameter Authorization. Certainly, both a consumer and the IRS should use the same configured Keycloak Realm.</p>
+<p>In order to consume the Restful application IRS, the security aspect should be taken in consideration. IRS is a Spring Boot based application and is secured with the OpenID connector provider with OAuth2 protocol. This means for the consumers (users) that they need to authenticate themselves in order to be authorized to get access to the IRS. They generate a bearer token that they get from OAuth2 provider and attach it to the HTTP header parameter Authorization.</p>
 </div>
 </div>
 <div class="sect4">
@@ -1637,7 +1642,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <h4 id="_component_diagram_2">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/level-1.svg" alt="level 1" width="956" height="1103">
+<img src="architecture-constraints/level-1.svg" alt="level 1" width="1019" height="1001">
 </div>
 </div>
 </div>
@@ -1710,10 +1715,6 @@ A job is processed in this order:</p>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Policy Store</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>Policy Store</strong> provides an Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>BlobStore</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The BlobStore is the database where the relationships and tombstones are stored for a requested item.</p></td>
 </tr>
@@ -1732,6 +1733,14 @@ A job is processed in this order:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC Client</strong></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EssController</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>EssController</strong> provides a REST Interface to perform BPN investigations of supply chain.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PolicyStoreController</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>PolicyStoreController</strong> provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1892,6 +1901,53 @@ A job is processed in this order:</p>
 </table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_ess_controller">ESS controller</h4>
+<div class="paragraph">
+<p>The ESS REST controller is used to provide a RESTful web service to related Environmental and Social Standards functionalities.</p>
+</div>
+<div class="sect4">
+<h5 id="_component_diagram_6">Component diagram</h5>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/level-2-ess-controller.svg" alt="level 2 ess controller" width="627" height="445">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_component_description_6">Component description</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Components</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EssService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service contains business logic for investigation if part is inside supply chain.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IrsItemGraphQueryService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service for retrieving item graph.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BpnInvestigationJobCache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interface for storing incident data blobs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EssRecursiveNotificationHandler</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Business logic handling recursive investigation and results calculation. Responsible for sending and receiving EDC notifications.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_irs_api_2">IRS API</h3>
@@ -1912,19 +1968,30 @@ A job is processed in this order:</p>
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_ess_investigation_interaction_diagram">ESS Investigation interaction diagram</h4>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/ess-api.svg" alt="ess api" width="779" height="471">
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_runtime_view">Runtime view</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_irs_iterative">IRS Iterative</h3>
 <div class="paragraph">
-<p>This section covers the main processes of the IRS and explains how data is transfered and processed when a job is executed.</p>
+<p>This section covers the main processes of the IRS and explains how data is transferred and processed when a job is executed.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_overall">Overall</h3>
+<h3 id="_irs_iterative_2">IRS iterative</h3>
 <div class="paragraph">
-<p>This section describes the overall flow of the IRS</p>
+<p>This section describes the iterative flow of the IRS</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2061,6 +2128,542 @@ Only if the job is in state "COMPLETED" or if the caller has set the parameter "
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_irs_recursive">IRS Recursive</h3>
+<div class="paragraph">
+<p>This section covers the main processes of the IRS in a recursive scenario in a network.
+This recursive scenario is illustrated using the various use cases realized in the scenario.</p>
+</div>
+<div class="sect3">
+<h4 id="_use_case_ess_environmental_and_social_standards_top_down_approach">Use Case: ESS (Environmental and Social Standards) Top-Down approach</h4>
+
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_case_ess_environmental_and_social_standards_top_down_approach_2">Use Case: ESS (Environmental and Social Standards) Top-Down Approach</h3>
+<div class="paragraph">
+<p>With the entry into force of the German Supply Chain Due Diligence Act as from January 1st, 2023, German companies are obliged to implement the corresponding requirements of this law.
+In addition, the following European directives on this subject have also been adopted: EU regulation 2018/858. This regulation is legally binding to all EU member states.</p>
+</div>
+<div class="sect3">
+<h4 id="_specification">Specification</h4>
+<div class="paragraph">
+<p>This component enables data providers to provide the BoM as planned aspect models via the Catena-X defined solution stack (i.e. EDC).
+The BoM as planned aspect models consists of three aspect models:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>PartAsPlanned - Masterdata of a Part Type incl. location related data (e.g. production sites)</p>
+</li>
+<li>
+<p>SingleLevelBomAsPlanned - The relation to child part types provided by the supplier of the given company</p>
+</li>
+<li>
+<p>PartSiteInformationAsPlanned - Relation to Sites in order to resemble the flow of the specific part/material</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_overall_flow">Overall flow</h4>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/submodel-processing.svg" alt="submodel processing" width="1201" height="748">
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Step</th>
+<th class="tableblock halign-left valign-top">Actor</th>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[000]</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IncidentManager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request ESS Incident investigation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[001]</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check direct suppliers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check BPNS in direct suppliers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[002]</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Forward incident to Tier N+1 Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[003]</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check direct suppliers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check BPNS in direct suppliers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Forward incident to Tier N+n Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[004]</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+n Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check direct suppliers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+n Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check BPNS in direct suppliers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+n Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Return responses (including hops) to Tier N+1 Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ESS supplier response</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[005]</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregate results</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Return responses (including hops) to Inquiring OEM Company</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ESS supplier response</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[006]</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregate results</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check subgraph infection on first tier level</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[007]</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IncidentManager</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receive incident report from Inquiring OEM Company</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Note: ESS supplier responses are involved in each step of the process.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_flow_on_company_level">Flow on company level</h4>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_0_process_initiation">Step 0: Process initiation</h5>
+<div class="paragraph">
+<p>The process is initiated by an ESS incident, that is received by (or created within) the inquiring company.
+This ESS incident acts as the root incident for the overall process The incident contains a company name (incl. address) and a valid BPN exists for that company.
+The BPN (a BPNL or BPNS) can be looked up in BPDM.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_1_check_direct_suppliers">Step 1: Check direct suppliers</h5>
+<div class="paragraph">
+<p>The inquiring company checks, if the company of the incident is a direct supplier of them.
+In order to perform this check, the following data must be available in the inquiring company:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Full list of direct suppliers</p>
+</li>
+<li>
+<p>Full list of parts supplied by those direct suppliers</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In case the company of the incident is a direct supplier of the inquiring company, the process ends.
+In case the company of the incident is not a direct supplier of the inquiring company, Step 2 is executed.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_2_forward_incident">Step 2: Forward Incident</h5>
+<div class="paragraph">
+<p>The incident is forwarded to all direct suppliers.
+Each direct supplier is sent a "personalized" request to evaluate, if the inquiring company is impacted by the incident.
+The incident is enhanced with additional data by the inquiring company:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>List of parts, that are supplied to the inquiring company by their direct supplier.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each direct supplier executes Step 1.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_step_3_gather_responses">Step 3: Gather Responses</h5>
+<div class="paragraph">
+<p>The inquiring company collects the (asynchronous) responses.
+The response of each direct supplier may contain the following results;</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>YES → The company of the incident was found in the supply chain of the given list of parts</p>
+</li>
+<li>
+<p>NO → The company of the incident was not found in the supply chain of the given list of parts</p>
+</li>
+<li>
+<p>UNKNOWN → The query timed out or some other error occurred</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In case at least one "YES" is received, the process step 3 ends</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_application_functionality_overview">Application Functionality Overview</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_register_an_ess_investigation_order">Register an Ess-Investigation-Order</h4>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_1_client_request">1. Client Request</h4>
+<div class="paragraph">
+<p>The <em>Client App (Script)</em> initiates a request to the IRS (Item Relationship Service) by sending a GET request for shell lookup based on a specific BPN (Business Partner Number).</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_2_shell_lookup">2. Shell Lookup</h4>
+<div class="paragraph">
+<p>IRS, along with other services like DiscoveryFinder, EDCDiscoveryService, and Digital Twin Registry, collaborates to look up shells for the given BPN, returning an array of AAS identifiers.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_3_aas_descriptor_retrieval">3. AAS Descriptor Retrieval</h4>
+<div class="paragraph">
+<p>For each AAS identifier, the client requests the IRS for the corresponding shell descriptors, adding them to a collection.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_4_filtering_aas">4. Filtering AAS</h4>
+<div class="paragraph">
+<p>The <em>Client App (Script)</em> filters the AAS collection for SubmodelDescriptors marked <em>asPlanned</em>, based on certain criteria.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_5_incident_registration">5. Incident Registration</h4>
+<div class="paragraph">
+<p>The client then initiates an IRS incident registration by sending a POST request with specific parameters, including bomLifecycle and callback URL.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_6_incident_handling_loop">6. Incident Handling Loop</h4>
+<div class="paragraph">
+<p>IRS proceeds to handle the incident by iterating through AAS identifiers, extracting child CXIds, and performing checks on associated data.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_7_data_validation">7. Data Validation</h4>
+<div class="paragraph">
+<p>The system checks the validity period of the received data and, if valid, proceeds to extract additional information.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_8_incident_response">8. Incident Response</h4>
+<div class="paragraph">
+<p>If certain conditions are met (e.g., incidentBpns contain catenaXsiteId), the system responds to the client indicating a part-chain infection.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_9_notification_handling">9. Notification Handling</h4>
+<div class="paragraph">
+<p>Otherwise, the system sends an ess-request notification to the next tier level IRS, and after processing the request on the next tier level, receives an ess-response notification.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scenario_1_register_an_ess_investigation_order">Scenario 1: Register an Ess-Investigation-Order</h3>
+<div class="paragraph">
+<p>This section describes what happens when user creates an ess order.</p>
+</div>
+<div class="sect3">
+<h4 id="_register_an_ess_investigation_order_2">Register an Ess-Investigation-Order</h4>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/submodel-processing.svg" alt="submodel processing" width="1962" height="734">
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Step</th>
+<th class="tableblock halign-left valign-top">Actor</th>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[000]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a POST request to <code>/ess/bpn/investigation/orders</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Includes JSON payload with parameters like "bomLifecycle," "batchSize," "callbackUrl," "incidentBPNSs," "keys," and "timeout."</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[001]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates initial order processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Begins asynchronous processing of ESS process for "incidentBPNSs" and tuples of "globalAssetId" and "BPN."</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[002]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Registers callback</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Establishes a callback mechanism with the provided callback URL.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[003]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receives 201 success response</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates successful registration of the order.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[004]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a GET request to <code>/irs/orders/{orderId}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requests information for a specific orderId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[005]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processes GET request</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates processing of the requested orderId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[006]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a 200 response with order payload</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the details of the processed order.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[007]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally initiates batch completion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Completes the batch processing if required.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[008]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a POST request to <code>/irs/orders/{orderId}/batches/'{batchId}'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates batch processing for a specific orderId and batchId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[009]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends BatchShell with jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns details of the batch with associated jobs.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_scenario_1_register_an_ess_investigation_job">Scenario 1: Register an Ess-Investigation-Job</h3>
+<div class="paragraph">
+<p>This section describes what happens when user creates an ess job.</p>
+</div>
+<div class="sect3">
+<h4 id="_register_an_ess_investigation_job">Register an Ess-Investigation Job</h4>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/submodel-processing.svg" alt="submodel processing" width="2978" height="1414">
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Step</th>
+<th class="tableblock halign-left valign-top">Actor</th>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[000]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requestor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a POST request to <code>/ess/bpn/investigations</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Includes JSON payload with parameters such as "bomLifecycle," "callbackUrl," "incidentBpns," and "key" containing "bpn" and "globalAssetId."</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[001]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Registers an IRS ess incident job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates the registration of an IRS ess incident job based on the received request.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[002]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS, DiscoveryFinder, EDCDiscoveryService, EDC, dDTR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Look up shells for the given globalAssetId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conducts a lookup and retrieves AAS (Asset Administration Shell) for the specified globalAssetId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[003]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS &#8594; SubmodelServer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a GET request for SingleLevelBomAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates a request to the SubmodelServer for the SingleLevelBomAsPlanned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[004]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SubmodelServer &#8594; IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receives SingleLevelBomAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends back the SingleLevelBomAsPlanned data to the IRS.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[005]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extracts childCXIds from SingleLevelBomAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processes and extracts childCXIds from the received SingleLevelBomAsPlanned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[006]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Loop (for each childCXId)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS, DiscoveryFinder, EDCDiscoveryService</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get EDC endpoint for Tier1, Retrieves the EDC endpoint for Tier1 based on the childCXId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[007]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS, EDCTier1, dDTRTier1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Look up shells for the given globalAssetId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Conducts a lookup and retrieves AAS for the specified globalAssetId in Tier1.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[008]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS &#8594; SubmodelServer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a request to get PartAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates a request to the SubmodelServer to get PartAsPlanned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[009]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SubmodelServer &#8592; IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receives PartAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gets PartAsPlanned data from the SubmodelServer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[010]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Validity Check on PartAsPlanned validityPeriod</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checks the validity period of PartAsPlanned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[011]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS &#8594; SubmodelServer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a GET request for PartSiteInformationAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requests PartSiteInformationAsPlanned from the SubmodelServer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[012]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS &#8594; IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Extracts catenaXsiteId from PartSiteInformationAsPlanned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processes and extracts catenaXsiteId from PartSiteInformationAsPlanned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[013]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches "incidentBpns" and catenaXsiteId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checks for a match between "incidentBpns" and catenaXsiteId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[014]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Detects the supplyChainImpacted on the first tier level</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Identifies the supply chain impacted on the first tier level and provides information.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[015]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requestor &#8592; IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Responds part-chain infected</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receives the response indicating the part-chain infection.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[016]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Continues the loop</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Continues the loop for the remaining childCXIds.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[017]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Loop (end)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Loop completion</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Unresolved directive in runtime-view/full.adoc - include::ess-top-down/ess-top-down-scenario-3.adoc[leveloffset=+1]</p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2151,7 +2754,7 @@ The IRS Helm charts can be found here: <a href="https://github.com/eclipse-tract
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/development.svg" alt="development" width="649" height="323">
+<img src="architecture-constraints/development.svg" alt="development" width="642" height="323">
 </div>
 </div>
 </div>
@@ -2162,7 +2765,7 @@ The IRS Helm charts can be found here: <a href="https://github.com/eclipse-tract
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/integrated.svg" alt="integrated" width="717" height="310">
+<img src="architecture-constraints/integrated.svg" alt="integrated" width="710" height="310">
 </div>
 </div>
 </div>
@@ -2603,7 +3206,7 @@ In the future, another approach or an additional way to to index the data might 
 <div class="sect3">
 <h4 id="_communication_and_integration">Communication and integration</h4>
 <div class="paragraph">
-<p>All interfaces to other systems are using RESTful calls over HTTP(S). Where central authentication is required, a common Keycloak instance is used.</p>
+<p>All interfaces to other systems are using RESTful calls over HTTP(S). Where central authentication is required, a common OAuth2 provider is used.</p>
 </div>
 <div class="paragraph">
 <p>For outgoing calls, the Spring RestTemplate mechanism is used and separate RestTemplates are created for the different ways of authentication.</p>
@@ -3062,7 +3665,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-08 13:03:45 UTC
+Last updated 2023-11-15 13:20:24 UTC
 </div>
 </div>
 </body>

@@ -57,7 +57,7 @@ Create a new application in ArgoCD and point it to your repository / Helm chart 
 Take the following template and adjust the configuration parameters (&lt;placeholders> mark the relevant spots).
 You can define the URLs as well as most of the secrets yourself.
 
-The Keycloak, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
+The OAuth2, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
 ## Spring Configuration
 
@@ -75,22 +75,22 @@ spring:
     oauth2:
       client:
         registration:
-          keycloak:
+          common:
             authorization-grant-type: client_credentials
-            client-id: ${KEYCLOAK_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
-            client-secret: ${KEYCLOAK_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
+            client-id: ${OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
           portal:
             authorization-grant-type: client_credentials
             client-id: ${PORTAL_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
             client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
         provider:
-          keycloak:
-            token-uri: ${KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+          common:
+            token-uri: ${OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           portal:
             token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
       resourceserver:
         jwt:
-          jwk-set-uri: ${KEYCLOAK_OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
+          jwk-set-uri: ${OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -110,6 +110,9 @@ management: # Spring management API config, see https://spring.io/guides/gs/cent
       enabled: true
     readinessstate:
       enabled: true
+    dependencies:
+      enabled: false
+      urls: { }
   metrics:
     distribution:
       percentiles-histogram:
@@ -235,6 +238,8 @@ irs-edc-client:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
+  connectorEndpointService:
+    cacheTTL: 86400000
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
@@ -242,7 +247,7 @@ digitalTwinRegistry:
   shellLookupEndpoint: ${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:} # The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}
   shellDescriptorTemplate: ${DIGITALTWINREGISTRY_SHELL_DESCRIPTOR_TEMPLATE:/shell-descriptors/{aasIdentifier}} # The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}
   lookupShellsTemplate: ${DIGITALTWINREGISTRY_QUERY_SHELLS_PATH:/lookup/shells?assetIds={assetIds}} # The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}
-  oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
   timeout:
     read: PT90S # HTTP read timeout for the digital twin registry client
@@ -267,7 +272,7 @@ semanticshub:
     #          │ │ │  │ │ │
     scheduler: 0 0 23 * * * # How often to clear the semantic model cache
   defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part:1.0.0#SerialPart}" # IDs of models to cache at IRS startup
-  oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the semantic hub client
     connect: PT90S # HTTP connect timeout for the semantic hub client
@@ -275,7 +280,7 @@ semanticshub:
 
 bpdm:
   bpnEndpoint: "${BPDM_URL:}" # Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}
-  oAuthClientId: keycloak # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the bpdm client
     connect: PT90S # HTTP connect timeout for the bpdm client
@@ -315,6 +320,12 @@ bpn:  # BPN for this IRS instance; only users with this BPN are allowed to acces
 ingress:
   enabled: false
 
+management:
+  health:
+    dependencies:
+      enabled: false  # Flag to determine if external service healthcheck endpoints should be checked
+      urls: {}  # Map of services with corresponding healthcheck endpoint url's, example service_name: http://service_name_host.com/health
+
 digitalTwinRegistry:
   type: decentral  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
   url:  # "https://<digital-twin-registry-url>"
@@ -348,12 +359,11 @@ bpdm:
 minioUser: "minio"  # <minio-username>
 minioPassword:  # <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
-keycloak:
-  oauth2:
-    clientId:  # <keycloak-client-id>
-    clientSecret:  # <keycloak-client-secret>
-    clientTokenUri:  # <keycloak-token-uri>
-    jwkSetUri:  # <keycloak-jwkset-uri>
+oauth2:
+  clientId:  # <oauth2-client-id>
+  clientSecret:  # <oauth2-client-secret>
+  clientTokenUri:  # <oauth2-token-uri>
+  jwkSetUri:  # <oauth2-jwkset-uri>
 portal:
   oauth2:
     clientId:  # <portal-client-id>
@@ -402,7 +412,8 @@ edc:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
-
+  connectorEndpointService:
+    cacheTTL: 86400000
 discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
@@ -485,12 +496,6 @@ prometheus:
         - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
 
     - job_name: 'minio-actuator'
-      metrics_path: /minio/v2/metrics/cluster
-      static_configs:
-        - targets: [ '{{ .Release.Name }}-minio:9000' ]
-
-
-#########################
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -542,13 +547,13 @@ The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas f
 
 The URL of the BPDM service. The IRS uses this service to fetch business partner information based on BPNs.
 
-##### keycloak-token-uri
+##### oauth2-token-uri
 
-The URL of the Keycloak token API. Used by the IRS for token creation to authenticate with other services.
+The URL of the OAuth2 token API. Used by the IRS for token creation to authenticate with other services.
 
-##### keycloak-jwkset-uri
+##### oauth2-jwkset-uri
 
-The URL of the Keycloak JWK Set. Used by the IRS to validate tokens when the IRS API is called.
+The URL of the OAuth2 JWK Set. Used by the IRS to validate tokens when the IRS API is called.
 
 ##### grafana-url
 
@@ -628,13 +633,13 @@ This is a list of all secrets used in the deployment.
 **⚠️ WARNING**\
 Keep the values for these settings safe and do not publish them!
 
-#### keycloak-client-id
+#### common-client-id
 
-Client ID for Keycloak. Request this from your Keycloak operator.
+Client ID for OAuth2 provider. Request this from your OAuth2 operator.
 
-#### keycloak-client-secret
+#### common-client-secret
 
-Client secret for Keycloak. Request this from your Keycloak operator.
+Client secret for OAuth2 provider. Request this from your OAuth2 operator.
 
 #### minio-username
 

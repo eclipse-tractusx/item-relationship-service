@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Overall</title>
+<title>Scenario 1: Register an Ess-Investigation-Order</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,14 +439,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Overall</h1>
+<h1>Scenario 1: Register an Ess-Investigation-Order</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_submodel">Submodel</a></li>
-<li><a href="#_job_orchestration_flow">Job orchestration flow</a></li>
-<li><a href="#_policy_store_flow">Policy store flow</a></li>
-<li><a href="#_policy_check_procedure">Policy check procedure</a></li>
+<li><a href="#_register_an_ess_investigation_order">Register an Ess-Investigation-Order</a></li>
 </ul>
 </div>
 </div>
@@ -454,71 +451,102 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section describes the overall flow of the IRS</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="overall.svg" alt="overall" width="1347" height="1005">
-</div>
+<p>This section describes what happens when user creates an ess order.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_submodel">Submodel</h2>
+<h2 id="_register_an_ess_investigation_order">Register an Ess-Investigation-Order</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>This section describes how the IRS fetches submodel payload.</p>
-</div>
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="1365" height="721">
+<img src="submodel-processing.svg" alt="submodel processing" width="1962" height="734">
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_job_orchestration_flow">Job orchestration flow</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This section describes the job orchestration in IRS.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="job-orchestration.svg" alt="job orchestration" width="2804" height="1441">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_policy_store_flow">Policy store flow</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This section describes the policy store in IRS.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="policy-store.svg" alt="policy store" width="664" height="233">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_policy_check_procedure">Policy check procedure</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This section describes the way IRS is validating policies found in assets.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="policy-check.svg" alt="policy check" width="854" height="312">
-</div>
-</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Step</th>
+<th class="tableblock halign-left valign-top">Actor</th>
+<th class="tableblock halign-left valign-top">Action</th>
+<th class="tableblock halign-left valign-top">Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[000]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a POST request to <code>/ess/bpn/investigation/orders</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Includes JSON payload with parameters like "bomLifecycle," "batchSize," "callbackUrl," "incidentBPNSs," "keys," and "timeout."</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[001]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates initial order processing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Begins asynchronous processing of ESS process for "incidentBPNSs" and tuples of "globalAssetId" and "BPN."</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[002]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Registers callback</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Establishes a callback mechanism with the provided callback URL.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[003]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Receives 201 success response</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates successful registration of the order.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[004]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a GET request to <code>/irs/orders/{orderId}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Requests information for a specific orderId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[005]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processes GET request</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates processing of the requested orderId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[006]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a 200 response with order payload</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the details of the processed order.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[007]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optionally initiates batch completion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Completes the batch processing if required.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[008]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends a POST request to <code>/irs/orders/{orderId}/batches/'{batchId}'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initiates batch processing for a specific orderId and batchId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[009]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sends BatchShell with jobs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns details of the batch with associated jobs.</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-08 13:03:45 UTC
+Last updated 2023-11-15 13:20:24 UTC
 </div>
 </div>
 </body>
