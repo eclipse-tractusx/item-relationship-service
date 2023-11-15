@@ -362,8 +362,8 @@ paths:
             format: uuid
             maxLength: 36
             minLength: 36
-        - description: "<true> Return job with current processed item graph. <false>\
-          \ Return job with item graph if job is in state <COMPLETED>, otherwise job."
+        - description: "\\<true\\> Return job with current processed item graph. \\<false\\>
+         Return job with item graph if job is in state COMPLETED, otherwise job."
           in: query
           name: returnUncompletedJob
           required: false
