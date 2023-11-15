@@ -11,7 +11,7 @@ JWT token should also contain two claims:
 - 'bpn' which is equal to the configuration value from `API_ALLOWED_BPN` property
 - 'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. (The keys are configurable. For more details see chapter "IRS OAuth2 JWT Token").
 The list of values will be converted to roles by IRS.
-Currently, IRS API handles two roles: **'admin_irs'** and **'view_irs'.** A valid token with the **'admin_irs'** role can access any endpoint exposed by the IRS API, while a token with the **'view_irs'** role does not have access to policies endpoints and can operate only on resources it owns.
+Currently, IRS API handles two roles: *'admin_irs'* and *'view_irs'.* A valid token with the *'admin_irs'* role can access any endpoint exposed by the IRS API, while a token with the *'view_irs'* role does not have access to policies endpoints and can operate only on resources it owns.
 That means that he only has access to the resources he has created, e.g. jobs and batches.
 This behavior is shown in the table below.
 

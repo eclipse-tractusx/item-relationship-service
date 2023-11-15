@@ -30,7 +30,7 @@ spring:
           jwk-set-uri: https://localhost
       client:
         provider:
-          keycloak:
+          common:
             token-uri: https://localhost
 
 # ESS Module specific properties

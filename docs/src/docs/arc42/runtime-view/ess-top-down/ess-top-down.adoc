@@ -54,7 +54,7 @@ Note: ESS supplier responses are involved in each step of the process.
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/1_ess-top-down-sequence-highlevel.puml[]
 ....
 
-=== Step 0: Process initiation:
+=== Step 0: Process initiation
 
 The process is initiated by an ESS incident, that is received by (or created within) the inquiring company.
 This ESS incident acts as the root incident for the overall process The incident contains a company name (incl. address) and a valid BPN exists for that company.
