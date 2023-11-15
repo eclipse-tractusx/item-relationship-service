@@ -39,7 +39,7 @@ public class SmokeTestConfiguration {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.security.oauth2.client.registration.keycloak")
+    @ConfigurationProperties(prefix = "spring.security.oauth2.client.registration.common")
     public SmokeTestCredentialsProperties credentials() {
         return new SmokeTestCredentialsProperties();
     }
