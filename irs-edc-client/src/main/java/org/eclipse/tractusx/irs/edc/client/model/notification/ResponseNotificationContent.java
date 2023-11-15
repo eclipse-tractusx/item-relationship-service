@@ -44,11 +44,9 @@ public class ResponseNotificationContent implements NotificationContent {
     /**
      * Incrementing hops value
      *
-     * @return updated object
      */
-    public ResponseNotificationContent incrementHops() {
+    public void incrementHops() {
         this.hops += 1;
-        return this;
     }
 
     /**

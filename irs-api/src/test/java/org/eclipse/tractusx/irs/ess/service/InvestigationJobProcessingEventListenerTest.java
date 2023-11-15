@@ -149,7 +149,8 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.UNKNOWN), eq("bpn"));
+        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.UNKNOWN), eq("bpn"),
+                eq(0));
     }
 
     @Test
@@ -226,7 +227,8 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
-        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO), eq("bpn"));
+        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO), eq("bpn"),
+                eq(0));
     }
 
     @Test
