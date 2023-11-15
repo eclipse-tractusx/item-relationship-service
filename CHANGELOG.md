@@ -41,6 +41,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
               token-uri:
   ```
   
+### Fixed
+- IRS will return 206 Http status from GET /jobs/{id} endpoint if Job is still running
+  
 ## [4.0.1] - 2023-11-10
 ### Changed
 - Added state `STARTED` as acceptable state to complete the EDC transfer process to be compatible with EDC 0.5.1
