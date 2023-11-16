@@ -65,8 +65,7 @@ For more information on the tool and how to acquire the token, check https://git
 ### Commit messages
 The commit messages have to match a pattern in the form of:  
 ``< type >(scope):[<Ticket_ID>] < description >``  
-where type is: `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test`  
-and ticket id is optional
+where type is: `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test`
 
 Example:  
 ``chore(api):[#123] some text``
