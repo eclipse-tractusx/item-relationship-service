@@ -607,6 +607,58 @@ stages:
 ---
 
 
+test_name: Make sure job with status RUNNING is responsed with http code 206
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
+        collectAspects: true
+        depth: 2
+        aspects:
+          - SerialPart
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - name: verify running job is responsed with http code 206
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_bearer_token
+    response:
+      status_code: 206
+      json:
+        job:
+          state: RUNNING
+
+
+---
+
+
 test_name: Make sure job with submodels process with status COMPLETED with asPlanned-id
 
 strict:
@@ -1275,7 +1327,7 @@ stages:
         $ext:
           function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
-      status_code: 200
+      status_code: 206
       json:
         job:
           state: RUNNING
