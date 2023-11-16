@@ -2,7 +2,7 @@
 
 # Problem Statement
 SingleLevelBomAsBuilt 2.0.0 introduces a new property with boolean values called hasAlternatives.
-The model now allows to reference items that are not available as AsBuilt Twins - e.g. Serial items or batches) but as AsPlanned twins.
+The model now allows to reference items that are not available as AsBuilt Twins - (e.g. Serial items or batches) but as AsPlanned twins.
 Sometimes, however, it is not known what exact AsPlanned twin is needed to build the BoM asBuilt because there are different alternative twins to choose from.
 In that case, all potential alternatives have to be referenced. To indicate that ambiguity the property "hasAlternative" has been added to the aspect model.
 Property hasAlternative: Expresses weather the part is built-in or weather it is one of several options.
@@ -45,6 +45,8 @@ Description of the main property 'SingleLevelBomAsBuild' was adapted to the new 
 * The switch of BoMLifecyle is only unidirectional from asBuilt to asPlanned (no way back)
 * Business apps and use cases do not have the requirement to continue traversing the asPlanned structure after switching. The return of the semantic models such as (PartAsPlanned) is sufficient.  
 * There is no option to group childItems in SingleLevelBomAsBuilt to a assembly. Each childItem is handled independent from each other. Part alternatives are not identifiable in the structure. 
+* The requestor (Trace-X) only wants to know the semantic models behind the part, but after a change of the BomLifecycle asPlanned, it does not want to continue traversing but only query the part information on the next level.
+* If the complete structure of an asPlanned twin is required, the business app can initiate its own asPlanned oriented query for this parts tree via a separate query inside the irs
 
 # Requirements
 * [ ] IRS has the capability to switch bomLifeCyle (only for asBuilt) to provide asPlanned parts  in a mixed stucture.
