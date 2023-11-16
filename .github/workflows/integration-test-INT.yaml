@@ -7,7 +7,7 @@ jobs:
   trigger-integration-test:
     uses: ./.github/workflows/xray-cucumber-integration.yaml
     secrets:
-      keycloakTokenUrl: ${{ secrets.KEYCLOAK_OAUTH2_CLIENT_TOKEN_URI }}
+      oauth2TokenUrl: ${{ secrets.OAUTH2_CLIENT_TOKEN_URI }}
       clientId: ${{ secrets.ORG_IRS_OAUTH2_CLIENT_ID_INT }}
       clientSecret: ${{ secrets.ORG_IRS_OAUTH2_CLIENT_SECRET_INT }}
       jiraUser: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
