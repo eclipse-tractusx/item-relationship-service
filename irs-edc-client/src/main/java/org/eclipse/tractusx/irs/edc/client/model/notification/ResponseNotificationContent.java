@@ -39,7 +39,7 @@ public class ResponseNotificationContent implements NotificationContent {
 
     private final String result;
     private Integer hops;
-    private String parentBpn;
+    private String bpn;
 
     /**
      * Incrementing hops value

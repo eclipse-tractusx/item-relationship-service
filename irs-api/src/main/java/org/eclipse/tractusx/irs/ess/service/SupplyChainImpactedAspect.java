@@ -23,8 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.service;
 
-import java.util.Set;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +39,7 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 public class SupplyChainImpactedAspect {
     private SupplyChainImpacted supplyChainImpacted;
-    private Set<ImpactedSupplierFirstLevel> impactedSuppliersOnFirstTier;
+    private ImpactedSupplierFirstLevel impactedSuppliersOnFirstTier;
 
     /**
      * BPNLs on first tier level where infection was detected

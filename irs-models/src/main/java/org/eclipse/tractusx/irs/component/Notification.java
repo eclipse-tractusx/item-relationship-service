@@ -26,5 +26,5 @@ package org.eclipse.tractusx.irs.component;
 /**
  * Response notification body containing notificationId and parent bpn
  */
-public record Notification(String notificationId, String bpn) {
+public record Notification(String notificationId, String childBpn) {
 }

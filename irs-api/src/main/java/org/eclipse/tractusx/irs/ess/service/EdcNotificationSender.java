@@ -70,7 +70,7 @@ public class EdcNotificationSender {
                 final NotificationContent notificationContent = ResponseNotificationContent.builder()
                                                                                            .result(supplyChainImpacted.getDescription())
                                                                                            .hops(hops)
-                                                                                           .parentBpn(bpn)
+                                                                                           .bpn(bpn)
                                                                                            .build();
                 final EdcNotification<NotificationContent> responseNotification = edcRequest(notificationId,
                         originalNotificationId, essLocalEdcEndpoint, localBpn, recipientBpn, notificationContent);

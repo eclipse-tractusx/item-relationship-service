@@ -27,9 +27,9 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -65,14 +65,13 @@ public class BpnInvestigationJob {
         this(jobSnapshot, incidentBpns, new ArrayList<>(), new ArrayList<>(), JobState.RUNNING);
     }
 
-    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain,
-            final String bpn) {
+    public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
         final Optional<SupplyChainImpacted> previousSupplyChain = getSupplyChainImpacted();
 
         final SupplyChainImpacted supplyChainImpacted = previousSupplyChain.map(
                 prevSupplyChain -> prevSupplyChain.or(newSupplyChain)).orElse(newSupplyChain);
 
-        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted, bpn);
+        this.jobSnapshot = extendJobWithSupplyChainSubmodel(jobSnapshot, supplyChainImpacted);
         this.jobSnapshot = extendSummary(this.jobSnapshot);
         this.jobSnapshot = updateLastModified(this.jobSnapshot, ZonedDateTime.now(ZoneOffset.UTC));
         return this;
@@ -85,21 +84,21 @@ public class BpnInvestigationJob {
 
     public BpnInvestigationJob withAnsweredNotification(
             final EdcNotification<ResponseNotificationContent> notification) {
-        final Optional<String> parentBpn = getParentBpn(notification);
+        final Optional<String> bpn = getChildBpn(notification);
         removeFromUnansweredNotification(notification);
-        notification.getContent().setParentBpn(parentBpn.orElse(null));
+        notification.getContent().setBpn(bpn.orElse(null));
         notification.getContent().incrementHops();
         this.answeredNotifications.add(notification);
 
         return this;
     }
 
-    private Optional<String> getParentBpn(final EdcNotification<ResponseNotificationContent> notification) {
+    private Optional<String> getChildBpn(final EdcNotification<ResponseNotificationContent> notification) {
         return this.unansweredNotifications.stream()
                                            .filter(unansweredNotification -> unansweredNotification.notificationId()
                                                                                                    .equals(notification.getHeader()
                                                                                                                        .getOriginalNotificationId()))
-                                           .map(Notification::bpn)
+                                           .map(Notification::childBpn)
                                            .findAny();
     }
 
@@ -125,38 +124,39 @@ public class BpnInvestigationJob {
                    .findFirst();
     }
 
-    private Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted,
-            final String bpn) {
-        log.debug(bpn);
+    private Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted) {
         final SupplyChainImpactedAspect.SupplyChainImpactedAspectBuilder supplyChainImpactedAspectBuilder = SupplyChainImpactedAspect.builder()
                                                                                                                                      .supplyChainImpacted(
                                                                                                                                              supplyChainImpacted);
 
         if (getUnansweredNotifications().isEmpty()) {
-            final List<ResponseNotificationContent> incidentWithMinHopsValue = getAnsweredNotifications().stream()
-                                                                                                         .map(EdcNotification::getContent)
-                                                                                                         .filter(ResponseNotificationContent::thereIsIncident)
-                                                                                                         .toList();
-
-            final List<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> suppliersFirstLevel = incidentWithMinHopsValue.stream()
-                                                                                                                           .map(impacted -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(
-                                                                                                                                   impacted.getParentBpn(),
-                                                                                                                                   impacted.getHops()))
-                                                                                                                           .toList();
-
-            supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(Set.copyOf(suppliersFirstLevel));
+            final Optional<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> impactedSupplierWithLowestHopsNumber = getImpactedSupplierWithLowestHopsNumber();
+            supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(
+                    impactedSupplierWithLowestHopsNumber.orElse(null));
         }
-
-        final Submodel supplyChainImpactedSubmodel = Submodel.builder()
-                                                             .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
-                                                             .payload(new JsonUtil().asMap(
-                                                                     supplyChainImpactedAspectBuilder.build()))
-                                                             .build();
 
         return irsJob.toBuilder()
                      .clearSubmodels()
-                     .submodels(Collections.singletonList(supplyChainImpactedSubmodel))
+                     .submodels(Collections.singletonList(
+                             createSupplyChainImpactedSubmodel(supplyChainImpactedAspectBuilder)))
                      .build();
+    }
+
+    private Optional<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> getImpactedSupplierWithLowestHopsNumber() {
+        return getAnsweredNotifications().stream()
+                                         .map(EdcNotification::getContent)
+                                         .filter(ResponseNotificationContent::thereIsIncident)
+                                         .min(Comparator.comparing(ResponseNotificationContent::getHops))
+                                         .map(impacted -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(
+                                                 impacted.getBpn(), impacted.getHops()));
+    }
+
+    private static Submodel createSupplyChainImpactedSubmodel(
+            final SupplyChainImpactedAspect.SupplyChainImpactedAspectBuilder supplyChainImpactedAspectBuilder) {
+        return Submodel.builder()
+                       .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
+                       .payload(new JsonUtil().asMap(supplyChainImpactedAspectBuilder.build()))
+                       .build();
     }
 
     private Jobs updateLastModified(final Jobs irsJob, final ZonedDateTime lastModifiedOn) {
