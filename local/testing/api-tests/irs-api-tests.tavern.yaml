@@ -804,9 +804,9 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
-          bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
-        collectAspects: false
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
+        collectAspects: true
         depth: 1
         direction: "downward"
       method: POST
@@ -838,6 +838,9 @@ stages:
       status_code: 200
       verify_response_with:
         - function: local.testing.api-tests.tavern_helpers:submodels_are_empty
+        - function: local.testing.api-tests.tavern_helpers:submodelDescriptors_in_shells_are_empty
+        - function: local.testing.api-tests.tavern_helpers:aspects_in_job_parameter_are_empty
+        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
         - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
