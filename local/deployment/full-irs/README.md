@@ -1,5 +1,7 @@
 # Item Relationship Service
 
+> **Please note that this demo is currently based on IRS version 2.4.0.**
+
 ## Deployment of the IRS with all dependencies
 
 ### Step 1: Prerequisites
@@ -25,7 +27,8 @@
 
 Check out the project [Item Relationship Service](https://github.com/eclipse-tractusx/item-relationship-service) or download a [released version](https://github.com/eclipse-tractusx/item-relationship-service/releases) of the Item Relationship Service
 
-> 👉 Please use the [tag 2.6.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/2.6.0) for uploading test data
+> 👉 **Please use [tag 2.6.0](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/2.6.0) instead
+of the latest version currently (this is the version compatible with IRS 2.4.0).**
 >
 > ```git clone -b 2.6.0 https://github.com/catenax-ng/tx-item-relationship-service```
 
