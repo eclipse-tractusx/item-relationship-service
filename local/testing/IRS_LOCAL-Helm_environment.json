@@ -1,6 +1,6 @@
 {
 	"IRS_HOST": "http://localhost:8080",
-	"KEYCLOAK_TOKEN_URL": "http://localhost:4011/connect/token",
+	"OAUTH2_TOKEN_URL": "http://localhost:4011/connect/token",
 	"CLIENT_ID": "",
 	"CLIENT_SECRET": "",
 	"DIGITAL_TWIN_REGISTRY": "http://localhost:10200",
