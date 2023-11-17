@@ -5,7 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Fixed templating for `management.health.dependencies`
+
+## [6.10.0]
 ### Changed
+- Update IRS version to 4.1.0
 - Changed configuration for OAuth2 client from:
   ```
   keycloak:

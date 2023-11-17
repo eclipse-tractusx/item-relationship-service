@@ -81,7 +81,7 @@ cp local/development/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/co
 For further information please see https://github.com/hazcod/semantic-commit-hook
 
 ## Code formatting 
-Please use the following code formatter: https://github.com/eclipse-tractusx/item-relationship-service/tree/main/.idea/codeStyles
+Please use the following code formatter: [.idea/codeStyles](.idea/codeStyles)
 
 ## Contact
 

@@ -135,9 +135,9 @@ data:
     management:
       health:
         dependencies:
-          enabled: {{ tpl (.Values.management.health.dependencies.enabled | default "false") . | quote }}
+          enabled: {{ .Values.management.health.dependencies.enabled | default false }}
           urls:
-            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 10 }}
+            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 12 }}
     {{- end }}
     {{- end }}
 
