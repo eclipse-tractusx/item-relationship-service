@@ -173,7 +173,7 @@ irs-edc-client:
         operator: "eq"
         rightOperand: "active"
   connectorEndpointService:
-    cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
+    cacheTTL: 86400000  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
