@@ -69,7 +69,6 @@ where type is: `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test`
 
 Example:  
 ``chore(api):[#123] some text``
-``feat(api): some text``
 
 Detailed pattern can be found here: [commit-msg](local/development/commit-msg)
 
