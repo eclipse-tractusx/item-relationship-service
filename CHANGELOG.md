@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Known knowns
 - [#253] Cancelation of order jobs is not working stable
->>>>>>> main
 
 ## [4.1.0] - 2023-11-15
 ### Added
