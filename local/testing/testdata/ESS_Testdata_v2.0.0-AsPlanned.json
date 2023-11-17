@@ -773,7 +773,7 @@
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
               "businessPartner": "BPNL00000004FAIL",
-              "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8"
+              "catenaXId": "urn:uuid:9846f1c6-0dd0-4d5a-9c7a-30af0b7e0247"
             },
             {
               "validityPeriod": {
@@ -786,8 +786,8 @@
               },
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "businessPartner": "BPNL00ARBITRARY9",
-              "catenaXId": "urn:uuid:9846f1c6-0dd0-4d5a-9c7a-30af0b7e0247"
+              "businessPartner": "BPNL00ARBITRARY10",
+              "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8"
             }
           ]
         }
@@ -869,7 +869,7 @@
               },
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "businessPartner": "BPNS00ARBITRARY9",
+              "businessPartner": "BPNS00ARBITRARY11",
               "catenaXId": "urn:uuid:01796f87-9677-43f0-9c62-61665be29d85"
             }
           ]

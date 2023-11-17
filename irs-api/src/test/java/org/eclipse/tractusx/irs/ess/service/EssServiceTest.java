@@ -34,6 +34,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,6 +44,7 @@ import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.RegisterJob;
@@ -56,6 +58,7 @@ import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.server.ResponseStatusException;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 class EssServiceTest {
 
@@ -115,7 +118,7 @@ class EssServiceTest {
         final UUID jobId = UUID.randomUUID();
         final String owner = securityHelperService.getClientIdClaim();
 
-        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").build();
+        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).bpn("bot-impacted-bpn").build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
                                                                    .notificationId(notificationId)
                                                                    .originalNotificationId(notificationId)
@@ -124,9 +127,9 @@ class EssServiceTest {
                                                                                             .header(header1)
                                                                                             .content(resultNo)
                                                                                             .build();
-        final ResponseNotificationContent resultYes = ResponseNotificationContent.builder().result("Yes").build();
+        final ResponseNotificationContent resultYes = ResponseNotificationContent.builder().result("Yes").hops(0).bpn("impacted-bpn").build();
         final EdcNotificationHeader header2 = EdcNotificationHeader.builder()
-                                                                   .notificationId(notificationId2)
+                                                                   .notificationId(notificationId)
                                                                    .originalNotificationId(notificationId2)
                                                                    .build();
         final EdcNotification<ResponseNotificationContent> edcNotification2 = EdcNotification.<ResponseNotificationContent>builder()
@@ -136,7 +139,7 @@ class EssServiceTest {
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
                 Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
-                new ArrayList<>()).withNotifications(List.of(notificationId, notificationId2));
+                new ArrayList<>()).withUnansweredNotifications(List.of(new Notification(notificationId, "bpn"), new Notification(notificationId2, "bpn")));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification));
@@ -144,25 +147,92 @@ class EssServiceTest {
 
         final BpnInvestigationJob job = bpnInvestigationJobCache.findAll().get(0);
         final String supplyChainImpacted = (String) job.getJobSnapshot()
-                                                       .getSubmodels()
-                                                       .get(0)
-                                                       .getPayload()
-                                                       .get("supplyChainImpacted");
+                                                      .getSubmodels()
+                                                      .get(0)
+                                                      .getPayload()
+                                                      .get("supplyChainImpacted");
         assertThat(supplyChainImpacted).isEqualTo("No");
         assertThat(job.getState()).isEqualTo(JobState.RUNNING);
 
         assertDoesNotThrow(() -> essService.handleNotificationCallback(edcNotification2));
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
+
         final BpnInvestigationJob job2 = bpnInvestigationJobCache.findAll().get(0);
         assertThat(job2.getJobSnapshot().getSubmodels()).hasSize(1);
-        final String supplyChainImpacted2 = (String) job.getJobSnapshot()
-                                                        .getSubmodels()
-                                                        .get(0)
-                                                        .getPayload()
-                                                        .get("supplyChainImpacted");
-        assertThat(supplyChainImpacted2).isEqualTo("Yes");
-        assertThat(job.getState()).isEqualTo(JobState.COMPLETED);
 
+        final Map<String, Object> supplyChainPayload = job2.getJobSnapshot().getSubmodels().get(0).getPayload();
+        final SupplyChainImpactedAspect supplyChainImpactedAspect = new ObjectMapper().convertValue(supplyChainPayload, SupplyChainImpactedAspect.class);
+        assertThat(supplyChainImpactedAspect.getSupplyChainImpacted()).isEqualTo(SupplyChainImpacted.YES);
+        assertThat(supplyChainImpactedAspect.getImpactedSuppliersOnFirstTier()).isNotNull();
+        assertThat(supplyChainImpactedAspect.getImpactedSuppliersOnFirstTier().getHops()).isPositive();
+        assertThat(job.getState()).isEqualTo(JobState.COMPLETED);
+    }
+
+    @Test
+    void shouldReturnCorrectFirstLevelImpactedSupplierBpnAndHopsNumberWhenImpactedSupplierIsOnThirdLevel() {
+        // given
+        final String notificationId = UUID.randomUUID().toString();
+        final String notificationId2 = UUID.randomUUID().toString();
+        final UUID jobId = UUID.randomUUID();
+        final UUID jobId2 = UUID.randomUUID();
+        final UUID jobId3 = UUID.randomUUID();
+        final String owner = securityHelperService.getClientIdClaim();
+
+        final String bpnLevel0 = "bpn-level-0";
+        final String bpnLevel1 = "bpn-level-1";
+        final String bpnLevel2 = "bpn-level-2";
+
+        final ResponseNotificationContent responseNotificationContentLevel1 = ResponseNotificationContent.builder().result("Yes").hops(1).bpn(bpnLevel0).build();
+        final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notificationId)
+                                                                   .originalNotificationId(notificationId)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> responseNotificationLevel1 = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                                       .header(header1)
+                                                                                                       .content(responseNotificationContentLevel1)
+                                                                                                       .build();
+
+        final ResponseNotificationContent responseNotificationContent2 = ResponseNotificationContent.builder().result("Yes").hops(0).bpn(bpnLevel1).build();
+        final EdcNotificationHeader header2 = EdcNotificationHeader.builder()
+                                                                   .notificationId(notificationId)
+                                                                   .originalNotificationId(notificationId2)
+                                                                   .build();
+        final EdcNotification<ResponseNotificationContent> responseNotificationLevel2 = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                                       .header(header2)
+                                                                                                       .content(responseNotificationContent2)
+                                                                                                       .build();
+
+        final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
+                Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
+                new ArrayList<>()).withUnansweredNotifications(List.of(new Notification(notificationId, bpnLevel1)));
+        bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
+
+        final BpnInvestigationJob bpnInvestigationJob2 = new BpnInvestigationJob(
+                Jobs.builder().job(Job.builder().id(jobId2).owner(owner).build()).build(),
+                new ArrayList<>()).withUnansweredNotifications(List.of(new Notification(notificationId2, bpnLevel2)));
+        bpnInvestigationJobCache.store(jobId2, bpnInvestigationJob2);
+
+        final BpnInvestigationJob bpnInvestigationJob3 = new BpnInvestigationJob(
+                Jobs.builder().job(Job.builder().id(jobId3).owner(owner).build()).build(),
+                new ArrayList<>());
+        bpnInvestigationJobCache.store(jobId3, bpnInvestigationJob3);
+
+        // when
+        essService.handleNotificationCallback(responseNotificationLevel2);
+        essService.handleNotificationCallback(responseNotificationLevel1);
+
+        // then
+        final Optional<BpnInvestigationJob> investigationJobLevel1 = bpnInvestigationJobCache.findByJobId(jobId);
+        assertThat(investigationJobLevel1).isPresent();
+
+        final Map<String, Object> supplyChainImpacted2 = (Map<String, Object>) investigationJobLevel1.get().getJobSnapshot()
+                                                                                   .getSubmodels()
+                                                                                   .get(0)
+                                                                                   .getPayload()
+                                                                                   .get("impactedSuppliersOnFirstTier");
+
+        assertThat(supplyChainImpacted2.get("bpnl").toString()).isEqualTo(bpnLevel1);
+        assertThat(supplyChainImpacted2.get("hops").toString()).isEqualTo("2");
     }
 
     @Test
@@ -174,7 +244,7 @@ class EssServiceTest {
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
                 Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
-                new ArrayList<>()).withNotifications(Collections.singletonList(notificationId));
+                new ArrayList<>()).withUnansweredNotifications(Collections.singletonList(new Notification(notificationId, "bpn")));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         assertThat(bpnInvestigationJobCache.findAll()).hasSize(1);
@@ -198,8 +268,19 @@ class EssServiceTest {
 
         final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId, owner);
+        final EdcNotification<ResponseNotificationContent> answeredNotification = EdcNotification.<ResponseNotificationContent>builder()
+                                                                                  .header(EdcNotificationHeader.builder()
+                                                                                                               .notificationId(
+                                                                                                                       notificationId)
+                                                                                                               .build())
+                                                                                  .content(
+                                                                                          ResponseNotificationContent.builder()
+                                                                                                                     .result(SupplyChainImpacted.YES.getDescription())
+                                                                                                                     .hops(0)
+                                                                                                                     .build())
+                                                                                  .build();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot,
-                null).withAnsweredNotification(notificationId).withNotifications(List.of());
+                null).withAnsweredNotification(answeredNotification).withUnansweredNotifications(List.of());
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         // Act
@@ -220,9 +301,9 @@ class EssServiceTest {
         final Jobs jobSnapshot = job(jobId, owner);
         final String notificationId = UUID.randomUUID().toString();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot, null).update(jobSnapshot,
-                SupplyChainImpacted.NO).withNotifications(List.of(notificationId));
+                SupplyChainImpacted.NO).withUnansweredNotifications(List.of(new Notification(notificationId, "bpn")));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
-        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").build();
+        final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
                                                                    .notificationId(notificationId)
                                                                    .originalNotificationId(notificationId)

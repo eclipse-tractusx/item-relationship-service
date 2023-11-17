@@ -6,31 +6,31 @@ import os
 from box import Box
 
 
-def supplyChainImpacted_is_Yes(response):
+def supplyChainImpacted_is_as_expected(response, expectedSupplyChainImpacted):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
     assert len(submodels) <= 1
     for i in submodels:
         assert 'supply_chain_impacted' in i.get('aspectType')
-        assert 'Yes' in i.get("payload").get('supplyChainImpacted')
+        assert expectedSupplyChainImpacted in i.get("payload").get('supplyChainImpacted')
 
 
-def supplyChainImpacted_is_No(response):
-    submodels = response.json().get("submodels")
-    print("submodels ", submodels)
-    assert len(submodels) <= 1
-    for i in submodels:
-        assert 'supply_chain_impacted' in i.get('aspectType')
-        assert 'No' in i.get("payload").get('supplyChainImpacted')
+def supplyChainFirstLevelBpn_is_as_expected(response, expectedBpnl):
+    bpnl = response.json().get("submodels").get("payload").get("impactedSuppliersOnFirstTier").get("bpnl")
+    assert expectedBpnl == bpnl
+    # for i in submodels:
+    #     impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
+    #     for ii in impactedSuppliersOnFirstTier:
+    #         assert expectedBpnl in ii.get('bpnl')
 
 
-def supplyChainImpacted_is_Unknown(response):
-    submodels = response.json().get("submodels")
-    print("submodels ", submodels)
-    assert len(submodels) <= 1
-    for i in submodels:
-        assert 'supply_chain_impacted' in i.get('aspectType')
-        assert 'Unknown' in i.get("payload").get('supplyChainImpacted')
+def supplyChainhops_is_as_expected(response, expectedHops):
+    hops = response.json().get("submodels").get("payload").get("impactedSuppliersOnFirstTier").get("hops")
+    assert expectedHops == hops
+    # for i in submodels:
+    #     impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
+    #     for ii in impactedSuppliersOnFirstTier:
+    #         assert ii.get('hops') == expectedHops
 
 
 def errors_for_invalid_investigation_request_are_correct(response):
