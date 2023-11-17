@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - IRS can now check the readiness of external services. Use the new ``management.health.dependencies.enabled`` config entry to determine if external dependencies health checks should be checked (false by default).
   - The map of external services healthcheck endpoints can be configured with ``management.health.dependencies.urls`` property, eg. ``service_name: http://service_name_host/health``
+- Added cache mechanism for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 ### Changed
 - Changed name of spring's OAuth2 client registration from 'keycloak' to 'common' like below:
