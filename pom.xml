@@ -266,6 +266,7 @@
                         <exclude>**/*IrsApiConstants.class</exclude>
                         <exclude>**/*ApiErrorsConstants.class</exclude>
                         <exclude>org/eclipse/tractusx/irs/testing/dataintegrity/**</exclude>
+                        <exclude>org/eclipse/tractusx/irs/edc/client/model/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>

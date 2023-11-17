@@ -7,11 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Changed default behaviour of IRS - when aspects list is not provided or empty in request body, IRS will not collect any submodel now (previously default aspects were collected).
+- ESS
+  - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
+  - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
+
+### Known knowns
+- [#253] Cancelation of order jobs is not working stable
+>>>>>>> main
 
 ## [4.1.0] - 2023-11-15
 ### Added
 - IRS can now check the readiness of external services. Use the new ``management.health.dependencies.enabled`` config entry to determine if external dependencies health checks should be checked (false by default).
   - The map of external services healthcheck endpoints can be configured with ``management.health.dependencies.urls`` property, eg. ``service_name: http://service_name_host/health``
+- Added cache mechanism for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 ### Changed
 - Changed name of spring's OAuth2 client registration from 'keycloak' to 'common' like below:
