@@ -90,6 +90,8 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
     @Override
     public List<AspectModel> getAllAspectModels() {
         return List.of(
+                new AspectModel("urn:bamm:io.catenax.serial_part:1.0.1#SerialPart", "1.0.1",
+                        "SerialPart", MODEL_TYPE, MODEL_STATUS),
                 new AspectModel("urn:bamm:com.catenax.esr_certificates.esr_certificate:1.0.0#EsrCertificate", "1.0.0",
                         "EsrCertificate", MODEL_TYPE, MODEL_STATUS),
                 new AspectModel("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
