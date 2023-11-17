@@ -3,7 +3,7 @@
 == References
 The Swagger documentation can be found in the local deployment of the reference application. More information can be found in the GitHub repository: https://github.com/eclipse-tractusx/item-relationship-service/blob/main/README.md
 
-Since we cannot rely on synchronous responses regarding the requests of submodel endpoints, we designed the IRS in a way that it will handle the job management of requesting all needed endpoints in order to build a BoM tree.
+Since we cannot rely on synchronous responses to submodel endpoint requests, we designed the IRS to handle the job management of requesting all the endpoints needed to build a BoM tree.
 
 == IRS interaction diagram
 

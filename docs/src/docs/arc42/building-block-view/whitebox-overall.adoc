@@ -1,6 +1,6 @@
 = Whitebox overall system
 
-The interfaces show how the components interact with each other and which interfaces the IRS is providing.
+The interfaces show how the components interact with each other and what interfaces the IRS provides.
 
 == Component diagram
 
@@ -15,34 +15,34 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |Components |Description
 
 |IRSApiConsumer
-|Proxy for any consumer of the IRS api.
+|A proxy for any consumer of the IRS API.
 
 |IRS
-|The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS
+|The IRS consumes relationship information across the CX Network and builds the graph view. Within this documentation, the focus is on the IRS.
 
 |EDC Consumer
-|The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane.
+|The EDC Consumer Component is there to fulfil the GAIA-X and IDSA data sovereignty principles. The EDC Consumer consists of a control plane and a data plane.
 
 |EDC Provider
-|The EDC Provider Component connects with EDC Consumer component and forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications.
+|The EDC Provider Component connects to the EDC Consumer Component and forms the end point for the actual data exchange. It handles the automatic contract negotiation and the subsequent exchange of data assets for connected applications.
 
 |Submodel Server
-|The Submodel Server offers endpoints for requesting the Submodel aspects.
+|The Submodel Server provides endpoints for requesting Submodel aspects.
 
 |MIW
-|Managed Identity Wallet as Self-Sovereign-Identity Provider for EDC
+|Managed Identity Wallet as a self-sovereign identity provider for EDC.
 
 |Discovery Finder
-|The Discovery Finder is used to get the EDC Discovery Endpoint for a certain type of identification, e.g. BPNL.
+|The Discovery Finder is used to obtain the EDC Discovery Endpoint for a particular type of identity, e.g. BPNL.
 
 |EDC Discovery
-|The EDC Discovery Service is used to get EDC endpoints for a certain BPNL.
+|The EDC Discovery Service is used to obtain EDC endpoints for a specific BPNL.
 
 |Semantic Hub
-|Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers.
+|The Semantic Hub provides information about semantic models in a specific version. This includes JSON schemas used by IRS to validate the payload received from data providers.
 
 |BPDM
-|The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.
+|The Business Partner Data Management (BPDM) service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.
 |===
 
 
@@ -71,16 +71,16 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | IRS MUST authorize at central IAM
 
 | 08
-| IRS lookup for EDC Provider by given BPNs over the *EDC Discovery Service*
+| IRS lookup for an EDC Provider by given BPNs via the *EDC Discovery Service*
 
 | 09
-| IRS lookup for *EDC Discovery Services* by given type <BPN> over the *Discovery Finder*
+| IRS lookup for *EDC Discovery Services* by given type <BPN> via the *Discovery Finder*
 
 | 10
 | IRS uses *Semantic Hub* to validate of *SubmodelAspects* payloads agains the schema provided in *Semantic Hub*
 
 | 11
-| In case "lookupBPNs" is active IRS provides a lookup of company for given BPN
+| In case "lookupBPNs" is active, IRS provides a lookup of the company for the given BPN
 
 | 12
 | *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
@@ -92,10 +92,10 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
 
 | 15
-| *IRS* accessing to *SubmodelServer* on Tier Level using the *EDC*
+| *IRS* accessing to *SubmodelServer* at tier level using the *EDC*
 
 | 16
-| *IRS* accessing the *decentral DigitalTwinRegistry* on Tier Level using the *EDC*
+| *IRS* accessing the *decentral DigitalTwinRegistry* at tier level using the *EDC*
 |===
 
 
