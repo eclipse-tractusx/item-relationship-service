@@ -1,6 +1,6 @@
 {
 	"IRS_HOST": "https://irs-pen.int.demo.catena-x.net",
-	"KEYCLOAK_TOKEN_URL": "https://centralidp-pen.dev.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token",
+	"OAUTH2_TOKEN_URL": "https://centralidp-pen.dev.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token",
 	"CLIENT_ID": "",
 	"CLIENT_SECRET": "",
 	"DIGITAL_TWIN_REGISTRY": "https://semantics-pen.dev.demo.catena-x.net/registry",
