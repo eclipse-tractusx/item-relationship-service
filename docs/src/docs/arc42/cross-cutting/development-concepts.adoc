@@ -1,34 +1,34 @@
 = Development concepts
 
 == Build, test, deploy
-The IRS is built using Maven and utilizes all the standard concepts of it. Test execution is part of the build process and a minimum test coverage of 80% is enforced.
+The IRS is built using Maven and utilizes all of its standard concepts. Testing is part of the build process and a minimum test coverage of 80% is enforced.
 
-The project setup contains a multi-module Maven build. Commonly used classes (like the IRS data model) should be extracted into a separate submodule and reused across the project. However, this is not a "one-size-fits-all" solution. New submodules should be created with care and require a review by the team.
+The project setup includes a multi-module Maven build. Commonly used classes (such as the IRS data model) should be extracted into a separate submodule and reused throughout the project. However, this is not a one-size-fits-all solution. New submodules should be created with care and require a review by the team.
 
-The Maven build alone only leads up to the JAR artifact of the IRS. Do create Docker images, the Docker build feature is used. This copies all resources into a builder image, builds the software and creates a final Docker image at the end that can then be deployed.
+The Maven build alone will only lead to the JAR artifact of the IRS. When creating Docker images, the Docker build feature is used. This copies all the resources into a builder image, builds the software and creates a final Docker image at the end that can then be deployed.
 
-Although the Docker image can be deployed in various ways, the standard solution are the provided Helm charts, which describe the required components as well.
+Although the Docker image can be deployed in various ways, the standard solution is to use the provided Helm charts, which also describe the components required.
 
 == Code generation
 There are two methods of code generation in the IRS:
 
 === Lombok
-The Lombok library is heavily used to generate boilerplate code (like Constructors, Getters, Setters, Builders...).
-This way, code can be written faster and this boilerplate code is excluded from test coverage, which keeps the test base lean.
+The Lombok library is heavily used to generate boilerplate code (such as Constructors, Getters, Setters, Builders...).
+This allows code to be written faster and this boilerplate code is excluded from test coverage, keeping the test base lean.
 
 === Swagger / OpenAPI
-The API uses OpenAPI annotations to describe the endpoints with all necessary information. The annotations are then used to automatically generate the OpenAPI specification file, which can be viewed in the Swagger UI that is deployed with the application.
+The API uses OpenAPI annotations to describe the endpoints with all the necessary information. The annotations are then used to automatically generate the OpenAPI specification file, which can be viewed in the Swagger UI that is deployed with the application.
 
-The generated OpenAPI specification file is automatically compared to a fixed, stored version of it to avoid unwanted changes of the API.
+The generated OpenAPI specification file is automatically compared to a fixed, stored version of it to avoid unwanted changes to the API.
 
 == Migration
-There currently is no data migration mechanism for the IRS.
-In case the model of the persisted data (Jobs) changes, data is dropped and Jobs will need to be recreated.
+There is currently no data migration mechanism for the IRS.
+If the model of the persisted data (jobs) changes, data will be dropped and jobs will have to be re-created.
 
 == Configurability
-The IRS utilizes the configuration mechanism provided by Spring Boot. Configuration properties can be defined in the file `+src/main/resources/application.yml+`
+The IRS utilizes the configuration mechanism provided by Spring Boot. Configuration properties can be defined in the `+src/main/resources/application.yml+` file.
 
-For local testing purposes, there is an additional configuration file called `+application-local.yml+`. Values can be overriden there to support the local dev environment.
+For local testing purposes there is an additional configuration file called `+application-local.yml+`. Values can be overridden there to support the local development environment.
 
-Other profiles should be avoided. Instead, the configuration can be overwritten using Spring's external configuration mechanism (see https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html). The operator must have total control over the configuration of the IRS.
+Other profiles should be avoided. Instead, the configuration can be overwritten using Spring's external configuration mechanism (see https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html). The operator must have full control over the configuration of the IRS.
 

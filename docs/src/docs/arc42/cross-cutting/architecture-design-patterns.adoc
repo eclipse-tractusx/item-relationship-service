@@ -4,18 +4,18 @@
 
 For the IRS, we utilize the dependency inversion mechanisms provided by Spring Boot as much as possible.
 
-The principle says:
+The principle is:
 
-High-level modules should not import anything from low-level modules. Both should depend on abstractions (e.g., interfaces).
+High-level modules should not import from low-level modules. Both should depend on abstractions (e.g. interfaces).
 Abstractions should not depend on details. Details (concrete implementations) should depend on abstractions.
 
-Adhering to this, we define clear interfaces between the different domains (e.g. job orchestration and AAS communication) in the IRS and let dependencies be injected by the framework. This improves testability of the classes as well.
+Following this, we define clear interfaces between the different domains (e.g. job orchestration and AAS communication) in the IRS and let the framework inject the dependencies. This also improves the testability of the classes.
 
 == Hexagonal architecture
 
-The hexagonal architecture divides a system into several loosely-coupled interchangeable components, such as the application core, the database, the user interface, test scripts and interfaces with other systems. This approach is an alternative to the traditional layered architecture.
+The hexagonal architecture divides a system into several loosely coupled interchangeable components, such as the application core, the database, the user interface, test scripts and interfaces to other systems. This approach is an alternative to the traditional layered architecture.
 
-For the IRS, this means decoupling the application logic from components like the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (so-called port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic will be necessary.
+For the IRS, this means decoupling the application logic from components such as the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (called a port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic are required.
 
 
 [plantuml, target=architecture, format=svg]

@@ -5,15 +5,15 @@
 === IRS API
 
 The IRS is secured using OAuth2.0 / Open ID Connect.
-Every request to the IRS API requires a valid bearer token.
-JWT token should also contain two claims:
+Any request to the IRS API requires a valid bearer token.
+The JWT token should also contain two claims:
 
-- 'bpn' which is equal to the configuration value from `API_ALLOWED_BPN` property
-- 'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. (The keys are configurable. For more details see chapter "IRS OAuth2 JWT Token").
-The list of values will be converted to roles by IRS.
-Currently, IRS API handles two roles: *'admin_irs'* and *'view_irs'.* A valid token with the *'admin_irs'* role can access any endpoint exposed by the IRS API, while a token with the *'view_irs'* role does not have access to policies endpoints and can operate only on resources it owns.
-That means that he only has access to the resources he has created, e.g. jobs and batches.
-This behavior is shown in the table below.
+- 'bpn' which is equal to the configuration value from the `API_ALLOWED_BPN` property
+- 'resource_access' with the specific key 'Cl20-CX-IRS' for C-X environments. (The keys are configurable. For more details see chapter "IRS OAuth2 JWT Token").
+The list of values will be converted into roles by IRS.
+Currently, the IRS API handles two roles: *'admin_irs'* and *'view_irs'.* A valid token with the *'admin_irs'* role can access any endpoint exposed by the IRS API, while a token with the *'view_irs'* role does not have access to policy endpoints and can only operate on resources it owns.
+This means that it can only access the resources that it created, e.g. jobs and batches.
+This behaviour is shown in the table below.
 
 ==== Rights and Roles Matrix of IRS
 
@@ -73,21 +73,21 @@ oauth:
 
 === IRS as DTR client
 
-The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect.
+The IRS acts as a client to the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect.
 The IRS uses client credentials to authenticate requests to the DTR.
-Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
+This requires the IRS account to have access to every item in the DTR, regardless of the permissions of the account calling the IRS API.
 
 === IRS as decentralized DTR client
 
-In a decentralized network, IRS uses the EDC client to access the provider DTR.
-This way, no authentication, other than the EDC contract negotiation, is needed to access the DTR.
+In a decentralized network, the IRS uses the EDC client to access the provider DTR.
+This way, no authentication other than the EDC contract negotiation, is required to access the DTR.
 
 === IRS as EDC client
 
 The IRS accesses the Catena-X network via the EDC consumer connector.
 This component requires authentication via a Verifiable Credential (VC), which is provided to the EDC via the Managed Identity Wallet.
 
-The VC identifies and authenticates the EDC and is used to acquire access permissions for the data transferred via EDC.
+The VC identifies and authenticates the EDC and is used to gain access rights to the data transferred via the EDC.
 
 == Credentials
 
