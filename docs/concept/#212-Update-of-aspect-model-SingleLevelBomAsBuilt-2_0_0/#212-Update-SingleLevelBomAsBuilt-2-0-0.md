@@ -57,7 +57,7 @@ Description of the main property 'SingleLevelBomAsBuild' was adapted to the new 
 
 # Concept
 
-````json
+```json
 "relationships": [
   {
     "catenaXId": "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
@@ -71,7 +71,7 @@ Description of the main property 'SingleLevelBomAsBuild' was adapted to the new 
             }
     }
 ],
-```` 
+```
 
 | Change           | Description                                                                                        |
 |------------------|----------------------------------------------------------------------------------------------------|
@@ -84,27 +84,22 @@ Description of the main property 'SingleLevelBomAsBuild' was adapted to the new 
 2. Traversal Aspect: SingleLevelBomAsBuilt
 3. Semantic Aspects: Provisioning of bomLifeCycle asBuilt related semantic models (SerialPart, JustInSequence) according to job params "aspects":"[  ]"
 
-````mermaid
+```mermaid
 ---
-title: SingleLevelBomAsBuilt childItems contains asBuilt aspects hasAlternatives=false 
+title: SingleLevelBomAsBuilt childItems contains asBuilt aspects hasAlternatives=false
 ---
-%%{init: { 'fontFamily': 'Architects daughter', 'theme': 'dark' , 'curve' : 'linear'} }%%
 flowchart LR
-    s1((AAS C-X 1 
-        hasAlternatives=false))
+    s1((AAS C-X 1 \n hasAlternatives=false))
     SingleLevelBomAsBuilt[SingleLevelBomAsBuilt2.0.0]
-    aas((AAS OEM)) --> 
+    aas((AAS OEM)) --> SingleLevelBomAsBuilt
     SingleLevelBomAsBuilt --> s1
     s1 --> SerialPart
     s1 --> SingleLevelBomAsBuilt2
-    SingleLevelBomAsBuilt2(SingleLevelBomAsBuilt) --> s4((AAS C-X 2
-        hasAlternatives=false))
+    SingleLevelBomAsBuilt2(SingleLevelBomAsBuilt) --> s4((AAS C-X 2 \n hasAlternatives=false))
     s4 --> SerialPart3(SerialPart)
-    SingleLevelBomAsBuilt2 --> s5((AAS C-X 3
-        hasAlternatives=false))
+    SingleLevelBomAsBuilt2 --> s5((AAS C-X 3 \n hasAlternatives=false))
     s5 --> SerialPart2(SerialPart)
-
-````
+```
 
 ## SingleLevelBomAsBuilt childItems contains asPlanned aspects hasAlternatives=false
 
@@ -122,7 +117,7 @@ flowchart LR
 2. Traversal using SLBoMAsBuilt on all levels independent from property hasAlternatives
 3. In case of switch to bomLifecycle asPlanned the semantic models are collected on next level. Traversal will be stopped.
 
-````json 
+```json 
 {
   "aspects": [
     "SerialPart",
@@ -138,45 +133,38 @@ flowchart LR
   },
   "lookupBPNs": true
 }
-````
+```
 
-````mermaid
+```mermaid
 ---
-title:  SingleLevelBomAsBuilt2 childItems contains asPlanned aspects hasAlternatives=false  
+title: SingleLevelBomAsBuilt2 childItems contains asPlanned aspects hasAlternatives=false
 ---
-%%{init: { 'fontFamily': 'Architects daughter', 'theme': 'dark' , 'curve' : 'linear'} }%%
 flowchart LR
-    s1((AAS C-X 1
-    hasAlternatives=true))
-s2((AAS C-X 2
-hasAlternatives=true))
-s3((AAS C-X 3
-hasAlternatives=true))
-SingleLevelBomAsBuilt[SingleLevelBomAsBuilt2.0.0]
+    s1((AAS C-X 1 \n hasAlternatives=true))
+    s2((AAS C-X 2 \n hasAlternatives=true))
+    s3((AAS C-X 3 \n hasAlternatives=true))
+    SingleLevelBomAsBuilt[SingleLevelBomAsBuilt2.0.0]
 
+    aas((AAS OEM)) --> SingleLevelBomAsBuilt
+    SingleLevelBomAsBuilt --> s1
+    SingleLevelBomAsBuilt --> s2
+    SingleLevelBomAsBuilt --> s3
+    
+    s2 --> p1(PartAsPlanned)
+    s3 --> p2(PartAsPlanned)
+    s2 --> stop1((stop))
+    s3 --> stop2((stop))
+    
+    s1 --> SingleLevelBomAsBuilt3[SingleLevelBomAsBuilt]
+    SingleLevelBomAsBuilt3 --> s4((AAS C-X 4))
+    
+    classDef asPlanned fill: #9f6,stroke: #333, stroke-width: 2px;
+    class s2,s3 asPlanned
+    
+    classDef stop1, stop2 fill: #fff, stroke: #333, stroke-width: 2px;
+```
 
-aas((AAS OEM)) -->
-SingleLevelBomAsBuilt --> s1
-SingleLevelBomAsBuilt --> s2
-SingleLevelBomAsBuilt --> s3
-
-s2 --> p1(PartAsPlanned)
-s3 --> p2(PartAsPlanned)
-s2 --> stop1((stop))
-s3 --> stop2((stop))
-
-s1 --> SingleLevelBomAsBuilt3[SingleLevelBomAsBuilt]
-SingleLevelBomAsBuilt3 --> s4((AAS C-X 4))
-
-classDef asPlanned fill: #9f6,stroke: #333, stroke-width: 2px;
-class s2,s3 asPlanned
-
-classDef stop1, stop2 fill: #fff, stroke: #333, stroke-width: 2px;
-
-
-````
-
-== SingleLevelBomAsBuilt childItems contains combination of asBuilt parts with mixture of hasAlternatives=false &=true
+## SingleLevelBomAsBuilt childItems contains combination of asBuilt parts with mixture of hasAlternatives=false &=true
 
 Case: Plastic granulate is used for the part. The "plastic granulate" batch cannot be assigned directly to the part, so several batches are assigned to the part.
 
@@ -186,38 +174,32 @@ Case: Plastic granulate is used for the part. The "plastic granulate" batch cann
    Provisioning of bomLifeCycle asBuilt related semantic models (SerialPart, JustInSequence) according to job params "aspects":[]
 4. The traversing of the parts is carried out according to the traversing over the SingleLevelBomAsBuilt
 
-````mermaid
+```mermaid
 ---
-title:  SingleLevelBomAsBuilt2 childItems contains combination of hasAlternatives=false &=true  
+title: SingleLevelBomAsBuilt2 childItems contains combination of hasAlternatives=false &=true
 ---
-%%{init: { 'fontFamily': 'Architects daughter', 'theme': 'dark' , 'curve' : 'linear'} }%%
 flowchart LR
-    s1((AAS C-X 1
-        hasAlternatives=false))
-    s2((AAS C-X 2
-        hasAlternatives=true
-        Batch #1))
-    s3((AAS C-X 3
-        hasAlternatives=true
-        Batch #2))
+    s1((AAS C-X 1 \n hasAlternatives=false))
+    s2((AAS C-X 2 \n hasAlternatives=true \n Batch #1))
+    s3((AAS C-X 3 \n hasAlternatives=true \n Batch #2))
     SingleLevelBomAsBuilt[SingleLevelBomAsBuilt2.0.0]
 
-   aas((AAS OEM)) -->
-   SingleLevelBomAsBuilt --> s1
-   SingleLevelBomAsBuilt --> s2
-   SingleLevelBomAsBuilt --> s3
-   s1 --> SingleLevelBomAsBuilt3[SingleLevelBomAsBuilt]
-   s2 --> SingleLevelBomAsBuilt4[SingleLevelBomAsBuilt]
-   s3 --> SingleLevelBomAsBuilt5[SingleLevelBomAsBuilt]
-   
-   s1 --> SerialPart3(SerialPart)
-   s2 --> SerialPart4(SerialPart)
-   s3 --> SerialPart5(SerialPart)
-   
-   SingleLevelBomAsBuilt3 --> AAS5((AAS))
-   SingleLevelBomAsBuilt4 --> AAS6((AAS))
-   SingleLevelBomAsBuilt5 --> AAS7((AAS))
-````
+    aas((AAS OEM)) --> SingleLevelBomAsBuilt
+    SingleLevelBomAsBuilt --> s1
+    SingleLevelBomAsBuilt --> s2
+    SingleLevelBomAsBuilt --> s3
+    s1 --> SingleLevelBomAsBuilt3[SingleLevelBomAsBuilt]
+    s2 --> SingleLevelBomAsBuilt4[SingleLevelBomAsBuilt]
+    s3 --> SingleLevelBomAsBuilt5[SingleLevelBomAsBuilt]
+    
+    s1 --> SerialPart3(SerialPart)
+    s2 --> SerialPart4(SerialPart)
+    s3 --> SerialPart5(SerialPart)
+    
+    SingleLevelBomAsBuilt3 --> AAS5((AAS))
+    SingleLevelBomAsBuilt4 --> AAS6((AAS))
+    SingleLevelBomAsBuilt5 --> AAS7((AAS))
+```
 
 # LOP
 
