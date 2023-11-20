@@ -5,7 +5,7 @@ skinparam nodesep 100
 skinparam ranksep 20
 skinparam defaultFontName "Architects daughter"
 
-cloud Keycloak
+cloud OAuth2
 
 node "Kubernetes Cluster" as k8s {
 
@@ -28,6 +28,6 @@ node "Kubernetes Cluster" as k8s {
 
 }
 
-IRS --> Keycloak
+IRS --> OAuth2
 
 @enduml

@@ -1,0 +1,138 @@
+= Use Case: ESS (Environmental and Social Standards) Top-Down Approach
+
+With the entry into force of the German Supply Chain Due Diligence Act as from January 1st, 2023, German companies are obliged to implement the corresponding requirements of this law.
+In addition, the following European directives on this subject have also been adopted: EU regulation 2018/858. This regulation is legally binding to all EU member states.
+
+== Specification
+
+This component enables data providers to provide the BoM as planned aspect models via the Catena-X defined solution stack (i.e. EDC).
+The BoM as planned aspect models consists of three aspect models:
+
+- PartAsPlanned - Masterdata of a Part Type incl. location related data (e.g. production sites)
+- SingleLevelBomAsPlanned - The relation to child part types provided by the supplier of the given company
+- PartSiteInformationAsPlanned - Relation to Sites in order to resemble the flow of the specific part/material
+
+== Overall flow
+
+[plantuml,target=submodel-processing,format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/0-ess-top-down-sequence.puml[]
+....
+
+|===
+| Step | Actor | Action | Details
+
+| *[000]* | IncidentManager | Request ESS Incident investigation | -
+
+| *[001]* | Inquiring OEM Company | Check direct suppliers | -
+|                 | Inquiring OEM Company | Check BPNS in direct suppliers | -
+
+| *[002]* | Inquiring OEM Company | Forward incident to Tier N+1 Supplier | -
+| *[003]* | Tier N+1 Supplier | Check direct suppliers | -
+|                 | Tier N+1 Supplier | Check BPNS in direct suppliers | -
+|                 | Tier N+1 Supplier | Forward incident to Tier N+n Supplier | -
+
+| *[004]* | Tier N+n Supplier | Check direct suppliers | -
+|                 | Tier N+n Supplier | Check BPNS in direct suppliers | -
+|                 | Tier N+n Supplier | Return responses (including hops) to Tier N+1 Supplier | ESS supplier response
+
+| *[005]* | Tier N+1 Supplier | Aggregate results | -
+|                 | Tier N+1 Supplier | Return responses (including hops) to Inquiring OEM Company | ESS supplier response
+
+| *[006]* | Inquiring OEM Company | Aggregate results | -
+|                 | Inquiring OEM Company | Check subgraph infection on first tier level | -
+
+| *[007]* | IncidentManager | Receive incident report from Inquiring OEM Company | -
+|===
+
+Note: ESS supplier responses are involved in each step of the process.
+
+== Flow on company level
+
+[plantuml,target=submodel-processing,format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/1_ess-top-down-sequence-highlevel.puml[]
+....
+
+=== Step 0: Process initiation
+
+The process is initiated by an ESS incident, that is received by (or created within) the inquiring company.
+This ESS incident acts as the root incident for the overall process The incident contains a company name (incl. address) and a valid BPN exists for that company.
+The BPN (a BPNL or BPNS) can be looked up in BPDM.
+
+=== Step 1: Check direct suppliers
+
+The inquiring company checks, if the company of the incident is a direct supplier of them.
+In order to perform this check, the following data must be available in the inquiring company:
+
+- Full list of direct suppliers
+- Full list of parts supplied by those direct suppliers
+
+In case the company of the incident is a direct supplier of the inquiring company, the process ends.
+In case the company of the incident is not a direct supplier of the inquiring company, Step 2 is executed.
+
+=== Step 2: Forward Incident
+
+The incident is forwarded to all direct suppliers.
+Each direct supplier is sent a "personalized" request to evaluate, if the inquiring company is impacted by the incident.
+The incident is enhanced with additional data by the inquiring company:
+
+- List of parts, that are supplied to the inquiring company by their direct supplier.
+
+Each direct supplier executes Step 1.
+
+=== Step 3: Gather Responses
+
+The inquiring company collects the (asynchronous) responses.
+The response of each direct supplier may contain the following results;
+
+- YES → The company of the incident was found in the supply chain of the given list of parts
+- NO → The company of the incident was not found in the supply chain of the given list of parts
+- UNKNOWN → The query timed out or some other error occurred
+
+In case at least one "YES" is received, the process step 3 ends
+
+== Application Functionality Overview
+
+== Register an Ess-Investigation-Order
+
+[plantuml,target=submodel-processing,format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/1_ess-top-down-sequence-highlevel.puml[]
+....
+
+== 1. Client Request
+
+The _Client App (Script)_ initiates a request to the IRS (Item Relationship Service) by sending a GET request for shell lookup based on a specific BPN (Business Partner Number).
+
+== 2. Shell Lookup
+
+IRS, along with other services like DiscoveryFinder, EDCDiscoveryService, and Digital Twin Registry, collaborates to look up shells for the given BPN, returning an array of AAS identifiers.
+
+== 3. AAS Descriptor Retrieval
+
+For each AAS identifier, the client requests the IRS for the corresponding shell descriptors, adding them to a collection.
+
+== 4. Filtering AAS
+
+The _Client App (Script)_ filters the AAS collection for SubmodelDescriptors marked _asPlanned_, based on certain criteria.
+
+== 5. Incident Registration
+
+The client then initiates an IRS incident registration by sending a POST request with specific parameters, including bomLifecycle and callback URL.
+
+== 6. Incident Handling Loop
+
+IRS proceeds to handle the incident by iterating through AAS identifiers, extracting child CXIds, and performing checks on associated data.
+
+== 7. Data Validation
+
+The system checks the validity period of the received data and, if valid, proceeds to extract additional information.
+
+== 8. Incident Response
+
+If certain conditions are met (e.g., incidentBpns contain catenaXsiteId), the system responds to the client indicating a part-chain infection.
+
+== 9. Notification Handling
+
+Otherwise, the system sends an ess-request notification to the next tier level IRS, and after processing the request on the next tier level, receives an ess-response notification.

@@ -3,7 +3,7 @@ name: IRS Cucumber Integration test Xray execution
 on:
   workflow_call: # Trigger by another workflow
     secrets:
-      keycloakTokenUrl:
+      oauth2TokenUrl:
         required: true
       clientId:
         required: true
@@ -57,9 +57,9 @@ jobs:
       - name: Build with Maven
         if: ${{ steps.download.outputs.http_response == '200' }}
         env:
-          KEYCLOAK_HOST: ${{ secrets.keycloakTokenUrl }}
-          KEYCLOAK_CLIENT_ID: ${{ secrets.clientId }}
-          KEYCLOAK_CLIENT_SECRET: ${{ secrets.clientSecret }}
+          OAUTH2_HOST: ${{ secrets.oauth2TokenUrl }}
+          OAUTH2_CLIENT_ID: ${{ secrets.clientId }}
+          OAUTH2_CLIENT_SECRET: ${{ secrets.clientSecret }}
           ISSUE_FILTER: ${{ inputs.executionFilter }}
         run: |
           unzip -o features.zip -d irs-cucumber-tests/src/test/resources/features

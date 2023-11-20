@@ -6,6 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.0] - 2023-11-15
+### Added
+- IRS can now check the readiness of external services. Use the new ``management.health.dependencies.enabled`` config entry to determine if external dependencies health checks should be checked (false by default).
+  - The map of external services healthcheck endpoints can be configured with ``management.health.dependencies.urls`` property, eg. ``service_name: http://service_name_host/health``
+
+### Changed
+- Changed name of spring's OAuth2 client registration from 'keycloak' to 'common' like below:
+  ```
+  spring:
+    security:
+      oauth2:
+        client:
+          registration:
+            keycloak:
+              authorization-grant-type: client_credentials
+              client-id: 
+              client-secret: 
+          provider:
+            keycloak:
+              token-uri:
+  ```
+  to:
+  ```
+  spring:
+    security:
+      oauth2:
+        client:
+          registration:
+            common:
+              authorization-grant-type: client_credentials
+              client-id: 
+              client-secret: 
+          provider:
+            common:
+              token-uri:
+  ```
+- Update IRS API Swagger documentation to match AAS 3.0.0
+  
 ## [4.0.2] - 2023-11-20
 ### Changed
 - Remove `apk upgrade --no-cache libssl3 libcrypto3` in Docker base image to be TRG compliant
@@ -409,7 +447,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.2...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.2...4.1.0
 [4.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.4...4.0.0

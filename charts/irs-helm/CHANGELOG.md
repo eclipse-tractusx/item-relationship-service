@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.10.0]
+### Changed
+- Update IRS version to 4.1.0
+- Changed configuration for OAuth2 client from:
+  ```
+  keycloak:
+    oauth2:
+      clientId: 
+      clientSecret:  
+      clientTokenUri: 
+      jwkSetUri:  
+  ```
+  to:
+  ```
+  oauth2:
+    clientId: 
+    clientSecret:  
+    clientTokenUri: 
+    jwkSetUri:  
+  ```
+
 ## [6.9.2]
 ### Changed
 - Update IRS version to 4.0.2

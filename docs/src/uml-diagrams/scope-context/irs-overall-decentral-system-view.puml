@@ -18,7 +18,7 @@ node "Group of Submodel Endpoints" {
 }
 node "Central Services" {
     node "IAM" {
-        [**Keycloak**] <<Component>> as KIAM
+        [**OAuth2**] <<Component>> as OAuth2
     }
     [**Discovery Service**] <<Central Service>> as DS
     interface "Discovery API" as DAPI
@@ -35,10 +35,10 @@ interface "Submodel API" as ISubModelAPI
 Consumer -( IAPI
 IAPI - IRS
 IRS --( DAPI
-IRS -- KIAM
+IRS -- OAuth2
 IRS -( IEDC
 
-DS -- KIAM
+DS -- OAuth2
 DS - DAPI
 
 IEDC - EDC

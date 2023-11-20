@@ -51,20 +51,20 @@ data:
         oauth2:
           client:
             registration:
-              keycloak:
-                client-id: "${KEYCLOAK_OAUTH2_CLIENT_ID}" # taken from secret ENV
-                client-secret: "${KEYCLOAK_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+              common:
+                client-id: "${OAUTH2_CLIENT_ID}" # taken from secret ENV
+                client-secret: "${OAUTH2_CLIENT_SECRET}" # taken from secret ENV
               portal:
                 client-id: ${PORTAL_OAUTH2_CLIENT_ID} # taken from secret ENV
                 client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # taken from secret ENV
             provider:
-              keycloak:
-                token-uri: {{ tpl (.Values.keycloak.oauth2.clientTokenUri | default "http://localhost") . | quote }}
+              common:
+                token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
               portal:
-                token-uri: {{ tpl (.Values.keycloak.oauth2.clientTokenUri | default "http://localhost") . | quote }}
+                token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
           resourceserver:
             jwt:
-              jwk-set-uri: {{ tpl (.Values.keycloak.oauth2.jwkSetUri | default "http://localhost") . | quote }}
+              jwk-set-uri: {{ tpl (.Values.oauth2.jwkSetUri | default "http://localhost") . | quote }}
 
     digitalTwinRegistry:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
@@ -114,6 +114,8 @@ data:
             operator: {{ .operator | quote }}
             rightOperand: {{ .rightOperand | quote }}
           {{- end }}
+      connectorEndpointService:
+        cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | int64 }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
@@ -129,6 +131,14 @@ data:
         {{- if .Values.ess.mockRecursiveEdcAsset }}
         mockRecursiveEdcAsset: {{ tpl (.Values.ess.mockRecursiveEdcAsset) . | quote }}
         {{- end }}
+    {{- if .Values.management.health.dependencies.enabled }}
+    management:
+      health:
+        dependencies:
+          enabled: {{ tpl (.Values.management.health.dependencies.enabled | default "false") . | quote }}
+          urls:
+            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 10 }}
+    {{- end }}
     {{- end }}
 
     apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}

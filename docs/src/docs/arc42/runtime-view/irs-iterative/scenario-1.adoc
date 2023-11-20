@@ -4,7 +4,7 @@ This section describes what happens when user creates a new job.
 
 [plantuml, target=create-job, format=svg]
 ....
-include::../../../uml-diagrams/runtime-view/create-job.puml[]
+include::../../../../uml-diagrams/runtime-view/create-job.puml[]
 ....
 
 == Overview

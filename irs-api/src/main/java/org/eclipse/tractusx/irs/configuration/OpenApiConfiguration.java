@@ -59,7 +59,7 @@ public class OpenApiConfiguration {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI().addServersItem(new Server().url(irsConfiguration.getApiUrl().toString()))
-                            .addSecurityItem(new SecurityRequirement().addList("oAuth2", "profile email"))
+                            .addSecurityItem(new SecurityRequirement().addList("oAuth2"))
                             .info(new Info().title("IRS API")
                                             .version(IrsApplication.API_VERSION)
                                             .description(
@@ -69,19 +69,18 @@ public class OpenApiConfiguration {
     /**
      * Generates example values in Swagger
      *
-     * @param tokenUri the keycloak token uri loaded from application.yaml
+     * @param tokenUri the OAuth2 token uri loaded from application.yaml
      * @return the customizer
      */
     @Bean
     public OpenApiCustomizer customizer(
-            @Value("${spring.security.oauth2.client.provider.keycloak.token-uri}") final String tokenUri) {
+            @Value("${spring.security.oauth2.client.provider.common.token-uri}") final String tokenUri) {
         return openApi -> {
             final Components components = openApi.getComponents();
             components.addSecuritySchemes("oAuth2", new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
                                                                         .flows(new OAuthFlows().clientCredentials(
                                                                                 new OAuthFlow().scopes(
-                                                                                                       new Scopes().addString(
-                                                                                                               "profile email", ""))
+                                                                                                       new Scopes())
                                                                                                .tokenUrl(tokenUri))));
             openApi.getComponents().getSchemas().values().forEach(s -> s.setAdditionalProperties(false));
             new OpenApiExamples().createExamples(components);

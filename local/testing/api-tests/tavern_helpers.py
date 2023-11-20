@@ -340,9 +340,9 @@ def job_parameter_are_as_requested(response):
 
 
 def create_bearer_token():
-    url = os.getenv('KEYCLOAK_HOST')
-    client_id = os.getenv('KEYCLOAK_CLIENT_ID')
-    client_secret = os.getenv('KEYCLOAK_CLIENT_SECRET')
+    url = os.getenv('OAUTH2_HOST')
+    client_id = os.getenv('OAUTH2_CLIENT_ID')
+    client_secret = os.getenv('OAUTH2_CLIENT_SECRET')
 
     data = {"grant_type": "client_credentials", "client_id": client_id, "client_secret": client_secret}
     token = requests.post(url, data).json().get('access_token')
