@@ -2458,6 +2458,8 @@ components:
       properties:
         aspects:
           type: array
+          description: List of aspect names that will be collected if \<collectAspects\>
+            flag is set to true.
           items:
             type: string
           maxItems: 2147483647

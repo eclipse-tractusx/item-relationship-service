@@ -140,6 +140,20 @@ def errors_for_invalid_depth_are_correct(response):
     assert 'depth:must be greater than or equal to 1' in error_list
 
 
+def submodelDescriptors_in_shells_are_empty(response):
+    shells = response.json().get("shells")
+    print("shells ", shells)
+    for i in shells:
+        assert len(shells.get("submodelDescriptors")) == 0
+
+
+def aspects_in_job_parameter_are_empty(response):
+    parameter = response.json().get('job').get('parameter')
+    print(parameter)
+    assert parameter.get('collectAspects') is True
+    assert len(parameter.get("aspects")) == 0
+
+
 def errors_for_unknown_globalAssetId_are_correct(response):
     error_list = response.json().get("tombstones")
 

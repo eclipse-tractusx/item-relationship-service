@@ -41,16 +41,14 @@ import lombok.Getter;
 @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
 @Getter
 public enum BomLifecycle {
-    AS_BUILT("asBuilt", AspectType.SERIAL_PART),
-    AS_PLANNED("asPlanned", AspectType.PART_AS_PLANNED),
-    AS_SPECIFIED("asSpecified", AspectType.PART_AS_SPECIFIED);
+    AS_BUILT("asBuilt"),
+    AS_PLANNED("asPlanned"),
+    AS_SPECIFIED("asSpecified");
 
     private final String name;
-    private final String defaultAspect;
 
-    BomLifecycle(final String name, final AspectType aspectType) {
+    BomLifecycle(final String name) {
         this.name = name;
-        this.defaultAspect = aspectType.toString();
     }
 
     /**
