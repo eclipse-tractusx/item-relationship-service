@@ -51,10 +51,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
               token-uri:
   ```
 - Update IRS API Swagger documentation to match AAS 3.0.0
-  
+
 ### Fixed
 - IRS will return 206 Http status from GET /jobs/{id} endpoint if Job is still running
-  
+
+## [4.0.2] - 2023-11-20
+### Changed
+- Remove `apk upgrade --no-cache libssl3 libcrypto3` in Docker base image to be TRG compliant
+
 ## [4.0.1] - 2023-11-10
 ### Changed
 - Added state `STARTED` as acceptable state to complete the EDC transfer process to be compatible with EDC 0.5.1
@@ -455,7 +459,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 [Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...HEAD
-[4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.1.0
+[4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.2...4.1.0
+[4.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.4...4.0.0
 [3.5.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...3.5.4
