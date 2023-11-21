@@ -106,10 +106,7 @@ def filter_for_as_planned_and_bpn(search_bpn_):
 
 
 def poll_batch_job(batch_url, token_):
-    header_ = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {get_or_refresh_oauth_token(token_url, client_id, client_secret, token_)}"
-    }
+    header_ = create_header_with_token(token_)
     while True:
         try:
             response_ = session.get(batch_url, headers=header_)
@@ -125,6 +122,14 @@ def poll_batch_job(batch_url, token_):
         except requests.exceptions.RequestException as e:
             logging.error(f"Error: {e}")
             break
+
+
+def create_header_with_token(token_):
+    header_ = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {get_or_refresh_oauth_token(token_url, client_id, client_secret, token_)}"
+    }
+    return header_
 
 
 def print_order(response_json):
@@ -162,6 +167,16 @@ def get_or_refresh_oauth_token(token_url_, client_id_, client_secret_, token_: N
             return token_
 
 
+class ESSException(Exception):
+    def __init__(self, *args, **kwargs):  # real signature unknown
+        pass
+
+    @staticmethod  # known case of __new__
+    def __new__(*args, **kwargs):
+        """ Create and return a new object.  See help(type) for accurate signature. """
+        pass
+
+
 def start_ess_investigation(irs_ess_url_, incident_bpns_, filtered_twins_, token_):
     payload_ = {
         "batchSize": 10,
@@ -169,16 +184,13 @@ def start_ess_investigation(irs_ess_url_, incident_bpns_, filtered_twins_, token
         "incidentBPNSs": incident_bpns_,
         "keys": filtered_twins_
     }
-    headers_ = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {get_or_refresh_oauth_token(token_url, client_id, client_secret, token_)}"
-    }
+    headers_ = create_header_with_token(token_)
     logging.info(f"Starting ESS batch investigation with {json.dumps(payload_, indent=4)}")
     response_ = session.post(url=irs_ess_url_, json=payload_, headers=headers_)
 
     if response_.status_code != 201:
         logging.error(f"Failed to start ESS Batch Investigation. Status code: {response_.status_code}")
-        raise Exception("Failed to start ESS Batch Investigation")
+        raise ESSException("Failed to start ESS Batch Investigation")
     else:
         batch_id_ = response_.json().get("id")
         logging.info(f"Started ESS Batch Investigation with id {batch_id_}")
@@ -186,19 +198,13 @@ def start_ess_investigation(irs_ess_url_, incident_bpns_, filtered_twins_, token
 
 
 def get_jobs_for_batch(url_, token_):
-    headers_ = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {get_or_refresh_oauth_token(token_url, client_id, client_secret, token_)}"
-    }
+    headers_ = create_header_with_token(token_)
     response_ = session.get(url_, headers=headers_)
     return response_.json().get("jobs")
 
 
 def get_job_for_id(url_, token_):
-    headers_ = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {get_or_refresh_oauth_token(token_url, client_id, client_secret, token_)}"
-    }
+    headers_ = create_header_with_token(token_)
     response_ = session.get(url_, headers=headers_)
 
     return response_.json()
