@@ -37,14 +37,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.DataTableType;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
@@ -131,11 +129,6 @@ public class E2ETestStepDefinitions {
     @Given("I register an IRS batch job for globalAssetIds:")
     public void iRegisterAnIRSBatchForGlobalAssetIds(List<PartChainIdentificationKey> keys) {
         registerBatchOrderBuilder.keys(Set.copyOf(keys));
-    }
-
-    @DataTableType
-    public PartChainIdentificationKey definePartChainIdentificationKey(Map<String, String> entry) {
-        return new PartChainIdentificationKey(entry.get("globalAssetId"), entry.get("bpn"));
     }
 
     @Given("I register an IRS batch job for globalAssetIds and BPN:")
