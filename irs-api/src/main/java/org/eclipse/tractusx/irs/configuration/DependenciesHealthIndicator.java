@@ -60,6 +60,10 @@ class DependenciesHealthIndicator implements HealthIndicator {
         this.restTemplate = noErrorRestTemplate;
     }
 
+    public DependenciesHealthConfiguration getConfig() {
+        return dependenciesHealthConfiguration;
+    }
+
     @Override
     public Health health() {
         final Map<String, Status> details = details();
