@@ -126,8 +126,8 @@ public class E2ETestStepDefinitions {
         registerJobBuilder.key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn(bpn).build());
     }
 
-    @Given("I register an IRS batch job for globalAssetIds:")
-    public void iRegisterAnIRSBatchForGlobalAssetIds(List<PartChainIdentificationKey> keys) {
+    @Given("I register an IRS batch job for globalAssetIds and BPNs:")
+    public void iRegisterAnIRSBatchForGlobalAssetIdsAndBpns(List<PartChainIdentificationKey> keys) {
         registerBatchOrderBuilder.keys(Set.copyOf(keys));
     }
 
