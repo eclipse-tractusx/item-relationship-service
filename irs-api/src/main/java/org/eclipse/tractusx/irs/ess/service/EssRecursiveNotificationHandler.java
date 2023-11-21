@@ -43,7 +43,8 @@ public class EssRecursiveNotificationHandler {
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final EdcNotificationSender edcNotificationSender;
 
-    /* package */ void handleNotification(final UUID finishedJobId, final SupplyChainImpacted supplyChainImpacted) {
+    /* package */ void handleNotification(final UUID finishedJobId, final SupplyChainImpacted supplyChainImpacted,
+            final String bpn, final Integer hops) {
 
         final Optional<RelatedInvestigationJobs> relatedJobsId = relatedInvestigationJobsCache.findByRecursiveRelatedJobId(
                 finishedJobId);
@@ -51,33 +52,37 @@ public class EssRecursiveNotificationHandler {
         relatedJobsId.ifPresentOrElse(relatedJobs -> {
             if (SupplyChainImpacted.YES.equals(supplyChainImpacted)) {
                 log.debug("SupplyChain is impacted. Sending notification back to requestor.");
-                edcNotificationSender.sendEdcNotification(relatedJobs.originalNotification(), supplyChainImpacted);
+                edcNotificationSender.sendEdcNotification(relatedJobs.originalNotification(), supplyChainImpacted, hops,
+                        bpn);
                 relatedInvestigationJobsCache.remove(
                         relatedJobs.originalNotification().getHeader().getNotificationId());
             } else {
                 log.debug(
                         "SupplyChainImpacted in state '{}'. Waiting for Jobs to complete to send notification back to requestor.",
                         supplyChainImpacted);
-                sendNotificationAfterAllCompleted(relatedJobs);
+                sendNotificationAfterAllCompleted(relatedJobs, bpn, hops);
             }
         }, () -> log.debug("No RelatedInvestigationJob found for id '{}'.", finishedJobId));
     }
 
-    private void sendNotificationAfterAllCompleted(final RelatedInvestigationJobs relatedInvestigationJobs) {
+    private void sendNotificationAfterAllCompleted(final RelatedInvestigationJobs relatedInvestigationJobs,
+            final String bpn, final Integer hops) {
         final List<BpnInvestigationJob> allInvestigationJobs = relatedInvestigationJobs.recursiveRelatedJobIds()
                                                                                        .stream()
                                                                                        .map(bpnInvestigationJobCache::findByJobId)
                                                                                        .flatMap(Optional::stream)
                                                                                        .toList();
+
         if (checkAllFinished(allInvestigationJobs)) {
             final SupplyChainImpacted finalResult = allInvestigationJobs.stream()
                                                                         .map(BpnInvestigationJob::getSupplyChainImpacted)
                                                                         .flatMap(Optional::stream)
                                                                         .reduce(SupplyChainImpacted.NO,
                                                                                 SupplyChainImpacted::or);
-            edcNotificationSender.sendEdcNotification(relatedInvestigationJobs.originalNotification(), finalResult);
-        }
 
+            edcNotificationSender.sendEdcNotification(relatedInvestigationJobs.originalNotification(), finalResult,
+                    hops, bpn);
+        }
     }
 
     private boolean checkAllFinished(final List<BpnInvestigationJob> allInvestigationJobs) {

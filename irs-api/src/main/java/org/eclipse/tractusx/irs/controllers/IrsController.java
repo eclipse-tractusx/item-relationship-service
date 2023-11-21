@@ -65,6 +65,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -179,15 +180,19 @@ public class IrsController {
     @IrsTimer("getjob")
     @GetMapping("/jobs/{id}")
     @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
-    public Jobs getJobById(
+    public ResponseEntity<Jobs> getJobById(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID id,
             @Parameter(
-                    description = "<true> Return job with current processed item graph. <false> Return job with item graph if job is in state <COMPLETED>, otherwise job.") @Schema(
+                    description = "\\<true\\> Return job with current processed item graph. \\<false\\> Return job with item graph if job is in state COMPLETED, otherwise job.") @Schema(
                     implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
                                                                                          required = false) final boolean returnUncompletedJob) {
-        return itemJobService.getJobForJobId(id, returnUncompletedJob);
+        final Jobs job = itemJobService.getJobForJobId(id, returnUncompletedJob);
+        if (job.getJob().getState().equals(JobState.RUNNING)) {
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(job);
+        }
+        return ResponseEntity.ok(job);
     }
 
     @Operation(description = "Cancel job for requested jobId.", operationId = "cancelJobByJobId",

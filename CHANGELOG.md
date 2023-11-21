@@ -5,11 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- ESS
+  - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
+  - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
+
+### Known knowns
+- [#253] Cancelation of order jobs is not working stable
 
 ## [4.1.0] - 2023-11-15
 ### Added
 - IRS can now check the readiness of external services. Use the new ``management.health.dependencies.enabled`` config entry to determine if external dependencies health checks should be checked (false by default).
   - The map of external services healthcheck endpoints can be configured with ``management.health.dependencies.urls`` property, eg. ``service_name: http://service_name_host/health``
+- Added cache mechanism for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 ### Changed
 - Changed name of spring's OAuth2 client registration from 'keycloak' to 'common' like below:
@@ -43,6 +51,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
               token-uri:
   ```
 - Update IRS API Swagger documentation to match AAS 3.0.0
+  
+### Fixed
+- IRS will return 206 Http status from GET /jobs/{id} endpoint if Job is still running
   
 ## [4.0.1] - 2023-11-10
 ### Changed

@@ -23,45 +23,34 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.service;
 
-import java.util.Locale;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Return value indicates if supply chain is impacted. The supply chain contains the passed BPN.
+ * Supply Chain Impacted aspect representation
  */
-public enum SupplyChainImpacted {
-    YES("Yes"),
-    NO("No"),
-    UNKNOWN("Unknown");
+@Data
+@Jacksonized
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class SupplyChainImpactedAspect {
+    private SupplyChainImpacted supplyChainImpacted;
+    private ImpactedSupplierFirstLevel impactedSuppliersOnFirstTier;
 
-    @Getter
-    @JsonValue
-    private final String description;
-
-    SupplyChainImpacted(final String description) {
-        this.description = description;
-    }
-
-    @JsonCreator
-    public static SupplyChainImpacted fromString(final String name) {
-        return SupplyChainImpacted.valueOf(name.toUpperCase(Locale.ROOT));
-    }
-
-    @SuppressWarnings("PMD.ShortMethodName")
-    public SupplyChainImpacted or(final SupplyChainImpacted newSupplyChainImpacted) {
-        if (this.equals(YES)) {
-            return this;
-        } else if (this.equals(UNKNOWN)) {
-            if (newSupplyChainImpacted.equals(NO)) {
-                return this;
-            } else {
-                return newSupplyChainImpacted;
-            }
-        }
-
-        return newSupplyChainImpacted;
+    /**
+     * BPNLs on first tier level where infection was detected
+     */
+    @Data
+    @Jacksonized
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ImpactedSupplierFirstLevel {
+        private String bpnl;
+        private Integer hops;
     }
 }
