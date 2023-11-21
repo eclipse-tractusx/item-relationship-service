@@ -185,11 +185,12 @@ def start_ess_investigation(irs_ess_url_, incident_bpns_, filtered_twins_, token
         "keys": filtered_twins_
     }
     headers_ = create_header_with_token(token_)
-    logging.info(f"Starting ESS batch investigation with {json.dumps(payload_, indent=4)}")
+    logging.info(f"Starting ESS batch investigation with \n{json.dumps(payload_, indent=4)}")
     response_ = session.post(url=irs_ess_url_, json=payload_, headers=headers_)
 
     if response_.status_code != 201:
         logging.error(f"Failed to start ESS Batch Investigation. Status code: {response_.status_code}")
+        logging.info(response_.text)
         raise ESSException("Failed to start ESS Batch Investigation")
     else:
         batch_id_ = response_.json().get("id")
@@ -258,6 +259,7 @@ if __name__ == "__main__":
 
     irs_ess_url = f"{irs_base_url}/ess/bpn/investigations"
     irs_ess_batch_url = f"{irs_base_url}/irs/ess/orders"
+    irs_batch_url = f"{irs_base_url}/irs/orders"
 
     logging_level = logging.INFO
     if is_debug:
@@ -283,10 +285,10 @@ if __name__ == "__main__":
     token = get_oauth_token(token_url, client_id, client_secret)
 
     # Start IRS batch job
-    batch_id = start_ess_investigation(irs_ess_url, incident_BPNSs, filtered_twins, token)
+    batch_id = start_ess_investigation(irs_ess_batch_url, incident_BPNSs, filtered_twins, token)
 
     # Poll batch until it is completed
-    completed_batch = poll_batch_job(f"{irs_ess_batch_url}/{batch_id}", token)
+    completed_batch = poll_batch_job(f"{irs_batch_url}/{batch_id}", token)
     for batch in completed_batch.get("batches"):
         url = batch.get("batchUrl")
         jobs = get_jobs_for_batch(url, token)
