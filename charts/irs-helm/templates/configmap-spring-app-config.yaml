@@ -115,7 +115,7 @@ data:
             rightOperand: {{ .rightOperand | quote }}
           {{- end }}
       connectorEndpointService:
-        cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | int64 }}
+        cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | quote }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
       localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
@@ -135,9 +135,9 @@ data:
     management:
       health:
         dependencies:
-          enabled: {{ tpl (.Values.management.health.dependencies.enabled | default "false") . | quote }}
+          enabled: {{ .Values.management.health.dependencies.enabled | default false }}
           urls:
-            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 10 }}
+            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 12 }}
     {{- end }}
     {{- end }}
 

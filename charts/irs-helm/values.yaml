@@ -113,7 +113,8 @@ management:
   health:
     dependencies:
       enabled: false  # Flag to determine if external service healthcheck endpoints should be checked
-      urls: {}  # Map of services with corresponding healthcheck endpoint url's, example service_name: http://service_name_host.com/health
+      urls: {}  # Map of services with corresponding healthcheck endpoint url's. Example:
+        # service_name: http://service_name_host.com/health
 
 digitalTwinRegistry:
   type: decentral  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
@@ -202,7 +203,7 @@ edc:
         operator: "eq"
         rightOperand: "active"
   connectorEndpointService:
-    cacheTTL: 86400000
+    cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
