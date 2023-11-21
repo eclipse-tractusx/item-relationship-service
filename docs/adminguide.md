@@ -239,7 +239,7 @@ irs-edc-client:
         operator: "eq"
         rightOperand: "active"
   connectorEndpointService:
-    cacheTTL: 86400000
+    cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
@@ -324,7 +324,8 @@ management:
   health:
     dependencies:
       enabled: false  # Flag to determine if external service healthcheck endpoints should be checked
-      urls: {}  # Map of services with corresponding healthcheck endpoint url's, example service_name: http://service_name_host.com/health
+      urls: {}  # Map of services with corresponding healthcheck endpoint url's. Example:
+        # service_name: http://service_name_host.com/health
 
 digitalTwinRegistry:
   type: decentral  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
@@ -413,7 +414,7 @@ edc:
         operator: "eq"
         rightOperand: "active"
   connectorEndpointService:
-    cacheTTL: 86400000
+    cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
@@ -495,7 +496,6 @@ prometheus:
       static_configs:
         - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
 
-    - job_name: 'minio-actuator'
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -563,6 +563,11 @@ The hostname where Grafana will be made available.
 
 The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.
+
+##### connectorEndpointService.cacheTTL
+
+When IRS calls EDC Discovery Service to fetch endpoints for BPNL’s there is a cache mechanism between them, to improve performance.
+This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.
 
 #### Semantic Model Provisioning
 

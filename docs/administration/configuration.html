@@ -879,7 +879,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
         <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
   <span class="na">connectorEndpointService</span><span class="pi">:</span>
-    <span class="na">cacheTTL</span><span class="pi">:</span> <span class="m">86400000</span>
+    <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache</span>
 
 <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
   <span class="na">type</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_TYPE:decentral}</span> <span class="c1"># The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.</span>
@@ -968,7 +968,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">health</span><span class="pi">:</span>
     <span class="na">dependencies</span><span class="pi">:</span>
       <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>  <span class="c1"># Flag to determine if external service healthcheck endpoints should be checked</span>
-      <span class="na">urls</span><span class="pi">:</span> <span class="pi">{}</span>  <span class="c1"># Map of services with corresponding healthcheck endpoint url's, example service_name: http://service_name_host.com/health</span>
+      <span class="na">urls</span><span class="pi">:</span> <span class="pi">{}</span>  <span class="c1"># Map of services with corresponding healthcheck endpoint url's. Example:</span>
+        <span class="c1"># service_name: http://service_name_host.com/health</span>
 
 <span class="na">digitalTwinRegistry</span><span class="pi">:</span>
   <span class="na">type</span><span class="pi">:</span> <span class="s">decentral</span>  <span class="c1"># The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.</span>
@@ -1057,7 +1058,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
         <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
   <span class="na">connectorEndpointService</span><span class="pi">:</span>
-    <span class="na">cacheTTL</span><span class="pi">:</span> <span class="m">86400000</span>
+    <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache</span>
 <span class="na">discovery</span><span class="pi">:</span>
   <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span>  <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
 
@@ -1137,9 +1138,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="s">metrics_path: '/actuator/prometheus'</span>
       <span class="s">scrape_interval: 5s</span>
       <span class="s">static_configs:</span>
-        <span class="s">- targets: [ '{{ .Release.Name }}-irs-helm:4004' ]</span>
-
-    <span class="s">- job_name: 'minio-actuator'</span></code></pre>
+        <span class="s">- targets: [ '{{ .Release.Name }}-irs-helm:4004' ]</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1233,6 +1232,13 @@ You can do this by adding this to ingress:</p>
 <div class="paragraph">
 <p>The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_connectorendpointservice_cachettl">&lt;connectorEndpointService.cacheTTL&gt;</h4>
+<div class="paragraph">
+<p>When IRS calls EDC Discovery Service to fetch endpoints for BPNL&#8217;s there is a cache mechanism between them, to improve performance.
+This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.</p>
 </div>
 </div>
 </div>
@@ -1395,7 +1401,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-15 13:20:24 UTC
+Last updated 2023-11-21 08:30:28 UTC
 </div>
 </div>
 </body>

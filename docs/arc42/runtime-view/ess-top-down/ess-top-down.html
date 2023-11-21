@@ -453,17 +453,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_step_3_gather_responses">Step 3: Gather Responses</a></li>
 </ul>
 </li>
-<li><a href="#_application_functionality_overview">Application Functionality Overview</a></li>
+<li><a href="#_application_functionality_overview">Application Functionality Overview</a>
+<ul class="sectlevel2">
 <li><a href="#_register_an_ess_investigation_order">Register an Ess-Investigation-Order</a></li>
-<li><a href="#_1_client_request">1. Client Request</a></li>
-<li><a href="#_2_shell_lookup">2. Shell Lookup</a></li>
-<li><a href="#_3_aas_descriptor_retrieval">3. AAS Descriptor Retrieval</a></li>
-<li><a href="#_4_filtering_aas">4. Filtering AAS</a></li>
-<li><a href="#_5_incident_registration">5. Incident Registration</a></li>
-<li><a href="#_6_incident_handling_loop">6. Incident Handling Loop</a></li>
-<li><a href="#_7_data_validation">7. Data Validation</a></li>
-<li><a href="#_8_incident_response">8. Incident Response</a></li>
-<li><a href="#_9_notification_handling">9. Notification Handling</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -702,95 +696,74 @@ The response of each direct supplier may contain the following results;</p>
 <div class="sect1">
 <h2 id="_application_functionality_overview">Application Functionality Overview</h2>
 <div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_register_an_ess_investigation_order">Register an Ess-Investigation-Order</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_register_an_ess_investigation_order">Register an Ess-Investigation-Order</h3>
 <div class="imageblock">
 <div class="content">
 <img src="submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_1_client_request">1. Client Request</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_1_client_request">1. Client Request</h4>
 <div class="paragraph">
 <p>The <em>Client App (Script)</em> initiates a request to the IRS (Item Relationship Service) by sending a GET request for shell lookup based on a specific BPN (Business Partner Number).</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_2_shell_lookup">2. Shell Lookup</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_2_shell_lookup">2. Shell Lookup</h4>
 <div class="paragraph">
 <p>IRS, along with other services like DiscoveryFinder, EDCDiscoveryService, and Digital Twin Registry, collaborates to look up shells for the given BPN, returning an array of AAS identifiers.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_3_aas_descriptor_retrieval">3. AAS Descriptor Retrieval</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_3_aas_descriptor_retrieval">3. AAS Descriptor Retrieval</h4>
 <div class="paragraph">
 <p>For each AAS identifier, the client requests the IRS for the corresponding shell descriptors, adding them to a collection.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_4_filtering_aas">4. Filtering AAS</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_4_filtering_aas">4. Filtering AAS</h4>
 <div class="paragraph">
 <p>The <em>Client App (Script)</em> filters the AAS collection for SubmodelDescriptors marked <em>asPlanned</em>, based on certain criteria.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_5_incident_registration">5. Incident Registration</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_5_incident_registration">5. Incident Registration</h4>
 <div class="paragraph">
 <p>The client then initiates an IRS incident registration by sending a POST request with specific parameters, including bomLifecycle and callback URL.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_6_incident_handling_loop">6. Incident Handling Loop</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_6_incident_handling_loop">6. Incident Handling Loop</h4>
 <div class="paragraph">
 <p>IRS proceeds to handle the incident by iterating through AAS identifiers, extracting child CXIds, and performing checks on associated data.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_7_data_validation">7. Data Validation</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_7_data_validation">7. Data Validation</h4>
 <div class="paragraph">
 <p>The system checks the validity period of the received data and, if valid, proceeds to extract additional information.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_8_incident_response">8. Incident Response</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_8_incident_response">8. Incident Response</h4>
 <div class="paragraph">
 <p>If certain conditions are met (e.g., incidentBpns contain catenaXsiteId), the system responds to the client indicating a part-chain infection.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_9_notification_handling">9. Notification Handling</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_9_notification_handling">9. Notification Handling</h4>
 <div class="paragraph">
 <p>Otherwise, the system sends an ess-request notification to the next tier level IRS, and after processing the request on the next tier level, receives an ess-response notification.</p>
 </div>
 </div>
 </div>
 </div>
+</div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-15 13:20:24 UTC
+Last updated 2023-11-21 08:30:28 UTC
 </div>
 </div>
 </body>

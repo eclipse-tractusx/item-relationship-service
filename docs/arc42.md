@@ -484,8 +484,6 @@ Afterwards, the IRS will return the updated job details of the canceled job to t
 This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.
 
-#### Use Case: ESS (Environmental and Social Standards) Top-Down approach
-
 ## Use Case: ESS (Environmental and Social Standards) Top-Down Approach
 
 With the entry into force of the German Supply Chain Due Diligence Act as from January 1st, 2023, German companies are obliged to implement the corresponding requirements of this law.
@@ -564,41 +562,41 @@ In case at least one "YES" is received, the process step 3 ends
 
 ### Application Functionality Overview
 
-### Register an Ess-Investigation-Order
+#### Register an Ess-Investigation-Order
 
-### 1. Client Request
+##### 1. Client Request
 
 The _Client App (Script)_ initiates a request to the IRS (Item Relationship Service) by sending a GET request for shell lookup based on a specific BPN (Business Partner Number).
 
-### 2. Shell Lookup
+##### 2. Shell Lookup
 
 IRS, along with other services like DiscoveryFinder, EDCDiscoveryService, and Digital Twin Registry, collaborates to look up shells for the given BPN, returning an array of AAS identifiers.
 
-### 3. AAS Descriptor Retrieval
+##### 3. AAS Descriptor Retrieval
 
 For each AAS identifier, the client requests the IRS for the corresponding shell descriptors, adding them to a collection.
 
-### 4. Filtering AAS
+##### 4. Filtering AAS
 
 The _Client App (Script)_ filters the AAS collection for SubmodelDescriptors marked _asPlanned_, based on certain criteria.
 
-### 5. Incident Registration
+##### 5. Incident Registration
 
 The client then initiates an IRS incident registration by sending a POST request with specific parameters, including bomLifecycle and callback URL.
 
-### 6. Incident Handling Loop
+##### 6. Incident Handling Loop
 
 IRS proceeds to handle the incident by iterating through AAS identifiers, extracting child CXIds, and performing checks on associated data.
 
-### 7. Data Validation
+##### 7. Data Validation
 
 The system checks the validity period of the received data and, if valid, proceeds to extract additional information.
 
-### 8. Incident Response
+##### 8. Incident Response
 
 If certain conditions are met (e.g., incidentBpns contain catenaXsiteId), the system responds to the client indicating a part-chain infection.
 
-### 9. Notification Handling
+##### 9. Notification Handling
 
 Otherwise, the system sends an ess-request notification to the next tier level IRS, and after processing the request on the next tier level, receives an ess-response notification.
 

@@ -5612,7 +5612,7 @@ font-style: italic;
     <div class="field-items">
       <div class="param">returnUncompletedJob (optional)</div>
 
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; <true> Return job with current processed item graph. <false> Return job with item graph if job is in state <COMPLETED>, otherwise job. default: true </div>
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; &lt;true&gt; Return job with current processed item graph. &lt;false&gt; Return job with item graph if job is in state COMPLETED, otherwise job. default: true </div>
     </div>  <!-- field-items -->
 
 
@@ -10157,7 +10157,9 @@ font-style: italic;
     <h3><a name="ResponseNotificationContent"><code>ResponseNotificationContent</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">result (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">hops (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">bpn (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">result (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -10184,8 +10186,8 @@ font-style: italic;
       <div class="param">administration (optional)</div><div class="param-desc"><span class="param-type"><a href="#AdministrativeInformation">AdministrativeInformation</a></span>  </div>
 <div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#LangString">array[LangString]</a></span>  </div>
 <div class="param">endpoints (optional)</div><div class="param-desc"><span class="param-type"><a href="#Endpoint">array[Endpoint]</a></span>  </div>
-<div class="param">idShort (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">idShort (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">semanticId (optional)</div><div class="param-desc"><span class="param-type"><a href="#Reference">Reference</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -10220,7 +10222,7 @@ font-style: italic;
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-15 13:20:24 UTC
+Last updated 2023-11-21 08:30:28 UTC
 </div>
 </div>
 </body>
