@@ -7,58 +7,17 @@ autonumber "<b>[000]"
 
 actor "Client" as User
 
-participant "Client App (Script)" as ClientApp
+
+User -> IncidentApp : Incident notification (incidentID)
+activate IncidentApp
 
 box Incident Company (Tier 4)
-participant "Digital Twin Registry" as dDTR_Tier_N
-participant "IRS Incident" as IRS_Tier_N
+participant "IRS" as IRS_Tier_N
+participant "dDTR_Tier_N" as dDTR_Tier_N
+participant "SubmodelServer_Tier_N" as SubmodelServer_Tier_N
 end box
 
-participant EDC
-
-box Tier3 Company
-participant "Digital Twin Registry" as dDTR_Tier_3
-participant "SubmodelServer" as SubmodelServer_Tier_3
-participant "IRS Customer Tier 3" as IRS_Tier_3
-end box
-
-
-User -> ClientApp : Incident notification (incidentID)
-activate ClientApp
-
-ClientApp -> dDTR_Tier_N : getAAShells ()
-ref over dDTR_Tier_N
-    GET AAShells from dDTR for own BPNL
-end ref
-ClientApp <-- dDTR_Tier_N : Array [{AAS shells}]
-
-ClientApp -> ClientApp : Extract globalAssetId
-
-
-ClientApp <-- dDTR_Tier_N : return array of {aasIdentifier}
-
-ClientApp -> ClientApp :  filter aas for submodelDescriptor  (asPlanned)
-        note left
-               semanticId/
-                    ["type"="ExternalReference"]/
-                        keys["type"="GlobalReference"]/
-                            ["value".contains("SingleLevelBomAsPlanned")]
-               SingleLevelBomAsPlanned (only downwards supported!!)
-        end note
-
-opt aas is asPlanned
-
-     ClientApp -> ClientApp : add aas to aasResultSet
-     note right
-                 Requesting all twins for a given "bomLifecycle"
-     end note
-
-end opt
-
-ClientApp <-- ClientApp : aasResultSet
-
-
-ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
+IncidentApp -> IRS_Tier_N : /irs/ess/orders
     note left
         Investigation of customers who must be notified about an incident.
         parameters:
@@ -79,50 +38,57 @@ ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
             }
     end note
 
-    IRS_Tier_N -> IRS_Tier_N : Check PartSiteInformationAsPlanned if BPNS matches
-    note left
-        Check if bpns contains any catenaXsiteId  in PartSiteInformationAsPlanned
-    end note
-    opt "!bpns.containsAny(catenaXsiteIds) then"
-        IRS_Tier_N -> IRS_Tier_N : skip twin;
-    end
+    loop over globalAssetIds
+            ref over IRS_Tier_N, dDTR_Tier_N
+                GET aas for globalAssetId from dDTR
+            end ref
+            IRS_Tier_N -> IRS_Tier_N : detect endpoint for submodel "PartAsPlanned"
+            IRS_Tier_N -> IRS_Tier_N : validityPeriodChecker
+                             note left
+                                 validityPeriodCheck: Checks if passed timestamp is in validity period defined with
+                                 validityPeriod.validFrom and  PartAsPlanned.validityPeriod.validTo
 
-    ref over dDTR_Tier_N, dDTR_Tier_3, SubmodelServer_Tier_3
-        Determining relationships 1 tier level upwards
-    end ref
+                                 PartAsPlanned.validityPeriod.validFrom
+                                 >= validityTimestamp
+                                 >= PartAsPlanned.validityPeriod.validTo
+                             end note
+            opt validityCheck == false
+                IRS_Tier_N -> IRS_Tier_N : skip globalAssetId;
+            else
+                IRS_Tier_N -> IRS_Tier_N : detect endpoint for submodel "PartSiteInformationAsPlanned"
+                ref over IRS_Tier_N, SubmodelServer_Tier_N
+                     GET PartSiteInformationAsPlanned for globalAssetId from dDTR
+                end ref
+                IRS_Tier_N -> IRS_Tier_N : Check PartSiteInformationAsPlanned if BPNS matches
+                note left
+                    Check if bpns contains any catenaXsiteId  in PartSiteInformationAsPlanned
+                end note
+                opt "!bpns.containsAny(catenaXsiteIds) then"
+                    IRS_Tier_N -> IRS_Tier_N : skip globalAssetId;
+                else
 
-    IRS_Tier_N -> IRS_Tier_N : validityPeriodChecker
-    note left
-        validityPeriodCheck: Checks if passed timestamp is in validity period defined with
-        validityPeriod.validFrom and  PartAsPlanned.validityPeriod.validTo
-
-        PartAsPlanned.validityPeriod.validFrom
-        >= validityTimestamp
-        >= PartAsPlanned.validityPeriod.validTo
-    end note
-
-    IRS_Tier_N -> IRS_Tier_N : aggregateBPNLs
-    note left
-        Aggregate bpns numbers for each bpnl
-    end note
-    IRS_Tier_N -> IRS_Tier_N : incrementHopsCount
-        note left
-            increment hopsCount on twin level
-        end note
-
-
-    IRS_Tier_N <-- IRS_Tier_N : [{globalAssetId,businessPartnerNumberLegalEntity, [businessPartnerNumberSite]}]
-
+                     ref over dDTR_Tier_N, dDTR_Tier_Customer, SubmodelServer_Tier_Customer
+                         Determining relationships 1 tier level upwards
+                     end ref
 
 
 
-    ClientApp --> IRS_Tier_N : GET /irs/orders/{orderId}
-    ClientApp <-- IRS_Tier_N : Get a batch order for a given orderId.
-    ClientApp --> IRS_Tier_N : GET /irs/orders/{orderId}/batches/{batchId}
-    ClientApp <-- IRS_Tier_N : Get a batch with a given batchId for a given orderId.
-    ClientApp --> IRS_Tier_N : GET /irs/jobs/{id}
-    ClientApp <-- IRS_Tier_N : Return job with item graph for the requested id.
-    User <-- ClientApp : Return job with item graph for the requested id.
+                     IRS_Tier_N -> IRS_Tier_N : aggregateBPNLs
+                        note left
+                            Aggregate globalAssetIds and bpns numbers for each bpnl
+                            [{globalAssetId,businessPartnerNumberLegalEntity, [businessPartnerNumberSite]}]
+                        end note
+                end opt
+            end opt
+    end loop
+
+    IncidentApp --> IRS_Tier_N : GET /irs/orders/{orderId}
+    IncidentApp <-- IRS_Tier_N : Get a batch order for a given orderId.
+    IncidentApp --> IRS_Tier_N : GET /irs/orders/{orderId}/batches/{batchId}
+    IncidentApp <-- IRS_Tier_N : Get a batch with a given batchId for a given orderId.
+    IncidentApp --> IRS_Tier_N : GET /irs/customer/investigation/{id}
+    IncidentApp <-- IRS_Tier_N : Return job with item graph for the requested id.
+    User <-- IncidentApp : Return job with item graph for the requested id.
       note left
             {
                 customers : [
@@ -131,7 +97,6 @@ ClientApp -> IRS_Tier_N : /ess/customers/investigations/orders
                         "customerParts" [
                             {
                                 globalAssetId:   <globalAssetId>,
-                                hopsCount: <hopsCount>,
                                 sites : [
                                     {<bpns>},
                                 ],

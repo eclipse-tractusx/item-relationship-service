@@ -30,7 +30,8 @@ endif
 
 : Extract and collect globalAssetIds for own twins (AsPlanned);
 : Request batch call for globalAssetIds
-POST /ess/customers/investigations/orders;
+POST /irs/ess/orders;
+
 
 : Filter for incident BPNS
 in PartSiteInformationAsPlanned;
@@ -58,7 +59,23 @@ endif
  tier level upwards;
 
 : aggregateBPNLs Aggregate bpns numbers for each bpnl;
-: increment hops count for each twin ;
+      note left
+            {
+                customers : [
+                    {
+                        businessPartnerNumberLegalEntity : <bpnl>,
+                        "customerParts" [
+                            {
+                                globalAssetId:   <globalAssetId>,
+                                sites : [
+                                    {<bpns>},
+                                ],
+                             }, ...
+                        ]
+                    },
+                ]
+            }
+        end note
 stop
 
 @enduml
