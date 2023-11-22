@@ -631,7 +631,7 @@ stages:
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:supplyChainFirstLevelBpn_is_as_expected
           extra_kwargs:
-            expectedBpnl: BPNS00000003B6LU
+            expectedBpnl: BPNL00000003B6LU
       headers:
         content-type: application/json
 
@@ -1035,7 +1035,7 @@ stages:
         $ext:
           function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
-      status_code: 200
+      status_code: 206
       headers:
         content-type: application/json
 
@@ -1711,7 +1711,7 @@ stages:
         $ext:
           function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
-      status_code: 200
+      status_code: 206
       json:
         job:
           state: RUNNING
@@ -2461,7 +2461,7 @@ stages:
         $ext:
           function: local.testing.api-tests.tavern_helpers:create_bearer_token
     response:
-      status_code: 200
+      status_code: 206
       verify_response_with:
         - function: local.testing.api-tests.tavern_helpers:job_parameter_are_as_requested
       headers:
