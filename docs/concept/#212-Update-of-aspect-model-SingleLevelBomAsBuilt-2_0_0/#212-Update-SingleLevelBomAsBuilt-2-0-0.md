@@ -100,7 +100,7 @@ flowchart LR
    s4 --> SerialPart5(SingleLevelBomAsBuilt2.0.0)
     SingleLevelBomAsBuilt2 --> s5((AAS C-X 3 \n hasAlternatives=false))
     s5 --> SerialPart2(SerialPart)
-    s5 --> SerialPart4(SingleLevelBomAsBuilt2.0.0)
+    s5 --> SingleLevelBomAsBuilt4(SingleLevelBomAsBuilt2.0.0)
 ```
 
 ## SingleLevelBomAsBuilt childItems contains asPlanned aspects hasAlternatives=false
