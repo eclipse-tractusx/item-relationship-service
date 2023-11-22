@@ -43,6 +43,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
@@ -92,6 +93,11 @@ public class E2ETestStepDefinitions {
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
+
+    @DataTableType
+    public PartChainIdentificationKey definePartChainIdentificationKey(Map<String, String> entry) {
+        return new PartChainIdentificationKey(entry.get("globalAssetId"), entry.get("bpn"));
     }
 
     @Given("the IRS URL {string}")
