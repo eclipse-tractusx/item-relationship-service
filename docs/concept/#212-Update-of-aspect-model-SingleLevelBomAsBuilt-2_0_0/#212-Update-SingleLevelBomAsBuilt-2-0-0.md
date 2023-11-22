@@ -97,7 +97,7 @@ flowchart LR
     s1 --> SingleLevelBomAsBuilt2
     SingleLevelBomAsBuilt2(SingleLevelBomAsBuilt) --> s4((AAS C-X 2 \n hasAlternatives=false))
     s4 --> SerialPart3(SerialPart)
-   s4 --> SerialPart5(SingleLevelBomAsBuilt2.0.0)
+   s4 --> SingleLevelBomAsBuilt5(SingleLevelBomAsBuilt2.0.0)
     SingleLevelBomAsBuilt2 --> s5((AAS C-X 3 \n hasAlternatives=false))
     s5 --> SerialPart2(SerialPart)
     s5 --> SingleLevelBomAsBuilt4(SingleLevelBomAsBuilt2.0.0)
