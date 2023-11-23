@@ -44,32 +44,43 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 public class IrsHealthMetricsExportConfiguration {
 
-    public static final String HEALTH_IRS = "health-irs";
-    public static final String HEALTH_IRS_DEPENDENCY = "health-irs-dependency";
+    private static final MetricDescriptor HEALTH_IRS = //
+            new MetricDescriptor("health-irs", "The IRS health status.");
 
+    private static final MetricDescriptor HEALTH_IRS_DEPENDENCY_OVERALL = //
+            new MetricDescriptor("health-irs-dependency-overall",
+                    "The overall health status of the IRS dependencies. See configuration under '%s'.".formatted(
+                            DependenciesHealthConfiguration.MANAGEMENT_HEALTH_DEPENDENCIES));
+
+    private static final MetricDescriptor HEALTH_IRS_DEPENDENCY = //
+            new MetricDescriptor("health-irs-dependency",
+                    "The health status of the IRS dependencies configured under '%s'.".formatted(
+                            DependenciesHealthConfiguration.MANAGEMENT_HEALTH_DEPENDENCIES));
+
+    /**
+     * Constructor.
+     *
+     * @param registry                    the metrics registry
+     * @param healthEndpoint              the IRS health endpoint
+     * @param dependenciesHealthIndicator the health indicator for the IRS dependencies
+     */
     public IrsHealthMetricsExportConfiguration(final MeterRegistry registry, final HealthEndpoint healthEndpoint,
             final DependenciesHealthIndicator dependenciesHealthIndicator) {
+
         registerIrsHealthMetrics(registry, healthEndpoint);
         registerIrsDependenciesOverallHealthMetric(registry, dependenciesHealthIndicator);
         registerIrsDependenciesMetrics(registry, dependenciesHealthIndicator);
     }
 
-    private void registerIrsDependenciesMetrics(final MeterRegistry registry,
-            final DependenciesHealthIndicator dependenciesHealthIndicator) {
-        final DependenciesHealthConfiguration config = dependenciesHealthIndicator.getConfig();
-        final Set<String> dependencyNames = config.getUrls().keySet();
-        for (final String dependencyName : dependencyNames) {
-            registerIrsDependencyHealthMetric(registry, dependenciesHealthIndicator, dependencyName);
-        }
-    }
+    private void registerIrsHealthMetrics(final MeterRegistry registry, final HealthEndpoint irsHealthEndpoint) {
 
-    private void registerIrsDependencyHealthMetric(final MeterRegistry registry,
-            final DependenciesHealthIndicator dependenciesHealthIndicator, final String dependencyName) {
-        final String metricName = HEALTH_IRS_DEPENDENCY;
-        log.debug("Registering metric '{}' tag '{}'", metricName, dependencyName);
-        Gauge.builder(metricName, dependenciesHealthIndicator,
-                     healthIndicator -> StatusHelper.toNumeric(getIrsDependencyStatus(healthIndicator, dependencyName)))
-             .tag("name", dependencyName)
+        final MetricDescriptor metricDescriptor = HEALTH_IRS;
+        log.debug("Registering metric '{}'", metricDescriptor.name);
+
+        final ToDoubleFunction<? super HealthEndpoint> statusProvider = //
+                healthEndpoint -> StatusHelper.toNumeric(getIrsStatus(healthEndpoint));
+
+        Gauge.builder(metricDescriptor.name, irsHealthEndpoint, statusProvider).description(metricDescriptor.description)
              .strongReference(true)
              .register(registry);
     }
@@ -77,22 +88,47 @@ public class IrsHealthMetricsExportConfiguration {
     private void registerIrsDependenciesOverallHealthMetric(final MeterRegistry registry,
             final DependenciesHealthIndicator dependenciesHealthIndicator) {
 
-        final String metricName = "health-irs-dependency-overall";
-        log.debug("Registering metric '{}'", metricName);
+        final MetricDescriptor metricDescriptor = HEALTH_IRS_DEPENDENCY_OVERALL;
+        log.debug("Registering metric '{}'", metricDescriptor.name);
 
-        final ToDoubleFunction<DependenciesHealthIndicator> statusProvider = healthIndicator -> StatusHelper.toNumeric(
-                getIrsDependenciesOverallStatus(healthIndicator));
+        final ToDoubleFunction<DependenciesHealthIndicator> statusProvider = //
+                healthIndicator -> StatusHelper.toNumeric(getIrsDependenciesOverallStatus(healthIndicator));
 
-        Gauge.builder(metricName, dependenciesHealthIndicator, statusProvider).strongReference(true).register(registry);
+        Gauge.builder(metricDescriptor.name, dependenciesHealthIndicator, statusProvider).description(metricDescriptor.description())
+             .strongReference(true)
+             .register(registry);
     }
 
-    private void registerIrsHealthMetrics(final MeterRegistry registry, final HealthEndpoint healthEndpoint) {
-        final String metricName = HEALTH_IRS;
-        log.debug("Registering metric '{}'", metricName);
+    private void registerIrsDependenciesMetrics(final MeterRegistry registry,
+            final DependenciesHealthIndicator dependenciesHealthIndicator) {
 
-        final ToDoubleFunction<? super HealthEndpoint> statusProvider = he -> StatusHelper.toNumeric(getIrsStatus(he));
+        final Set<String> dependencyNames = getDependencyNamesFromConfiguration(dependenciesHealthIndicator);
+        for (final String dependencyName : dependencyNames) {
+            registerIrsDependencyHealthMetric(registry, dependenciesHealthIndicator, dependencyName);
+        }
+    }
 
-        Gauge.builder(metricName, healthEndpoint, statusProvider).strongReference(true).register(registry);
+    private Set<String> getDependencyNamesFromConfiguration(
+            final DependenciesHealthIndicator dependenciesHealthIndicator) {
+
+        final DependenciesHealthConfiguration config = dependenciesHealthIndicator.getConfig();
+        return config.getUrls().keySet();
+    }
+
+    private void registerIrsDependencyHealthMetric(final MeterRegistry registry,
+            final DependenciesHealthIndicator dependenciesHealthIndicator, final String dependencyName) {
+
+        final MetricDescriptor metricDescriptor = HEALTH_IRS_DEPENDENCY;
+        log.debug("Registering metric '{}' tag '{}'", metricDescriptor.name, dependencyName);
+
+        final ToDoubleFunction<DependenciesHealthIndicator> statusProvider = //
+                healthIndicator -> StatusHelper.toNumeric(getIrsDependencyStatus(healthIndicator, dependencyName));
+
+        Gauge.builder(metricDescriptor.name, dependenciesHealthIndicator, statusProvider)
+             .tag("name", dependencyName)
+             .description(metricDescriptor.description)
+             .strongReference(true)
+             .register(registry);
     }
 
     private Status getIrsStatus(final HealthEndpoint healthEndpoint) {
@@ -151,5 +187,8 @@ public class IrsHealthMetricsExportConfiguration {
 
             return STATUS_UNKNOWN;
         }
+    }
+
+    private record MetricDescriptor(String name, String description) {
     }
 }
