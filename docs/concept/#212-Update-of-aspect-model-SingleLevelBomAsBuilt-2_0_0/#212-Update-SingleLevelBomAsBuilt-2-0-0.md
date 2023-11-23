@@ -67,7 +67,7 @@ Description of the main property 'SingleLevelBomAsBuild' was adapted to the new 
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
             "lifecycleContext": "<<LifeCyleContext>>", // If there is a change of BomLifecycle
             "quantity": {...},
-            "alternative": "true" // <boolean> == hasAlternatices
+            "hasAlternatives": "true" // <boolean> == hasAlternatives
             }
     }
 ],
@@ -76,7 +76,7 @@ Description of the main property 'SingleLevelBomAsBuild' was adapted to the new 
 | Change           | Description                                                                                        |
 |------------------|----------------------------------------------------------------------------------------------------|
 | lifecycleContext | Lifecycle context is adjusted to asPlanned or asBuilt in relation in case of a switch              |    
-| alternative      | Reflects the state of property hasAlternative of item in SingleLevelBomAsBuilt chldItems structure |    
+| hasAlternatives  | Reflects the state of property hasAlternative of item in SingleLevelBomAsBuilt chldItems structure |    
 
 ## SingleLevelBomAsBuilt childItems contains asBuilt aspects hasAlternatives=false
 
@@ -97,8 +97,10 @@ flowchart LR
     s1 --> SingleLevelBomAsBuilt2
     SingleLevelBomAsBuilt2(SingleLevelBomAsBuilt) --> s4((AAS C-X 2 \n hasAlternatives=false))
     s4 --> SerialPart3(SerialPart)
+   s4 --> SingleLevelBomAsBuilt5(SingleLevelBomAsBuilt2.0.0)
     SingleLevelBomAsBuilt2 --> s5((AAS C-X 3 \n hasAlternatives=false))
     s5 --> SerialPart2(SerialPart)
+    s5 --> SingleLevelBomAsBuilt4(SingleLevelBomAsBuilt2.0.0)
 ```
 
 ## SingleLevelBomAsBuilt childItems contains asPlanned aspects hasAlternatives=false
@@ -152,10 +154,11 @@ flowchart LR
     
     s2 --> p1(PartAsPlanned)
     s3 --> p2(PartAsPlanned)
-    s2 --> stop1((stop))
-    s3 --> stop2((stop))
+    s2 --> stop1{stop processing}
+    s3 --> stop2{stop processing}
     
     s1 --> SingleLevelBomAsBuilt3[SingleLevelBomAsBuilt]
+    s1 --> p3[SerialPart]
     SingleLevelBomAsBuilt3 --> s4((AAS C-X 4))
     
     classDef asPlanned fill: #9f6,stroke: #333, stroke-width: 2px;
