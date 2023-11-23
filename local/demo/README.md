@@ -27,19 +27,23 @@ The demo consists of four steps:
 
 ## Demo cases for IRS ESS INT environment
 
-###  Case 1 (incident and no issues in tree):
+### Case 1 (incident and no issues in tree)
+
 searchBPN: BPNL00ARBITRARY4  
 incidentBPNS: BPNS00ARBITRARY6
 
-###  Case 2 (no incident and no issues in tree):
+### Case 2 (no incident and no issues in tree)
+
 searchBPN: BPNL00ARBITRARY4  
 incidentBPNS: BPNS00ARBITRARY8
 
-###  Case 3 (incident and not resolvable path in tree):
+### Case 3 (incident and not resolvable path in tree)
+
 searchBPN: BPNL00ARBITRARY8  
 incidentBPNS: BPNS0ARBITRARY10
 
-###  Case 4 (no incident and not resolvable path in tree):
+### Case 4 (no incident and not resolvable path in tree)
+
 searchBPN: BPNL00ARBITRARY8  
 incidentBPNS: BPNS0ARBITRARY12
 
