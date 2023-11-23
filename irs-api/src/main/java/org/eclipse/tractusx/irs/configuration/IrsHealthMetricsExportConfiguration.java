@@ -29,6 +29,8 @@ import java.util.function.ToDoubleFunction;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthEndpoint;
@@ -56,7 +58,7 @@ public class IrsHealthMetricsExportConfiguration {
             final DependenciesHealthIndicator dependenciesHealthIndicator) {
         final DependenciesHealthConfiguration config = dependenciesHealthIndicator.getConfig();
         final Set<String> dependencyNames = config.getUrls().keySet();
-        for (String dependencyName : dependencyNames) {
+        for (final String dependencyName : dependencyNames) {
             registerIrsDependencyHealthMetric(registry, dependenciesHealthIndicator, dependencyName);
         }
     }
@@ -93,26 +95,31 @@ public class IrsHealthMetricsExportConfiguration {
         Gauge.builder(metricName, healthEndpoint, statusProvider).strongReference(true).register(registry);
     }
 
-    private Status getIrsStatus(final HealthEndpoint he) {
-        final Status status = he.health().getStatus();
+    private Status getIrsStatus(final HealthEndpoint healthEndpoint) {
+        final Status status = healthEndpoint.health().getStatus();
         log.debug("Health status for IRS is '{}'", status);
         return status;
     }
 
-    private static Status getIrsDependenciesOverallStatus(final DependenciesHealthIndicator hi) {
-        final Status status = hi.getHealth(false).getStatus();
+    private static Status getIrsDependenciesOverallStatus(final DependenciesHealthIndicator healthIndicator) {
+        final Status status = healthIndicator.getHealth(false).getStatus();
         log.debug("Overall IRS dependency health status is '{}'", status);
         return status;
     }
 
-    private Status getIrsDependencyStatus(final DependenciesHealthIndicator hi, final String dependencyName) {
-        final Health health = hi.getHealth(true);
+    private Status getIrsDependencyStatus(final DependenciesHealthIndicator healthIndicator,
+            final String dependencyName) {
+        final Health health = healthIndicator.getHealth(true);
         final Map<String, Object> healthDetails = health.getDetails();
         final Status status = (Status) healthDetails.get(dependencyName);
         log.debug("Health status for IRS dependency '{}' is '{}'", dependencyName, status);
         return status;
     }
 
+    /**
+     * Utility class with status helper methods
+     */
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     private static final class StatusHelper {
 
         public static final int STATUS_DOWN = 1;
