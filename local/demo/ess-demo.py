@@ -28,6 +28,7 @@ from types import SimpleNamespace
 
 import jwt
 import requests
+from colorlog import ColoredFormatter
 from oauthlib.oauth2 import BackendApplicationClient
 from requests.adapters import HTTPAdapter, Retry
 from requests.auth import HTTPBasicAuth
@@ -59,20 +60,20 @@ def fetch_all_registry_data(registry_url_, bpn_):
         registry_response = fetch_registry_data(registry_url_, bpn_, params)
 
         if not registry_response:
-            logging.info(f"No registry response: '{registry_response}'")
+            logger.info(f"No registry response: '{registry_response}'")
             break
 
         result = registry_response.result
-        logging.info(f"Adding {len(result)} twins to result list.")
+        logger.debug(f"Adding {len(result)} twins to result list.")
         twins_.extend(result)
 
         if hasattr(registry_response.paging_metadata, 'cursor'):
             cursor = registry_response.paging_metadata.cursor
-            logging.info(f"Setting cursor: '{cursor}'")
+            logger.debug(f"Setting cursor: '{cursor}'")
         else:
-            logging.info("No cursor found.")
+            logger.debug("No cursor found.")
             break
-    logging.info(f"Returning {len(twins_)} twins.")
+    logger.info(f"Found a {len(twins_)} twins in the DTR.")
     return twins_
 
 
@@ -95,8 +96,6 @@ def filter_for_as_planned_and_bpn(search_bpn_):
             global_asset_id = twin.globalAssetId
             bpn = get_bpn_from_twin(twin)
             if bpn in search_bpn_:
-                logging.info(global_asset_id)
-                logging.info(bpn)
                 x = {
                     "globalAssetId": global_asset_id,
                     "bpn": bpn
@@ -115,7 +114,7 @@ def poll_batch_job(batch_url, token_):
 
             state = response_json.get("state")
             if state in ("COMPLETED", "ERROR", "CANCELED"):
-                logging.info(f"ESS Batch Investigation completed in state '{state}'")
+                logger.info(f"ESS Batch Investigation completed in state '{state}'")
                 return response_json
 
             time.sleep(5)
@@ -143,7 +142,7 @@ def print_order(response_json):
         ]
     # Pretty print the selected fields
     pretty_selected_fields = json.dumps(selected_fields, indent=4)
-    logging.info("Polling ESS Batch. Status: " + pretty_selected_fields)
+    logger.info("Polling ESS Batch. Status: " + pretty_selected_fields)
 
 
 def get_oauth_token(token_url_, client_id_, client_secret_):
@@ -154,17 +153,19 @@ def get_oauth_token(token_url_, client_id_, client_secret_):
 
 
 def get_or_refresh_oauth_token(token_url_, client_id_, client_secret_, token_: None):
+    global token
     if token_ is None:
-        return get_oauth_token(token_url_, client_id_, client_secret_)
+        token = get_oauth_token(token_url_, client_id_, client_secret_)
     else:
         decoded_token = jwt.decode(token_, options={"verify_signature": False})
         exp_timestamp = datetime.fromtimestamp(decoded_token["exp"])
         current_timestamp = datetime.now()
         if exp_timestamp < current_timestamp:
-            logging.info("Token expired. Requesting new.")
-            return get_oauth_token(token_url_, client_id_, client_secret_)
+            logger.info("Token expired. Requesting new.")
+            token = get_oauth_token(token_url_, client_id_, client_secret_)
         else:
-            return token_
+            token = token_
+    return token
 
 
 class ESSException(Exception):
@@ -185,16 +186,16 @@ def start_ess_investigation(irs_ess_url_, incident_bpns_, filtered_twins_, token
         "keys": filtered_twins_
     }
     headers_ = create_header_with_token(token_)
-    logging.info(f"Starting ESS batch investigation with \n{json.dumps(payload_, indent=4)}")
+    logger.info(f"Starting ESS batch investigation with \n{json.dumps(payload_, indent=4)}")
     response_ = session.post(url=irs_ess_url_, json=payload_, headers=headers_)
 
     if response_.status_code != 201:
         logging.error(f"Failed to start ESS Batch Investigation. Status code: {response_.status_code}")
-        logging.info(response_.text)
+        logger.info(response_.text)
         raise ESSException("Failed to start ESS Batch Investigation")
     else:
         batch_id_ = response_.json().get("id")
-        logging.info(f"Started ESS Batch Investigation with id {batch_id_}")
+        logger.info(f"Started ESS Batch Investigation with id {batch_id_}")
         return batch_id_
 
 
@@ -224,84 +225,136 @@ def prepare_arguments():
     parser.add_argument("--clientid", type=str, help="Client ID", required=True)
     parser.add_argument("--clientsecret", type=str, help="Client Secret", required=True)
     parser.add_argument("--debug", help="debug logging", action='store_true', required=False)
-    args = parser.parse_args()
-    return vars(args)
+    return parser.parse_args()
 
-# Demo Cases:
-#  Case 1 (incident and no issues in tree):
-#  searchBPN: BPNL00ARBITRARY4
-#  incidentBPNS: BPNS00ARBITRARY6
 
-#  Case 2 (no incident and no issues in tree):
-#  searchBPN: BPNL00ARBITRARY4
-#  incidentBPNS: BPNS00ARBITRARY8
+def wait_for_job_completion(job_ids_):
+    while True:
+        states = []
+        logger.info("------------------------------")
+        for job_id_ in job_ids_:
+            job_ = get_job_for_id(f"{irs_ess_url}/{job_id_}", token)
+            job_state = job_.get("job").get("state")
+            logger.info(f"Job {job_id_} is in state {job_state}")
+            states.append(job_state)
 
-#  Case 3 (incident and not resolvable path in tree):
-#  searchBPN: BPNL00ARBITRARY8
-#  incidentBPNS: BPNS0ARBITRARY10
+        if all(state == "COMPLETED" for state in states):
+            break
 
-#  Case 4 (no incident and not resolvable path in tree):
-#  searchBPN: BPNL00ARBITRARY8
-#  incidentBPNS: BPNS0ARBITRARY12
+        time.sleep(5)
+
+
+def get_job_ids_from_batch(batches):
+    job_ids_ = []
+    for batch in batches:
+        url = batch.get("batchUrl")
+        jobs_ = get_jobs_for_batch(url, token)
+        for job_ in jobs_:
+            job_id_ = job_.get("id")
+            job_ids_.append(job_id_)
+            logger.debug(f"Adding jobId {job_id_}")
+    return job_ids_
+
+
+def get_and_print_investigation_result(job_ids_):
+    logger.info("-------------------------------------------------------------------------------")
+    logger.info("Investigation completed.")
+    for job_id in job_ids_:
+        logger.info("------------------------------")
+        job = get_job_for_id(f"{irs_ess_url}/{job_id}", token)
+        for submodel in job.get("submodels"):
+            submodel_payload = submodel.get('payload')
+            impacted = submodel_payload.get("supplyChainImpacted")
+            impacted_suppliers = submodel_payload.get("impactedSuppliersOnFirstTier")
+            logger.info(f"Investigation result for Job {job_id} resulted in {impacted}.")
+            if impacted_suppliers:
+                logger.info(f"Impacted Suppliers on first level: {impacted_suppliers}.")
+    logger.info("-------------------------------------------------------------------------------")
+
+
+def configure_logger(is_debug_):
+    logging_level = logging.INFO
+    if is_debug_:
+        logging_level = logging.DEBUG
+    logger_ = logging.getLogger(__name__)
+    logger_.setLevel(logging_level)
+    formatter = ColoredFormatter(
+        "%(white)s%(asctime)s %(log_color)s%(levelname)-8s%(reset)s %(blue)s%(message)s",
+        datefmt="%H:%M:%S",
+        reset=True,
+        log_colors={
+            'DEBUG': 'cyan',
+            'INFO': 'green',
+            'WARNING': 'yellow',
+            'ERROR': 'red',
+            'CRITICAL': 'red,bg_white',
+        },
+        secondary_log_colors={},
+        style='%'
+    )
+    sh = logging.StreamHandler()
+    sh.setFormatter(formatter)
+    logger_.addHandler(sh)
+    return logger_
+
+
+def wait_for_user_input():
+    prompt = "Press ENTER to continue..."
+    time.sleep(0.1)
+    input(prompt)
 
 
 if __name__ == "__main__":
     config = prepare_arguments()
-    registry_url = config.get("aas")
-    own_BPN = config.get("ownBPN")
-    search_BPN = config.get("searchBPN")
-    incident_BPNSs = config.get("incidentBPNS")
-    irs_base_url = config.get("irs")
-    token_url = config.get("tokenurl")
-    client_id = config.get("clientid")
-    client_secret = config.get("clientsecret")
-    is_debug = config.get("debug")
+    registry_url = config.aas
+    own_BPN = config.ownBPN
+    search_BPN = config.searchBPN
+    incident_BPNSs = config.incidentBPNS
+    irs_base_url = config.irs
+    token_url = config.tokenurl
+    client_id = config.clientid
+    client_secret = config.clientsecret
+    is_debug = config.debug
 
     irs_ess_url = f"{irs_base_url}/ess/bpn/investigations"
     irs_ess_batch_url = f"{irs_base_url}/irs/ess/orders"
     irs_batch_url = f"{irs_base_url}/irs/orders"
 
-    logging_level = logging.INFO
-    if is_debug:
-        logging_level = logging.DEBUG
+    logger = configure_logger(is_debug)
 
-    logging.basicConfig(level=logging_level, format='%(asctime)s [%(levelname)-5.5s] %(message)s')
     retries = Retry(total=3,
                     backoff_factor=0.1)
     session = requests.Session()
     session.mount('https://', HTTPAdapter(max_retries=retries))
 
-    # TODO eval, if it makes sense to filter via lookup/shells endpoint or filter by getting the entire list of twins
-
     # Fetch all digital Twins from the DTR
     digital_twins = fetch_all_registry_data(registry_url, own_BPN)
 
+    wait_for_user_input()
+
     # Filter for bomLifecycle "asPlanned" and the provided BPN
     filtered_twins = filter_for_as_planned_and_bpn(search_BPN)
-    logging.info(f"Found {len(filtered_twins)} twin(s) after filtering.")
-    logging.info(json.dumps(filtered_twins, indent=4))
+    logger.info(f"Found {len(filtered_twins)} twin(s) after filtering for lifecycle AsPlanned.")
+    logger.info(json.dumps(filtered_twins, indent=4))
+
+    wait_for_user_input()
 
     # Authenticate
     token = get_oauth_token(token_url, client_id, client_secret)
 
-    # Start IRS batch job
+    # Start ESS batch investigation
     batch_id = start_ess_investigation(irs_ess_batch_url, incident_BPNSs, filtered_twins, token)
+
+    wait_for_user_input()
 
     # Poll batch until it is completed
     completed_batch = poll_batch_job(f"{irs_batch_url}/{batch_id}", token)
-    for batch in completed_batch.get("batches"):
-        url = batch.get("batchUrl")
-        jobs = get_jobs_for_batch(url, token)
-        for job in jobs:
-            job_id = job.get("id")
+    job_ids = get_job_ids_from_batch(completed_batch.get("batches"))
 
-            job = get_job_for_id(f"{irs_ess_url}/{job_id}", token)
+    # TODO remove this step, once ESS Batch states works properly
+    wait_for_job_completion(job_ids)
 
-            submodels = job.get("submodels")
-            for submodel in submodels:
-                submodel_payload = submodel.get('payload')
-                impacted = submodel_payload.get("supplyChainImpacted")
-                impacted_suppliers = submodel_payload.get("impactedSuppliersOnFirstTier")
-                logging.info(f"Investigation result for Job {job_id} resulted in {impacted}.")
-                if impacted_suppliers:
-                    logging.info(f"Impacted Suppliers on first level: {impacted_suppliers}.")
+    wait_for_user_input()
+
+    # Get the ESS investigation result for all jobs of the batch and pretty print the result
+    get_and_print_investigation_result(job_ids)
