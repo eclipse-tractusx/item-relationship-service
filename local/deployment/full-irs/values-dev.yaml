@@ -631,6 +631,7 @@ irs:
       irsmonitoring: dashboards/resource-monitoring-dashboard.json
       irsjobs: dashboards/irs-jobs-dashboard.json
       irsapi: dashboards/irs-api-dashboard.json
+      systemhealth: dashboards/system-health-dashboard.json
 
 ################
 # IRS Frontend #
