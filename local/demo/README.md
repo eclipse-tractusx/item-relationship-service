@@ -1,4 +1,4 @@
-# demo.py
+# ess-demo.py
 
 ## Prerequisites
 
