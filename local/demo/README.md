@@ -11,7 +11,7 @@
 ## Usage
 
 ```shell
-python transform-and-upload.py [ options ]
+python ess-demo.py [ options ]
 ```
 
 ## Description
