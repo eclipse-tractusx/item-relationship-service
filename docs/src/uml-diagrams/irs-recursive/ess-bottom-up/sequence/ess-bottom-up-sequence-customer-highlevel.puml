@@ -14,7 +14,6 @@ participant EDC
 box Customer Company (Tier 3)
 participant "Incident App" as BusinessApp_Tier_3
 
-
 BusinessApp_Tier_4 -> BusinessApp_Tier_3 : notification
 BusinessApp_Tier_4 <-- BusinessApp_Tier_3 : 200 ack
 note left
@@ -60,7 +59,5 @@ end note
         process batch order request
     end ref
     BusinessApp_Tier_3 <-- IRS_Tier_3 : Return job with item graph for the requested id.
-
-
 
 @enduml

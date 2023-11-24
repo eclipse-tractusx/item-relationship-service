@@ -13,8 +13,8 @@ activate IncidentApp
 
 box Incident Company (Tier 4)
 participant "IRS" as IRS_Tier_N
-participant "dDTR_Tier_N" as dDTR_Tier_N
-participant "SubmodelServer_Tier_N" as SubmodelServer_Tier_N
+participant "dDTR_Tier_Incident" as dDTR_Tier_N
+participant "SubmodelServer_Tier_Incident" as SubmodelServer_Tier_N
 end box
 
 IncidentApp -> IRS_Tier_N : /irs/ess/orders
@@ -39,6 +39,7 @@ IncidentApp -> IRS_Tier_N : /irs/ess/orders
     end note
 
     loop over globalAssetIds
+            IRS_Tier_N -> IRS_Tier_N : /ess/customer/investigation
             ref over IRS_Tier_N, dDTR_Tier_N
                 GET aas for globalAssetId from dDTR
             end ref
