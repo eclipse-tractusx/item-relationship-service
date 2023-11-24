@@ -80,7 +80,8 @@ public class IrsHealthMetricsExportConfiguration {
         final ToDoubleFunction<? super HealthEndpoint> statusProvider = //
                 healthEndpoint -> StatusHelper.toNumeric(getIrsStatus(healthEndpoint));
 
-        Gauge.builder(metricDescriptor.name, irsHealthEndpoint, statusProvider).description(metricDescriptor.description)
+        Gauge.builder(metricDescriptor.name, irsHealthEndpoint, statusProvider)
+             .description(metricDescriptor.description)
              .strongReference(true)
              .register(registry);
     }
@@ -94,7 +95,8 @@ public class IrsHealthMetricsExportConfiguration {
         final ToDoubleFunction<DependenciesHealthIndicator> statusProvider = //
                 healthIndicator -> StatusHelper.toNumeric(getIrsDependenciesOverallStatus(healthIndicator));
 
-        Gauge.builder(metricDescriptor.name, dependenciesHealthIndicator, statusProvider).description(metricDescriptor.description())
+        Gauge.builder(metricDescriptor.name, dependenciesHealthIndicator, statusProvider)
+             .description(metricDescriptor.description())
              .strongReference(true)
              .register(registry);
     }
