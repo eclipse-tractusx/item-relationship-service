@@ -24,7 +24,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 6,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -82,7 +81,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 21,
+        "h": 9,
         "w": 23,
         "x": 0,
         "y": 0
@@ -107,11 +106,14 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "builder",
+          "exemplar": false,
           "expr": "health_irs",
+          "format": "time_series",
           "hide": false,
+          "instant": false,
           "legendFormat": "IRS Health",
           "range": true,
           "refId": "health_irs"
@@ -119,28 +121,114 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "builder",
+          "exemplar": false,
           "expr": "health_irs_dependency_overall",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
           "legendFormat": "Dependency Overall Status",
           "range": true,
           "refId": "health_irs_dependencies_overall"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "builder",
-          "expr": "health_irs_dependency",
-          "hide": false,
-          "legendFormat": "Dependency '{{name}}'",
-          "range": true,
-          "refId": "health_irs_dependency"
         }
       ],
       "title": "IRS Health",
+      "type": "status-history"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 1
+          },
+          "mappings": [
+            {
+              "options": {
+                "3": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "UP"
+                }
+              },
+              "type": "value"
+            },
+            {
+              "options": {
+                "from": 0,
+                "result": {
+                  "color": "red",
+                  "index": 1,
+                  "text": "DOWN"
+                },
+                "to": 2
+              },
+              "type": "range"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 23,
+        "x": 0,
+        "y": 9
+      },
+      "id": 6,
+      "options": {
+        "colWidth": 0.9,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "health_irs_dependency",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{name}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "IRS Dependencies Health",
       "type": "status-history"
     }
   ],
@@ -159,6 +247,6 @@
   "timezone": "",
   "title": "System Health",
   "uid": "_3NCxeSSk",
-  "version": 12,
+  "version": 1,
   "weekStart": ""
 }
