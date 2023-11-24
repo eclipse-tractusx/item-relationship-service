@@ -95,15 +95,15 @@ flowchart LR
     SingleLevelBomAsBuilt --> s1
     s1 --> SerialPart
     s1 --> SingleLevelBomAsBuilt2
-    SingleLevelBomAsBuilt2(SingleLevelBomAsBuilt) --> s4((AAS C-X 2 \n hasAlternatives=false))
+    SingleLevelBomAsBuilt2[SingleLevelBomAsBuilt] --> s4((AAS C-X 2 \n hasAlternatives=false))
     s4 --> SerialPart3(SerialPart)
-   s4 --> SerialPart5(SingleLevelBomAsBuilt2.0.0)
+    s4 --> SingleLevelBomAsBuilt5[SingleLevelBomAsBuilt2.0.0]
     SingleLevelBomAsBuilt2 --> s5((AAS C-X 3 \n hasAlternatives=false))
     s5 --> SerialPart2(SerialPart)
-    s5 --> SerialPart4(SingleLevelBomAsBuilt2.0.0)
+    s5 --> SingleLevelBomAsBuilt7[SingleLevelBomAsBuilt2.0.0]
 ```
 
-## SingleLevelBomAsBuilt childItems contains asPlanned aspects hasAlternatives=false
+## SingleLevelBomAsBuilt childItems contains asPlanned aspects hasAlternatives=true
 
 1. IRS traversal using SingleLevelBomAsBuilt
 2. Traversal Aspect: SingleLevelBomAsBuilt
@@ -142,7 +142,7 @@ flowchart LR
 title: SingleLevelBomAsBuilt2 childItems contains asPlanned aspects hasAlternatives=false
 ---
 flowchart LR
-    s1((AAS C-X 1 \n hasAlternatives=true))
+    s1((AAS C-X 1 \n hasAlternatives=false))
     s2((AAS C-X 2 \n hasAlternatives=true))
     s3((AAS C-X 3 \n hasAlternatives=true))
     SingleLevelBomAsBuilt[SingleLevelBomAsBuilt2.0.0]
@@ -158,7 +158,7 @@ flowchart LR
     s3 --> stop2{stop processing}
     
     s1 --> SingleLevelBomAsBuilt3[SingleLevelBomAsBuilt]
-    s1 --> p3[SerialPart]
+    s1 --> p3(SerialPart)
     SingleLevelBomAsBuilt3 --> s4((AAS C-X 4))
     
     classDef asPlanned fill: #9f6,stroke: #333, stroke-width: 2px;
@@ -183,11 +183,11 @@ title: SingleLevelBomAsBuilt2 childItems contains combination of hasAlternatives
 ---
 flowchart LR
     s1((AAS C-X 1 \n hasAlternatives=false))
-    s2((AAS C-X 2 \n hasAlternatives=true \n Batch #1))
-    s3((AAS C-X 3 \n hasAlternatives=true \n Batch #2))
+    s2((AAS C-X 2 \n hasAlternatives=true))
+    s3((AAS C-X 3 \n hasAlternatives=true))
     SingleLevelBomAsBuilt[SingleLevelBomAsBuilt2.0.0]
 
-    aas((AAS OEM)) --> SingleLevelBomAsBuilt
+    aas((AAS OEM)) --> SingleLevelBomAsBuilt[SingleLevelBomAsBuilt]
     SingleLevelBomAsBuilt --> s1
     SingleLevelBomAsBuilt --> s2
     SingleLevelBomAsBuilt --> s3
@@ -196,8 +196,8 @@ flowchart LR
     s3 --> SingleLevelBomAsBuilt5[SingleLevelBomAsBuilt]
     
     s1 --> SerialPart3(SerialPart)
-    s2 --> SerialPart4(SerialPart)
-    s3 --> SerialPart5(SerialPart)
+    s2 --> SerialPart4(Batch)
+    s3 --> SerialPart5(Batch)
     
     SingleLevelBomAsBuilt3 --> AAS5((AAS))
     SingleLevelBomAsBuilt4 --> AAS6((AAS))
