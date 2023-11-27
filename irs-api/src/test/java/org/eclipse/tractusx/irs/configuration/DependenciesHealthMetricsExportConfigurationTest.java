@@ -40,16 +40,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
-class IrsHealthMetricsExportConfigurationTest {
+class DependenciesHealthMetricsExportConfigurationTest {
 
     private final MeterRegistry meterRegistry = new SimpleMeterRegistry();
-
-    @Mock
-    private HealthEndpoint healthEndpointMock;
 
     @Mock
     private RestTemplate restTemplateMock;
@@ -65,7 +61,7 @@ class IrsHealthMetricsExportConfigurationTest {
         dependenciesHealthConfig.setUrls(simulateIrsDependencies());
 
         // ACT
-        new IrsHealthMetricsExportConfiguration(meterRegistry, healthEndpointMock,
+        new DependenciesHealthMetricsExportConfiguration(meterRegistry,
                 new DependenciesHealthIndicator(restTemplateMock, dependenciesHealthConfig));
 
         // ASSERT
@@ -74,12 +70,10 @@ class IrsHealthMetricsExportConfigurationTest {
                                                      .map(Meter::getId)
                                                      .collect(Collectors.toList());
 
-        assertThat(meterIds).hasSize(4);
+        assertThat(meterIds).hasSize(3);
 
         assertThat(meterIds).describedAs("should have registered the given health metrics") //
                             .containsAll(List.of(
-                                    // IRS health
-                                    createMeterId("health-irs", Tags.empty()),
                                     // IRS dependencies overall health
                                     createMeterId("health-irs-dependency-overall", Tags.empty()),
                                     // health of each IRS dependency
