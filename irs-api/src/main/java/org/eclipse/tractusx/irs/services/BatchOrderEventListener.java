@@ -167,7 +167,7 @@ public class BatchOrderEventListener {
                           .key(identificationKey)
                           .bomLifecycle(batchOrder.getBomLifecycle())
                           .callbackUrl(batchOrder.getCallbackUrl())
-                          .incidentBPNSs(List.of())
+                          .incidentBPNSs(batchOrder.getIncidentBPNSs())
                           .build();
     }
 
