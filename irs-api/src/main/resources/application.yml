@@ -222,7 +222,7 @@ bpdm:
 # ESS Module specific properties
 ess:
   localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
-  localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
+  localEdcEndpoint: ${ESS_EDC_URL:} # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
   managementPath: ${EDC_MANAGEMENT_PATH:/management/v2} # EDC management API path - used for notification asset creation
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
