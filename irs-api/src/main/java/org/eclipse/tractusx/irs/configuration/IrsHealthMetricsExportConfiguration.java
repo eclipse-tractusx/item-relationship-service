@@ -161,10 +161,10 @@ public class IrsHealthMetricsExportConfiguration {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     private static final class StatusHelper {
 
+        public static final int STATUS_UNKNOWN = 0;
         public static final int STATUS_DOWN = 1;
         public static final int STATUS_OUT_OF_SERVICE = 2;
         public static final int STATUS_UP = 3;
-        public static final int STATUS_UNKNOWN = 0;
 
         /**
          * Converts health status for usage with Gauge.

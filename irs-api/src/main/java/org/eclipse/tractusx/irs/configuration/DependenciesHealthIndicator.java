@@ -49,7 +49,7 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @Slf4j
 @ConditionalOnEnabledHealthIndicator("dependencies")
-class DependenciesHealthIndicator implements HealthIndicator {
+public class DependenciesHealthIndicator implements HealthIndicator {
 
     private final DependenciesHealthConfiguration dependenciesHealthConfiguration;
     private final RestTemplate restTemplate;
