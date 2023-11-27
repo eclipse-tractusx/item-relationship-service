@@ -63,16 +63,17 @@ python ess-demo.py \
 
 ## Parameters
 
-| Parameter      | Example                                                  | Description                                                |
-|----------------|----------------------------------------------------------|------------------------------------------------------------|
-| -h, --help     |                                                          | show help message                                          |
-| --aas          | https://registry.example/api/v3.0/shell-descriptors      | AAS registry URL                                           |
-| --ownBPN       | BPNL0000000XYZ00                                         | BPN of the requesting Company                              |
-| --searchBPN    | BPNL0000000XYZ11                                         | BPN of the Company to search for                           |
-| --incidentBPNS | BPNS0000000XYZ22 BPNS0000000XYZ33                        | List of BPNS of the Companies where the incidents occurred |
-| --irs          | https://irs.example                                      | IRS base URL                                               |
-| --tokenurl     | https://oauth2.example/auth/EXAMPLE/openid-connect/token | OAuth2 token URL                                           |
-| --clientid     | exampleuser                                              | Client ID                                                  |
-| --clientsecret | examplepass                                              | Client Secret                                              |
-| --debug        |                                                          | debug logging (optional)                                   |
+| Parameter      | Example                                                  | Description                                                        |
+|----------------|----------------------------------------------------------|--------------------------------------------------------------------|
+| -h, --help     |                                                          | show help message                                                  |
+| --aas          | https://registry.example/api/v3.0/shell-descriptors      | AAS registry URL                                                   |
+| --ownBPN       | BPNL0000000XYZ00                                         | BPN of the requesting Company                                      |
+| --searchBPN    | BPNL0000000XYZ11                                         | BPN of the Company to search for                                   |
+| --incidentBPNS | BPNS0000000XYZ22 BPNS0000000XYZ33                        | List of BPNS of the Companies where the incidents occurred         |
+| --irs          | https://irs.example                                      | IRS base URL                                                       |
+| --tokenurl     | https://oauth2.example/auth/EXAMPLE/openid-connect/token | OAuth2 token URL                                                   |
+| --clientid     | exampleuser                                              | Client ID                                                          |
+| --clientsecret | examplepass                                              | Client Secret                                                      |
+| --batchsize    | 10                                                       | The batch size for a ESS investigation. Must be mod 10. Default 10 |
+| --debug        |                                                          | debug logging (optional)                                           |
 

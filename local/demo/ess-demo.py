@@ -22,6 +22,7 @@
 import argparse
 import json
 import logging
+import sys
 import time
 from datetime import datetime
 from types import SimpleNamespace
@@ -84,8 +85,8 @@ def fetch_registry_data(registry_url_, bpn_, params_=None):
         registry_response = json.loads(response_.text, object_hook=lambda d: SimpleNamespace(**d))
         return registry_response
     else:
-        logging.error(f"Failed to fetch registry data. Status code: {response_.status_code}")
-        return None
+        logger.error(f"Failed to fetch registry data. Status code: {response_.status_code}")
+        sys.exit("Failed to fetch registry data.")
 
 
 def filter_for_as_planned_and_bpn(search_bpn_):
@@ -119,8 +120,8 @@ def poll_batch_job(batch_url, token_):
 
             time.sleep(5)
         except requests.exceptions.RequestException as e:
-            logging.error(f"Error: {e}")
-            break
+            logger.error(f"Error: {e}")
+            sys.exit("Failed to poll ESS Batch Investigation.")
 
 
 def create_header_with_token(token_):
@@ -168,19 +169,9 @@ def get_or_refresh_oauth_token(token_url_, client_id_, client_secret_, token_: N
     return token
 
 
-class ESSException(Exception):
-    def __init__(self, *args, **kwargs):  # real signature unknown
-        pass
-
-    @staticmethod  # known case of __new__
-    def __new__(*args, **kwargs):
-        """ Create and return a new object.  See help(type) for accurate signature. """
-        pass
-
-
-def start_ess_investigation(irs_ess_url_, incident_bpns_, filtered_twins_, token_):
+def start_ess_investigation(irs_ess_url_, incident_bpns_, filtered_twins_, batch_size_, token_):
     payload_ = {
-        "batchSize": 10,
+        "batchSize": batch_size_,
         "batchStrategy": "PRESERVE_BATCH_JOB_ORDER",
         "incidentBPNSs": incident_bpns_,
         "keys": filtered_twins_
@@ -190,9 +181,9 @@ def start_ess_investigation(irs_ess_url_, incident_bpns_, filtered_twins_, token
     response_ = session.post(url=irs_ess_url_, json=payload_, headers=headers_)
 
     if response_.status_code != 201:
-        logging.error(f"Failed to start ESS Batch Investigation. Status code: {response_.status_code}")
+        logger.error(f"Failed to start ESS Batch Investigation. Status code: {response_.status_code}")
         logger.info(response_.text)
-        raise ESSException("Failed to start ESS Batch Investigation")
+        sys.exit("Failed to start ESS Batch Investigation.")
     else:
         batch_id_ = response_.json().get("id")
         logger.info(f"Started ESS Batch Investigation with id {batch_id_}")
@@ -225,6 +216,7 @@ def prepare_arguments():
     parser.add_argument("--clientid", type=str, help="Client ID", required=True)
     parser.add_argument("--clientsecret", type=str, help="Client Secret", required=True)
     parser.add_argument("--debug", help="debug logging", action='store_true', required=False)
+    parser.add_argument("--batchsize", help="Batch size for ESS Investigation", type=int, default=10, required=False)
     return parser.parse_args()
 
 
@@ -315,6 +307,7 @@ if __name__ == "__main__":
     client_id = config.clientid
     client_secret = config.clientsecret
     is_debug = config.debug
+    batch_size = config.batchsize
 
     irs_ess_url = f"{irs_base_url}/ess/bpn/investigations"
     irs_ess_batch_url = f"{irs_base_url}/irs/ess/orders"
@@ -343,7 +336,7 @@ if __name__ == "__main__":
     token = get_oauth_token(token_url, client_id, client_secret)
 
     # Start ESS batch investigation
-    batch_id = start_ess_investigation(irs_ess_batch_url, incident_BPNSs, filtered_twins, token)
+    batch_id = start_ess_investigation(irs_ess_batch_url, incident_BPNSs, filtered_twins, batch_size, token)
 
     wait_for_user_input()
 
