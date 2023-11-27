@@ -4,7 +4,7 @@ This section describes what happens when user creates an ess job.
 
 == Register an Ess-Investigation Job
 
-[plantuml,target=submodel-processing,format=svg]
+[plantuml, target=ess-topdown-order-job,format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/4_ess_top_down_sequence_RegisterEssInvestigationJob.puml[]
 ....

@@ -80,6 +80,34 @@ Retrieve the job results by using the jobId returned by the previous call:
 curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/json' -H 'Authorization: Bearer <token_value>'
 ```
 
+#### Environmental and Social Standards (ESS)
+
+Start an ESS investigation for a globalAssetId and Incident BPNS.
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/ess/bpn/investigations' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <token_value>' \
+  -d '{
+	"key": {
+		"globalAssetId": "urn:uuid:3d61ada2-1a50-42a0-b411-40a932dd56cc",
+		"bpn": "BPNL00ARBITRARY6"
+	},
+	"incidentBPNSs": [
+		"BPNS00ARBITRARY7"
+	],
+	"bomLifecycle": "asPlanned"
+    }'
+```
+
+Retrieve the investigation results by using the jobId returned by the previous call:
+
+```bash
+curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept: application/json' -H 'Authorization: Bearer <token_value>'
+```
+
 ## Documentation
 
 - [Item Relationship Service Documentation](https://eclipse-tractusx.github.io/item-relationship-service/docs/)

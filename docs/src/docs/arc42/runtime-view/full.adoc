@@ -21,4 +21,3 @@ This recursive scenario is illustrated using the various use cases realized in t
 include::ess-top-down/ess-top-down.adoc[leveloffset=+1]
 include::ess-top-down/ess-top-down-scenario-1.adoc[leveloffset=+1]
 include::ess-top-down/ess-top-down-scenario-2.adoc[leveloffset=+1]
-include::ess-top-down/ess-top-down-scenario-3.adoc[leveloffset=+1]
