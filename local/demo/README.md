@@ -61,6 +61,12 @@ python ess-demo.py \
     --clientsecret "examplepass"
 ```
 
+### Authentication
+
+IRS is secured by OAuth2. This requires the user of this demo script to provide the token URL of the OAuth2 provider which is used by the IRS as well as a valid clientId and clientSecret. 
+
+For more information regarding IRS authentication, see: [Safety and security concepts](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42/full.html#_safety_and_security_concepts)
+
 ## Parameters
 
 | Parameter      | Example                                                  | Description                                                        |
