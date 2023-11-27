@@ -54,7 +54,7 @@ public class DependenciesHealthIndicator implements HealthIndicator {
     private final DependenciesHealthConfiguration dependenciesHealthConfiguration;
     private final RestTemplate restTemplate;
 
-    /* package */ DependenciesHealthIndicator(@Qualifier(NO_ERROR_REST_TEMPLATE) final RestTemplate noErrorRestTemplate,
+    public DependenciesHealthIndicator(@Qualifier(NO_ERROR_REST_TEMPLATE) final RestTemplate noErrorRestTemplate,
             final DependenciesHealthConfiguration dependenciesHealthConfiguration) {
         this.dependenciesHealthConfiguration = dependenciesHealthConfiguration;
         this.restTemplate = noErrorRestTemplate;
