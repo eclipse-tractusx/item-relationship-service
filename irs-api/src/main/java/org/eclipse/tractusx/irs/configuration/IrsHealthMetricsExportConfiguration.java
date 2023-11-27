@@ -56,6 +56,7 @@ public class IrsHealthMetricsExportConfiguration {
             new MetricDescriptor("health-irs-dependency",
                     "The health status of the IRS dependencies configured under '%s'.".formatted(
                             DependenciesHealthConfiguration.MANAGEMENT_HEALTH_DEPENDENCIES));
+    private static final String HEALTH_IRS_DEPENDENCY_TAG_NAME = "name";
 
     /**
      * Constructor.
@@ -127,7 +128,7 @@ public class IrsHealthMetricsExportConfiguration {
                 healthIndicator -> StatusHelper.toNumeric(getIrsDependencyStatus(healthIndicator, dependencyName));
 
         Gauge.builder(metricDescriptor.name, dependenciesHealthIndicator, statusProvider)
-             .tag("name", dependencyName)
+             .tag(HEALTH_IRS_DEPENDENCY_TAG_NAME, dependencyName)
              .description(metricDescriptor.description)
              .strongReference(true)
              .register(registry);
