@@ -1,4 +1,4 @@
-= Spring configuration
+= Spring Configuration
 
 The IRS application is configured using the Spring configuration mechanism. The main configuration file is the ``application.yaml``.
 
