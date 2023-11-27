@@ -361,6 +361,7 @@ grafana:
             "editable": true,
             "fiscalYearStartMonth": 0,
             "graphTooltip": 0,
+            "id": 7,
             "links": [],
             "liveNow": false,
             "panels": [
@@ -516,12 +517,8 @@ grafana:
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "green",
+                          "color": "transparent",
                           "value": null
-                        },
-                        {
-                          "color": "red",
-                          "value": 80
                         }
                       ]
                     }
@@ -583,7 +580,7 @@ grafana:
             "timepicker": {},
             "timezone": "",
             "title": "System Health",
-            "uid": "_3NCxeSSk",
+            "uid": "_3NCxeSSk1",
             "version": 1,
             "weekStart": ""
           }
