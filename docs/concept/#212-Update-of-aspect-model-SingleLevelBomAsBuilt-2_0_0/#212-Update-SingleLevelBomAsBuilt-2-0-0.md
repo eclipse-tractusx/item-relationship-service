@@ -196,8 +196,8 @@ flowchart LR
     s3 --> SingleLevelBomAsBuilt5[SingleLevelBomAsBuilt]
     
     s1 --> SerialPart3(SerialPart)
-    s2 --> SerialPart4(Batch)
-    s3 --> SerialPart5(Batch)
+    s2 --> Batch1(Batch)
+    s3 --> Batch2(Batch)
     
     SingleLevelBomAsBuilt3 --> AAS5((AAS))
     SingleLevelBomAsBuilt4 --> AAS6((AAS))
