@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   added [system health dashboard](charts/irs-helm/dashboards/system-health-dashboard.json) in order to visualize health
   metrics of IRS and its dependencies
 
+### Fixed
+- Fixed incorrect passing of incidentBPNS for ESS Orders
+
 ### Known knowns
 - [#253] Cancelation of order jobs is not working stable
 
