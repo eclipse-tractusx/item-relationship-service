@@ -5,12 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [6.11.0] - 2023-11-28
 ### Fixed
 - Fixed templating for `management.health.dependencies`
+
+### Added
 - Added [system health dashboard](dashboards/system-health-dashboard.json) in order to visualize health metrics of IRS
   and its dependencies
+- Added configuration for the Discovery Finder cache time to live value in `edc.connectorEndpointService.cacheTTL`
 
-## [6.10.0]
+## [6.10.0] - 2023-11-15
 ### Changed
 - Update IRS version to 4.1.0
 - Changed configuration for OAuth2 client from:
@@ -31,11 +36,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     jwkSetUri:  
   ```
 
-## [6.9.1]
+## [6.9.1] - 2023-11-10
 ### Changed
 - Update IRS version to 4.0.1
 
-## [6.9.0]
+## [6.9.0] - 2023-10-27
 ### Changed
 - Update IRS version to 4.0.0
 
