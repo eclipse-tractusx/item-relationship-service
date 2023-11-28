@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - Fixed templating for `management.health.dependencies`
+- Added [system health dashboard](dashboards/system-health-dashboard.json) in order to visualize health metrics of IRS
+  and its dependencies
 
 ## [6.10.0]
 ### Changed
