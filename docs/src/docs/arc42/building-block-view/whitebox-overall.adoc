@@ -98,7 +98,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | *IRS* accessing the *decentral DigitalTwinRegistry* on Tier Level using the *EDC*
 
 | 17
-| *IRS* sending notifications to the *IRS-ESS* instance running at the data provider using the *EDC*
+| In case of the use-case Environmental and Social Standards, *IRS* sends notifications to the *IRS-ESS* instance running at the data provider using the *EDC*.
 |===
 
 
