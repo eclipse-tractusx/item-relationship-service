@@ -47,7 +47,7 @@ class HealthMetricsExportConfigurationTest {
     private HealthEndpoint healthEndpointMock;
 
     @Test
-    public void shouldRegisterHealthMetricsWithPrometheus() {
+    void shouldRegisterHealthMetricsWithPrometheus() {
 
         // ACT
         new HealthMetricsExportConfiguration(meterRegistry, healthEndpointMock);
@@ -58,13 +58,9 @@ class HealthMetricsExportConfigurationTest {
                                                      .map(Meter::getId)
                                                      .collect(Collectors.toList());
 
-        assertThat(meterIds).hasSize(1);
-
-        assertThat(meterIds).describedAs("should have registered the given health metrics") //
-                            .containsAll(List.of(
-                                    // IRS health
-                                    new Meter.Id("health-irs", Tags.empty(), null, null, Meter.Type.GAUGE) //
-                            ));
+        assertThat(meterIds).describedAs("should have registered the IRS health metric") //
+                            .hasSize(1) //
+                            .contains(new Meter.Id("health-irs", Tags.empty(), null, null, Meter.Type.GAUGE));
     }
 
 }

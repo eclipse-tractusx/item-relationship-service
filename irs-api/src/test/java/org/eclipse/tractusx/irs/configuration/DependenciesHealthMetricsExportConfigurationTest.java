@@ -54,7 +54,7 @@ class DependenciesHealthMetricsExportConfigurationTest {
     }
 
     @Test
-    public void shouldRegisterHealthMetricsWithPrometheus() {
+    void shouldRegisterHealthMetricsWithPrometheus() {
 
         // ARRANGE
         final DependenciesHealthConfiguration dependenciesHealthConfig = new DependenciesHealthConfiguration();
@@ -70,9 +70,8 @@ class DependenciesHealthMetricsExportConfigurationTest {
                                                      .map(Meter::getId)
                                                      .collect(Collectors.toList());
 
-        assertThat(meterIds).hasSize(3);
-
         assertThat(meterIds).describedAs("should have registered the given health metrics") //
+                            .hasSize(3) //
                             .containsAll(List.of(
                                     // IRS dependencies overall health
                                     createMeterId("health-irs-dependency-overall", Tags.empty()),
