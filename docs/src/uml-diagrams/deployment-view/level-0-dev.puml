@@ -11,17 +11,17 @@ node "Kubernetes Cluster" as k8s {
 
     component IRS
     component Minio
-    component "Decentral Registry" as dtr
+    component "Digital Twin Registry" as dtr
     component "EDC Consumer" as consumer
     component "EDC Provider" as provider
-    component "DAPS" as daps
+    component "Managed Identity Wallet" as miw
     collections "Submodel Provider" as submodel
 
 
     IRS --> Minio
     IRS -> consumer
-    consumer --> daps
-    provider --> daps
+    consumer --> miw
+    provider --> miw
     consumer <--> provider
     provider --- submodel
     provider --- dtr

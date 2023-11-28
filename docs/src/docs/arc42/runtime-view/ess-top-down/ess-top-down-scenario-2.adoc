@@ -1,4 +1,4 @@
-= Scenario 1: Register an Ess-Investigation-Job
+= Scenario 2: Register an Ess-Investigation-Job
 
 This section describes what happens when user creates an ess job.
 
