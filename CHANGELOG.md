@@ -5,10 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.2.0] - 2023-11-28
 ### Changed
+- Changed default behaviour of IRS - when aspects list is not provided or empty in request body, IRS will not collect any submodel now (previously default aspects were collected).
 - ESS
   - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
   - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
+- Exported health endpoints to prometheus (see HealthMetricsExportConfiguration,
+  DependenciesHealthMetricsExportConfiguration) and
+  added [system health dashboard](charts/irs-helm/dashboards/system-health-dashboard.json) in order to visualize health
+  metrics of IRS and its dependencies
+
+### Fixed
+- Fixed incorrect passing of incidentBPNS for ESS Orders
 
 ### Known knowns
 - [#253] Cancelation of order jobs is not working stable
@@ -458,7 +468,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.2.0...HEAD
+[4.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.2...4.1.0
 [4.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...4.0.1

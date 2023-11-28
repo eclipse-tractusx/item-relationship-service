@@ -16,21 +16,15 @@ def supplyChainImpacted_is_as_expected(response, expectedSupplyChainImpacted):
 
 
 def supplyChainFirstLevelBpn_is_as_expected(response, expectedBpnl):
-    bpnl = response.json().get("submodels").get("payload").get("impactedSuppliersOnFirstTier").get("bpnl")
-    assert expectedBpnl == bpnl
-    # for i in submodels:
-    #     impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
-    #     for ii in impactedSuppliersOnFirstTier:
-    #         assert expectedBpnl in ii.get('bpnl')
+    submodels = response.json().get("submodels")
+    for i in submodels:
+        assert expectedBpnl in i.get("payload").get("impactedSuppliersOnFirstTier").get("bpnl")
 
 
 def supplyChainhops_is_as_expected(response, expectedHops):
-    hops = response.json().get("submodels").get("payload").get("impactedSuppliersOnFirstTier").get("hops")
-    assert expectedHops == hops
-    # for i in submodels:
-    #     impactedSuppliersOnFirstTier = i.get("payload").get("impactedSuppliersOnFirstTier")
-    #     for ii in impactedSuppliersOnFirstTier:
-    #         assert ii.get('hops') == expectedHops
+    submodels = response.json().get("submodels")
+    for i in submodels:
+        assert expectedHops is i.get("payload").get("impactedSuppliersOnFirstTier").get("hops")
 
 
 def errors_for_invalid_investigation_request_are_correct(response):
@@ -47,6 +41,7 @@ def relationships_for_BPN_investigations_contains_several_childs(response):
     print("Länge: ", len(relationships))
     assert len(relationships) != 0
 
+
 def ESS_job_parameter_are_as_requested(response):
     print("Check if ESS-job parameter are as requested:")
     parameter = response.json().get('job').get('parameter')
@@ -60,6 +55,7 @@ def ESS_job_parameter_are_as_requested(response):
     aspects_list = parameter.get("aspects")
     assert 'PartSiteInformationAsPlanned' in aspects_list
     assert 'PartAsPlanned' in aspects_list
+
 
 def tombstone_for_EssValidation_are_correct(response, expectedTombstone):
     error_list = response.json().get("tombstones")
@@ -138,6 +134,20 @@ def errors_for_invalid_depth_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
     assert 'depth:must be greater than or equal to 1' in error_list
+
+
+def submodelDescriptors_in_shells_are_empty(response):
+    shells = response.json().get("shells")
+    print("shells ", shells)
+    for i in shells:
+        assert len(shells.get("submodelDescriptors")) == 0
+
+
+def aspects_in_job_parameter_are_empty(response):
+    parameter = response.json().get('job').get('parameter')
+    print(parameter)
+    assert parameter.get('collectAspects') is True
+    assert len(parameter.get("aspects")) == 0
 
 
 def errors_for_unknown_globalAssetId_are_correct(response):
