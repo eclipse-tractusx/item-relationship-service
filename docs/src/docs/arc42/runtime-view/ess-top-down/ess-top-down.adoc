@@ -14,7 +14,7 @@ The BoM as planned aspect models consists of three aspect models:
 
 == Overall flow
 
-[plantuml, target=ess-top-down,format=svg]
+[plantuml, target=ess-top-down, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/0-ess-top-down-sequence.puml[]
 ....
@@ -49,7 +49,7 @@ Note: ESS supplier responses are involved in each step of the process.
 
 == Flow on company level
 
-[plantuml, target=ess-top-down-highlevel,format=svg]
+[plantuml, target=ess-top-down-highlevel, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/1_ess-top-down-sequence-highlevel.puml[]
 ....
@@ -111,7 +111,7 @@ In case at least one "YES" is received, the process step 3 ends
 | NO      | NO      | NO      | NO           | No if complete SupplyChain is not impacted
 |===
 
-[plantuml, target=ess_top_down_sequence-result,format=svg]
+[plantuml, target=ess_top_down_sequence-result, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/5_ess_top_down_sequence_determine_result.puml[]
 ....
@@ -120,7 +120,7 @@ include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/5_ess_top_d
 
 === Register an Ess-Investigation-Order
 
-[plantuml, target=ess-top-down-highlevel,format=svg]
+[plantuml, target=ess-top-down-highlevel, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/1_ess-top-down-sequence-highlevel.puml[]
 ....
