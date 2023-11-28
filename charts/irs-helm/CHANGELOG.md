@@ -36,6 +36,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     jwkSetUri:  
   ```
 
+## [6.9.2] - 2023-11-20
+### Changed
+- Update IRS version to 4.0.2
+
 ## [6.9.1] - 2023-11-10
 ### Changed
 - Update IRS version to 4.0.1
