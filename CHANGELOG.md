@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ESS
   - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
   - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
+### Fixed
+- Fixed incorrect passing of incidentBPNS for ESS Orders
 
 ### Known knowns
 - [#253] Cancelation of order jobs is not working stable
