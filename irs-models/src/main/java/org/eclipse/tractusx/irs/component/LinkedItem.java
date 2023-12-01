@@ -61,4 +61,7 @@ public class LinkedItem {
     @JsonUnwrapped
     private GlobalAssetIdentification childCatenaXId;
 
+    @Schema(description = "Expresses whether the part is built-in or whether it is one of several options.", implementation = Boolean.class)
+    private boolean hasAlternatives;
+
 }
