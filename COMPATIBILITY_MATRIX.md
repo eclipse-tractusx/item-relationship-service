@@ -1,5 +1,7 @@
 # Compatibility matrix IRS
 
+Full changelog of IRS: [changelog](CHANGELOG.md)
+
 ## [4.2.0] - 2023-11-28
 | Name of service           | Version                      | Helm       | Comments        |
 |---------------------------|------------------------------|------------|-----------------|
