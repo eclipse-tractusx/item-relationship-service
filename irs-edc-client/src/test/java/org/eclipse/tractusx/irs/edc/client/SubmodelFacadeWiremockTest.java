@@ -64,6 +64,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.edc.client.util.EndpointDataReferenceCacheService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -116,6 +117,7 @@ class SubmodelFacadeWiremockTest {
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
 
         final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
+        final EndpointDataReferenceCacheService endpointDataReferenceCacheService = new EndpointDataReferenceCacheService(new EndpointDataReferenceStorage(Duration.ofMinutes(1)));
 
         acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
@@ -130,7 +132,7 @@ class SubmodelFacadeWiremockTest {
 
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
         this.edcSubmodelClient = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
-                pollingService, retryRegistry, catalogFacade);
+                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
     @AfterEach
