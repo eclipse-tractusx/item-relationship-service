@@ -1068,6 +1068,7 @@ components:
             linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+              hasAlternatives: false
               lastModifiedOn: 2022-02-03T14:48:54.709Z
               lifecycleContext: asBuilt
               quantity:
@@ -1187,6 +1188,7 @@ components:
             linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+              hasAlternatives: false
               lastModifiedOn: 2022-02-03T14:48:54.709Z
               lifecycleContext: asBuilt
               quantity:
@@ -1375,6 +1377,7 @@ components:
             linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+              hasAlternatives: false
               lastModifiedOn: 2022-02-03T14:48:54.709Z
               lifecycleContext: asBuilt
               quantity:
@@ -2105,20 +2108,24 @@ components:
           maxLength: 45
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        hasAlternatives:
+          type: boolean
+          description: Expresses whether the part is built-in or whether it is one
+            of several options.
         lastModifiedOn:
           type: string
-          example: 2022-02-03T14:48:54.709Z
           format: date-time
           description: Last datetime item was modified.
+          example: 2022-02-03T14:48:54.709Z
         lifecycleContext:
           type: string
-          example: asBuilt
           description: The lifecycle context in which the child part was assembled
             into the parent part.
           enum:
             - asBuilt
             - asPlanned
             - asSpecified
+          example: asBuilt
         quantity:
           $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
