@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed
 - Updated edc dependencies to 0.2.1
-- Update deprecated field "providerUrl" to counterPartyAddress in EDC catalog request
+- Update deprecated field `providerUrl` to `counterPartyAddress` in EDC catalog request
 - Update ESS EDC notification creation asset endpoint to v3
 
 
