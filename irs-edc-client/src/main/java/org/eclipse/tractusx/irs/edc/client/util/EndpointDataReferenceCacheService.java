@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client.util;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -78,7 +79,7 @@ public class EndpointDataReferenceCacheService {
     }
 
     private static boolean isTokenExpired(final EndpointDataReference endpointDataReference) {
-        final Instant tokenExpirationInstant = extractTokenExpiration(endpointDataReference.getAuthCode());
+        final Instant tokenExpirationInstant = extractTokenExpiration(Objects.requireNonNull(endpointDataReference.getAuthCode()));
         return Instant.now().isAfter(tokenExpirationInstant);
     }
 

@@ -91,7 +91,7 @@ public class ContractNegotiationService {
             }
             case EXPIRED -> {
                 contractAgreementId = EDRAuthCode.fromAuthCodeToken(
-                        endpointDataReferenceStatus.endpointDataReference().getAuthKey()).getCid();
+                        Objects.requireNonNull(endpointDataReferenceStatus.endpointDataReference().getAuthKey())).getCid();
                 log.info(
                         "Cached endpoint data reference has expired token. Refreshing token without new contract negotiation for contractAgreementId: {}",
                         contractAgreementId);
