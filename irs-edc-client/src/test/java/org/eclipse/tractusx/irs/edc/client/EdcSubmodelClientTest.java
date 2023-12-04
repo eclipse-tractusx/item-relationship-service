@@ -139,7 +139,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         endpointDataReferenceStorage.put("agreementId", ref);
         final String singleLevelBomAsBuiltJson = readSingleLevelBomAsBuiltData();
         when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(singleLevelBomAsBuiltJson);
-        when(endpointDataReferenceCacheService.getEndpointDataReference(eq("assetId"))).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
+        when(endpointDataReferenceCacheService.getEndpointDataReference("assetId")).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
         final var result = testee.getSubmodelRawPayload(ENDPOINT_ADDRESS, "suffix", "assetId");
@@ -243,7 +243,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelBomAsBuilt");
-        when(endpointDataReferenceCacheService.getEndpointDataReference(eq(ASSET_ID))).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
+        when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
 
         final String submodelResponse = testee.getSubmodelRawPayload("http://localhost/", "/submodel", ASSET_ID)
@@ -258,7 +258,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
                 "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID)).thenReturn(createCatalog(ASSET_ID, 3));
         prepareTestdata(existingCatenaXId, "_serialPart");
-        when(endpointDataReferenceCacheService.getEndpointDataReference(eq(ASSET_ID))).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
+        when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelRawPayload("https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID).get(5, TimeUnit.SECONDS);
@@ -274,7 +274,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String target = URLEncoder.encode(ASSET_ID, StandardCharsets.UTF_8);
         when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
                 "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID)).thenReturn(createCatalog(target, 3));
-        when(endpointDataReferenceCacheService.getEndpointDataReference(eq(ASSET_ID))).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
+        when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelRawPayload("https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID).get(5, TimeUnit.SECONDS);
@@ -290,7 +290,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(parentCatenaXId).build()));
         prepareTestdata(parentCatenaXId, "_singleLevelBomAsBuilt");
-        when(endpointDataReferenceCacheService.getEndpointDataReference(eq(ASSET_ID))).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
+        when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
         final String relationshipsJson = testee.getSubmodelRawPayload("http://localhost/", "_singleLevelBomAsBuilt",
                 ASSET_ID).get(5, TimeUnit.SECONDS);
 

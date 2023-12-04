@@ -46,6 +46,7 @@ import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.util.EndpointDataReferenceStatus;
+import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.stereotype.Service;
 
 /**
@@ -100,7 +101,7 @@ public class ContractNegotiationService {
                         endpointDataReferenceStatus.endpointDataReference().getAuthKey()).getCid();
                 log.info(
                         "Cached endpoint data reference has expired token. Refreshing token without new contract negotiation for contractAgreementId: {}",
-                        contractAgreementId);
+                        Masker.mask(contractAgreementId));
             }
             case VALID -> throw new IllegalStateException(
                     "Token is present and valid. Contract negotiation should not be started.");

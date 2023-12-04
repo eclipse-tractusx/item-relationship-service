@@ -47,8 +47,9 @@ public class EndpointDataReferenceCacheService {
     /**
      * Returns {@link org.eclipse.edc.spi.types.domain.edr.EndpointDataReference}
      * for assetId from {@link org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage}
+     *
      * @param assetId key for
-     * {@link org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage}
+     *                {@link org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage}
      * @return {@link org.eclipse.edc.spi.types.domain.edr.EndpointDataReference}
      * and {@link org.eclipse.tractusx.irs.edc.client.util.EndpointDataReferenceStatus.TokenStatus}
      * describing token status
@@ -60,11 +61,15 @@ public class EndpointDataReferenceCacheService {
         if (endpointDataReferenceOptional.isPresent() && endpointDataReferenceOptional.get().getAuthCode() != null) {
             final EndpointDataReference endpointDataReference = endpointDataReferenceOptional.get();
             if (isTokenExpired(endpointDataReference)) {
-                log.info("Endpoint data reference with expired token and id: {} for assetId: {} found in storage.", endpointDataReference.getId(), assetId);
-                return new EndpointDataReferenceStatus(endpointDataReference, EndpointDataReferenceStatus.TokenStatus.EXPIRED);
+                log.info("Endpoint data reference with expired token and id: {} for assetId: {} found in storage.",
+                        endpointDataReference.getId(), assetId);
+                return new EndpointDataReferenceStatus(endpointDataReference,
+                        EndpointDataReferenceStatus.TokenStatus.EXPIRED);
             } else {
-                log.info("Endpoint data reference with id: {} for assetId: {} found in storage.", endpointDataReference.getId(), assetId);
-                return new EndpointDataReferenceStatus(endpointDataReference, EndpointDataReferenceStatus.TokenStatus.VALID);
+                log.info("Endpoint data reference with id: {} for assetId: {} found in storage.",
+                        endpointDataReference.getId(), assetId);
+                return new EndpointDataReferenceStatus(endpointDataReference,
+                        EndpointDataReferenceStatus.TokenStatus.VALID);
             }
         }
 
@@ -77,8 +82,7 @@ public class EndpointDataReferenceCacheService {
         return endpointDataReferenceStorage.get(assetId);
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
-            value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     private static boolean isTokenExpired(final EndpointDataReference endpointDataReference) {
         final Instant tokenExpirationInstant = extractTokenExpiration(endpointDataReference.getAuthCode());
         return Instant.now().isAfter(tokenExpirationInstant);
