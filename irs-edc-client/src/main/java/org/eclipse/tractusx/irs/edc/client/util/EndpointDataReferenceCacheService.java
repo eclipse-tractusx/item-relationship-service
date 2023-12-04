@@ -24,7 +24,6 @@
 package org.eclipse.tractusx.irs.edc.client.util;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -58,7 +57,7 @@ public class EndpointDataReferenceCacheService {
         final Optional<EndpointDataReference> endpointDataReferenceOptional = retrieveEndpointEndpointReferenceByAssetId(
                 assetId);
 
-        if (endpointDataReferenceOptional.isPresent()) {
+        if (endpointDataReferenceOptional.isPresent() && endpointDataReferenceOptional.get().getAuthCode() != null) {
             final EndpointDataReference endpointDataReference = endpointDataReferenceOptional.get();
             if (isTokenExpired(endpointDataReference)) {
                 log.info("Endpoint data reference with expired token and id: {} for assetId: {} found in storage.", endpointDataReference.getId(), assetId);
@@ -79,7 +78,7 @@ public class EndpointDataReferenceCacheService {
     }
 
     private static boolean isTokenExpired(final EndpointDataReference endpointDataReference) {
-        final Instant tokenExpirationInstant = extractTokenExpiration(Objects.requireNonNull(endpointDataReference.getAuthCode()));
+        final Instant tokenExpirationInstant = extractTokenExpiration(endpointDataReference.getAuthCode());
         return Instant.now().isAfter(tokenExpirationInstant);
     }
 

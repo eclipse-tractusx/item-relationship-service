@@ -260,7 +260,10 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             endpointDataReferenceStorage.put(assetId, endpointDataReference);
 
             return endpointDataReference;
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new EdcClientException(e);
+        } catch (ExecutionException e) {
             throw new EdcClientException(e);
         }
     }
