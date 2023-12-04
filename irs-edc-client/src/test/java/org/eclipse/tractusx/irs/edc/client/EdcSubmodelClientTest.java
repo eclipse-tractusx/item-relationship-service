@@ -371,7 +371,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null,
                         TokenStatus.REQUIRED_NEW));
         final String value = "result";
-        when(edcDataPlaneClient.getData(any(), any())).thenReturn(value);
 
         // when
         testee.getSubmodelRawPayload(ENDPOINT_ADDRESS, "suffix", "assetId");
