@@ -68,6 +68,9 @@ public class ContractNegotiationService {
     }
 
     @SuppressWarnings("PMD.AvoidReassigningParameters")
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
+            value="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+            justification="Not reachable code")
     public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
             EndpointDataReferenceStatus endpointDataReferenceStatus)
             throws ContractNegotiationException, UsagePolicyException, TransferProcessException {

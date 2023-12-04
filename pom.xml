@@ -105,6 +105,7 @@
         <junit-jupiter-engine.version>5.9.2</junit-jupiter-engine.version>
         <json-smart.version>2.4.10</json-smart.version>
         <testcontainers-bom.version>1.19.1</testcontainers-bom.version>
+        <findbug.version>3.0.1</findbug.version>
 
         <!-- Plugins -->
         <spotbugs-plugin.version>4.7.3.2</spotbugs-plugin.version>
