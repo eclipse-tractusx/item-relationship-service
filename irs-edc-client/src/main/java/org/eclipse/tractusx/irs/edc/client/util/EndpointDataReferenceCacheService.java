@@ -82,7 +82,6 @@ public class EndpointDataReferenceCacheService {
         return endpointDataReferenceStorage.get(assetId);
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     private static boolean isTokenExpired(final EndpointDataReference endpointDataReference) {
         final Instant tokenExpirationInstant = extractTokenExpiration(endpointDataReference.getAuthCode());
         return Instant.now().isAfter(tokenExpirationInstant);
