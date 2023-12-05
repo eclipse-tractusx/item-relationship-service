@@ -111,7 +111,7 @@ public class EdcControlPlaneClient {
             querySpec.limit(limit);
         }
         return CatalogRequest.Builder.newInstance()
-                                     .providerUrl(providerUrl)
+                                     .counterPartyAddress(providerUrl)
                                      .protocol(DATASPACE_PROTOCOL_HTTP)
                                      .querySpec(querySpec.build())
                                      .build();
@@ -121,7 +121,7 @@ public class EdcControlPlaneClient {
             final String value) {
         final QuerySpec querySpec = QuerySpec.Builder.newInstance().filter(new Criterion(key, "=", value)).build();
         final var catalogRequest = CatalogRequest.Builder.newInstance()
-                                                         .providerUrl(providerConnectorUrl)
+                                                         .counterPartyAddress(providerConnectorUrl)
                                                          .protocol(DATASPACE_PROTOCOL_HTTP)
                                                          .querySpec(querySpec)
                                                          .build();
