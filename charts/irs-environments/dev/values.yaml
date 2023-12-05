@@ -104,6 +104,17 @@ irs-helm:
   ############################
   prometheus:
     enabled: true
+    extraScrapeConfigs: |
+      - job_name: 'spring-actuator'
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 60s
+        static_configs:
+          - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+
+      - job_name: 'minio-actuator'
+        metrics_path: /minio/v2/metrics/cluster
+        static_configs:
+          - targets: [ '{{ .Release.Name }}-minio:9000' ]
 
 
 tractusx-connector:
