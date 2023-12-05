@@ -65,7 +65,6 @@ Description of the main property 'SingleLevelBomAsBuild' was adapted to the new 
             "assembledOn": "2022-02-03T14:48:54.709Z",
             "childCatenaXId": "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9",
             "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-            "lifecycleContext": "<<LifeCyleContext>>", // If there is a change of BomLifecycle
             "quantity": {...},
             "hasAlternatives": "true" // <boolean> == hasAlternatives
             }
@@ -75,7 +74,6 @@ Description of the main property 'SingleLevelBomAsBuild' was adapted to the new 
 
 | Change           | Description                                                                                        |
 |------------------|----------------------------------------------------------------------------------------------------|
-| lifecycleContext | Lifecycle context is adjusted to asPlanned or asBuilt in relation in case of a switch              |    
 | hasAlternatives  | Reflects the state of property hasAlternative of item in SingleLevelBomAsBuilt chldItems structure |    
 
 ## SingleLevelBomAsBuilt childItems contains asBuilt aspects hasAlternatives=false
