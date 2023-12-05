@@ -5,7 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
 - Added support for `hasAlternatives` property in SingleLevelBomAsBuilt aspect
+
+### Changed
+- Updated edc dependencies to 0.2.1
+- Update deprecated field `providerUrl` to `counterPartyAddress` in EDC catalog request
+- Update ESS EDC notification creation asset endpoint to v3
 
 ## [4.2.0] - 2023-11-28
 ### Changed
