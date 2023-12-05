@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Changed 
 - Changed configuration from `ess.managementPath` to options for each endpoint `ess.assetsPath` `ess.policydefinitionsPath` `ess.contractdefinitionsPath`. E.g. `ess.assetsPath: /management/v3/assets`
+- Rename property `edc.provider.host` to `ess.edc.host`
 
 ## [6.11.0] - 2023-11-28
 ### Fixed

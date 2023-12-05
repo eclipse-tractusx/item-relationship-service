@@ -16,14 +16,14 @@ The Item Relationship Service (IRS) is the first reference application of the Da
 
 ### Requirements
 The IRS needs to be deployed with the following components in the same environment: 
-- [Eclipse Dataspace Connector](https://github.com/eclipse-dataspaceconnector/DataSpaceConnector)
+- [Eclipse Dataspace Connector](https://github.com/eclipse-tractusx/tractusx-edc)
 
-The Service interacts with the Catena-X [Digital Twin Registry](https://catena-x.net/en/angebote/digitaler-zwilling) and is built upon the Catena-X Semantic Models which are stored in the [Semantic Hub](https://catena-x.net/en/angebote/digitaler-zwilling). 
+The Service interacts with the Catena-X [Digital Twin Registry](https://github.com/eclipse-tractusx/sldt-digital-twin-registry) and is built upon the Catena-X Semantic Models which are stored in the [Semantic Hub](https://github.com/eclipse-tractusx/sldt-semantic-hub). 
 
 ### Tools and documentation
 
 - 🖥 Item Relationship Service Video
-- 📄 [Item Relationship Service Product Page](https://catena-x.net/en/angebote/item-relationship-service)
+- 📄 [Item Relationship Service Product Page](https://catena-x.net/en/offers-standards/item-relationship-service)
 - 📄 [Item Relationship Service Documentation](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/README.md)
 - 📄 [IRS REST API Documentation](https://eclipse-tractusx.github.io/item-relationship-service/docs/api-specification/api-specification.html)
 - 📄 Catena-X Kit's
