@@ -49,8 +49,11 @@ import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientLocalStub;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
@@ -151,4 +154,11 @@ public class JobConfiguration {
                 connectorEndpointsService);
     }
 
+    @Profile({ "local",
+               "stubtest"
+    })
+    @Bean
+    public DigitalTwinRegistryClient digitalTwinRegistryClient(final CxTestDataContainer cxTestDataContainer) {
+        return new DigitalTwinRegistryClientLocalStub(cxTestDataContainer);
+    }
 }
