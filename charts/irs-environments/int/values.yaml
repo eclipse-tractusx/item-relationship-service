@@ -42,7 +42,12 @@ irs-helm:
       clientId: <path:traceability-irs/data/int/dataspacediscovery#clientId>
       clientSecret: <path:traceability-irs/data/int/dataspacediscovery#clientSecret>
   edc:
+    submodel:
+      request:
+        ttl: PT2M
     controlplane:
+      request:
+        ttl: PT2M
       apikey:
         secret: <path:traceability-irs/data/int/controlplane#apiKey>
 

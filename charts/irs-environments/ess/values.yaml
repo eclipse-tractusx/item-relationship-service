@@ -44,7 +44,12 @@ irs-helm:
   edc:
     provider:
       host: "https://irs-ess-provider-controlplane.int.demo.catena-x.net"
+    submodel:
+      request:
+        ttl: PT2M
     controlplane:
+      request:
+        ttl: PT2M
       apikey:
         secret: <path:traceability-irs/data/ess/controlplane#apiKey>
 
