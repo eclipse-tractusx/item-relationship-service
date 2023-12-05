@@ -52,7 +52,12 @@ irs-helm:
     clientTokenUri: <path:traceability-irs/data/dev/oauth2#tokenUri>
     jwkSetUri: <path:traceability-irs/data/dev/oauth2#jwkSetUri>
   edc:
+    submodel:
+      request:
+        ttl: PT2M
     controlplane:
+      request:
+        ttl: PT2M
       apikey:
         secret: <path:traceability-irs/data/dev/controlplane#apiKey>
 
