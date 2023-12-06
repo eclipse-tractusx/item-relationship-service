@@ -59,18 +59,21 @@ public class EndpointDataReferenceCacheService {
         final Optional<EndpointDataReference> endpointDataReferenceOptional = retrieveEndpointEndpointReferenceByAssetId(
                 assetId);
 
-        if (endpointDataReferenceOptional.isPresent() && endpointDataReferenceOptional.get().getAuthCode() != null) {
-            final EndpointDataReference endpointDataReference = endpointDataReferenceOptional.get();
-            if (isTokenExpired(endpointDataReferenceOptional.get().getAuthCode())) {
-                log.info("Endpoint data reference with expired token and id: {} for assetId: {} found in storage.",
-                        endpointDataReference.getId(), assetId);
-                return new EndpointDataReferenceStatus(endpointDataReference,
-                        EndpointDataReferenceStatus.TokenStatus.EXPIRED);
-            } else {
-                log.info("Endpoint data reference with id: {} for assetId: {} found in storage.",
-                        endpointDataReference.getId(), assetId);
-                return new EndpointDataReferenceStatus(endpointDataReference,
-                        EndpointDataReferenceStatus.TokenStatus.VALID);
+        if (endpointDataReferenceOptional.isPresent()) {
+            final String authCode = endpointDataReferenceOptional.get().getAuthCode();
+            if (authCode != null) {
+                final EndpointDataReference endpointDataReference = endpointDataReferenceOptional.get();
+                if (isTokenExpired(authCode)) {
+                    log.info("Endpoint data reference with expired token and id: {} for assetId: {} found in storage.",
+                            endpointDataReference.getId(), assetId);
+                    return new EndpointDataReferenceStatus(endpointDataReference,
+                            EndpointDataReferenceStatus.TokenStatus.EXPIRED);
+                } else {
+                    log.info("Endpoint data reference with id: {} for assetId: {} found in storage.",
+                            endpointDataReference.getId(), assetId);
+                    return new EndpointDataReferenceStatus(endpointDataReference,
+                            EndpointDataReferenceStatus.TokenStatus.VALID);
+                }
             }
         }
 
