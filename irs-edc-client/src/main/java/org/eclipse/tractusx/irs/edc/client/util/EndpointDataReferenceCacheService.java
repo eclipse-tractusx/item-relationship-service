@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 /**
@@ -60,7 +61,7 @@ public class EndpointDataReferenceCacheService {
 
         if (endpointDataReferenceOptional.isPresent() && endpointDataReferenceOptional.get().getAuthCode() != null) {
             final EndpointDataReference endpointDataReference = endpointDataReferenceOptional.get();
-            if (isTokenExpired(endpointDataReference)) {
+            if (isTokenExpired(endpointDataReferenceOptional.get().getAuthCode())) {
                 log.info("Endpoint data reference with expired token and id: {} for assetId: {} found in storage.",
                         endpointDataReference.getId(), assetId);
                 return new EndpointDataReferenceStatus(endpointDataReference,
@@ -82,8 +83,8 @@ public class EndpointDataReferenceCacheService {
         return endpointDataReferenceStorage.get(assetId);
     }
 
-    private static boolean isTokenExpired(final EndpointDataReference endpointDataReference) {
-        final Instant tokenExpirationInstant = extractTokenExpiration(endpointDataReference.getAuthCode());
+    private static boolean isTokenExpired(final @NotNull String authCode) {
+        final Instant tokenExpirationInstant = extractTokenExpiration(authCode);
         return Instant.now().isAfter(tokenExpirationInstant);
     }
 
