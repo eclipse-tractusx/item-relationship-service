@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.services.timeouts;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
@@ -62,7 +63,12 @@ public class CancelBatchProcessingService {
         log.info("Start scheduled timeout process for batchId: {}", batchId.toString());
         batchStore.find(batchId).ifPresent(batch -> {
             if (isBatchNotCompleted(batch.getBatchState())) {
-                cancelNotFinishedJobs(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList());
+                final List<UUID> jobIds = batch.getJobProgressList()
+                                               .stream()
+                                               .map(JobProgress::getJobId)
+                                               .filter(Objects::nonNull)
+                                               .toList();
+                cancelNotFinishedJobs(jobIds);
             }
         });
     }
@@ -75,7 +81,12 @@ public class CancelBatchProcessingService {
                                               .toList();
         batches.forEach(batch -> {
             if (isBatchNotCompleted(batch.getBatchState())) {
-                cancelNotFinishedJobs(batch.getJobProgressList().stream().map(JobProgress::getJobId).toList());
+                final List<UUID> jobIds = batch.getJobProgressList()
+                                             .stream()
+                                             .map(JobProgress::getJobId)
+                                             .filter(Objects::nonNull)
+                                             .toList();
+                cancelNotFinishedJobs(jobIds);
             }
         });
     }
