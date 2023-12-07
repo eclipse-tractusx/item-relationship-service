@@ -27,7 +27,16 @@ import java.time.Clock;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import io.github.resilience4j.retry.RetryRegistry;
+import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
+import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
+import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
@@ -51,6 +60,9 @@ import org.springframework.web.client.RestTemplate;
  * IRS configuration settings. Sets up the digital twin registry client.
  */
 @Configuration
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 public class DefaultConfiguration {
 
     public static final String DIGITAL_TWIN_REGISTRY_REST_TEMPLATE = "digitalTwinRegistryRestTemplate";
@@ -110,6 +122,21 @@ public class DefaultConfiguration {
                 throw new EdcRetrieverException(e);
             }
         });
+    }
+
+    @Bean
+    public EdcSubmodelFacade edcSubmodelFacade(final EdcSubmodelClient client) {
+        return new EdcSubmodelFacade(client);
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
+    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
+            final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
+            final EndpointDataReferenceStorage endpointDataReferenceStorage, final AsyncPollingService pollingService,
+            final RetryRegistry retryRegistry, final EDCCatalogFacade catalogFacade) {
+        return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
+                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade);
     }
 
     @Bean
