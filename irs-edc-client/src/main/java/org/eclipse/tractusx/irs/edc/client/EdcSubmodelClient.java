@@ -39,13 +39,17 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -129,7 +133,7 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         log.info("EDC Task '{}' took {} ms", stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
     }
 
-    private NegotiationResponse fetchNegotiationResponseWithFilter(final String connectorEndpoint, final String assetId)
+    private CatalogItem fetchCatalogItemWithFilter(final String connectorEndpoint, final String assetId)
             throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + connectorEndpoint);
@@ -137,23 +141,25 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final List<CatalogItem> catalog = catalogFacade.fetchCatalogByFilter(connectorEndpoint, NAMESPACE_EDC_ID,
                 assetId);
 
-        final CatalogItem catalogItem = catalog.stream()
-                                               .findFirst()
-                                               .orElseThrow(() -> new ItemNotFoundInCatalogException(connectorEndpoint,
-                                                       assetId));
-        return contractNegotiationService.negotiate(connectorEndpoint, catalogItem);
+        return catalog.stream()
+                      .findFirst()
+                      .orElseThrow(() -> new ItemNotFoundInCatalogException(connectorEndpoint, assetId));
     }
 
     private CompletableFuture<EdcNotificationResponse> sendNotificationAsync(final String contractAgreementId,
-            final EdcNotification<NotificationContent> notification, final StopWatch stopWatch) {
-
-        return pollingService.<EdcNotificationResponse>createJob()
-                             .action(() -> sendSubmodelNotification(contractAgreementId, notification, stopWatch))
-                             .timeToLive(config.getSubmodel().getRequestTtl())
-                             .description("waiting for submodel notification to be sent")
-                             .build()
-                             .schedule();
-
+            final EdcNotification<NotificationContent> notification, final StopWatch stopWatch)
+            throws TransferProcessException {
+        if (config.getControlplane().isEdrManagementEnabled()) {
+            return CompletableFuture.completedFuture(
+                    sendSubmodelNotificationWithManagedEdr(contractAgreementId, notification, stopWatch));
+        } else {
+            return pollingService.<EdcNotificationResponse>createJob()
+                                 .action(() -> sendSubmodelNotification(contractAgreementId, notification, stopWatch))
+                                 .timeToLive(config.getSubmodel().getRequestTtl())
+                                 .description("waiting for submodel notification to be sent")
+                                 .build()
+                                 .schedule();
+        }
     }
 
     private Optional<String> retrieveSubmodelData(final String submodelDataplaneUrl, final String contractAgreementId,
@@ -200,6 +206,19 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return Optional.empty();
     }
 
+    private EdcNotificationResponse sendSubmodelNotificationWithManagedEdr(final String contractAgreementId,
+            final EdcNotification<NotificationContent> notification, final StopWatch stopWatch)
+            throws TransferProcessException {
+        final EndpointDataReference ref = contractNegotiationService.getManagedEndpointDataReference(
+                contractAgreementId);
+
+        log.info("Sending dataReference to EDC data plane for contractAgreementId '{}'",
+                Masker.mask(contractAgreementId));
+        final EdcNotificationResponse response = edcDataPlaneClient.sendData(ref, notification);
+        stopWatchOnEdcTask(stopWatch);
+        return response;
+    }
+
     @Override
     public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint,
             final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
@@ -211,16 +230,39 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final var negotiationEndpoint = appendSuffix(connectorEndpoint,
                     config.getControlplane().getProviderSuffix());
             log.debug("Starting negotiation with EDC endpoint: '{}'", negotiationEndpoint);
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint,
-                    assetId);
-            return pollingService.<String>createJob()
-                                 .action(() -> retrieveSubmodelData(submodelDataplaneUrl,
-                                         negotiationResponse.getContractAgreementId(), stopWatch))
-                                 .timeToLive(config.getSubmodel().getRequestTtl())
-                                 .description("waiting for submodel retrieval")
-                                 .build()
-                                 .schedule();
+            final CatalogItem catalogItem = fetchCatalogItemWithFilter(negotiationEndpoint, assetId);
+            if (config.getControlplane().isEdrManagementEnabled()) {
+                return getSubmodelRawPayloadWithManagedEdr(negotiationEndpoint, catalogItem, submodelDataplaneUrl);
+            } else {
+                return getSubmodelRawPayloadWithEdrCallback(negotiationEndpoint, catalogItem, submodelDataplaneUrl,
+                        stopWatch);
+            }
         });
+    }
+
+    private CompletableFuture<String> getSubmodelRawPayloadWithEdrCallback(final String negotiationEndpoint,
+            final CatalogItem catalogItem, final String submodelDataplaneUrl, final StopWatch stopWatch)
+            throws EdcClientException {
+        final NegotiationResponse negotiationResponse = contractNegotiationService.negotiate(negotiationEndpoint,
+                catalogItem);
+
+        return pollingService.<String>createJob()
+                             .action(() -> retrieveSubmodelData(submodelDataplaneUrl,
+                                     negotiationResponse.getContractAgreementId(), stopWatch))
+                             .timeToLive(config.getSubmodel().getRequestTtl())
+                             .description("waiting for submodel retrieval")
+                             .build()
+                             .schedule();
+    }
+
+    private CompletableFuture<String> getSubmodelRawPayloadWithManagedEdr(final String negotiationEndpoint,
+            final CatalogItem catalogItem, final String submodelDataplaneUrl) throws EdcClientException {
+        final NegotiationResponse negotiationResponse = contractNegotiationService.negotiateWithEdrManagement(
+                negotiationEndpoint, catalogItem);
+        final EndpointDataReference edr = contractNegotiationService.getManagedEndpointDataReference(
+                negotiationResponse.getContractAgreementId());
+
+        return CompletableFuture.completedFuture(edcDataPlaneClient.getData(edr, submodelDataplaneUrl));
     }
 
     @Override
@@ -231,8 +273,10 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             stopWatch.start("Send EDC notification task, endpoint " + connectorEndpoint);
             final var negotiationEndpoint = appendSuffix(connectorEndpoint,
                     config.getControlplane().getProviderSuffix());
-            final NegotiationResponse negotiationResponse = fetchNegotiationResponseWithFilter(negotiationEndpoint,
-                    assetId);
+            final CatalogItem catalogItem = fetchCatalogItemWithFilter(negotiationEndpoint, assetId);
+            final NegotiationResponse negotiationResponse = config.getControlplane().isEdrManagementEnabled()
+                    ? contractNegotiationService.negotiateWithEdrManagement(negotiationEndpoint, catalogItem)
+                    : contractNegotiationService.negotiate(negotiationEndpoint, catalogItem);
 
             return sendNotificationAsync(negotiationResponse.getContractAgreementId(), notification, stopWatch);
         });
@@ -250,17 +294,38 @@ class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey,
                     filterValue);
 
-            final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
-                    items.stream().findFirst().orElseThrow());
-
-            return pollingService.<EndpointDataReference>createJob()
-                                 .action(() -> retrieveEndpointReference(response.getContractAgreementId(), stopWatch))
-                                 .timeToLive(config.getSubmodel().getRequestTtl())
-                                 .description("waiting for Endpoint Reference retrieval")
-                                 .build()
-                                 .schedule();
-
+            if (config.getControlplane().isEdrManagementEnabled()) {
+                return getManagedEndpointDataReference(providerWithSuffix, items);
+            } else {
+                return getEndpointDataReferenceWithCallback(providerWithSuffix, items, stopWatch);
+            }
         });
+    }
+
+    private CompletableFuture<EndpointDataReference> getEndpointDataReferenceWithCallback(
+            final String providerWithSuffix, final List<CatalogItem> items, final StopWatch stopWatch)
+            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
+        final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
+                items.stream().findFirst().orElseThrow());
+
+        return pollingService.<EndpointDataReference>createJob()
+                             .action(() -> retrieveEndpointReference(response.getContractAgreementId(), stopWatch))
+                             .timeToLive(config.getSubmodel().getRequestTtl())
+                             .description("waiting for Endpoint Reference retrieval")
+                             .build()
+                             .schedule();
+    }
+
+    @NotNull
+    private CompletableFuture<EndpointDataReference> getManagedEndpointDataReference(final String providerWithSuffix,
+            final List<CatalogItem> items)
+            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
+        final NegotiationResponse negotiationResponse = contractNegotiationService.negotiateWithEdrManagement(
+                providerWithSuffix, items.stream().findFirst().orElseThrow());
+        final EndpointDataReference edr = contractNegotiationService.getManagedEndpointDataReference(
+                negotiationResponse.getContractAgreementId());
+
+        return CompletableFuture.completedFuture(edr);
     }
 
     private String appendSuffix(final String endpointAddress, final String providerSuffix) {

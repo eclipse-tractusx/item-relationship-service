@@ -57,6 +57,8 @@ public class EdcConfiguration {
 
         private Duration requestTtl;
 
+        private boolean edrManagementEnabled;
+
         private ApiKeyConfig apiKey = new ApiKeyConfig();
 
         /**
@@ -67,6 +69,7 @@ public class EdcConfiguration {
             private String data;
             private String catalog;
             private String contractNegotiation;
+            private String edrManagement;
             private String transferProcess;
             private String stateSuffix;
 

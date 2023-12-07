@@ -33,6 +33,8 @@ import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.model.EndpointDataReferenceEntryResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
@@ -41,6 +43,7 @@ import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -58,6 +61,7 @@ import org.springframework.web.client.RestTemplate;
 public class EdcControlPlaneClient {
 
     public static final String STATUS_FINALIZED = "FINALIZED";
+    public static final String STATUS_NEGOTIATED = "NEGOTIATED";
     public static final String STATUS_COMPLETED = "COMPLETED";
     public static final String STATUS_STARTED = "STARTED";
     public static final String STATUS_ERROR = "ERROR";
@@ -94,7 +98,7 @@ public class EdcControlPlaneClient {
     }
 
     /* package */ Catalog getCatalog(final CatalogRequest requestBody) {
-        final var endpoint = config.getControlplane().getEndpoint();
+        final var endpoint = getControlplaneEndpoint();
         final var url = endpoint.getData() + endpoint.getCatalog();
 
         final String requestJson = edcTransformer.transformCatalogRequestToJson(requestBody).toString();
@@ -129,7 +133,7 @@ public class EdcControlPlaneClient {
     }
 
     /* package */ Response startNegotiations(final NegotiationRequest request) {
-        final var endpoint = config.getControlplane().getEndpoint();
+        final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getContractNegotiation();
 
         final String jsonObject = edcTransformer.transformNegotiationRequestToJson(request).toString();
@@ -174,7 +178,7 @@ public class EdcControlPlaneClient {
 
     private NegotiationState getContractNegotiationState(final Response negotiationId,
             final HttpEntity<Object> objectHttpEntity) {
-        final var endpoint = config.getControlplane().getEndpoint();
+        final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId()
                 + endpoint.getStateSuffix();
 
@@ -183,7 +187,7 @@ public class EdcControlPlaneClient {
 
     private NegotiationResponse getContractNegotiationResponse(final Response negotiationId,
             final HttpEntity<Object> objectHttpEntity) {
-        final var endpoint = config.getControlplane().getEndpoint();
+        final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getContractNegotiation() + "/" + negotiationId.getResponseId();
 
         return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, NegotiationResponse.class).getBody();
@@ -191,7 +195,7 @@ public class EdcControlPlaneClient {
 
     /* package */ Response startTransferProcess(final TransferProcessRequest request) {
         final String jsonObject = edcTransformer.transformTransferProcessRequestToJson(request).toString();
-        final var endpoint = config.getControlplane().getEndpoint();
+        final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getTransferProcess();
         return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
                               .getBody();
@@ -235,7 +239,7 @@ public class EdcControlPlaneClient {
 
     private NegotiationState getTransferProcessState(final Response transferProcessId,
             final HttpEntity<Object> objectHttpEntity) {
-        final var endpoint = config.getControlplane().getEndpoint();
+        final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getResponseId()
                 + endpoint.getStateSuffix();
 
@@ -244,7 +248,7 @@ public class EdcControlPlaneClient {
 
     private TransferProcessResponse getTransferProcessResponse(final Response transferProcessId,
             final HttpEntity<Object> objectHttpEntity) {
-        final var endpoint = config.getControlplane().getEndpoint();
+        final var endpoint = getControlplaneEndpoint();
         final String url = endpoint.getData() + endpoint.getTransferProcess() + "/" + transferProcessId.getResponseId();
         return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, TransferProcessResponse.class).getBody();
     }
@@ -260,4 +264,68 @@ public class EdcControlPlaneClient {
         return headers;
     }
 
+    /* package */ Response startEDRNegotiations(final NegotiationRequest request) {
+        final var endpoint = getControlplaneEndpoint();
+        final String url = endpoint.getData() + endpoint.getEdrManagement();
+
+        final String jsonObject = edcTransformer.transformNegotiationRequestToJson(request).toString();
+
+        return edcRestTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(jsonObject, headers()), Response.class)
+                              .getBody();
+    }
+
+    private EdcConfiguration.ControlplaneConfig.EndpointConfig getControlplaneEndpoint() {
+        return config.getControlplane().getEndpoint();
+    }
+
+    public CompletableFuture<EndpointDataReferenceEntryResponse> getEndpointDataReferenceEntry(
+            final String contractAgreementId) {
+        final HttpEntity<Object> objectHttpEntity = new HttpEntity<>(null, headers());
+
+        return pollingService.<EndpointDataReferenceEntryResponse>createJob()
+                             .action(() -> {
+                                 log.info("Check EDR status");
+                                 final var edrEntries = getEndpointDataReferenceEntryState(contractAgreementId,
+                                         objectHttpEntity);
+
+                                 if (edrEntries != null && !edrEntries.isEmpty()) {
+                                     final var edrEntry = edrEntries.stream().findFirst().get();
+                                     return switch (edrEntry.getState()) {
+                                         case STATUS_NEGOTIATED -> Optional.of(edrEntry);
+                                         case STATUS_ERROR -> throw new IllegalStateException(
+                                                 "EDR entry for asset id " + edrEntry.getAssetId()
+                                                         + " is in state ERROR");
+                                         case STATUS_TERMINATED -> throw new IllegalStateException(
+                                                 "EDR entry for asset id " + edrEntry.getAssetId()
+                                                         + " is in state TERMINATED");
+                                         default -> Optional.empty();
+                                     };
+                                 }
+                                 return Optional.empty();
+
+                             })
+                             .description("wait for EDR readiness")
+                             .timeToLive(config.getControlplane().getRequestTtl())
+                             .build()
+                             .schedule();
+
+    }
+
+    private List<EndpointDataReferenceEntryResponse> getEndpointDataReferenceEntryState(
+            final String contractAgreementId, final HttpEntity<Object> objectHttpEntity) {
+        final var endpoint = getControlplaneEndpoint();
+        final String url =
+                endpoint.getData() + endpoint.getEdrManagement() + "?contractAgreementId=" + contractAgreementId;
+
+        return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity,
+                new ParameterizedTypeReference<List<EndpointDataReferenceEntryResponse>>() {
+                }).getBody();
+    }
+
+    public EndpointDataReference getEndpointDataReference(final String transferProcessId) {
+        final var endpoint = getControlplaneEndpoint();
+        final String url = endpoint.getData() + endpoint.getEdrManagement() + "/" + transferProcessId;
+        return edcRestTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(null, headers()),
+                EndpointDataReference.class).getBody();
+    }
 }

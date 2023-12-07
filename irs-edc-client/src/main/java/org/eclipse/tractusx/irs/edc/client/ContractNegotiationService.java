@@ -32,11 +32,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.types.domain.DataAddress;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
+import org.eclipse.tractusx.irs.edc.client.model.EndpointDataReferenceEntryResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.Response;
@@ -147,6 +149,52 @@ public class ContractNegotiationService {
             final CompletableFuture<TransferProcessResponse> transferProcessResponse) throws TransferProcessException {
         try {
             return transferProcessResponse.get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new TransferProcessException(e);
+        }
+        return null;
+    }
+
+    public NegotiationResponse negotiateWithEdrManagement(final String providerConnectorUrl,
+            final CatalogItem catalogItem)
+            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
+        if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
+            log.info("Policy was not allowed, canceling negotiation.");
+            throw new UsagePolicyException(catalogItem.getItemId());
+        }
+
+        final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
+                catalogItem);
+
+        final Response negotiationId = edcControlPlaneClient.startEDRNegotiations(negotiationRequest);
+
+        log.info("Fetch negotiation id: {}", negotiationId.getResponseId());
+
+        final CompletableFuture<NegotiationResponse> responseFuture = edcControlPlaneClient.getNegotiationResult(
+                negotiationId);
+        return Objects.requireNonNull(getNegotiationResponse(responseFuture));
+    }
+
+    public EndpointDataReference getManagedEndpointDataReference(final String contractAgreementId)
+            throws TransferProcessException {
+        final CompletableFuture<EndpointDataReferenceEntryResponse> edrEntryFuture = edcControlPlaneClient.getEndpointDataReferenceEntry(
+                contractAgreementId);
+
+        final EndpointDataReferenceEntryResponse edrEntryResponse = Objects.requireNonNull(
+                getEndpointDataReferenceEntryResponse(edrEntryFuture));
+
+        final EndpointDataReference edr = edcControlPlaneClient.getEndpointDataReference(edrEntryResponse.getTransferProcessId());
+        log.info("Got EDR with id: {}", edr.getId());
+        return edr;
+    }
+
+    private EndpointDataReferenceEntryResponse getEndpointDataReferenceEntryResponse(
+            final CompletableFuture<EndpointDataReferenceEntryResponse> edrEntryFuture)
+            throws TransferProcessException {
+        try {
+            return edrEntryFuture.get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (ExecutionException e) {

@@ -133,6 +133,7 @@ irs-edc-client:
     endpoint:
       data: ${EDC_CONTROLPLANE_ENDPOINT_DATA:} # URL of the EDC consumer controlplane data endpoint
       catalog: ${EDC_CONTROLPLANE_ENDPOINT_CATALOG:/v2/catalog/request} # EDC consumer controlplane catalog path
+      edr-management: ${EDC_CONTROLPLANE_ENDPOINT_EDRS:/edrs} # EDC consumer controlplane EDR management path
       contract-negotiation: ${EDC_CONTROLPLANE_ENDPOINT_CONTRACT_NEGOTIATION:/v2/contractnegotiations} # EDC consumer controlplane contract negotiation path
       transfer-process: ${EDC_CONTROLPLANE_ENDPOINT_TRANSFER_PROCESS:/v2/transferprocesses} # EDC consumer controlplane transfer process path
       state-suffix: ${EDC_CONTROLPLANE_ENDPOINT_DATA:/state} # Path of the state suffix for contract negotiation and transfer process
@@ -145,6 +146,7 @@ irs-edc-client:
     datareference:
       storage:
         duration: PT1H # Time after which stored data references will be cleaned up, ISO 8601 Duration
+    edr-management-enabled: ${EDC_CONTROLPLANE_USE_EDR_MANAGEMENT:false} # Whether to make use of the EDC EDR management API to avoid callbacks
 
   submodel:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M} # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
