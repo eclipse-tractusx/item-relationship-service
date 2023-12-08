@@ -79,6 +79,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_SPECIFIED)
+                                                                      .hasAlternatives(Boolean.FALSE)
                                                                       .assembledOn(childPart.getCreatedOn())
                                                                       .lastModifiedOn(childPart.getLastModifiedOn());
 

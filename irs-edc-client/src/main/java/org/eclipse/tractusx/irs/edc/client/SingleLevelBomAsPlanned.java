@@ -78,6 +78,7 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_PLANNED)
+                                                                      .hasAlternatives(Boolean.FALSE)
                                                                       .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
 

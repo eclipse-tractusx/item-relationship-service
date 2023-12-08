@@ -56,20 +56,26 @@ public class EdcRegistration {
     private final String essBaseUrl;
     private final String apiKeyHeader;
     private final String apiKeySecret;
-    private final String managementPath;
+    private final String assetsPath;
+    private final String policydefinitionsPath;
+    private final String contractdefinitionsPath;
 
     public EdcRegistration(@Qualifier("noErrorRestTemplate") final RestTemplate restTemplate,
             @Value("${ess.localEdcEndpoint}") final String edcProviderUrl,
             @Value("${ess.irs.url}") final String essBaseUrl,
             @Value("${irs-edc-client.controlplane.api-key.header}") final String apiKeyHeader,
             @Value("${irs-edc-client.controlplane.api-key.secret}") final String apiKeySecret,
-            @Value("${ess.managementPath}") final String managementPath) {
+            @Value("${ess.assetsPath}") final String assetsPath,
+            @Value("${ess.policydefinitionsPath}") final String policydefinitionsPath,
+            @Value("${ess.contractdefinitionsPath}") final String contractdefinitionsPath) {
         this.restTemplate = restTemplate;
         this.edcProviderUrl = edcProviderUrl;
         this.essBaseUrl = essBaseUrl;
         this.apiKeyHeader = apiKeyHeader;
         this.apiKeySecret = apiKeySecret;
-        this.managementPath = managementPath;
+        this.assetsPath = assetsPath;
+        this.policydefinitionsPath = policydefinitionsPath;
+        this.contractdefinitionsPath = contractdefinitionsPath;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -107,14 +113,12 @@ public class EdcRegistration {
         final var body = """
                 {
                     "@context": {},
-                    "asset": {
-                        "@id": "%s",
-                        "properties": {
-                            "description": "ESS notification endpoint",
-                            "contenttype": "application/json",
-                            "notificationtype":"%s",
-                            "notificationmethod": "receive"
-                        }
+                    "@id": "%s",
+                    "properties": {
+                        "description": "ESS notification endpoint",
+                        "contenttype": "application/json",
+                        "notificationtype":"%s",
+                        "notificationmethod": "receive"
                     },
                     "dataAddress": {
                         "baseUrl": "%s",
@@ -124,7 +128,7 @@ public class EdcRegistration {
                     }
                 }
                 """.formatted(assetId, notificationType, essBaseUrl + path);
-        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/assets", HttpMethod.POST,
+        final var entity = restTemplate.exchange(edcProviderUrl + assetsPath, HttpMethod.POST,
                 toEntity(body), String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
@@ -165,7 +169,7 @@ public class EdcRegistration {
                       }
                   }
                 """.formatted(policyId);
-        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/policydefinitions",
+        final var entity = restTemplate.exchange(edcProviderUrl + policydefinitionsPath,
                 HttpMethod.POST, toEntity(body), String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
@@ -190,7 +194,7 @@ public class EdcRegistration {
                 }
                 """.formatted(contractId, contractId, assetId);
 
-        final var entity = restTemplate.exchange(edcProviderUrl + managementPath + "/contractdefinitions",
+        final var entity = restTemplate.exchange(edcProviderUrl + contractdefinitionsPath,
                 HttpMethod.POST, toEntity(body), String.class);
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification contract definition registered successfully.");
@@ -215,7 +219,7 @@ public class EdcRegistration {
 
     private boolean assetIsNotRegisteredYet(final String assetId) {
         if (restTemplate != null && StringUtils.isNotBlank(edcProviderUrl)) {
-            final var url = edcProviderUrl + managementPath + "/assets/request";
+            final var url = edcProviderUrl + assetsPath + "/request";
             log.info("Requesting asset from EDC provider with url {}", url);
             final String filter = """
                     {

@@ -73,11 +73,13 @@ class SingleLevelBomAsBuilt implements RelationshipSubmodel {
         private ZonedDateTime lastModifiedOn;
         private String catenaXId;
         private String businessPartner;
+        private boolean hasAlternatives;
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)
+                                                                      .hasAlternatives(this.hasAlternatives)
                                                                       .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
