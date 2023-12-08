@@ -111,14 +111,11 @@ def relationships_are_not_empty(response):
 
 
 def submodels_are_empty(response):
-    print(response.json().get("submodels"))
     print("Check if submodels are empty", len(response.json().get("submodels")))
     assert len(response.json().get("submodels")) == 0
 
 
 def submodels_are_not_empty(response):
-    print(response)
-    print(response.json().get("submodels"))
     print("Check if submodels are not empty", len(response.json().get("submodels")))
     assert len(response.json().get("submodels")) != 0
 
