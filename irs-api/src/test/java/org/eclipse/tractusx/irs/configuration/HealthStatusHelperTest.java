@@ -21,23 +21,28 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+
 package org.eclipse.tractusx.irs.configuration;
 
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
+import java.util.List;
 
-/**
- * Config values for external dependencies health URLs
- */
-@Component
-@ConfigurationProperties(prefix = DependenciesHealthConfiguration.MANAGEMENT_HEALTH_DEPENDENCIES)
-@Data
-public class DependenciesHealthConfiguration {
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.springframework.boot.actuate.health.Status;
 
-    public static final String MANAGEMENT_HEALTH_DEPENDENCIES = "management.health.dependencies";
+class HealthStatusHelperTest {
 
-    private Map<String, String> urls;
+    public static List<Arguments> healthStatusToNumeric() {
+        return List.of(Arguments.of(Status.UP, 3), Arguments.of(Status.OUT_OF_SERVICE, 2), Arguments.of(Status.DOWN, 1),
+                Arguments.of(Status.UNKNOWN, 0), Arguments.of(null, 0));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void healthStatusToNumeric(final Status status, final int numericStatus) {
+        assertThat(HealthStatusHelper.healthStatustoNumeric(status)).isEqualTo(numericStatus);
+    }
 }

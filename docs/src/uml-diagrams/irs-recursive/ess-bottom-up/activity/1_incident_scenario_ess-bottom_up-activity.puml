@@ -30,10 +30,12 @@ endif
 
 : Extract and collect globalAssetIds for own twins (AsPlanned);
 : Request batch call for globalAssetIds
-POST /ess/customers/investigations/orders;
+POST /irs/ess/orders;
+: Call POST /ess/customer/investigation for each globalAsset;
+
 
 : Filter for incident BPNS
-in PartSiteInformationAsPlanned;
+in PartSiteInformationAsPlanned on own parts;
 
 if(!twin.contains(incidentBpns)) then (no)
     : skip twin;
@@ -41,7 +43,7 @@ else (yes)
     : add twin;
 endif
 
-: ValidityPeriodChecker in own aas;
+: ValidityPeriodChecker in own PartAsPlanned;
 if(timestamp is in validity period) then (yes)
 note left
     PartAsPlanned.validityPeriod.validFrom
@@ -58,7 +60,25 @@ endif
  tier level upwards;
 
 : aggregateBPNLs Aggregate bpns numbers for each bpnl;
-: increment hops count for each twin ;
+      note left
+            {
+                customers : [
+                    {
+                        businessPartnerNumberLegalEntity : <bpnl>,
+                        "customerParts" [
+                            {
+                                globalAssetId:   <globalAssetId>,
+                                sites : [
+                                    {<bpns>},
+                                ],
+                             }, ...
+                        ]
+                    },
+                ]
+            }
+        end note
 stop
+
+: Request for results "ESSCustomerNotificationsSubmodel ";
 
 @enduml

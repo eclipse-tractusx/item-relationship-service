@@ -329,7 +329,7 @@ class EdcTransformerTest {
         final String providerConnector = "https://provider.edc/api/v1/dsp";
         final String protocol = "dataspace-protocol-http";
         final CatalogRequest catalogRequest = CatalogRequest.Builder.newInstance()
-                                                                    .providerUrl(providerConnector)
+                                                                    .counterPartyAddress(providerConnector)
                                                                     .protocol(protocol)
                                                                     .build();
         final JsonObject requestJson = edcTransformer.transformCatalogRequestToJson(catalogRequest);

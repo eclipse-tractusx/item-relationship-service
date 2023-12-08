@@ -6,10 +6,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- Updated edc dependencies to 0.2.1
+- Update deprecated field `providerUrl` to `counterPartyAddress` in EDC catalog request
+- Update ESS EDC notification creation asset endpoint to v3
+
+
+## [4.2.0] - 2023-11-28
+### Changed
 - Changed default behaviour of IRS - when aspects list is not provided or empty in request body, IRS will not collect any submodel now (previously default aspects were collected).
 - ESS
   - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
   - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
+- Exported health endpoints to prometheus (see HealthMetricsExportConfiguration,
+  DependenciesHealthMetricsExportConfiguration) and
+  added [system health dashboard](charts/irs-helm/dashboards/system-health-dashboard.json) in order to visualize health
+  metrics of IRS and its dependencies
+
+### Fixed
+- Fixed incorrect passing of incidentBPNS for ESS Orders
 
 ### Known knowns
 - [#253] Cancelation of order jobs is not working stable
@@ -52,10 +66,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
               token-uri:
   ```
 - Update IRS API Swagger documentation to match AAS 3.0.0
-  
+
 ### Fixed
 - IRS will return 206 Http status from GET /jobs/{id} endpoint if Job is still running
-  
+
+## [4.0.2] - 2023-11-20
+### Changed
+- Remove `apk upgrade --no-cache libssl3 libcrypto3` in Docker base image to be TRG compliant
+
 ## [4.0.1] - 2023-11-10
 ### Changed
 - Added state `STARTED` as acceptable state to complete the EDC transfer process to be compatible with EDC 0.5.1
@@ -455,8 +473,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...HEAD
-[4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.1.0
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.2.0...HEAD
+[4.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...4.2.0
+[4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.2...4.1.0
+[4.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.4...4.0.0
 [3.5.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...3.5.4
