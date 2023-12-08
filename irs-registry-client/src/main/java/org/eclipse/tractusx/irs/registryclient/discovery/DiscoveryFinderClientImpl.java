@@ -26,12 +26,16 @@ package org.eclipse.tractusx.irs.registryclient.discovery;
 import java.util.List;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.client.RestTemplate;
 
 /**
- *
+ * Discovery finder client implementation.
  */
+@Slf4j
 public class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
 
     public static final String DISCOVERY_ENDPOINTS_CACHE = "discovery_endpoints_cache";
@@ -50,6 +54,12 @@ public class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
     @Cacheable(value = DISCOVERY_ENDPOINTS_CACHE)
     public DiscoveryResponse findDiscoveryEndpoints(final DiscoveryFinderRequest request) {
         return restTemplate.postForObject(discoveryFinderUrl, request, DiscoveryResponse.class);
+    }
+
+    @CacheEvict(value = DISCOVERY_ENDPOINTS_CACHE, allEntries = true)
+    @Scheduled(fixedRateString = "${irs-edc-client.discoveryFinderClient.cacheTTL}")
+    public void evictDiscoveryEndpointsCacheValues() {
+        log.debug("Clearing \"{}\" cache.", DISCOVERY_ENDPOINTS_CACHE);
     }
 
     @Override

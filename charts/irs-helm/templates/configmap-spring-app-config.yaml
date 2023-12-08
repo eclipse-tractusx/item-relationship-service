@@ -114,6 +114,8 @@ data:
             operator: {{ .operator | quote }}
             rightOperand: {{ .rightOperand | quote }}
           {{- end }}
+      discoveryFinderClient:
+        cacheTTL: { { .Values.edc.discoveryFinderClient.cacheTTL | quote } }
       connectorEndpointService:
         cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | quote }}
     ess:

@@ -14,7 +14,7 @@ include::irs-spring-config.adoc[leveloffset=+1]
 
 [source,yaml]
 ----
-include::../../../../charts/irs-helm/values.yaml[lines=104..287]
+include::../../../../charts/irs-helm/values.yaml[lines=104..302]
 ----
 
 <1> Use this to enable or disable the monitoring components
@@ -74,8 +74,15 @@ The hostname where Grafana will be made available.
 The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.
 
+==== <discoveryFinderClient.cacheTTL>
+
+When IRS calls the DTR discovery finder URL for BPNL's there is a cache mechanism between them, to improve performance.
+This parameter define how long cache is maintained before it is cleared.
+Data is in ISO 8601.
+
 ==== <connectorEndpointService.cacheTTL>
-When IRS calls EDC Discovery Service to fetch endpoints for BPNL's there is a cache mechanism between them, to improve performance.
+
+When IRS calls EDC Discovery Service to fetch connector endpoints for BPNL's there is a cache mechanism between them, to improve performance.
 This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.
 
 == OAuth2 Configuration

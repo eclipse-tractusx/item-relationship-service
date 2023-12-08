@@ -66,7 +66,7 @@ class DiscoveryFinderClientTest {
     private CacheManager cacheManager;
 
     @Test
-    void findDiscoveryEndpoints_WhenCalled_ShouldCacheResults() {
+    void findDiscoveryEndpoints_WhenCalled_ResultsShouldBeCached() {
 
         // GIVEN
         final var request = new DiscoveryFinderRequest(List.of("bpn"));
@@ -82,7 +82,7 @@ class DiscoveryFinderClientTest {
 
         // and the response must be cached
         {
-            final var cachedResponse = getDiscoveryEndpointsCacheValue(request);
+            final var cachedResponse = requireDiscoveryEndpointsCacheValue(request);
             final var cachedAddresses = extractEndpointAddresses(cachedResponse);
             final var returnedAddresses = extractEndpointAddresses(actualResult);
             final var originalAddresses = extractEndpointAddresses(originalResponse);
@@ -97,25 +97,43 @@ class DiscoveryFinderClientTest {
         }
     }
 
+    @Test
+    void evictDiscoveryEndpointsCacheValues_WhenCalled_ShouldEvictCache() {
+
+        // GIVEN
+        final var request = new DiscoveryFinderRequest(List.of("bpn"));
+        simulateFindDiscoveryEndpointsRestRequest(request, MOCKED_DISCOVERY_RESPONSE);
+        testee.findDiscoveryEndpoints(request);
+        requireDiscoveryEndpointsCacheValue(request);
+
+        // WHEN
+        ((DiscoveryFinderClientImpl) testee).evictDiscoveryEndpointsCacheValues();
+
+        // THEN
+        {
+            final var cache = getDiscoveryEndpointsCache();
+            final var cacheValue = cache.get(request);
+            assertThat(cacheValue).isNull();
+        }
+    }
+
     private void simulateFindDiscoveryEndpointsRestRequest(final DiscoveryFinderRequest discoveryFinderRequest,
             final DiscoveryResponse discoveryResponse) {
         when(restTemplateMock.postForObject("", discoveryFinderRequest, DiscoveryResponse.class)).thenReturn(
                 discoveryResponse);
     }
 
-    private DiscoveryResponse getDiscoveryEndpointsCacheValue(final DiscoveryFinderRequest request) {
+    private DiscoveryResponse requireDiscoveryEndpointsCacheValue(final DiscoveryFinderRequest request) {
         final var cache = getDiscoveryEndpointsCache();
-        return getCacheValue(cache, request);
+        final var cacheValue = cache.get(request);
+        assertThat(cacheValue).isNotNull();
+        final DiscoveryResponse discoveryResponse = (DiscoveryResponse) cacheValue.get();
+        assertThat(discoveryResponse).isNotNull();
+        return discoveryResponse;
     }
 
     private Cache getDiscoveryEndpointsCache() {
         return cacheManager.getCache(DiscoveryFinderClientImpl.DISCOVERY_ENDPOINTS_CACHE);
-    }
-
-    private DiscoveryResponse getCacheValue(final Cache cache, final DiscoveryFinderRequest cacheKey) {
-        final var cacheValue = cache.get(cacheKey);
-        assertThat(cacheValue).isNotNull();
-        return (DiscoveryResponse) cacheValue.get();
     }
 
     private List<String> extractEndpointAddresses(final DiscoveryResponse discoveryResponse) {
