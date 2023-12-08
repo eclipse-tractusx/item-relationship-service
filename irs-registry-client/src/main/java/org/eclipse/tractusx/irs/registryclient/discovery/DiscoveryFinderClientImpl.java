@@ -51,7 +51,7 @@ public class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
 
     @Override
     @Retry(name = "registry")
-    @Cacheable(value = DISCOVERY_ENDPOINTS_CACHE)
+    @Cacheable(DISCOVERY_ENDPOINTS_CACHE)
     public DiscoveryResponse findDiscoveryEndpoints(final DiscoveryFinderRequest request) {
         return restTemplate.postForObject(discoveryFinderUrl, request, DiscoveryResponse.class);
     }
