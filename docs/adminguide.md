@@ -19,7 +19,7 @@ The IRS Helm repository can be found here:
 Use the latest release of the "irs-helm" chart.
 It contains all required dependencies.
 
-If you also want to set up your own EDC consumer, use the "irs-edc-consumer" chart.
+If you also want to set up your own EDC consumer, use the [tractusx-connector](https://github.com/eclipse-tractusx/tractusx-edc/tree/main/charts/tractusx-connector) chart.
 
 Supply the required configuration properties (see chapter [Configuration](configuration.adoc#_configuration)) in a values.yaml file or override the settings directly.
 
@@ -41,10 +41,10 @@ Create a new Helm chart and use the IRS as a dependency.
 dependencies:
   - name: irs-helm
     repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 5.x.x
-  - name: irs-edc-consumer # optional
-    repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 1.x.x
+    version: 6.x.x
+  - name: tractusx-connector # optional
+    repository: https://eclipse-tractusx.github.io/tractusx-edc
+    version: 0.5.x
 
 ```
 
@@ -288,8 +288,10 @@ bpdm:
 # ESS Module specific properties
 ess:
   localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
-  localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
-  managementPath: ${EDC_MANAGEMENT_PATH:/management/v2} # EDC management API path - used for notification asset creation
+  localEdcEndpoint: ${ESS_EDC_URL:} # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
+  assetsPath: ${EDC_MANAGEMENT_PATH:/management/v3/assets} # EDC management API "assets" path - used for notification asset creation
+  policydefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/policydefinitions} # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/contractdefinitions} # EDC management API "contractdefinitions" path - used for notification contract definitions creation
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
@@ -370,8 +372,6 @@ portal:
     clientId:  # <portal-client-id>
     clientSecret:  # <portal-client-secret>
 edc:
-  provider:
-    host:  # EDC Provider Host URL
   controlplane:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
@@ -419,9 +419,13 @@ discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:
+  edc:
+    host:  # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
   mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
   mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
-  managementPath: "/management/v2"  # EDC management API path - used for notification asset creation
+  assetsPath: /management/v3/assets  # EDC management API "assets" path - used for notification asset creation
+  policydefinitionsPath: /management/v2/policydefinitions  # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: /management/v2/contractdefinitions  # EDC management API "contractdefinitions" path - used for notification contract definitions creation
 
 oauth:
   resourceClaim: "resource_access"  # Name of the JWT claim for roles
@@ -494,8 +498,6 @@ prometheus:
       metrics_path: '/actuator/prometheus'
       scrape_interval: 5s
       static_configs:
-        - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
-
 ```
 
 1. Use this to enable or disable the monitoring components

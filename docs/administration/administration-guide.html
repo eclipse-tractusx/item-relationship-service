@@ -724,7 +724,7 @@ pre.rouge {
 It contains all required dependencies.</p>
 </div>
 <div class="paragraph">
-<p>If you also want to set up your own EDC consumer, use the "irs-edc-consumer" chart.</p>
+<p>If you also want to set up your own EDC consumer, use the <a href="https://github.com/eclipse-tractusx/tractusx-edc/tree/main/charts/tractusx-connector">tractusx-connector</a> chart.</p>
 </div>
 <div class="paragraph">
 <p>Supply the required configuration properties (see chapter <a href="#_configuration">Configuration</a>) in a values.yaml file or override the settings directly.</p>
@@ -758,10 +758,10 @@ It contains all required dependencies.</p>
 <pre class="rouge highlight"><code data-lang="yaml"><span class="na">dependencies</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">irs-helm</span>
     <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/item-relationship-service</span>
-    <span class="na">version</span><span class="pi">:</span> <span class="s">5.x.x</span>
-  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">irs-edc-consumer</span> <span class="c1"># optional</span>
-    <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/item-relationship-service</span>
-    <span class="na">version</span><span class="pi">:</span> <span class="s">1.x.x</span></code></pre>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">6.x.x</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tractusx-connector</span> <span class="c1"># optional</span>
+    <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/tractusx-edc</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">0.5.x</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1014,8 +1014,10 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <span class="c1"># ESS Module specific properties</span>
 <span class="na">ess</span><span class="pi">:</span>
   <span class="na">localBpn</span><span class="pi">:</span> <span class="s">${ESS_LOCAL_BPN:}</span> <span class="c1"># BPN value of product - used during EDC notification communication</span>
-  <span class="na">localEdcEndpoint</span><span class="pi">:</span> <span class="s">${EDC_PROVIDER_URL:}</span> <span class="c1"># EDC Provider Url - used during EDC notification communication</span>
-  <span class="na">managementPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2}</span> <span class="c1"># EDC management API path - used for notification asset creation</span>
+  <span class="na">localEdcEndpoint</span><span class="pi">:</span> <span class="s">${ESS_EDC_URL:}</span> <span class="c1"># EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications</span>
+  <span class="na">assetsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v3/assets}</span> <span class="c1"># EDC management API "assets" path - used for notification asset creation</span>
+  <span class="na">policydefinitionsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2/policydefinitions}</span> <span class="c1"># EDC management API "policydefinitions" path - used for notification policy definition creation</span>
+  <span class="na">contractdefinitionsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2/contractdefinitions}</span> <span class="c1"># EDC management API "contractdefinitions" path - used for notification contract definitions creation</span>
   <span class="na">irs</span><span class="pi">:</span>
     <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
   <span class="na">discovery</span><span class="pi">:</span>
@@ -1098,8 +1100,6 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">clientId</span><span class="pi">:</span>  <span class="c1"># &lt;portal-client-id&gt;</span>
     <span class="na">clientSecret</span><span class="pi">:</span>  <span class="c1"># &lt;portal-client-secret&gt;</span>
 <span class="na">edc</span><span class="pi">:</span>
-  <span class="na">provider</span><span class="pi">:</span>
-    <span class="na">host</span><span class="pi">:</span>  <span class="c1"># EDC Provider Host URL</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">endpoint</span><span class="pi">:</span>
       <span class="na">data</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>  <span class="c1"># &lt;edc-controlplane-endpoint-data&gt;</span>
@@ -1147,9 +1147,13 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span>  <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
 
 <span class="na">ess</span><span class="pi">:</span>
+  <span class="na">edc</span><span class="pi">:</span>
+    <span class="na">host</span><span class="pi">:</span>  <span class="c1"># EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications</span>
   <span class="na">mockEdcResult</span><span class="pi">:</span>  <span class="c1"># Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN</span>
   <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span>  <span class="c1"># List of BPNs for which the special, mocked notification asset should be used</span>
-  <span class="na">managementPath</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/management/v2"</span>  <span class="c1"># EDC management API path - used for notification asset creation</span>
+  <span class="na">assetsPath</span><span class="pi">:</span> <span class="s">/management/v3/assets</span>  <span class="c1"># EDC management API "assets" path - used for notification asset creation</span>
+  <span class="na">policydefinitionsPath</span><span class="pi">:</span> <span class="s">/management/v2/policydefinitions</span>  <span class="c1"># EDC management API "policydefinitions" path - used for notification policy definition creation</span>
+  <span class="na">contractdefinitionsPath</span><span class="pi">:</span> <span class="s">/management/v2/contractdefinitions</span>  <span class="c1"># EDC management API "contractdefinitions" path - used for notification contract definitions creation</span>
 
 <span class="na">oauth</span><span class="pi">:</span>
   <span class="na">resourceClaim</span><span class="pi">:</span> <span class="s2">"</span><span class="s">resource_access"</span>  <span class="c1"># Name of the JWT claim for roles</span>
@@ -1221,8 +1225,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="s">- job_name: 'spring-actuator'</span>
       <span class="s">metrics_path: '/actuator/prometheus'</span>
       <span class="s">scrape_interval: 5s</span>
-      <span class="s">static_configs:</span>
-        <span class="s">- targets: [ '{{ .Release.Name }}-irs-helm:4004' ]</span></code></pre>
+      <span class="s">static_configs:</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1541,7 +1544,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 <h2 id="_notice">NOTICE</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This work is licensed under the [Apache-2.0](<a href="https://www.apache.org/licenses/LICENSE-2.0" class="bare">https://www.apache.org/licenses/LICENSE-2.0</a>).</p>
+<p>This work is licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1573,7 +1576,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-28 16:07:07 UTC
+Last updated 2023-12-08 12:23:24 UTC
 </div>
 </div>
 </body>

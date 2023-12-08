@@ -444,36 +444,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#_irs_iterative">IRS Iterative</a></li>
-<li><a href="#_irs_recursive">IRS Recursive</a>
-<ul class="sectlevel2">
-<li><a href="#_use_case_ess_environmental_and_social_standards_top_down_approach">Use Case: ESS (Environmental and Social Standards) Top-Down approach</a></li>
-</ul>
-</li>
-<li><a href="#_use_case_ess_environmental_and_social_standards_top_down_approach_2">Use Case: ESS (Environmental and Social Standards) Top-Down Approach</a>
-<ul class="sectlevel2">
-<li><a href="#_specification">Specification</a></li>
-<li><a href="#_overall_flow">Overall flow</a></li>
-<li><a href="#_flow_on_company_level">Flow on company level</a></li>
-<li><a href="#_application_functionality_overview">Application Functionality Overview</a></li>
-</ul>
-</li>
+<li><a href="#_irs_recursive">IRS Recursive</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div id="preamble">
-<div class="sectionbody">
-<div class="paragraph">
-<p>This section covers the main processes of the IRS and explains how data is transferred and processed when a job is executed.</p>
-</div>
-<div class="paragraph">
-<p>Please see the subpages for the relevant scenarios:</p>
-</div>
-</div>
-</div>
 <div class="sect1">
 <h2 id="_irs_iterative">IRS Iterative</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>This section describes the iterative flow, the main processes of the IRS, and explains how data is transferred and processed when a job is executed.</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -502,307 +483,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.</p>
 </div>
-<div class="sect2">
-<h3 id="_use_case_ess_environmental_and_social_standards_top_down_approach">Use Case: ESS (Environmental and Social Standards) Top-Down approach</h3>
-
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_use_case_ess_environmental_and_social_standards_top_down_approach_2">Use Case: ESS (Environmental and Social Standards) Top-Down Approach</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>With the entry into force of the German Supply Chain Due Diligence Act as from January 1st, 2023, German companies are obliged to implement the corresponding requirements of this law.
-In addition, the following European directives on this subject have also been adopted: EU regulation 2018/858. This regulation is legally binding to all EU member states.</p>
-</div>
-<div class="sect2">
-<h3 id="_specification">Specification</h3>
-<div class="paragraph">
-<p>This component enables data providers to provide the BoM as planned aspect models via the Catena-X defined solution stack (i.e. EDC).
-The BoM as planned aspect models consists of three aspect models:</p>
-</div>
 <div class="ulist">
 <ul>
 <li>
-<p>PartAsPlanned - Masterdata of a Part Type incl. location related data (e.g. production sites)</p>
+<p><a href="ess-top-down/ess-top-down.html">Use Case: ESS (Environmental and Social Standards) Top-Down approach</a></p>
 </li>
 <li>
-<p>SingleLevelBomAsPlanned - The relation to child part types provided by the supplier of the given company</p>
+<p><a href="ess-top-down/ess-top-down-scenario-1.html">Scenario 1: Register an Ess-Investigation-Order</a></p>
 </li>
 <li>
-<p>PartSiteInformationAsPlanned - Relation to Sites in order to resemble the flow of the specific part/material</p>
+<p><a href="ess-top-down/ess-top-down-scenario-2.html">Scenario 2: Register an Ess-Investigation-Job</a></p>
 </li>
 </ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_overall_flow">Overall flow</h3>
-<div class="imageblock">
-<div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="1201" height="748">
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Step</th>
-<th class="tableblock halign-left valign-top">Actor</th>
-<th class="tableblock halign-left valign-top">Action</th>
-<th class="tableblock halign-left valign-top">Details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[000]</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IncidentManager</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Request ESS Incident investigation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[001]</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Check direct suppliers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Check BPNS in direct suppliers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[002]</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Forward incident to Tier N+1 Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[003]</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Check direct suppliers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Check BPNS in direct suppliers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Forward incident to Tier N+n Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[004]</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+n Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Check direct suppliers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+n Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Check BPNS in direct suppliers</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+n Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Return responses (including hops) to Tier N+1 Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ESS supplier response</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[005]</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregate results</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tier N+1 Supplier</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Return responses (including hops) to Inquiring OEM Company</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ESS supplier response</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[006]</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregate results</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inquiring OEM Company</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Check subgraph infection on first tier level</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>[007]</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IncidentManager</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Receive incident report from Inquiring OEM Company</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Note: ESS supplier responses are involved in each step of the process.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_flow_on_company_level">Flow on company level</h3>
-<div class="imageblock">
-<div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
-</div>
-</div>
-<div class="sect3">
-<h4 id="_step_0_process_initiation">Step 0: Process initiation</h4>
-<div class="paragraph">
-<p>The process is initiated by an ESS incident, that is received by (or created within) the inquiring company.
-This ESS incident acts as the root incident for the overall process The incident contains a company name (incl. address) and a valid BPN exists for that company.
-The BPN (a BPNL or BPNS) can be looked up in BPDM.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_step_1_check_direct_suppliers">Step 1: Check direct suppliers</h4>
-<div class="paragraph">
-<p>The inquiring company checks, if the company of the incident is a direct supplier of them.
-In order to perform this check, the following data must be available in the inquiring company:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Full list of direct suppliers</p>
-</li>
-<li>
-<p>Full list of parts supplied by those direct suppliers</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In case the company of the incident is a direct supplier of the inquiring company, the process ends.
-In case the company of the incident is not a direct supplier of the inquiring company, Step 2 is executed.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_step_2_forward_incident">Step 2: Forward Incident</h4>
-<div class="paragraph">
-<p>The incident is forwarded to all direct suppliers.
-Each direct supplier is sent a "personalized" request to evaluate, if the inquiring company is impacted by the incident.
-The incident is enhanced with additional data by the inquiring company:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>List of parts, that are supplied to the inquiring company by their direct supplier.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Each direct supplier executes Step 1.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_step_3_gather_responses">Step 3: Gather Responses</h4>
-<div class="paragraph">
-<p>The inquiring company collects the (asynchronous) responses.
-The response of each direct supplier may contain the following results;</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>YES → The company of the incident was found in the supply chain of the given list of parts</p>
-</li>
-<li>
-<p>NO → The company of the incident was not found in the supply chain of the given list of parts</p>
-</li>
-<li>
-<p>UNKNOWN → The query timed out or some other error occurred</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In case at least one "YES" is received, the process step 3 ends</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_application_functionality_overview">Application Functionality Overview</h3>
-<div class="sect3">
-<h4 id="_register_an_ess_investigation_order">Register an Ess-Investigation-Order</h4>
-<div class="imageblock">
-<div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
-</div>
-</div>
-<div class="sect4">
-<h5 id="_1_client_request">1. Client Request</h5>
-<div class="paragraph">
-<p>The <em>Client App (Script)</em> initiates a request to the IRS (Item Relationship Service) by sending a GET request for shell lookup based on a specific BPN (Business Partner Number).</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_2_shell_lookup">2. Shell Lookup</h5>
-<div class="paragraph">
-<p>IRS, along with other services like DiscoveryFinder, EDCDiscoveryService, and Digital Twin Registry, collaborates to look up shells for the given BPN, returning an array of AAS identifiers.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_3_aas_descriptor_retrieval">3. AAS Descriptor Retrieval</h5>
-<div class="paragraph">
-<p>For each AAS identifier, the client requests the IRS for the corresponding shell descriptors, adding them to a collection.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_4_filtering_aas">4. Filtering AAS</h5>
-<div class="paragraph">
-<p>The <em>Client App (Script)</em> filters the AAS collection for SubmodelDescriptors marked <em>asPlanned</em>, based on certain criteria.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_5_incident_registration">5. Incident Registration</h5>
-<div class="paragraph">
-<p>The client then initiates an IRS incident registration by sending a POST request with specific parameters, including bomLifecycle and callback URL.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_6_incident_handling_loop">6. Incident Handling Loop</h5>
-<div class="paragraph">
-<p>IRS proceeds to handle the incident by iterating through AAS identifiers, extracting child CXIds, and performing checks on associated data.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_7_data_validation">7. Data Validation</h5>
-<div class="paragraph">
-<p>The system checks the validity period of the received data and, if valid, proceeds to extract additional information.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_8_incident_response">8. Incident Response</h5>
-<div class="paragraph">
-<p>If certain conditions are met (e.g., incidentBpns contain catenaXsiteId), the system responds to the client indicating a part-chain infection.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_9_notification_handling">9. Notification Handling</h5>
-<div class="paragraph">
-<p>Otherwise, the system sends an ess-request notification to the next tier level IRS, and after processing the request on the next tier level, receives an ess-response notification.</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-28 16:07:07 UTC
+Last updated 2023-12-08 12:23:24 UTC
 </div>
 </div>
 </body>

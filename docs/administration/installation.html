@@ -675,7 +675,7 @@ pre.rouge {
 It contains all required dependencies.</p>
 </div>
 <div class="paragraph">
-<p>If you also want to set up your own EDC consumer, use the "irs-edc-consumer" chart.</p>
+<p>If you also want to set up your own EDC consumer, use the <a href="https://github.com/eclipse-tractusx/tractusx-edc/tree/main/charts/tractusx-connector">tractusx-connector</a> chart.</p>
 </div>
 <div class="paragraph">
 <p>Supply the required configuration properties (see chapter <a href="configuration.html#_configuration">Configuration</a>) in a values.yaml file or override the settings directly.</p>
@@ -714,10 +714,10 @@ It contains all required dependencies.</p>
 <pre class="rouge highlight"><code data-lang="yaml"><span class="na">dependencies</span><span class="pi">:</span>
   <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">irs-helm</span>
     <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/item-relationship-service</span>
-    <span class="na">version</span><span class="pi">:</span> <span class="s">5.x.x</span>
-  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">irs-edc-consumer</span> <span class="c1"># optional</span>
-    <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/item-relationship-service</span>
-    <span class="na">version</span><span class="pi">:</span> <span class="s">1.x.x</span></code></pre>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">6.x.x</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tractusx-connector</span> <span class="c1"># optional</span>
+    <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/tractusx-edc</span>
+    <span class="na">version</span><span class="pi">:</span> <span class="s">0.5.x</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -731,7 +731,7 @@ It contains all required dependencies.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-28 16:07:07 UTC
+Last updated 2023-12-08 12:23:24 UTC
 </div>
 </div>
 </body>

@@ -497,7 +497,7 @@ The BoM as planned aspect models consists of three aspect models:</p>
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="1201" height="748">
+<img src="ess-top-down.svg" alt="ess top down" width="1201" height="748">
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -618,7 +618,7 @@ The BoM as planned aspect models consists of three aspect models:</p>
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
+<img src="ess-top-down-highlevel.svg" alt="ess top down highlevel" width="2254" height="1758">
 </div>
 </div>
 <div class="sect2">
@@ -690,6 +690,103 @@ The response of each direct supplier may contain the following results;</p>
 <div class="paragraph">
 <p>In case at least one "YES" is received, the process step 3 ends</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 66.6666%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1112%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Case</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOWN</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All assets on all nodes does not contain assets with incidentBPNs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one node contains assets with  incidentBPNs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one node does not contain PartSiteInformationAsPlanned aspect OR for at least one node PartSiteInformationAsPlanned  aspect  is not accessible</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one node contains PartSiteInformationAsPlanned  with missing BPNS</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one child node does not exist or is not accessible</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 20%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State 1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result State</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKOWN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If any part is impacted then whole Supply is impactes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes if any BPN is impacted even if all are not impacted.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unknown if no Yes and at leat one bpn is unknown state.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No if complete SupplyChain is not impacted</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="ess_top_down_sequence-result.svg" alt="ess top down sequence result" width="728" height="287">
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -700,7 +797,7 @@ The response of each direct supplier may contain the following results;</p>
 <h3 id="_register_an_ess_investigation_order">Register an Ess-Investigation-Order</h3>
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
+<img src="ess-top-down-highlevel.svg" alt="ess top down highlevel" width="2254" height="1758">
 </div>
 </div>
 <div class="sect3">
@@ -763,7 +860,7 @@ The response of each direct supplier may contain the following results;</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-28 16:07:07 UTC
+Last updated 2023-12-08 12:23:24 UTC
 </div>
 </div>
 </body>

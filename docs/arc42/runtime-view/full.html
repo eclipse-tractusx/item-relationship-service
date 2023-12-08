@@ -443,8 +443,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_irs_iterative">IRS Iterative</a></li>
-<li><a href="#_irs_iterative_2">IRS iterative</a>
+<li><a href="#_irs_iterative">IRS Iterative</a>
 <ul class="sectlevel2">
 <li><a href="#_submodel">Submodel</a></li>
 <li><a href="#_job_orchestration_flow">Job orchestration flow</a></li>
@@ -486,7 +485,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_register_an_ess_investigation_order_2">Register an Ess-Investigation-Order</a></li>
 </ul>
 </li>
-<li><a href="#_scenario_1_register_an_ess_investigation_job">Scenario 1: Register an Ess-Investigation-Job</a>
+<li><a href="#_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</a>
 <ul class="sectlevel2">
 <li><a href="#_register_an_ess_investigation_job">Register an Ess-Investigation Job</a></li>
 </ul>
@@ -499,15 +498,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_irs_iterative">IRS Iterative</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This section covers the main processes of the IRS and explains how data is transferred and processed when a job is executed.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_irs_iterative_2">IRS iterative</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>This section describes the iterative flow of the IRS</p>
+<p>This section describes the iterative flow, the main processes of the IRS, and explains how data is transferred and processed when a job is executed.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -693,7 +684,7 @@ The BoM as planned aspect models consists of three aspect models:</p>
 <h3 id="_overall_flow">Overall flow</h3>
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="1201" height="748">
+<img src="ess-top-down.svg" alt="ess top down" width="1201" height="748">
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -812,7 +803,7 @@ The BoM as planned aspect models consists of three aspect models:</p>
 <h3 id="_flow_on_company_level">Flow on company level</h3>
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
+<img src="ess-top-down-highlevel.svg" alt="ess top down highlevel" width="2254" height="1758">
 </div>
 </div>
 <div class="sect3">
@@ -884,6 +875,103 @@ The response of each direct supplier may contain the following results;</p>
 <div class="paragraph">
 <p>In case at least one "YES" is received, the process step 3 ends</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 66.6666%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1112%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Case</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOWN</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All assets on all nodes does not contain assets with incidentBPNs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one node contains assets with  incidentBPNs</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one node does not contain PartSiteInformationAsPlanned aspect OR for at least one node PartSiteInformationAsPlanned  aspect  is not accessible</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one node contains PartSiteInformationAsPlanned  with missing BPNS</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">At least one child node does not exist or is not accessible</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 20%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State 1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State 2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">State n</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result State</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKOWN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If any part is impacted then whole Supply is impactes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YES</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes if any BPN is impacted even if all are not impacted.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UNKNOW</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unknown if no Yes and at leat one bpn is unknown state.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No if complete SupplyChain is not impacted</p></td>
+</tr>
+</tbody>
+</table>
+<div class="imageblock">
+<div class="content">
+<img src="ess_top_down_sequence-result.svg" alt="ess top down sequence result" width="728" height="287">
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -892,7 +980,7 @@ The response of each direct supplier may contain the following results;</p>
 <h4 id="_register_an_ess_investigation_order">Register an Ess-Investigation-Order</h4>
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="2254" height="1758">
+<img src="ess-top-down-highlevel.svg" alt="ess top down highlevel" width="2254" height="1758">
 </div>
 </div>
 <div class="sect4">
@@ -963,7 +1051,7 @@ The response of each direct supplier may contain the following results;</p>
 <h3 id="_register_an_ess_investigation_order_2">Register an Ess-Investigation-Order</h3>
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="1962" height="734">
+<img src="ess-topdown-order.svg" alt="ess topdown order" width="1962" height="734">
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1048,7 +1136,7 @@ The response of each direct supplier may contain the following results;</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_scenario_1_register_an_ess_investigation_job">Scenario 1: Register an Ess-Investigation-Job</h2>
+<h2 id="_scenario_2_register_an_ess_investigation_job">Scenario 2: Register an Ess-Investigation-Job</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section describes what happens when user creates an ess job.</p>
@@ -1057,7 +1145,7 @@ The response of each direct supplier may contain the following results;</p>
 <h3 id="_register_an_ess_investigation_job">Register an Ess-Investigation Job</h3>
 <div class="imageblock">
 <div class="content">
-<img src="submodel-processing.svg" alt="submodel processing" width="2978" height="1414">
+<img src="ess-topdown-order-job.svg" alt="ess topdown order job" width="2978" height="1414">
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1186,16 +1274,13 @@ The response of each direct supplier may contain the following results;</p>
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Unresolved directive in full.adoc - include::ess-top-down/ess-top-down-scenario-3.adoc[leveloffset=+1]</p>
-</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-28 16:07:07 UTC
+Last updated 2023-12-08 12:23:24 UTC
 </div>
 </div>
 </body>

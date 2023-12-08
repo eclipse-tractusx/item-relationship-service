@@ -24,6 +24,7 @@ The IRS is a:
 * federated IRS service
 * 'asBuild' BoM of serialized components
 * provides endpoints for submodel-descriptors
+* start recursive Environmental and Social Standard investigations throughout the network based on the "asPlanned" lifecycle
 
 ## Quality goals
 
@@ -147,8 +148,8 @@ The integrated EDC client in the IRS is responsible for creating restful request
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| SingelLevelBomAsBuilt | The aspect provides the child parts (one structural level down) which the given object assembles. | 1.1.0 |
-| SingelLevelUsageAsBuilt | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | [X.X.X] |
+| SingleLevelBomAsBuilt | The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as-built lifecycle themselves, unless parts can only be tracked by an part ID. If it’s unclear which item has been built-in into the parent item, all potential parts must be listed. This is the case when, e.g. the same item is supplied by two suppliers and the item is only tracked by a customer part ID during assembly, these items can not be differentiated from each other. | 2.0.0 |
+| SingleLevelUsageAsBuilt | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | 2.0.0 |
 
 ##### Semantic Model
 
@@ -156,10 +157,8 @@ The integrated EDC client in the IRS is responsible for creating restful request
 | --- | --- | --- |
 | Name | Description | Version range |
 | SerialPart | A serialized part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a serial numbers or a similar identifier (e.g. VAN) or a combination of multiple identifiers (e.g. combination of manufacturer, date and number) | [1.0,0, 1.1.0] |
-| SingelLevelBomAsBuilt | The aspect provides the child parts (one structural level down) which the given object assembles. | [1.0.0,1.1.0] |
-| SingelLevelUsageAsBuilt | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | [1.0.0,1.0.1] |
-| Batch | A batch is a quantity of (semi-) finished products or (raw) material product that have been produced under the same circumstances (e.g. same production location), as specified groups or amounts, within a certain time frame. Every batch can differ in the number or amount of products. Different batches can have varied specifications, e.g., different colors. A batch is identified via a Batch ID. | [1.0.0,2.0.0] |
-| JustInSequencePart | A just-in-sequence part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a combination of several IDs related to a just-in-sequence process | [1.0.0] |
+| Batch | A batch is a quantity of (semi-) finished products or (raw) material product that have been produced under the same circumstances (e.g. same production location), as specified groups or amounts, within a certain time frame. Every batch can differ in the number or amount of products. Different batches can have varied specifications, e.g., different colors. A batch is identified via a Batch ID. | [1.0.0, 2.0.0] |
+| JustInSequencePart | A just-in-sequence part is an instantiation of a (design-) part, where the particular instantiation can be uniquely identified by means of a combination of several IDs related to a just-in-sequence process | 1.0.0 |
 | TractionBatteryCode | The traction battery code is an identification code for any automotive traction battery, ultracapacitor and other reachargeble energy storage device. It allows to carry information as required by the National Standard of the People’s Republic of China according to GB/T 34014-2017 published by the Standardization Administration of China (SAC). | 1.0.0 |
 
 #### Overview asPlanned
@@ -169,17 +168,16 @@ The integrated EDC client in the IRS is responsible for creating restful request
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| SingelLevelBomAsPlanned | The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM. | 1.1.0 |
-| SingelLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list. | 1.1.0 |
+| SingleLevelBomAsPlanned | The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM. | 2.0.0 |
+| SingleLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list. | Not supported |
 
 ##### Semantic Model
 
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| PartAsPlanned | A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version. | [ , ] |
+| PartAsPlanned | A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version. | [1.0,0, 1.0.1] |
 | PartSiteInformationAsPlanned | The aspect provides site related information for a given as planned item (i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In the \"as planned\" lifecycle context all potentially related sites are listed including all sites where e.g. production of this part (type) is planned. | 1.0.0 |
-| SingelLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list. | [1.0.0,1.1.0] |
 
 #### Overview asSpecified
 
@@ -188,14 +186,14 @@ The integrated EDC client in the IRS is responsible for creating restful request
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| SingelLevelBomAsSpecified | The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place. | 2.0.0 |
+| SingleLevelBomAsSpecified | The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place. | 1.0.0 |
 
 ##### Semantic Model
 
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| SingelLevelBomAsSpecified | The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place. | [1.0.0,2.0.0] |
+| PartAsSpecified | The aspect model PartAsSpecified belongs to the Part Catalogue. A PartAsSpecified represents a certain OEM catalog part on part number level. Providing a digital representation of the part as specified by the OEM. The link to the serialized part is done via the partId, this can only be done if the respective DT was provided by the supplier within the value chain. | [1.0.0, 1.0.1, 2.0.0] |
 
 ## Solution strategy
 
@@ -275,6 +273,7 @@ The interfaces show how the components interact with each other and which interf
 | 14 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers |
 | 15 | **IRS** accessing to **SubmodelServer** on Tier Level using the **EDC** |
 | 16 | **IRS** accessing the **decentral DigitalTwinRegistry** on Tier Level using the **EDC** |
+| 17 | In case of the use-case Environmental and Social Standards, **IRS** sends notifications to the **IRS-ESS** instance running at the data provider using the **EDC**. |
 
 ## Level 1
 
@@ -323,7 +322,7 @@ The IRS REST controller is used to provide a RESTful web service.
 
 ### RecursiveJobHandler
 
-The **RecursiveJobHandler** component provide the logic to build jobs with recursive logic to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.
+The **RecursiveJobHandler** component provide the logic to build jobs recursively to retrieve items over the complete C-X network and assembles the partial results into a single item graph result.
 
 #### Component diagram
 
@@ -394,11 +393,7 @@ Since we cannot rely on synchronous responses regarding the requests of submodel
 
 ### IRS Iterative
 
-This section covers the main processes of the IRS and explains how data is transferred and processed when a job is executed.
-
-## IRS iterative
-
-This section describes the iterative flow of the IRS
+This section describes the iterative flow, the main processes of the IRS, and explains how data is transferred and processed when a job is executed.
 
 ![arc42_010](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_010.png)
 
@@ -500,6 +495,8 @@ The BoM as planned aspect models consists of three aspect models:
 
 ### Overall flow
 
+![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
+
 | Step | Actor | Action | Details |
 | --- | --- | --- | --- |
 | **[000]** | IncidentManager | Request ESS Incident investigation | - |
@@ -521,6 +518,8 @@ The BoM as planned aspect models consists of three aspect models:
 Note: ESS supplier responses are involved in each step of the process.
 
 ### Flow on company level
+
+![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
 
 #### Step 0: Process initiation
 
@@ -560,9 +559,30 @@ The response of each direct supplier may contain the following results;
 
 In case at least one "YES" is received, the process step 3 ends
 
+|     |     |     |     |
+| --- | --- | --- | --- |
+| Case | YES | NO | UNKNOWN |
+| All assets on all nodes does not contain assets with incidentBPNs | x |  |  |
+| At least one node contains assets with  incidentBPNs |  | x |  |
+| At least one node does not contain PartSiteInformationAsPlanned aspect OR for at least one node PartSiteInformationAsPlanned  aspect  is not accessible |  |  | x |
+| At least one node contains PartSiteInformationAsPlanned  with missing BPNS |  |  | x |
+| At least one child node does not exist or is not accessible |  |  | x |
+
+|     |     |     |     |     |
+| --- | --- | --- | --- | --- |
+| State 1 | State 2 | State n | Result State | Description |
+| YES | NO | UNKOWN | YES | If any part is impacted then whole Supply is impactes |
+| YES | NO | NO | YES | Yes if any BPN is impacted even if all are not impacted. |
+| NO | UNKNOW | NO | UNKNOW | Unknown if no Yes and at leat one bpn is unknown state. |
+| NO | NO | NO | NO | No if complete SupplyChain is not impacted |
+
+![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
+
 ### Application Functionality Overview
 
 #### Register an Ess-Investigation-Order
+
+![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
 
 ##### 1. Client Request
 
@@ -606,6 +626,8 @@ This section describes what happens when user creates an ess order.
 
 ### Register an Ess-Investigation-Order
 
+![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
+
 | Step | Actor | Action | Details |
 | --- | --- | --- | --- |
 | [000] | Client | Sends a POST request to `/ess/bpn/investigation/orders` | Includes JSON payload with parameters like "bomLifecycle," "batchSize," "callbackUrl," "incidentBPNSs," "keys," and "timeout." |
@@ -619,11 +641,13 @@ This section describes what happens when user creates an ess order.
 | [008] | Client | Sends a POST request to `/irs/orders/{orderId}/batches/'{batchId}'` | Initiates batch processing for a specific orderId and batchId. |
 | [009] | IRS | Sends BatchShell with jobs | Returns details of the batch with associated jobs. |
 
-## Scenario 1: Register an Ess-Investigation-Job
+## Scenario 2: Register an Ess-Investigation-Job
 
 This section describes what happens when user creates an ess job.
 
 ### Register an Ess-Investigation Job
+
+![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
 
 | Step | Actor | Action | Details |
 | --- | --- | --- | --- |
@@ -646,13 +670,11 @@ This section describes what happens when user creates an ess job.
 | [016] | IRS | Continues the loop | Continues the loop for the remaining childCXIds. |
 | [017] | Loop (end) | IRS | Loop completion |
 
-Unresolved directive in runtime-view/full.adoc - include::ess-top-down/ess-top-down-scenario-3.adoc[leveloffset=+1]
-
 ## Deployment view
 
 The deployment view shows the IRS application on ArgoCD, which is a continuous delivery tool for Kubernetes. Kubernetes manifests are specified using Helm charts. Helm is a package manager for Kubernetes. IRS is developed in a cloud-agnostic manner, so the application could be installed in any cloud infrastructure (on-premises, hybrid, or public cloud infrastructure).
 
-![arc42_019](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_019.png)
+![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
 
 ### Operator
 
@@ -694,25 +716,25 @@ For information on how to run the application locally, please check the README d
 
 The isolated environment contains the IRS as well as all surrounding services.
 
-![arc42_020](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_020.png)
+![arc42_026](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_026.png)
 
 ### Development environment
 
 The development environment contains the IRS as well as the essential surrounding services, excluding the external IAM.
 
-![arc42_021](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_021.png)
+![arc42_027](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_027.png)
 
 ### Integrated environment
 
 The integrated environment contains the IRS and is integrated with the rest of the Catena-X network.
 
-![arc42_022](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_022.png)
+![arc42_028](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_028.png)
 
 ## Level 1 - IRS application
 
 This section focuses only on the IRS itself, detached from its neighbors. It shows the resources deployed in Kubernetes for the IRS.
 
-![arc42_023](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_023.png)
+![arc42_029](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_029.png)
 
 ### Pod
 
@@ -736,11 +758,11 @@ The ingress uses a reverse proxy to provide specified Service ports to the inter
 
 ### Domain entity model
 
-![arc42_024](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_024.png)
+![arc42_030](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_030.png)
 
 ### Domain model
 
-![arc42_025](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_025.png)
+![arc42_031](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_031.png)
 
 ### API Model
 
@@ -759,15 +781,15 @@ A job can be in one of the following states:
 | COMPLETED | The job has completed. See the job response for details on the data. |
 | ERROR | The job could not be processed correctly by the IRS due to a technical problem. |
 
-![arc42_026](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_026.png)
+![arc42_032](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_032.png)
 
 ### Job Store Datamodel
 
-![arc42_027](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_027.png)
+![arc42_033](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_033.png)
 
 ### Job Response Datamodel
 
-![arc42_028](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_028.png)
+![arc42_034](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_034.png)
 
 ```json
 {
@@ -1009,7 +1031,7 @@ The hexagonal architecture divides a system into several loosely-coupled interch
 
 For the IRS, this means decoupling the application logic from components like the BLOB store, the REST API controllers or the AAS client connection. With an interface between the parts (so-called port), it is easy to switch to other implementations, e.g. if you want to change the persistence implementation. No changes to the application logic will be necessary.
 
-![arc42_029](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_029.png)
+![arc42_035](https://eclipse-tractusx.github.io/item-relationship-service/docs/assets/arc42/arc42_035.png)
 
 ## "Under-the-hood" concepts
 

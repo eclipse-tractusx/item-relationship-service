@@ -886,8 +886,10 @@ pre.rouge {
 <span class="c1"># ESS Module specific properties</span>
 <span class="na">ess</span><span class="pi">:</span>
   <span class="na">localBpn</span><span class="pi">:</span> <span class="s">${ESS_LOCAL_BPN:}</span> <span class="c1"># BPN value of product - used during EDC notification communication</span>
-  <span class="na">localEdcEndpoint</span><span class="pi">:</span> <span class="s">${EDC_PROVIDER_URL:}</span> <span class="c1"># EDC Provider Url - used during EDC notification communication</span>
-  <span class="na">managementPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2}</span> <span class="c1"># EDC management API path - used for notification asset creation</span>
+  <span class="na">localEdcEndpoint</span><span class="pi">:</span> <span class="s">${ESS_EDC_URL:}</span> <span class="c1"># EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications</span>
+  <span class="na">assetsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v3/assets}</span> <span class="c1"># EDC management API "assets" path - used for notification asset creation</span>
+  <span class="na">policydefinitionsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2/policydefinitions}</span> <span class="c1"># EDC management API "policydefinitions" path - used for notification policy definition creation</span>
+  <span class="na">contractdefinitionsPath</span><span class="pi">:</span> <span class="s">${EDC_MANAGEMENT_PATH:/management/v2/contractdefinitions}</span> <span class="c1"># EDC management API "contractdefinitions" path - used for notification contract definitions creation</span>
   <span class="na">irs</span><span class="pi">:</span>
     <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
   <span class="na">discovery</span><span class="pi">:</span>
@@ -910,7 +912,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-11-28 16:07:07 UTC
+Last updated 2023-12-08 12:23:24 UTC
 </div>
 </div>
 </body>
