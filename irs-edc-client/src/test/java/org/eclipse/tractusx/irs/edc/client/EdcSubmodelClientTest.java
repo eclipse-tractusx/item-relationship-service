@@ -24,7 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.edc.client.util.EndpointDataReferenceStatus.TokenStatus;
+import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -70,8 +70,8 @@ import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
-import org.eclipse.tractusx.irs.edc.client.util.EndpointDataReferenceCacheService;
-import org.eclipse.tractusx.irs.edc.client.util.EndpointDataReferenceStatus;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
@@ -155,11 +155,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final EdcNotification<NotificationContent> notification = EdcNotification.builder().build();
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
-        when(contractNegotiationService.negotiate(any(), any())).thenReturn(
+        when(contractNegotiationService.negotiate(any(), any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId("agreementId").build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         endpointDataReferenceStorage.put("agreementId", ref);
         when(edcDataPlaneClient.sendData(ref, notification)).thenReturn(() -> true);
+        when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
         final var result = testee.sendNotification(CONNECTOR_ENDPOINT, "notify-request-asset", notification);

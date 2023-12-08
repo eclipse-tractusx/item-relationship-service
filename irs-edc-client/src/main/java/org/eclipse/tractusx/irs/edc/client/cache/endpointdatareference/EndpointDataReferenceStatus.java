@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.util;
+package org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 

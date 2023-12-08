@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.util;
+package org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -52,7 +52,7 @@ public class EndpointDataReferenceCacheService {
      * @param assetId key for
      *                {@link org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage}
      * @return {@link org.eclipse.edc.spi.types.domain.edr.EndpointDataReference}
-     * and {@link org.eclipse.tractusx.irs.edc.client.util.EndpointDataReferenceStatus.TokenStatus}
+     * and {@link EndpointDataReferenceStatus.TokenStatus}
      * describing token status
      */
     public EndpointDataReferenceStatus getEndpointDataReference(final String assetId) {

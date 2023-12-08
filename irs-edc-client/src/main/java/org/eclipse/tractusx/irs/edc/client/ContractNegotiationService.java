@@ -45,7 +45,7 @@ import org.eclipse.tractusx.irs.edc.client.model.TransferProcessDataDestination;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
-import org.eclipse.tractusx.irs.edc.client.util.EndpointDataReferenceStatus;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.stereotype.Service;
 
@@ -68,22 +68,25 @@ public class ContractNegotiationService {
                 new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
     }
 
-    @SuppressWarnings("PMD.AvoidReassigningParameters")
     public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
-            EndpointDataReferenceStatus endpointDataReferenceStatus)
+            final EndpointDataReferenceStatus endpointDataReferenceStatus)
             throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
+
+        EndpointDataReferenceStatus resultEndpointDataReferenceStatus;
 
         if (endpointDataReferenceStatus == null) {
             log.info(
                     "Missing information about endpoint data reference from storage, setting token status to REQUIRED_NEW.");
-            endpointDataReferenceStatus = new EndpointDataReferenceStatus(null,
+            resultEndpointDataReferenceStatus = new EndpointDataReferenceStatus(null,
                     EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW);
+        } else {
+            resultEndpointDataReferenceStatus = endpointDataReferenceStatus;
         }
 
         NegotiationResponse negotiationResponse = null;
-        String contractAgreementId = null;
+        String contractAgreementId;
 
-        switch (endpointDataReferenceStatus.tokenStatus()) {
+        switch (resultEndpointDataReferenceStatus.tokenStatus()) {
             case REQUIRED_NEW -> {
                 final CompletableFuture<NegotiationResponse> responseFuture = startNewNegotiation(providerConnectorUrl,
                         catalogItem);
@@ -91,7 +94,7 @@ public class ContractNegotiationService {
                 contractAgreementId = negotiationResponse.getContractAgreementId();
             }
             case EXPIRED -> {
-                final String authKey = endpointDataReferenceStatus.endpointDataReference().getAuthKey();
+                final String authKey = resultEndpointDataReferenceStatus.endpointDataReference().getAuthKey();
                 if (authKey == null) {
                     throw new IllegalStateException("Missing information about AuthKey.");
                 }

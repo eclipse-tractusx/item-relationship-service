@@ -1,18 +1,3 @@
-package org.eclipse.tractusx.irs.edc.client.util;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
-
-import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 /********************************************************************************
  * Copyright (c) 2021,2022,2023
  *       2022: ZF Friedrichshafen AG
@@ -36,6 +21,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs.edc.client.util;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 class EndpointDataReferenceCacheServiceTest {
 

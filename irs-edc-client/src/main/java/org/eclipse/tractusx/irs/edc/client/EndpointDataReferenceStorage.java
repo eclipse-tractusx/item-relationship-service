@@ -69,13 +69,8 @@ public class EndpointDataReferenceStorage {
         });
     }
 
-    public Optional<EndpointDataReference> remove(final String storageId) {
-        return Optional.ofNullable(storageMap.remove(storageId)).map(ExpiringContainer::getDataReference);
-    }
-
     public Optional<EndpointDataReference> get(final String storageId) {
-        return Optional.ofNullable(
-                storageMap.get(storageId) != null ? storageMap.get(storageId).getDataReference() : null);
+        return Optional.ofNullable(storageMap.get(storageId)).map(ExpiringContainer::getDataReference);
     }
 
     /**
