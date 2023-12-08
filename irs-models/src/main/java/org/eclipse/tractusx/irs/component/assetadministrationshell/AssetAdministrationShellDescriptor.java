@@ -150,7 +150,4 @@ public class AssetAdministrationShellDescriptor {
         return semanticId.contains(join);
     }
 
-    private boolean notContainsSingleLevelBomAsBuilt(final List<String> filterAspectTypes) {
-        return !filterAspectTypes.contains(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
-    }
 }
