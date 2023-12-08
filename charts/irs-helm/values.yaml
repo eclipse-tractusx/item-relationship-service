@@ -159,8 +159,6 @@ portal:
     clientId:  # <portal-client-id>
     clientSecret:  # <portal-client-secret>
 edc:
-  provider:
-    host:  # EDC Provider Host URL
   controlplane:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
@@ -211,9 +209,13 @@ discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:
+  edc:
+    host:  # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
   mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
   mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
-  managementPath: "/management/v2"  # EDC management API path - used for notification asset creation
+  assetsPath: /management/v3/assets  # EDC management API "assets" path - used for notification asset creation
+  policydefinitionsPath: /management/v2/policydefinitions  # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: /management/v2/contractdefinitions  # EDC management API "contractdefinitions" path - used for notification contract definitions creation
 
 oauth:
   resourceClaim: "resource_access"  # Name of the JWT claim for roles

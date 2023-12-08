@@ -3,7 +3,7 @@
 Full changelog of IRS: [changelog](CHANGELOG.md)
 
 ## [4.2.0] - 2023-11-28
-| Name of service           | Version                      | Helm       | Comments        |
+| Dependency                | Version                      | Helm       | Comments        |
 |---------------------------|------------------------------|------------|-----------------|
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |
@@ -17,7 +17,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 | SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
 
 ## [4.1.0] - 2023-11-15
-| Name of service           | Version                      | Helm       | Comments        |
+| Dependency                | Version                      | Helm       | Comments        |
 |---------------------------|------------------------------|------------|-----------------|
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
 | EDC PostgresSQL           | 15.1.0-debian-11-r12         | 12.1.6     | Optional        |

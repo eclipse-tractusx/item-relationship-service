@@ -1,10 +1,8 @@
 = Runtime view
 
-This section covers the main processes of the IRS and explains how data is transferred and processed when a job is executed.
-
-Please see the subpages for the relevant scenarios:
-
 == IRS Iterative
+
+This section describes the iterative flow, the main processes of the IRS, and explains how data is transferred and processed when a job is executed.
 
 - xref:irs-iterative/irs-iterative.adoc[Overall]
 - xref:irs-iterative/scenario-1.adoc[Scenario 1: Create Job]
@@ -12,16 +10,14 @@ Please see the subpages for the relevant scenarios:
 - xref:irs-iterative/scenario-3.adoc[Scenario 3: Request for JobResponse]
 - xref:irs-iterative/scenario-4.adoc[Scenario 4: Cancel job execution]
 
-
-
 == IRS Recursive
 
 This section covers the main processes of the IRS in a recursive scenario in a network.
 This recursive scenario is illustrated using the various use cases realized in the scenario.
 
-=== Use Case: ESS (Environmental and Social Standards) Top-Down approach
-
-include::ess-top-down/ess-top-down.adoc[leveloffset=+1]
+- xref:ess-top-down/ess-top-down.adoc[Use Case: ESS (Environmental and Social Standards) Top-Down approach]
+- xref:ess-top-down/ess-top-down-scenario-1.adoc[Scenario 1: Register an Ess-Investigation-Order]
+- xref:ess-top-down/ess-top-down-scenario-2.adoc[Scenario 2: Register an Ess-Investigation-Job]
 
 
 
