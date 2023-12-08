@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.registryclient.discovery;
 import java.util.List;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -33,19 +34,20 @@ import org.springframework.web.client.RestTemplate;
  */
 public class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
 
+    public static final String DISCOVERY_ENDPOINTS_CACHE = "discovery_endpoints_cache";
+
     private final String discoveryFinderUrl;
 
     private final RestTemplate restTemplate;
 
-    public DiscoveryFinderClientImpl(
-            final String discoveryFinderUrl,
-            final RestTemplate restTemplate) {
+    public DiscoveryFinderClientImpl(final String discoveryFinderUrl, final RestTemplate restTemplate) {
         this.discoveryFinderUrl = discoveryFinderUrl;
         this.restTemplate = restTemplate;
     }
 
     @Override
     @Retry(name = "registry")
+    @Cacheable(value = DISCOVERY_ENDPOINTS_CACHE)
     public DiscoveryResponse findDiscoveryEndpoints(final DiscoveryFinderRequest request) {
         return restTemplate.postForObject(discoveryFinderUrl, request, DiscoveryResponse.class);
     }
@@ -55,7 +57,7 @@ public class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
     public List<EdcDiscoveryResult> findConnectorEndpoints(final String endpointAddress, final List<String> bpns) {
         final EdcDiscoveryResult[] edcDiscoveryResults = restTemplate.postForObject(endpointAddress, bpns,
                 EdcDiscoveryResult[].class);
-
         return edcDiscoveryResults == null ? List.of() : List.of(edcDiscoveryResults);
     }
+
 }
