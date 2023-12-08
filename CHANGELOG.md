@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added cache mechanism
+  for [DiscoveryFinderClientImpl](irs-registry-client/src/main/java/org/eclipse/tractusx/irs/registryclient/discovery/DiscoveryFinderClientImpl.java)
+  for findDiscoveryEndpoints method cache
+
+
 ## [4.2.0] - 2023-11-28
 ### Changed
 - Changed default behaviour of IRS - when aspects list is not provided or empty in request body, IRS will not collect any submodel now (previously default aspects were collected).
