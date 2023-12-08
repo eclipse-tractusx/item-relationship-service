@@ -30,9 +30,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.eclipse.tractusx.irs.configuration.RestTemplateConfig;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryEndpoint;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
@@ -42,6 +42,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
@@ -52,77 +53,75 @@ import org.springframework.web.client.RestTemplate;
 @Import({ TestConfig.class })
 class DiscoveryFinderClientTest {
 
+    private static final DiscoveryResponse MOCKED_DISCOVERY_RESPONSE = new DiscoveryResponse(
+            List.of(new DiscoveryEndpoint("test-endpoint", "desc", "test-endpoint-addr", "docs", "resId")));
+
     @Autowired
     private DiscoveryFinderClient testee;
 
-    @MockBean(name = "dtrRestTemplate")
+    @MockBean(name = RestTemplateConfig.DTR_REST_TEMPLATE)
     private RestTemplate restTemplateMock;
 
     @Autowired
     private CacheManager cacheManager;
 
     @Test
-    void shouldGenerateCacheRecordWhenFindDiscoveryEndpointsCalled() {
+    void findDiscoveryEndpoints_WhenCalled_ShouldCacheResults() {
 
-        // preparations
-        final var expectedEndpoint = "test-endpoint-addr";
-        final var discoveryFinderRequest = new DiscoveryFinderRequest(List.of("bpn"));
-        simulateFindDiscoveryEndpointsRestRequest(discoveryFinderRequest, expectedEndpoint);
+        // GIVEN
+        final var request = new DiscoveryFinderRequest(List.of("bpn"));
+        final var originalResponse = MOCKED_DISCOVERY_RESPONSE;
+        simulateFindDiscoveryEndpointsRestRequest(request, originalResponse);
 
-        // -------------
-        // first call
-        // -------------
-        final var result = testee.findDiscoveryEndpoints(discoveryFinderRequest);
+        // WHEN
+        final var actualResult = testee.findDiscoveryEndpoints(request);
 
-        // should call real endpoint
-        verifyDiscoveryFinderHttpRequestPerformed(discoveryFinderRequest);
+        // THEN
+        // real endpoint must be called
+        verify(restTemplateMock).postForObject("", request, DiscoveryResponse.class);
 
-        // and the result should be cached
+        // and the response must be cached
         {
-            final var cachedResponse = getCachedDiscoveryResponse(discoveryFinderRequest);
-            assertThat(cachedResponse.endpoints()).isNotNull();
+            final var cachedResponse = getDiscoveryEndpointsCacheValue(request);
+            final var cachedAddresses = extractEndpointAddresses(cachedResponse);
+            final var returnedAddresses = extractEndpointAddresses(actualResult);
+            final var originalAddresses = extractEndpointAddresses(originalResponse);
 
-            final var cachedAddresses = extractCachedEndpointAddresses(cachedResponse);
-            assertThat(cachedAddresses).as("assert that the endpoint address '%s' has been cached", expectedEndpoint)
-                                       .containsExactly(expectedEndpoint);
+            // which means that now the value in the cache must equal the original and the actual value
+            assertThat(cachedAddresses).isEqualTo(originalAddresses).isEqualTo(returnedAddresses);
 
-            assertThat(cachedResponse).as("assert that the cached value is the response from the first request")
-                                      .isEqualTo(result);
+            // and subsequent calls must be answered from cache instead of calling http service again
+            final DiscoveryResponse subsequentResult = testee.findDiscoveryEndpoints(request);
+            assertThat(extractEndpointAddresses(subsequentResult)).isEqualTo(cachedAddresses);
+            verifyNoMoreInteractions(restTemplateMock);
         }
-
-        // -------------
-        // second call
-        // -------------
-        testee.findDiscoveryEndpoints(discoveryFinderRequest);
-        // should be answered from cache
-        verifyNoMoreInteractions(restTemplateMock);
-
     }
 
-    private static List<String> extractCachedEndpointAddresses(final DiscoveryResponse cachedResponse) {
-        return cachedResponse.endpoints().stream().map(DiscoveryEndpoint::endpointAddress).collect(Collectors.toList());
+    private void simulateFindDiscoveryEndpointsRestRequest(final DiscoveryFinderRequest discoveryFinderRequest,
+            final DiscoveryResponse discoveryResponse) {
+        when(restTemplateMock.postForObject("", discoveryFinderRequest, DiscoveryResponse.class)).thenReturn(
+                discoveryResponse);
     }
 
-    private void verifyDiscoveryFinderHttpRequestPerformed(final DiscoveryFinderRequest discoveryFinderRequest) {
-        verify(restTemplateMock).postForObject("", discoveryFinderRequest, DiscoveryResponse.class);
+    private DiscoveryResponse getDiscoveryEndpointsCacheValue(final DiscoveryFinderRequest request) {
+        final var cache = getDiscoveryEndpointsCache();
+        return getCacheValue(cache, request);
     }
 
-    private DiscoveryResponse getCachedDiscoveryResponse(final DiscoveryFinderRequest discoveryFinderRequest) {
+    private Cache getDiscoveryEndpointsCache() {
+        return cacheManager.getCache(DiscoveryFinderClientImpl.DISCOVERY_ENDPOINTS_CACHE);
+    }
 
-        final var cache = cacheManager.getCache(DiscoveryFinderClientImpl.DISCOVERY_ENDPOINTS_CACHE);
-        final var cacheValue = Objects.requireNonNull(cache).get(discoveryFinderRequest);
-
+    private DiscoveryResponse getCacheValue(final Cache cache, final DiscoveryFinderRequest cacheKey) {
+        final var cacheValue = cache.get(cacheKey);
         assertThat(cacheValue).isNotNull();
-
         return (DiscoveryResponse) cacheValue.get();
     }
 
-    @SuppressWarnings("SameParameterValue")
-    private void simulateFindDiscoveryEndpointsRestRequest(final DiscoveryFinderRequest discoveryFinderRequest,
-            final String expectedEndpoint) {
-        when(restTemplateMock.postForObject("", discoveryFinderRequest, DiscoveryResponse.class)).thenReturn(
-                new DiscoveryResponse(
-                        List.of(new DiscoveryEndpoint("test-endpoint", "desc", expectedEndpoint, "docs", "resId"))));
+    private List<String> extractEndpointAddresses(final DiscoveryResponse discoveryResponse) {
+        return discoveryResponse.endpoints().stream() //
+                                .map(DiscoveryEndpoint::endpointAddress) //
+                                .sorted() //
+                                .collect(Collectors.toList());
     }
-
 }
