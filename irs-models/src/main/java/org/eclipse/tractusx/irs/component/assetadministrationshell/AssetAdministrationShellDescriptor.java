@@ -23,7 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -103,14 +102,7 @@ public class AssetAdministrationShellDescriptor {
      * @return AssetAdministrationShellDescriptor with filtered submodel descriptors
      */
     public AssetAdministrationShellDescriptor withFilteredSubmodelDescriptors(final List<String> aspectTypes) {
-        final List<String> filterAspectTypes = new ArrayList<>(aspectTypes);
-
-        if (notContainsSingleLevelBomAsBuilt(filterAspectTypes)) {
-            filterAspectTypes.add(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString());
-            log.info("Adjusted Aspect Type Filter '{}'", filterAspectTypes);
-        }
-
-        this.setSubmodelDescriptors(this.filterDescriptorsByAspectTypes(filterAspectTypes));
+        this.setSubmodelDescriptors(this.filterDescriptorsByAspectTypes(aspectTypes));
         return this;
     }
 

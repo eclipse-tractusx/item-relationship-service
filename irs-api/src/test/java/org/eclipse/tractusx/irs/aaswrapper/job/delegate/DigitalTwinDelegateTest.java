@@ -36,7 +36,11 @@ import java.util.List;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.enums.AspectType;
+import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
+import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
@@ -61,13 +65,24 @@ class DigitalTwinDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
+        assertThat(result.getShells().get(0).getSubmodelDescriptors()).isNotEmpty();
     }
 
-    private static PartChainIdentificationKey createKey() {
-        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
-    }
-    private static PartChainIdentificationKey createKeyWithoutBpn() {
-        return PartChainIdentificationKey.builder().globalAssetId("itemId").build();
+    @Test
+    void shouldFillItemContainerWithShellAndFilteredSubmodelDescriptorsWhenDepthReached() throws RegistryServiceException {
+        // given
+        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
+                List.of(shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))));
+        final JobParameter jobParameter = JobParameter.builder().depth(1).aspects(List.of()).build();
+
+        // when
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter,
+                new AASTransferProcess("id", 1), createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getShells()).isNotEmpty();
+        assertThat(result.getShells().get(0).getSubmodelDescriptors()).isEmpty();
     }
 
     @Test
@@ -105,4 +120,10 @@ class DigitalTwinDelegateTest {
                 ProcessStep.DIGITAL_TWIN_REQUEST);
     }
 
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
+    }
+    private static PartChainIdentificationKey createKeyWithoutBpn() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").build();
+    }
 }
