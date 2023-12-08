@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +48,10 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
+import org.testcontainers.shaded.org.awaitility.Awaitility;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+                properties = "irs-edc-client.discoveryFinderClient.cacheTTL=PT0.1S")
 @ActiveProfiles(profiles = "test")
 @Import({ TestConfig.class })
 class DiscoveryFinderClientTest {
@@ -98,23 +101,20 @@ class DiscoveryFinderClientTest {
     }
 
     @Test
-    void evictDiscoveryEndpointsCacheValues_WhenCalled_ShouldEvictCache() {
+    void evictDiscoveryEndpointsCacheValues_WhenScheduled_ShouldEvictCache() {
 
         // GIVEN
         final var request = new DiscoveryFinderRequest(List.of("bpn"));
         simulateFindDiscoveryEndpointsRestRequest(request, MOCKED_DISCOVERY_RESPONSE);
         testee.findDiscoveryEndpoints(request);
-        requireDiscoveryEndpointsCacheValue(request);
+        final var cache = getDiscoveryEndpointsCache();
+        assertThat(cache.get(request)).isNotNull();
 
         // WHEN
-        ((DiscoveryFinderClientImpl) testee).evictDiscoveryEndpointsCacheValues();
+        Awaitility.await().atLeast(Duration.ofMillis(100))
+                  // THEN
+                  .untilAsserted(() -> assertThat(cache.get(request)).isNull());
 
-        // THEN
-        {
-            final var cache = getDiscoveryEndpointsCache();
-            final var cacheValue = cache.get(request);
-            assertThat(cacheValue).isNull();
-        }
     }
 
     private void simulateFindDiscoveryEndpointsRestRequest(final DiscoveryFinderRequest discoveryFinderRequest,
