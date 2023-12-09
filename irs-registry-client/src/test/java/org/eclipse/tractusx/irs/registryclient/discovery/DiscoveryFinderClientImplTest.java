@@ -24,10 +24,12 @@
 package org.eclipse.tractusx.irs.registryclient.discovery;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,30 +39,44 @@ import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
 class DiscoveryFinderClientImplTest {
+
     @Mock
     private RestTemplate restTemplate;
 
     @Nested
     class FindDiscoveryEndpointsTests {
 
+        public static final String DISCOVERY_FINDER_URL = "dummyUrl";
+
+        private DiscoveryFinderClientImpl discoveryFinderClient;
+
+        @BeforeEach
+        void beforeEach() {
+            this.discoveryFinderClient = new DiscoveryFinderClientImpl(DISCOVERY_FINDER_URL, restTemplate);
+        }
+
         @Test
-        void shouldReturnResponseFromRestRequest() {
+        void findDiscoveryEndpoints_shouldReturnResponseFromRestRequest() {
             // Arrange
-            final List<String> bpns = List.of("bpn");
-            final DiscoveryFinderClientImpl discoveryFinderClient = new DiscoveryFinderClientImpl("dummyUrl",
-                    restTemplate);
-            when(restTemplate.postForObject("dummyUrl", new DiscoveryFinderRequest(bpns),
-                    DiscoveryResponse.class)).thenReturn(new DiscoveryResponse(
-                    List.of(new DiscoveryEndpoint("test-endpoint", "desc", "test-endpoint-addr", "docs", "resId"))));
+            final DiscoveryResponse mockResponse = new DiscoveryResponse(
+                    List.of(new DiscoveryEndpoint("test-endpoint", "desc", "test-endpoint-addr", "docs", "resId")));
+
+            final var request = new DiscoveryFinderRequest(List.of("bpn"));
+            when(restTemplate.postForObject(DISCOVERY_FINDER_URL, request, DiscoveryResponse.class)).thenReturn(
+                    mockResponse);
 
             // Act
-            final DiscoveryResponse discoveryResponse = discoveryFinderClient.findDiscoveryEndpoints(
-                    new DiscoveryFinderRequest(bpns));
+            final var response = discoveryFinderClient.findDiscoveryEndpoints(request);
 
             // Assert
-            assertThat(discoveryResponse).isNotNull();
-            assertThat(discoveryResponse.endpoints().stream().map(DiscoveryEndpoint::endpointAddress)).containsExactly(
+            assertThat(response).isNotNull();
+            assertThat(response.endpoints().stream().map(DiscoveryEndpoint::endpointAddress)).containsExactly(
                     "test-endpoint-addr");
+        }
+
+        @Test
+        void evictDiscoveryEndpointsCacheValues_shouldNotThrow() {
+            assertThatNoException().isThrownBy(discoveryFinderClient::evictDiscoveryEndpointsCacheValues);
         }
 
     }
