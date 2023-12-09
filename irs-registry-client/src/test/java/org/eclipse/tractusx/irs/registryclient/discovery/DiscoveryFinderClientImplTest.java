@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -39,43 +40,73 @@ class DiscoveryFinderClientImplTest {
     @Mock
     private RestTemplate restTemplate;
 
-    @Test
-    void shouldReturnEmptyListWhenDiscoveryReturnsNull() {
-        // Arrange
-        final String discoveryFinderUrl = "https://discovery.mock/api/administration/connectors/discovery/search";
-        final String providerUrl = "https://discovery.mock/api/administration/connectors/discovery";
-        final List<String> bpns = List.of("BPN123");
-        final DiscoveryFinderClientImpl discoveryFinderClient = new DiscoveryFinderClientImpl(discoveryFinderUrl,
-                restTemplate);
-        when(restTemplate.postForObject(providerUrl, bpns, EdcDiscoveryResult[].class)).thenReturn(null);
+    @Nested
+    class FindDiscoveryEndpointsTests {
 
-        // Act
-        final List<EdcDiscoveryResult> connectorEndpoints = discoveryFinderClient.findConnectorEndpoints(providerUrl,
-                bpns);
+        @Test
+        void shouldReturnResponseFromRestRequest() {
+            // Arrange
+            final List<String> bpns = List.of("bpn");
+            final DiscoveryFinderClientImpl discoveryFinderClient = new DiscoveryFinderClientImpl("dummyUrl",
+                    restTemplate);
+            when(restTemplate.postForObject("dummyUrl", new DiscoveryFinderRequest(bpns),
+                    DiscoveryResponse.class)).thenReturn(new DiscoveryResponse(
+                    List.of(new DiscoveryEndpoint("test-endpoint", "desc", "test-endpoint-addr", "docs", "resId"))));
 
-        // Assert
-        assertThat(connectorEndpoints).isNotNull().isEmpty();
+            // Act
+            final DiscoveryResponse discoveryResponse = discoveryFinderClient.findDiscoveryEndpoints(
+                    new DiscoveryFinderRequest(bpns));
+
+            // Assert
+            assertThat(discoveryResponse).isNotNull();
+            assertThat(discoveryResponse.endpoints().stream().map(DiscoveryEndpoint::endpointAddress)).containsExactly(
+                    "test-endpoint-addr");
+        }
+
     }
 
-    @Test
-    void shouldReturnEmptyListWhenDiscoveryReturnsEmpty() {
-        // Arrange
-        final String discoveryFinderUrl = "https://discovery.mock/api/administration/connectors/discovery/search";
-        final String providerUrl = "https://discovery.mock/api/administration/connectors/discovery";
-        final List<String> bpns = List.of("BPN123");
-        final DiscoveryFinderClientImpl discoveryFinderClient = new DiscoveryFinderClientImpl(discoveryFinderUrl,
-                restTemplate);
-        final EdcDiscoveryResult[] discoveryResponse = { new EdcDiscoveryResult("BPN123",
-                List.of("https://provider.edc"))
-        };
+    @Nested
+    class FindConnectorEndpointsTests {
 
-        when(restTemplate.postForObject(providerUrl, bpns, EdcDiscoveryResult[].class)).thenReturn(discoveryResponse);
+        @Test
+        void shouldReturnEmptyListWhenDiscoveryReturnsNull() {
+            // Arrange
+            final String discoveryFinderUrl = "https://discovery.mock/api/administration/connectors/discovery/search";
+            final String providerUrl = "https://discovery.mock/api/administration/connectors/discovery";
+            final List<String> bpns = List.of("BPN123");
+            final DiscoveryFinderClientImpl discoveryFinderClient = new DiscoveryFinderClientImpl(discoveryFinderUrl,
+                    restTemplate);
+            when(restTemplate.postForObject(providerUrl, bpns, EdcDiscoveryResult[].class)).thenReturn(null);
 
-        // Act
-        final List<EdcDiscoveryResult> connectorEndpoints = discoveryFinderClient.findConnectorEndpoints(providerUrl,
-                bpns);
+            // Act
+            final List<EdcDiscoveryResult> connectorEndpoints = discoveryFinderClient.findConnectorEndpoints(
+                    providerUrl, bpns);
 
-        // Assert
-        assertThat(connectorEndpoints).isNotNull().hasSize(1);
+            // Assert
+            assertThat(connectorEndpoints).isNotNull().isEmpty();
+        }
+
+        @Test
+        void shouldReturnEmptyListWhenDiscoveryReturnsEmpty() {
+            // Arrange
+            final String discoveryFinderUrl = "https://discovery.mock/api/administration/connectors/discovery/search";
+            final String providerUrl = "https://discovery.mock/api/administration/connectors/discovery";
+            final List<String> bpns = List.of("BPN123");
+            final DiscoveryFinderClientImpl discoveryFinderClient = new DiscoveryFinderClientImpl(discoveryFinderUrl,
+                    restTemplate);
+            final EdcDiscoveryResult[] discoveryResponse = { new EdcDiscoveryResult("BPN123",
+                    List.of("https://provider.edc"))
+            };
+
+            when(restTemplate.postForObject(providerUrl, bpns, EdcDiscoveryResult[].class)).thenReturn(
+                    discoveryResponse);
+
+            // Act
+            final List<EdcDiscoveryResult> connectorEndpoints = discoveryFinderClient.findConnectorEndpoints(
+                    providerUrl, bpns);
+
+            // Assert
+            assertThat(connectorEndpoints).isNotNull().hasSize(1);
+        }
     }
 }
