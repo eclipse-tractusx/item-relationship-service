@@ -19,7 +19,8 @@ package [**OEM**] <<CatenaX Company>> as consumer {
         component [**EDC (Provider)**] <<System>> as EDCProviderOEM
         component [**SubmodelServer**] <<System>> as SubmodelServerOEM
         component [**decentral Digital Twin Registry**] <<System>> as DT_REG_OEM
-        }
+        component [**IRS-ESS**] <<System>> as EssOEM
+    }
 
 }
 
@@ -37,6 +38,7 @@ package [**N-Tier**] <<CatenaX Data Provider Company>> as provider {
     component [**EDC (Provider)**] <<System>> as EDCProvider
     component [**SubmodelServer**] <<System>> as SubmodelServer
     component [**decentral Digital Twin Registry**] <<System>> as DT_REG
+    component [**IRS-ESS**] <<System>> as EssProvider
 }
 
 actor IrsApiConsumer
@@ -47,6 +49,7 @@ IAM_IRS  <..> Portal_IdP  : **[03]**
 
 EDCProviderOEM <-> SubmodelServerOEM : **[04]**
 EDCProviderOEM <--> DT_REG_OEM : **[05]**
+EDCProviderOEM <--> EssOEM : **[17]**
 miw <..> EDCProviderOEM  : **[12]**
 
 IRS <.d.> EDC  : **[06]**
@@ -63,6 +66,7 @@ EDC <..> EDCProviderOEM  : **[13]**
 miw <..> EDCProvider  : **[14]**
 EDCProvider <--> SubmodelServer : **[15]**
 EDCProvider <--> DT_REG : **[16]**
+EDCProvider <-> EssProvider : **[17]**
 
 miw -[hidden]d- IAM_IRS
 miw -[hidden]r- discovery_finder

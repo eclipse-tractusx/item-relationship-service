@@ -96,6 +96,7 @@ class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)
+                                                                      .hasAlternatives(Boolean.FALSE)
                                                                       .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
