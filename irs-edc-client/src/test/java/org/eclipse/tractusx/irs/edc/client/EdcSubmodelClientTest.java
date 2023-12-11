@@ -201,6 +201,28 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
+    void shouldGetManagedEndpointDataReference() throws Exception {
+        config.getControlplane().setEdrManagementEnabled(true);
+
+        // arrange
+        final String filterKey = "filter-key";
+        final String filterValue = "filter-value";
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId("asset-id").build()));
+        when(contractNegotiationService.negotiateWithEdrManagement(any(), any())).thenReturn(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        final EndpointDataReference expected = mock(EndpointDataReference.class);
+        when(contractNegotiationService.getManagedEndpointDataReference("agreementId")).thenReturn(expected);
+
+        // act
+        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS, filterKey, filterValue);
+        final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
+
+        // assert
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     void shouldReturnRelationshipsWhenRequestingWithCatenaXIdAndSingleLevelBomAsBuilt() throws Exception {
         final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
