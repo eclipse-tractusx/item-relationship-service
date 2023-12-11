@@ -77,7 +77,7 @@ If left empty, this defaults to the internal endpoint of the controlplane provid
 ==== <discoveryFinderClient.cacheTTL>
 
 When IRS calls the DTR discovery finder URL for BPNL's there is a cache mechanism between them, to improve performance.
-This parameter define how long cache is maintained before it is cleared.
+This parameter defines how long the cache is maintained before it is cleared.
 Data is in ISO 8601.
 
 ==== <connectorEndpointService.cacheTTL>
