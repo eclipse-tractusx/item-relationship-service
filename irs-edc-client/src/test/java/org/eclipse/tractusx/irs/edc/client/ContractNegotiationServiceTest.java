@@ -32,11 +32,13 @@ import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
+import org.eclipse.tractusx.irs.edc.client.model.EndpointDataReferenceEntryResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
@@ -153,6 +155,44 @@ class ContractNegotiationServiceTest {
 
         // act & assert
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem)).isInstanceOf(EdcClientException.class);
+    }
+
+    @Test
+    void shouldNegotiateSuccessfullyWithEdrManagement()
+            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
+        // arrange
+        final var assetId = "testTarget";
+        final String offerId = "offerId";
+        final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
+        when(policyCheckerService.isValid(any())).thenReturn(Boolean.TRUE);
+        when(edcControlPlaneClient.startEDRNegotiations(any())).thenReturn(
+                Response.builder().responseId("negotiationId").build());
+        CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
+                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+        when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
+
+        // act
+        NegotiationResponse result = testee.negotiateWithEdrManagement(CONNECTOR_URL, catalogItem);
+
+        // assert
+        assertThat(result).isNotNull();
+        assertThat(result.getContractAgreementId()).isEqualTo("agreementId");
+    }
+
+    @Test
+    void shouldGetManagedEdr() throws TransferProcessException {
+        // arrange
+        final CompletableFuture<EndpointDataReferenceEntryResponse> response = CompletableFuture.completedFuture(
+                EndpointDataReferenceEntryResponse.builder().transferProcessId("test-transfer-id").build());
+        when(edcControlPlaneClient.getEndpointDataReferenceEntry(any())).thenReturn(response);
+        final EndpointDataReference dataRef = EndpointDataReference.Builder.newInstance().endpoint("test").build();
+        when(edcControlPlaneClient.getEndpointDataReference(any())).thenReturn(dataRef);
+
+        // act
+        final EndpointDataReference edr = testee.getManagedEndpointDataReference("test");
+
+        // assert
+        assertThat(edr).isEqualTo(dataRef);
     }
 
 }

@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_COMPLETED;
 import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_FINALIZED;
+import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_NEGOTIATED;
 import static org.eclipse.tractusx.irs.edc.client.EdcControlPlaneClient.STATUS_TERMINATED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -38,6 +39,7 @@ import static org.mockito.Mockito.when;
 import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -47,6 +49,7 @@ import jakarta.json.JsonObject;
 import org.assertj.core.api.Assertions;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
+import org.eclipse.tractusx.irs.edc.client.model.EndpointDataReferenceEntryResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationState;
@@ -61,6 +64,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -232,5 +236,25 @@ class EdcControlPlaneClientTest {
 
         // assert
         assertThat(transferProcessResponse).isEqualTo(response);
+    }
+
+    @Test
+    void shouldReturnNegotiatedResult() throws Exception {
+        // arrange
+        final var entry = EndpointDataReferenceEntryResponse.builder()
+                                                                        .agreementId("testContractId")
+                                                                        .state(STATUS_NEGOTIATED)
+                                                                        .build();
+
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(),
+                eq(new ParameterizedTypeReference<List<EndpointDataReferenceEntryResponse>>() {
+                }))).thenReturn(ResponseEntity.of(Optional.of(List.of(entry))));
+
+        // act
+        final var result = testee.getEndpointDataReferenceEntry(entry.getAgreementId());
+        final EndpointDataReferenceEntryResponse response = result.get(5, TimeUnit.SECONDS);
+
+        // assert
+        assertThat(response).isEqualTo(entry);
     }
 }
