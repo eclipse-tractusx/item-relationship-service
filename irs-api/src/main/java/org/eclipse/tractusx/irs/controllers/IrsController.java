@@ -65,6 +65,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -95,7 +96,7 @@ public class IrsController {
 
     @Operation(operationId = "registerJobForGlobalAssetId",
                summary = "Register an IRS job to retrieve an item graph for given {globalAssetId}.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" },
                description = "Register an IRS job to retrieve an item graph for given {globalAssetId}.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns id of registered job.",
@@ -135,7 +136,7 @@ public class IrsController {
     @Operation(description = "Return job with optional item graph result for requested id.",
                operationId = "getJobForJobId",
                summary = "Return job with optional item graph result for requested id.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Return job with item graph for the requested id.",
@@ -179,20 +180,24 @@ public class IrsController {
     @IrsTimer("getjob")
     @GetMapping("/jobs/{id}")
     @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
-    public Jobs getJobById(
+    public ResponseEntity<Jobs> getJobById(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Size(min = IrsAppConstants.JOB_ID_SIZE,
                                                                                max = IrsAppConstants.JOB_ID_SIZE) @Valid @PathVariable final UUID id,
             @Parameter(
-                    description = "<true> Return job with current processed item graph. <false> Return job with item graph if job is in state <COMPLETED>, otherwise job.") @Schema(
+                    description = "\\<true\\> Return job with current processed item graph. \\<false\\> Return job with item graph if job is in state COMPLETED, otherwise job.") @Schema(
                     implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
                                                                                          required = false) final boolean returnUncompletedJob) {
-        return itemJobService.getJobForJobId(id, returnUncompletedJob);
+        final Jobs job = itemJobService.getJobForJobId(id, returnUncompletedJob);
+        if (job.getJob().getState().equals(JobState.RUNNING)) {
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(job);
+        }
+        return ResponseEntity.ok(job);
     }
 
     @Operation(description = "Cancel job for requested jobId.", operationId = "cancelJobByJobId",
                summary = "Cancel job for requested jobId.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled.",
                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -238,7 +243,7 @@ public class IrsController {
 
     @Operation(description = "Returns paginated jobs with state and execution times.", operationId = "getJobsByJobStates",
                summary = "Returns paginated jobs with state and execution times.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Paginated list of jobs with state and execution times for requested job states.",
@@ -281,7 +286,7 @@ public class IrsController {
 
     @Operation(operationId = "getAllAspectModels",
                summary = "Get all available aspect models from semantic hub or local models.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"), tags = { "Aspect Models" },
+               security = @SecurityRequirement(name = "oAuth2"), tags = { "Aspect Models" },
                description = "Get all available aspect models from semantic hub or local models.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns all available aspect models.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,

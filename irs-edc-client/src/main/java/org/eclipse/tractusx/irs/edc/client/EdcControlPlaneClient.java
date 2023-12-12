@@ -59,6 +59,7 @@ public class EdcControlPlaneClient {
 
     public static final String STATUS_FINALIZED = "FINALIZED";
     public static final String STATUS_COMPLETED = "COMPLETED";
+    public static final String STATUS_STARTED = "STARTED";
     public static final String STATUS_ERROR = "ERROR";
     public static final String DATASPACE_PROTOCOL_HTTP = "dataspace-protocol-http";
     public static final String STATUS_TERMINATED = "TERMINATED";
@@ -110,7 +111,7 @@ public class EdcControlPlaneClient {
             querySpec.limit(limit);
         }
         return CatalogRequest.Builder.newInstance()
-                                     .providerUrl(providerUrl)
+                                     .counterPartyAddress(providerUrl)
                                      .protocol(DATASPACE_PROTOCOL_HTTP)
                                      .querySpec(querySpec.build())
                                      .build();
@@ -120,7 +121,7 @@ public class EdcControlPlaneClient {
             final String value) {
         final QuerySpec querySpec = QuerySpec.Builder.newInstance().filter(new Criterion(key, "=", value)).build();
         final var catalogRequest = CatalogRequest.Builder.newInstance()
-                                                         .providerUrl(providerConnectorUrl)
+                                                         .counterPartyAddress(providerConnectorUrl)
                                                          .protocol(DATASPACE_PROTOCOL_HTTP)
                                                          .querySpec(querySpec)
                                                          .build();
@@ -209,7 +210,7 @@ public class EdcControlPlaneClient {
 
                                  if (transferProcessState != null) {
                                      return switch (transferProcessState.getState()) {
-                                         case STATUS_COMPLETED -> Optional.of(
+                                         case STATUS_COMPLETED, STATUS_STARTED -> Optional.of(
                                                  getTransferProcessResponse(transferProcessId, objectHttpEntity));
                                          case STATUS_ERROR -> throw new IllegalStateException(
                                                  "TransferProcessResponse with id " + getTransferProcessResponse(

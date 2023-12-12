@@ -63,7 +63,7 @@ public class RegisterJob {
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @ArraySchema(schema = @Schema(implementation = String.class), maxItems = Integer.MAX_VALUE)
+    @ArraySchema(arraySchema = @Schema(implementation = String.class, description = "List of aspect names that will be collected if \\<collectAspects\\> flag is set to true."), maxItems = Integer.MAX_VALUE)
     private List<String> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,

@@ -109,6 +109,13 @@ bpn:  # BPN for this IRS instance; only users with this BPN are allowed to acces
 ingress:
   enabled: false
 
+management:
+  health:
+    dependencies:
+      enabled: false  # Flag to determine if external service healthcheck endpoints should be checked
+      urls: {}  # Map of services with corresponding healthcheck endpoint url's. Example:
+        # service_name: http://service_name_host.com/health
+
 digitalTwinRegistry:
   type: decentral  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
   url:  # "https://<digital-twin-registry-url>"
@@ -142,19 +149,16 @@ bpdm:
 minioUser: "minio"  # <minio-username>
 minioPassword:  # <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
-keycloak:
-  oauth2:
-    clientId:  # <keycloak-client-id>
-    clientSecret:  # <keycloak-client-secret>
-    clientTokenUri:  # <keycloak-token-uri>
-    jwkSetUri:  # <keycloak-jwkset-uri>
+oauth2:
+  clientId:  # <oauth2-client-id>
+  clientSecret:  # <oauth2-client-secret>
+  clientTokenUri:  # <oauth2-token-uri>
+  jwkSetUri:  # <oauth2-jwkset-uri>
 portal:
   oauth2:
     clientId:  # <portal-client-id>
     clientSecret:  # <portal-client-secret>
 edc:
-  provider:
-    host:  # EDC Provider Host URL
   controlplane:
     endpoint:
       data: ""  # <edc-controlplane-endpoint-data>
@@ -196,14 +200,19 @@ edc:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
-
+  connectorEndpointService:
+    cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:
+  edc:
+    host:  # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
   mockEdcResult:  # Map of BPNs and YES/NO strings - this configures the ESS mock response in case it called to investigate a BPN
   mockRecursiveEdcAsset:  # List of BPNs for which the special, mocked notification asset should be used
-  managementPath: "/management/v2"  # EDC management API path - used for notification asset creation
+  assetsPath: /management/v3/assets  # EDC management API "assets" path - used for notification asset creation
+  policydefinitionsPath: /management/v2/policydefinitions  # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: /management/v2/contractdefinitions  # EDC management API "contractdefinitions" path - used for notification contract definitions creation
 
 oauth:
   resourceClaim: "resource_access"  # Name of the JWT claim for roles
@@ -326,6 +335,257 @@ grafana:
 
   dashboards:
     default:
+      system-health-dashboard:
+        json: |
+          {
+            "annotations": {
+              "list": [
+                {
+                  "builtIn": 1,
+                  "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                  },
+                  "enable": true,
+                  "hide": true,
+                  "iconColor": "rgba(0, 211, 255, 1)",
+                  "name": "Annotations & Alerts",
+                  "target": {
+                    "limit": 100,
+                    "matchAny": false,
+                    "tags": [],
+                    "type": "dashboard"
+                  },
+                  "type": "dashboard"
+                }
+              ]
+            },
+            "editable": true,
+            "fiscalYearStartMonth": 0,
+            "graphTooltip": 0,
+            "id": 7,
+            "links": [],
+            "liveNow": false,
+            "panels": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "color": {
+                      "mode": "continuous-GrYlRd"
+                    },
+                    "custom": {
+                      "fillOpacity": 70,
+                      "lineWidth": 1
+                    },
+                    "mappings": [
+                      {
+                        "options": {
+                          "0": {
+                            "color": "purple",
+                            "index": 3,
+                            "text": "UNKNOWN"
+                          },
+                          "1": {
+                            "color": "red",
+                            "index": 1,
+                            "text": "DOWN"
+                          },
+                          "2": {
+                            "color": "#808080",
+                            "index": 2,
+                            "text": "OUT"
+                          },
+                          "3": {
+                            "color": "green",
+                            "index": 0,
+                            "text": "UP"
+                          }
+                        },
+                        "type": "value"
+                      }
+                    ],
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "transparent",
+                          "value": null
+                        }
+                      ]
+                    }
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                  "h": 9,
+                  "w": 23,
+                  "x": 0,
+                  "y": 0
+                },
+                "id": 4,
+                "options": {
+                  "colWidth": 0.9,
+                  "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                  },
+                  "rowHeight": 0.9,
+                  "showValue": "auto",
+                  "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                  }
+                },
+                "pluginVersion": "9.2.5",
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "builder",
+                    "exemplar": false,
+                    "expr": "health_irs",
+                    "format": "time_series",
+                    "hide": false,
+                    "instant": false,
+                    "legendFormat": "IRS Health",
+                    "range": true,
+                    "refId": "health_irs"
+                  },
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "builder",
+                    "exemplar": false,
+                    "expr": "health_irs_dependency_overall",
+                    "format": "time_series",
+                    "instant": false,
+                    "interval": "",
+                    "legendFormat": "Dependency Overall Status",
+                    "range": true,
+                    "refId": "health_irs_dependencies_overall"
+                  }
+                ],
+                "title": "IRS Health",
+                "type": "status-history"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "PBFA97CFB590B2093"
+                },
+                "fieldConfig": {
+                  "defaults": {
+                    "color": {
+                      "mode": "thresholds"
+                    },
+                    "custom": {
+                      "fillOpacity": 70,
+                      "lineWidth": 1
+                    },
+                    "mappings": [
+                      {
+                        "options": {
+                          "3": {
+                            "color": "green",
+                            "index": 0,
+                            "text": "UP"
+                          }
+                        },
+                        "type": "value"
+                      },
+                      {
+                        "options": {
+                          "from": 0,
+                          "result": {
+                            "color": "red",
+                            "index": 1,
+                            "text": "DOWN"
+                          },
+                          "to": 2
+                        },
+                        "type": "range"
+                      }
+                    ],
+                    "thresholds": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "transparent",
+                          "value": null
+                        }
+                      ]
+                    }
+                  },
+                  "overrides": []
+                },
+                "gridPos": {
+                  "h": 9,
+                  "w": 23,
+                  "x": 0,
+                  "y": 9
+                },
+                "id": 6,
+                "options": {
+                  "colWidth": 0.9,
+                  "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                  },
+                  "rowHeight": 0.9,
+                  "showValue": "auto",
+                  "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                  }
+                },
+                "targets": [
+                  {
+                    "datasource": {
+                      "type": "prometheus",
+                      "uid": "${DS_PROMETHEUS}"
+                    },
+                    "editorMode": "builder",
+                    "exemplar": false,
+                    "expr": "health_irs_dependency",
+                    "instant": false,
+                    "interval": "",
+                    "legendFormat": "{{name}}",
+                    "range": true,
+                    "refId": "A"
+                  }
+                ],
+                "title": "IRS Dependencies Health",
+                "type": "status-history"
+              }
+            ],
+            "refresh": "5s",
+            "schemaVersion": 37,
+            "style": "dark",
+            "tags": [],
+            "templating": {
+              "list": []
+            },
+            "time": {
+              "from": "now-15m",
+              "to": "now"
+            },
+            "timepicker": {},
+            "timezone": "",
+            "title": "System Health",
+            "uid": "_3NCxeSSk1",
+            "version": 1,
+            "weekStart": ""
+          }
       irs-api-dashboard:
         json: |
           {

@@ -81,7 +81,7 @@ public class JobParameter {
     public static JobParameter create(final @NonNull RegisterJob request) {
         final BomLifecycle bomLifecycle = Optional.ofNullable(request.getBomLifecycle()).orElse(BomLifecycle.AS_BUILT);
         final List<String> aspectTypeValues = Optional.ofNullable(request.getAspects())
-                                                      .orElse(List.of(bomLifecycle.getDefaultAspect()));
+                                                      .orElse(List.of());
         final Direction direction = Optional.ofNullable(request.getDirection()).orElse(Direction.DOWNWARD);
 
         return JobParameter.builder()
@@ -90,7 +90,7 @@ public class JobParameter {
                            .bpn(request.getKey().getBpn())
                            .direction(direction)
                            .aspects(aspectTypeValues.isEmpty()
-                                   ? List.of(bomLifecycle.getDefaultAspect())
+                                   ? List.of()
                                    : aspectTypeValues)
                            .collectAspects(request.isCollectAspects())
                            .integrityCheck(request.isIntegrityCheck())

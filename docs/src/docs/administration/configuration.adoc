@@ -6,7 +6,7 @@
 Take the following template and adjust the configuration parameters (<placeholders> mark the relevant spots).
 You can define the URLs as well as most of the secrets yourself.
 
-The Keycloak, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
+The OAuth2, MIW and Vault configuration / secrets depend on your setup and might need to be provided externally.
 
 include::irs-spring-config.adoc[leveloffset=+1]
 
@@ -61,11 +61,11 @@ The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas f
 ==== <bpdm-url>
 The URL of the BPDM service. The IRS uses this service to fetch business partner information based on BPNs.
 
-==== <keycloak-token-uri>
-The URL of the Keycloak token API. Used by the IRS for token creation to authenticate with other services.
+==== <oauth2-token-uri>
+The URL of the OAuth2 token API. Used by the IRS for token creation to authenticate with other services.
 
-==== <keycloak-jwkset-uri>
-The URL of the Keycloak JWK Set. Used by the IRS to validate tokens when the IRS API is called.
+==== <oauth2-jwkset-uri>
+The URL of the OAuth2 JWK Set. Used by the IRS to validate tokens when the IRS API is called.
 
 ==== <grafana-url>
 The hostname where Grafana will be made available.
@@ -73,6 +73,13 @@ The hostname where Grafana will be made available.
 ==== <edc-controlplane-endpoint-data>
 The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.
+
+==== <connectorEndpointService.cacheTTL>
+When IRS calls EDC Discovery Service to fetch endpoints for BPNL's there is a cache mechanism between them, to improve performance.
+This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.
+
+== OAuth2 Configuration
+OAuth2 protocol is used by IRS to protect the APIs and other resources. This means it is possible to configure and use any identity and access management tool that provides OAuth 2.0 functionality.
 
 === Semantic Model Provisioning
 The IRS can retrieve semantic models in two ways:
@@ -139,11 +146,11 @@ This is a list of all secrets used in the deployment.
 
 WARNING: Keep the values for these settings safe and do not publish them!
 
-=== <keycloak-client-id>
-Client ID for Keycloak. Request this from your Keycloak operator.
+=== <common-client-id>
+Client ID for OAuth2 provider. Request this from your OAuth2 operator.
 
-=== <keycloak-client-secret>
-Client secret for Keycloak. Request this from your Keycloak operator.
+=== <common-client-secret>
+Client secret for OAuth2 provider. Request this from your OAuth2 operator.
 
 === <minio-username>
 Login username for Minio. To be defined by you.

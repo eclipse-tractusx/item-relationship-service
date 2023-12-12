@@ -20,7 +20,7 @@
 # * SPDX-License-Identifier: Apache-2.0
 
 # Dependencies
-FROM maven:3-openjdk-18-slim AS maven
+FROM maven:3-eclipse-temurin-17-alpine AS maven
 ARG BUILD_TARGET=irs-api
 
 WORKDIR /build
@@ -49,9 +49,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET 
 
 
 # Copy the jar and build image
-FROM eclipse-temurin:20-jre-alpine AS irs-api
-
-RUN apk upgrade --no-cache libssl3 libcrypto3
+FROM eclipse-temurin:17-jre-alpine AS irs-api
 
 ARG UID=10000
 ARG GID=3000

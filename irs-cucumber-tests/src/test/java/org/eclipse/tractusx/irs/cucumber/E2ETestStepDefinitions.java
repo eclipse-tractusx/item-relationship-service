@@ -37,13 +37,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
@@ -96,6 +96,11 @@ public class E2ETestStepDefinitions {
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
+    @DataTableType
+    public PartChainIdentificationKey definePartChainIdentificationKey(Map<String, String> entry) {
+        return new PartChainIdentificationKey(entry.get("globalAssetId"), entry.get("bpn"));
+    }
+
     @Given("the IRS URL {string}")
     public void theIRSURL(String irsUrl) {
         authenticationPropertiesBuilder.uri(irsUrl);
@@ -104,18 +109,18 @@ public class E2ETestStepDefinitions {
     @And("the user {string} with authentication")
     public void theUser(String clientId) throws PropertyNotFoundException {
         authenticationPropertiesBuilder.clientId(clientId);
-        final String keycloakClientSecretKey = "KEYCLOAK_CLIENT_SECRET";
-        String clientSecret = System.getenv(keycloakClientSecretKey);
+        final String oauth2UrlClientSecretKey = "OAUTH2_CLIENT_SECRET";
+        String clientSecret = System.getenv(oauth2UrlClientSecretKey);
         if (clientSecret != null) {
             authenticationPropertiesBuilder.clientSecret(clientSecret);
         } else {
-            throw new PropertyNotFoundException("Environment Variable missing: " + keycloakClientSecretKey);
+            throw new PropertyNotFoundException("Environment Variable missing: " + oauth2UrlClientSecretKey);
         }
     }
 
-    @And("the keycloak token url {string}")
-    public void theKeycloakTokenUrl(String tokenUrl) {
-        authenticationPropertiesBuilder.keycloakUrl(tokenUrl);
+    @And("the OAuth2 token url {string}")
+    public void theOAuth2TokenUrl(String tokenUrl) {
+        authenticationPropertiesBuilder.oauth2Url(tokenUrl);
     }
 
     @Given("I register an IRS job for globalAssetId {string}")
@@ -128,13 +133,9 @@ public class E2ETestStepDefinitions {
         registerJobBuilder.key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn(bpn).build());
     }
 
-    @Given("I register an IRS batch job for globalAssetIds:")
-    public void iRegisterAnIRSBatchForGlobalAssetIds(List<String> globalAssetIds) {
-        registerBatchOrderBuilder.keys(globalAssetIds.stream()
-                                                     .map(x -> PartChainIdentificationKey.builder()
-                                                                                         .globalAssetId(x)
-                                                                                         .build())
-                                                     .collect(Collectors.toSet()));
+    @Given("I register an IRS batch job for globalAssetIds and BPNs:")
+    public void iRegisterAnIRSBatchForGlobalAssetIdsAndBpns(List<PartChainIdentificationKey> keys) {
+        registerBatchOrderBuilder.keys(Set.copyOf(keys));
     }
 
     @Given("I register an IRS batch job for globalAssetIds and BPN:")

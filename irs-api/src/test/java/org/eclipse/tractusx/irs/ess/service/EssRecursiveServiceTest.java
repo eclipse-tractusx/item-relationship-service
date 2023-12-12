@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.ess.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -66,7 +67,7 @@ class EssRecursiveServiceTest {
         EdcNotification<InvestigationNotificationContent> edcNotification = EdcNotification.<InvestigationNotificationContent>builder()
                                                                                            .content(notificationContent)
                                                                                            .build();
-        Mockito.doNothing().when(edcNotificationSender).sendEdcNotification(any(), supplyChainCaptor.capture());
+        Mockito.doNothing().when(edcNotificationSender).sendEdcNotification(any(), supplyChainCaptor.capture(), eq(0), eq(localBpn));
 
         // when
         essRecursiveService.handleNotification(edcNotification);

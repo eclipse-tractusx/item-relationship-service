@@ -1,0 +1,27 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam defaultFontName "Architects daughter"
+
+start
+if (Twin is available in DTR) then (No)
+    :Unknown;
+    stop
+else (Yes)
+if (Twins has PartSiteInformationAsPlanned) then (No)
+    :Unknown;
+    stop
+else (Yes)
+if (PartSiteInformation contains BPNS) then (No)
+    :Unknown;
+    stop
+else (Yes)
+if (PartSiteInformation contains incident BPNS) then (No)
+    :No;
+    stop
+else (Yes)
+    :Yes;
+    stop
+endif
+
+@enduml

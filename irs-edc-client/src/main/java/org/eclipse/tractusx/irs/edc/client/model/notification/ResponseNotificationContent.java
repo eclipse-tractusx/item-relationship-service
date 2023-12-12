@@ -34,5 +34,25 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class ResponseNotificationContent implements NotificationContent {
+
+    private static final String INFECTED_SUPPLY_CHAIN_RESULT = "Yes";
+
     private final String result;
+    private Integer hops;
+    private String bpn;
+
+    /**
+     * Incrementing hops value
+     *
+     */
+    public void incrementHops() {
+        this.hops += 1;
+    }
+
+    /**
+     * @return true if the result is Yes
+     */
+    public boolean thereIsIncident() {
+        return INFECTED_SUPPLY_CHAIN_RESULT.equals(this.getResult());
+    }
 }

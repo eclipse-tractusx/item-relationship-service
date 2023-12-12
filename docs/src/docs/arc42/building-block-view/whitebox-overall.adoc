@@ -50,19 +50,19 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |Number |Description
 
 | 01
-| IrsApiConsumer calls the **IRS** public **API**
+| IrsApiConsumer calls the *IRS* public *API*
 
 | 02
-| IrsApiConsumer must authorize using **technical C-X User**
+| IrsApiConsumer must authorize using *technical C-X User*
 
 | 03
-| Delegate authorization request to **IdP**
+| Delegate authorization request to *IdP*
 
 | 04
-| IRS requesting for **SubmodelAspects** using **EDC**
+| IRS requesting for *SubmodelAspects* using *EDC*
 
 | 05
-| IRS requesting the **decentral DigitalTwinRegistry** over **EDC** and service discovery flow
+| IRS requesting the *decentral DigitalTwinRegistry* over *EDC* and service discovery flow
 
 | 06
 | IRS uses EDC to ensure sovereign data consumption
@@ -71,31 +71,34 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | IRS MUST authorize at central IAM
 
 | 08
-| IRS lookup for EDC Provider by given BPNs over the **EDC Discovery Service**
+| IRS lookup for EDC Provider by given BPNs over the *EDC Discovery Service*
 
 | 09
-| IRS lookup for **EDC Discovery Services** by given type <BPN> over the **Discovery Finder**
+| IRS lookup for *EDC Discovery Services* by given type <BPN> over the *Discovery Finder*
 
 | 10
-| IRS uses **Semantic Hub** to validate of **SubmodelAspects** payloads agains the schema provided in **Semantic Hub**
+| IRS uses *Semantic Hub* to validate of *SubmodelAspects* payloads agains the schema provided in *Semantic Hub*
 
 | 11
 | In case "lookupBPNs" is active IRS provides a lookup of company for given BPN
 
 | 12
-| **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers
+| *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
 
 | 13
-| **EDC** communication covering negotiation and data consumption
+| *EDC* communication covering negotiation and data consumption
 
 | 14
-| **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers
+| *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
 
 | 15
-| **IRS** accessing to **SubmodelServer** on Tier Level using the **EDC**
+| *IRS* accessing to *SubmodelServer* on Tier Level using the *EDC*
 
 | 16
-| **IRS** accessing the **decentral DigitalTwinRegistry** on Tier Level using the **EDC**
+| *IRS* accessing the *decentral DigitalTwinRegistry* on Tier Level using the *EDC*
+
+| 17
+| In case of the use-case Environmental and Social Standards, *IRS* sends notifications to the *IRS-ESS* instance running at the data provider using the *EDC*.
 |===
 
 
