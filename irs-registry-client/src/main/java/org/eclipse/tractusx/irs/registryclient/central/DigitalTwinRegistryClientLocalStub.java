@@ -30,21 +30,16 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdminist
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.registryclient.decentral.LookupShellsResponse;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
 
 /**
  * Digital Twin Registry Rest Client Stub used in local environment
  */
-@Service
-@Profile({ "local",
-           "stubtest"
-})
-class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
+public class DigitalTwinRegistryClientLocalStub implements DigitalTwinRegistryClient {
 
     private final AssetAdministrationShellTestdataCreator testdataCreator;
 
-    /* package */ DigitalTwinRegistryClientLocalStub(final CxTestDataContainer cxTestDataContainer) {
+    /* package */
+    public DigitalTwinRegistryClientLocalStub(final CxTestDataContainer cxTestDataContainer) {
         this.testdataCreator = new AssetAdministrationShellTestdataCreator(cxTestDataContainer);
     }
 
