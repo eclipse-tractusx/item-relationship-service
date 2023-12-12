@@ -107,4 +107,4 @@ When the EDC Discovery is requested to return the EDC connector endpoint URLs fo
 
 The time to live for both caches can be configured separately as described in the Administration Guide.
 
-Please find more information on Discovery Service see chapter "System scope and context".
+Further information on Discovery Service can be found in the chapter "System scope and context".
