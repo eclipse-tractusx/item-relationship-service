@@ -137,7 +137,7 @@ def submodelDescriptors_in_shells_are_empty(response):
     shells = response.json().get("shells")
     print("shells ", shells)
     for i in shells:
-        assert len(shells.get("submodelDescriptors")) == 0
+        assert len(i.get("submodelDescriptors")) == 0
 
 
 def aspects_in_job_parameter_are_empty(response):
