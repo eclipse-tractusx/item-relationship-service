@@ -82,7 +82,7 @@ Data is in ISO 8601.
 
 ==== <connectorEndpointService.cacheTTL>
 
-When IRS calls EDC Discovery Service to fetch connector endpoints for BPNL's there is a cache mechanism between them, to improve performance.
+When IRS calls EDC Discovery Service to fetch connector endpoints for BPNLs, the results are cached to improve performance.
 This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.
 
 == OAuth2 Configuration
