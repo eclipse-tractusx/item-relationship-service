@@ -37,12 +37,13 @@ import org.eclipse.tractusx.irs.data.CxTestDataContainer;
  * Class to create Submodel Testdata
  * As AASWrapper is not deployed, we are using this class to Stub responses
  */
-class SubmodelTestdataCreator {
+public class SubmodelTestdataCreator {
 
     private final CxTestDataContainer cxTestDataContainer;
     private final ObjectMapper objectMapper;
 
-    /* package */ SubmodelTestdataCreator(final CxTestDataContainer cxTestDataContainer) {
+    /* package */
+    public SubmodelTestdataCreator(final CxTestDataContainer cxTestDataContainer) {
         this.cxTestDataContainer = cxTestDataContainer;
 
         objectMapper = new ObjectMapper();

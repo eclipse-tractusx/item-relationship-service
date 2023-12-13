@@ -13,7 +13,8 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:d57a0374-45bc-4d9e-b44c-e6e75cfe84c0"
+                "childCatenaXId": "urn:uuid:d57a0374-45bc-4d9e-b44c-e6e75cfe84c0",
+                "hasAlternatives": true
             },
             "aspectType": "SingleLevelBomAsBuilt",
             "bpn": "BPNL00000003B3NX"
@@ -31,7 +32,8 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:098d565e-915a-4794-a60a-d92a8391bdde"
+                "childCatenaXId": "urn:uuid:098d565e-915a-4794-a60a-d92a8391bdde",
+                "hasAlternatives": true
             },
             "aspectType": "SingleLevelBomAsBuilt",
             "bpn": "BPNL00000003AZQP"
@@ -49,7 +51,8 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:aa42c959-a79c-4350-8ff8-3126a9e984a0"
+                "childCatenaXId": "urn:uuid:aa42c959-a79c-4350-8ff8-3126a9e984a0",
+                "hasAlternatives": true
             },
             "aspectType": "SingleLevelBomAsBuilt",
             "bpn": "BPNL00000003AYRE"
@@ -67,7 +70,8 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:6cae0932-05e2-467d-98d0-7d580938a23e"
+                "childCatenaXId": "urn:uuid:6cae0932-05e2-467d-98d0-7d580938a23e",
+                "hasAlternatives": true
             },
             "aspectType": "SingleLevelBomAsBuilt",
             "bpn": "BPNL00000003B0Q0"

@@ -60,6 +60,8 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TimeoutException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;

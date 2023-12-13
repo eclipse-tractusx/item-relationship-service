@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,6 +34,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -61,6 +63,14 @@ class DefaultConfigurationTest {
                 testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
 
         assertThat(service).isNotNull();
+    }
+
+    @Test
+    void edcSubmodelFacade() {
+        final EdcSubmodelClient facadeMock = mock(EdcSubmodelClient.class);
+        final EdcSubmodelFacade edcSubmodelFacade = testee.edcSubmodelFacade(facadeMock);
+
+        assertThat(edcSubmodelFacade).isNotNull();
     }
 
     @Test
