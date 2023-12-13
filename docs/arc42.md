@@ -1145,6 +1145,17 @@ Whenever a semantic model schema is requested from the Semantic Hub, it is store
 
 Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.
 
+#### Discovery Service
+
+The IRS uses the Discovery Finder in order to find the correct EDC Discovery URL for the type BPN.
+This URL is cached locally.
+
+When the EDC Discovery is requested to return the EDC connector endpoint URLs for a specific BPN, the results are cached as well.
+
+The time to live for both caches can be configured separately as described in the Administration Guide.
+
+Further information on Discovery Service can be found in the chapter "System scope and context".
+
 ## Development concepts
 
 ### Build, test, deploy

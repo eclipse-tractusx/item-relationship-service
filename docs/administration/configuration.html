@@ -882,6 +882,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Membership"</span>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
         <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
+  <span class="na">discoveryFinderClient</span><span class="pi">:</span>
+    <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache</span>
   <span class="na">connectorEndpointService</span><span class="pi">:</span>
     <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache</span>
 
@@ -1061,8 +1063,11 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Membership"</span>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
         <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
+  <span class="na">discoveryFinderClient</span><span class="pi">:</span>
+    <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache</span>
   <span class="na">connectorEndpointService</span><span class="pi">:</span>
     <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache</span>
+
 <span class="na">discovery</span><span class="pi">:</span>
   <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span>  <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
 
@@ -1145,7 +1150,19 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="s">- job_name: 'spring-actuator'</span>
       <span class="s">metrics_path: '/actuator/prometheus'</span>
       <span class="s">scrape_interval: 5s</span>
-      <span class="s">static_configs:</span></code></pre>
+      <span class="s">static_configs:</span>
+        <span class="s">- targets: [ '{{ .Release.Name }}-irs-helm:4004' ]</span>
+
+    <span class="s">- job_name: 'minio-actuator'</span>
+      <span class="s">metrics_path: /minio/v2/metrics/cluster</span>
+      <span class="s">static_configs:</span>
+        <span class="s">- targets: [ '{{ .Release.Name }}-minio:9000' ]</span>
+
+
+<span class="c1">#########################</span>
+<span class="c1"># Grafana Configuration #</span>
+<span class="c1">#########################</span>
+<span class="na">grafana</span><span class="pi">:</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1242,9 +1259,17 @@ If left empty, this defaults to the internal endpoint of the controlplane provid
 </div>
 </div>
 <div class="sect3">
+<h4 id="_discoveryfinderclient_cachettl">&lt;discoveryFinderClient.cacheTTL&gt;</h4>
+<div class="paragraph">
+<p>When IRS calls the Discovery Finder URL for BPNLs, the results are cached to improve performance.
+This parameter defines how long the cache is maintained before it is cleared.
+Data is in ISO 8601.</p>
+</div>
+</div>
+<div class="sect3">
 <h4 id="_connectorendpointservice_cachettl">&lt;connectorEndpointService.cacheTTL&gt;</h4>
 <div class="paragraph">
-<p>When IRS calls EDC Discovery Service to fetch endpoints for BPNL&#8217;s there is a cache mechanism between them, to improve performance.
+<p>When IRS calls EDC Discovery Service to fetch connector endpoints for BPNLs, the results are cached to improve performance.
 This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.</p>
 </div>
 </div>
@@ -1416,7 +1441,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-08 12:23:24 UTC
+Last updated 2023-12-13 14:00:05 UTC
 </div>
 </div>
 </body>

@@ -238,6 +238,8 @@ irs-edc-client:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
+  discoveryFinderClient:
+    cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
     cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
@@ -413,8 +415,11 @@ edc:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
+  discoveryFinderClient:
+    cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
     cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
+
 discovery:
   oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
@@ -498,6 +503,18 @@ prometheus:
       metrics_path: '/actuator/prometheus'
       scrape_interval: 5s
       static_configs:
+        - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+
+    - job_name: 'minio-actuator'
+      metrics_path: /minio/v2/metrics/cluster
+      static_configs:
+        - targets: [ '{{ .Release.Name }}-minio:9000' ]
+
+
+#########################
+# Grafana Configuration #
+#########################
+grafana:
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -566,9 +583,15 @@ The hostname where Grafana will be made available.
 The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.
 
+##### discoveryFinderClient.cacheTTL
+
+When IRS calls the Discovery Finder URL for BPNLs, the results are cached to improve performance.
+This parameter defines how long the cache is maintained before it is cleared.
+Data is in ISO 8601.
+
 ##### connectorEndpointService.cacheTTL
 
-When IRS calls EDC Discovery Service to fetch endpoints for BPNL’s there is a cache mechanism between them, to improve performance.
+When IRS calls EDC Discovery Service to fetch connector endpoints for BPNLs, the results are cached to improve performance.
 This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.
 
 ### OAuth2 Configuration
