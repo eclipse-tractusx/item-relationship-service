@@ -172,6 +172,8 @@ irs-edc-client:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
+  discoveryFinderClient:
+    cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
     cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
@@ -222,7 +224,7 @@ bpdm:
 # ESS Module specific properties
 ess:
   localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
-  localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
+  localEdcEndpoint: ${ESS_EDC_URL:} # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
   assetsPath: ${EDC_MANAGEMENT_PATH:/management/v3/assets} # EDC management API "assets" path - used for notification asset creation
   policydefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/policydefinitions} # EDC management API "policydefinitions" path - used for notification policy definition creation
   contractdefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/contractdefinitions} # EDC management API "contractdefinitions" path - used for notification contract definitions creation

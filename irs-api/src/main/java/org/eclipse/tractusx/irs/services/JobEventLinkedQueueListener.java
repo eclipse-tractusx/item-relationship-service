@@ -85,7 +85,9 @@ public class JobEventLinkedQueueListener {
                 log.info("BatchId: {} reached {} state.", batchId, batchProcessingState);
                 saveUpdatedBatch(batch, progressList, batchProcessingState);
                 queueMap.remove(batchId);
-                publishFinishProcessingEvent(batch, batchProcessingState);
+                if (isCompleted(batchProcessingState)) {
+                    publishFinishProcessingEvent(batch, batchProcessingState);
+                }
             });
         }
     }

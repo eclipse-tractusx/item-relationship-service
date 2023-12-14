@@ -1370,7 +1370,7 @@ stages:
       verify_response_with:
         #  - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
         - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
-        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+        - function: local.testing.api-tests.tavern_helpers:submodels_are_empty
         - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
       headers:
         content-type: application/json
@@ -1569,8 +1569,8 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5"
-          bpn: "BPNL00000003B0Q0"
+          globalAssetId: "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc"
+          bpn: "BPNL00000003B2OM"
         aspects:
           - Batch
         collectAspects: true

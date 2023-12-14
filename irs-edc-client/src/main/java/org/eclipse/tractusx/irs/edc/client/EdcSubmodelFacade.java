@@ -32,12 +32,10 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
-import org.springframework.stereotype.Service;
 
 /**
  * Public API Facade for submodel domain
  */
-@Service("irsEdcClientEdcSubmodelFacade")
 @Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")

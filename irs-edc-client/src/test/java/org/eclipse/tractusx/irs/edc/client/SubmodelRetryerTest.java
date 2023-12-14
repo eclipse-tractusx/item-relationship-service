@@ -104,7 +104,7 @@ class SubmodelExponentialRetryTest {
                 HttpServerErrorException.class);
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts() * 3)).exchange(any(String.class),
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),
                 eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class));
     }
 
@@ -122,7 +122,7 @@ class SubmodelExponentialRetryTest {
                 "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert
-        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts() * 3)).exchange(any(String.class),
+        verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),
                 eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class));
     }
 

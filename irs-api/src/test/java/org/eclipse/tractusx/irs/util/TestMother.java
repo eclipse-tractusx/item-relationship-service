@@ -149,7 +149,7 @@ public class TestMother {
 
     public static JobParameter jobParameter() {
         return JobParameter.builder()
-                           .depth(0)
+                           .depth(5)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
                            .aspects(List.of(AspectType.SERIAL_PART.toString(),

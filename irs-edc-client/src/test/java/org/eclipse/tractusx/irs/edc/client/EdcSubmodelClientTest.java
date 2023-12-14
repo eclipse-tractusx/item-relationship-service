@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -333,6 +334,27 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // act
         final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS, filterKey, filterValue,
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
+        final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
+
+        // assert
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void shouldRetrieveEndpointReferenceForAsset2() throws Exception {
+        // arrange
+        final String filterKey = "filter-key";
+        final String filterValue = "filter-value";
+        final String agreementId = "agreementId";
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId("asset-id").build()));
+        when(contractNegotiationService.negotiate(any(), any(), eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW))))
+                .thenReturn(NegotiationResponse.builder().contractAgreementId(agreementId).build());
+        final EndpointDataReference expected = mock(EndpointDataReference.class);
+        endpointDataReferenceStorage.put(agreementId, expected);
+
+        // act
+        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS, filterKey, filterValue);
         final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
 
         // assert

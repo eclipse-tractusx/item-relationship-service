@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinReg
 import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
+import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,7 +87,14 @@ public class RegistryConfiguration {
     public ConnectorEndpointsService connectorEndpointsService(
             @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
             @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String finderUrl) {
-        return new ConnectorEndpointsService(new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate));
+        return new ConnectorEndpointsService(discoveryFinderClient(dtrRestTemplate, finderUrl));
+    }
+
+    @Bean
+    public DiscoveryFinderClient discoveryFinderClient(
+            @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
+            @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String finderUrl) {
+        return new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate);
     }
 
 }
