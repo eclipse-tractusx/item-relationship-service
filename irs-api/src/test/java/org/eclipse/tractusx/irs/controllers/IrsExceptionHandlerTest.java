@@ -77,9 +77,7 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(InternalServerError.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
+        this.mockMvc.perform(get("/irs/aspectmodels"))
                     .andExpect(status().is5xxServerError());
     }
 
@@ -89,9 +87,7 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(IllegalArgumentException.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
+        this.mockMvc.perform(get("/irs/aspectmodels"))
                     .andExpect(status().isBadRequest());
     }
 
@@ -101,9 +97,7 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(IllegalStateException.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
+        this.mockMvc.perform(get("/irs/aspectmodels"))
                     .andExpect(status().isBadRequest());
     }
 
@@ -113,9 +107,7 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(MethodArgumentTypeMismatchException.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
+        this.mockMvc.perform(get("/irs/aspectmodels"))
                     .andExpect(status().isBadRequest());
     }
 
@@ -125,9 +117,7 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(AccessDeniedException.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
+        this.mockMvc.perform(get("/irs/aspectmodels"))
                     .andExpect(status().isForbidden());
     }
 }
