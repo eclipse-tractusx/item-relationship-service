@@ -30,7 +30,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.tractusx.irs.configuration.security.ApiKeyAuthentication;
 import org.eclipse.tractusx.irs.configuration.security.ApiKeyAuthority;
 import org.eclipse.tractusx.irs.configuration.security.AuthenticationService;
-import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.authority.AuthorityUtils;
 

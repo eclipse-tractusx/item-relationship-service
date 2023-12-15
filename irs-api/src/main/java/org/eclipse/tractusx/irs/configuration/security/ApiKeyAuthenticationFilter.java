@@ -56,11 +56,10 @@ class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
         try {
             final Authentication authentication = authenticationService.getAuthentication(request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
         } catch (final BadCredentialsException exception) {
             unauthorizedResponse(response, exception);
         }
-
-        filterChain.doFilter(request, response);
     }
 
     private void unauthorizedResponse(final HttpServletResponse servletResponse, final Exception exception) throws IOException {

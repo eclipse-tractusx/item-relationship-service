@@ -23,11 +23,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.controllers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
 import static org.eclipse.tractusx.irs.util.TestMother.registerBpnInvestigationBatchOrder;
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -38,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.tractusx.irs.ControllerTest;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
@@ -53,7 +53,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(BatchController.class)
@@ -73,11 +73,14 @@ class BatchControllerTest extends ControllerTest {
     private CancelBatchProcessingService cancelBatchProcessingService;
 
     @Test
-    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() {
-        assertThatThrownBy(() -> this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
-                                                                         .content(new ObjectMapper().writeValueAsString(
-                                                                                 registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
-        ).isInstanceOf(AccessDeniedException.class);
+    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
+        when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
+                .thenThrow(new BadCredentialsException("Wrong ApiKey"));
+
+        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
+                                                .content(new ObjectMapper().writeValueAsString(
+                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                    .andExpect(status().isUnauthorized());
     }
 
     @Test

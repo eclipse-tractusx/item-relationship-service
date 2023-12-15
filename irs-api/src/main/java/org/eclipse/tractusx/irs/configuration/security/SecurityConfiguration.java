@@ -114,8 +114,6 @@ public class SecurityConfiguration {
 
         httpSecurity.addFilterBefore(new IgnoreWhitelistedPathFilter(new ApiKeyAuthenticationFilter(authenticationService, new JsonUtil())), UsernamePasswordAuthenticationFilter.class);
 
-        httpSecurity.exceptionHandling(AbstractHttpConfigurer::disable);
-
         return httpSecurity.build();
     }
 

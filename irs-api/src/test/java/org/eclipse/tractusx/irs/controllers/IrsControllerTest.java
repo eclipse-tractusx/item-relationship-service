@@ -24,8 +24,6 @@
 package org.eclipse.tractusx.irs.controllers;
 
 import static java.lang.String.format;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithUrl;
@@ -77,7 +75,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
@@ -121,14 +118,14 @@ class IrsControllerTest extends ControllerTest {
     }
 
     @Test
-    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() {
+    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() throws Exception {
         when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
                 .thenThrow(new BadCredentialsException("Wrong ApiKey"));
 
-        assertThatThrownBy(() -> this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                                                       .content(new ObjectMapper().writeValueAsString(
-                                                                               registerJobWithoutDepthAndAspect())))
-        ).isInstanceOf(AccessDeniedException.class);
+        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                              .content(new ObjectMapper().writeValueAsString(
+                                                      registerJobWithoutDepthAndAspect())))
+                    .andExpect(status().isUnauthorized());
     }
 
     @Test
