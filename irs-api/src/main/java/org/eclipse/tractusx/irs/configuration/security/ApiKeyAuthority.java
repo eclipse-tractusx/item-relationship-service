@@ -23,15 +23,20 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration.security;
 
+import java.io.Serializable;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * @param apiKey
- * @param authorities
  */
-public record ApiKeyAuthority(String apiKey, List<GrantedAuthority> authorities) {
+@RequiredArgsConstructor
+@Getter
+public class ApiKeyAuthority implements Serializable {
+    private final String apiKey;
+    private final List<GrantedAuthority> authorities;
 
     @SuppressWarnings("PMD.ShortMethodName")
     public static ApiKeyAuthority of(final String apiKey, final List<GrantedAuthority> authorities) {
