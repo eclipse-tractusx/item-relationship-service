@@ -47,7 +47,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@WebMvcTest(IrsController.class)
+@WebMvcTest(value = { IrsController.class, IrsExceptionHandler.class })
 @Import(SecurityConfiguration.class)
 class IrsExceptionHandlerTest extends ControllerTest {
 
