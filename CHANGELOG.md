@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Authentication was redesigned to use API keys, instead of OAuth2 protocol. The api key has to be sent as a X-API-KEY request header. IRS is supporting two types of API keys - one for admin and one for regular/view usage. Use new ``apiKeyAdmin`` and ``apiKeyRegular`` config entries to set up API keys.
 
 ### Removed
-- Removed ``oauth.resourceClaim``, ``oauth.irsNamespace``,``oauth.roles``,``oauth2.jwkSetUri`` config entries
+- Removed ``oauth.resourceClaim``, ``oauth.irsNamespace``,``oauth.roles``,``oauth2.jwkSetUri``,``bpn`` config entries
 
 ## [4.3.0] - 2023-12-08
 ### Added
