@@ -21,28 +21,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs.configuration.security;
 
-package org.eclipse.tractusx.irs.configuration;
+import com.apicatalog.jsonld.StringUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * Check X-API-KEY header against api keys from config
+ */
+@RequiredArgsConstructor
+@Service
+public class AuthenticationService {
 
-import java.util.List;
+    private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.actuate.health.Status;
+    private final ApiKeysConfiguration apiKeysConfiguration;
 
-class HealthStatusHelperTest {
+    public Authentication getAuthentication(final HttpServletRequest request) {
+        final String apiKeyHeader = request.getHeader(AUTH_TOKEN_HEADER_NAME);
+        if (StringUtils.isBlank(apiKeyHeader)) {
+            throw new BadCredentialsException("Wrong ApiKey");
+        }
 
-    public static List<Arguments> healthStatusToNumeric() {
-        return List.of(Arguments.of(Status.UP, 3), Arguments.of(Status.OUT_OF_SERVICE, 2), Arguments.of(Status.DOWN, 1),
-                Arguments.of(Status.UNKNOWN, 0), Arguments.of(null, 0));
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void healthStatusToNumeric(final Status status, final int numericStatus) {
-        assertThat(HealthStatusHelper.healthStatusToNumeric(status)).isEqualTo(numericStatus);
+        return new ApiKeyAuthentication(apiKeysConfiguration.authorityOf(apiKeyHeader));
     }
 }

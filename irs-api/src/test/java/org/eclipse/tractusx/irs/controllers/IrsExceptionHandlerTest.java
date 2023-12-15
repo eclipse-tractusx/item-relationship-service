@@ -32,9 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.web.client.HttpServerErrorException.InternalServerError;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.ControllerTest;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
-import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
+import org.eclipse.tractusx.irs.configuration.security.SecurityConfiguration;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.junit.jupiter.api.Test;
@@ -44,29 +44,26 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @WebMvcTest(IrsController.class)
 @Import(SecurityConfiguration.class)
-class IrsExceptionHandlerTest {
+class IrsExceptionHandlerTest extends ControllerTest {
 
     @MockBean
     private IrsItemGraphQueryService service;
     @MockBean
     private SemanticHubService semanticHubService;
-    @MockBean(name = "authorizationService")
-    private AuthorizationService authorizationService;
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void handleAll() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         when(service.registerItemJob(any())).thenThrow(InternalServerError.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(
@@ -75,10 +72,10 @@ class IrsExceptionHandlerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturn500WhenGetSemanticModelsFails() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         when(semanticHubService.getAllAspectModels()).thenThrow(InternalServerError.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
                                                      .content(new ObjectMapper().writeValueAsString(
@@ -87,10 +84,10 @@ class IrsExceptionHandlerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturn400WhenProvidingBadInput() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         when(semanticHubService.getAllAspectModels()).thenThrow(IllegalArgumentException.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
                                                      .content(new ObjectMapper().writeValueAsString(
@@ -99,10 +96,10 @@ class IrsExceptionHandlerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturn400WhenCatchingIllegalStateException() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         when(semanticHubService.getAllAspectModels()).thenThrow(IllegalStateException.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
                                                      .content(new ObjectMapper().writeValueAsString(
@@ -111,10 +108,10 @@ class IrsExceptionHandlerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturn400WhenCatchingMethodArgumentTypeMismatchException() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         when(semanticHubService.getAllAspectModels()).thenThrow(MethodArgumentTypeMismatchException.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
                                                      .content(new ObjectMapper().writeValueAsString(
@@ -123,8 +120,9 @@ class IrsExceptionHandlerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturn403WhenRightsAreMissing() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         when(semanticHubService.getAllAspectModels()).thenThrow(AccessDeniedException.class);
 
         this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)

@@ -26,6 +26,8 @@ package org.eclipse.tractusx.irs;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfigurationExcludeFilter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
 import org.springframework.boot.context.TypeExcludeFilter;
 import org.springframework.cache.annotation.EnableCaching;
@@ -37,7 +39,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * Application entry point.
  */
-@SpringBootApplication(exclude = WebSocketServletAutoConfiguration.class)
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class, WebSocketServletAutoConfiguration.class })
 @EnableScheduling
 @EnableCaching
 @EnableAsync

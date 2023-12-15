@@ -22,9 +22,7 @@ spring:
             token-uri: ${OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           portal:
             token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
-      resourceserver:
-        jwt:
-          jwk-set-uri: ${OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
+
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -96,6 +94,11 @@ irs: # Application config
         completed: P7D # ISO 8601 Duration
       cron:
         expression: "*/10 * * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
+  security:
+    api:
+      keys:
+        admin: ${API_KEY_ADMIN}
+        regular: ${API_KEY_REGULAR}
 
 blobstore:
   endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
@@ -238,10 +241,3 @@ ess:
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API
-
-# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
-oauth:
-  resourceClaim: "resource_access" # Name of the JWT claim for roles
-  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
-  roles: "roles" # Name of the list of roles within the IRS namespace

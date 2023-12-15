@@ -23,28 +23,30 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.controller;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.tractusx.irs.ess.service.EssRecursiveService;
+import org.eclipse.tractusx.irs.ControllerTest;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
+import org.eclipse.tractusx.irs.configuration.security.SecurityConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.ess.service.EssRecursiveService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(EssRecursiveController.class)
-class EssRecursiveControllerTest {
+@Import(SecurityConfiguration.class)
+class EssRecursiveControllerTest extends ControllerTest {
 
     private final String path = "/ess/notification/receive-recursive";
 
@@ -55,11 +57,10 @@ class EssRecursiveControllerTest {
     private EssRecursiveService essRecursiveService;
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldHandleRecursiveBpnInvestigationByNotification() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
 
-        this.mockMvc.perform(post(path).with(csrf())
-                                       .contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(path).contentType(MediaType.APPLICATION_JSON)
                                        .content(new ObjectMapper().writeValueAsString(prepareNotification())))
                     .andExpect(status().isCreated());
     }

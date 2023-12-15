@@ -24,6 +24,8 @@
 package org.eclipse.tractusx.irs.controllers;
 
 import static java.lang.String.format;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithUrl;
@@ -49,6 +51,9 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import org.eclipse.tractusx.irs.ControllerTest;
+import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
@@ -57,10 +62,9 @@ import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
+import org.eclipse.tractusx.irs.configuration.security.SecurityConfiguration;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.junit.jupiter.api.Test;
@@ -73,13 +77,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
 @WebMvcTest(IrsController.class)
 @Import(SecurityConfiguration.class)
-class IrsControllerTest {
+class IrsControllerTest extends ControllerTest {
 
     private final UUID jobId = UUID.randomUUID();
 
@@ -92,8 +97,6 @@ class IrsControllerTest {
     private IrsItemGraphQueryService service;
     @MockBean
     private SemanticHubService semanticHubService;
-    @MockBean(name = "authorizationService")
-    private AuthorizationService authorizationService;
 
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
@@ -103,11 +106,12 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void initiateJobForGlobalAssetId() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(
@@ -117,26 +121,19 @@ class IrsControllerTest {
     }
 
     @Test
-    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() throws Exception {
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isUnauthorized());
+    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() {
+        when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
+                .thenThrow(new BadCredentialsException("Wrong ApiKey"));
+
+        assertThatThrownBy(() -> this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
+                                                                       .content(new ObjectMapper().writeValueAsString(
+                                                                               registerJobWithoutDepthAndAspect())))
+        ).isInstanceOf(AccessDeniedException.class);
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs_wrong_authority")
     void shouldReturnForbiddenStatusWhenRequiredAuthorityIsMissing() throws Exception {
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @WithMockUser(authorities = "view_irs")
-    void shouldReturnForbiddenStatusWhenWrongBpnInJwtToken() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.FALSE);
+        authenticateWith("view_irs_wrong_authority");
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(
@@ -146,16 +143,18 @@ class IrsControllerTest {
 
     @ParameterizedTest
     @MethodSource("corruptedJobs")
-    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(registerJob)))
                     .andExpect(status().isBadRequest());
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenRegisterJobHasWrongCallbackUrl() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(
                                                       registerJobWithUrl("hhh://example.com"))))
@@ -163,11 +162,11 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void shouldAcceptCorrectCallbackUrl() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final UUID returnedJob = UUID.randomUUID();
         when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
                                               .content(new ObjectMapper().writeValueAsString(
@@ -176,8 +175,9 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void getJobsByState() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final JobStatusResult returnedJob = JobStatusResult.builder()
                                                            .id(UUID.randomUUID())
                                                            .state(JobState.COMPLETED)
@@ -187,7 +187,6 @@ class IrsControllerTest {
 
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         when(service.getJobsByState(any(), any())).thenReturn(
                 new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
@@ -205,20 +204,19 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void cancelJobById() throws Exception {
-        final Job canceledJob = Job.builder().id(jobId).state(JobState.CANCELED).build();
+        authenticateWith(IrsRoles.VIEW_IRS);
 
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        final Job canceledJob = Job.builder().id(jobId).state(JobState.CANCELED).build();
         when(this.service.cancelJobById(jobId)).thenReturn(canceledJob);
 
         this.mockMvc.perform(put("/irs/jobs/" + jobId)).andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void cancelJobById_throwEntityNotFoundException() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         given(this.service.cancelJobById(jobId)).willThrow(
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId));
 
@@ -228,18 +226,19 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void getJobWithMalformedIdShouldReturnBadRequest() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final String jobIdMalformed = UUID.randomUUID() + "MALFORMED";
 
         this.mockMvc.perform(get("/irs/jobs/" + jobIdMalformed)).andExpect(status().isBadRequest());
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         when(service.registerItemJob(any())).thenThrow(IllegalArgumentException.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
         this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON).content(requestBody))
@@ -247,9 +246,9 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void shouldReturnBadRequestWhenCancelingAlreadyCompletedJob() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         given(this.service.cancelJobById(jobId)).willThrow(new IllegalStateException(
                 format("Cannot transition from state %s to %s", JobState.COMPLETED, JobState.CANCELED)));
 
@@ -259,8 +258,9 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void shouldReturnAspectModels() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final AspectModel assemblyPartRelationship = AspectModel.builder()
                                                                 .name("AssemblyPartRelationship")
                                                                 .urn("urn:bamm:io.catenax.assembly_part_relationship:1.1.1#AssemblyPartRelationship")
@@ -274,7 +274,6 @@ class IrsControllerTest {
                                                       .models(List.of(assemblyPartRelationship))
                                                       .build();
 
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         given(this.semanticHubService.getAllAspectModels()).willReturn(aspectModels);
         final String aspectModelResponseAsString = objectMapper.writeValueAsString(aspectModels);
 
@@ -284,8 +283,9 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs_wrong_authority")
     void shouldReturnForbiddenStatusForAspectModelsWhenRequiredAuthorityIsMissing() throws Exception {
+        authenticateWith("view_irs_wrong_authority");
+
         this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
                                                      .content(new ObjectMapper().writeValueAsString(
                                                              registerJobWithoutDepthAndAspect())))
@@ -293,13 +293,13 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void shouldReturnPartialWhenJobCompleted() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final Jobs runningJob = Jobs.builder().job(Job.builder().id(jobId).state(JobState.RUNNING).build()).build();
         final boolean shouldIncludePartial = Boolean.TRUE;
         final boolean shouldNotIncludePartial = Boolean.FALSE;
 
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         when(this.service.getJobForJobId(eq(jobId), anyBoolean())).thenReturn(runningJob);
 
         this.mockMvc.perform(get("/irs/jobs/" + jobId).queryParam("returnUncompletedJob", String.valueOf(shouldIncludePartial))).andExpect(status().isPartialContent());
@@ -307,13 +307,13 @@ class IrsControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = "view_irs")
     void shouldReturnOkWhenJobCompleted() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final Jobs completedJob = Jobs.builder().job(Job.builder().id(jobId).state(JobState.COMPLETED).build()).build();
         final boolean shouldIncludePartial = Boolean.TRUE;
         final boolean shouldNotIncludePartial = Boolean.FALSE;
 
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         when(this.service.getJobForJobId(eq(jobId), anyBoolean())).thenReturn(completedJob);
 
         this.mockMvc.perform(get("/irs/jobs/" + jobId).queryParam("returnUncompletedJob", String.valueOf(shouldIncludePartial))).andExpect(status().isOk());

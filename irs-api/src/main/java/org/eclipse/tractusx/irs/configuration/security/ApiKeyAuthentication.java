@@ -21,28 +21,30 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs.configuration.security;
 
-package org.eclipse.tractusx.irs.configuration;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * Api key authentication representation
+ */
+public class ApiKeyAuthentication extends AbstractAuthenticationToken {
 
-import java.util.List;
+    private final ApiKeyAuthority apiKeyAuthority;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.actuate.health.Status;
-
-class HealthStatusHelperTest {
-
-    public static List<Arguments> healthStatusToNumeric() {
-        return List.of(Arguments.of(Status.UP, 3), Arguments.of(Status.OUT_OF_SERVICE, 2), Arguments.of(Status.DOWN, 1),
-                Arguments.of(Status.UNKNOWN, 0), Arguments.of(null, 0));
+    public ApiKeyAuthentication(final ApiKeyAuthority apiKeyAuthority) {
+        super(apiKeyAuthority.authorities());
+        this.apiKeyAuthority = apiKeyAuthority;
+        setAuthenticated(true);
     }
 
-    @ParameterizedTest
-    @MethodSource
-    void healthStatusToNumeric(final Status status, final int numericStatus) {
-        assertThat(HealthStatusHelper.healthStatusToNumeric(status)).isEqualTo(numericStatus);
+    @Override
+    public Object getCredentials() {
+        return apiKeyAuthority.apiKey();
+    }
+
+    @Override
+    public Object getPrincipal() {
+        return apiKeyAuthority.apiKey();
     }
 }

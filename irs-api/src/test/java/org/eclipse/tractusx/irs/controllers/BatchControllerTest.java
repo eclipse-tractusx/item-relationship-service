@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.controllers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.util.TestMother.registerBatchOrder;
 import static org.eclipse.tractusx.irs.util.TestMother.registerBpnInvestigationBatchOrder;
 import static org.hamcrest.Matchers.containsString;
@@ -36,12 +38,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.ControllerTest;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
-import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
+import org.eclipse.tractusx.irs.configuration.security.SecurityConfiguration;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.eclipse.tractusx.irs.services.timeouts.CancelBatchProcessingService;
@@ -51,12 +53,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(BatchController.class)
 @Import(SecurityConfiguration.class)
-class BatchControllerTest {
+class BatchControllerTest extends ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -70,21 +72,17 @@ class BatchControllerTest {
     @MockBean
     private CancelBatchProcessingService cancelBatchProcessingService;
 
-    @MockBean(name = "authorizationService")
-    private AuthorizationService authorizationService;
-
     @Test
-    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
-        this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
-                                                .content(new ObjectMapper().writeValueAsString(
-                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
-                    .andExpect(status().isUnauthorized());
+    void shouldReturnUnauthorizedWhenAuthenticationIsMissing() {
+        assertThatThrownBy(() -> this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
+                                                                         .content(new ObjectMapper().writeValueAsString(
+                                                                                 registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+        ).isInstanceOf(AccessDeniedException.class);
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestWhenGlobalAssetIdWithWrongFormat() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        authenticateWith(IrsRoles.VIEW_IRS);
 
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(
@@ -93,9 +91,8 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestWhenBatchSizeNotMod10Compliant() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        authenticateWith(IrsRoles.VIEW_IRS);
 
         final RegisterBatchOrder registerBatchOrder = registerBatchOrder("MALFORMED_GLOBAL_ASSET");
         registerBatchOrder.setBatchSize(33);
@@ -105,9 +102,8 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldRegisterRegularJobBatchOrder() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        authenticateWith(IrsRoles.VIEW_IRS);
 
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(
@@ -116,9 +112,8 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldRegisterEssJobBatchOrder() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        authenticateWith(IrsRoles.VIEW_IRS);
 
         this.mockMvc.perform(post("/irs/ess/orders").contentType(MediaType.APPLICATION_JSON)
                                                 .content(new ObjectMapper().writeValueAsString(
@@ -127,9 +122,8 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBatchOrder() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        authenticateWith(IrsRoles.VIEW_IRS);
 
         final UUID orderId = UUID.randomUUID();
         when(queryBatchService.findOrderById(orderId)).thenReturn(BatchOrderResponse.builder().orderId(orderId).build());
@@ -140,11 +134,11 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBatch() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final UUID orderId = UUID.randomUUID();
         final UUID batchId = UUID.randomUUID();
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
         when(queryBatchService.findBatchById(orderId, batchId)).thenReturn(
                 BatchResponse.builder().batchId(batchId).orderId(orderId).build());
 
@@ -155,9 +149,8 @@ class BatchControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldCancelBatchOrder() throws Exception {
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+        authenticateWith(IrsRoles.VIEW_IRS);
 
         final UUID orderId = UUID.randomUUID();
         when(queryBatchService.findOrderById(orderId)).thenReturn(BatchOrderResponse.builder().orderId(orderId).build());
