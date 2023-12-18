@@ -23,46 +23,58 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static io.restassured.RestAssured.given;
+import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.eclipse.tractusx.irs.ControllerTest;
+import org.eclipse.tractusx.irs.TestConfig;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
-import org.eclipse.tractusx.irs.configuration.security.SecurityConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
 import org.eclipse.tractusx.irs.ess.service.EssRecursiveService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@WebMvcTest(EssRecursiveController.class)
-@Import(SecurityConfiguration.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = { "digitalTwinRegistry.type=central" })
+@ActiveProfiles(profiles = { "test", "local" })
+@Import(TestConfig.class)
+@ExtendWith({ MockitoExtension.class, SpringExtension.class })
 class EssRecursiveControllerTest extends ControllerTest {
 
     private final String path = "/ess/notification/receive-recursive";
 
-    @Autowired
-    private MockMvc mockMvc;
-
     @MockBean
     private EssRecursiveService essRecursiveService;
+
+    @LocalServerPort
+    private int port;
+
+    @BeforeEach
+    public void configureRestAssured() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
+    }
 
     @Test
     void shouldHandleRecursiveBpnInvestigationByNotification() throws Exception {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        this.mockMvc.perform(post(path).contentType(MediaType.APPLICATION_JSON)
-                                       .content(new ObjectMapper().writeValueAsString(prepareNotification())))
-                    .andExpect(status().isCreated());
+        given().port(port).contentType(ContentType.JSON).body(prepareNotification()).post(path)
+               .then().statusCode(CREATED.value());
     }
 
     private EdcNotification<InvestigationNotificationContent> prepareNotification() {
