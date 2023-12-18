@@ -23,32 +23,40 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.controllers;
 
+import static io.restassured.RestAssured.given;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.web.client.HttpServerErrorException.InternalServerError;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.eclipse.tractusx.irs.ControllerTest;
+import org.eclipse.tractusx.irs.TestConfig;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
-import org.eclipse.tractusx.irs.configuration.security.SecurityConfiguration;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@WebMvcTest(value = { IrsController.class, IrsExceptionHandler.class })
-@Import(value = { SecurityConfiguration.class })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = { "digitalTwinRegistry.type=central" })
+@ActiveProfiles(profiles = { "test", "local" })
+@Import(TestConfig.class)
+@ExtendWith({ MockitoExtension.class, SpringExtension.class })
 class IrsExceptionHandlerTest extends ControllerTest {
 
     @MockBean
@@ -56,19 +64,23 @@ class IrsExceptionHandlerTest extends ControllerTest {
     @MockBean
     private SemanticHubService semanticHubService;
 
-    @Autowired
-    private MockMvc mockMvc;
+    @LocalServerPort
+    private int port;
+
+    @BeforeEach
+    public void configureRestAssured() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
+    }
 
     @Test
-    void handleAll() throws Exception {
+    void handleAll() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         when(service.registerItemJob(any())).thenThrow(InternalServerError.class);
 
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().is5xxServerError());
+        given().port(port).contentType(ContentType.JSON).body(registerJobWithoutDepthAndAspect()).post("/irs/jobs")
+               .then().statusCode(INTERNAL_SERVER_ERROR.value());
     }
 
     @Test
@@ -77,8 +89,8 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(InternalServerError.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels"))
-                    .andExpect(status().is5xxServerError());
+        given().port(port).get("/irs/aspectmodels")
+               .then().statusCode(INTERNAL_SERVER_ERROR.value());
     }
 
     @Test
@@ -87,8 +99,8 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(IllegalArgumentException.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels"))
-                    .andExpect(status().isBadRequest());
+        given().port(port).get("/irs/aspectmodels")
+               .then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
@@ -97,8 +109,8 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(IllegalStateException.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels"))
-                    .andExpect(status().isBadRequest());
+        given().port(port).get("/irs/aspectmodels")
+               .then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
@@ -107,8 +119,8 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(MethodArgumentTypeMismatchException.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels"))
-                    .andExpect(status().isBadRequest());
+        given().port(port).get("/irs/aspectmodels")
+               .then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
@@ -117,7 +129,7 @@ class IrsExceptionHandlerTest extends ControllerTest {
 
         when(semanticHubService.getAllAspectModels()).thenThrow(AccessDeniedException.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels"))
-                    .andExpect(status().isForbidden());
+        given().port(port).get("/irs/aspectmodels")
+               .then().statusCode(FORBIDDEN.value());
     }
 }

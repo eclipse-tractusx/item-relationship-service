@@ -23,23 +23,25 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.controllers;
 
+import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithUrl;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.PARTIAL_CONTENT;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -49,8 +51,11 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.tractusx.irs.ControllerTest;
+import org.eclipse.tractusx.irs.TestConfig;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -60,33 +65,39 @@ import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.configuration.security.SecurityConfiguration;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.server.ResponseStatusException;
 
-@WebMvcTest(IrsController.class)
-@Import(SecurityConfiguration.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = { "digitalTwinRegistry.type=central" })
+@ActiveProfiles(profiles = { "test", "local" })
+@Import(TestConfig.class)
+@ExtendWith({ MockitoExtension.class, SpringExtension.class })
 class IrsControllerTest extends ControllerTest {
 
     private final UUID jobId = UUID.randomUUID();
 
-    @Autowired
-    private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -94,6 +105,15 @@ class IrsControllerTest extends ControllerTest {
     private IrsItemGraphQueryService service;
     @MockBean
     private SemanticHubService semanticHubService;
+
+    @LocalServerPort
+    private int port;
+
+    @BeforeEach
+    public void configureRestAssured() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
+    }
 
     private static Stream<RegisterJob> corruptedJobs() {
         return Stream.of(registerJobWithDepthAndAspect(110, null),
@@ -103,72 +123,59 @@ class IrsControllerTest extends ControllerTest {
     }
 
     @Test
-    void initiateJobForGlobalAssetId() throws Exception {
+    void initiateJobForGlobalAssetId() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         final UUID returnedJob = UUID.randomUUID();
-        when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
+        Mockito.when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
 
-
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isCreated())
-                    .andExpect(content().string(containsString(returnedJob.toString())));
+        given().port(port).contentType(ContentType.JSON).body(registerJobWithoutDepthAndAspect()).post("/irs/jobs")
+               .then().statusCode(CREATED.value()).body("id", is(returnedJob.toString()));
     }
 
     @Test
-    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() throws Exception {
-        when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
+    void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() {
+        Mockito.when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
                 .thenThrow(new BadCredentialsException("Wrong ApiKey"));
 
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isUnauthorized());
+        given().port(port).contentType(ContentType.JSON).body(registerJobWithoutDepthAndAspect()).post("/irs/jobs")
+               .then().statusCode(UNAUTHORIZED.value());
     }
 
     @Test
-    void shouldReturnForbiddenStatusWhenRequiredAuthorityIsMissing() throws Exception {
+    void shouldReturnForbiddenStatusWhenRequiredAuthorityIsMissing() {
         authenticateWith("view_irs_wrong_authority");
 
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isForbidden());
+        given().port(port).contentType(ContentType.JSON).body(registerJobWithoutDepthAndAspect()).post("/irs/jobs")
+               .then().statusCode(FORBIDDEN.value());
     }
 
     @ParameterizedTest
     @MethodSource("corruptedJobs")
-    void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) throws Exception {
+    void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(registerJob)))
-                    .andExpect(status().isBadRequest());
+        given().port(port).contentType(ContentType.JSON).body(registerJob).post("/irs/jobs")
+               .then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
-    void shouldReturnBadRequestWhenRegisterJobHasWrongCallbackUrl() throws Exception {
+    void shouldReturnBadRequestWhenRegisterJobHasWrongCallbackUrl() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithUrl("hhh://example.com"))))
-                    .andExpect(status().isBadRequest());
+        given().port(port).contentType(ContentType.JSON).body(registerJobWithUrl("hhh://example.com")).post("/irs/jobs")
+               .then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
-    void shouldAcceptCorrectCallbackUrl() throws Exception {
+    void shouldAcceptCorrectCallbackUrl() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         final UUID returnedJob = UUID.randomUUID();
-        when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
+        Mockito.when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
 
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithUrl("https://example.com"))))
-                    .andExpect(status().isCreated());
+        given().port(port).contentType(ContentType.JSON).body(registerJobWithUrl("https://example.com")).post("/irs/jobs")
+               .then().statusCode(CREATED.value());
     }
 
     @Test
@@ -184,74 +191,72 @@ class IrsControllerTest extends ControllerTest {
 
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
-        when(service.getJobsByState(any(), any())).thenReturn(
+        Mockito.when(service.getJobsByState(any(), any())).thenReturn(
                 new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
-        this.mockMvc.perform(get("/irs/jobs"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(returnJobAsString)))
-                    .andExpect(content().string(containsString(returnedJob.getId().toString())))
-                    .andExpect(content().string(containsString(returnedJob.getState().toString())))
-                    .andExpect(content().string(containsString(returnedJob.getStartedOn()
-                                                                          .format(DateTimeFormatter.ofPattern(
-                                                                                  "yyyy-MM-dd'T'HH:mm:ss.SSS")))))
-                    .andExpect(content().string(containsString(returnedJob.getCompletedOn()
-                                                                          .format(DateTimeFormatter.ofPattern(
-                                                                                  "yyyy-MM-dd'T'HH:mm:ss.SSS")))));
+        given().port(port).get("/irs/jobs")
+               .then().statusCode(OK.value())
+               .body(containsString(returnJobAsString))
+               .body(containsString(returnedJob.getId().toString()))
+               .body(containsString(returnedJob.getState().toString()))
+               .body(containsString(returnedJob.getStartedOn().format(DateTimeFormatter.ofPattern(
+                       "yyyy-MM-dd'T'HH:mm:ss.SSS"))))
+               .body(containsString(returnedJob.getCompletedOn().format(DateTimeFormatter.ofPattern(
+                       "yyyy-MM-dd'T'HH:mm:ss.SSS"))));
     }
 
     @Test
-    void cancelJobById() throws Exception {
+    void cancelJobById() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         final Job canceledJob = Job.builder().id(jobId).state(JobState.CANCELED).build();
-        when(this.service.cancelJobById(jobId)).thenReturn(canceledJob);
+        Mockito.when(this.service.cancelJobById(jobId)).thenReturn(canceledJob);
 
-        this.mockMvc.perform(put("/irs/jobs/" + jobId)).andExpect(status().isOk());
+        given().port(port).put("/irs/jobs/" + jobId)
+               .then().statusCode(OK.value());
     }
 
     @Test
-    void cancelJobById_throwEntityNotFoundException() throws Exception {
+    void cancelJobById_throwEntityNotFoundException() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        given(this.service.cancelJobById(jobId)).willThrow(
+        BDDMockito.given(this.service.cancelJobById(jobId)).willThrow(
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId));
 
-        this.mockMvc.perform(put("/irs/jobs/" + jobId))
-                    .andExpect(status().isNotFound())
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof ResponseStatusException));
+        given().port(port).put("/irs/jobs/" + jobId)
+               .then().statusCode(NOT_FOUND.value());
     }
 
     @Test
-    void getJobWithMalformedIdShouldReturnBadRequest() throws Exception {
+    void getJobWithMalformedIdShouldReturnBadRequest() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         final String jobIdMalformed = UUID.randomUUID() + "MALFORMED";
 
-        this.mockMvc.perform(get("/irs/jobs/" + jobIdMalformed)).andExpect(status().isBadRequest());
+        given().port(port).get("/irs/jobs/" + jobIdMalformed)
+               .then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
-    void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() throws Exception {
+    void shouldReturnBadRequestWhenRegisterJobWithMalformedAspectJson() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        when(service.registerItemJob(any())).thenThrow(IllegalArgumentException.class);
+        Mockito.when(service.registerItemJob(any())).thenThrow(IllegalArgumentException.class);
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON).content(requestBody))
-                    .andExpect(status().isBadRequest());
+        given().port(port).contentType(ContentType.JSON).body(requestBody).post("/irs/jobs")
+               .then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
-    void shouldReturnBadRequestWhenCancelingAlreadyCompletedJob() throws Exception {
+    void shouldReturnBadRequestWhenCancelingAlreadyCompletedJob() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        given(this.service.cancelJobById(jobId)).willThrow(new IllegalStateException(
+        BDDMockito.given(this.service.cancelJobById(jobId)).willThrow(new IllegalStateException(
                 format("Cannot transition from state %s to %s", JobState.COMPLETED, JobState.CANCELED)));
 
-        this.mockMvc.perform(put("/irs/jobs/" + jobId))
-                    .andExpect(status().isBadRequest())
-                    .andExpect(result -> assertTrue(result.getResolvedException() instanceof IllegalStateException));
+        given().port(port).put("/irs/jobs/" + jobId)
+               .then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
@@ -271,50 +276,48 @@ class IrsControllerTest extends ControllerTest {
                                                       .models(List.of(assemblyPartRelationship))
                                                       .build();
 
-        given(this.semanticHubService.getAllAspectModels()).willReturn(aspectModels);
-        final String aspectModelResponseAsString = objectMapper.writeValueAsString(aspectModels);
+        BDDMockito.given(this.semanticHubService.getAllAspectModels()).willReturn(aspectModels);
 
-        this.mockMvc.perform(get("/irs/aspectmodels"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().string(containsString(aspectModelResponseAsString)));
+        final AspectModels response = given().port(port).get("/irs/aspectmodels")
+                                             .then().statusCode(OK.value()).and().extract().response().as(AspectModels.class);
+
+        assertEquals(aspectModels, response);
     }
 
     @Test
-    void shouldReturnForbiddenStatusForAspectModelsWhenRequiredAuthorityIsMissing() throws Exception {
+    void shouldReturnForbiddenStatusForAspectModelsWhenRequiredAuthorityIsMissing() {
         authenticateWith("view_irs_wrong_authority");
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isForbidden());
+        given().port(port).get("/irs/aspectmodels")
+               .then().statusCode(FORBIDDEN.value());
     }
 
     @Test
-    void shouldReturnPartialWhenJobCompleted() throws Exception {
+    void shouldReturnPartialWhenJobCompleted() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         final Jobs runningJob = Jobs.builder().job(Job.builder().id(jobId).state(JobState.RUNNING).build()).build();
-        final boolean shouldIncludePartial = Boolean.TRUE;
-        final boolean shouldNotIncludePartial = Boolean.FALSE;
 
-        when(this.service.getJobForJobId(eq(jobId), anyBoolean())).thenReturn(runningJob);
+        Mockito.when(this.service.getJobForJobId(eq(jobId), anyBoolean())).thenReturn(runningJob);
 
-        this.mockMvc.perform(get("/irs/jobs/" + jobId).queryParam("returnUncompletedJob", String.valueOf(shouldIncludePartial))).andExpect(status().isPartialContent());
-        this.mockMvc.perform(get("/irs/jobs/" + jobId).queryParam("returnUncompletedJob", String.valueOf(shouldNotIncludePartial))).andExpect(status().isPartialContent());
+        given().port(port).queryParam("returnUncompletedJob", true).get("/irs/jobs/" + jobId)
+               .then().statusCode(PARTIAL_CONTENT.value());
+        given().port(port).queryParam("returnUncompletedJob", false).get("/irs/jobs/" + jobId)
+               .then().statusCode(PARTIAL_CONTENT.value());
     }
 
     @Test
-    void shouldReturnOkWhenJobCompleted() throws Exception {
+    void shouldReturnOkWhenJobCompleted() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         final Jobs completedJob = Jobs.builder().job(Job.builder().id(jobId).state(JobState.COMPLETED).build()).build();
-        final boolean shouldIncludePartial = Boolean.TRUE;
-        final boolean shouldNotIncludePartial = Boolean.FALSE;
 
-        when(this.service.getJobForJobId(eq(jobId), anyBoolean())).thenReturn(completedJob);
+        Mockito.when(this.service.getJobForJobId(eq(jobId), anyBoolean())).thenReturn(completedJob);
 
-        this.mockMvc.perform(get("/irs/jobs/" + jobId).queryParam("returnUncompletedJob", String.valueOf(shouldIncludePartial))).andExpect(status().isOk());
-        this.mockMvc.perform(get("/irs/jobs/" + jobId).queryParam("returnUncompletedJob", String.valueOf(shouldNotIncludePartial))).andExpect(status().isOk());
+        given().port(port).queryParam("returnUncompletedJob", true).get("/irs/jobs/" + jobId)
+               .then().statusCode(OK.value());
+        given().port(port).queryParam("returnUncompletedJob", false).get("/irs/jobs/" + jobId)
+               .then().statusCode(OK.value());
     }
 
 }
