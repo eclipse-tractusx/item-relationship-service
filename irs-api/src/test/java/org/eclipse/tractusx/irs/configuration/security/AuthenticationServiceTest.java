@@ -59,6 +59,8 @@ class AuthenticationServiceTest {
 
     @Test
     void shouldThrowExceptionWhenXApiKeyHeaderIsMissing() {
-        assertThrows(BadCredentialsException.class, () -> authenticationService.getAuthentication(new MockHttpServletRequest()));
+        final MockHttpServletRequest noApiKeyRequest = new MockHttpServletRequest();
+
+        assertThrows(BadCredentialsException.class, () -> authenticationService.getAuthentication(noApiKeyRequest));
     }
 }

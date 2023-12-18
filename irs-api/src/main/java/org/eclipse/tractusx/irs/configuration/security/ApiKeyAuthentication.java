@@ -23,11 +23,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration.security;
 
+import lombok.EqualsAndHashCode;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 /**
  * Api key authentication representation
  */
+@EqualsAndHashCode
 public class ApiKeyAuthentication extends AbstractAuthenticationToken {
 
     private final ApiKeyAuthority apiKeyAuthority;
