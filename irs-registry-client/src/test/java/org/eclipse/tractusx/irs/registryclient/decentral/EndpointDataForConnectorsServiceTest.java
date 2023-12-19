@@ -36,6 +36,7 @@ import java.util.List;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 import org.springframework.web.client.RestClientException;
 
 class EndpointDataForConnectorsServiceTest {
@@ -45,6 +46,7 @@ class EndpointDataForConnectorsServiceTest {
 
     private static final String connectionOneAddress = "connectionOneAddress";
     private static final String connectionTwoAddress = "connectionTwoAddress";
+    private static final String connectionThreeAddress = "connectionThreeAddress";
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade = mock(EdcEndpointReferenceRetriever.class);
 
@@ -69,13 +71,16 @@ class EndpointDataForConnectorsServiceTest {
 
     @Test
     void shouldReturnExpectedEndpointDataReferenceFromSecondConnectionEndpoint() throws EdcRetrieverException {
-        // given
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE)).thenThrow(
-                new EdcRetrieverException(new EdcClientException("EdcClientException")));
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE)).thenReturn(
-                EndpointDataReference.Builder.newInstance().endpoint(connectionTwoAddress).build());
+
+        { // given
+            // a failing answer
+            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
+                    DT_REGISTRY_ASSET_VALUE)).thenThrow(edcRetrieverException());
+            // and a successful answer
+            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
+                    DT_REGISTRY_ASSET_VALUE)).thenReturn(
+                    EndpointDataReference.Builder.newInstance().endpoint(connectionTwoAddress).build());
+        }
 
         // when
         final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
@@ -87,17 +92,56 @@ class EndpointDataForConnectorsServiceTest {
     }
 
     @Test
+    void shouldReturnExpectedEndpointDataReferenceFromThirdConnectionEndpoint() throws EdcRetrieverException {
+
+        // TODO #214 @mfischer can we improve this test without sleeping?
+
+        { // given
+            // a slow answer
+            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
+                    DT_REGISTRY_ASSET_VALUE)).thenAnswer((Answer<EndpointDataReference>) invocation -> {
+                Thread.sleep(5000);
+                return EndpointDataReference.Builder.newInstance().endpoint(connectionOneAddress).build();
+            });
+
+            // and a failing answer
+            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
+                    DT_REGISTRY_ASSET_VALUE)).thenThrow(edcRetrieverException());
+
+            // and the fastest answer
+            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionThreeAddress, DT_REGISTRY_ASSET_TYPE,
+                    DT_REGISTRY_ASSET_VALUE)).thenAnswer((Answer<EndpointDataReference>) invocation -> {
+                Thread.sleep(50);
+                return EndpointDataReference.Builder.newInstance().endpoint(connectionThreeAddress).build();
+            });
+        }
+
+        // when
+        final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
+                List.of(connectionOneAddress, connectionTwoAddress, connectionThreeAddress));
+
+        // then
+        assertThat(endpointDataReference).isNotNull();
+        assertThat(endpointDataReference.getEndpoint()).isEqualTo(connectionThreeAddress);
+    }
+
+    @Test
     void shouldThrowExceptionWhenConnectorEndpointsNotReachable() throws EdcRetrieverException {
-        // given
+
+        // given #
+        // all answers failing
         when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE),
-                eq(DT_REGISTRY_ASSET_VALUE))).thenThrow(
-                new EdcRetrieverException(new EdcClientException("EdcClientException")));
+                eq(DT_REGISTRY_ASSET_VALUE))).thenThrow(edcRetrieverException());
         final List<String> connectorEndpoints = List.of(connectionOneAddress, connectionTwoAddress);
 
         // when + then
         assertThatThrownBy(
                 () -> endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints)).isInstanceOf(
                 RestClientException.class).hasMessageContainingAll(connectionOneAddress, connectionTwoAddress);
+    }
+
+    private static EdcRetrieverException edcRetrieverException() {
+        return new EdcRetrieverException(new EdcClientException("EdcClientException"));
     }
 
 }
