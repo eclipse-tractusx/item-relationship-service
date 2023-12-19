@@ -24,6 +24,12 @@ include::../../../../charts/irs-helm/values.yaml[lines=104..302]
 ==== <irs-url>
 The hostname where the IRS will be made available.
 
+==== <api-key-admin>
+Api key to access API with admin role.
+
+==== <api-key-regular>
+Api key to access API with regular/view role.
+
 === <ingress>
 To expose the IRS service, you need to add an ingress for the default port 8080.
 You can do this by adding this to ingress:
@@ -64,9 +70,6 @@ The URL of the BPDM service. The IRS uses this service to fetch business partner
 ==== <oauth2-token-uri>
 The URL of the OAuth2 token API. Used by the IRS for token creation to authenticate with other services.
 
-==== <oauth2-jwkset-uri>
-The URL of the OAuth2 JWK Set. Used by the IRS to validate tokens when the IRS API is called.
-
 ==== <grafana-url>
 The hostname where Grafana will be made available.
 
@@ -86,7 +89,7 @@ When IRS calls EDC Discovery Service to fetch connector endpoints for BPNLs, the
 This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.
 
 == OAuth2 Configuration
-OAuth2 protocol is used by IRS to protect the APIs and other resources. This means it is possible to configure and use any identity and access management tool that provides OAuth 2.0 functionality.
+Previously, OAuth2 protocol was used by IRS to protect the APIs and other resources. As reference, latest IRS version that supported OAuth2 protocol was 4.3.0, which can be found here: https://github.com/catenax-ng/tx-item-relationship-service/releases/tag/4.3.0.
 
 === Semantic Model Provisioning
 The IRS can retrieve semantic models in two ways:

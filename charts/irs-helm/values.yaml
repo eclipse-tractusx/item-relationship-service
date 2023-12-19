@@ -105,8 +105,8 @@ readinessProbe:
 # IRS Configuration #
 #####################
 irsUrl:  # "https://<irs-url>"
-apiKeyAdmin:  # Api key to access API with admin role
-apiKeyRegular:  # Api key to access API with regular/view role
+apiKeyAdmin:  # <api-key-admin>
+apiKeyRegular:  # <api-key-regular>
 ingress:
   enabled: false
 
