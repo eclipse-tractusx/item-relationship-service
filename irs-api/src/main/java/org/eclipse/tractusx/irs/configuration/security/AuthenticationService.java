@@ -23,10 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration.security;
 
-import com.apicatalog.jsonld.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -43,9 +41,6 @@ public class AuthenticationService {
 
     public Authentication getAuthentication(final HttpServletRequest request) {
         final String apiKeyHeader = request.getHeader(AUTH_TOKEN_HEADER_NAME);
-        if (StringUtils.isBlank(apiKeyHeader)) {
-            throw new BadCredentialsException("Wrong ApiKey");
-        }
 
         return new ApiKeyAuthentication(apiKeysConfiguration.authorityOf(apiKeyHeader));
     }

@@ -4,7 +4,7 @@
 
 === IRS API
 
-The IRS API is secured using API Keys (tokens that a client provides when invoking API calls). IRS identifies API clients based on the provided token inside 'X-API-KEY' request header, and then checks the token with configuration. API Keys can be configured with helm configuration entries - check Administration Guide to know how. Every request to the IRS API requires a valid 'X-API-KEY' header to be successfully authenticated.
+The IRS API is secured using API Keys (tokens that a client provides when invoking API calls). IRS identifies API clients based on the provided token inside 'X-API-KEY' request header, and then checks the token with configuration. API Keys can be configured with helm configuration entries - check Administration Guide to know how to do this. Every request to the IRS API requires a valid 'X-API-KEY' header to be successfully authenticated.
 
 Currently, IRS API handles two roles: *'admin_irs'* and *'view_irs'.* A valid token with the *'admin_irs'* role can access any endpoint exposed by the IRS API, while a token with the *'view_irs'* role does not have access to policies endpoints and can operate only on resources it owns.
 That means that he only has access to the resources he has created, e.g. jobs and batches.

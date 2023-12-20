@@ -105,6 +105,7 @@ readinessProbe:
 # IRS Configuration #
 #####################
 irsUrl:  # "https://<irs-url>"
+bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
 apiKeyAdmin:  # <api-key-admin>
 apiKeyRegular:  # <api-key-regular>
 ingress:
