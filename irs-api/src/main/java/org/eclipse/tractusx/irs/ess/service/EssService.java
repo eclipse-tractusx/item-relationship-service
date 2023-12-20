@@ -87,14 +87,6 @@ public class EssService {
 
         if (job.isPresent()) {
             final BpnInvestigationJob bpnInvestigationJob = job.get();
-            if (!securityHelperService.isAdmin() && !bpnInvestigationJob.getJobSnapshot()
-                                                                        .getJob()
-                                                                        .getOwner()
-                                                                        .equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                        "Cannot access investigation job with id " + jobId + " due to missing privileges.");
-            }
-
             return updateState(bpnInvestigationJob);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No investigation job exists with id " + jobId);

@@ -147,12 +147,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private List<MultiTransferJob> filterJobs(final @NotNull List<JobState> states) {
-        final List<MultiTransferJob> jobs = states.isEmpty() ? jobStore.findAll() : jobStore.findByStates(states);
-        if (securityHelperService.isAdmin()) {
-            return jobs;
-        } else {
-            return jobs.stream().filter(multiJob -> multiJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())).toList();
-        }
+        return states.isEmpty() ? jobStore.findAll() : jobStore.findByStates(states);
     }
 
     private PagedListHolder<JobStatusResult> paginateAndSortResults(final Pageable pageable,
@@ -190,7 +185,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         validateAspectTypeValues(params.getAspects());
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(),
-                params, batchId, owner);
+                params, batchId);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
@@ -230,11 +225,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String idAsString = String.valueOf(jobId);
 
         final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
-        canceled.ifPresent(cancelledJob -> {
-            if (!securityHelperService.isAdmin() && !cancelledJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access and cancel job with id " + jobId + " due to missing privileges.");
-            }
-        });
         canceled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
                 new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState().name(),
                         cancelledJob.getJobParameter().getCallbackUrl(), cancelledJob.getBatchId())));
@@ -250,11 +240,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob multiJob = multiTransferJob.get();
-
-            if (!securityHelperService.isAdmin() && !multiJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access job with id " + jobId + " due to missing privileges.");
-            }
-
             return getJobForJobId(multiJob, includePartialResults);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId);

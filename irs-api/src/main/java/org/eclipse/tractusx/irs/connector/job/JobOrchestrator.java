@@ -110,11 +110,10 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
      * @param globalAssetId root id
      * @param jobData       additional data for the job to be managed by the {@link JobStore}.
      * @param batchId       batch id
-     * @param owner         owner
      * @return response.
      */
-    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData, final UUID batchId, final String owner) {
-        final Job job = createJob(globalAssetId, jobData, owner);
+    public JobInitiateResponse startJob(final String globalAssetId, final JobParameter jobData, final UUID batchId) {
+        final Job job = createJob(globalAssetId, jobData);
         final var multiJob = MultiTransferJob.builder().job(job).batchId(Optional.ofNullable(batchId)).build();
         jobStore.create(multiJob);
 
@@ -281,7 +280,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         return response;
     }
 
-    private Job createJob(final String globalAssetId, final JobParameter jobData, final String owner) {
+    private Job createJob(final String globalAssetId, final JobParameter jobData) {
         if (StringUtils.isEmpty(globalAssetId)) {
             throw new JobException("GlobalAsset Identifier cannot be null or empty string");
         }
@@ -292,7 +291,6 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                   .createdOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .lastModifiedOn(ZonedDateTime.now(ZoneOffset.UTC))
                   .state(JobState.UNSAVED)
-                  .owner(owner)
                   .parameter(jobData)
                   .build();
     }

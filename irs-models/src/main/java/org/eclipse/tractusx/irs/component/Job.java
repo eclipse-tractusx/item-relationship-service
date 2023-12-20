@@ -100,12 +100,6 @@ public class Job {
     @JsonAlias("jobCompleted")
     private ZonedDateTime completedOn;
 
-    /**
-     * Owner of the job
-     */
-    @Schema(description = "The IRS api consumer.")
-    private String owner;
-
     @Schema(description = "Summary of the job with statistics of the job processing.", implementation = Summary.class)
     private Summary summary;
 
