@@ -56,7 +56,7 @@ public class EndpointDataReferenceCacheService {
      * describing token status
      */
     public EndpointDataReferenceStatus getEndpointDataReference(final String assetId) {
-        final Optional<EndpointDataReference> endpointDataReferenceOptional = retrieveEndpointEndpointReferenceByAssetId(
+        final Optional<EndpointDataReference> endpointDataReferenceOptional = retrieveEndpointReferenceByAssetId(
                 assetId);
 
         if (endpointDataReferenceOptional.isPresent()) {
@@ -81,7 +81,7 @@ public class EndpointDataReferenceCacheService {
         return new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW);
     }
 
-    private Optional<EndpointDataReference> retrieveEndpointEndpointReferenceByAssetId(final String assetId) {
+    private Optional<EndpointDataReference> retrieveEndpointReferenceByAssetId(final String assetId) {
         log.info("Retrieving dataReference from storage for assetId {}", assetId);
         return endpointDataReferenceStorage.get(assetId);
     }
