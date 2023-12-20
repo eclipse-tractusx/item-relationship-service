@@ -169,10 +169,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        return this.registerItemJob(request, null, securityHelperService.getClientIdClaim());
+        return this.registerItemJob(request, null);
     }
 
-    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId, final String owner) {
+    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId) {
         final var params = JobParameter.create(request);
         if (params.getDirection().equals(Direction.UPWARD) && !params.getBomLifecycle().equals(BomLifecycle.AS_BUILT)) {
             // Currently not supported variant

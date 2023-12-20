@@ -64,12 +64,12 @@ public class EssService {
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
-        return startIrsJob(request, null, securityHelperService.getClientIdClaim());
+        return startIrsJob(request, null);
     }
 
-    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request, final UUID batchId, final String owner) {
+    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request, final UUID batchId) {
         final JobHandle jobHandle = irsItemGraphQueryService.registerItemJob(
-                bpnInvestigations(request.getKey(), request.getBomLifecycle()), batchId, owner);
+                bpnInvestigations(request.getKey(), request.getBomLifecycle()), batchId);
 
         final UUID createdJobId = jobHandle.getId();
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(createdJobId.toString());

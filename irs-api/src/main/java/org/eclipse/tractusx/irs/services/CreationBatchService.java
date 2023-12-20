@@ -77,7 +77,6 @@ public class CreationBatchService {
                                                 .timeout(request.getTimeout())
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
-                                                .owner(securityHelperService.getClientIdClaim())
                                                 .jobType(BatchOrder.JobType.REGULAR)
                                                 .build();
 
@@ -93,7 +92,6 @@ public class CreationBatchService {
                                                 .timeout(request.getTimeout())
                                                 .jobTimeout(request.getJobTimeout())
                                                 .callbackUrl(request.getCallbackUrl())
-                                                .owner(securityHelperService.getClientIdClaim())
                                                 .incidentBPNSs(request.getIncidentBPNSs())
                                                 .jobType(BatchOrder.JobType.ESS)
                                                 .build();
@@ -105,7 +103,7 @@ public class CreationBatchService {
         batchOrderStore.save(batchOrder.getBatchOrderId(), batchOrder);
 
         final List<Batch> batches = createBatches(List.copyOf(keys),
-                batchSize, batchOrder.getBatchOrderId(), securityHelperService.getClientIdClaim());
+                batchSize, batchOrder.getBatchOrderId());
         batches.forEach(batch -> {
             batchStore.save(batch.getBatchId(), batch);
             jobEventLinkedQueueListener.addQueueForBatch(batch.getBatchId(), batch.getJobProgressList().size());
@@ -116,7 +114,7 @@ public class CreationBatchService {
         return batchOrder.getBatchOrderId();
     }
 
-    public List<Batch> createBatches(final List<PartChainIdentificationKey> keys, final int batchSize, final UUID batchOrderId, final String owner) {
+    public List<Batch> createBatches(final List<PartChainIdentificationKey> keys, final int batchSize, final UUID batchOrderId) {
         final List<List<PartChainIdentificationKey>> globalAssetIdsBatches = Lists.partition(keys, batchSize);
 
         final AtomicInteger batchNumber = new AtomicInteger(1);
@@ -130,7 +128,6 @@ public class CreationBatchService {
                         .batchTotal(globalAssetIdsBatches.size())
                         .batchUrl(buildBatchUrl(batchOrderId, batchId))
                         .batchState(ProcessingState.INITIALIZED)
-                        .owner(owner)
                         .jobProgressList(batch.stream()
                                               .map(identificationKey -> JobProgress.builder()
                                                                                .identificationKey(identificationKey)
