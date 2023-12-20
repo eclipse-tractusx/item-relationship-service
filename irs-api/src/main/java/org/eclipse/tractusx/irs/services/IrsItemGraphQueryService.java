@@ -44,7 +44,8 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.aaswrapper.job.RequestMetric;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
-import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.FetchedItems;
@@ -69,8 +70,6 @@ import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
@@ -112,8 +111,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final String bpdmUrl;
 
-    private final SecurityHelperService securityHelperService;
-
     public IrsItemGraphQueryService(final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator,
             final JobStore jobStore, @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
             final MeterRegistryService meterRegistryService, final SemanticsHubFacade semanticsHubFacade,
@@ -126,7 +123,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         this.semanticsHubFacade = semanticsHubFacade;
         this.applicationEventPublisher = applicationEventPublisher;
         this.bpdmUrl = bpdmUrl;
-        this.securityHelperService = new SecurityHelperService();
     }
 
     @Override
