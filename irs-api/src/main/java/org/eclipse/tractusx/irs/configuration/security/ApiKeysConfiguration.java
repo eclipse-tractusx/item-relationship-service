@@ -42,7 +42,7 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 class ApiKeysConfiguration {
 
-    private static final int MIN_API_KEY_SIZE = 20;
+    private static final int MIN_API_KEY_SIZE = 5;
 
     @NotBlank
     @Size(min = MIN_API_KEY_SIZE)
