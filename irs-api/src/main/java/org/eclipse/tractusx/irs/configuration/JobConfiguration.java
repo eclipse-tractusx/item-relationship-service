@@ -49,8 +49,20 @@ import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
+import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
+import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClientImpl;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClientLocalStub;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientLocalStub;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
@@ -151,4 +163,29 @@ public class JobConfiguration {
                 connectorEndpointsService);
     }
 
+    @Profile({ "local",
+               "stubtest"
+    })
+    @Bean
+    public DigitalTwinRegistryClient digitalTwinRegistryClient(final CxTestDataContainer cxTestDataContainer) {
+        return new DigitalTwinRegistryClientLocalStub(cxTestDataContainer);
+    }
+
+    @Profile({ "local",
+               "stubtest"
+    })
+    @Bean
+    public EdcSubmodelClient edcLocalSubmodelClient(final CxTestDataContainer cxTestDataContainer) {
+        return new EdcSubmodelClientLocalStub(cxTestDataContainer);
+    }
+
+    @Profile({ "!local && !stubtest" })
+    @Bean
+    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
+            final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
+            final EndpointDataReferenceStorage endpointDataReferenceStorage, final AsyncPollingService pollingService,
+            final RetryRegistry retryRegistry, final EDCCatalogFacade catalogFacade) {
+        return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
+                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade);
+    }
 }

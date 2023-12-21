@@ -16,6 +16,7 @@ target/
 ### IntelliJ IDEA ###
 .idea
 !.idea/codeStyles/
+!.idea/copyright/*
 !.idea/fileTemplates/
 *.iws
 *.iml

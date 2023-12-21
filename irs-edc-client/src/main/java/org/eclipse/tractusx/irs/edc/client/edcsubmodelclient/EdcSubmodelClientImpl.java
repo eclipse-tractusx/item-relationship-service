@@ -21,13 +21,12 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client;
+package org.eclipse.tractusx.irs.edc.client.edcsubmodelclient;
 
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -37,8 +36,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.data.CxTestDataContainer;
-import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
+import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
+import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
+import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
@@ -46,74 +50,15 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
 /**
  * Public API facade for EDC domain
  */
-@SuppressWarnings("PMD.ExcessiveImports")
-public interface EdcSubmodelClient {
-
-    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelDataplaneUrl,
-            String assetId) throws EdcClientException;
-
-    CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
-            EdcNotification<NotificationContent> notification) throws EdcClientException;
-
-    CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress, String filterKey,
-            String filterValue) throws EdcClientException;
-}
-
-/**
- * Submodel facade stub used in local environment
- */
-@Service
-@Profile({ "local",
-           "stubtest"
-})
-class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
-
-    private final SubmodelTestdataCreator testdataCreator;
-
-    /* package */ EdcSubmodelClientLocalStub(final CxTestDataContainer cxTestDataContainer) {
-        this.testdataCreator = new SubmodelTestdataCreator(cxTestDataContainer);
-    }
-
-    @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint,
-            final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
-        if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(assetId)) {
-            throw new EdcClientException("Dummy Exception");
-        }
-        final Map<String, Object> submodel = testdataCreator.createSubmodelForId(assetId + "_" + submodelDataplaneUrl);
-        return CompletableFuture.completedFuture(StringMapper.mapToString(submodel));
-    }
-
-    @Override
-    public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final String assetId, final EdcNotification<NotificationContent> notification) {
-        // not actually sending anything, just return success response
-        return CompletableFuture.completedFuture(() -> true);
-    }
-
-    @Override
-    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
-            final String filterKey, final String filterValue) throws EdcClientException {
-        throw new EdcClientException("Not implemented");
-    }
-}
-
-/**
- * Public API facade for EDC domain
- */
-@Service("irsEdcClientEdcSubmodelClientImpl")
 @Slf4j
 @RequiredArgsConstructor
-@Profile({ "!local && !stubtest" })
 @SuppressWarnings("PMD.TooManyMethods")
-class EdcSubmodelClientImpl implements EdcSubmodelClient {
+public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;

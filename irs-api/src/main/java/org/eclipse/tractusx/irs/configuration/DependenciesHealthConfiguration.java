@@ -33,9 +33,11 @@ import org.springframework.stereotype.Component;
  * Config values for external dependencies health URLs
  */
 @Component
-@ConfigurationProperties(prefix = "management.health.dependencies")
+@ConfigurationProperties(prefix = DependenciesHealthConfiguration.MANAGEMENT_HEALTH_DEPENDENCIES)
 @Data
 public class DependenciesHealthConfiguration {
+
+    public static final String MANAGEMENT_HEALTH_DEPENDENCIES = "management.health.dependencies";
 
     private Map<String, String> urls;
 }

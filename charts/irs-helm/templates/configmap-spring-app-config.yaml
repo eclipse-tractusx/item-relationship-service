@@ -114,12 +114,16 @@ data:
             operator: {{ .operator | quote }}
             rightOperand: {{ .rightOperand | quote }}
           {{- end }}
+      discoveryFinderClient:
+        cacheTTL: {{ .Values.edc.discoveryFinderClient.cacheTTL | quote }}
       connectorEndpointService:
         cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | quote }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
-      localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
-      managementPath: {{ tpl (.Values.ess.managementPath | default "/management/v2") . | quote }}
+      localEdcEndpoint: {{ tpl (.Values.ess.edc.host | default "") . | quote }}
+      assetsPath: {{ tpl (.Values.ess.assetsPath | default "/management/v3/assets") . | quote }}
+      policydefinitionsPath: {{ tpl (.Values.ess.policydefinitionsPath | default "/management/v2/policydefinitions") . | quote }}
+      contractdefinitionsPath: {{ tpl (.Values.ess.contractdefinitionsPath | default "/management/v2/contractdefinitions") . | quote }}
       irs:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:

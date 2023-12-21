@@ -35,6 +35,8 @@ import java.util.concurrent.Executors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.retry.internal.InMemoryRetryRegistry;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

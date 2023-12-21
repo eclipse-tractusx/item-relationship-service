@@ -41,34 +41,6 @@ class AssetAdministrationShellDescriptorTest {
     final String serialPartIdWithAspectName = "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart";
 
     @Test
-    void shouldFilterByAssemblyPartRelationshipWhenEndingWithAspectName() {
-        // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltIdWithAspectName)));
-        // Act
-        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
-                                                               .getSubmodelDescriptors();
-
-        // Assert
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
-    }
-
-    @Test
-    void shouldFilterByAssemblyPartRelationshipWhenNotEndingWithAspectName() {
-        // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltId)));
-        // Act
-        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
-                                                               .getSubmodelDescriptors();
-
-        // Assert
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltId);
-    }
-
-    @Test
     void shouldFilterByAspectTypeWhenEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
