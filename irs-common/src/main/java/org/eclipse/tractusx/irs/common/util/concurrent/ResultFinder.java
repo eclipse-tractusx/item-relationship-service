@@ -27,9 +27,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Helper class to find the relevant result from a list of futures.
  */
+@Slf4j
 public class ResultFinder {
 
     /**
@@ -55,6 +58,9 @@ public class ResultFinder {
                                                   resultPromise.complete(Optional.of(value));
                                                   return true;
                                               } else {
+                                                  if (throwable != null) {
+                                                      log.warn(throwable.getMessage(), throwable);
+                                                  }
                                                   return false;
                                               }
                                           })).toList();
