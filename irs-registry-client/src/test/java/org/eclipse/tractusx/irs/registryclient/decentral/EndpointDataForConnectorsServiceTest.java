@@ -36,7 +36,6 @@ import java.util.List;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
 import org.springframework.web.client.RestClientException;
 
 class EndpointDataForConnectorsServiceTest {
@@ -46,7 +45,6 @@ class EndpointDataForConnectorsServiceTest {
 
     private static final String connectionOneAddress = "connectionOneAddress";
     private static final String connectionTwoAddress = "connectionTwoAddress";
-    private static final String connectionThreeAddress = "connectionThreeAddress";
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade = mock(EdcEndpointReferenceRetriever.class);
 
@@ -61,12 +59,13 @@ class EndpointDataForConnectorsServiceTest {
                 EndpointDataReference.Builder.newInstance().endpoint(connectionOneAddress).build());
 
         // when
-        final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
+        final List<EndpointDataReference> endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
                 Collections.singletonList(connectionOneAddress));
 
         // then
-        assertThat(endpointDataReference).isNotNull();
-        assertThat(endpointDataReference.getEndpoint()).isEqualTo(connectionOneAddress);
+        assertThat(endpointDataReference).hasSize(1);
+        assertThat(endpointDataReference.get(0)).isNotNull();
+        assertThat(endpointDataReference.get(0).getEndpoint()).isEqualTo(connectionOneAddress);
     }
 
     @Test
@@ -83,46 +82,13 @@ class EndpointDataForConnectorsServiceTest {
         }
 
         // when
-        final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
+        final List<EndpointDataReference> endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
                 List.of(connectionOneAddress, connectionTwoAddress));
 
         // then
-        assertThat(endpointDataReference).isNotNull();
-        assertThat(endpointDataReference.getEndpoint()).isEqualTo(connectionTwoAddress);
-    }
-
-    @Test
-    void shouldReturnExpectedEndpointDataReferenceFromThirdConnectionEndpoint() throws EdcRetrieverException {
-
-        // TODO #214 @mfischer can we improve this test without sleeping?
-
-        { // given
-            // a slow answer
-            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
-                    DT_REGISTRY_ASSET_VALUE)).thenAnswer((Answer<EndpointDataReference>) invocation -> {
-                Thread.sleep(5000);
-                return EndpointDataReference.Builder.newInstance().endpoint(connectionOneAddress).build();
-            });
-
-            // and a failing answer
-            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
-                    DT_REGISTRY_ASSET_VALUE)).thenThrow(edcRetrieverException());
-
-            // and the fastest answer
-            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionThreeAddress, DT_REGISTRY_ASSET_TYPE,
-                    DT_REGISTRY_ASSET_VALUE)).thenAnswer((Answer<EndpointDataReference>) invocation -> {
-                Thread.sleep(50);
-                return EndpointDataReference.Builder.newInstance().endpoint(connectionThreeAddress).build();
-            });
-        }
-
-        // when
-        final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
-                List.of(connectionOneAddress, connectionTwoAddress, connectionThreeAddress));
-
-        // then
-        assertThat(endpointDataReference).isNotNull();
-        assertThat(endpointDataReference.getEndpoint()).isEqualTo(connectionThreeAddress);
+        assertThat(endpointDataReference).hasSize(1);
+        assertThat(endpointDataReference.get(0)).isNotNull();
+        assertThat(endpointDataReference.get(0).getEndpoint()).isEqualTo(connectionTwoAddress);
     }
 
     @Test
