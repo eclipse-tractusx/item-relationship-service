@@ -98,7 +98,7 @@ class PolicyCheckerServiceTest {
         boolean result = policyCheckerService.isValid(policy);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result).isFalse();
     }
 
     @Test
