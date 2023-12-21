@@ -81,8 +81,8 @@ tractusx-connector:
       oauth:
         tokenurl: <path:traceability-irs/data/int/controlplane#ssi.oauth.tokenurl>
         client:
-          id: <path:traceability-irs/data/int/controlplane#ssi.oauth.client.id>
-          secretAlias: miw-int-keycloak-secret
+          id: <path:traceability-irs/data/ess/controlplane#ssi.oauth.client.id>
+          secretAlias: miw-ess-keycloak-secret
     ingresses:
       - enabled: true
         hostname: "irs-ess-consumer-controlplane.int.demo.catena-x.net"

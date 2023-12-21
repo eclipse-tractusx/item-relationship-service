@@ -1,6 +1,12 @@
 tractusx-connector:
 
   controlplane:
+    # SSI configuration
+    ssi:
+      oauth:
+        client:
+          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id.provider3>
+          secretAlias: dev-provider3-miw-secret
     ingresses:
       - enabled: true
         hostname: "irs-provider-controlplane3.dev.demo.catena-x.net"
