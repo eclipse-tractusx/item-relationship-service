@@ -37,6 +37,8 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -56,134 +58,151 @@ class EdcSubmodelFacadeTest {
     @Mock
     private EdcSubmodelClient client;
 
+    @Nested
+    @DisplayName("getSubmodelRawPayload")
+    class GetSubmodelRawPayloadTests {
 
-    @Test
-    void shouldThrowExecutionExceptionForSubmodel() throws EdcClientException {
-        // arrange
-        final ExecutionException e = new ExecutionException(new EdcClientException("test"));
-        final CompletableFuture<String> future = CompletableFuture.failedFuture(e);
-        when(client.getSubmodelRawPayload(any(), any(), any())).thenReturn(future);
+        @Test
+        void shouldThrowExecutionExceptionForSubmodel() throws EdcClientException {
+            // arrange
+            final ExecutionException e = new ExecutionException(new EdcClientException("test"));
+            final CompletableFuture<String> future = CompletableFuture.failedFuture(e);
+            when(client.getSubmodelRawPayload(any(), any(), any())).thenReturn(future);
 
-        // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
+            // act
+            ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT,
+                    SUBMODEL_SUFIX, ASSET_ID);
 
-        // assert
-        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+            // assert
+            assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+        }
+
+        @Test
+        void shouldThrowEdcClientExceptionForSubmodel() throws EdcClientException {
+            // arrange
+            final EdcClientException e = new EdcClientException("test");
+            when(client.getSubmodelRawPayload(any(), any(), any())).thenThrow(e);
+
+            // act
+            ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT,
+                    SUBMODEL_SUFIX, ASSET_ID);
+
+            // assert
+            assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+        }
+
+        @Test
+        void shouldRestoreInterruptOnInterruptExceptionForSubmodel()
+                throws EdcClientException, ExecutionException, InterruptedException {
+            // arrange
+            final CompletableFuture<String> future = mock(CompletableFuture.class);
+            final InterruptedException e = new InterruptedException();
+            when(future.get()).thenThrow(e);
+            when(client.getSubmodelRawPayload(any(), any(), any())).thenReturn(future);
+
+            // act
+            testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
+
+            // assert
+            assertThat(Thread.currentThread().isInterrupted()).isTrue();
+        }
+
     }
 
-    @Test
-    void shouldThrowEdcClientExceptionForSubmodel() throws EdcClientException {
-        // arrange
-        final EdcClientException e = new EdcClientException("test");
-        when(client.getSubmodelRawPayload(any(), any(), any())).thenThrow(e);
+    @Nested
+    @DisplayName("sendNotification")
+    class SendNotificationTests {
 
-        // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
+        @Test
+        void shouldRestoreInterruptOnInterruptExceptionForNotification()
+                throws EdcClientException, ExecutionException, InterruptedException {
+            // arrange
+            final CompletableFuture<EdcNotificationResponse> future = mock(CompletableFuture.class);
+            final InterruptedException e = new InterruptedException();
+            when(future.get()).thenThrow(e);
+            when(client.sendNotification(any(), any(), any())).thenReturn(future);
 
-        // assert
-        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+            // act
+            testee.sendNotification("", "notify-request-asset", null);
+
+            // assert
+            assertThat(Thread.currentThread().isInterrupted()).isTrue();
+        }
+
+        @Test
+        void shouldThrowExecutionExceptionForNotification() throws EdcClientException {
+            // arrange
+            final ExecutionException e = new ExecutionException(new EdcClientException("test"));
+            final CompletableFuture<EdcNotificationResponse> future = CompletableFuture.failedFuture(e);
+            when(client.sendNotification(any(), any(), any())).thenReturn(future);
+
+            // act
+            ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", "notify-request-asset", null);
+
+            // assert
+            assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+        }
+
+        @Test
+        void shouldThrowEdcClientExceptionForNotification() throws EdcClientException {
+            // arrange
+            final EdcClientException e = new EdcClientException("test");
+            when(client.sendNotification(any(), any(), any())).thenThrow(e);
+
+            // act
+            ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", "notify-request-asset", null);
+
+            // assert
+            assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+        }
     }
 
-    @Test
-    void shouldRestoreInterruptOnInterruptExceptionForSubmodel()
-            throws EdcClientException, ExecutionException, InterruptedException {
-        // arrange
-        final CompletableFuture<String> future = mock(CompletableFuture.class);
-        final InterruptedException e = new InterruptedException();
-        when(future.get()).thenThrow(e);
-        when(client.getSubmodelRawPayload(any(), any(), any())).thenReturn(future);
+    @Nested
+    @DisplayName("getEndpointReferenceForAsset")
+    class GetEndpointReferenceForAssetTests {
 
-        // act
-        testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
+        @Test
+        void shouldThrowEdcClientExceptionForEndpointReference() throws EdcClientException {
+            // arrange
+            final EdcClientException e = new EdcClientException("test");
+            when(client.getEndpointReferenceForAsset(any(), any(), any())).thenThrow(e);
 
-        // assert
-        assertThat(Thread.currentThread().isInterrupted()).isTrue();
-    }
+            // act
+            ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferenceForAsset("", "", "");
 
-    @Test
-    void shouldRestoreInterruptOnInterruptExceptionForNotification()
-            throws EdcClientException, ExecutionException, InterruptedException {
-        // arrange
-        final CompletableFuture<EdcNotificationResponse> future = mock(CompletableFuture.class);
-        final InterruptedException e = new InterruptedException();
-        when(future.get()).thenThrow(e);
-        when(client.sendNotification(any(), any(), any())).thenReturn(future);
+            // assert
+            assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+        }
 
-        // act
-        testee.sendNotification("", "notify-request-asset", null);
+        @Test
+        void shouldThrowExecutionExceptionForEndpointReference() throws EdcClientException {
+            // arrange
+            final ExecutionException e = new ExecutionException(new EdcClientException("test"));
+            final CompletableFuture<EndpointDataReference> future = CompletableFuture.failedFuture(e);
+            when(client.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(future);
 
-        // assert
-        assertThat(Thread.currentThread().isInterrupted()).isTrue();
-    }
+            // act
+            ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferenceForAsset("", "", "");
 
-    @Test
-    void shouldThrowExecutionExceptionForNotification() throws EdcClientException {
-        // arrange
-        final ExecutionException e = new ExecutionException(new EdcClientException("test"));
-        final CompletableFuture<EdcNotificationResponse> future = CompletableFuture.failedFuture(e);
-        when(client.sendNotification(any(), any(), any())).thenReturn(future);
+            // assert
+            assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
+        }
 
-        // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", "notify-request-asset", null);
+        @Test
+        void shouldRestoreInterruptOnInterruptExceptionForEndpointReference()
+                throws EdcClientException, ExecutionException, InterruptedException {
+            // arrange
+            final CompletableFuture<EndpointDataReference> future = mock(CompletableFuture.class);
+            final InterruptedException e = new InterruptedException();
+            when(future.get()).thenThrow(e);
+            when(client.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(future);
 
-        // assert
-        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
-    }
+            // act
+            testee.getEndpointReferenceForAsset("", "", "");
 
-    @Test
-    void shouldThrowEdcClientExceptionForNotification() throws EdcClientException {
-        // arrange
-        final EdcClientException e = new EdcClientException("test");
-        when(client.sendNotification(any(), any(), any())).thenThrow(e);
-
-        // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.sendNotification("", "notify-request-asset", null);
-
-        // assert
-        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
-    }
-
-    @Test
-    void shouldThrowEdcClientExceptionForEndpointReference() throws EdcClientException {
-        // arrange
-        final EdcClientException e = new EdcClientException("test");
-        when(client.getEndpointReferenceForAsset(any(), any(), any())).thenThrow(e);
-
-        // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferenceForAsset("", "", "");
-
-        // assert
-        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
-    }
-
-    @Test
-    void shouldThrowExecutionExceptionForEndpointReference() throws EdcClientException {
-        // arrange
-        final ExecutionException e = new ExecutionException(new EdcClientException("test"));
-        final CompletableFuture<EndpointDataReference> future = CompletableFuture.failedFuture(e);
-        when(client.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(future);
-
-        // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferenceForAsset("", "", "");
-
-        // assert
-        assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
-    }
-
-    @Test
-    void shouldRestoreInterruptOnInterruptExceptionForEndpointReference()
-            throws EdcClientException, ExecutionException, InterruptedException {
-        // arrange
-        final CompletableFuture<EndpointDataReference> future = mock(CompletableFuture.class);
-        final InterruptedException e = new InterruptedException();
-        when(future.get()).thenThrow(e);
-        when(client.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(future);
-
-        // act
-        testee.getEndpointReferenceForAsset("", "", "");
-
-        // assert
-        assertThat(Thread.currentThread().isInterrupted()).isTrue();
+            // assert
+            assertThat(Thread.currentThread().isInterrupted()).isTrue();
+        }
     }
 
 }
