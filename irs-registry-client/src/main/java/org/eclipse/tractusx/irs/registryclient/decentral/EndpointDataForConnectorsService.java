@@ -23,10 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,68 +44,18 @@ public class EndpointDataForConnectorsService {
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
     public EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
-        return new FindFastestImpl().findEndpointDataForConnectors(connectorEndpoints);
-    }
-
-    public class FindFastestImpl {
-
-        private final List<Worker> workers = Collections.synchronizedList(new ArrayList<>());
-        private final List<EndpointDataReference> outputScraper = Collections.synchronizedList(new ArrayList<>());
-        private final CountDownLatch countDownLatch = new CountDownLatch(1);
-
-        public EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
-
-            this.workers.addAll(connectorEndpoints.stream().map(Worker::new).toList());
-            this.workers.stream().map(Thread::new).toList().forEach(Thread::start);
-
+        for (final String connector : connectorEndpoints) {
+            log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
             try {
-                countDownLatch.await();
-            } catch (InterruptedException e) { // TODO #214 @mfischer better handling?!
-                throw new RuntimeException(e);
-            }
-
-            return outputScraper.stream()
-                                .findAny()
-                                .orElseThrow(() -> new RestClientException(
-                                        "EndpointDataReference was not found. Requested connectorEndpoints: "
-                                                + String.join(", ", connectorEndpoints)));
-        }
-
-        public class Worker implements Runnable {
-            private final String connector;
-
-            public Worker(String connector) {
-                this.connector = connector;
-            }
-
-            @Override
-            public void run() {
-
-                log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
-
-                try {
-                    final var result = edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
-                            DT_REGISTRY_ASSET_VALUE);
-
-                    workers.remove(this);
-                    outputScraper.add(result);
-                    countDownLatch.countDown();
-
-                } catch (EdcRetrieverException e) {
-
-                    workers.remove(this);
-                    log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector,
-                            e);
-
-                    if (noWorkersRemaining()) {
-                        countDownLatch.countDown();
-                    }
-                }
-            }
-
-            private boolean noWorkersRemaining() {
-                return workers.isEmpty();
+                return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
+                        DT_REGISTRY_ASSET_VALUE);
+            } catch (EdcRetrieverException e) {
+                log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector, e);
             }
         }
+        throw new RestClientException(
+                "EndpointDataReference was not found. Requested connectorEndpoints: " + String.join(", ",
+                        connectorEndpoints));
     }
+
 }

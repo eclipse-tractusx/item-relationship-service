@@ -11,8 +11,7 @@
  *
  * This program and the accompanying materials are made available under the
  * terms of the Apache License, Version 2.0 which is available at
- * https://www.apache.org/licenses/LICENSE-2.0.
- *
+ * https://www.apache.org/licenses/LICENSE-2.0. *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -59,55 +58,45 @@ class EndpointDataForConnectorsServiceTest {
                 EndpointDataReference.Builder.newInstance().endpoint(connectionOneAddress).build());
 
         // when
-        final List<EndpointDataReference> endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
+        final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
                 Collections.singletonList(connectionOneAddress));
 
         // then
-        assertThat(endpointDataReference).hasSize(1);
-        assertThat(endpointDataReference.get(0)).isNotNull();
-        assertThat(endpointDataReference.get(0).getEndpoint()).isEqualTo(connectionOneAddress);
+        assertThat(endpointDataReference).isNotNull();
+        assertThat(endpointDataReference.getEndpoint()).isEqualTo(connectionOneAddress);
     }
 
     @Test
     void shouldReturnExpectedEndpointDataReferenceFromSecondConnectionEndpoint() throws EdcRetrieverException {
-
-        { // given
-            // a failing answer
-            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
-                    DT_REGISTRY_ASSET_VALUE)).thenThrow(edcRetrieverException());
-            // and a successful answer
-            when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
-                    DT_REGISTRY_ASSET_VALUE)).thenReturn(
-                    EndpointDataReference.Builder.newInstance().endpoint(connectionTwoAddress).build());
-        }
+        // given
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE)).thenThrow(
+                new EdcRetrieverException(new EdcClientException("EdcClientException")));
+        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE)).thenReturn(
+                EndpointDataReference.Builder.newInstance().endpoint(connectionTwoAddress).build());
 
         // when
-        final List<EndpointDataReference> endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
+        final EndpointDataReference endpointDataReference = endpointDataForConnectorsService.findEndpointDataForConnectors(
                 List.of(connectionOneAddress, connectionTwoAddress));
 
         // then
-        assertThat(endpointDataReference).hasSize(1);
-        assertThat(endpointDataReference.get(0)).isNotNull();
-        assertThat(endpointDataReference.get(0).getEndpoint()).isEqualTo(connectionTwoAddress);
+        assertThat(endpointDataReference).isNotNull();
+        assertThat(endpointDataReference.getEndpoint()).isEqualTo(connectionTwoAddress);
     }
 
     @Test
     void shouldThrowExceptionWhenConnectorEndpointsNotReachable() throws EdcRetrieverException {
-
-        // given #
-        // all answers failing
+        // given
         when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE),
-                eq(DT_REGISTRY_ASSET_VALUE))).thenThrow(edcRetrieverException());
+                eq(DT_REGISTRY_ASSET_VALUE))).thenThrow(
+                new EdcRetrieverException(new EdcClientException("EdcClientException")));
         final List<String> connectorEndpoints = List.of(connectionOneAddress, connectionTwoAddress);
 
         // when + then
         assertThatThrownBy(
                 () -> endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints)).isInstanceOf(
                 RestClientException.class).hasMessageContainingAll(connectionOneAddress, connectionTwoAddress);
-    }
-
-    private static EdcRetrieverException edcRetrieverException() {
-        return new EdcRetrieverException(new EdcClientException("EdcClientException"));
     }
 
 }
