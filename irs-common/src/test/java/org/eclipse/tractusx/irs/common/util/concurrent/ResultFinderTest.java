@@ -24,17 +24,17 @@
 
 package org.eclipse.tractusx.irs.common.util.concurrent;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * Test for {@link ResultFinder}
@@ -48,14 +48,14 @@ class ResultFinderTest {
     void withNullOrEmptyInputList(final List<CompletableFuture<String>> list)
             throws ExecutionException, InterruptedException {
         final var result = sut.getFastestResult(list).get();
-        assertThat(result).isEmpty();
+        assertThat(result).isNull();
     }
 
     @Test
     void withOneSuccessfulCompletableFuture() throws ExecutionException, InterruptedException {
         final var futures = List.of(supplyAsync(() -> "ok"));
-        final var result = sut.getFastestResult(futures).get();
-        assertThat(result.orElseThrow()).isEqualTo("ok");
+        final String result = sut.getFastestResult(futures).get();
+        assertThat(result).isEqualTo("ok");
     }
 
     @Test
@@ -71,10 +71,10 @@ class ResultFinderTest {
                 }));
 
         // when
-        final var result = sut.getFastestResult(futures).get();
+        final String result = sut.getFastestResult(futures).get();
 
         // then
-        assertThat(result.orElseThrow()).isEqualTo("ok");
+        assertThat(result).isEqualTo("ok");
     }
 
     @Test
@@ -89,10 +89,10 @@ class ResultFinderTest {
         );
 
         // when
-        final var result = sut.getFastestResult(futures).get();
+        final String result = sut.getFastestResult(futures).get();
 
         // then
-        assertThat(result.orElseThrow()).isEqualTo("fastest success");
+        assertThat(result).isEqualTo("fastest success");
     }
 
     private static CompletableFuture<String> futureThrowAfterMillis(final int sleepMillis,

@@ -23,13 +23,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.common.util.concurrent;
 
-import static java.util.concurrent.CompletableFuture.allOf;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-import lombok.extern.slf4j.Slf4j;
+import static java.util.concurrent.CompletableFuture.allOf;
 
 /**
  * Helper class to find the relevant result from a list of futures.
@@ -46,13 +45,13 @@ public class ResultFinder {
      * @param <T>     the return type
      * @return a {@link CompletableFuture} returning the fastest successful result or empty
      */
-    public <T> CompletableFuture<Optional<T>> getFastestResult(final List<CompletableFuture<T>> futures) {
+    public <T> CompletableFuture<T> getFastestResult(final List<CompletableFuture<T>> futures) {
 
         if (futures == null || futures.isEmpty()) {
-            return CompletableFuture.supplyAsync(Optional::empty);
+            return CompletableFuture.supplyAsync(() -> null);
         }
 
-        final CompletableFuture<Optional<T>> resultPromise = new CompletableFuture<>();
+        final CompletableFuture<T> resultPromise = new CompletableFuture<>();
 
         final var handledFutures = //
                 futures.stream() //
@@ -64,7 +63,7 @@ public class ResultFinder {
                            if (notFinishedByOtherFuture && currentFutureSuccessful) {
 
                                // first future that completes successfully completes the overall future
-                               resultPromise.complete(Optional.of(value));
+                               resultPromise.complete(value);
                                return true;
 
                            } else {
@@ -77,7 +76,7 @@ public class ResultFinder {
 
         allOf(handledFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
             if (!resultPromise.isDone()) {
-                resultPromise.complete(Optional.empty());
+                resultPromise.complete(null);
             }
         });
 
