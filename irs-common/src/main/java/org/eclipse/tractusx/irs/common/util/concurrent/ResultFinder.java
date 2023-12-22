@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.common.util.concurrent;
 
+import static java.util.concurrent.CompletableFuture.allOf;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -52,20 +54,28 @@ public class ResultFinder {
 
         final CompletableFuture<Optional<T>> resultPromise = new CompletableFuture<>();
 
-        final var handledFutures = futures.stream() //
-                                          .map(future -> future.handle((value, throwable) -> {
-                                              if (!resultPromise.isDone() && throwable == null && value != null) {
-                                                  resultPromise.complete(Optional.of(value));
-                                                  return true;
-                                              } else {
-                                                  if (throwable != null) {
-                                                      log.warn(throwable.getMessage(), throwable);
-                                                  }
-                                                  return false;
-                                              }
-                                          })).toList();
+        final var handledFutures = //
+                futures.stream() //
+                       .map(future -> future.handle((value, throwable) -> {
 
-        CompletableFuture.allOf(handledFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
+                           final boolean notFinishedByOtherFuture = !resultPromise.isDone();
+                           final boolean currentFutureSuccessful = throwable == null && value != null;
+
+                           if (notFinishedByOtherFuture && currentFutureSuccessful) {
+
+                               // first future that completes successfully completes the overall future
+                               resultPromise.complete(Optional.of(value));
+                               return true;
+
+                           } else {
+                               if (throwable != null) {
+                                   log.warn(throwable.getMessage(), throwable);
+                               }
+                               return false;
+                           }
+                       })).toList();
+
+        allOf(handledFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
             if (!resultPromise.isDone()) {
                 resultPromise.complete(Optional.empty());
             }
