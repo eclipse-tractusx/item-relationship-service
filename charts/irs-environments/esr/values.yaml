@@ -3,6 +3,8 @@ irs-helm:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs-esr.dev.demo.catena-x.net"
+  apiKeyAdmin: <path:traceability-irs/data/dev/irs#apiKeyAdmin>
+  apiKeyRegular: <path:traceability-irs/data/dev/irs#apiKeyRegular>
   ingress:
     enabled: true
     className: "nginx"
@@ -31,7 +33,6 @@ irs-helm:
     clientId: <path:traceability-irs/data/dev/oauth2#clientId>
     clientSecret: <path:traceability-irs/data/dev/oauth2#clientSecret>
     clientTokenUri: <path:traceability-irs/data/dev/oauth2#tokenUri>
-    jwkSetUri: <path:traceability-irs/data/dev/oauth2#jwkSetUri>
   edc:
     controlplane:
       apikey:

@@ -4,6 +4,8 @@ irs-helm:
   #####################
   irsUrl: "https://irs.int.demo.catena-x.net"
   bpn: BPNL00000001CRHK
+  apiKeyAdmin: <path:traceability-irs/data/int/irs#apiKeyAdmin>
+  apiKeyRegular: <path:traceability-irs/data/int/irs#apiKeyRegular>
   ingress:
     enabled: true
     className: "nginx"

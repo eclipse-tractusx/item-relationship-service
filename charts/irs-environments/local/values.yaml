@@ -3,6 +3,8 @@ irs-helm:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs.dev.demo.catena-x.net"
+  apiKeyAdmin: 1234567890
+  apiKeyRegular: 0987654321
   ingress:
     enabled: false
   digitalTwinRegistry:

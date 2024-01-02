@@ -3,6 +3,8 @@ irs-helm:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs.beta.demo.catena-x.net"
+  apiKeyAdmin: secret-placeholder
+  apiKeyRegular: secret-placeholder
   ingress:
     enabled: true
     className: "nginx"
