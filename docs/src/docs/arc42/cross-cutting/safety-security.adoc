@@ -6,8 +6,7 @@
 
 The IRS API is secured using API Keys (tokens that a client provides when invoking API calls). IRS identifies API clients based on the provided token inside 'X-API-KEY' request header, and then checks the token with configuration. API Keys can be configured with helm configuration entries - check Administration Guide to know how to do this. Every request to the IRS API requires a valid 'X-API-KEY' header to be successfully authenticated.
 
-Currently, IRS API handles two roles: *'admin_irs'* and *'view_irs'.* A valid token with the *'admin_irs'* role can access any endpoint exposed by the IRS API, while a token with the *'view_irs'* role does not have access to policies endpoints and can operate only on resources it owns.
-That means that he only has access to the resources he has created, e.g. jobs and batches.
+Currently, IRS API handles two roles: *'admin_irs'* and *'view_irs'.* A valid token with the *'admin_irs'* role can access any endpoint exposed by the IRS API, including Policies management API. A valid token with the *'view_irs'* role does not have access to policies endpoints.
 This behavior is shown in the table below.
 
 ==== Rights and Roles Matrix of IRS
@@ -19,21 +18,21 @@ This behavior is shown in the table below.
 |                  | Update policy     | PUT /irs/policies/{policyId}    |            | x
 |                  | Delete policy     | DELETE /irs/policies/{policyId} |            | x
 | Aspect models    | Get aspect models | GET /irs/aspectmodels           |  x         | x
-| Job processing   | Register job      | POST /irs/jobs                  | (x)        | x
-|                  | Get jobs          | GET /irs/jobs                   | (x)        | x
-|                  | Get job           | GET /irs/jobs/{jobId}           | (x)        | x
-|                  | Cancel job        | PUT /irs/jobs/{jobId}           | (x)        | x
-| Batch processing | Register order    | POST /irs/orders                | (x)        | x
-|                  | Get order         | GET /irs/orders/{orderId}       | (x)        | x
-|                  | Cancel order      | PUT /irs/orders/{orderId}       | (x)        | x
-|                  | Get batch         | GET /irs/orders/{orderId}/batches/{batchId}  | (x)    | x
+| Job processing   | Register job      | POST /irs/jobs                  |  x        | x
+|                  | Get jobs          | GET /irs/jobs                   |  x        | x
+|                  | Get job           | GET /irs/jobs/{jobId}           |  x        | x
+|                  | Cancel job        | PUT /irs/jobs/{jobId}           |  x        | x
+| Batch processing | Register order    | POST /irs/orders                |  x        | x
+|                  | Get order         | GET /irs/orders/{orderId}       |  x        | x
+|                  | Cancel order      | PUT /irs/orders/{orderId}       |  x        | x
+|                  | Get batch         | GET /irs/orders/{orderId}/batches/{batchId}  | x    | x
 | Environmental- and
-Social Standards   | Register investigation job | POST /ess/bpn/investigations        | (x)    | x
-|                  | Get investigation job      | GET /ess/bpn/investigations{id}     | (x)    | x
+Social Standards   | Register investigation job | POST /ess/bpn/investigations        | x    | x
+|                  | Get investigation job      | GET /ess/bpn/investigations{id}     | x    | x
 |                  | Accept notifications       | POST /ess/notification/receive      | x      | x
 |===
 
-Legend: x = full access to all resources, (x) = access to the resources he owns
+Legend: x = full access to all resources
 
 === IRS as DTR client
 
