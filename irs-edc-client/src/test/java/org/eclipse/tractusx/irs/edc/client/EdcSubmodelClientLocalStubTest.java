@@ -21,29 +21,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.edcsubmodelclient;
+package org.eclipse.tractusx.irs.edc.client;
 
-import java.util.concurrent.CompletableFuture;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
-import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
-import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- * Public API facade for EDC domain
- */
-@SuppressWarnings("PMD.ExcessiveImports")
-public interface EdcSubmodelClient {
+@ExtendWith(MockitoExtension.class)
+class EdcSubmodelClientLocalStubTest {
 
-    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelDataplaneUrl,
-            String assetId) throws EdcClientException;
+    @Mock
+    private SubmodelTestdataCreator testdataCreator;
 
-    CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
-            EdcNotification<NotificationContent> notification) throws EdcClientException;
+    @InjectMocks
+    private EdcSubmodelClientLocalStub edcSubmodelClientLocalStub;
 
-    CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress, String filterKey,
-            String filterValue) throws EdcClientException;
+    @Test
+    void shouldThrowExceptionFor() {
+        // given
+        String assetId = "urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446";
+
+        // when
+        assertThrows(EdcClientException.class, () -> edcSubmodelClientLocalStub.getSubmodelRawPayload("", "", assetId));
+    }
 }
-

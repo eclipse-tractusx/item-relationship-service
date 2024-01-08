@@ -21,7 +21,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.edcsubmodelclient;
+package org.eclipse.tractusx.irs.edc.client;
 
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -29,7 +29,7 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.data.StringMapper;
-import org.eclipse.tractusx.irs.edc.client.SubmodelTestdataCreator;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
@@ -62,6 +62,13 @@ public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
             final String assetId, final EdcNotification<NotificationContent> notification) {
         // not actually sending anything, just return success response
         return CompletableFuture.completedFuture(() -> true);
+    }
+
+    @Override
+    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+            final String filterKey, final String filterValue,
+            final EndpointDataReferenceStatus cachedEndpointDataReference) throws EdcClientException {
+        throw new EdcClientException("Not implemented");
     }
 
     @Override
