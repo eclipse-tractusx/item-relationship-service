@@ -53,8 +53,6 @@ import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClient;
-import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
@@ -66,6 +64,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -118,6 +117,7 @@ class SubmodelFacadeWiremockTest {
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
 
         final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
+        final EndpointDataReferenceCacheService endpointDataReferenceCacheService = new EndpointDataReferenceCacheService(new EndpointDataReferenceStorage(Duration.ofMinutes(1)));
 
         acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
@@ -132,7 +132,7 @@ class SubmodelFacadeWiremockTest {
 
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
         this.edcSubmodelClient = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
-                pollingService, retryRegistry, catalogFacade);
+                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
     @AfterEach

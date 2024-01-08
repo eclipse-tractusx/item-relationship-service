@@ -57,9 +57,10 @@ import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
-import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClient;
-import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClientImpl;
-import org.eclipse.tractusx.irs.edc.client.edcsubmodelclient.EdcSubmodelClientLocalStub;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientLocalStub;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientLocalStub;
@@ -184,8 +185,10 @@ public class JobConfiguration {
     public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
             final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
             final EndpointDataReferenceStorage endpointDataReferenceStorage, final AsyncPollingService pollingService,
-            final RetryRegistry retryRegistry, final EDCCatalogFacade catalogFacade) {
+            final RetryRegistry retryRegistry, final EDCCatalogFacade catalogFacade,
+            final EndpointDataReferenceCacheService endpointDataReferenceCacheService) {
         return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade);
+                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade,
+                endpointDataReferenceCacheService);
     }
 }
