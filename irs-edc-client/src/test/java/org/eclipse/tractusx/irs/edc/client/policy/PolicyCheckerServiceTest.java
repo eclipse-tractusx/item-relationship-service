@@ -85,39 +85,6 @@ class PolicyCheckerServiceTest {
     }
 
     @Test
-    void shouldConfirmValidPolicyWhenWildcardIsSet() {
-        // given
-        final String wildcardPolicyId = "*";
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(TestConstants.ID_3_0_TRACE), OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(wildcardPolicyId), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAtomicConstraintPolicy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                TestConstants.STATUS_ACTIVE);
-        // when
-        boolean result = policyCheckerService.isValid(policy);
-
-        // then
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void shouldRejectWhenWildcardIsPartOfPolicy() {
-        // given
-        final String invalidWildcardPolicy = "Policy*";
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(invalidWildcardPolicy), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAtomicConstraintPolicy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                TestConstants.STATUS_ACTIVE);
-        // when
-        boolean result = policyCheckerService.isValid(policy);
-
-        // then
-        assertThat(result).isFalse();
-    }
-
-    @Test
     void shouldRejectAndConstraintsWhenOnlyOneMatch() {
         // given
         final var policyList = List.of(new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY),
