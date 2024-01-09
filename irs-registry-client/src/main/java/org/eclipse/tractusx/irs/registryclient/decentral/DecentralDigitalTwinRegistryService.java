@@ -23,26 +23,30 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
-import java.time.Instant;
-import java.util.ArrayList;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
+import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceRuntimeException;
 import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,6 +61,17 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private final EndpointDataForConnectorsService endpointDataForConnectorsService;
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
 
+    private ResultFinder resultFinder = new ResultFinder();
+
+    /**
+     * Package private setter in order to allow simulating {@link InterruptedException} and {@link ExecutionException} in tests.
+     *
+     * @param resultFinder the {@link ResultFinder}
+     */
+    void setResultFinder(final ResultFinder resultFinder) {
+        this.resultFinder = resultFinder;
+    }
+
     private static Stream<Map.Entry<String, List<DigitalTwinRegistryKey>>> groupKeysByBpn(
             final Collection<DigitalTwinRegistryKey> keys) {
         return keys.stream().collect(Collectors.groupingBy(DigitalTwinRegistryKey::bpn)).entrySet().stream();
@@ -65,10 +80,13 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     @Override
     public Collection<AssetAdministrationShellDescriptor> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
             throws RegistryServiceException {
+
         log.info("Fetching shell(s) for {} key(s)", keys.size());
+
         final var calledEndpoints = new HashSet<String>();
         final var collectedShells = groupKeysByBpn(keys).flatMap(
-                entry -> fetchShellDescriptors(calledEndpoints, entry.getKey(), entry.getValue())).toList();
+                entry -> fetchShellDescriptors(calledEndpoints, entry.getKey(), entry.getValue()).stream()).toList();
+
         if (collectedShells.isEmpty()) {
             throw new ShellNotFoundException("Unable to find any of the requested shells", calledEndpoints);
         } else {
@@ -78,40 +96,40 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     @NotNull
-    private Stream<AssetAdministrationShellDescriptor> fetchShellDescriptors(final Set<String> calledEndpoints,
+    private List<AssetAdministrationShellDescriptor> fetchShellDescriptors(final Set<String> calledEndpoints,
             final String bpn, final List<DigitalTwinRegistryKey> keys) {
+
         log.info("Fetching {} shells for bpn {}", keys.size(), bpn);
+
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
         calledEndpoints.addAll(connectorEndpoints);
 
-        final List<AssetAdministrationShellDescriptor> descriptors = new ArrayList<>();
+        try {
+            final var endpointDataReferences = getEndpointDataReferences(connectorEndpoints);
+            final var futures = endpointDataReferences.stream()
+                                                      .map(edr -> supplyAsynchShellDescriptorForKeys(keys, edr))
+                                                      .toList();
 
-        EndpointDataReference endpointDataReference = null;
+            return resultFinder.getFastestResult(futures).get();
 
-        for (final DigitalTwinRegistryKey key : keys) {
-            endpointDataReference = renewIfNecessary(endpointDataReference, connectorEndpoints);
-            descriptors.add(fetchShellDescriptor(endpointDataReference, key));
-        }
-
-        return descriptors.stream();
-    }
-
-    private EndpointDataReference renewIfNecessary(final EndpointDataReference endpointDataReference,
-            final List<String> connectorEndpoints) {
-        if (endpointDataReference == null || endpointDataReference.getAuthCode() == null) {
-            return getEndpointDataReference(connectorEndpoints);
-        } else {
-            final var tokenExpirationInstant = extractTokenExpiration(endpointDataReference.getAuthCode());
-            if (Instant.now().isAfter(tokenExpirationInstant)) {
-                log.info("EndpointDataReference token has expired, getting a new one.");
-                return getEndpointDataReference(connectorEndpoints);
-            }
-            return endpointDataReference;
+        } catch (InterruptedException e) {
+            log.debug("InterruptedException occurred while fetching shells for bpn '%s'".formatted(bpn), e);
+            Thread.currentThread().interrupt();
+            return Collections.emptyList();
+        } catch (ExecutionException e) {
+            throw new RegistryServiceRuntimeException(
+                    "Exception occurred while fetching shells for bpn '%s'".formatted(bpn), e);
         }
     }
 
-    private Instant extractTokenExpiration(final String token) {
-        return Instant.ofEpochSecond(EDRAuthCode.fromAuthCodeToken(token).getExp());
+    private CompletableFuture<List<AssetAdministrationShellDescriptor>> supplyAsynchShellDescriptorForKeys(
+            final List<DigitalTwinRegistryKey> keys, final EndpointDataReference endpointDataReference) {
+        return supplyAsync(() -> fetchShellDescriptorsForKey(keys, endpointDataReference));
+    }
+
+    private List<AssetAdministrationShellDescriptor> fetchShellDescriptorsForKey(
+            final List<DigitalTwinRegistryKey> keys, final EndpointDataReference endpointDataReference) {
+        return keys.stream().map(key -> fetchShellDescriptor(endpointDataReference, key)).toList();
     }
 
     private AssetAdministrationShellDescriptor fetchShellDescriptor(final EndpointDataReference endpointDataReference,
@@ -147,20 +165,42 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     @NotNull
-    private EndpointDataReference getEndpointDataReference(final List<String> connectorEndpoints) {
+    private List<EndpointDataReference> getEndpointDataReferences(final List<String> connectorEndpoints) {
         return endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints);
     }
 
     private Collection<String> lookupShellIds(final String bpn) {
         log.info("Looking up shell ids for bpn {}", bpn);
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        final var endpointDataReference = getEndpointDataReference(connectorEndpoints);
+        final var endpointDataReferences = getEndpointDataReferences(connectorEndpoints);
 
-        final var shellIds = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                endpointDataReference,
+        try {
+            final var futures = endpointDataReferences.stream()
+                                                      .map(edr -> supplyAsyncLookupShellIds(bpn, edr))
+                                                      .toList();
+            final var shellIds = resultFinder.getFastestResult(futures).get();
+
+            log.info("Found {} shell id(s) in total", shellIds.size());
+            return shellIds;
+
+        } catch (InterruptedException e) {
+            log.debug("InterruptedException occurred while looking up shells ids for bpn '%s'".formatted(bpn), e);
+            Thread.currentThread().interrupt();
+            return Collections.emptyList();
+        } catch (ExecutionException e) {
+            throw new RegistryServiceRuntimeException(
+                    "Exception occurred while looking up shell ids for bpn '%s'".formatted(bpn), e);
+        }
+    }
+
+    private CompletableFuture<List<String>> supplyAsyncLookupShellIds(final String bpn,
+            final EndpointDataReference endpointDataReference) {
+        return supplyAsync(() -> lookupShellIds(bpn, endpointDataReference));
+    }
+
+    private List<String> lookupShellIds(final String bpn, final EndpointDataReference endpointDataReference) {
+        return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(endpointDataReference,
                 List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())).getResult();
-        log.info("Found {} shell id(s) in total", shellIds.size());
-        return shellIds;
     }
 
     @Override

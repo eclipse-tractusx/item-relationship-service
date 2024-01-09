@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,19 +44,32 @@ public class EndpointDataForConnectorsService {
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
-    public EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
-        for (final String connector : connectorEndpoints) {
-            log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
-            try {
-                return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
-                        DT_REGISTRY_ASSET_VALUE);
-            } catch (EdcRetrieverException e) {
-                log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector, e);
-            }
+    public List<EndpointDataReference> findEndpointDataForConnectors(final List<String> connectorEndpoints) {
+
+        final List<EndpointDataReference> endpointDataReferences = //
+                connectorEndpoints.stream().parallel() //
+                                  .map(this::getEndpointReferenceForAsset) //
+                                  .filter(Optional::isPresent) //
+                                  .map(Optional::get) //
+                                  .map(EndpointDataReference.class::cast).toList();
+
+        if (endpointDataReferences.isEmpty()) {
+            throw new RestClientException("EndpointDataReference was not found. Requested connectorEndpoints: " //
+                    + String.join(", ", connectorEndpoints));
+        } else {
+            return endpointDataReferences;
         }
-        throw new RestClientException(
-                "EndpointDataReference was not found. Requested connectorEndpoints: " + String.join(", ",
-                        connectorEndpoints));
+    }
+
+    private Optional<?> getEndpointReferenceForAsset(final String connector) {
+        log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
+        try {
+            return Optional.ofNullable(edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
+                    DT_REGISTRY_ASSET_VALUE));
+        } catch (EdcRetrieverException e) {
+            log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector, e);
+            return Optional.empty();
+        }
     }
 
 }

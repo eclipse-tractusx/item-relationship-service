@@ -26,14 +26,16 @@ package org.eclipse.tractusx.irs.registryclient;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClientException;
@@ -74,12 +76,19 @@ class DefaultConfigurationTest {
 
     @Test
     void endpointDataForConnectorsService() throws EdcClientException {
+
+        // ARRANGE
         final var mock = mock(EdcSubmodelFacade.class);
+        final var endpointAddress = "endpointaddress";
+        final var endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint(endpointAddress).build();
+        when(mock.getEndpointReferenceForAsset(eq(endpointAddress), any(), any())).thenReturn(endpointDataReference);
 
+        // ACT
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
-        endpointDataForConnectorsService.findEndpointDataForConnectors(List.of("test"));
+        endpointDataForConnectorsService.findEndpointDataForConnectors(List.of(endpointAddress));
 
-        verify(mock).getEndpointReferenceForAsset(any(), any(), any());
+        // ASSERT
+        verify(mock).getEndpointReferenceForAsset(eq(endpointAddress), any(), any());
     }
 
     @Test
