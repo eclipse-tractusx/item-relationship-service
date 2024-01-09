@@ -31,7 +31,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -69,7 +68,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     /**
-     * Package private setter in order to allow simulating {@link InterruptedException} and {@link ExecutionException} in tests.
+     * Package private setter in order to allow simulating {@link InterruptedException}
+     * and {@link ExecutionException} in tests.
      *
      * @param resultFinder the {@link ResultFinder}
      */
@@ -105,9 +105,11 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         calledEndpoints.addAll(connectorEndpoints);
 
         try {
-            final var endpointDataReferences = getEndpointDataReferences(connectorEndpoints);
+            final var endpointDataReferences = endpointDataForConnectorsService.findEndpointDataForConnectors(
+                    connectorEndpoints);
             final var futures = endpointDataReferences.stream()
-                                                      .map(edr -> supplyAsynchShellDescriptorForKeys(keys, edr))
+                                                      .map(edr -> supplyAsync(
+                                                              () -> fetchShellDescriptorsForKey(keys, edr)))
                                                       .toList();
 
             return resultFinder.getFastestResult(futures).get();
@@ -120,11 +122,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             throw new RegistryServiceRuntimeException(
                     "Exception occurred while fetching shells for bpn '%s'".formatted(bpn), e);
         }
-    }
-
-    private CompletableFuture<List<AssetAdministrationShellDescriptor>> supplyAsynchShellDescriptorForKeys(
-            final List<DigitalTwinRegistryKey> keys, final EndpointDataReference endpointDataReference) {
-        return supplyAsync(() -> fetchShellDescriptorsForKey(keys, endpointDataReference));
     }
 
     private List<AssetAdministrationShellDescriptor> fetchShellDescriptorsForKey(
@@ -164,19 +161,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         return aaShellIdentification;
     }
 
-    @NotNull
-    private List<EndpointDataReference> getEndpointDataReferences(final List<String> connectorEndpoints) {
-        return endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints);
-    }
-
     private Collection<String> lookupShellIds(final String bpn) {
         log.info("Looking up shell ids for bpn {}", bpn);
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        final var endpointDataReferences = getEndpointDataReferences(connectorEndpoints);
+        final var endpointDataReferences = endpointDataForConnectorsService.findEndpointDataForConnectors(
+                connectorEndpoints);
 
         try {
-            final var futures = endpointDataReferences.stream()
-                                                      .map(edr -> supplyAsyncLookupShellIds(bpn, edr))
+            final var futures = endpointDataReferences.stream().map(edr -> supplyAsync(() -> lookupShellIds(bpn, edr)))
                                                       .toList();
             final var shellIds = resultFinder.getFastestResult(futures).get();
 
@@ -191,11 +183,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             throw new RegistryServiceRuntimeException(
                     "Exception occurred while looking up shell ids for bpn '%s'".formatted(bpn), e);
         }
-    }
-
-    private CompletableFuture<List<String>> supplyAsyncLookupShellIds(final String bpn,
-            final EndpointDataReference endpointDataReference) {
-        return supplyAsync(() -> lookupShellIds(bpn, endpointDataReference));
     }
 
     private List<String> lookupShellIds(final String bpn, final EndpointDataReference endpointDataReference) {
