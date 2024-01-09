@@ -63,18 +63,18 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
     private ResultFinder resultFinder = new ResultFinder();
 
+    private static Stream<Map.Entry<String, List<DigitalTwinRegistryKey>>> groupKeysByBpn(
+            final Collection<DigitalTwinRegistryKey> keys) {
+        return keys.stream().collect(Collectors.groupingBy(DigitalTwinRegistryKey::bpn)).entrySet().stream();
+    }
+
     /**
      * Package private setter in order to allow simulating {@link InterruptedException} and {@link ExecutionException} in tests.
      *
      * @param resultFinder the {@link ResultFinder}
      */
-    void setResultFinder(final ResultFinder resultFinder) {
+    /* package */ void setResultFinder(final ResultFinder resultFinder) {
         this.resultFinder = resultFinder;
-    }
-
-    private static Stream<Map.Entry<String, List<DigitalTwinRegistryKey>>> groupKeysByBpn(
-            final Collection<DigitalTwinRegistryKey> keys) {
-        return keys.stream().collect(Collectors.groupingBy(DigitalTwinRegistryKey::bpn)).entrySet().stream();
     }
 
     @Override
