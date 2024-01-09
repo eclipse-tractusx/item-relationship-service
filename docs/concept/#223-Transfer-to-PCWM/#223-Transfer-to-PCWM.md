@@ -2,13 +2,9 @@
 
 ## How to migrate the Confluence pages to GitHub (Pages, Wiki, MD, issues)
 
-It is possible to convert confluence html pages to markdown using this
-tool: https://github.com/meridius/confluence-to-markdown  
-Unfortunately, the repository is archived, so it has to be validated, that it is still working.
+Only a small portion of our Confluence documentation has to be migrated to GitHub, so copy-pasting the content manually is sufficient and the fastest solution.
 
-[How-To: Export Confluence Space](https://confluence.atlassian.com/doc/export-content-to-word-pdf-html-and-xml-139475.html)
-
-Migrating the confluence pages might also be a good time to get rid of outdated documentation.
+Confluence pages which shall be moved to GitHub have to be marked as such. Everything else will not be moved.
 
 ## Test management and Test Reporting (Cucumber)
 
@@ -38,7 +34,7 @@ Furthermore, integration tests using mocks of the third-party systems should be 
 
 PRs are to be opened directly to eclipse-tractusx/item-relationship-service. Eclipse committers can create branches directly in this project. External contributors can contribute by forking the eclipse-tractusx/item-relationship-service project and create pull requests from their fork.
 
-To be clarified:
-- Should the non-committers of the core IRS team still use the catenax-ng/tx-item-relationship-service fork or create their own fork?
-- Should we remove branch protection on catenax-ng/tx-item-relationship-service:main for easy synchronization with the upstream project?
+Non-committers of the core IRS team can still use the catenax-ng/tx-item-relationship-service fork but pull requests still have to be opened directly to eclipse-tractusx/item-relationship-service.
+
+Branch protection of catenax-ng/tx-item-relationship-service:main will be removed so synchronization with the upstream project can be done by one click.
 
