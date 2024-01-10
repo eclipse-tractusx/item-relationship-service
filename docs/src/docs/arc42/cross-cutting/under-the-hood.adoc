@@ -118,7 +118,7 @@ This allows reuse of already existing EndpointDataReference if it is present, va
 rather than starting whole new contract negotiation process.
 
 In case token is expired the process is also shortened. We don't have to start new contract negotiation process,
-since we can obtain required contractAgreementId from present authKey. This improves request processing time.
+since we can obtain required contractAgreementId from present authCode. This improves request processing time.
 
 [source, mermaid]
 ....
