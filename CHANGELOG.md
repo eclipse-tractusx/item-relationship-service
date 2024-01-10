@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added EDR token cache to reuse token after contract negotiation
 - Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints
 
+### Changed
+
+- Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
+
 ## [4.3.0] - 2023-12-08
 ### Added
 - Added support for `hasAlternatives` property in SingleLevelBomAsBuilt aspect
