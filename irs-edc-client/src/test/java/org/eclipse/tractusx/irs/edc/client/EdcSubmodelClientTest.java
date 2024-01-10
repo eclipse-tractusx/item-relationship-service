@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,6 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -62,6 +61,8 @@ import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
@@ -71,8 +72,6 @@ import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;

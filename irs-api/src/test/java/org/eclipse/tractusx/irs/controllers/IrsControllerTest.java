@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -49,6 +49,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobStatusResult;
@@ -60,7 +61,6 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.junit.jupiter.api.Test;

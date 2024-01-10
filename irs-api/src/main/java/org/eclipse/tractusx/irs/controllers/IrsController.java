@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,9 +31,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import java.util.List;
 import java.util.UUID;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.Explode;
@@ -44,9 +41,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -57,7 +57,6 @@ import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.IrsTimer;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;

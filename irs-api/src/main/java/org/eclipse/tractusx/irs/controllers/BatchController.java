@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,6 +42,7 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.BatchOrderCreated;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
@@ -49,7 +50,6 @@ import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.eclipse.tractusx.irs.services.timeouts.CancelBatchProcessingService;

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,12 +36,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.CreationBatchService;
 import org.eclipse.tractusx.irs.services.QueryBatchService;
 import org.eclipse.tractusx.irs.services.timeouts.CancelBatchProcessingService;
