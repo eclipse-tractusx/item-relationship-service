@@ -12,14 +12,15 @@
 3. [Problem Statement](#statement)
 4. [Requirements](#requirements)
 5. [NFR](#nfr)
-6. [Concept](#concept)
-7. [Glossary](#glossary)
+6. [Out of scope](#outofscope)
+7. [Concept](#concept)
+8. [Glossary](#glossary)
 
 
 # <ins>Overview</ins> <a name="overview"></a>
 
 
-# <ins>Summarny</ins> <a name="summary"></a>
+# <ins>Summary</ins> <a name="summary"></a>
 
 # <ins>Problem Statement</ins> <a name="statement"></a>
 
@@ -27,8 +28,9 @@
 
 # <ins>NFR</ins> <a name="nfr"></a>
 
-# <ins>Concept</ins> <a name="concept"></a>
+# <ins>Out of scope</ins> <a name="outofscope"></a>
 
+# <ins>Concept</ins> <a name="concept"></a>
 
 # <ins>Glossary</ins> <a name="glossary"></a>
 
