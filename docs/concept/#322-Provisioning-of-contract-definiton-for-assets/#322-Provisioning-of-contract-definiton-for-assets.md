@@ -20,6 +20,7 @@
 6. [Out of scope](#outofscope)
 7. [Concept](#concept)
 8. [Glossary](#glossary)
+9. [References](#references)
 
 
 # <ins>Overview</ins> <a name="overview"></a>
@@ -48,6 +49,14 @@ This specific id must therefore be stored and linked for the exchanged asset in 
 
 # <ins>Concept</ins> <a name="concept"></a>
 
+## EDC Management API 
+Source: https://app.swaggerhub.com/apis/eclipse-tractusx-bot/tractusx-edc/0.5.3#/Contract%20Agreement/getNegotiationByAgreementId
+GET /v2/contractagreements/{id} Gets an contract agreement with the given ID
+GET /v2/contractagreements/{id}/negotiation Gets a contract negotiation with the given contract agreement ID
+
+## ContractAgreementId for AAS 
+
+
 
 ## ContractAgreementId for submodels 
 
@@ -60,6 +69,25 @@ Impact: High invasive changes to the code, api, JobResponse and documentation.
        "contractAgreementId": "<contractAgreementId>",
        "submodels": [
         {
+            "identification": "<identification>>",
+            "aspectType": "<aspectType>",
+            "payload": {
+              <... submodel payload ...>
+        }
+      ] 
+    }     
+        
+  ]
+```
+
+### Example 
+
+```json 
+  "contractAggreements" : [
+    "contractAggreement" : {
+       "contractAgreementId": "YjA4NjdmMjgtYWMwMC00OTdiLTliMTItNGEzZDdkYjk4YmEw:cmVnaXN0cnktYXNzZXQ=:YWI2MTY5ZDctNzdiYi00YTQ1LTljZTYtZTUzZjhjM2MwYTFm",
+       "submodels": [
+        {
             "identification": "urn:uuid:f9b6f066-c4de-4bed-b531-2a1cad7bd173",
             "aspectType": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
             "payload": {
@@ -70,6 +98,9 @@ Impact: High invasive changes to the code, api, JobResponse and documentation.
         
   ]
 ```
+
+
+
 
 ### Option 2: Provide contractAgreementId for each submodel: 
 Impact: 
@@ -89,6 +120,7 @@ Impact:
   ]
 ```
 
+
 # <ins>Glossary</ins> <a name="glossary"></a>
 
 | Abbreviation           | Name                     |
@@ -97,3 +129,7 @@ Impact:
 | edc:ContractNegotation |                          |
 | AAS                    | AssetAdministrationShell |   
  | contractAgreementId   |                          |
+
+# <ins>References</ins> <a name="references"></a>
+
+https://app.swaggerhub.com/apis/eclipse-tractusx-bot/tractusx-edc/0.5.3#/Contract%20Agreement/getAgreementById
