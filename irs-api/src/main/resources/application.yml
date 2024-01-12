@@ -97,8 +97,8 @@ irs: # Application config
   security:
     api:
       keys:
-        admin: ${API_KEY_ADMIN}  # API Key to access IRS API with admin role
-        regular: ${API_KEY_REGULAR}  # API Key to access IRS API with view role
+        admin: "8f976efe-ee07-4049-b851-07e38cc60baa"  # API Key to access IRS API with admin role
+        regular: "4ec5a557-7c6d-48a4-af57-ab5016424c11"  # API Key to access IRS API with view role
 
 blobstore:
   endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
