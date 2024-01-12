@@ -37,7 +37,8 @@ import org.springframework.stereotype.Service;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 
 /**
- * InMemory storage for endpoint data references.
+ * In-memory storage for endpoint data references.
+ * Values are held either by assetId or contractAgreementId.
  */
 @Service("irsEdcClientEndpointDataReferenceStorage")
 public class EndpointDataReferenceStorage {
@@ -50,8 +51,8 @@ public class EndpointDataReferenceStorage {
         this.storageDuration = storageDuration;
     }
 
-    public void put(final String contractAgreementId, final EndpointDataReference dataReference) {
-        storageMap.put(contractAgreementId, new ExpiringContainer(Instant.now(), dataReference));
+    public void put(final String storageId, final EndpointDataReference dataReference) {
+        storageMap.put(storageId, new ExpiringContainer(Instant.now(), dataReference));
         cleanup();
     }
 
@@ -68,8 +69,8 @@ public class EndpointDataReferenceStorage {
         });
     }
 
-    public Optional<EndpointDataReference> remove(final String contractAgreementId) {
-        return Optional.ofNullable(storageMap.remove(contractAgreementId)).map(ExpiringContainer::getDataReference);
+    public Optional<EndpointDataReference> get(final String storageId) {
+        return Optional.ofNullable(storageMap.get(storageId)).map(ExpiringContainer::getDataReference);
     }
 
     /**

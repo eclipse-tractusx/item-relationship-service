@@ -87,6 +87,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final List<AssetAdministrationShellDescriptor> descriptors = new ArrayList<>();
 
         EndpointDataReference endpointDataReference = null;
+
         for (final DigitalTwinRegistryKey key : keys) {
             endpointDataReference = renewIfNecessary(endpointDataReference, connectorEndpoints);
             descriptors.add(fetchShellDescriptor(endpointDataReference, key));

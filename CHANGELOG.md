@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Added EDR token cache to reuse token after contract negotiation
 - Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints
 
 ### Changed

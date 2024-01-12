@@ -49,7 +49,7 @@ class EdcCallbackControllerTest {
         testee.receiveEdcCallback(ref);
 
         // assert
-        final var result = storage.remove("testId");
+        final var result = storage.get("testId");
         assertThat(result).isNotNull().contains(ref);
     }
 
@@ -62,7 +62,7 @@ class EdcCallbackControllerTest {
         testee.receiveEdcCallback(ref);
 
         // assert
-        final var result = storage.remove("testId");
+        final var result = storage.get("testId");
         assertThat(result).isNotNull().isEmpty();
     }
 }
