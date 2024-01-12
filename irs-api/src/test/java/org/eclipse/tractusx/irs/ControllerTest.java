@@ -21,28 +21,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs;
 
-package org.eclipse.tractusx.irs.configuration;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import jakarta.servlet.http.HttpServletRequest;
+import org.eclipse.tractusx.irs.configuration.security.ApiKeyAuthentication;
+import org.eclipse.tractusx.irs.configuration.security.ApiKeyAuthority;
+import org.eclipse.tractusx.irs.configuration.security.AuthenticationService;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.authority.AuthorityUtils;
 
-import java.util.List;
+public abstract class ControllerTest {
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.actuate.health.Status;
+    @MockBean
+    protected AuthenticationService authenticationService;
 
-class HealthStatusHelperTest {
-
-    public static List<Arguments> healthStatusToNumeric() {
-        return List.of(Arguments.of(Status.UP, 3), Arguments.of(Status.OUT_OF_SERVICE, 2), Arguments.of(Status.DOWN, 1),
-                Arguments.of(Status.UNKNOWN, 0), Arguments.of(null, 0));
+    protected void authenticateWith(String... roles) {
+        when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
+                .thenReturn(new ApiKeyAuthentication(
+                        ApiKeyAuthority.of("123", AuthorityUtils.createAuthorityList(roles))));
     }
 
-    @ParameterizedTest
-    @MethodSource
-    void healthStatusToNumeric(final Status status, final int numericStatus) {
-        assertThat(HealthStatusHelper.healthStatusToNumeric(status)).isEqualTo(numericStatus);
-    }
 }

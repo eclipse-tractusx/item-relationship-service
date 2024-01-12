@@ -121,7 +121,7 @@ public class BatchOrderEventListener {
                     .map(identificationKey -> createRegisterJob(batchOrder, identificationKey))
                     .map(registerJob -> createJobProgress(
                             irsItemGraphQueryService.registerItemJob(registerJob,
-                                    batch.getBatchId(), batch.getOwner()),
+                                    batch.getBatchId()),
                             registerJob.getKey()))
                     .toList());
         } else if (batchOrder.getJobType().equals(BatchOrder.JobType.ESS)) {
@@ -129,8 +129,8 @@ public class BatchOrderEventListener {
                     .map(identificationKey -> createRegisterBpnInvestigationBatchOrder(
                             batchOrder, identificationKey))
                     .map(registerJob -> createJobProgress(
-                            essService.startIrsJob(registerJob, batch.getBatchId(),
-                                    batch.getOwner()), registerJob.getKey()))
+                            essService.startIrsJob(registerJob, batch.getBatchId()),
+                            registerJob.getKey()))
                     .toList());
         }
 

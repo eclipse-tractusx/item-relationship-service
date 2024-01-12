@@ -26,79 +26,23 @@ package org.eclipse.tractusx.irs.common.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 class SecurityHelperServiceTest {
-
-    private final String CLIENT_ID = "sa-cl6-cx-2";
-    private final String BPN = "BPNL00000001CRHK";
 
     final SecurityHelperService securityHelperService = new SecurityHelperService();
 
     @Test
-    void shouldReturnUnknownWhenNoAuthentication() {
-        // given
-        SecurityContextHolder.setContext(Mockito.mock(SecurityContext.class));
-
-        // when
-        final String clientIdClaim = securityHelperService.getClientIdClaim();
-
-        // then
-        assertThat(clientIdClaim).isEqualTo("Unknown");
-    }
-
-    @Test
-    void shouldReturnClientIdClaimWhenJwtAuthentication() {
-        // given
-        thereIsJwtAuthentication(IrsRoles.VIEW_IRS);
-
-        // when
-        final String clientIdClaim = securityHelperService.getClientIdClaim();
-
-        // then
-        assertThat(clientIdClaim).isEqualTo(CLIENT_ID);
-    }
-
-    @Test
-    void shouldReturnBpnClaimWhenJwtAuthentication() {
-        // given
-        thereIsJwtAuthentication(IrsRoles.VIEW_IRS);
-
-        // when
-        final String bpnClaim = securityHelperService.getBpnClaim();
-
-        // then
-        assertThat(bpnClaim).isEqualTo(BPN);
-    }
-
-    @Test
-    void shouldReturnClientIdWhenJwtAuthenticationAndViewIrsRole() {
-        // given
-        thereIsJwtAuthentication(IrsRoles.VIEW_IRS);
-
-        // when
-        final String bpnClaim = securityHelperService.getClientIdForViewIrs();
-
-        // then
-        assertThat(bpnClaim).isEqualTo(CLIENT_ID);
-    }
-
-    @Test
     void shouldReturnTrueWhenAdminRolePresentInToken() {
         // given
-        thereIsJwtAuthentication(IrsRoles.ADMIN_IRS);
+        thereIsAuthentication(IrsRoles.ADMIN_IRS);
 
         // when
         final Boolean isAdmin = securityHelperService.isAdmin();
@@ -107,21 +51,12 @@ class SecurityHelperServiceTest {
         assertThat(isAdmin).isTrue();
     }
 
-    private void thereIsJwtAuthentication(final String irsRole) {
-        final JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
-        final Jwt token = mock(Jwt.class);
-        when(jwtAuthenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority(irsRole)));
-        when(jwtAuthenticationToken.getToken()).thenReturn(token);
-        when(token.getClaim("clientId")).thenReturn(CLIENT_ID);
-        when(token.getClaim("bpn")).thenReturn(BPN);
+    private void thereIsAuthentication(final String irsRole) {
+        UsernamePasswordAuthenticationToken authenticationToken = mock(UsernamePasswordAuthenticationToken.class);
+        when(authenticationToken.getAuthorities()).thenReturn(List.of(new SimpleGrantedAuthority(irsRole)));
         SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
+        when(securityContext.getAuthentication()).thenReturn(authenticationToken);
         SecurityContextHolder.setContext(securityContext);
-    }
-
-    Jwt jwt() {
-        return new Jwt("token", Instant.now(), Instant.now().plusSeconds(30), Map.of("alg", "none"),
-                Map.of(SUB, CLIENT_ID, "clientId", CLIENT_ID, "bpn", BPN));
     }
 
 }

@@ -73,7 +73,7 @@ public class DependenciesHealthMetricsExportConfiguration {
         log.debug("Registering metric '{}'", metricDescriptor.name);
 
         final ToDoubleFunction<DependenciesHealthIndicator> statusProvider = //
-                healthIndicator -> HealthStatusHelper.healthStatustoNumeric(overallStatus(healthIndicator));
+                healthIndicator -> HealthStatusHelper.healthStatusToNumeric(overallStatus(healthIndicator));
 
         Gauge.builder(metricDescriptor.name, dependenciesHealthIndicator, statusProvider)
              .description(metricDescriptor.description())
@@ -103,7 +103,7 @@ public class DependenciesHealthMetricsExportConfiguration {
         log.debug("Registering metric '{}' tag '{}'", metricDescriptor.name, dependencyName);
 
         final ToDoubleFunction<DependenciesHealthIndicator> statusProvider = //
-                healthIndicator -> HealthStatusHelper.healthStatustoNumeric(
+                healthIndicator -> HealthStatusHelper.healthStatusToNumeric(
                         getIrsDependencyStatus(healthIndicator, dependencyName));
 
         Gauge.builder(metricDescriptor.name, dependenciesHealthIndicator, statusProvider)

@@ -36,7 +36,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Cache maven packages
         uses: actions/cache@v3
@@ -105,8 +105,8 @@ jobs:
       - name: MD linting
         run: |
           npm install markdownlint-cli2
-          npx markdownlint-cli2-config docs/.markdownlint.yaml docs/target/generated-docs/adminguide.md
-          npx markdownlint-cli2-config docs/.markdownlint.yaml docs/target/generated-docs/arc42.md
+          npx markdownlint-cli2 --config docs/.markdownlint.yaml docs/target/generated-docs/adminguide.md
+          npx markdownlint-cli2 --config docs/.markdownlint.yaml docs/target/generated-docs/arc42.md
 
       - name: Move assets to target directory
         run: |

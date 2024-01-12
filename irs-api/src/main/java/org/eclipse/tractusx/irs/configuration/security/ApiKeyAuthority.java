@@ -21,28 +21,26 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs.configuration.security;
 
-package org.eclipse.tractusx.irs.configuration;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
+import java.io.Serializable;
 import java.util.List;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.actuate.health.Status;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
-class HealthStatusHelperTest {
+/**
+ */
+@RequiredArgsConstructor
+@Getter
+public class ApiKeyAuthority implements Serializable {
+    private final String apiKey;
+    private final List<GrantedAuthority> authorities;
 
-    public static List<Arguments> healthStatusToNumeric() {
-        return List.of(Arguments.of(Status.UP, 3), Arguments.of(Status.OUT_OF_SERVICE, 2), Arguments.of(Status.DOWN, 1),
-                Arguments.of(Status.UNKNOWN, 0), Arguments.of(null, 0));
+    @SuppressWarnings("PMD.ShortMethodName")
+    public static ApiKeyAuthority of(final String apiKey, final List<GrantedAuthority> authorities) {
+        return new ApiKeyAuthority(apiKey, authorities);
     }
 
-    @ParameterizedTest
-    @MethodSource
-    void healthStatusToNumeric(final Status status, final int numericStatus) {
-        assertThat(HealthStatusHelper.healthStatusToNumeric(status)).isEqualTo(numericStatus);
-    }
 }
