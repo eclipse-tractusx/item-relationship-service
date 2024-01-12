@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.configuration.security;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -53,6 +54,10 @@ class ApiKeysConfiguration {
     private String regular;
 
     /* package */ ApiKeyAuthority authorityOf(final String apiKey) {
+        if (StringUtils.isBlank(apiKey)) {
+            throw new BadCredentialsException("Wrong ApiKey");
+        }
+
         if (apiKey.equals(admin)) {
             return ApiKeyAuthority.of(apiKey, AuthorityUtils.createAuthorityList(IrsRoles.ADMIN_IRS));
         } else if (apiKey.equals(regular)) {
