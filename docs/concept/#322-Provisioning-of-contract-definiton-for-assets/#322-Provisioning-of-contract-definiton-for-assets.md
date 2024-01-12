@@ -1,15 +1,16 @@
 # \[Concept\] \[#ID#\] Summary 
 
-| Key           | Value             |
-|---------------|-------------------|
-| Creation date | 11.01.2024        |
-| Ticket Id     | https://github.com/eclipse-tractusx/item-relationship-service/issues/322        |    
-| State        | <DRAFT,WIP, DONE> | 
+| Key            | Value             |
+|----------------|-------------------|
+| Creation date  | 11.01.2024        |
+| Ticket Id      | https://github.com/eclipse-tractusx/item-relationship-service/issues/322        |    
+| State          | <DRAFT,WIP, DONE> | 
 
 # LOP <TO be deleted>
 - [ ] Can Trace-X access the management API of the IRS EDC?
 - [ ] Should the EDC Management API of the IRS be configured in the business application or should the url be supplied via the JobResponse?
 - [ ] Does the business app have access to the management API of the EDC configured for the IRS
+- [ ] Is  a distinction is currently necessary for AAS accesses that are not traded via the EDC as we have not currently implemented the case in the IRS
 
 # Table of Contents
 1. [Overview](#overview)
@@ -50,6 +51,8 @@ This specific id must therefore be stored and linked for the exchanged asset in 
 # <ins>Concept</ins> <a name="concept"></a>
 
 ## EDC Management API 
+The EDC Management API is provided by EDC consumer. In this case the IRS configured EDC provider logs the required contract aggreements and provides the API to request contract agreements and contract negotations for given contract agreement @id
+
 Source: https://app.swaggerhub.com/apis/eclipse-tractusx-bot/tractusx-edc/0.5.3#/Contract%20Agreement/getNegotiationByAgreementId
 GET /v2/contractagreements/{id} Gets an contract agreement with the given ID
 GET /v2/contractagreements/{id}/negotiation Gets a contract negotiation with the given contract agreement ID
@@ -61,7 +64,9 @@ GET /v2/contractagreements/{id}/negotiation Gets a contract negotiation with the
 ## ContractAgreementId for submodels 
 
 ### Option 1: Provide submodel for  contractAgreementId 
-Impact: High invasive changes to the code, api, JobResponse and documentation. 
+Impact: 
+1. High invasive changes to the code, api, JobResponse and documentation. 
+2. This variant complicates the optional (activatable/deactivatable) collection of ContractAggreementIds as these are an essential part of the response structure.
 
 ```json 
   "contractAggreements" : [
