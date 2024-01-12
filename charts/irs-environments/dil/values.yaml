@@ -7,6 +7,8 @@ irs-helm:
     repository: ghcr.io/catenax-ng/irs-api
     tag: PR-469
   bpn: BPNL00000001CRHK
+  apiKeyAdmin: <path:traceability-irs/data/dil/irs#apiKeyAdmin>
+  apiKeyRegular: <path:traceability-irs/data/dil/irs#apiKeyRegular>
   ingress:
     enabled: true
     className: "nginx"
@@ -38,7 +40,6 @@ irs-helm:
     clientId: <path:traceability-irs/data/dil/oauth2#clientId>
     clientSecret: <path:traceability-irs/data/dil/oauth2#clientSecret>
     clientTokenUri: <path:traceability-irs/data/dil/oauth2#tokenUri>
-    jwkSetUri: <path:traceability-irs/data/dil/oauth2#jwkSetUri>
   edc:
     controlplane:
       apikey:

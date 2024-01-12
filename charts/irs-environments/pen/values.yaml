@@ -4,6 +4,8 @@ irs-helm:
   #####################
   irsUrl: "https://irs-pen.int.demo.catena-x.net"
   bpn: BPNL00000001CRHK
+  apiKeyAdmin: <path:traceability-irs/data/int/irs#apiKeyAdmin>
+  apiKeyRegular: <path:traceability-irs/data/int/irs#apiKeyRegular>
   ingress:
     enabled: true
     className: "nginx"
@@ -34,7 +36,6 @@ irs-helm:
     clientId: <path:traceability-irs/data/pen/oauth2#clientId>
     clientSecret: <path:traceability-irs/data/pen/oauth2#clientSecret>
     clientTokenUri: <path:traceability-irs/data/pen/oauth2#tokenUri>
-    jwkSetUri: <path:traceability-irs/data/pen/oauth2#jwkSetUri>
   edc:
     controlplane:
       apikey:
