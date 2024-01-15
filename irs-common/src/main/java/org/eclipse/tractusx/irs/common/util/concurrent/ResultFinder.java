@@ -23,12 +23,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.common.util.concurrent;
 
-import lombok.extern.slf4j.Slf4j;
+import static java.util.concurrent.CompletableFuture.allOf;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static java.util.concurrent.CompletableFuture.allOf;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Helper class to find the relevant result from a list of futures.
@@ -48,7 +48,7 @@ public class ResultFinder {
     public <T> CompletableFuture<T> getFastestResult(final List<CompletableFuture<T>> futures) {
 
         if (futures == null || futures.isEmpty()) {
-            return CompletableFuture.supplyAsync(() -> null);
+            return CompletableFuture.completedFuture(null);
         }
 
         final CompletableFuture<T> resultPromise = new CompletableFuture<>();
