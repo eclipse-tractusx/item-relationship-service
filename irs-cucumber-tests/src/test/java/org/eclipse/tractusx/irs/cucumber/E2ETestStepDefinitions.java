@@ -88,7 +88,6 @@ public class E2ETestStepDefinitions {
         registerJobBuilder = RegisterJob.builder();
         registerBatchOrderBuilder = RegisterBatchOrder.builder();
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
-        authenticationPropertiesBuilder.grantType("client_credentials").tokenPath("access_token");
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -105,21 +104,26 @@ public class E2ETestStepDefinitions {
         authenticationPropertiesBuilder.uri(irsUrl);
     }
 
-    @And("the user {string} with authentication")
-    public void theUser(String clientId) throws PropertyNotFoundException {
-        authenticationPropertiesBuilder.clientId(clientId);
-        final String oauth2UrlClientSecretKey = "OAUTH2_CLIENT_SECRET";
-        String clientSecret = System.getenv(oauth2UrlClientSecretKey);
-        if (clientSecret != null) {
-            authenticationPropertiesBuilder.clientSecret(clientSecret);
+    @And("the regular user api key")
+    public void theRegularUser() throws PropertyNotFoundException {
+        final String regularUserApiKey = "REGULAR_USER_API_KEY";
+        String apiKey = System.getenv(regularUserApiKey);
+        if (apiKey != null) {
+            authenticationPropertiesBuilder.apiKey(apiKey);
         } else {
-            throw new PropertyNotFoundException("Environment Variable missing: " + oauth2UrlClientSecretKey);
+            throw new PropertyNotFoundException("Environment Variable missing: " + regularUserApiKey);
         }
     }
 
-    @And("the OAuth2 token url {string}")
-    public void theOAuth2TokenUrl(String tokenUrl) {
-        authenticationPropertiesBuilder.oauth2Url(tokenUrl);
+    @And("the admin user api key")
+    public void theAdminUser() throws PropertyNotFoundException {
+        final String adminUserApiKey = "ADMIN_USER_API_KEY";
+        String apiKey = System.getenv(adminUserApiKey);
+        if (apiKey != null) {
+            authenticationPropertiesBuilder.apiKey(apiKey);
+        } else {
+            throw new PropertyNotFoundException("Environment Variable missing: " + adminUserApiKey);
+        }
     }
 
     @Given("I register an IRS job for globalAssetId {string}")
