@@ -24,23 +24,17 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import static java.util.Collections.emptyList;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
@@ -48,14 +42,11 @@ import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.data.StringMapper;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceRuntimeException;
 import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -72,20 +63,14 @@ class DecentralDigitalTwinRegistryServiceTest {
     private final DecentralDigitalTwinRegistryService sut = new DecentralDigitalTwinRegistryService(
             connectorEndpointsService, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
 
-    private static String createAuthCode(final Function<Instant, Instant> expirationModifier) {
-        final var serializedEdrAuthCode = StringMapper.mapToString(
-                EDRAuthCode.builder().exp(expirationModifier.apply(Instant.now()).getEpochSecond()).build());
-        final var bytes = serializedEdrAuthCode.getBytes(StandardCharsets.UTF_8);
-        return Base64.getUrlEncoder().encodeToString(bytes);
-    }
-
     public static AssetAdministrationShellDescriptor shellDescriptor(
             final List<SubmodelDescriptor> submodelDescriptors) {
+
+        final var specificAssetIds = List.of(
+                IdentifierKeyValuePair.builder().name("ManufacturerId").value("BPNL00000003AYRE").build());
+
         return AssetAdministrationShellDescriptor.builder()
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .name("ManufacturerId")
-                                                                                                 .value("BPNL00000003AYRE")
-                                                                                                 .build()))
+                                                 .specificAssetIds(specificAssetIds)
                                                  .submodelDescriptors(submodelDescriptors)
                                                  .build();
     }
@@ -104,8 +89,11 @@ class DecentralDigitalTwinRegistryServiceTest {
             final var lookupShellsResponse = LookupShellsResponse.builder().result(emptyList()).build();
 
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
+
+            final var endpointDataRefFutures = List.of(completedFuture(endpointDataReference));
             when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(
-                    List.of(endpointDataReference));
+                    endpointDataRefFutures);
+
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     anyList())).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
@@ -128,8 +116,13 @@ class DecentralDigitalTwinRegistryServiceTest {
 
             final List<String> connectorEndpoints = List.of("address1", "address2");
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(connectorEndpoints);
+
+            final var dataRefFutures = List.of( //
+                    completedFuture(endpointDataReference("url.to.host1")), //
+                    completedFuture(endpointDataReference("url.to.host2")));
             when(endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints)).thenReturn(
-                    List.of(endpointDataReference("url.to.host1"), endpointDataReference("url.to.host2")));
+                    dataRefFutures);
+
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     anyList())).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
@@ -157,8 +150,11 @@ class DecentralDigitalTwinRegistryServiceTest {
 
             final List<String> connectorEndpoints = List.of("address");
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(connectorEndpoints);
+
+            final var dataRefFutures = List.of(completedFuture(endpointDataReference("url.to.host")));
             when(endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints)).thenReturn(
-                    List.of(endpointDataReference("url.to.host")));
+                    dataRefFutures);
+
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     anyList())).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
@@ -202,83 +198,6 @@ class DecentralDigitalTwinRegistryServiceTest {
         return endpointDataReferenceBuilder().endpoint(url).build();
     }
 
-    // FIXME #214 clarify: after removal of DecentralDigitalTwinRegistryService.renewIfNecessary
-    //           (as discussed with jhartmann) these tests make no sense anymore
-    //           and the one that checks renewal fails of course.
-    //           Was it really ok to remove the renewal?
-    //           What do we do with these tests? Remove completely or adapt? How?
-    @Nested
-    @DisplayName("fetchShells - tests for EndpointDataReference renewal")
-    class FetchShellsEndpointDataReferenceRenewalTests {
-
-        @Test
-        @Disabled("disabled until clarified, see FIXME comment above")
-        void shouldRenewEndpointDataReferenceForMultipleAssets() throws RegistryServiceException {
-
-            // given
-            final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
-                    "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
-            final var expectedShell = shellDescriptor(emptyList());
-
-            final var expiredAuthCode = "test." + createAuthCode(exp -> exp.minus(1, ChronoUnit.DAYS));
-            final var expiredReference = EndpointDataReference.Builder.newInstance()
-                                                                      .endpoint("url.to.host")
-                                                                      .authKey("test")
-                                                                      .authCode(expiredAuthCode)
-                                                                      .build();
-
-            final var renewedReference = EndpointDataReference.Builder.newInstance().endpoint("url.to.host").build();
-
-            when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
-            when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(
-                    List.of(expiredReference), List.of(renewedReference));
-            when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                    anyList())).thenReturn(LookupShellsResponse.builder().result(emptyList()).build());
-            when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
-                    expectedShell);
-
-            // when
-            final var actualShell = sut.fetchShells(List.of(digitalTwinRegistryKey, digitalTwinRegistryKey));
-
-            // then
-            assertThat(actualShell).containsExactly(expectedShell, expectedShell);
-
-            verify(endpointDataForConnectorsService, times(2)).findEndpointDataForConnectors(anyList());
-        }
-
-        @Test
-        void shouldNotRenewEndpointDataReferenceForMultipleAssets() throws RegistryServiceException {
-            // given
-            final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
-                    "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
-            final var expectedShell = shellDescriptor(emptyList());
-            final var authCode = "test." + createAuthCode(exp -> exp.plus(1, ChronoUnit.DAYS));
-            final var endpointDataReference = endpointDataReferenceBuilder().endpoint("url.to.host")
-                                                                            .authKey("test")
-                                                                            .authCode(authCode)
-                                                                            .build();
-            final var lookupShellsResponse = LookupShellsResponse.builder().result(emptyList()).build();
-
-            when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
-            when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(
-                    List.of(endpointDataReference));
-            when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                    anyList())).thenReturn(lookupShellsResponse);
-            when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
-                    expectedShell);
-
-            // when
-            final var actualShell = sut.fetchShells(
-                    List.of(digitalTwinRegistryKey, digitalTwinRegistryKey, digitalTwinRegistryKey));
-
-            // then
-            assertThat(actualShell).containsExactly(expectedShell, expectedShell, expectedShell);
-
-            verify(endpointDataForConnectorsService, times(1)).findEndpointDataForConnectors(anyList());
-        }
-
-    }
-
     @Nested
     @DisplayName("lookupGlobalAssetIds")
     class LookupGlobalAssetIdsTests {
@@ -293,13 +212,12 @@ class DecentralDigitalTwinRegistryServiceTest {
             final var expectedShell = shellDescriptor(emptyList()).toBuilder()
                                                                   .globalAssetId(expectedGlobalAssetId)
                                                                   .build();
-            final var endpointDataReference = endpointDataReference("url.to.host");
+            final var dataRefFutures = List.of(completedFuture(endpointDataReference("url.to.host")));
             final var lookupShellsResponse = LookupShellsResponse.builder()
                                                                  .result(List.of(digitalTwinRegistryKey.shellId()))
                                                                  .build();
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
-            when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(
-                    List.of(endpointDataReference));
+            when(endpointDataForConnectorsService.findEndpointDataForConnectors(anyList())).thenReturn(dataRefFutures);
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     anyList())).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(

@@ -23,10 +23,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import static java.util.Collections.emptyList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -104,20 +104,23 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
         calledEndpoints.addAll(connectorEndpoints);
 
+        final var service = endpointDataForConnectorsService;
+
         try {
-            final var endpointDataReferences = endpointDataForConnectorsService.findEndpointDataForConnectors(
-                    connectorEndpoints);
-            final var futures = endpointDataReferences.stream()
-                                                      .map(edr -> supplyAsync(
-                                                              () -> fetchShellDescriptorsForKey(keys, edr)))
-                                                      .toList();
+
+            final var futures = //
+                    service.findEndpointDataForConnectors(connectorEndpoints)
+                           .stream()
+                           .map(edrFuture -> edrFuture.thenCompose(
+                                   edr -> supplyAsync(() -> fetchShellDescriptorsForKey(keys, edr))))
+                           .toList();
 
             return resultFinder.getFastestResult(futures).get();
 
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred while fetching shells for bpn '%s'".formatted(bpn), e);
             Thread.currentThread().interrupt();
-            return Collections.emptyList();
+            return emptyList();
         } catch (ExecutionException e) {
             throw new RegistryServiceRuntimeException(
                     "Exception occurred while fetching shells for bpn '%s'".formatted(bpn), e);
@@ -164,12 +167,13 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private Collection<String> lookupShellIds(final String bpn) {
         log.info("Looking up shell ids for bpn {}", bpn);
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        final var endpointDataReferences = endpointDataForConnectorsService.findEndpointDataForConnectors(
-                connectorEndpoints);
+        final var edrFutures = endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints);
 
         try {
-            final var futures = endpointDataReferences.stream().map(edr -> supplyAsync(() -> lookupShellIds(bpn, edr)))
-                                                      .toList();
+            final var futures = edrFutures.stream()
+                                          .map(edrFuture -> edrFuture.thenCompose(
+                                                  edr -> supplyAsync(() -> lookupShellIds(bpn, edr))))
+                                          .toList();
             final var shellIds = resultFinder.getFastestResult(futures).get();
 
             log.info("Found {} shell id(s) in total", shellIds.size());
@@ -178,7 +182,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred while looking up shells ids for bpn '%s'".formatted(bpn), e);
             Thread.currentThread().interrupt();
-            return Collections.emptyList();
+            return emptyList();
         } catch (ExecutionException e) {
             throw new RegistryServiceRuntimeException(
                     "Exception occurred while looking up shell ids for bpn '%s'".formatted(bpn), e);
