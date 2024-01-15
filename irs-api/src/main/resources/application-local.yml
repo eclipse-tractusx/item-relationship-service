@@ -21,11 +21,11 @@ irs:
       ttl:
         failed: PT1H
         completed: PT1H
-#  security:
-#    api:
-#      keys:
-#        admin: 01234567890123456789
-#        regular: 09876543210987654321
+  security:
+    api:
+      keys:
+        admin: 01234567890123456789
+        regular: 09876543210987654321
 
 spring:
   security:
