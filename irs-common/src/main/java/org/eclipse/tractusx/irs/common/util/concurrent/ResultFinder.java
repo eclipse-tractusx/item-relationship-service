@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -57,43 +59,57 @@ public class ResultFinder {
 
         final CompletableFuture<T> resultPromise = new CompletableFuture<>();
 
-        final ArrayList<Throwable> exceptions = new ArrayList<>();
+        final List<Throwable> exceptions = new ArrayList<>();
 
         final var handledFutures = //
-                futures.stream() //
-                       .map(future -> future.exceptionally(t -> {
-                           exceptions.add(t);
-                           throw new CompletionException(t);
-                       }).handle((value, throwable) -> {
+                futures.stream()
+                       .map(future -> future.exceptionally(completingExceptionallyCollectingException(exceptions))
+                                            .handle(completingOnFirstSuccessful(resultPromise)))
+                       .toList();
 
-                           final boolean notFinishedByOtherFuture = !resultPromise.isDone();
-                           final boolean currentFutureSuccessful = throwable == null && value != null;
-
-                           if (notFinishedByOtherFuture && currentFutureSuccessful) {
-
-                               // first future that completes successfully completes the overall future
-                               resultPromise.complete(value);
-                               return true;
-
-                           } else {
-                               if (throwable != null) {
-                                   log.warn(throwable.getMessage(), throwable);
-                                   throw new CompletionException(throwable.getMessage(), throwable);
-                               }
-                               return false;
-                           }
-                       })).toList();
-
-        allOf(handledFutures.toArray(new CompletableFuture[0])).whenComplete((value, ex) -> {
+        allOf(toArray(handledFutures)).whenComplete((value, ex) -> {
             if (ex != null) {
                 resultPromise.completeExceptionally(new CompletionExceptions(exceptions));
-            }
-            if (!resultPromise.isDone()) {
+            } else if (!resultPromise.isDone()) {
                 resultPromise.complete(null);
             }
         });
 
         return resultPromise;
+    }
+
+    private static <T> CompletableFuture<T>[] toArray(final List<CompletableFuture<T>> handledFutures) {
+        return handledFutures.toArray(new CompletableFuture[0]);
+    }
+
+    private static <T> BiFunction<T, Throwable, Boolean> completingOnFirstSuccessful(
+            final CompletableFuture<T> resultPromise) {
+        return (value, throwable) -> {
+            final boolean notFinishedByOtherFuture = !resultPromise.isDone();
+            final boolean currentFutureSuccessful = throwable == null && value != null;
+
+            if (notFinishedByOtherFuture && currentFutureSuccessful) {
+
+                // first future that completes successfully completes the overall future
+                resultPromise.complete(value);
+                return true;
+
+            } else {
+                if (throwable != null) {
+                    log.warn(throwable.getMessage(), throwable);
+                    throw new CompletionException(throwable.getMessage(), throwable);
+                }
+                return false;
+            }
+        };
+    }
+
+    private static <T> Function<Throwable, T> completingExceptionallyCollectingException(
+            final List<Throwable> exceptions) {
+        return t -> {
+            exceptions.add(t);
+            throw new CompletionException(t);
+        };
     }
 
     /**
