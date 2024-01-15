@@ -84,15 +84,13 @@ public class ResultFinder {
                            }
                        })).toList();
 
-        allOf(handledFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
+        allOf(handledFutures.toArray(new CompletableFuture[0])).whenComplete((value, ex) -> {
+            if (ex != null) {
+                resultPromise.completeExceptionally(new CompletionExceptions(exceptions));
+            }
             if (!resultPromise.isDone()) {
-                log.warn("result promise not done yet, completing with null");
                 resultPromise.complete(null);
             }
-        }).exceptionally(t -> {
-            // returning list, because t is just one of multiple throwables that may have occurred
-            resultPromise.completeExceptionally(new CompletionExceptions(exceptions));
-            return null;
         });
 
         return resultPromise;

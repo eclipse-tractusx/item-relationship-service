@@ -34,6 +34,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -41,27 +44,31 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 /**
  * Test for {@link ResultFinder}
  */
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@DisplayName("ResultFinder")
 class ResultFinderTest {
 
     final ResultFinder sut = new ResultFinder();
 
     @NullAndEmptySource
     @ParameterizedTest
-    void withNullOrEmptyInputList(final List<CompletableFuture<String>> list)
+    void with_null_or_empty_input_list_it_should_return_null(final List<CompletableFuture<String>> list)
             throws ExecutionException, InterruptedException {
         final var result = sut.getFastestResult(list).get();
         assertThat(result).isNull();
     }
 
     @Test
-    void withOneSuccessfulCompletableFuture() throws ExecutionException, InterruptedException {
+    void with_one_successful_CompletableFuture_it_should_return_the_successful_result()
+            throws ExecutionException, InterruptedException {
         final var futures = List.of(supplyAsync(() -> "ok"));
         final String result = sut.getFastestResult(futures).get();
         assertThat(result).isEqualTo("ok");
     }
 
     @Test
-    void withOnlySuccessfulAndOtherCompletableFuturesFailing() throws ExecutionException, InterruptedException {
+    void with_only_successful_and_other_CompletableFutures_failing_it_should_return_the_successful_resulr()
+            throws ExecutionException, InterruptedException {
 
         // given
         final List<CompletableFuture<String>> futures = List.of( //
@@ -81,7 +88,7 @@ class ResultFinderTest {
     }
 
     @Test
-    void withAllCompletableFuturesFailing() throws Throwable {
+    void with_all_CompletableFutures_failing_it_should_throw() {
 
         // given
         final List<CompletableFuture<String>> futures = List.of( //
@@ -110,7 +117,8 @@ class ResultFinderTest {
     }
 
     @Test
-    void shouldReturnFastestSuccessful() throws ExecutionException, InterruptedException {
+    void with_multiple_successful_CompletableFutures_it_should_return_fastest_successful_result()
+            throws ExecutionException, InterruptedException {
 
         // given
         final List<CompletableFuture<String>> futures = List.of( //
