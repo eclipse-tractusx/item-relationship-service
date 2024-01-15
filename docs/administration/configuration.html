@@ -732,9 +732,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
           <span class="na">portal</span><span class="pi">:</span>
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
-      <span class="na">resourceserver</span><span class="pi">:</span>
-        <span class="na">jwt</span><span class="pi">:</span>
-          <span class="na">jwk-set-uri</span><span class="pi">:</span> <span class="s">${OAUTH2_JWK_SET_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request the JWK set</span>
+
 
 <span class="na">management</span><span class="pi">:</span> <span class="c1"># Spring management API config, see https://spring.io/guides/gs/centralized-configuration/</span>
   <span class="na">endpoints</span><span class="pi">:</span>
@@ -806,6 +804,11 @@ You can define the URLs as well as most of the secrets yourself.</p>
         <span class="na">completed</span><span class="pi">:</span> <span class="s">P7D</span> <span class="c1"># ISO 8601 Duration</span>
       <span class="na">cron</span><span class="pi">:</span>
         <span class="na">expression</span><span class="pi">:</span> <span class="s2">"</span><span class="s">*/10</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">?"</span> <span class="c1"># Determines how often the number of stored jobs is updated in the metrics API.</span>
+  <span class="na">security</span><span class="pi">:</span>
+    <span class="na">api</span><span class="pi">:</span>
+      <span class="na">keys</span><span class="pi">:</span>
+        <span class="na">admin</span><span class="pi">:</span> <span class="s">${API_KEY_ADMIN}</span>  <span class="c1"># API Key to access IRS API with admin role</span>
+        <span class="na">regular</span><span class="pi">:</span> <span class="s">${API_KEY_REGULAR}</span>  <span class="c1"># API Key to access IRS API with view role</span>
 
 <span class="na">blobstore</span><span class="pi">:</span>
   <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_URL}"</span> <span class="c1"># S3 compatible API endpoint (e.g. Minio)</span>
@@ -948,13 +951,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked BPN Investigation results</span>
     <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
 
-<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000001CRHK}</span> <span class="c1"># BPN value that is allowed to access IRS API</span>
-
-<span class="c1"># OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.</span>
-<span class="na">oauth</span><span class="pi">:</span>
-  <span class="na">resourceClaim</span><span class="pi">:</span> <span class="s2">"</span><span class="s">resource_access"</span> <span class="c1"># Name of the JWT claim for roles</span>
-  <span class="na">irsNamespace</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Cl20-CX-IRS"</span> <span class="c1"># Namespace for the IRS roles</span>
-  <span class="na">roles</span><span class="pi">:</span> <span class="s2">"</span><span class="s">roles"</span> <span class="c1"># Name of the list of roles within the IRS namespace</span></code></pre>
+<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000001CRHK}</span> <span class="c1"># BPN value that is allowed to access IRS API</span></code></pre>
 </div>
 </div>
 </div>
@@ -969,6 +966,8 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <span class="c1">#####################</span>
 <span class="na">irsUrl</span><span class="pi">:</span>  <span class="c1"># "https://&lt;irs-url&gt;"</span>
 <span class="na">bpn</span><span class="pi">:</span>  <span class="c1"># BPN for this IRS instance; only users with this BPN are allowed to access the API</span>
+<span class="na">apiKeyAdmin</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-admin&gt; Admin auth key, Should be changed!</span>
+<span class="na">apiKeyRegular</span><span class="pi">:</span> <span class="s2">"</span><span class="s">password"</span>  <span class="c1"># &lt;api-key-regular&gt; View auth key, Should be changed!</span>
 <span class="na">ingress</span><span class="pi">:</span>
   <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>
 
@@ -1016,7 +1015,6 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">clientId</span><span class="pi">:</span>  <span class="c1"># &lt;oauth2-client-id&gt;</span>
   <span class="na">clientSecret</span><span class="pi">:</span>  <span class="c1"># &lt;oauth2-client-secret&gt;</span>
   <span class="na">clientTokenUri</span><span class="pi">:</span>  <span class="c1"># &lt;oauth2-token-uri&gt;</span>
-  <span class="na">jwkSetUri</span><span class="pi">:</span>  <span class="c1"># &lt;oauth2-jwkset-uri&gt;</span>
 <span class="na">portal</span><span class="pi">:</span>
   <span class="na">oauth2</span><span class="pi">:</span>
     <span class="na">clientId</span><span class="pi">:</span>  <span class="c1"># &lt;portal-client-id&gt;</span>
@@ -1079,11 +1077,6 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">assetsPath</span><span class="pi">:</span> <span class="s">/management/v3/assets</span>  <span class="c1"># EDC management API "assets" path - used for notification asset creation</span>
   <span class="na">policydefinitionsPath</span><span class="pi">:</span> <span class="s">/management/v2/policydefinitions</span>  <span class="c1"># EDC management API "policydefinitions" path - used for notification policy definition creation</span>
   <span class="na">contractdefinitionsPath</span><span class="pi">:</span> <span class="s">/management/v2/contractdefinitions</span>  <span class="c1"># EDC management API "contractdefinitions" path - used for notification contract definitions creation</span>
-
-<span class="na">oauth</span><span class="pi">:</span>
-  <span class="na">resourceClaim</span><span class="pi">:</span> <span class="s2">"</span><span class="s">resource_access"</span>  <span class="c1"># Name of the JWT claim for roles</span>
-  <span class="na">irsNamespace</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Cl20-CX-IRS"</span>  <span class="c1"># Namespace for the IRS roles</span>
-  <span class="na">roles</span><span class="pi">:</span> <span class="s2">"</span><span class="s">roles"</span>  <span class="c1"># Name of the list of roles within the IRS namespace</span>
 
 <span class="na">config</span><span class="pi">:</span>
   <span class="c1"># If true, the config provided below will completely replace the configmap.</span>
@@ -1162,7 +1155,11 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <span class="c1">#########################</span>
 <span class="c1"># Grafana Configuration #</span>
 <span class="c1">#########################</span>
-<span class="na">grafana</span><span class="pi">:</span></code></pre>
+<span class="na">grafana</span><span class="pi">:</span>
+  <span class="na">enabled</span><span class="pi">:</span> <span class="no">false</span>  <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="na">rbac</span><span class="pi">:</span>
+    <span class="na">create</span><span class="pi">:</span> <span class="no">false</span>
+  <span class="na">persistence</span><span class="pi">:</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1179,6 +1176,18 @@ You can define the URLs as well as most of the secrets yourself.</p>
 <h4 id="_irs_url">&lt;irs-url&gt;</h4>
 <div class="paragraph">
 <p>The hostname where the IRS will be made available.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_api_key_admin">&lt;api-key-admin&gt;</h4>
+<div class="paragraph">
+<p>Api key to access API with admin role.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_api_key_regular">&lt;api-key-regular&gt;</h4>
+<div class="paragraph">
+<p>Api key to access API with regular/view role.</p>
 </div>
 </div>
 </div>
@@ -1240,12 +1249,6 @@ You can do this by adding this to ingress:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_oauth2_jwkset_uri">&lt;oauth2-jwkset-uri&gt;</h4>
-<div class="paragraph">
-<p>The URL of the OAuth2 JWK Set. Used by the IRS to validate tokens when the IRS API is called.</p>
-</div>
-</div>
-<div class="sect3">
 <h4 id="_grafana_url">&lt;grafana-url&gt;</h4>
 <div class="paragraph">
 <p>The hostname where Grafana will be made available.</p>
@@ -1280,7 +1283,7 @@ This parameter define how long cache is maintained before it is cleared. Data is
 <h2 id="_oauth2_configuration">OAuth2 Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>OAuth2 protocol is used by IRS to protect the APIs and other resources. This means it is possible to configure and use any identity and access management tool that provides OAuth 2.0 functionality.</p>
+<p>Previously, OAuth2 protocol was used by IRS to protect the APIs and other resources. As a reference, latest IRS version that supported OAuth2 protocol was 4.3.0, which can be found here: <a href="https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.3.0" class="bare">https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.3.0</a>.</p>
 </div>
 <div class="sect2">
 <h3 id="_semantic_model_provisioning">Semantic Model Provisioning</h3>
@@ -1441,7 +1444,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-13 14:00:05 UTC
+Last updated 2024-01-15 13:30:46 UTC
 </div>
 </div>
 </body>

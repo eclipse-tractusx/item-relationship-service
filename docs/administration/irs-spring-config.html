@@ -686,9 +686,7 @@ pre.rouge {
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
           <span class="na">portal</span><span class="pi">:</span>
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
-      <span class="na">resourceserver</span><span class="pi">:</span>
-        <span class="na">jwt</span><span class="pi">:</span>
-          <span class="na">jwk-set-uri</span><span class="pi">:</span> <span class="s">${OAUTH2_JWK_SET_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request the JWK set</span>
+
 
 <span class="na">management</span><span class="pi">:</span> <span class="c1"># Spring management API config, see https://spring.io/guides/gs/centralized-configuration/</span>
   <span class="na">endpoints</span><span class="pi">:</span>
@@ -760,6 +758,11 @@ pre.rouge {
         <span class="na">completed</span><span class="pi">:</span> <span class="s">P7D</span> <span class="c1"># ISO 8601 Duration</span>
       <span class="na">cron</span><span class="pi">:</span>
         <span class="na">expression</span><span class="pi">:</span> <span class="s2">"</span><span class="s">*/10</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">?"</span> <span class="c1"># Determines how often the number of stored jobs is updated in the metrics API.</span>
+  <span class="na">security</span><span class="pi">:</span>
+    <span class="na">api</span><span class="pi">:</span>
+      <span class="na">keys</span><span class="pi">:</span>
+        <span class="na">admin</span><span class="pi">:</span> <span class="s">${API_KEY_ADMIN}</span>  <span class="c1"># API Key to access IRS API with admin role</span>
+        <span class="na">regular</span><span class="pi">:</span> <span class="s">${API_KEY_REGULAR}</span>  <span class="c1"># API Key to access IRS API with view role</span>
 
 <span class="na">blobstore</span><span class="pi">:</span>
   <span class="na">endpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${MINIO_URL}"</span> <span class="c1"># S3 compatible API endpoint (e.g. Minio)</span>
@@ -902,19 +905,13 @@ pre.rouge {
     <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked BPN Investigation results</span>
     <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
 
-<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000001CRHK}</span> <span class="c1"># BPN value that is allowed to access IRS API</span>
-
-<span class="c1"># OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.</span>
-<span class="na">oauth</span><span class="pi">:</span>
-  <span class="na">resourceClaim</span><span class="pi">:</span> <span class="s2">"</span><span class="s">resource_access"</span> <span class="c1"># Name of the JWT claim for roles</span>
-  <span class="na">irsNamespace</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Cl20-CX-IRS"</span> <span class="c1"># Namespace for the IRS roles</span>
-  <span class="na">roles</span><span class="pi">:</span> <span class="s2">"</span><span class="s">roles"</span> <span class="c1"># Name of the list of roles within the IRS namespace</span></code></pre>
+<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000001CRHK}</span> <span class="c1"># BPN value that is allowed to access IRS API</span></code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2023-12-13 14:00:05 UTC
+Last updated 2024-01-15 13:30:46 UTC
 </div>
 </div>
 </body>

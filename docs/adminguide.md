@@ -88,9 +88,7 @@ spring:
             token-uri: ${OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           portal:
             token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
-      resourceserver:
-        jwt:
-          jwk-set-uri: ${OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
+
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -162,6 +160,11 @@ irs: # Application config
         completed: P7D # ISO 8601 Duration
       cron:
         expression: "*/10 * * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
+  security:
+    api:
+      keys:
+        admin: ${API_KEY_ADMIN}  # API Key to access IRS API with admin role
+        regular: ${API_KEY_REGULAR}  # API Key to access IRS API with view role
 
 blobstore:
   endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
@@ -305,12 +308,6 @@ ess:
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
 apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API
-
-# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
-oauth:
-  resourceClaim: "resource_access" # Name of the JWT claim for roles
-  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
-  roles: "roles" # Name of the list of roles within the IRS namespace
 ```
 
 ### Helm configuration IRS (values.yaml)
@@ -321,6 +318,8 @@ oauth:
 #####################
 irsUrl:  # "https://<irs-url>"
 bpn:  # BPN for this IRS instance; only users with this BPN are allowed to access the API
+apiKeyAdmin: "password"  # <api-key-admin> Admin auth key, Should be changed!
+apiKeyRegular: "password"  # <api-key-regular> View auth key, Should be changed!
 ingress:
   enabled: false
 
@@ -368,7 +367,6 @@ oauth2:
   clientId:  # <oauth2-client-id>
   clientSecret:  # <oauth2-client-secret>
   clientTokenUri:  # <oauth2-token-uri>
-  jwkSetUri:  # <oauth2-jwkset-uri>
 portal:
   oauth2:
     clientId:  # <portal-client-id>
@@ -431,11 +429,6 @@ ess:
   assetsPath: /management/v3/assets  # EDC management API "assets" path - used for notification asset creation
   policydefinitionsPath: /management/v2/policydefinitions  # EDC management API "policydefinitions" path - used for notification policy definition creation
   contractdefinitionsPath: /management/v2/contractdefinitions  # EDC management API "contractdefinitions" path - used for notification contract definitions creation
-
-oauth:
-  resourceClaim: "resource_access"  # Name of the JWT claim for roles
-  irsNamespace: "Cl20-CX-IRS"  # Namespace for the IRS roles
-  roles: "roles"  # Name of the list of roles within the IRS namespace
 
 config:
   # If true, the config provided below will completely replace the configmap.
@@ -515,6 +508,10 @@ prometheus:
 # Grafana Configuration #
 #########################
 grafana:
+  enabled: false  # ①
+  rbac:
+    create: false
+  persistence:
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -524,6 +521,14 @@ grafana:
 ##### irs-url
 
 The hostname where the IRS will be made available.
+
+##### api-key-admin
+
+Api key to access API with admin role.
+
+##### api-key-regular
+
+Api key to access API with regular/view role.
 
 #### ingress
 
@@ -570,10 +575,6 @@ The URL of the BPDM service. The IRS uses this service to fetch business partner
 
 The URL of the OAuth2 token API. Used by the IRS for token creation to authenticate with other services.
 
-##### oauth2-jwkset-uri
-
-The URL of the OAuth2 JWK Set. Used by the IRS to validate tokens when the IRS API is called.
-
 ##### grafana-url
 
 The hostname where Grafana will be made available.
@@ -596,7 +597,7 @@ This parameter define how long cache is maintained before it is cleared. Data is
 
 ### OAuth2 Configuration
 
-OAuth2 protocol is used by IRS to protect the APIs and other resources. This means it is possible to configure and use any identity and access management tool that provides OAuth 2.0 functionality.
+Previously, OAuth2 protocol was used by IRS to protect the APIs and other resources. As a reference, latest IRS version that supported OAuth2 protocol was 4.3.0, which can be found here: <https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.3.0.>
 
 #### Semantic Model Provisioning
 

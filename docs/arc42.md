@@ -926,15 +926,9 @@ A job can be in one of the following states:
 
 #### IRS API
 
-The IRS is secured using OAuth2.0 / Open ID Connect.
-Every request to the IRS API requires a valid bearer token.
-JWT token should also contain two claims:
+The IRS API is secured using API Keys (tokens that a client provides when invoking API calls). IRS identifies API clients based on the provided token inside 'X-API-KEY' request header, and then checks the token with configuration. API Keys can be configured with helm configuration entries - check Administration Guide to know how to do this. Every request to the IRS API requires a valid 'X-API-KEY' header to be successfully authenticated.
 
-* 'bpn' which is equal to the configuration value from `API_ALLOWED_BPN` property
-* 'resource_access' with the specific 'Cl20-CX-IRS' key for C-X environments. (The keys are configurable. For more details see chapter "IRS OAuth2 JWT Token").
-The list of values will be converted to roles by IRS.
-Currently, IRS API handles two roles: **'admin_irs'** and **'view_irs'.** A valid token with the **'admin_irs'** role can access any endpoint exposed by the IRS API, while a token with the **'view_irs'** role does not have access to policies endpoints and can operate only on resources it owns.
-That means that he only has access to the resources he has created, e.g. jobs and batches.
+Currently, IRS API handles two roles: **'admin_irs'** and **'view_irs'.** A valid token with the **'admin_irs'** role can access any endpoint exposed by the IRS API, including Policies management API. A valid token with the **'view_irs'** role does not have access to policies endpoints.
 This behavior is shown in the table below.
 
 ##### Rights and Roles Matrix of IRS
@@ -947,52 +941,23 @@ This behavior is shown in the table below.
 |  | Update policy | PUT /irs/policies/{policyId} |  | x |
 |  | Delete policy | DELETE /irs/policies/{policyId} |  | x |
 | Aspect models | Get aspect models | GET /irs/aspectmodels | x | x |
-| Job processing | Register job | POST /irs/jobs | (x) | x |
-|  | Get jobs | GET /irs/jobs | (x) | x |
-|  | Get job | GET /irs/jobs/{jobId} | (x) | x |
-|  | Cancel job | PUT /irs/jobs/{jobId} | (x) | x |
-| Batch processing | Register order | POST /irs/orders | (x) | x |
-|  | Get order | GET /irs/orders/{orderId} | (x) | x |
-|  | Cancel order | PUT /irs/orders/{orderId} | (x) | x |
-|  | Get batch | GET /irs/orders/{orderId}/batches/{batchId} | (x) | x |
-| Environmental- and Social Standards | Register investigation job | POST /ess/bpn/investigations | (x) | x |
-|  | Get investigation job | GET /ess/bpn/investigations{id} | (x) | x |
+| Job processing | Register job | POST /irs/jobs | x | x |
+|  | Get jobs | GET /irs/jobs | x | x |
+|  | Get job | GET /irs/jobs/{jobId} | x | x |
+|  | Cancel job | PUT /irs/jobs/{jobId} | x | x |
+| Batch processing | Register order | POST /irs/orders | x | x |
+|  | Get order | GET /irs/orders/{orderId} | x | x |
+|  | Cancel order | PUT /irs/orders/{orderId} | x | x |
+|  | Get batch | GET /irs/orders/{orderId}/batches/{batchId} | x | x |
+| Environmental- and Social Standards | Register investigation job | POST /ess/bpn/investigations | x | x |
+|  | Get investigation job | GET /ess/bpn/investigations{id} | x | x |
 |  | Accept notifications | POST /ess/notification/receive | x | x |
 
-Legend: x = full access to all resources, (x) = access to the resources he owns
-
-#### IRS OAuth2 JWT Token
-
-IRS expects the JWT access token to have the following structure to be able to extract role information:
-
-```json
-{
-...
-  "resource_access": {
-    "Cl20-CX-IRS": {
-      "roles": [
-        "view_irs",
-        "admin_irs"
-      ]
-    }
-  },
-...
-}
-```
-
-The field names can be configured via application.yaml:
-
-```yaml
-# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
-oauth:
-  resourceClaim: "resource_access" # Name of the JWT claim for roles
-  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
-  roles: "roles" # Name of the list of roles within the IRS namespace
-```
+Legend: x = full access to all resources
 
 #### IRS as DTR client
 
-The IRS acts as a client for the Digital Twin Registry (DTR), which is also secured using OAuth2.0 / Open ID Connect.
+The IRS acts as a client for the Digital Twin Registry (DTR), which is secured using OAuth2.0 / Open ID Connect.
 The IRS uses client credentials to authenticate requests to the DTR.
 Due to this, the IRS account needs to have access to every item in the DTR, unrelated to the permissions of the account calling the IRS API.
 
@@ -1155,6 +1120,46 @@ When the EDC Discovery is requested to return the EDC connector endpoint URLs fo
 The time to live for both caches can be configured separately as described in the Administration Guide.
 
 Further information on Discovery Service can be found in the chapter "System scope and context".
+
+#### EDC
+
+EndpointDataReferenceStorage is in-memory local storage that holds records (EndpointDataReferences) by either assetId or contractAgreementId.
+
+When EDC gets EndpointDataReference describing endpoint serving data it uses EndpointDataReferenceStorage and query it by assetId.
+This allows reuse of already existing EndpointDataReference if it is present, valid, and it’s token is not expired,
+rather than starting whole new contract negotiation process.
+
+In case token is expired the process is also shortened. We don’t have to start new contract negotiation process,
+since we can obtain required contractAgreementId from present authCode. This improves request processing time.
+
+```bash
+sequenceDiagram
+    autonumber
+    participant EdcSubmodelClient
+    participant ContractNegotiationService
+    participant EndpointDataReferenceStorage
+    participant EdcCallbackController
+    participant EdcDataPlaneClient
+    EdcSubmodelClient ->> EndpointDataReferenceStorage: Get EDR Token for EDC asset id
+    EndpointDataReferenceStorage ->> EdcSubmodelClient: Return Optional<EDR Token>
+    alt Token is present and not expired
+        EdcSubmodelClient ->> EdcSubmodelClient: Optional.get
+    else
+        alt Token is expired
+            EdcSubmodelClient ->> ContractNegotiationService: Renew EDR Token based on existing Token
+        else Token is not present
+            EdcSubmodelClient ->> ContractNegotiationService: Negotiate new EDR Token
+        end
+        ContractNegotiationService -->> EdcCallbackController: EDC flow
+        EdcCallbackController ->> EndpointDataReferenceStorage: Store EDR token by EDC asset id after EDC callback
+        loop While EDR Token is not present
+            EdcSubmodelClient ->> EndpointDataReferenceStorage: Poll for EDR Token
+        end
+        EndpointDataReferenceStorage ->> EdcSubmodelClient: Return EDR Token
+    end
+    EdcSubmodelClient ->> EdcDataPlaneClient: Get data(EDR Token, Dataplane URL)
+    EdcDataPlaneClient ->> EdcSubmodelClient: Return data
+```
 
 ## Development concepts
 
