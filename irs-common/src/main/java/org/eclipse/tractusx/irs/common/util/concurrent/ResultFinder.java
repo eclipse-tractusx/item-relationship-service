@@ -25,9 +25,13 @@ package org.eclipse.tractusx.irs.common.util.concurrent;
 
 import static java.util.concurrent.CompletableFuture.allOf;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
+import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -53,9 +57,14 @@ public class ResultFinder {
 
         final CompletableFuture<T> resultPromise = new CompletableFuture<>();
 
+        final ArrayList<Throwable> exceptions = new ArrayList<>();
+
         final var handledFutures = //
                 futures.stream() //
-                       .map(future -> future.handle((value, throwable) -> {
+                       .map(future -> future.exceptionally(t -> {
+                           exceptions.add(t);
+                           throw new CompletionException(t);
+                       }).handle((value, throwable) -> {
 
                            final boolean notFinishedByOtherFuture = !resultPromise.isDone();
                            final boolean currentFutureSuccessful = throwable == null && value != null;
@@ -69,6 +78,7 @@ public class ResultFinder {
                            } else {
                                if (throwable != null) {
                                    log.warn(throwable.getMessage(), throwable);
+                                   throw new CompletionException(throwable.getMessage(), throwable);
                                }
                                return false;
                            }
@@ -76,11 +86,31 @@ public class ResultFinder {
 
         allOf(handledFutures.toArray(new CompletableFuture[0])).thenRun(() -> {
             if (!resultPromise.isDone()) {
+                log.warn("result promise not done yet, completing with null");
                 resultPromise.complete(null);
             }
+        }).exceptionally(t -> {
+            // returning list, because t is just one of multiple throwables that may have occurred
+            resultPromise.completeExceptionally(new CompletionExceptions(exceptions));
+            return null;
         });
 
         return resultPromise;
     }
 
+    /**
+     * Helper exception that can hold multiple causes.
+     */
+    @Getter
+    @ToString
+    public static class CompletionExceptions extends CompletionException {
+
+        private final List<Throwable> causes;
+
+        public CompletionExceptions(final List<Throwable> causes) {
+            super("All failing, use getCauses() for details");
+            this.causes = causes;
+        }
+
+    }
 }

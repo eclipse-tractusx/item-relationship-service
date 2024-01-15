@@ -24,17 +24,19 @@
 
 package org.eclipse.tractusx.irs.common.util.concurrent;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 /**
  * Test for {@link ResultFinder}
@@ -66,7 +68,8 @@ class ResultFinderTest {
                 supplyAsync(() -> {
                     throw new RuntimeException("failing");
                 }), //
-                supplyAsync(() -> "ok"), supplyAsync(() -> {
+                supplyAsync(() -> "ok"), //
+                supplyAsync(() -> {
                     throw new RuntimeException("failing");
                 }));
 
@@ -75,6 +78,35 @@ class ResultFinderTest {
 
         // then
         assertThat(result).isEqualTo("ok");
+    }
+
+    @Test
+    void withAllCompletableFuturesFailing() throws Throwable {
+
+        // given
+        final List<CompletableFuture<String>> futures = List.of( //
+                futureThrowAfterMillis(5000, () -> new RuntimeException("failing 1")), //
+                supplyAsync(() -> {
+                    throw new RuntimeException("failing 2");
+                }), //
+                futureThrowAfterMillis(1000, () -> new RuntimeException("failing 3")));
+
+        // when
+        final ThrowingCallable call = () -> sut.getFastestResult(futures).get();
+
+        // then
+        assertThatThrownBy(call).isInstanceOf(ExecutionException.class)
+                                .extracting(Throwable::getCause)
+                                .isInstanceOf(ResultFinder.CompletionExceptions.class)
+                                .extracting(collectedFailures -> (ResultFinder.CompletionExceptions) collectedFailures)
+                                .extracting(ResultFinder.CompletionExceptions::getCauses)
+                                .describedAs("should have collected all exceptions")
+                                .satisfies(causes -> assertThat(
+                                        causes.stream().map(Throwable::getMessage).toList()).containsExactlyInAnyOrder(
+                                        "java.lang.RuntimeException: failing 1",
+                                        "java.lang.RuntimeException: failing 2",
+                                        "java.lang.RuntimeException: failing 3"));
+
     }
 
     @Test
