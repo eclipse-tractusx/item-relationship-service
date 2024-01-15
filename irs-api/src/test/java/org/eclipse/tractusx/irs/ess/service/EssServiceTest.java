@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
@@ -90,14 +89,13 @@ class EssServiceTest {
                                           .job(Job.builder()
                                                   .state(JobState.COMPLETED)
                                                   .id(createdJobId)
-                                                  .owner(IrsRoles.VIEW_IRS)
                                                   .globalAssetId(GlobalAssetIdentification.of(globalAssetId))
                                                   .build())
                                           .submodels(new ArrayList<>())
                                           .shells(new ArrayList<>())
                                           .build();
 
-        when(irsItemGraphQueryService.registerItemJob(any(RegisterJob.class), any(), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
+        when(irsItemGraphQueryService.registerItemJob(any(RegisterJob.class), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
         when(jobStore.find(createdJobId.toString())).thenReturn(Optional.of(MultiTransferJob.builder().job(expectedResponse.getJob()).build()));
         when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(true))).thenReturn(expectedResponse);
         when(securityHelperService.isAdmin()).thenReturn(true);
@@ -116,7 +114,6 @@ class EssServiceTest {
         final String notificationId = UUID.randomUUID().toString();
         final String notificationId2 = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();
-        final String owner = securityHelperService.getClientIdClaim();
 
         final ResponseNotificationContent resultNo = ResponseNotificationContent.builder().result("No").hops(0).bpn("bot-impacted-bpn").build();
         final EdcNotificationHeader header1 = EdcNotificationHeader.builder()
@@ -138,7 +135,7 @@ class EssServiceTest {
                                                                                              .build();
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
-                Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
+                Jobs.builder().job(Job.builder().id(jobId).build()).build(),
                 new ArrayList<>()).withUnansweredNotifications(List.of(new Notification(notificationId, "bpn"), new Notification(notificationId2, "bpn")));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
@@ -176,7 +173,6 @@ class EssServiceTest {
         final UUID jobId = UUID.randomUUID();
         final UUID jobId2 = UUID.randomUUID();
         final UUID jobId3 = UUID.randomUUID();
-        final String owner = securityHelperService.getClientIdClaim();
 
         final String bpnLevel0 = "bpn-level-0";
         final String bpnLevel1 = "bpn-level-1";
@@ -203,17 +199,17 @@ class EssServiceTest {
                                                                                                        .build();
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
-                Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
+                Jobs.builder().job(Job.builder().id(jobId).build()).build(),
                 new ArrayList<>()).withUnansweredNotifications(List.of(new Notification(notificationId, bpnLevel1)));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
         final BpnInvestigationJob bpnInvestigationJob2 = new BpnInvestigationJob(
-                Jobs.builder().job(Job.builder().id(jobId2).owner(owner).build()).build(),
+                Jobs.builder().job(Job.builder().id(jobId2).build()).build(),
                 new ArrayList<>()).withUnansweredNotifications(List.of(new Notification(notificationId2, bpnLevel2)));
         bpnInvestigationJobCache.store(jobId2, bpnInvestigationJob2);
 
         final BpnInvestigationJob bpnInvestigationJob3 = new BpnInvestigationJob(
-                Jobs.builder().job(Job.builder().id(jobId3).owner(owner).build()).build(),
+                Jobs.builder().job(Job.builder().id(jobId3).build()).build(),
                 new ArrayList<>());
         bpnInvestigationJobCache.store(jobId3, bpnInvestigationJob3);
 
@@ -239,11 +235,10 @@ class EssServiceTest {
     void shouldKeepJobInRunningIfNotificationIsOpen() {
         final String notificationId = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();
-        final String owner = securityHelperService.getClientIdClaim();
         when(securityHelperService.isAdmin()).thenReturn(true);
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
-                Jobs.builder().job(Job.builder().id(jobId).owner(owner).build()).build(),
+                Jobs.builder().job(Job.builder().id(jobId).build()).build(),
                 new ArrayList<>()).withUnansweredNotifications(Collections.singletonList(new Notification(notificationId, "bpn")));
         bpnInvestigationJobCache.store(jobId, bpnInvestigationJob);
 
@@ -263,11 +258,10 @@ class EssServiceTest {
     void shouldCompleteJobIfAllNotificationsSentWereAnswered() {
         // Arrange
         final String notificationId = UUID.randomUUID().toString();
-        final String owner = securityHelperService.getClientIdClaim();
         when(securityHelperService.isAdmin()).thenReturn(true);
 
         final UUID jobId = UUID.randomUUID();
-        final Jobs jobSnapshot = job(jobId, owner);
+        final Jobs jobSnapshot = job(jobId);
         final EdcNotification<ResponseNotificationContent> answeredNotification = EdcNotification.<ResponseNotificationContent>builder()
                                                                                   .header(EdcNotificationHeader.builder()
                                                                                                                .notificationId(
@@ -294,11 +288,10 @@ class EssServiceTest {
     @Test
     void shouldCompleteJobIfFinalNotificationWasReceived() {
         // Arrange
-        final String owner = securityHelperService.getClientIdClaim();
         when(securityHelperService.isAdmin()).thenReturn(true);
 
         final UUID jobId = UUID.randomUUID();
-        final Jobs jobSnapshot = job(jobId, owner);
+        final Jobs jobSnapshot = job(jobId);
         final String notificationId = UUID.randomUUID().toString();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot, null).update(jobSnapshot,
                 SupplyChainImpacted.NO).withUnansweredNotifications(List.of(new Notification(notificationId, "bpn")));
@@ -324,8 +317,8 @@ class EssServiceTest {
         assertThat(jobAfterNotificationReceive.getJob().getState()).isEqualTo(JobState.COMPLETED);
     }
 
-    private Jobs job(final UUID jobId, final String owner) {
-        final Job job = Job.builder().id(jobId).owner(owner).build();
+    private Jobs job(final UUID jobId) {
+        final Job job = Job.builder().id(jobId).build();
         return Jobs.builder().job(job).build();
     }
 }

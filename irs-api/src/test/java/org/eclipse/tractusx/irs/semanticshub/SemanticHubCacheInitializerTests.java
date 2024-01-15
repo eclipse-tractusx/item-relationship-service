@@ -39,7 +39,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Import(TestConfig.class)
-@ActiveProfiles(profiles = { "test" })
+@ActiveProfiles(profiles = { "test", "local" })
 class SemanticHubCacheInitializerTests {
 
     @Autowired

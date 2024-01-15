@@ -21,28 +21,21 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference;
 
-package org.eclipse.tractusx.irs.configuration;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.actuate.health.Status;
-
-class HealthStatusHelperTest {
-
-    public static List<Arguments> healthStatusToNumeric() {
-        return List.of(Arguments.of(Status.UP, 3), Arguments.of(Status.OUT_OF_SERVICE, 2), Arguments.of(Status.DOWN, 1),
-                Arguments.of(Status.UNKNOWN, 0), Arguments.of(null, 0));
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void healthStatusToNumeric(final Status status, final int numericStatus) {
-        assertThat(HealthStatusHelper.healthStatusToNumeric(status)).isEqualTo(numericStatus);
+/**
+ * Represents {@link org.eclipse.edc.spi.types.domain.edr.EndpointDataReference}
+ * with it's token status
+ */
+public record EndpointDataReferenceStatus(EndpointDataReference endpointDataReference, TokenStatus tokenStatus) {
+    /**
+     * Token status of assigned {@link org.eclipse.edc.spi.types.domain.edr.EndpointDataReference}
+     */
+    public enum TokenStatus {
+        VALID,
+        EXPIRED,
+        REQUIRED_NEW
     }
 }

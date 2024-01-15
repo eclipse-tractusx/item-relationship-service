@@ -80,9 +80,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
                 properties = { "digitalTwinRegistry.type=central" })
-@ActiveProfiles(profiles = { "test",
-                             "stubtest"
-})
+@ActiveProfiles(profiles = { "test", "stubtest", "local" })
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 
