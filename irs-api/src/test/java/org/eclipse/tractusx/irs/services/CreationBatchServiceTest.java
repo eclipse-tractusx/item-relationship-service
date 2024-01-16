@@ -127,7 +127,7 @@ class CreationBatchServiceTest {
         given(irsConfiguration.getApiUrl()).willReturn(new URL(EXAMPLE_URL));
 
         // when
-        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID(), securityHelperService.getClientIdClaim());
+        final List<Batch> batches = service.createBatches(globalAssetIds, batchSize, UUID.randomUUID());
 
         // then
         assertThat(batches).hasSize(7);

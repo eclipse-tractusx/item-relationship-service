@@ -38,7 +38,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
                 properties = { "digitalTwinRegistry.type=central" })
-@ActiveProfiles(profiles = "test")
+@ActiveProfiles(profiles = { "test", "local" })
 @Import(TestConfig.class)
 @ExtendWith({ MockitoExtension.class,
               SpringExtension.class
