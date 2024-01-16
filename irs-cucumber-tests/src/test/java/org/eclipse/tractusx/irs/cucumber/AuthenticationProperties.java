@@ -23,11 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.cucumber;
 
-import static io.restassured.RestAssured.given;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import lombok.Builder;
@@ -35,35 +30,16 @@ import lombok.Builder;
 @Builder
 /* package */ class AuthenticationProperties {
     private final String uri;
-    private final String clientId;
-    private final String clientSecret;
-    private final String oauth2Url;
-    private final String grantType;
-    private final String tokenPath;
+    private final String apiKey;
 
-    /* package */ AuthenticationProperties(final String uri, final String clientId, final String clientSecret,
-            final String oauth2Url, final String grantType, final String tokenPath) {
+    /* package */ AuthenticationProperties(final String uri, final String apiKey) {
         this.uri = uri;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.oauth2Url = oauth2Url;
-        this.grantType = grantType;
-        this.tokenPath = tokenPath;
-    }
-
-    private String obtainAccessToken() {
-        final Map<String, String> oauth2Payload = new HashMap<>();
-        oauth2Payload.put("grant_type", grantType);
-        oauth2Payload.put("client_id", clientId);
-        oauth2Payload.put("client_secret", clientSecret);
-
-        return given().params(oauth2Payload).post(oauth2Url).then().extract().jsonPath().getString(tokenPath);
+        this.apiKey = apiKey;
     }
 
     /* package */ RequestSpecification getNewAuthenticationRequestSpecification() {
-        final String accessToken = obtainAccessToken();
         final RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.addHeader("Authorization", "Bearer " + accessToken);
+        builder.addHeader("X-API-KEY", apiKey);
         builder.setBaseUri(uri);
 
         return builder.build();
