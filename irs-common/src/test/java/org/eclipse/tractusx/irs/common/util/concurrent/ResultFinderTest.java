@@ -67,7 +67,7 @@ class ResultFinderTest {
     }
 
     @Test
-    void with_only_successful_and_other_CompletableFutures_failing_it_should_return_the_successful_resulr()
+    void with_only_successful_and_other_CompletableFutures_failing_it_should_return_the_successful_result()
             throws ExecutionException, InterruptedException {
 
         // given
