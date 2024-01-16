@@ -1,7 +1,6 @@
 # testing_utils.py
 from datetime import datetime
 
-import requests
 import os
 from box import Box
 
@@ -348,5 +347,11 @@ def job_parameter_are_as_requested(response):
 
 def create_api_key():
     api_key = os.getenv('ADMIN_USER_API_KEY')
+
+    return {"X-API-KEY": api_key}
+
+
+def create_api_key_ess():
+    api_key = os.getenv('ADMIN_USER_API_KEY_ESS')
 
     return {"X-API-KEY": api_key}
