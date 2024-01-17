@@ -18,7 +18,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 400
       verify_response_with:
@@ -56,7 +56,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -76,7 +76,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       json:
@@ -93,7 +93,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -131,7 +131,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -151,7 +151,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -186,7 +186,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -206,7 +206,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -244,7 +244,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -264,7 +264,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -303,7 +303,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -323,7 +323,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -359,7 +359,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -379,7 +379,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -421,7 +421,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -441,7 +441,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -480,7 +480,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -500,7 +500,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -540,7 +540,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -560,7 +560,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -601,7 +601,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -621,7 +621,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -660,7 +660,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -680,7 +680,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -719,7 +719,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -739,7 +739,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -780,7 +780,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -800,7 +800,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -839,7 +839,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -859,7 +859,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -898,7 +898,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 201
       headers:
@@ -918,7 +918,7 @@ stages:
       headers:
         content-type: application/json
         $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
     response:
       status_code: 200
       verify_response_with:
@@ -959,7 +959,7 @@ stages:
 #      headers:
 #        content-type: application/json
 #        $ext:
-#          function: local.testing.api-tests.tavern_helpers:create_api_key
+#          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
 #    response:
 #      status_code: 201
 #      headers:
@@ -979,7 +979,7 @@ stages:
 #      headers:
 #        content-type: application/json
 #        $ext:
-#          function: local.testing.api-tests.tavern_helpers:create_api_key
+#          function: local.testing.api-tests.tavern_helpers:create_api_key_ess
 #    response:
 #      status_code: 200
 #      verify_response_with:

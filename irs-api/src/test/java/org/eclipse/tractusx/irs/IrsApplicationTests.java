@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,6 +37,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.awaitility.Awaitility;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -45,7 +46,6 @@ import org.eclipse.tractusx.irs.connector.job.JobInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
-import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
