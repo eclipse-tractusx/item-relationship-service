@@ -122,7 +122,6 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();
         assertThat(finishedJob.get().getJob().getParameter()).isNotNull();
-        assertThat(finishedJob.get().getJob().getOwner()).isNotBlank();
     }
 
     @Test

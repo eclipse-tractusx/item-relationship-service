@@ -34,6 +34,11 @@ data:
 
     irs:
       apiUrl: {{ tpl (.Values.irsUrl | default "http://localhost") . | quote }}
+      security:
+        api:
+          keys:
+            admin: {{ tpl (.Values.apiKeyAdmin | default "") . | quote }}
+            regular: {{ tpl (.Values.apiKeyRegular | default "") . | quote }}
 
     blobstore:
       endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
@@ -62,9 +67,6 @@ data:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
               portal:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
-          resourceserver:
-            jwt:
-              jwk-set-uri: {{ tpl (.Values.oauth2.jwkSetUri | default "http://localhost") . | quote }}
 
     digitalTwinRegistry:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
@@ -146,11 +148,6 @@ data:
     {{- end }}
 
     apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
-
-    oauth:
-      resourceClaim: {{ tpl (.Values.oauth.resourceClaim | default "resource_access") . | quote }}
-      irsNamespace: {{ tpl (.Values.oauth.irsNamespace | default "") . | quote }}
-      roles: {{ tpl (.Values.oauth.roles | default "roles") . | quote }}
 
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}

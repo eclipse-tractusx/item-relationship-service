@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,27 +21,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.cucumber;
+package org.eclipse.tractusx.irs.configuration.security;
 
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.specification.RequestSpecification;
-import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-@Builder
-/* package */ class AuthenticationProperties {
-    private final String uri;
-    private final String apiKey;
+/**
+ * Api key authentication representation
+ */
+@EqualsAndHashCode
+public class ApiKeyAuthentication extends AbstractAuthenticationToken {
 
-    /* package */ AuthenticationProperties(final String uri, final String apiKey) {
-        this.uri = uri;
-        this.apiKey = apiKey;
+    private final ApiKeyAuthority apiKeyAuthority;
+
+    public ApiKeyAuthentication(final ApiKeyAuthority apiKeyAuthority) {
+        super(apiKeyAuthority.getAuthorities());
+        this.apiKeyAuthority = apiKeyAuthority;
+        setAuthenticated(true);
     }
 
-    /* package */ RequestSpecification getNewAuthenticationRequestSpecification() {
-        final RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.addHeader("X-API-KEY", apiKey);
-        builder.setBaseUri(uri);
+    @Override
+    public Object getCredentials() {
+        return apiKeyAuthority.getApiKey();
+    }
 
-        return builder.build();
+    @Override
+    public Object getPrincipal() {
+        return apiKeyAuthority.getApiKey();
     }
 }

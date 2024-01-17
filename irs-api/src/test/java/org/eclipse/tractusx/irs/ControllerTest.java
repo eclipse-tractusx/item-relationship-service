@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,27 +21,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.cucumber;
+package org.eclipse.tractusx.irs;
 
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.specification.RequestSpecification;
-import lombok.Builder;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-@Builder
-/* package */ class AuthenticationProperties {
-    private final String uri;
-    private final String apiKey;
+import jakarta.servlet.http.HttpServletRequest;
+import org.eclipse.tractusx.irs.configuration.security.ApiKeyAuthentication;
+import org.eclipse.tractusx.irs.configuration.security.ApiKeyAuthority;
+import org.eclipse.tractusx.irs.configuration.security.AuthenticationService;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.authority.AuthorityUtils;
 
-    /* package */ AuthenticationProperties(final String uri, final String apiKey) {
-        this.uri = uri;
-        this.apiKey = apiKey;
+public abstract class ControllerTest {
+
+    @MockBean
+    protected AuthenticationService authenticationService;
+
+    protected void authenticateWith(String... roles) {
+        when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
+                .thenReturn(new ApiKeyAuthentication(
+                        ApiKeyAuthority.of("123", AuthorityUtils.createAuthorityList(roles))));
     }
 
-    /* package */ RequestSpecification getNewAuthenticationRequestSpecification() {
-        final RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.addHeader("X-API-KEY", apiKey);
-        builder.setBaseUri(uri);
-
-        return builder.build();
-    }
 }

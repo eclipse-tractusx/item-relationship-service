@@ -992,7 +992,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1043,7 +1042,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1166,7 +1164,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1317,7 +1314,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1355,7 +1351,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1470,7 +1465,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1918,9 +1912,6 @@ components:
           type: string
           format: date-time
           example: 2022-02-03T14:48:54.709Z
-        owner:
-          type: string
-          description: The IRS api consumer.
         parameter:
           $ref: '#/components/schemas/JobParameter'
         startedOn:

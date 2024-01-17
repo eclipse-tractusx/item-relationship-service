@@ -43,6 +43,6 @@ class HealthStatusHelperTest {
     @ParameterizedTest
     @MethodSource
     void healthStatusToNumeric(final Status status, final int numericStatus) {
-        assertThat(HealthStatusHelper.healthStatustoNumeric(status)).isEqualTo(numericStatus);
+        assertThat(HealthStatusHelper.healthStatusToNumeric(status)).isEqualTo(numericStatus);
     }
 }

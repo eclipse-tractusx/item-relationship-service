@@ -45,7 +45,7 @@ public class HealthStatusHelper {
      * @param status the health status
      * @return the numeric representation of the health status
      */
-    public static int healthStatustoNumeric(final Status status) {
+    public static int healthStatusToNumeric(final Status status) {
 
         // see Spring documentation - map health indicators to metrics:
         //     https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/

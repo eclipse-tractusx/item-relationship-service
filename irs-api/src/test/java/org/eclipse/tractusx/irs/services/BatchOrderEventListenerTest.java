@@ -83,7 +83,6 @@ class BatchOrderEventListenerTest {
         // given
         final int numberOfJobs = 10;
         final int timeout = 60;
-        final String owner = "TestUser";
         final BatchOrder batchOrder = BatchOrder.builder()
                                                 .batchOrderId(BATCH_ORDER_ID)
                                                 .batchOrderState(ProcessingState.INITIALIZED)
@@ -91,7 +90,6 @@ class BatchOrderEventListenerTest {
                                                 .timeout(timeout)
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
-                                                .owner(owner)
                                                 .jobType(BatchOrder.JobType.REGULAR)
                                                 .build();
         final Batch firstBatch = Batch.builder()
@@ -99,7 +97,6 @@ class BatchOrderEventListenerTest {
                                       .batchState(ProcessingState.PARTIAL)
                                       .batchNumber(1)
                                       .batchOrderId(BATCH_ORDER_ID)
-                                      .owner(owner)
                                       .jobProgressList(createJobProgressList())
                                       .build();
         final Batch secondBatch = Batch.builder()
@@ -107,10 +104,9 @@ class BatchOrderEventListenerTest {
                                        .batchState(ProcessingState.PARTIAL)
                                        .batchNumber(2)
                                        .batchOrderId(BATCH_ORDER_ID)
-                                       .owner(owner)
                                        .build();
 
-        given(irsItemGraphQueryService.registerItemJob(any(), any(), eq(owner))).willReturn(
+        given(irsItemGraphQueryService.registerItemJob(any(), any())).willReturn(
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
         batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
@@ -119,7 +115,7 @@ class BatchOrderEventListenerTest {
         // when
         eventListener.handleBatchOrderRegisteredEvent(new BatchOrderRegisteredEvent(BATCH_ORDER_ID));
         // then
-        verify(irsItemGraphQueryService, times(numberOfJobs)).registerItemJob(any(), eq(FIRST_BATCH_ID), eq(owner));
+        verify(irsItemGraphQueryService, times(numberOfJobs)).registerItemJob(any(), eq(FIRST_BATCH_ID));
         verify(timeoutScheduler, times(1)).registerBatchTimeout(FIRST_BATCH_ID, timeout);
         verify(timeoutScheduler, times(1)).registerJobsTimeout(anyList(), eq(timeout));
     }
@@ -129,7 +125,6 @@ class BatchOrderEventListenerTest {
         // given
         final int numberOfJobs = 10;
         final int timeout = 60;
-        final String owner = "TestUser";
         final BatchOrder batchOrder = BatchOrder.builder()
                                                 .batchOrderId(BATCH_ORDER_ID)
                                                 .batchOrderState(ProcessingState.INITIALIZED)
@@ -137,7 +132,6 @@ class BatchOrderEventListenerTest {
                                                 .timeout(timeout)
                                                 .jobTimeout(timeout)
                                                 .lookupBPNs(Boolean.TRUE)
-                                                .owner(owner)
                                                 .jobType(BatchOrder.JobType.ESS)
                                                 .build();
         final Batch firstBatch = Batch.builder()
@@ -145,7 +139,6 @@ class BatchOrderEventListenerTest {
                                       .batchState(ProcessingState.PARTIAL)
                                       .batchNumber(1)
                                       .batchOrderId(BATCH_ORDER_ID)
-                                      .owner(owner)
                                       .build();
         final Batch secondBatch = Batch.builder()
                                        .batchId(SECOND_BATCH_ID)
@@ -153,10 +146,9 @@ class BatchOrderEventListenerTest {
                                        .batchNumber(2)
                                        .batchOrderId(BATCH_ORDER_ID)
                                        .jobProgressList(createJobProgressList())
-                                       .owner(owner)
                                        .build();
 
-        given(essService.startIrsJob(any(), any(), eq(owner))).willReturn(
+        given(essService.startIrsJob(any(), any())).willReturn(
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
         batchOrderStore.save(BATCH_ORDER_ID, batchOrder);
@@ -165,7 +157,7 @@ class BatchOrderEventListenerTest {
         // when
         eventListener.handleBatchProcessingFinishedEvent(new BatchProcessingFinishedEvent(BATCH_ORDER_ID, FIRST_BATCH_ID, ProcessingState.PARTIAL, ProcessingState.COMPLETED, 1, ""));
         // then
-        verify(essService, times(numberOfJobs)).startIrsJob(any(), eq(SECOND_BATCH_ID), eq(owner));
+        verify(essService, times(numberOfJobs)).startIrsJob(any(), eq(SECOND_BATCH_ID));
         verify(timeoutScheduler, times(1)).registerBatchTimeout(SECOND_BATCH_ID, timeout);
         verify(timeoutScheduler, times(1)).registerJobsTimeout(anyList(), eq(timeout));
     }

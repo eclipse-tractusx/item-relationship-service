@@ -1,7 +1,6 @@
 # testing_utils.py
 from datetime import datetime
 
-import requests
 import os
 from box import Box
 
@@ -346,11 +345,13 @@ def job_parameter_are_as_requested(response):
     assert 'PartAsPlanned' in aspects_list
 
 
-def create_bearer_token():
-    url = os.getenv('OAUTH2_HOST')
-    client_id = os.getenv('OAUTH2_CLIENT_ID')
-    client_secret = os.getenv('OAUTH2_CLIENT_SECRET')
+def create_api_key():
+    api_key = os.getenv('ADMIN_USER_API_KEY')
 
-    data = {"grant_type": "client_credentials", "client_id": client_id, "client_secret": client_secret}
-    token = requests.post(url, data).json().get('access_token')
-    return {"Authorization": f"Bearer {token}"}
+    return {"X-API-KEY": api_key}
+
+
+def create_api_key_ess():
+    api_key = os.getenv('ADMIN_USER_API_KEY_ESS')
+
+    return {"X-API-KEY": api_key}

@@ -65,10 +65,6 @@ public class QueryBatchService {
                                                                      "Cannot find Batch Order with id: "
                                                                              + batchOrderId));
 
-        if (!securityHelperService.isAdmin() && !batchOrder.getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access Batch Order with id " + batchOrderId + " due to missing privileges.");
-        }
-
         final List<Batch> batches = batchStore.findAll()
                                               .stream()
                                               .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
@@ -88,11 +84,6 @@ public class QueryBatchService {
                                               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                                                       "Cannot find Batch with orderId: " + batchOrderId
                                                                               + " and id: " + batchId));
-
-        if (!securityHelperService.isAdmin() && !batchResponse.getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access Batch with orderId: " + batchOrderId
-                    + " and id: " + batchId + " due to missing privileges.");
-        }
 
         final Integer totalJobs = batchStore.findAll()
                                             .stream()

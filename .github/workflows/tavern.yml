@@ -63,9 +63,10 @@ jobs:
         env:
           IRS_HOST: ${{ 'https://irs.dev.demo.catena-x.net' }}
           IRS_ESS_HOST: ${{ github.event.inputs.irs-ess-host || 'https://irs-ess.int.demo.catena-x.net' }}
-          OAUTH2_HOST: ${{ secrets.OAUTH2_CLIENT_TOKEN_URI }}
-          OAUTH2_CLIENT_ID: ${{ secrets.OAUTH2_CLIENT_ID }}
-          OAUTH2_CLIENT_SECRET: ${{ secrets.OAUTH2_CLIENT_SECRET }}
+          REGULAR_USER_API_KEY: ${{ secrets.DEV_REGULAR_USER_API_KEY }}
+          ADMIN_USER_API_KEY: ${{ secrets.DEV_ADMIN_USER_API_KEY }}
+          REGULAR_USER_API_KEY_ESS: ${{ secrets.INT_REGULAR_USER_API_KEY }}
+          ADMIN_USER_API_KEY_ESS: ${{ secrets.INT_ADMIN_USER_API_KEY }}
           GLOBAL_ASSET_ID_AS_PLANNED: ${{ github.event.inputs.global-asset-id-asPlanned || 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e' }}
           BPN_AS_PLANNED: ${{ github.event.inputs.bpn-asPlanned || 'BPNL00000003AYRE' }}
           GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:6d505432-8b31-4966-9514-4b753372683f' }}

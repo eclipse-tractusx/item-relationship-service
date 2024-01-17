@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,27 +21,26 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.cucumber;
+package org.eclipse.tractusx.irs.configuration.security;
 
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.specification.RequestSpecification;
-import lombok.Builder;
+import java.io.Serializable;
+import java.util.List;
 
-@Builder
-/* package */ class AuthenticationProperties {
-    private final String uri;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+
+/**
+ */
+@RequiredArgsConstructor
+@Getter
+public class ApiKeyAuthority implements Serializable {
     private final String apiKey;
+    private final List<GrantedAuthority> authorities;
 
-    /* package */ AuthenticationProperties(final String uri, final String apiKey) {
-        this.uri = uri;
-        this.apiKey = apiKey;
+    @SuppressWarnings("PMD.ShortMethodName")
+    public static ApiKeyAuthority of(final String apiKey, final List<GrantedAuthority> authorities) {
+        return new ApiKeyAuthority(apiKey, authorities);
     }
 
-    /* package */ RequestSpecification getNewAuthenticationRequestSpecification() {
-        final RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.addHeader("X-API-KEY", apiKey);
-        builder.setBaseUri(uri);
-
-        return builder.build();
-    }
 }

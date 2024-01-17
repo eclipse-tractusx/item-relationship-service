@@ -21,17 +21,23 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.configuration;
+package org.eclipse.tractusx.irs.configuration.security;
 
+import static java.util.Arrays.stream;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.eclipse.tractusx.irs.common.ApiConstants;
-import org.eclipse.tractusx.irs.configuration.converter.IrsTokenParser;
-import org.eclipse.tractusx.irs.configuration.converter.JwtAuthenticationConverter;
-import org.springframework.beans.factory.annotation.Value;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -40,16 +46,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ContentSecurityPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.PermissionsPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
  * Security config bean
@@ -57,21 +65,22 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@SuppressWarnings({ "PMD.ExcessiveImports" })
 public class SecurityConfiguration {
 
-    private static final String[] WHITELIST  = {
-        "/actuator/health",
-        "/actuator/health/readiness",
-        "/actuator/health/liveness",
-        "/actuator/prometheus",
-        "/api/swagger-ui/**",
-        "/api/api-docs",
-        "/api/api-docs.yaml",
-        "/api/api-docs/swagger-config",
-        "/" + ApiConstants.API_PREFIX_INTERNAL + "/endpoint-data-reference",
-        "/ess/mock/notification/receive",
-        "/ess/notification/receive",
-        "/ess/notification/receive-recursive"
+    private static final String[] WHITELIST = { "/actuator/health",
+                                                "/actuator/health/readiness",
+                                                "/actuator/health/liveness",
+                                                "/actuator/prometheus",
+                                                "/api/swagger-ui/**",
+                                                "/api/api-docs",
+                                                "/api/api-docs.yaml",
+                                                "/api/api-docs/swagger-config",
+                                                "/favicon.ico",
+                                                "/" + ApiConstants.API_PREFIX_INTERNAL + "/endpoint-data-reference",
+                                                "/ess/mock/notification/receive",
+                                                "/ess/notification/receive",
+                                                "/ess/notification/receive-recursive"
     };
     private static final long HSTS_MAX_AGE_DAYS = 365;
     private static final String ONLY_SELF_SCRIPT_SRC = "script-src 'self'";
@@ -80,7 +89,7 @@ public class SecurityConfiguration {
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     @Bean
     /* package */ SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity,
-            final JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
+            final AuthenticationService authenticationService) throws Exception {
         httpSecurity.httpBasic(AbstractHttpConfigurer::disable);
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
@@ -88,38 +97,50 @@ public class SecurityConfiguration {
         httpSecurity.cors(Customizer.withDefaults());
 
         httpSecurity.headers(headers -> headers.httpStrictTransportSecurity(
-                httpStrictTransportSecurity ->
-                        httpStrictTransportSecurity.maxAgeInSeconds(Duration.ofDays(HSTS_MAX_AGE_DAYS).toSeconds())
-                                                   .includeSubDomains(true)
-                                                   .preload(true)
-                                                   .requestMatcher(AnyRequestMatcher.INSTANCE)));
+                httpStrictTransportSecurity -> httpStrictTransportSecurity.maxAgeInSeconds(
+                        Duration.ofDays(HSTS_MAX_AGE_DAYS).toSeconds()).includeSubDomains(true).preload(true).requestMatcher(AnyRequestMatcher.INSTANCE)));
 
-        httpSecurity.headers(headers -> headers.xssProtection(xXssConfig ->
-                xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
+        httpSecurity.headers(headers -> headers.xssProtection(xXssConfig -> xXssConfig.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)));
 
         httpSecurity.headers(headers -> headers.addHeaderWriter(new ContentSecurityPolicyHeaderWriter(ONLY_SELF_SCRIPT_SRC)));
 
         httpSecurity.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
-        httpSecurity.headers(headers -> headers.addHeaderWriter(new ReferrerPolicyHeaderWriter(
-                ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)));
+        httpSecurity.headers(headers -> headers.addHeaderWriter(new ReferrerPolicyHeaderWriter(ReferrerPolicyHeaderWriter.ReferrerPolicy.SAME_ORIGIN)));
         httpSecurity.headers(headers -> headers.addHeaderWriter(new PermissionsPolicyHeaderWriter(PERMISSION_POLICY)));
 
-        httpSecurity.sessionManagement(sessionManagement -> sessionManagement
-                .sessionCreationPolicy(STATELESS));
+        httpSecurity.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(STATELESS));
 
-        httpSecurity.authorizeHttpRequests(auth -> auth
-                    .requestMatchers(WHITELIST)
-                    .permitAll()
-                    .requestMatchers("/**")
-                    .authenticated());
+        httpSecurity.authorizeHttpRequests(auth -> auth.requestMatchers(WHITELIST).permitAll().requestMatchers("/**").authenticated());
 
-        httpSecurity.oauth2ResourceServer(oauth2ResourceServer ->
-                            oauth2ResourceServer.jwt(jwt ->
-                                    jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
-                    .oauth2Client(Customizer.withDefaults());
+        httpSecurity.addFilterBefore(new IgnoreWhitelistedPathFilter(new ApiKeyAuthenticationFilter(authenticationService, new JsonUtil())), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
+
+    /**
+     * Dont execute delegate filter on whitelisted paths
+     */
+    @RequiredArgsConstructor
+    private static final class IgnoreWhitelistedPathFilter extends OncePerRequestFilter {
+
+        private final Filter delegate;
+        private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+        @Override
+        protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws
+                ServletException, IOException {
+            if (isNotWhitelisted(request)) {
+                delegate.doFilter(request, response, filterChain);
+            } else {
+                filterChain.doFilter(request, response);
+            }
+        }
+
+        private boolean isNotWhitelisted(final HttpServletRequest request) {
+            return stream(WHITELIST).noneMatch(path -> pathMatcher.match(path, request.getRequestURI()));
+        }
+    }
+
 
     @Bean
     /* package */ CorsConfigurationSource corsConfigurationSource() {
@@ -133,17 +154,5 @@ public class SecurityConfiguration {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    /* package */ IrsTokenParser irsTokenParser(@Value("${oauth.resourceClaim}") final String resourceAccessClaim,
-            @Value("${oauth.irsNamespace}") final String irsResourceAccess,
-            @Value("${oauth.roles}") final String roles) {
-        return new IrsTokenParser(resourceAccessClaim, irsResourceAccess, roles);
-    }
-
-    @Bean
-    /* package */ JwtAuthenticationConverter jwtAuthenticationConverter(final IrsTokenParser irsTokenParser) {
-        return new JwtAuthenticationConverter(new JwtGrantedAuthoritiesConverter(), irsTokenParser);
     }
 }

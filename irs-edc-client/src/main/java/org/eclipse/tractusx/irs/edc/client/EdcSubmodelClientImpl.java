@@ -234,11 +234,11 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         if (response != null) {
             storageId = response.getContractAgreementId();
         } else {
-            final String authKey = endpointDataReferenceStatus.endpointDataReference().getAuthKey();
-            if (authKey == null) {
-                throw new IllegalStateException("Missing information about AuthKey.");
+            final String authCode = endpointDataReferenceStatus.endpointDataReference().getAuthCode();
+            if (authCode == null) {
+                throw new IllegalStateException("Missing information about AuthCode.");
             }
-            storageId = EDRAuthCode.fromAuthCodeToken(authKey).getCid();
+            storageId = EDRAuthCode.fromAuthCodeToken(authCode).getCid();
         }
         return storageId;
     }

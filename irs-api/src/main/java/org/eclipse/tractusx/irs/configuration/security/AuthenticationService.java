@@ -21,33 +21,27 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common.auth;
+package org.eclipse.tractusx.irs.configuration.security;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 /**
- * BPN contains in JWT Token matches BPN under which IRS product is registered.
+ * Check X-API-KEY header against api keys from config
  */
+@RequiredArgsConstructor
 @Service
-public class AuthorizationService {
+public class AuthenticationService {
 
-    private final SecurityHelperService securityHelperService;
-    private final String apiAllowedBpn;
+    private static final String AUTH_TOKEN_HEADER_NAME = "X-API-KEY";
 
-    public AuthorizationService(@Value("${apiAllowedBpn:}") final String apiAllowedBpn) {
-        this.securityHelperService = new SecurityHelperService();
-        this.apiAllowedBpn = apiAllowedBpn;
+    private final ApiKeysConfiguration apiKeysConfiguration;
+
+    public Authentication getAuthentication(final HttpServletRequest request) {
+        final String apiKeyHeader = request.getHeader(AUTH_TOKEN_HEADER_NAME);
+
+        return new ApiKeyAuthentication(apiKeysConfiguration.authorityOf(apiKeyHeader));
     }
-
-    public boolean verifyBpn() {
-        if (StringUtils.isBlank(apiAllowedBpn)) {
-            return false;
-        }
-
-        final String bpnFromToken = securityHelperService.getBpnClaim();
-        return apiAllowedBpn.equals(bpnFromToken);
-    }
-
 }

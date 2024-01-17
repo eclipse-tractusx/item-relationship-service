@@ -52,7 +52,7 @@ import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,
                 properties = "irs-edc-client.discoveryFinderClient.cacheTTL=PT0.1S")
-@ActiveProfiles(profiles = "test")
+@ActiveProfiles(profiles = { "test", "local" })
 @Import({ TestConfig.class })
 class DiscoveryFinderClientTest {
 

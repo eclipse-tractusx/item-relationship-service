@@ -55,7 +55,7 @@ public class HealthMetricsExportConfiguration {
         log.debug("Registering metric '{}'", metricName);
 
         final ToDoubleFunction<? super HealthEndpoint> statusProvider = //
-                healthEndpoint -> HealthStatusHelper.healthStatustoNumeric(getIrsStatus(healthEndpoint));
+                healthEndpoint -> HealthStatusHelper.healthStatusToNumeric(getIrsStatus(healthEndpoint));
 
         Gauge.builder(metricName, irsHealthEndpoint, statusProvider)
              .description("The IRS health status.")
