@@ -74,12 +74,12 @@ class BatchControllerTest extends ControllerTest {
 
     @Test
     void shouldReturnUnauthorizedWhenAuthenticationIsMissing() throws Exception {
-        when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
-                .thenThrow(new BadCredentialsException("Wrong ApiKey"));
+        when(authenticationService.getAuthentication(any(HttpServletRequest.class))).thenThrow(
+                new BadCredentialsException("Wrong ApiKey"));
 
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
-                                                .content(new ObjectMapper().writeValueAsString(
-                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                                                .content(new ObjectMapper().writeValueAsString(registerBatchOrder(
+                                                        "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
                     .andExpect(status().isUnauthorized());
     }
 
@@ -109,8 +109,8 @@ class BatchControllerTest extends ControllerTest {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         this.mockMvc.perform(post("/irs/orders").contentType(MediaType.APPLICATION_JSON)
-                                                .content(new ObjectMapper().writeValueAsString(
-                                                        registerBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                                                .content(new ObjectMapper().writeValueAsString(registerBatchOrder(
+                                                        "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
                     .andExpect(status().isCreated());
     }
 
@@ -120,7 +120,8 @@ class BatchControllerTest extends ControllerTest {
 
         this.mockMvc.perform(post("/irs/ess/orders").contentType(MediaType.APPLICATION_JSON)
                                                     .content(new ObjectMapper().writeValueAsString(
-                                                            registerBpnInvestigationBatchOrder("urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
+                                                            registerBpnInvestigationBatchOrder(
+                                                                    "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b"))))
                     .andExpect(status().isCreated());
     }
 
@@ -129,7 +130,8 @@ class BatchControllerTest extends ControllerTest {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         final UUID orderId = UUID.randomUUID();
-        when(queryBatchService.findOrderById(orderId)).thenReturn(BatchOrderResponse.builder().orderId(orderId).build());
+        when(queryBatchService.findOrderById(orderId)).thenReturn(
+                BatchOrderResponse.builder().orderId(orderId).build());
 
         this.mockMvc.perform(get("/irs/orders/" + orderId))
                     .andExpect(status().isOk())
@@ -156,7 +158,8 @@ class BatchControllerTest extends ControllerTest {
         authenticateWith(IrsRoles.VIEW_IRS);
 
         final UUID orderId = UUID.randomUUID();
-        when(queryBatchService.findOrderById(orderId)).thenReturn(BatchOrderResponse.builder().orderId(orderId).build());
+        when(queryBatchService.findOrderById(orderId)).thenReturn(
+                BatchOrderResponse.builder().orderId(orderId).build());
 
         this.mockMvc.perform(put("/irs/orders/" + orderId))
                     .andExpect(status().isOk())

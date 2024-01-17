@@ -46,7 +46,6 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.IrsApplication;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -94,8 +93,7 @@ public class IrsController {
 
     @Operation(operationId = "registerJobForGlobalAssetId",
                summary = "Register an IRS job to retrieve an item graph for given {globalAssetId}.",
-               security = @SecurityRequirement(name = "oAuth2"),
-               tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = "oAuth2"), tags = { "Item Relationship Service" },
                description = "Register an IRS job to retrieve an item graph for given {globalAssetId}.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns id of registered job.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -132,10 +130,8 @@ public class IrsController {
     }
 
     @Operation(description = "Return job with optional item graph result for requested id.",
-               operationId = "getJobForJobId",
-               summary = "Return job with optional item graph result for requested id.",
-               security = @SecurityRequirement(name = "oAuth2"),
-               tags = { "Item Relationship Service" })
+               operationId = "getJobForJobId", summary = "Return job with optional item graph result for requested id.",
+               security = @SecurityRequirement(name = "oAuth2"), tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Return job with item graph for the requested id.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -194,15 +190,14 @@ public class IrsController {
     }
 
     @Operation(description = "Cancel job for requested jobId.", operationId = "cancelJobByJobId",
-               summary = "Cancel job for requested jobId.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               summary = "Cancel job for requested jobId.", security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled.",
-                                        content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                             schema = @Schema(implementation = Job.class),
-                                                             examples = @ExampleObject(name = "complete",
-                                                                                       ref = "#/components/examples/canceled-job-response"))
-                                        }),
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = Job.class),
+                                                              examples = @ExampleObject(name = "complete",
+                                                                                        ref = "#/components/examples/canceled-job-response"))
+                                         }),
                             @ApiResponse(responseCode = "400", description = "Cancel job failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
@@ -239,10 +234,9 @@ public class IrsController {
         return this.itemJobService.cancelJobById(id);
     }
 
-    @Operation(description = "Returns paginated jobs with state and execution times.", operationId = "getJobsByJobStates",
-               summary = "Returns paginated jobs with state and execution times.",
-               security = @SecurityRequirement(name = "oAuth2"),
-               tags = { "Item Relationship Service" })
+    @Operation(description = "Returns paginated jobs with state and execution times.",
+               operationId = "getJobsByJobStates", summary = "Returns paginated jobs with state and execution times.",
+               security = @SecurityRequirement(name = "oAuth2"), tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Paginated list of jobs with state and execution times for requested job states.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -250,7 +244,8 @@ public class IrsController {
                                                               examples = @ExampleObject(name = "complete",
                                                                                         ref = "#/components/examples/complete-job-list-processing-state"))
                                          }),
-                            @ApiResponse(responseCode = "400", description = "Return jobs for requested job states failed.",
+                            @ApiResponse(responseCode = "400",
+                                         description = "Return jobs for requested job states failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
@@ -275,10 +270,11 @@ public class IrsController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public PageResult getJobsByState(
             @Valid @ParameterObject @Parameter(description = "Requested job states.", in = QUERY,
-               explode = Explode.FALSE, array = @ArraySchema(schema = @Schema(implementation = JobState.class), maxItems = Integer.MAX_VALUE))
-            @RequestParam(value = "states", required = false, defaultValue = "") final List<JobState> states,
-            @Parameter(hidden = true)
-            @ParameterObject final Pageable pageable) {
+                                               explode = Explode.FALSE,
+                                               array = @ArraySchema(schema = @Schema(implementation = JobState.class),
+                                                                    maxItems = Integer.MAX_VALUE)) @RequestParam(
+                    value = "states", required = false, defaultValue = "") final List<JobState> states,
+            @Parameter(hidden = true) @ParameterObject final Pageable pageable) {
         return itemJobService.getJobsByState(states, pageable);
     }
 
@@ -289,7 +285,8 @@ public class IrsController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns all available aspect models.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = AspectModels.class),
-                                                              examples = { @ExampleObject(name = "complete", ref = "#/components/examples/aspect-models-list")
+                                                              examples = { @ExampleObject(name = "complete",
+                                                                                          ref = "#/components/examples/aspect-models-list")
                                                               })
                                          }),
                             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
