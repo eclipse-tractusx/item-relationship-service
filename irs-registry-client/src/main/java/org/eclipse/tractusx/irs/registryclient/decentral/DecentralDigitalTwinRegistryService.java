@@ -104,16 +104,21 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
         calledEndpoints.addAll(connectorEndpoints);
 
-        final var service = endpointDataForConnectorsService;
+        return fetchShellDescriptorsForConnectorEndpoints(bpn, keys, connectorEndpoints);
+    }
+
+    private List<AssetAdministrationShellDescriptor> fetchShellDescriptorsForConnectorEndpoints(final String bpn,
+            final List<DigitalTwinRegistryKey> keys, final List<String> connectorEndpoints) {
 
         try {
 
-            final var futures = //
-                    service.findEndpointDataForConnectors(connectorEndpoints)
-                           .stream()
-                           .map(edrFuture -> edrFuture.thenCompose(
-                                   edr -> supplyAsync(() -> fetchShellDescriptorsForKey(keys, edr))))
-                           .toList();
+            final var futures = endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints)
+                                                                .stream()
+                                                                .map(edrFuture -> edrFuture.thenCompose(
+                                                                        edr -> supplyAsync(
+                                                                                () -> fetchShellDescriptorsForKey(keys,
+                                                                                        edr))))
+                                                                .toList();
 
             return resultFinder.getFastestResult(futures).get();
 
