@@ -82,7 +82,7 @@ IRS transfers assets and collects contractAgreementId for asset
 ````mermaid
 
 sequenceDiagram
-    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px', 'fontFamily': 'Architects daughter'}}}%%
+    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px'}}}%%
     autonumber
     SubmodelDelegate ->> EdcSubmodelFacade : getEndpointReferenceForAsset
     EdcSubmodelFacade ->> EdcSubmodelClientImpl: getEndpointReferenceForAsset
@@ -119,7 +119,7 @@ sequenceDiagram
 ````mermaid
 
 sequenceDiagram
-    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px', 'fontFamily': 'Architects daughter'}}}%%
+    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px'}}}%%
     autonumber
     IRS ->> SubmodelDelegate : process 
     SubmodelDelegate ->> SubmodelDelegate : getSubmodels
@@ -167,7 +167,7 @@ In ContractNegotiationService startNewNegotiation if policy is not valid the pol
 ````mermaid
 
 sequenceDiagram
-    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px', 'fontFamily': 'Architects daughter'}}}%%
+    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px'}}}%%
     autonumber
     ContractNegotiationService ->> ContractNegotiationService : startNewNegotiation
     ContractNegotiationService ->> PolicyCheckerService : isValid
