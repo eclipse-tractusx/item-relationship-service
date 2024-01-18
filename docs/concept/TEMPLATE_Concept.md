@@ -13,9 +13,10 @@
 4. [Requirements](#requirements)
 5. [NFR](#nfr)
 6. [Out of scope](#outofscope)
-7. [Concept](#concept)
-8. [Glossary](#glossary)
-9. [References](#references)
+7. [Assumptions](#assumptions)
+8. [Concept](#concept)
+9. [Glossary](#glossary)
+10. [References](#references)
 
 
 # <ins>Overview</ins> <a name="overview"></a>
