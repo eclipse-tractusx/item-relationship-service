@@ -130,11 +130,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         } catch (ExecutionException e) {
             throw new RegistryServiceRuntimeException(
                     "Exception occurred while fetching shells for bpn '%s'".formatted(bpn), e);
+        } finally {
+            log.debug("End fetchShellDescriptorsForConnectorEndpoints");
         }
     }
 
     private List<AssetAdministrationShellDescriptor> fetchShellDescriptorsForKey(
             final List<DigitalTwinRegistryKey> keys, final EndpointDataReference endpointDataReference) {
+        log.info("Fetching shell descriptors for keys {}", keys);
         return keys.stream().map(key -> fetchShellDescriptor(endpointDataReference, key)).toList();
     }
 
@@ -142,7 +145,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             final DigitalTwinRegistryKey key) {
         log.info("Retrieving AAS Identification for DigitalTwinRegistryKey: {}", key);
         final String aaShellIdentification = mapToShellId(endpointDataReference, key.shellId());
-
+        log.debug("aaShellIdentification: {}", aaShellIdentification);
         return decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(endpointDataReference,
                 aaShellIdentification);
     }
@@ -173,14 +176,15 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private Collection<String> lookupShellIds(final String bpn) {
         log.info("Looking up shell ids for bpn {}", bpn);
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        final var edrFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                connectorEndpoints);
+        log.debug("Looking up shell ids for bpn {} with connector endpoints {}", bpn, connectorEndpoints);
 
+        final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
+                connectorEndpoints);
         try {
-            final var futures = edrFutures.stream()
-                                          .map(edrFuture -> edrFuture.thenCompose(
-                                                  edr -> supplyAsync(() -> lookupShellIds(bpn, edr))))
-                                          .toList();
+            final var futures = endpointDataReferenceFutures.stream()
+                                                            .map(edrFuture -> edrFuture.thenCompose(
+                                                                    edr -> supplyAsync(() -> lookupShellIds(bpn, edr))))
+                                                            .toList();
             final var shellIds = resultFinder.getFastestResult(futures).get();
 
             log.info("Found {} shell id(s) in total", shellIds.size());
@@ -197,6 +201,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private List<String> lookupShellIds(final String bpn, final EndpointDataReference endpointDataReference) {
+        log.debug("lookupShellIds for bpn {} with endpointDataReference {}", bpn, endpointDataReference);
         return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(endpointDataReference,
                 List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())).getResult();
     }
