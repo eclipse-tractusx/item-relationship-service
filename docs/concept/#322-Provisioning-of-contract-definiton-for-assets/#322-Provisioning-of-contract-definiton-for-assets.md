@@ -1,19 +1,10 @@
 # \[Concept\] \[#ID#\] Summary 
 
-| Key            | Value             |
-|----------------|-------------------|
-| Creation date  | 11.01.2024        |
-| Ticket Id      | https://github.com/eclipse-tractusx/item-relationship-service/issues/322        |    
-| State          | <DRAFT,WIP, DONE> | 
-
-# LOP <TO be deleted>
-
-
-
-- [ ] Is  a distinction is currently necessary for AAS accesses that are not traded via the EDC as we have not currently implemented the case in the IRS
-- [ ] ## 3. Case 3: IRS proceed successful EDC contract negotiation and revokes asset transfers cause by not matching usage policy prüfen
-- [ ] If contract negoation is not valid / not positive how we provide the contractAggreementId to the busines app? Exstend Tombstone extended. 
-
+| Key           | Value            |
+|---------------|------------------|
+| Creation date | 11.01.2024       |
+| Issue Id      | https://github.com/eclipse-tractusx/item-relationship-service/issues/322   https://github.com/eclipse-tractusx/item-relationship-service/issues/370    |    
+| State         | <DRAFT DONE> | 
 
 
 # Table of Contents
@@ -63,13 +54,17 @@ This specific id must therefore be stored and linked for the exchanged asset in 
 
 ## API Extensions 
 
+## APIs 
 - <span style="color:green">POST</span> /irs/jobs 
 - <span style="color:green">POST</span> /irs/orders
 - <span style="color:green">POST</span> /irs/ess/orders
 - <span style="color:green">POST</span> /ess/bpn/investigation
 
-
-auditContractNegotiation
+- parameter name: auditContractNegotiation 
+- parameter value: boolean value 
+- parameter default: true 
+- parameter description: enables and disables auditing including provisioning of ContractAgreementId inside submodels and shells objects
+- parameter impacts: enables collection of ContractAgreementId in job processing and provides this information in submodelContainers and ShellContainers as well in Tombstone in case policy does not match or other internal error during EDC communication. 
 
 
 
@@ -108,13 +103,13 @@ sequenceDiagram
     else is not valid
         ContractNegotiationService ->> ContractNegotiationService : throw UsagePolicyException
         note right of ContractNegotiationService : UsagePolicyException MUST cover the policy of catalog item  this is relevant to create tombstone afterwards with policy
-        SubmodelDelegate --> ItemContainer: create tombstone with policy 
+        SubmodelDelegate --> ItemContainer: create tombstone with policy payload
     end
         
     
 ````
 
-### Receiving SubmodelRawPayload 
+### Receiving Submodel Payload 
 
 ````mermaid
 
@@ -129,25 +124,33 @@ sequenceDiagram
     EdcSubmodelClientImpl  ->>   AsyncPollingService : createJob 
     AsyncPollingService -->>  EdcSubmodelClientImpl: submodel payload 
     EdcSubmodelClientImpl -->> EdcSubmodelFacade : submodel payload
-    EdcSubmodelFacade --> SubmodelDelegate: submodel payload
-    SubmodelDelegate --> IRS: write contractAgreementÍd to JobReponse 
+    EdcSubmodelFacade -->> SubmodelDelegate: submodel payload
+    SubmodelDelegate -->> IRS: write contractAgreementÍd to JobReponse submodels[]
 ````
+### Receiving AAS Payload
 
+````mermaid
 
-
-
-- [ ] TODO : EdcSubmodelFacade.getSubmodelRawPayload -> Payload of submodel
-
-EdcSubmodelFacade
-
-
-- [ ] TODO : DecentralDigitalTwinRegistryService -> fetchShells : List keys  
-- DigitalTwinDelegate
+sequenceDiagram
+    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px'}}}%%
+    autonumber
+    IRS ->> DigitalTwinDelegate : process
+    DigitalTwinDelegate ->> DigitalTwinRegistryService : fetchShells
+    DigitalTwinRegistryService ->> DecentralDigitalTwinRegistryService : fetchShellDescriptors
+    loop DigitalTwinRegistryKey
+        DigitalTwinRegistryService ->> DecentralDigitalTwinRegistryService : fetchShellDescriptor
+        DigitalTwinRegistryService ->> DecentralDigitalTwinRegistryService : AASContainer with AssetAdministrationShellDescriptor + CID
+    end 
+    DecentralDigitalTwinRegistryService -->> DigitalTwinRegistryService : AASContainer with AssetAdministrationShellDescriptor + CID
+    DigitalTwinRegistryService -->> IRS :  write contractAgreementId to JobReponse shells array
+    
+````   
 
 ## 2. Case 2: IRS proceed EDC contract negotiation fails because of internal EDC error 
 
 ### Case 2.1: GET contract negotiation return 404 and "type": "ObjectNotFound",
 
+Get policy of Catalog Offer and create tombstone 
 ````
 404
  [
@@ -169,27 +172,29 @@ In ContractNegotiationService startNewNegotiation if policy is not valid the pol
 sequenceDiagram
     %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px'}}}%%
     autonumber
-    ContractNegotiationService ->> ContractNegotiationService : startNewNegotiation
-    ContractNegotiationService ->> PolicyCheckerService : isValid
-    alt is valid
-        EdcSubmodelClientImpl ->>  ContractNegotiationService: retrieve NegotiationResponse
-        ContractNegotiationService -->> EdcSubmodelClientImpl : return NegotiationResponse
-        EdcSubmodelClientImpl -->> EdcSubmodelClientImpl : getContractAgreementId from  NegotiationResponse
-        EdcSubmodelClientImpl ->> AsyncPollingService : retrieveEndpointReference
-        AsyncPollingService -->>  EdcSubmodelClientImpl : EndpointDataReference
-        note left of EdcSubmodelClientImpl : received EDR Token to receive assets
-        EdcSubmodelClientImpl ->> EdcSubmodelFacade : EndpointDataReference
-        EdcSubmodelFacade ->> IRS : EndpointDataReference
-    else is not valid
-        ContractNegotiationService ->> ContractNegotiationService : throw UsagePolicyException
-        note right of ContractNegotiationService : UsagePolicyException MUST cover the policy of catalog item  this is relevant to create tombstone afterwards with policy
+    IRS ->> SubmodelDelegate: 
+    SubmodelDelegate ->> SubmodelDelegate : requestSubmodelAsString 
+    SubmodelDelegate ->>  AbstractDelegate : requestSubmodelAsString
+    alt dspEndpoint.isPresent()
+        AbstractDelegate ->> SubmodelFacade : getSubmodelRawPayload
+    else
+        AbstractDelegate ->> AbstractDelegate: getSubmodel
+        loop endpoints 
+            AbstractDelegate ->> SubmodelFacade : getSubmodelRawPayload
+        end
     end
-    SubmodelDelegate --> ItemContainer: create tombstone with raw policy information
-    
+    SubmodelFacade ->> EdcSubmodelClientImpl : getSubmodelRawPayload
+    EdcSubmodelClientImpl ->> EdcSubmodelClientImpl : getEndpointDataReference
+    EdcSubmodelClientImpl -->> EdcSubmodelClientImpl : EndpointDataReference
+    EdcSubmodelClientImpl ->> PollingService : createJob 
+    PollingService -->> EdcSubmodelClientImpl : SubmodelContainer contains SubmodelPayload and CID
+    EdcSubmodelClientImpl -->> SubmodelFacade :  SubmodelContainer contains SubmodelPayload and CID
+    SubmodelFacade -->> AbstractDelegate : SubmodelContainer contains SubmodelPayload and CID
+    AbstractDelegate -->> SubmodelDelegate : SubmodelContainer contains SubmodelPayload and CID
+    SubmodelDelegate --> IRS : write contractAgreementÍd to submodel inside JobReponse
 ````   
 
-- [ ] ContractNegotiationService adds policy information for catalog item to UsagePolicyException
-- [ ] Policy for catalog item is added to Tombstone in SubmodelDelegate
+
 
 ## <ins>EDC Management API </ins>
 The EDC Management API is provided by EDC consumer. In this case the IRS configured EDC provider logs the required contract aggreements and provides the API to request contract agreements and contract negotations for given contract agreement @id
@@ -356,17 +361,14 @@ The requestor gets the insight which policy does not match and has the opportuni
 
 `````
 
-
-
-
 # <ins>Glossary</ins> <a name="glossary"></a>
 
-| Abbreviation           | Name                               |
-|------------------------|------------------------------------|
-| edc:ContractAgreement  |                                    |
-| edc:ContractNegotation |                                    |
-| AAS                    | AssetAdministrationShell           |   
-| contractAgreementId    | Unique Id of an contract aggrement |
+| Abbreviation           | Name                    | Description                                 |  
+|------------------------|-------------------------|---------------------------------------------|
+| edc:ContractAgreement  |edc:ContractAgreement    | ContractAgreement of negotation in EDC      |
+| edc:ContractNegotation |edc:ContractNegotation   | ContractNegotation of negotation in EDC     |
+| AAS                    |AssetAdministrationShell | The Shell object dtored in  dDTR registry   | 
+| CID                    | contractAgreementId     | Unique Id of an contract aggrement          |
 
 # <ins>References</ins> <a name="references"></a>
 
