@@ -23,12 +23,16 @@
 # <ins>Overview</ins> <a name="overview"></a>
 The exchange of assets via the EDC takes place after a successful contract negotiation in which it is checked whether the consumer has authorized access to the data asset.
 This access is automatically checked by the EDC via so-called AccessPolicies. The consumer is only granted access to the data after a successful check.
-During contract negotation the edc stores audits the following artefacts edc:ContractAgreement and edc:ContractNegotation these audit information could be requested over the edc management api. 
+During contract negotiation the edc stores audits the following artefacts edc:ContractAgreement and edc:ContractNegotiation these audit information could be requested over the edc management api. 
 To request the mentioned artefacts over the management api the ContractAgreementDto:@id is required.
 This specific id must therefore be stored and linked for the exchanged asset in order to be able to determine the corresponding contract agreement later on.
 
 
 # <ins>Summary</ins> <a name="summary"></a>
+This feature provides the collecting of CIDs for contract negotiations regarding the EDD in the irs processing.
+The CIDs were provided in irs JobResponse document for collected assets. 
+For shells and submodels CID are collected and provided. 
+In case of a usage policy mismatch. The irs policy store does not provide the usage policy of the asset. This circumstance is reported in a tombstone which contains the  policy of the asset. 
 
 # <ins>Problem Statement</ins> <a name="statement"></a>
 1. The ContractAgreementDto:@id is currently not delivered via the IRS response, so business apps that use the IRS cannot access the corresponding ContractAggreement under which the assets delivered by the IRS were exchanged.
