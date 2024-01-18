@@ -1,5 +1,7 @@
 The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
-This applies to the following scenarios:
+This applies to the following scenarios.
+
+__Please note that the expression "the first result" in the subsequent sections means the first successful answer.__
 
 ==== Scenario 1: EDC with multiple DTRs
 
