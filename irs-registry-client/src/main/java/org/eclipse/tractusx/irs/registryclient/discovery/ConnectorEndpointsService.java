@@ -46,26 +46,27 @@ public class ConnectorEndpointsService {
 
     @Cacheable(CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME)
     public List<String> fetchConnectorEndpoints(final String bpn) {
+
         if (StringUtils.isBlank(bpn)) {
             log.warn("BPN was null, cannot search for any connector endpoints. Returning empty list.");
             return List.of();
         }
 
         log.info("Requesting connector endpoints for BPN {}", bpn);
-        final DiscoveryFinderRequest onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
-        final List<DiscoveryEndpoint> discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn)
-                                                                                .endpoints();
-        final List<String> providedBpn = List.of(bpn);
+
+        final var onlyBpn = new DiscoveryFinderRequest(List.of("bpn"));
+        final var discoveryEndpoints = discoveryFinderClient.findDiscoveryEndpoints(onlyBpn).endpoints();
         final var endpoints = discoveryEndpoints.stream()
                                                 .flatMap(
                                                         discoveryEndpoint -> discoveryFinderClient.findConnectorEndpoints(
-                                                                                                          discoveryEndpoint.endpointAddress(), providedBpn)
+                                                                                                          discoveryEndpoint.endpointAddress(), List.of(bpn))
                                                                                                   .stream()
                                                                                                   .filter(edcDiscoveryResult -> edcDiscoveryResult.bpn()
                                                                                                                                                   .equals(bpn))
                                                                                                   .map(EdcDiscoveryResult::connectorEndpoint))
                                                 .flatMap(List::stream)
                                                 .toList();
+
         log.info("Discovered the following endpoints for BPN '{}': '{}'", bpn, String.join(", ", endpoints));
         return endpoints;
     }
