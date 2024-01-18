@@ -76,11 +76,11 @@ public class ResultFinder {
             if (ex != null) {
                 log.error("Exception occurred: " + ex.getMessage(), ex);
                 fastestResultPromise.completeExceptionally(new CompletionExceptions(exceptions));
-            } else if (!fastestResultPromise.isDone()) {
+            } else if (fastestResultPromise.isDone()) {
+                log.debug("Fastest result already found, ignoring the others");
+            } else {
                 log.debug("Completing");
                 fastestResultPromise.complete(null);
-            } else {
-                log.debug("Fastest result already found, ignoring the others");
             }
         });
 
