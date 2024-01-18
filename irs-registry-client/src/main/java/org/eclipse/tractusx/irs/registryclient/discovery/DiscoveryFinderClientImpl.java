@@ -68,7 +68,7 @@ public class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
         return toList(restTemplate.postForObject(endpointAddress, bpns, EdcDiscoveryResult[].class));
     }
 
-    private static <T> List<T> toList(final T[] arr) {
+    private static <T> List<T> toList(final T... arr) {
         return arr == null ? List.of() : List.of(arr);
     }
 
