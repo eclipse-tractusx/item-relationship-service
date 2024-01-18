@@ -1,197 +1,65 @@
 The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
 This applies to the following scenarios:
 
-==== Scenarios
-
-===== EDC with multiple DTRs
+==== Scenario 1: EDC with multiple DTRs
 
 IRS queries all DTRs for the globalAssetId and will take the first result it gets.
 If none of the DTRs return a result, IRS will create a tombstone.
 
 [plantuml,target=discovery-DTR--EDC-with-multiple-DTRs,format=svg]
-----
-@startuml
-participant IRS
-participant DiscoveryService
-participant "EDC Provider" as EDCProvider
-participant "DTR 1" as DTR1
-participant "DTR 2" as DTR2
+....
+include::discovery-DTR--EDC-with-multiple-DTRs.puml[]
+....
 
-IRS ->> DiscoveryService: Get EDCs for BPN
-DiscoveryService ->> IRS: Return list of 1 EDC
-IRS ->> EDCProvider: Query for DTR contract offer
-EDCProvider ->> IRS: 2 DTR contract offers
-
-par QueryDTR1
-    IRS ->> EDCProvider: Negotiate contract
-    IRS ->> DTR1: Query for DT
-    DTR1 ->> IRS: no DT
-end
-
-par QueryDTR2
-    IRS ->> EDCProvider: Negotiate contract
-    IRS ->> DTR2: Query for DT
-    DTR2 ->> IRS: DT
-end
-@enduml
-----
-
-===== Multiple EDCs with one DTR
+==== Scenario 2: Multiple EDCs with one DTR
 
 IRS starts a contract negotiation for all registry contract offers in parallel and queries the DTRs for all successful negotiations.
 The first registry which responds with a DT will be the one used by IRS.
 
 [plantuml,target=discovery-DTR--multiple-EDCs-with-one-DTR,format=svg]
-----
-@startuml
-participant IRS
-participant DiscoveryService
-participant "EDC Provider 1" as EDCProvider1
-participant "EDC Provider 2" as EDCProvider2
-participant "EDC Provider 3" as EDCProvider3
-participant DTR
+....
+include::discovery-DTR--multiple-EDCs-with-one-DTR.puml[]
+....
 
-IRS ->> DiscoveryService: Get EDCs for BPN
-DiscoveryService ->> IRS: Return list of 3 EDCs
-
-par CatalogRequestEDC1
-    IRS ->> EDCProvider1: Query for DTR contract offer
-    EDCProvider1 ->> IRS: No offer
-end
-
-par CatalogRequestEDC2
-    IRS ->> EDCProvider2: Query for DTR contract offer
-    EDCProvider2 ->> IRS: No offer
-end
-
-par CatalogRequestEDC3
-    IRS ->> EDCProvider3: Query for DTR contract offer
-    EDCProvider3 ->> IRS: DTR contract offer
-    IRS -> EDCProvider3: Negotiate contract
-    IRS ->> DTR: Query for DT
-    DTR ->> IRS: DT
-end
-@enduml
-----
-
-===== One EDC with one DTR
+==== Scenario 3: One EDC with one DTR
 
 Only one EDC found for BPN and the catalog only contains one offer for the DTR.
 IRS will use this registry and will create a tombstone if no DT could be found for the globalAssetId.
 
 [plantuml,target=discovery-DTR--one-EDC-with-one-DTR,format=svg]
-----
-@startuml
-participant IRS
-participant DiscoveryService
-participant "EDC Provider 3" as EDCProvider3
-participant DTR
+....
+include::discovery-DTR--one-EDC-with-one-DTR.puml[]
+....
 
-IRS ->> DiscoveryService: Get EDCs for BPN
-DiscoveryService ->> IRS: Return list of 1 EDC
-IRS ->> EDCProvider3: Query for DTR contract offer
-EDCProvider3 ->> IRS: DTR contract offer
-IRS -> EDCProvider3: Negotiate contract
-IRS ->> DTR: Query for DT
-DTR ->> IRS: DT
-@enduml
-----
-
-===== Multiple EDCs with multiple DTRs
+==== Scenario 4: Multiple EDCs with multiple DTRs
 
 IRS starts a contract negotiation for all the registry offers.
 
 [plantuml,target=discovery-DTR--multiple-EDCs-with-multiple-DTRs,format=svg]
-----
-@startuml
-participant IRS
-participant DiscoveryService
-participant "EDC Provider 1" as EDCProvider1
-participant "EDC Provider 2" as EDCProvider2
-participant "EDC Provider 3" as EDCProvider3
-participant "DTR" as DTR
+....
+include::discovery-DTR--multiple-EDCs-with-multiple-DTRs.puml[]
+....
 
-IRS ->> DiscoveryService: Get EDCs for BPN
-DiscoveryService ->> IRS: Return list of 3 EDCs
-
-par CatalogRequestEDC1
-    IRS ->> EDCProvider1: Query for DTR contract offer
-    EDCProvider1 ->> IRS: No offer
-end
-
-par CatalogRequestEDC2
-    IRS ->> EDCProvider2: Query for DTR contract offer
-    EDCProvider2 ->> IRS: DTR contract offer
-    IRS -> EDCProvider2: Negotiate contract
-    IRS ->> DTR: Query for DT
-    DTR ->> IRS: DT
-end
-
-par CatalogRequestEDC3
-    IRS ->> EDCProvider3: Query for DTR contract offer
-    EDCProvider3 ->> IRS: DTR contract offer
-    IRS -> EDCProvider3: Negotiate contract
-    IRS ->> DTR: Query for DT
-    DTR ->> IRS: No DT
-end
-@enduml
-----
-
-===== Multiple EDCs with no DTRs
+==== Scenario 5: Multiple EDCs with no DTRs
 
 IRS starts a contract negotiation for all the registry offers and creates a tombstone since no DTR could be discovered.
 
 [plantuml,target=discovery-DTR--multiple-EDCs-with-no-DTRs,format=svg]
-----
-@startuml
-actor IRS
-actor "Discovery Service" as DiscoveryService
-participant "EDC 1" as EDCProvider1
-participant "EDC 2" as EDCProvider2
-participant "EDC 3" as EDCProvider3
+....
+include::discovery-DTR--multiple-EDCs-with-no-DTRs.puml[]
+....
 
-IRS -> DiscoveryService: Get EDCs for BPN
-DiscoveryService -> IRS: Return list of 3 EDCs
-
-par Catalog Request to EDC 1
-    IRS -> EDCProvider1: Query for DTR contract offer
-    EDCProvider1 -> IRS: No offer
-end
-
-and Catalog Request to EDC 2
-    IRS -> EDCProvider2: Query for DTR contract offer
-    EDCProvider2 -> IRS: No offer
-end
-
-and Catalog Request to EDC 3
-    IRS -> EDCProvider3: Query for DTR contract offer
-    EDCProvider3 -> IRS: No offer
-end
-
-IRS -> IRS: Tombstone
-@enduml
-----
-
-==== Special Scenarios
-
-===== Same DT in multiple DTRs
+==== Special Scenario: Same DT in multiple DTRs
 
 IRS will use all registries to query for the globalAssetId and takes the first result which is returned.
 If no DT could be found in any of the DTRs, IRS will create a tombstone.
 
-===== Multiple DTs (with the same globalAssetId) in one DTR
+==== Special Scenario: Multiple DTs (with the same globalAssetId) in one DTR
 
 IRS uses the `/query` endpoint of the DTR to get the DT id based on the globalAssetId.
 If more than one id is present for a globalAssetId, IRS will use the first of the list.
 
 [plantuml,target=discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR,format=svg]
-----
-@startuml
-actor IRS
-participant DTR
-
-IRS -> DTR: /query for globalAssetId
-DTR -> IRS: return list of two results
-IRS -> IRS: use first
-@enduml
-----
+....
+include::discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml[]
+....
