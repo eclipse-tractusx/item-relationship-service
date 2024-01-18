@@ -7,13 +7,13 @@
 | State          | <DRAFT,WIP, DONE> | 
 
 # LOP <TO be deleted>
-- [ ] Can Trace-X access the management API of the IRS EDC?
-- [ ] Should the EDC Management API of the IRS be configured in the business application or should the url be supplied via the JobResponse?
-- [ ] Does the business app have access to the management API of the EDC configured for the IRS
+
+
+
 - [ ] Is  a distinction is currently necessary for AAS accesses that are not traded via the EDC as we have not currently implemented the case in the IRS
-- [ ] Collect policy inside the IRS flow 
+- [ ] ## 3. Case 3: IRS proceed successful EDC contract negotiation and revokes asset transfers cause by not matching usage policy prüfen
 - [ ] If contract negoation is not valid / not positive how we provide the contractAggreementId to the busines app? Exstend Tombstone extended. 
-- [ ] tombstone creation 
+
 
 
 # Table of Contents
@@ -23,9 +23,10 @@
 4. [Requirements](#requirements)
 5. [NFR](#nfr)
 6. [Out of scope](#outofscope)
-7. [Concept](#concept)
-8. [Glossary](#glossary)
-9. [References](#references)
+7. [Assumptions](#assumptions)
+8. [Concept](#concept)
+9. [Glossary](#glossary)
+10. [References](#references)
 
 
 # <ins>Overview</ins> <a name="overview"></a>
@@ -53,7 +54,24 @@ This specific id must therefore be stored and linked for the exchanged asset in 
 
 # <ins>Out of scope</ins> <a name="outofscope"></a>
 
+# <ins>Assumptions</ins> <a name="assumptions"></a>
+- [x] Business app (Trace-X) has access to the management API of the IRS EDC Consumer. 
+- [x] EDC Management API of EDC Consumer is configured as a parameter in Business app (Trace-X). IRS does not provide API url to EDC Management API via JobResponse.
+- [x] In case there os no valid negotation including contract agreement policy of catalog offer will be collected inside IRS flow and provided to irs requestor.
 # <ins>Concept</ins> <a name="concept"></a>
+
+
+## API Extensions 
+
+- <span style="color:green">POST</span> /irs/jobs 
+- <span style="color:green">POST</span> /irs/orders
+- <span style="color:green">POST</span> /irs/ess/orders
+- <span style="color:green">POST</span> /ess/bpn/investigation
+
+
+auditContractNegotiation
+
+
 
 ## 1. Case 1: Successful contract negotiation 
 
@@ -73,20 +91,20 @@ sequenceDiagram
     EDCCatalogFacade ->> EdcControlPlaneClient: getCatalogWithFilter key/value
     EdcControlPlaneClient ->> EDC Consumer ControlPlane : GET catalog with filter <br /> [POST /management/v2/catalog/request]
     EDC Consumer ControlPlane ->> EdcControlPlaneClient : List<CatalogItems>
-    EdcControlPlaneClient ->> EDCCatalogFacade : List<CatalogItems>
-    EDCCatalogFacade ->> EdcSubmodelClientImpl : List<CatalogItems>
+    EdcControlPlaneClient -->> EDCCatalogFacade : List<CatalogItems>
+    EDCCatalogFacade -->> EdcSubmodelClientImpl : List<CatalogItems>
     EdcSubmodelClientImpl --> ContractNegotiationService : do negotiation for List<CatalogItems>
     ContractNegotiationService --> ContractNegotiationService : startNewNegotiation
     ContractNegotiationService --> PolicyCheckerService : isValid 
     alt is valid
-        ContractNegotiationService ->> EdcSubmodelClientImpl : return NegotiationResponse
-        ContractNegotiationService --> EdcSubmodelClientImpl : retrieve NegotiationResponse
-        EdcSubmodelClientImpl --> EdcSubmodelClientImpl : getContractAgreementId from  NegotiationResponse
-        EdcSubmodelClientImpl --> AsyncPollingService : retrieveEndpointReference
-        AsyncPollingService -->  EdcSubmodelClientImpl : EndpointDataReference
+        ContractNegotiationService -->> EdcSubmodelClientImpl : return NegotiationResponse
+        ContractNegotiationService -->> EdcSubmodelClientImpl : retrieve NegotiationResponse
+        EdcSubmodelClientImpl ->> EdcSubmodelClientImpl : getContractAgreementId from  NegotiationResponse
+        EdcSubmodelClientImpl ->> AsyncPollingService : retrieveEndpointReference
+        AsyncPollingService ->>  EdcSubmodelClientImpl : EndpointDataReference
         note left of EdcSubmodelClientImpl : received EDR Token to receive assets
-        EdcSubmodelClientImpl ->> EdcSubmodelFacade : EndpointDataReference
-        EdcSubmodelFacade ->> SubmodelDelegate : EndpointDataReference
+        EdcSubmodelClientImpl -->> EdcSubmodelFacade : EndpointDataReference
+        EdcSubmodelFacade -->> SubmodelDelegate : EndpointDataReference
     else is not valid
         ContractNegotiationService ->> ContractNegotiationService : throw UsagePolicyException
         note right of ContractNegotiationService : UsagePolicyException MUST cover the policy of catalog item  this is relevant to create tombstone afterwards with policy
@@ -96,13 +114,52 @@ sequenceDiagram
     
 ````
 
+### Receiving SubmodelRawPayload 
+
+````mermaid
+
+sequenceDiagram
+    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px', 'fontFamily': 'Architects daughter'}}}%%
+    autonumber
+    IRS ->> SubmodelDelegate : process 
+    SubmodelDelegate ->> SubmodelDelegate : getSubmodels
+    EdcSubmodelFacade ->> EdcSubmodelClientImpl : getSubmodelRawPayload (onnectorEndpoint, submodelDataplaneUrl, assetId)
+    EdcSubmodelClientImpl ->> EdcSubmodelClientImpl : getEndpointDataReference EndpointDataReference
+    EdcSubmodelClientImpl ->> EdcSubmodelClientImpl: storageId a
+    EdcSubmodelClientImpl  ->>   AsyncPollingService : createJob 
+    AsyncPollingService -->>  EdcSubmodelClientImpl: submodel payload 
+    EdcSubmodelClientImpl -->> EdcSubmodelFacade : submodel payload
+    EdcSubmodelFacade --> SubmodelDelegate: submodel payload
+    SubmodelDelegate --> IRS: write contractAgreementÍd to JobReponse 
+````
+
+
+
+
 - [ ] TODO : EdcSubmodelFacade.getSubmodelRawPayload -> Payload of submodel
+
+EdcSubmodelFacade
+
+
 - [ ] TODO : DecentralDigitalTwinRegistryService -> fetchShells : List keys  
-
-
-
+- DigitalTwinDelegate
 
 ## 2. Case 2: IRS proceed EDC contract negotiation fails because of internal EDC error 
+
+### Case 2.1: GET contract negotiation return 404 and "type": "ObjectNotFound",
+
+````
+404
+ [
+	{
+		"message": "Object of type ContractNegotiation with ID=f9600523-f8e4-42b3-b388-485370b4f8f4 was not found",
+		"type": "ObjectNotFound",
+		"path": null,
+		"invalidValue": null
+	}
+]
+````
+
 ## 3. Case 3: IRS proceed successful EDC contract negotiation and revokes asset transfers cause by not matching usage policy 
 
 In ContractNegotiationService startNewNegotiation if policy is not valid the policy of catalog item is returned. Tombstone with policy is created to display IRS requestor the catlogItem which could not be fetched because of invalid policy including their specific policy. 
@@ -112,14 +169,14 @@ In ContractNegotiationService startNewNegotiation if policy is not valid the pol
 sequenceDiagram
     %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px', 'fontFamily': 'Architects daughter'}}}%%
     autonumber
-    ContractNegotiationService --> ContractNegotiationService : startNewNegotiation
-    ContractNegotiationService --> PolicyCheckerService : isValid
+    ContractNegotiationService ->> ContractNegotiationService : startNewNegotiation
+    ContractNegotiationService ->> PolicyCheckerService : isValid
     alt is valid
-        ContractNegotiationService ->> EdcSubmodelClientImpl : return NegotiationResponse
-        ContractNegotiationService --> EdcSubmodelClientImpl : retrieve NegotiationResponse
-        EdcSubmodelClientImpl --> EdcSubmodelClientImpl : getContractAgreementId from  NegotiationResponse
-        EdcSubmodelClientImpl --> AsyncPollingService : retrieveEndpointReference
-        AsyncPollingService -->  EdcSubmodelClientImpl : EndpointDataReference
+        EdcSubmodelClientImpl ->>  ContractNegotiationService: retrieve NegotiationResponse
+        ContractNegotiationService -->> EdcSubmodelClientImpl : return NegotiationResponse
+        EdcSubmodelClientImpl -->> EdcSubmodelClientImpl : getContractAgreementId from  NegotiationResponse
+        EdcSubmodelClientImpl ->> AsyncPollingService : retrieveEndpointReference
+        AsyncPollingService -->>  EdcSubmodelClientImpl : EndpointDataReference
         note left of EdcSubmodelClientImpl : received EDR Token to receive assets
         EdcSubmodelClientImpl ->> EdcSubmodelFacade : EndpointDataReference
         EdcSubmodelFacade ->> IRS : EndpointDataReference
@@ -133,21 +190,6 @@ sequenceDiagram
 
 - [ ] ContractNegotiationService adds policy information for catalog item to UsagePolicyException
 - [ ] Policy for catalog item is added to Tombstone in SubmodelDelegate
-
-
-## 4. Case 4: GET contract negotiation return 404 and "type": "ObjectNotFound", 
-
-````
-404
- [
-	{
-		"message": "Object of type ContractNegotiation with ID=f9600523-f8e4-42b3-b388-485370b4f8f4 was not found",
-		"type": "ObjectNotFound",
-		"path": null,
-		"invalidValue": null
-	}
-]
-````
 
 ## <ins>EDC Management API </ins>
 The EDC Management API is provided by EDC consumer. In this case the IRS configured EDC provider logs the required contract aggreements and provides the API to request contract agreements and contract negotations for given contract agreement @id
@@ -276,6 +318,7 @@ Impact:
 Tombstone is extended with policy payload when policy is not matched and contract negotiation is not conducted.
 The requestor gets the insight which policy does not match and has the opportunity to add the specific policy to the IRS policy store in order to receice further on assets with the specific policy. 
 
+- [ ] Tombstone is extended with policy payload in case policy is invalid AND auditContractNegotiation api parameter is enabled.  
 
 `````json 
 "tombstones": [
