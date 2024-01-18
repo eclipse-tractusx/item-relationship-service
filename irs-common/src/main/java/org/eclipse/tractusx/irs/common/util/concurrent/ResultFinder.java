@@ -64,14 +64,12 @@ public class ResultFinder {
 
         final List<Throwable> exceptions = new ArrayList<>();
 
-        final var handledFutures = //
-                toArray(futures.stream()
-                               .map(future -> future.exceptionally(
-                                                            completingExceptionallyCollectingException(exceptions))
-                                                    .handle(completingOnFirstSuccessful(fastestResultPromise)))
-                               .toList());
+        final var futuresList = futures.stream()
+                                       .map(future -> future.exceptionally(collectingExceptionsAndThrow(exceptions))
+                                                            .handle(completingOnFirstSuccessful(fastestResultPromise)))
+                                       .toList();
 
-        allOf(handledFutures).whenComplete((value, ex) -> {
+        allOf(toArray(futuresList)).whenComplete((value, ex) -> {
 
             log.debug("List of futures completed");
 
@@ -118,8 +116,7 @@ public class ResultFinder {
         };
     }
 
-    private static <T> Function<Throwable, T> completingExceptionallyCollectingException(
-            final List<Throwable> exceptions) {
+    private static <T> Function<Throwable, T> collectingExceptionsAndThrow(final List<Throwable> exceptions) {
         return t -> {
             log.error("Exception occurred: " + t.getMessage(), t);
             exceptions.add(t);
