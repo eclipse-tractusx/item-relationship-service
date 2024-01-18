@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -44,11 +46,12 @@ public class EndpointDataForConnectorsService {
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
-    public List<CompletableFuture<EndpointDataReference>> findEndpointDataForConnectors(
+    public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
             final List<String> connectorEndpoints) {
 
+        log.debug("createFindEndpointDataForConnectorsFutures for connector endpoints: {}", connectorEndpoints);
         return connectorEndpoints.stream()
-                                 .map(connectorEndpoint -> CompletableFuture.supplyAsync(
+                                 .map(connectorEndpoint -> supplyAsync(
                                          () -> getEndpointReferenceForAsset(connectorEndpoint)))
                                  .toList();
     }
@@ -56,8 +59,12 @@ public class EndpointDataForConnectorsService {
     private EndpointDataReference getEndpointReferenceForAsset(final String connector) {
         log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
         try {
-            return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
-                    DT_REGISTRY_ASSET_VALUE);
+            final var endpointDataReference = edcSubmodelFacade.getEndpointReferenceForAsset(connector,
+                    DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE);
+
+            log.debug("Got EndpointDataReference for connector {}", connector);
+
+            return endpointDataReference;
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector, e);
             throw new CompletionException(e.getMessage(), e);

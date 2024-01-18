@@ -102,6 +102,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         log.info("Fetching {} shells for bpn {}", keys.size(), bpn);
 
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+
+        log.debug("Found {} connector endpoints for bpn {}", connectorEndpoints.size(), bpn);
+
         calledEndpoints.addAll(connectorEndpoints);
 
         return fetchShellDescriptorsForConnectorEndpoints(bpn, keys, connectorEndpoints);
@@ -110,15 +113,13 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private List<AssetAdministrationShellDescriptor> fetchShellDescriptorsForConnectorEndpoints(final String bpn,
             final List<DigitalTwinRegistryKey> keys, final List<String> connectorEndpoints) {
 
+        final EndpointDataForConnectorsService service = endpointDataForConnectorsService;
         try {
-
-            final var futures = endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints)
-                                                                .stream()
-                                                                .map(edrFuture -> edrFuture.thenCompose(
-                                                                        edr -> supplyAsync(
-                                                                                () -> fetchShellDescriptorsForKey(keys,
-                                                                                        edr))))
-                                                                .toList();
+            final var futures = service.createFindEndpointDataForConnectorsFutures(connectorEndpoints)
+                                       .stream()
+                                       .map(edrFuture -> edrFuture.thenCompose(
+                                               edr -> supplyAsync(() -> fetchShellDescriptorsForKey(keys, edr))))
+                                       .toList();
 
             return resultFinder.getFastestResult(futures).get();
 
@@ -172,7 +173,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private Collection<String> lookupShellIds(final String bpn) {
         log.info("Looking up shell ids for bpn {}", bpn);
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        final var edrFutures = endpointDataForConnectorsService.findEndpointDataForConnectors(connectorEndpoints);
+        final var edrFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
+                connectorEndpoints);
 
         try {
             final var futures = edrFutures.stream()

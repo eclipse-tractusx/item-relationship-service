@@ -66,7 +66,7 @@ class EndpointDataForConnectorsServiceTest {
                 DT_REGISTRY_ASSET_VALUE)).thenReturn(CONNECTION_ONE_DATA_REF);
 
         // WHEN
-        final List<CompletableFuture<EndpointDataReference>> endpointDataReferences = sut.findEndpointDataForConnectors(
+        final List<CompletableFuture<EndpointDataReference>> endpointDataReferences = sut.createFindEndpointDataForConnectorsFutures(
                 Collections.singletonList(connectionOneAddress));
 
         // THEN
@@ -93,7 +93,7 @@ class EndpointDataForConnectorsServiceTest {
 
         // WHEN
         final List<CompletableFuture<EndpointDataReference>> dataRefFutures = //
-                sut.findEndpointDataForConnectors(List.of(connectionOneAddress, // (1)
+                sut.createFindEndpointDataForConnectorsFutures(List.of(connectionOneAddress, // (1)
                         connectionTwoAddress // (2)
                 ));
 
@@ -132,7 +132,7 @@ class EndpointDataForConnectorsServiceTest {
 
         // THEN
         final List<String> connectorEndpoints = List.of(connectionOneAddress, connectionTwoAddress);
-        sut.findEndpointDataForConnectors(connectorEndpoints) //
+        sut.createFindEndpointDataForConnectorsFutures(connectorEndpoints) //
            .forEach(future -> {
                try {
                    future.get();
