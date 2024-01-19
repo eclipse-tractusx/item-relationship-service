@@ -4,12 +4,23 @@
 
 Only a small portion of our Confluence documentation has to be migrated to GitHub, so copy-pasting the content manually is sufficient and the fastest solution.
 
-Confluence pages which shall be moved to GitHub have to be marked as such. Everything else will not be moved.
+Confluence pages which shall not be moved to GitHub have to be marked as such. Everything else will be moved. [@DEPRECATION] lable will be used to identify those pages which will not be moved. 
+This [@DEPRECATION] label could be set on headline level as well to identify chapter which should not be moved. 
+
+**Notice:**
+During transition phase:
+1. Content of the pages or chapters will be moved to Github.
+2. However, the pages and structures are retained (not deleted)
+3. Links leading to the new content will be added instead. 
+4. After moving content and adding the link the lable  [@DEPRECATION] will be added to chapter or page.
+
 
 ## Test management and Test Reporting (Cucumber)
 
-Cucumber Tests are were stored in and reported to Jira, using the Jira-Xray plugin. 
+AsIs:
+Cucumber Tests are stored in and reported to Jira, using the Jira-Xray plugin. 
 
+ToBe:
 Feature files can be exported and directly stored in GitHub.
 
 Test results have to be displayed directly in GitHub workflow / Pull Request. This can be done in two ways:
@@ -19,8 +30,10 @@ Test results have to be displayed directly in GitHub workflow / Pull Request. Th
 
 ## Replacing the CatenaX-NG environment
 
+AsIs:
 The CatenaX-NG ArgoCD environments were used to execute Integration- and E2E-Tests. After the end of the Consortia phase, they are no longer available and have to be replaced by an open solution.
 
+ToBe:
 The proposed solution is a helm chart with all required dependencies, including EDC Consumer, EDC Provider, MIW,
 Semantic Hub, Discovery Service, Digital Twin Registry, OAuth Provider and IRS. Implementation of this chart is planned
 in https://github.com/eclipse-tractusx/item-relationship-service/issues/312
