@@ -70,7 +70,6 @@ In case of a usage policy mismatch. The irs policy store does not provide the us
 - parameter description: enables and disables auditing including provisioning of ContractAgreementId inside submodels and shells objects
 - parameter impacts: enables collection of ContractAgreementId in job processing and provides this information in submodelContainers and ShellContainers as well in Tombstone in case policy does not match or other internal error during EDC communication. 
 
-
 ## 1. Case 1: Successful contract negotiation 
 
 IRS proceed EDC contract negotiation succeeds.

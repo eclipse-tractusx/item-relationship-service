@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added EDR token cache to reuse token after contract negotiation
 - Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints
+- Add concept docs/#322-Provisioning-of-contractAgreementId-for-assets.md
 
 ## [4.3.0] - 2023-12-08
 ### Added
