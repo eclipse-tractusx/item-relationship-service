@@ -59,10 +59,10 @@ In case of a usage policy mismatch. The irs policy store does not provide the us
 ## API Extensions 
 
 ## APIs 
-- <span style="color:green">POST</span> /irs/jobs 
-- <span style="color:green">POST</span> /irs/orders
-- <span style="color:green">POST</span> /irs/ess/orders
-- <span style="color:green">POST</span> /ess/bpn/investigation
+- POST /irs/jobs 
+- POST /irs/orders
+- POST /irs/ess/orders
+- POST /ess/bpn/investigation
 
 - parameter name: auditContractNegotiation 
 - parameter value: boolean value 
