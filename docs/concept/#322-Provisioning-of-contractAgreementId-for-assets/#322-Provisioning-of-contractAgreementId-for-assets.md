@@ -36,7 +36,7 @@ In case of a usage policy mismatch. The irs policy store does not provide the us
 
 # <ins>Problem Statement</ins> 
 1. The ContractAgreementDto:@id is currently not delivered via the IRS response, so business apps that use the IRS cannot access the corresponding ContractAggreement under which the assets, delivered by the IRS, were exchanged.
-2. The EDC management api does not provide any endpoint to query a contract agreement using an asset id.
+2. Teh EDC management API provides a endpoint ro query contract agreement by assetId. It is not possible to determine which ContractAggreement belongs to which negotiation in case of multiple negotiations for the same asset
 3. Business apps must make the contract agreements under which the assets were exchanged available for audit purposes.
 
 # <ins>Requirements</ins> 
@@ -52,7 +52,8 @@ In case of a usage policy mismatch. The irs policy store does not provide the us
 # <ins>Assumptions</ins> >
 - [x] Business app (Trace-X) has access to the management API of the IRS EDC Consumer. 
 - [x] EDC Management API of EDC Consumer is configured as a parameter in Business app (Trace-X). IRS does not provide API url to EDC Management API via JobResponse.
-- [x] In case there os no valid negotation including contract agreement policy of catalog offer will be collected inside IRS flow and provided to irs requestor.
+- [x] In case there negotiation is not executed because of policy mismatch, the catalog offer policy of will be collected inside IRS flow and provided to irs requestor.
+
 # <ins>Concept</ins> <a name="concept"></a>
 
 
@@ -68,7 +69,7 @@ In case of a usage policy mismatch. The irs policy store does not provide the us
 - parameter value: boolean value 
 - parameter default: true 
 - parameter description: enables and disables auditing including provisioning of ContractAgreementId inside submodels and shells objects
-- parameter impacts: enables collection of ContractAgreementId in job processing and provides this information in submodelContainers and ShellContainers as well in Tombstone in case policy does not match or other internal error during EDC communication. 
+- parameter impacts: enables collection of ContractAgreementId in job processing and provides this information in SubmodelContainers and ShellContainers or policy from CatalogOffer in Tombstone in case of policy mismatch  
 
 ## 1. Case 1: Successful contract negotiation 
 
@@ -95,7 +96,6 @@ sequenceDiagram
     ContractNegotiationService --> PolicyCheckerService : isValid 
     alt is valid
         ContractNegotiationService -->> EdcSubmodelClientImpl : return NegotiationResponse
-        ContractNegotiationService -->> EdcSubmodelClientImpl : retrieve NegotiationResponse
         EdcSubmodelClientImpl ->> EdcSubmodelClientImpl : getContractAgreementId from  NegotiationResponse
         EdcSubmodelClientImpl ->> AsyncPollingService : retrieveEndpointReference
         AsyncPollingService ->>  EdcSubmodelClientImpl : EndpointDataReference
@@ -119,7 +119,7 @@ sequenceDiagram
     %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px'}}}%%
     autonumber
     IRS ->> SubmodelDelegate : process 
-    SubmodelDelegate ->> SubmodelDelegate : getSubmodels
+    SubmodelDelegate ->> EdcSubmodelFacade : getSubmodels
     EdcSubmodelFacade ->> EdcSubmodelClientImpl : getSubmodelRawPayload (onnectorEndpoint, submodelDataplaneUrl, assetId)
     EdcSubmodelClientImpl ->> EdcSubmodelClientImpl : getEndpointDataReference EndpointDataReference
     EdcSubmodelClientImpl ->> EdcSubmodelClientImpl: storageId a
@@ -127,7 +127,7 @@ sequenceDiagram
     AsyncPollingService -->>  EdcSubmodelClientImpl: submodel payload 
     EdcSubmodelClientImpl -->> EdcSubmodelFacade : submodel payload
     EdcSubmodelFacade -->> SubmodelDelegate: submodel payload
-    SubmodelDelegate -->> IRS: write contractAgreementÍd to JobReponse submodels[]
+    SubmodelDelegate -->> IRS: write contractAgreementId to JobReponse submodels[]
 ````
 ### Receiving AAS Payload
 
@@ -152,7 +152,6 @@ sequenceDiagram
 
 ### Case 2.1: GET contract negotiation return 404 and "type": "ObjectNotFound",
 
-Get policy of Catalog Offer and create tombstone 
 ````
 404
  [
@@ -167,7 +166,7 @@ Get policy of Catalog Offer and create tombstone
 
 ## 3. Case 3: IRS proceed successful EDC contract negotiation and revokes asset transfers cause by not matching usage policy 
 
-In ContractNegotiationService startNewNegotiation if policy is not valid the policy of catalog item is returned. Tombstone with policy is created to display IRS requestor the catlogItem which could not be fetched because of invalid policy including their specific policy. 
+Usage policy is checked before contract negotiation. in case policy mismatch, no negotiation will be started. 
 
 ````mermaid
 
@@ -301,25 +300,6 @@ Impact:
   ]
 ```
 
-#### Example
-
-```json 
-  "contractAggreements" : [
-    "contractAggreement" : {
-       "contractAgreementId": "YjA4NjdmMjgtYWMwMC00OTdiLTliMTItNGEzZDdkYjk4YmEw:cmVnaXN0cnktYXNzZXQ=:YWI2MTY5ZDctNzdiYi00YTQ1LTljZTYtZTUzZjhjM2MwYTFm",
-       "submodels": [
-        {
-            "identification": "urn:uuid:f9b6f066-c4de-4bed-b531-2a1cad7bd173",
-            "aspectType": "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-            "payload": {
-              <... submodel payload ...>
-        }
-      ] 
-    }     
-        
-  ]
-```
-
 ### <ins>Add Tombstone in case of not matching policy</ins> 
 
 Tombstone is extended with policy payload when policy is not matched and contract negotiation is not conducted.
@@ -354,7 +334,7 @@ The requestor gets the insight which policy does not match and has the opportuni
       },         
       "processingError": {
           "processStep": "DigitalTwinRequest",
-          "errorDetail": "EndpointDataReference was not found. Requested connectorEndpoints: https://dsi-int-2-1llhjasi.c-5e7e41f.stage.kyma.ondemand.com, https://sap-3-2-ap-edc1-cp.foss.cx.shoot.live.k8s-hana.ondemand.com",
+          "errorDetail": "EndpointDataReference was not found. Requested connectorEndpoints: https://test1.doubleSlash.com, https://test2.doubleSlash.com",
           "lastAttempt": "2024-01-17T09:02:36.648055745Z",
           "retryCounter": 3
       }
