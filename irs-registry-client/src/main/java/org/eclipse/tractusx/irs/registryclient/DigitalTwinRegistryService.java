@@ -34,15 +34,13 @@ import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceExcepti
 public interface DigitalTwinRegistryService {
 
     /**
-     * Retrieves the global asset IDs of all asset administration shells for a given BPN.
+     * Retrieves the shell details of all asset administration shells for a given BPN.
      *
      * @param bpn the BPN to retrieve the shells for
-     * @return the collection of global asset IDs
+     * @return the collection of asset administration shells
      */
-    default Collection<String> lookupGlobalAssetIds(final String bpn) throws RegistryServiceException {
-        return fetchShells(lookupShellIdentifiers(bpn)).stream()
-                                                       .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
-                                                       .toList();
+    default Collection<AssetAdministrationShellDescriptor> lookupShellsByBPN(final String bpn) throws RegistryServiceException {
+        return fetchShells(lookupShellIdentifiers(bpn)).stream().toList();
     }
 
     /**

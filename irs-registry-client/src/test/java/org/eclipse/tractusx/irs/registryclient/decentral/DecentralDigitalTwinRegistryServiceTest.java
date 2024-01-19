@@ -203,11 +203,12 @@ class DecentralDigitalTwinRegistryServiceTest {
                 expectedShell);
 
         // when
-        final Collection<String> globalAssetIds = decentralDigitalTwinRegistryService.lookupGlobalAssetIds(
+        final Collection<AssetAdministrationShellDescriptor> assetAdministrationShellDescriptors = decentralDigitalTwinRegistryService.lookupShellsByBPN(
                 digitalTwinRegistryKey.bpn());
 
+        String actualGloablAssetId = assetAdministrationShellDescriptors.stream().findFirst().map(AssetAdministrationShellDescriptor::getGlobalAssetId).get();
         // then
-        Assertions.assertThat(globalAssetIds).containsExactly(expectedGlobalAssetId);
+        Assertions.assertThat(actualGloablAssetId).isEqualTo(expectedGlobalAssetId);
     }
 
 }
