@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -45,7 +45,7 @@ public class HealthStatusHelper {
      * @param status the health status
      * @return the numeric representation of the health status
      */
-    public static int healthStatustoNumeric(final Status status) {
+    public static int healthStatusToNumeric(final Status status) {
 
         // see Spring documentation - map health indicators to metrics:
         //     https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/

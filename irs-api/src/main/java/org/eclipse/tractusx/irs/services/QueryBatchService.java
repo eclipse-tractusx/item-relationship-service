@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -65,10 +65,6 @@ public class QueryBatchService {
                                                                      "Cannot find Batch Order with id: "
                                                                              + batchOrderId));
 
-        if (!securityHelperService.isAdmin() && !batchOrder.getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access Batch Order with id " + batchOrderId + " due to missing privileges.");
-        }
-
         final List<Batch> batches = batchStore.findAll()
                                               .stream()
                                               .filter(batch -> batch.getBatchOrderId().equals(batchOrderId))
@@ -88,11 +84,6 @@ public class QueryBatchService {
                                               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                                                       "Cannot find Batch with orderId: " + batchOrderId
                                                                               + " and id: " + batchId));
-
-        if (!securityHelperService.isAdmin() && !batchResponse.getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access Batch with orderId: " + batchOrderId
-                    + " and id: " + batchId + " due to missing privileges.");
-        }
 
         final Integer totalJobs = batchStore.findAll()
                                             .stream()

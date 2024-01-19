@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -150,7 +150,7 @@ public class TestMother {
 
     public static JobParameter jobParameter() {
         return JobParameter.builder()
-                           .depth(0)
+                           .depth(5)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
                            .aspects(List.of(AspectType.SERIAL_PART.toString(),
@@ -275,7 +275,6 @@ public class TestMother {
                   .state(state)
                   .createdOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .startedOn(ZonedDateTime.now(ZoneId.of("UTC")))
-                  .owner(faker.lorem().characters())
                   .lastModifiedOn(ZonedDateTime.now(ZoneId.of("UTC")))
                   .parameter(jobParameter())
                   .completedOn(ZonedDateTime.now(ZoneId.of("UTC")))

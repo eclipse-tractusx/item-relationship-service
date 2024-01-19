@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,33 +21,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common.auth;
+package org.eclipse.tractusx.irs.configuration.security;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import lombok.EqualsAndHashCode;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 /**
- * BPN contains in JWT Token matches BPN under which IRS product is registered.
+ * Api key authentication representation
  */
-@Service
-public class AuthorizationService {
+@EqualsAndHashCode
+public class ApiKeyAuthentication extends AbstractAuthenticationToken {
 
-    private final SecurityHelperService securityHelperService;
-    private final String apiAllowedBpn;
+    private final ApiKeyAuthority apiKeyAuthority;
 
-    public AuthorizationService(@Value("${apiAllowedBpn:}") final String apiAllowedBpn) {
-        this.securityHelperService = new SecurityHelperService();
-        this.apiAllowedBpn = apiAllowedBpn;
+    public ApiKeyAuthentication(final ApiKeyAuthority apiKeyAuthority) {
+        super(apiKeyAuthority.getAuthorities());
+        this.apiKeyAuthority = apiKeyAuthority;
+        setAuthenticated(true);
     }
 
-    public boolean verifyBpn() {
-        if (StringUtils.isBlank(apiAllowedBpn)) {
-            return false;
-        }
-
-        final String bpnFromToken = securityHelperService.getBpnClaim();
-        return apiAllowedBpn.equals(bpnFromToken);
+    @Override
+    public Object getCredentials() {
+        return apiKeyAuthority.getApiKey();
     }
 
+    @Override
+    public Object getPrincipal() {
+        return apiKeyAuthority.getApiKey();
+    }
 }

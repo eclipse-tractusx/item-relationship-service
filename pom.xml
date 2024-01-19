@@ -73,7 +73,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>1.5.0-SNAPSHOT</irs-registry-client.version>
+        <irs-registry-client.version>1.5.1-SNAPSHOT</irs-registry-client.version>
 
         <!-- Dependencies -->
         <springboot.version>3.1.6</springboot.version>
@@ -84,7 +84,7 @@
         <gatling.version>3.9.5</gatling.version>
         <resilience4j.version>2.1.0</resilience4j.version>
         <minio.version>8.5.6</minio.version>
-        <rest-assured.version>5.3.0</rest-assured.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
         <awaitility.version>4.2.0</awaitility.version>
         <junit-bom.version>5.9.2</junit-bom.version>
         <cucumber-bom.version>7.11.1</cucumber-bom.version>
@@ -109,8 +109,8 @@
         <!-- Plugins -->
         <spotbugs-plugin.version>4.7.3.2</spotbugs-plugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
-        <checkstyle-plugin.version>3.3.0</checkstyle-plugin.version>
-        <checkstyle.version>10.12.4</checkstyle.version>
+        <checkstyle-plugin.version>3.3.1</checkstyle-plugin.version>
+        <checkstyle.version>10.12.6</checkstyle.version>
         <jacoco.version>0.8.10</jacoco.version>
         <pmd-plugin.version>3.19.0</pmd-plugin.version>
         <owasp-plugin.version>8.2.1</owasp-plugin.version>

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,15 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.*;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.BATCH_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.MATERIAL_FOR_RECYCLING_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.PART_AS_PLANNED_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.PHYSICAL_DIMENSION_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.PRODUCT_DESCRIPTION_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SERIAL_PART_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +45,11 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
-
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
 

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -64,12 +64,12 @@ public class EssService {
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
 
     public JobHandle startIrsJob(final RegisterBpnInvestigationJob request) {
-        return startIrsJob(request, null, securityHelperService.getClientIdClaim());
+        return startIrsJob(request, null);
     }
 
-    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request, final UUID batchId, final String owner) {
+    public JobHandle startIrsJob(final RegisterBpnInvestigationJob request, final UUID batchId) {
         final JobHandle jobHandle = irsItemGraphQueryService.registerItemJob(
-                bpnInvestigations(request.getKey(), request.getBomLifecycle()), batchId, owner);
+                bpnInvestigations(request.getKey(), request.getBomLifecycle()), batchId);
 
         final UUID createdJobId = jobHandle.getId();
         final Optional<MultiTransferJob> multiTransferJob = jobStore.find(createdJobId.toString());
@@ -87,14 +87,6 @@ public class EssService {
 
         if (job.isPresent()) {
             final BpnInvestigationJob bpnInvestigationJob = job.get();
-            if (!securityHelperService.isAdmin() && !bpnInvestigationJob.getJobSnapshot()
-                                                                        .getJob()
-                                                                        .getOwner()
-                                                                        .equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                        "Cannot access investigation job with id " + jobId + " due to missing privileges.");
-            }
-
             return updateState(bpnInvestigationJob);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No investigation job exists with id " + jobId);

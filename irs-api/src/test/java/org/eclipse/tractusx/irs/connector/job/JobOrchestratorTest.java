@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -94,8 +94,6 @@ class JobOrchestratorTest {
     TransferInitiateResponse okResponse2 = generate.okResponse();
     TransferProcess transfer = generate.transfer();
 
-    private static final String owner = "owner";
-
     @Test
     void startJob_storesJobWithDataAndState() {
         MultiTransferJob job2 = startJob();
@@ -148,7 +146,7 @@ class JobOrchestratorTest {
         // Arrange
         when(handler.initiate(any(MultiTransferJob.class))).thenReturn(Stream.empty());
 
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter(), null, owner);
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter(), null);
         var newJob = getStartedJob();
 
         // Assert
@@ -168,7 +166,7 @@ class JobOrchestratorTest {
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(okResponse);
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter(), null, owner);
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJob().getParameter(), null);
 
         // Assert
         var newJob = getStartedJob();
@@ -185,7 +183,7 @@ class JobOrchestratorTest {
                 generate.response(status));
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null, owner);
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
 
         // Assert
         verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
@@ -205,7 +203,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new RuntimeException());
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null, owner);
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -227,7 +225,7 @@ class JobOrchestratorTest {
         when(handler.initiate(any(MultiTransferJob.class))).thenThrow(new JobException("Cannot process the request"));
 
         // Act
-        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null, owner);
+        var response = sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
 
         // Assert
         verify(jobStore).create(jobCaptor.capture());
@@ -395,7 +393,7 @@ class JobOrchestratorTest {
     }
 
     private MultiTransferJob startJob() {
-        sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null, owner);
+        sut.startJob(job.getGlobalAssetId(), job.getJobParameter(), null);
         return getStartedJob();
     }
 

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,17 +23,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.util.UriUtils;
 
 /**
  * Check and validate Policy in Catalog fetch from EDC providers.
@@ -47,25 +44,13 @@ public class PolicyCheckerService {
     private final ConstraintCheckerService constraintCheckerService;
 
     public boolean isValid(final Policy policy) {
-        if (getValidStoredPolicyIds().contains("*")) {
-            return true;
-        }
-
         return policy.getPermissions().stream().allMatch(permission -> isValid(permission, getValidStoredPolicies()));
     }
 
     private boolean isValid(final Permission permission, final List<AcceptedPolicy> validStoredPolicies) {
-        return validStoredPolicies.stream().anyMatch(acceptedPolicy ->
-                constraintCheckerService.hasAllConstraint(acceptedPolicy.policy(), permission.getConstraints()));
-    }
-
-    private List<String> getValidStoredPolicyIds() {
-        return policyStore.getAcceptedPolicies()
-                          .stream()
-                          .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
-                          .map(acceptedPolicy -> acceptedPolicy.policy().getPolicyId())
-                          .flatMap(this::addEncodedVersion)
-                          .toList();
+        return validStoredPolicies.stream()
+                                  .anyMatch(acceptedPolicy -> constraintCheckerService.hasAllConstraint(
+                                          acceptedPolicy.policy(), permission.getConstraints()));
     }
 
     private List<AcceptedPolicy> getValidStoredPolicies() {
@@ -73,10 +58,6 @@ public class PolicyCheckerService {
                           .stream()
                           .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
                           .toList();
-    }
-
-    private Stream<String> addEncodedVersion(final String original) {
-        return Stream.of(original, UriUtils.encode(original, StandardCharsets.UTF_8));
     }
 
 }

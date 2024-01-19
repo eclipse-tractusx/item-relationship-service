@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,12 +37,13 @@ import org.eclipse.tractusx.irs.data.CxTestDataContainer;
  * Class to create Submodel Testdata
  * As AASWrapper is not deployed, we are using this class to Stub responses
  */
-class SubmodelTestdataCreator {
+public class SubmodelTestdataCreator {
 
     private final CxTestDataContainer cxTestDataContainer;
     private final ObjectMapper objectMapper;
 
-    /* package */ SubmodelTestdataCreator(final CxTestDataContainer cxTestDataContainer) {
+    /* package */
+    public SubmodelTestdataCreator(final CxTestDataContainer cxTestDataContainer) {
         this.cxTestDataContainer = cxTestDataContainer;
 
         objectMapper = new ObjectMapper();

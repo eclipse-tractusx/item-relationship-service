@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -49,7 +49,7 @@ class EdcCallbackControllerTest {
         testee.receiveEdcCallback(ref);
 
         // assert
-        final var result = storage.remove("testId");
+        final var result = storage.get("testId");
         assertThat(result).isNotNull().contains(ref);
     }
 
@@ -62,7 +62,7 @@ class EdcCallbackControllerTest {
         testee.receiveEdcCallback(ref);
 
         // assert
-        final var result = storage.remove("testId");
+        final var result = storage.get("testId");
         assertThat(result).isNotNull().isEmpty();
     }
 }

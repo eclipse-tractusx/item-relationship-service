@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -80,9 +80,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
                 properties = { "digitalTwinRegistry.type=central" })
-@ActiveProfiles(profiles = { "test",
-                             "stubtest"
-})
+@ActiveProfiles(profiles = { "test", "stubtest", "local" })
 @Import(TestConfig.class)
 class IrsItemGraphQueryServiceSpringBootTest {
 

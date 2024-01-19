@@ -3,11 +3,9 @@ name: IRS Cucumber Integration test Xray execution
 on:
   workflow_call: # Trigger by another workflow
     secrets:
-      oauth2TokenUrl:
+      regularUserApiKey:
         required: true
-      clientId:
-        required: true
-      clientSecret:
+      adminUserApiKey:
         required: true
       jiraUser:
         required: true
@@ -29,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
@@ -57,9 +55,8 @@ jobs:
       - name: Build with Maven
         if: ${{ steps.download.outputs.http_response == '200' }}
         env:
-          OAUTH2_HOST: ${{ secrets.oauth2TokenUrl }}
-          OAUTH2_CLIENT_ID: ${{ secrets.clientId }}
-          OAUTH2_CLIENT_SECRET: ${{ secrets.clientSecret }}
+          REGULAR_USER_API_KEY: ${{ secrets.regularUserApiKey }}
+          ADMIN_USER_API_KEY: ${{ secrets.adminUserApiKey }}
           ISSUE_FILTER: ${{ inputs.executionFilter }}
         run: |
           unzip -o features.zip -d irs-cucumber-tests/src/test/resources/features
