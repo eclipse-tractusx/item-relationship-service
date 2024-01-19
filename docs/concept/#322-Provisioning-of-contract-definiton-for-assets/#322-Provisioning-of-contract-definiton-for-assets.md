@@ -35,7 +35,7 @@ For shells and submodels CIDs are collected and provided.
 In case of a usage policy mismatch. The irs policy store does not provide the usage policy of the asset. This circumstance is reported in a tombstone which contains the  policy of the asset. 
 
 # <ins>Problem Statement</ins> <a name="statement"></a>
-1. The ContractAgreementDto:@id is currently not delivered via the IRS response, so business apps that use the IRS cannot access the corresponding ContractAggreement under which the assets delivered by the IRS were exchanged.
+1. The ContractAgreementDto:@id is currently not delivered via the IRS response, so business apps that use the IRS cannot access the corresponding ContractAggreement under which the assets, delivered by the IRS, were exchanged.
 2. The EDC management api does not provide any endpoint to query a contract agreement using an asset id.
 3. Business apps must make the contract agreements under which the assets were exchanged available for audit purposes.
 
