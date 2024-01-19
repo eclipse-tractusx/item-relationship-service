@@ -29,9 +29,9 @@ This specific id must therefore be stored and linked for the exchanged asset in 
 
 
 # <ins>Summary</ins> <a name="summary"></a>
-This feature provides the collecting of CIDs for contract negotiations regarding the EDD in the irs processing.
-The CIDs were provided in irs JobResponse document for collected assets. 
-For shells and submodels CID are collected and provided. 
+This feature is responsible for collecting the CIDs of EDC contract negotiations regarding during in the IRS processing.
+The CIDs are provided in the IRS JobResponse document for collected assets. 
+For shells and submodels CIDs are collected and provided. 
 In case of a usage policy mismatch. The irs policy store does not provide the usage policy of the asset. This circumstance is reported in a tombstone which contains the  policy of the asset. 
 
 # <ins>Problem Statement</ins> <a name="statement"></a>
