@@ -23,7 +23,7 @@
 # <ins>Overview</ins> <a name="overview"></a>
 The exchange of assets via the EDC takes place after a successful contract negotiation in which it is checked whether the consumer has authorized access to the data asset.
 This access is automatically checked by the EDC via so-called AccessPolicies. The consumer is only granted access to the data after a successful check.
-During contract negotiation the edc stores audits the following artefacts edc:ContractAgreement and edc:ContractNegotiation these audit information could be requested over the edc management api. 
+During contract negotiation the edc stores audits to the artefacts edc:ContractAgreement and edc:ContractNegotiation. These audit information can be requested over the edc management API. 
 To request the mentioned artefacts over the management api the ContractAgreementDto:@id is required.
 This specific id must therefore be stored and linked for the exchanged asset in order to be able to determine the corresponding contract agreement later on.
 
