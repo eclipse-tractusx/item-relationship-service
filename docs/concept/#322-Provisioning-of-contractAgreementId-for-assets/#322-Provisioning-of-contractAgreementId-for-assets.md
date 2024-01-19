@@ -10,17 +10,17 @@
 # Table of Contents
 1. [Overview](#overview)
 2. [Summary](#summary)
-3. [Problem Statement](#statement)
+3. [Problem Statement](#problem-statement)
 4. [Requirements](#requirements)
 5. [NFR](#nfr)
-6. [Out of scope](#outofscope)
+6. [Out of scope](#out-of-scope)
 7. [Assumptions](#assumptions)
 8. [Concept](#concept)
 9. [Glossary](#glossary)
 10. [References](#references)
 
 
-# <ins>Overview</ins> <a name="overview"></a>
+# <ins>Overview</ins> 
 The exchange of assets via the EDC takes place after a successful contract negotiation in which it is checked whether the consumer has authorized access to the data asset.
 This access is automatically checked by the EDC via so-called AccessPolicies. The consumer is only granted access to the data after a successful check.
 During contract negotiation the edc stores audits to the artefacts edc:ContractAgreement and edc:ContractNegotiation. These audit information can be requested over the edc management API. 
@@ -28,28 +28,28 @@ To request the mentioned artefacts over the management API the ContractAgreement
 This specific id must therefore be stored and linked for the exchanged asset in order to be able to determine the corresponding contract agreement later on.
 
 
-# <ins>Summary</ins> <a name="summary"></a>
+# <ins>Summary</ins>
 This feature is responsible for collecting the CIDs of EDC contract negotiations regarding during in the IRS processing.
 The CIDs are provided in the IRS JobResponse document for collected assets. 
 For shells and submodels CIDs are collected and provided. 
 In case of a usage policy mismatch. The irs policy store does not provide the usage policy of the asset. This circumstance is reported in a tombstone which contains the  policy of the asset. 
 
-# <ins>Problem Statement</ins> <a name="statement"></a>
+# <ins>Problem Statement</ins> 
 1. The ContractAgreementDto:@id is currently not delivered via the IRS response, so business apps that use the IRS cannot access the corresponding ContractAggreement under which the assets, delivered by the IRS, were exchanged.
 2. The EDC management api does not provide any endpoint to query a contract agreement using an asset id.
 3. Business apps must make the contract agreements under which the assets were exchanged available for audit purposes.
 
-# <ins>Requirements</ins> <a name="requirements"></a>
+# <ins>Requirements</ins> 
 
 1. [ ] Provisioning of ContractAgreementDto:@id via IRS JobReponse for AAS retrieved via EDC.
 2. [ ] Provisioning of ContractAgreementDto:@id via IRS JobReponse for submodels retrieved via EDC.
 3. [ ] API parameter SHOULD control whether ContractAgreementDto:@id should be returned via the IRSJobResponse
 
-# <ins>NFR</ins> <a name="nfr"></a>
+# <ins>NFR</ins> 
 
-# <ins>Out of scope</ins> <a name="outofscope"></a>
+# <ins>Out of scope</ins>
 
-# <ins>Assumptions</ins> <a name="assumptions"></a>
+# <ins>Assumptions</ins> >
 - [x] Business app (Trace-X) has access to the management API of the IRS EDC Consumer. 
 - [x] EDC Management API of EDC Consumer is configured as a parameter in Business app (Trace-X). IRS does not provide API url to EDC Management API via JobResponse.
 - [x] In case there os no valid negotation including contract agreement policy of catalog offer will be collected inside IRS flow and provided to irs requestor.
@@ -69,7 +69,6 @@ In case of a usage policy mismatch. The irs policy store does not provide the us
 - parameter default: true 
 - parameter description: enables and disables auditing including provisioning of ContractAgreementId inside submodels and shells objects
 - parameter impacts: enables collection of ContractAgreementId in job processing and provides this information in submodelContainers and ShellContainers as well in Tombstone in case policy does not match or other internal error during EDC communication. 
-
 
 
 ## 1. Case 1: Successful contract negotiation 
