@@ -206,9 +206,9 @@ class DecentralDigitalTwinRegistryServiceTest {
         final Collection<AssetAdministrationShellDescriptor> assetAdministrationShellDescriptors = decentralDigitalTwinRegistryService.lookupShellsByBPN(
                 digitalTwinRegistryKey.bpn());
 
-        String actualGloablAssetId = assetAdministrationShellDescriptors.stream().findFirst().map(AssetAdministrationShellDescriptor::getGlobalAssetId).get();
+        String actualGlobalAssetId = assetAdministrationShellDescriptors.stream().findFirst().map(AssetAdministrationShellDescriptor::getGlobalAssetId).get();
         // then
-        Assertions.assertThat(actualGloablAssetId).isEqualTo(expectedGlobalAssetId);
+        Assertions.assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
     }
 
 }
