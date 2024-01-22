@@ -95,7 +95,6 @@
         <okio-jvm.version>3.5.0</okio-jvm.version>
         <bc-jdk18on.version>1.76</bc-jdk18on.version>
         <wiremock-standalone.version>3.2.0</wiremock-standalone.version>
-        <graal-sdk.version>23.1.0</graal-sdk.version>
         <jsoup.version>1.16.1</jsoup.version>
         <jsonschemafriend.version>0.12.0</jsonschemafriend.version>
         <commons-io.version>2.14.0</commons-io.version>
