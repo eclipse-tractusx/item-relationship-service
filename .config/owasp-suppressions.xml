@@ -28,4 +28,11 @@
         <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
         <vulnerabilityName>CVE-2023-22006</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        This vulnerability does not apply to Java deployments, typically in servers, that load and run only trusted code (e.g., code installed by an administrator). This is not exploitable in IRS.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
+        <vulnerabilityName>CVE-2024-20932</vulnerabilityName>
+    </suppress>
 </suppressions>
