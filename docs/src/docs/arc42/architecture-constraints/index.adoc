@@ -78,7 +78,7 @@ Orchestration of application components and integration with other libraries/fra
 |Coding guidelines
 |We follow the Google Java Style Guide. This is ensured by using the unified code formatter in the team and enforcing the style via Maven and Checkstyle / PMD.
 |Executable Bundle provided via the App Marketplace
-|Since IRS is available in the App Marketplace, the application should be provided in one executable bundle.
+|Since the IRS is available in the App Marketplace, the application should be provided in one executable bundle.
 |Module structure
 |The entire build is driven by a Maven file, which runs itself from a single Dockerfile.
 |Code Analysis, Linting and Code Coverage
