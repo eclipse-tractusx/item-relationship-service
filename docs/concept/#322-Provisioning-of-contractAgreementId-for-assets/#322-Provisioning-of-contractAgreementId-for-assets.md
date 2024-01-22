@@ -1,10 +1,10 @@
 # Concept #322 Provisioning of contract agreement id for assets
 
-| Key           | Value            |
-|---------------|------------------|
-| Creation date | 11.01.2024       |
-| Issue Id      | https://github.com/eclipse-tractusx/item-relationship-service/issues/322   https://github.com/eclipse-tractusx/item-relationship-service/issues/370    |    
-| State         | <DRAFT DONE> | 
+| Key           | Value          |
+|---------------|----------------|
+| Creation date | 11.01.2024     |
+| Issue Id      | https://github.com/eclipse-tractusx/item-relationship-service/issues/322   https://github.com/eclipse-tractusx/item-relationship-service/issues/370  |    
+| State         | DRAFT | 
 
 
 # Table of Contents
@@ -148,25 +148,6 @@ sequenceDiagram
     
 ````   
 
-## 2. Case 2: IRS proceed EDC contract negotiation fails because of internal EDC error 
-
-### Case 2.1: GET contract negotiation return 404 and "type": "ObjectNotFound",
-
-````
-404
- [
-	{
-		"message": "Object of type ContractNegotiation with ID=f9600523-f8e4-42b3-b388-485370b4f8f4 was not found",
-		"type": "ObjectNotFound",
-		"path": null,
-		"invalidValue": null
-	}
-]
-````
-
-## 3. Case 3: IRS proceed successful EDC contract negotiation and revokes asset transfers cause by not matching usage policy 
-
-Usage policy is checked before contract negotiation. in case policy mismatch, no negotiation will be started. 
 
 ````mermaid
 
@@ -195,6 +176,52 @@ sequenceDiagram
     SubmodelDelegate --> IRS : write contractAgreementÍd to submodel inside JobReponse
 ````   
 
+
+## 2. Case 2: IRS proceed EDC contract negotiation fails because of internal EDC error 
+
+### Case 2.1: GET contract negotiation return 404 and "type": "ObjectNotFound",
+
+````
+404
+ [
+	{
+		"message": "Object of type ContractNegotiation with ID=f9600523-f8e4-42b3-b388-485370b4f8f4 was not found",
+		"type": "ObjectNotFound",
+		"path": null,
+		"invalidValue": null
+	}
+]
+````
+
+## 3. Case 3: IRS revokes asset transfers cause by not matching usage policy 
+
+
+Usage policy is checked before contract negotiation. in case policy mismatch, no negotiation will be started. 
+
+
+````mermaid
+
+sequenceDiagram
+    %%{init: {'theme': 'dark', 'themeVariables': { 'fontSize': '15px'}}}%%
+    autonumber
+    ContractNegotiationService --> ContractNegotiationService : startNewNegotiation
+    ContractNegotiationService --> PolicyCheckerService : isValid
+alt is valid
+    ContractNegotiationService -->> EdcSubmodelClientImpl : return NegotiationResponse
+    EdcSubmodelClientImpl ->> EdcSubmodelClientImpl : getContractAgreementId from  NegotiationResponse
+    EdcSubmodelClientImpl ->> AsyncPollingService : retrieveEndpointReference
+    AsyncPollingService ->>  EdcSubmodelClientImpl : EndpointDataReference
+note left of EdcSubmodelClientImpl : received EDR Token to receive assets
+    EdcSubmodelClientImpl -->> EdcSubmodelFacade : EndpointDataReference
+    EdcSubmodelFacade -->> SubmodelDelegate : EndpointDataReference
+else is not valid
+    ContractNegotiationService ->> ContractNegotiationService : throw UsagePolicyException
+    note right of ContractNegotiationService : UsagePolicyException MUST cover the policy of catalog item  this is relevant to create tombstone afterwards with policy
+    SubmodelDelegate --> ItemContainer: create tombstone with policy payload
+end
+
+
+````
 
 
 ## <ins>EDC Management API </ins>
