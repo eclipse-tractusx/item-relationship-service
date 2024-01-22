@@ -43,8 +43,7 @@ circumstance is reported in a tombstone which contains the policy of the asset.
 
 1. The ContractAgreementDto:@id is currently not delivered via the IRS response, so business apps that use the IRS
    cannot access the corresponding ContractAggreement under which the assets, delivered by the IRS, were exchanged.
-2. Teh EDC management API provides a endpoint ro query contract agreement by assetId. It is not possible to determine
-   which ContractAggreement belongs to which negotiation in case of multiple negotiations for the same asset
+2. The EDC management API provides an endpoint to query contract agreements by assetId. It is not possible to determine which ContractAgreement belongs to which negotiation in case of multiple negotiations for the same asset
 3. Business apps must make the contract agreements under which the assets were exchanged available for audit purposes.
 
 # Requirements
