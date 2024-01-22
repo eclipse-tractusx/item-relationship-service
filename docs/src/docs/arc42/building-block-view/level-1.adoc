@@ -18,7 +18,7 @@ include::../../../uml-diagrams/building-block-view/building-block-view.puml[]
 The result is an item graph in which each node represents a digital item of the product - this graph is called "Item Graph".
 
 |*IRS API*
-|The *IRS API* is the interface through which the Data Consumer communicates.
+|The *IRS API* is the interface through which the data consumer communicates.
 
 |*IrsController*
 |The *IrsController* provides a REST interface for retrieving IRS processed data and job details of the current Item Graph retrieval process.
