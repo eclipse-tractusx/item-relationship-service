@@ -15,7 +15,7 @@ The most relevant configuration properties are exposed as environment variables 
 == Disaster-Recovery
 
 === Ephemeral components
-All components in the IRS deployment that are not listed in the persistent components section below are considered ephemeral and can be easily replaced in a disaster scenario.
+All components in the IRS deployment that are not listed in the persistent components section below are considered ephemeral and can be replaced easily in a disaster scenario.
 All deployment components are described using Helm charts, which can be used to restore the deployment with the Docker images.
 If the Docker images go missing, they can be restored by running the build pipelines for the corresponding version tag of the component.
 
