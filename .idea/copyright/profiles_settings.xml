@@ -1,0 +1,17 @@
+<component name="CopyrightManager">
+  <settings default="IRS">
+    <module2copyright>
+      <element module="All" copyright="IRS" />
+    </module2copyright>
+    <LanguageOptions name="Python">
+      <option name="block" value="false" />
+    </LanguageOptions>
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="addBlankAfter" value="false" />
+      <option name="separateBefore" value="true" />
+      <option name="separateAfter" value="true" />
+      <option name="lenBefore" value="81" />
+      <option name="lenAfter" value="82" />
+    </LanguageOptions>
+  </settings>
+</component>

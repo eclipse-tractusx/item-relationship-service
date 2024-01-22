@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,14 @@ class DefaultConfigurationTest {
                 testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
 
         assertThat(service).isNotNull();
+    }
+
+    @Test
+    void edcSubmodelFacade() {
+        final EdcSubmodelClient facadeMock = mock(EdcSubmodelClient.class);
+        final EdcSubmodelFacade edcSubmodelFacade = testee.edcSubmodelFacade(facadeMock);
+
+        assertThat(edcSubmodelFacade).isNotNull();
     }
 
     @Test

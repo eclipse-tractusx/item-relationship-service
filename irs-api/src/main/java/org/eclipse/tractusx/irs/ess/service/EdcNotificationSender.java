@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -60,7 +60,7 @@ public class EdcNotificationSender {
     }
 
     public void sendEdcNotification(final EdcNotification<InvestigationNotificationContent> originalEdcNotification,
-            final SupplyChainImpacted supplyChainImpacted) {
+            final SupplyChainImpacted supplyChainImpacted, final Integer hops, final String bpn) {
         final String notificationId = UUID.randomUUID().toString();
         final String originalNotificationId = originalEdcNotification.getHeader().getNotificationId();
         final String recipientBpn = originalEdcNotification.getHeader().getSenderBpn();
@@ -69,6 +69,8 @@ public class EdcNotificationSender {
                 log.info("Edc Notification will be send to connector endpoint: {}", connectorEndpoint);
                 final NotificationContent notificationContent = ResponseNotificationContent.builder()
                                                                                            .result(supplyChainImpacted.getDescription())
+                                                                                           .hops(hops)
+                                                                                           .bpn(bpn)
                                                                                            .build();
                 final EdcNotification<NotificationContent> responseNotification = edcRequest(notificationId,
                         originalNotificationId, essLocalEdcEndpoint, localBpn, recipientBpn, notificationContent);

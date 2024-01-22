@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,7 +25,6 @@ package org.eclipse.tractusx.irs.ess.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,23 +33,25 @@ import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.tractusx.irs.ess.service.EssService;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
+import org.eclipse.tractusx.irs.ControllerTest;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
+import org.eclipse.tractusx.irs.configuration.security.SecurityConfiguration;
+import org.eclipse.tractusx.irs.ess.service.EssService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(EssController.class)
-class EssControllerTest {
+@Import(SecurityConfiguration.class)
+class EssControllerTest extends ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,28 +59,26 @@ class EssControllerTest {
     @MockBean
     private EssService essService;
 
-    @MockBean(name = "authorizationService")
-    private AuthorizationService authorizationService;
-
     private final String path = "/ess/bpn/investigations";
     private final String globalAssetId = "urn:uuid:d3c0bf85-d44f-47c5-990d-fec8a36065c6";
     private final String bpn = "BPNS000000000DDD";
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldRegisterBpnInvestigationForValidRequest() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         when(essService.startIrsJob(any(RegisterBpnInvestigationJob.class))).thenReturn(
                 JobHandle.builder().id(UUID.randomUUID()).build());
 
-        this.mockMvc.perform(post(path).with(csrf())
-                                       .contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(path).contentType(MediaType.APPLICATION_JSON)
                                        .content(new ObjectMapper().writeValueAsString(
                                                reqBody(globalAssetId, List.of(bpn))))).andExpect(status().isCreated());
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldGetJob() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
         final String jobId = UUID.randomUUID().toString();
         when(essService.getIrsJob(jobId)).thenReturn(Jobs.builder().build());
 
@@ -87,20 +86,20 @@ class EssControllerTest {
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestForWrongGlobalAssetId() throws Exception {
-        this.mockMvc.perform(post(path).with(csrf())
-                                       .contentType(MediaType.APPLICATION_JSON)
+        authenticateWith(IrsRoles.VIEW_IRS);
+
+        this.mockMvc.perform(post(path).contentType(MediaType.APPLICATION_JSON)
                                        .content(new ObjectMapper().writeValueAsString(
                                                reqBody("wrongGlobalAssetId", List.of(bpn)))))
                     .andExpect(status().isBadRequest());
     }
 
     @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
     void shouldReturnBadRequestForWrongBpn() throws Exception {
-        this.mockMvc.perform(post(path).with(csrf())
-                                       .contentType(MediaType.APPLICATION_JSON)
+        authenticateWith(IrsRoles.VIEW_IRS);
+
+        this.mockMvc.perform(post(path).contentType(MediaType.APPLICATION_JSON)
                                        .content(new ObjectMapper().writeValueAsString(
                                                reqBody(globalAssetId, List.of(bpn, "WRONG_BPN")))))
                     .andExpect(status().isBadRequest());

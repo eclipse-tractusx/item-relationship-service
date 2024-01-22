@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,13 +37,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
@@ -88,11 +88,15 @@ public class E2ETestStepDefinitions {
         registerJobBuilder = RegisterJob.builder();
         registerBatchOrderBuilder = RegisterBatchOrder.builder();
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
-        authenticationPropertiesBuilder.grantType("client_credentials").tokenPath("access_token");
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
+
+    @DataTableType
+    public PartChainIdentificationKey definePartChainIdentificationKey(Map<String, String> entry) {
+        return new PartChainIdentificationKey(entry.get("globalAssetId"), entry.get("bpn"));
     }
 
     @Given("the IRS URL {string}")
@@ -100,21 +104,26 @@ public class E2ETestStepDefinitions {
         authenticationPropertiesBuilder.uri(irsUrl);
     }
 
-    @And("the user {string} with authentication")
-    public void theUser(String clientId) throws PropertyNotFoundException {
-        authenticationPropertiesBuilder.clientId(clientId);
-        final String oauth2UrlClientSecretKey = "OAUTH2_CLIENT_SECRET";
-        String clientSecret = System.getenv(oauth2UrlClientSecretKey);
-        if (clientSecret != null) {
-            authenticationPropertiesBuilder.clientSecret(clientSecret);
+    @And("the regular user api key")
+    public void theRegularUser() throws PropertyNotFoundException {
+        final String regularUserApiKey = "REGULAR_USER_API_KEY";
+        String apiKey = System.getenv(regularUserApiKey);
+        if (apiKey != null) {
+            authenticationPropertiesBuilder.apiKey(apiKey);
         } else {
-            throw new PropertyNotFoundException("Environment Variable missing: " + oauth2UrlClientSecretKey);
+            throw new PropertyNotFoundException("Environment Variable missing: " + regularUserApiKey);
         }
     }
 
-    @And("the OAuth2 token url {string}")
-    public void theOAuth2TokenUrl(String tokenUrl) {
-        authenticationPropertiesBuilder.oauth2Url(tokenUrl);
+    @And("the admin user api key")
+    public void theAdminUser() throws PropertyNotFoundException {
+        final String adminUserApiKey = "ADMIN_USER_API_KEY";
+        String apiKey = System.getenv(adminUserApiKey);
+        if (apiKey != null) {
+            authenticationPropertiesBuilder.apiKey(apiKey);
+        } else {
+            throw new PropertyNotFoundException("Environment Variable missing: " + adminUserApiKey);
+        }
     }
 
     @Given("I register an IRS job for globalAssetId {string}")
@@ -127,13 +136,9 @@ public class E2ETestStepDefinitions {
         registerJobBuilder.key(PartChainIdentificationKey.builder().globalAssetId(globalAssetId).bpn(bpn).build());
     }
 
-    @Given("I register an IRS batch job for globalAssetIds:")
-    public void iRegisterAnIRSBatchForGlobalAssetIds(List<String> globalAssetIds) {
-        registerBatchOrderBuilder.keys(globalAssetIds.stream()
-                                                     .map(x -> PartChainIdentificationKey.builder()
-                                                                                         .globalAssetId(x)
-                                                                                         .build())
-                                                     .collect(Collectors.toSet()));
+    @Given("I register an IRS batch job for globalAssetIds and BPNs:")
+    public void iRegisterAnIRSBatchForGlobalAssetIdsAndBpns(List<PartChainIdentificationKey> keys) {
+        registerBatchOrderBuilder.keys(Set.copyOf(keys));
     }
 
     @Given("I register an IRS batch job for globalAssetIds and BPN:")

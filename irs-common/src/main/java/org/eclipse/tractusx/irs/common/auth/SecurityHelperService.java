@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,13 +25,11 @@ package org.eclipse.tractusx.irs.common.auth;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 /**
@@ -40,51 +38,20 @@ import org.springframework.stereotype.Service;
 @Service
 public final class SecurityHelperService {
 
-    private static final String UNKNOWN = "Unknown";
-    private static final String CLIENT_ID = "clientId";
-    private static final String BPN = "bpn";
-
-    public String getClientIdClaim() {
-        return getClaimOrUnknown(CLIENT_ID);
-    }
-
-    public String getBpnClaim() {
-        return getClaimOrUnknown(BPN);
-    }
-
     public boolean isAdmin() {
         return getIrsRoles().contains(IrsRoles.ADMIN_IRS);
-    }
-
-    public String getClientIdForViewIrs() {
-        if (getIrsRoles().contains(IrsRoles.VIEW_IRS)) {
-            return getClientIdClaim();
-        }
-        return "";
     }
 
     private List<String> getIrsRoles() {
         final Authentication authentication = getAuthenticationFromSecurityContext();
 
-        if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
-            return jwtAuthenticationToken.getAuthorities()
+        if (authentication instanceof AbstractAuthenticationToken authenticationToken) {
+            return authenticationToken.getAuthorities()
                                          .stream()
                                          .map(GrantedAuthority::getAuthority)
                                          .toList();
         }
         return Collections.emptyList();
-    }
-
-    private String getClaimOrUnknown(final String claimName) {
-        final Authentication authentication = getAuthenticationFromSecurityContext();
-
-        if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
-            final Jwt token = jwtAuthenticationToken.getToken();
-
-            return Optional.ofNullable(token.getClaim(claimName)).map(Object::toString).orElse(UNKNOWN);
-        }
-
-        return UNKNOWN;
     }
 
     private Authentication getAuthenticationFromSecurityContext() {

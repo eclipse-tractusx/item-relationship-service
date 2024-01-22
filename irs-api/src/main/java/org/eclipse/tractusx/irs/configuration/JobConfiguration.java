@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -49,8 +49,21 @@ import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
+import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
+import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientLocalStub;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientLocalStub;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
@@ -151,4 +164,31 @@ public class JobConfiguration {
                 connectorEndpointsService);
     }
 
+    @Profile({ "local",
+               "stubtest"
+    })
+    @Bean
+    public DigitalTwinRegistryClient digitalTwinRegistryClient(final CxTestDataContainer cxTestDataContainer) {
+        return new DigitalTwinRegistryClientLocalStub(cxTestDataContainer);
+    }
+
+    @Profile({ "local",
+               "stubtest"
+    })
+    @Bean
+    public EdcSubmodelClient edcLocalSubmodelClient(final CxTestDataContainer cxTestDataContainer) {
+        return new EdcSubmodelClientLocalStub(cxTestDataContainer);
+    }
+
+    @Profile({ "!local && !stubtest" })
+    @Bean
+    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
+            final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
+            final EndpointDataReferenceStorage endpointDataReferenceStorage, final AsyncPollingService pollingService,
+            final RetryRegistry retryRegistry, final EDCCatalogFacade catalogFacade,
+            final EndpointDataReferenceCacheService endpointDataReferenceCacheService) {
+        return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
+                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade,
+                endpointDataReferenceCacheService);
+    }
 }

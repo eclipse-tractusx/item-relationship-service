@@ -12,26 +12,28 @@
 [![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
 [![Spotbugs](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml)
 [![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
-[![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)   
+[![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)
 
 ## What is the IRS?
 
-Within the [Catena-X network](https://catena-x.net/), the so-called Item Relationship Service (IRS) forms an essential 
+Within the [Catena-X network](https://catena-x.net/), the so-called Item Relationship Service (IRS) forms an essential
 foundation for various services and products. Within the Catena-X use cases, the IRS serves to increase business value.
-For example, the IRS provides functionalities to serve requirements, such as occasion-based Traceability, 
-from the Supply Chain Act. In doing so, IDSA and Gaia-X principles, such as data interoperability and sovereignty, are 
-maintained on the Catena-X network and access to dispersed data is enabled. Data chains are established as a common asset.
+For example, the IRS provides functionalities to serve requirements, such as occasion-based Traceability,
+from the Supply Chain Act. In doing so, IDSA and Gaia-X principles, such as data interoperability and sovereignty, are
+maintained on the Catena-X network and access to dispersed data is enabled. Data chains are established as a common
+asset.
 
-With the help of the IRS, data chains are to be provided ad-hoc across n-tiers within the Catena-X network. 
-To realize these data chains, the IRS relies on data models of the Traceability use case and provides the federated 
-data chains to customers or applications. Furthermore, the target picture of the IRS includes the enablement of new 
+With the help of the IRS, data chains are to be provided ad-hoc across n-tiers within the Catena-X network.
+To realize these data chains, the IRS relies on data models of the Traceability use case and provides the federated
+data chains to customers or applications. Furthermore, the target picture of the IRS includes the enablement of new
 business areas by means of data chains along the value chain in the automotive industry.
 
 ## Usage
 
 ### Local deployment
 
-The following subsection provides instructions for running the infrastructure on docker-compose and the application in the IDE.
+The following subsection provides instructions for running the infrastructure on docker-compose and the application in
+the IDE.
 
 #### Docker-compose + IDE
 
@@ -47,9 +49,11 @@ The following subsection provides instructions for running the infrastructure on
 
 ### Helm deployment
 
-see [INSTALL.md](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/INSTALL.md)
+see [INSTALL.md](INSTALL.md)
 
 ### Sample calls
+
+#### IRS
 
 Start a job for a globalAssetId:
 
@@ -71,8 +75,37 @@ curl -X 'POST' \
 ```
 
 Retrieve the job results by using the jobId returned by the previous call:
+
 ```bash
 curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/json' -H 'Authorization: Bearer <token_value>'
+```
+
+#### Environmental and Social Standards (ESS)
+
+Start an ESS investigation for a globalAssetId and Incident BPNS.
+
+```bash
+curl -X 'POST' \
+  'http://localhost:8080/ess/bpn/investigations' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <token_value>' \
+  -d '{
+	"key": {
+		"globalAssetId": "urn:uuid:3d61ada2-1a50-42a0-b411-40a932dd56cc",
+		"bpn": "BPNL00ARBITRARY6"
+	},
+	"incidentBPNSs": [
+		"BPNS00ARBITRARY7"
+	],
+	"bomLifecycle": "asPlanned"
+    }'
+```
+
+Retrieve the investigation results by using the jobId returned by the previous call:
+
+```bash
+curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept: application/json' -H 'Authorization: Bearer <token_value>'
 ```
 
 ## Documentation
@@ -81,7 +114,8 @@ curl -X 'GET' 'http://localhost:8080/irs/jobs/<jobID>' -H 'accept: application/j
 
 ## Licenses
 
-For used licenses, please see the [NOTICE](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/NOTICE.md).
+For used licenses, please see
+the [NOTICE](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/NOTICE.md).
 
 ## Notice for Docker image
 
@@ -94,14 +128,19 @@ Eclipse Tractus-X product(s) installed within the image:
 - GitHub: https://github.com/eclipse-tractusx/item-relationship-service
 - Project home: https://projects.eclipse.org/projects/automotive.tractusx
 - Dockerfile: https://github.com/eclipse-tractusx/item-relationship-service/blob/main/Dockerfile
-- Project license: [Apache License, Version 2.0](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/LICENSE)
+- Project
+  license: [Apache License, Version 2.0](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/LICENSE)
 
 **Used base image**
-- [eclipse-temurin:20-jre-alpine](https://github.com/adoptium/containers)
-- Official Eclipse Temurin DockerHub page: https://hub.docker.com/_/eclipse-temurin  
-- Eclipse Temurin Project: https://projects.eclipse.org/projects/adoptium.temurin  
-- Additional information about the Eclipse Temurin images: https://github.com/docker-library/repo-info/tree/master/repos/eclipse-temurin
 
-As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
+- [eclipse-temurin:17-jre-alpine](https://github.com/adoptium/containers)
+- Official Eclipse Temurin DockerHub page: https://hub.docker.com/_/eclipse-temurin
+- Eclipse Temurin Project: https://projects.eclipse.org/projects/adoptium.temurin
+- Additional information about the Eclipse Temurin
+  images: https://github.com/docker-library/repo-info/tree/master/repos/eclipse-temurin
 
-As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies with any relevant licenses for all software contained within.
+As with all Docker images, these likely also contain other software which may be under other licenses (such as Bash, etc
+from the base distribution, along with any direct or indirect dependencies of the primary software being contained).
+
+As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies
+with any relevant licenses for all software contained within.

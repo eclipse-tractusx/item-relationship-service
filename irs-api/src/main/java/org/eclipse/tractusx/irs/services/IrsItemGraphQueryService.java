@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -44,7 +44,8 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.aaswrapper.job.RequestMetric;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
-import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.FetchedItems;
@@ -69,8 +70,6 @@ import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
-import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.semanticshub.AspectModel;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
@@ -112,8 +111,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final String bpdmUrl;
 
-    private final SecurityHelperService securityHelperService;
-
     public IrsItemGraphQueryService(final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator,
             final JobStore jobStore, @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
             final MeterRegistryService meterRegistryService, final SemanticsHubFacade semanticsHubFacade,
@@ -126,7 +123,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         this.semanticsHubFacade = semanticsHubFacade;
         this.applicationEventPublisher = applicationEventPublisher;
         this.bpdmUrl = bpdmUrl;
-        this.securityHelperService = new SecurityHelperService();
     }
 
     @Override
@@ -147,12 +143,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     }
 
     private List<MultiTransferJob> filterJobs(final @NotNull List<JobState> states) {
-        final List<MultiTransferJob> jobs = states.isEmpty() ? jobStore.findAll() : jobStore.findByStates(states);
-        if (securityHelperService.isAdmin()) {
-            return jobs;
-        } else {
-            return jobs.stream().filter(multiJob -> multiJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())).toList();
-        }
+        return states.isEmpty() ? jobStore.findAll() : jobStore.findByStates(states);
     }
 
     private PagedListHolder<JobStatusResult> paginateAndSortResults(final Pageable pageable,
@@ -174,10 +165,10 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     @Override
     public JobHandle registerItemJob(final @NonNull RegisterJob request) {
-        return this.registerItemJob(request, null, securityHelperService.getClientIdClaim());
+        return this.registerItemJob(request, null);
     }
 
-    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId, final String owner) {
+    public JobHandle registerItemJob(final @NonNull RegisterJob request, final UUID batchId) {
         final var params = JobParameter.create(request);
         if (params.getDirection().equals(Direction.UPWARD) && !params.getBomLifecycle().equals(BomLifecycle.AS_BUILT)) {
             // Currently not supported variant
@@ -190,7 +181,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         validateAspectTypeValues(params.getAspects());
 
         final JobInitiateResponse jobInitiateResponse = orchestrator.startJob(request.getKey().getGlobalAssetId(),
-                params, batchId, owner);
+                params, batchId);
         meterRegistryService.incrementNumberOfCreatedJobs();
 
         if (jobInitiateResponse.getStatus().equals(ResponseStatus.OK)) {
@@ -230,11 +221,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final String idAsString = String.valueOf(jobId);
 
         final Optional<MultiTransferJob> canceled = this.jobStore.cancelJob(idAsString);
-        canceled.ifPresent(cancelledJob -> {
-            if (!securityHelperService.isAdmin() && !cancelledJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access and cancel job with id " + jobId + " due to missing privileges.");
-            }
-        });
         canceled.ifPresent(cancelledJob -> applicationEventPublisher.publishEvent(
                 new JobProcessingFinishedEvent(cancelledJob.getJobIdString(), cancelledJob.getJob().getState().name(),
                         cancelledJob.getJobParameter().getCallbackUrl(), cancelledJob.getBatchId())));
@@ -250,11 +236,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         if (multiTransferJob.isPresent()) {
             final MultiTransferJob multiJob = multiTransferJob.get();
-
-            if (!securityHelperService.isAdmin() && !multiJob.getJob().getOwner().equals(securityHelperService.getClientIdForViewIrs())) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cannot access job with id " + jobId + " due to missing privileges.");
-            }
-
             return getJobForJobId(multiJob, includePartialResults);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId);

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -87,6 +87,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final List<AssetAdministrationShellDescriptor> descriptors = new ArrayList<>();
 
         EndpointDataReference endpointDataReference = null;
+
         for (final DigitalTwinRegistryKey key : keys) {
             endpointDataReference = renewIfNecessary(endpointDataReference, connectorEndpoints);
             descriptors.add(fetchShellDescriptor(endpointDataReference, key));

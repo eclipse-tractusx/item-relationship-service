@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -175,7 +175,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.ERROR)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
@@ -192,7 +191,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.RUNNING)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
@@ -235,12 +233,10 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.COMPLETED)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                      .completedOn(EXAMPLE_ZONED_DATETIME)
-                                     .owner("")
                                      .summary(createSummary())
                                      .parameter(createJobParameter())
                                      .exception(createJobException())
@@ -259,12 +255,10 @@ public class OpenApiExamples {
                                              .id(UUID.fromString(JOB_ID))
                                              .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                              .state(JobState.COMPLETED)
-                                             .owner("")
                                              .createdOn(EXAMPLE_ZONED_DATETIME)
                                              .startedOn(EXAMPLE_ZONED_DATETIME)
                                              .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                              .completedOn(EXAMPLE_ZONED_DATETIME)
-                                             .owner("")
                                              .summary(createSummary())
                                              .parameter(createJobParameter())
                                              .exception(createJobException())
@@ -484,7 +478,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.CANCELED)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)

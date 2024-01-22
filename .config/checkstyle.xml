@@ -21,9 +21,11 @@ page at http://checkstyle.sourceforge.net/config.html -->
         <property name="optional" value="true"/>
     </module>
 
-    <module name="Header">
-        <property name="headerFile" value=".config/irs.header"/>
+    <!-- Checks that the license header is present. -->
+    <module name="RegexpHeader">
         <property name="fileExtensions" value="java"/>
+        <property name="headerFile" value=".config/irs.header"/>
+        <property name="multiLines" value="2, 3, 4, 5, 6"/>
     </module>
 
     <!-- Checks that there are no tab characters in the file. -->

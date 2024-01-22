@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -90,6 +90,8 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
     @Override
     public List<AspectModel> getAllAspectModels() {
         return List.of(
+                new AspectModel("urn:bamm:io.catenax.serial_part:1.0.1#SerialPart", "1.0.1",
+                        "SerialPart", MODEL_TYPE, MODEL_STATUS),
                 new AspectModel("urn:bamm:com.catenax.esr_certificates.esr_certificate:1.0.0#EsrCertificate", "1.0.0",
                         "EsrCertificate", MODEL_TYPE, MODEL_STATUS),
                 new AspectModel("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",

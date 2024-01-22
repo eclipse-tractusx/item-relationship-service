@@ -37,6 +37,7 @@ include::../../../uml-diagrams/building-block-view/level-2-int.puml[]
 
 The *RecursiveJobHandler* component provides the logic to build jobs with recursive logic to retrieve items across the entire C-X network and assembles the partial results into a single item graph result.
 
+
 === Component diagram
 
 [plantuml, target=level-2-jobhandler, format=svg]

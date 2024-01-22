@@ -14,7 +14,7 @@ include::irs-spring-config.adoc[leveloffset=+1]
 
 [source,yaml]
 ----
-include::../../../../charts/irs-helm/values.yaml[lines=104..287]
+include::../../../../charts/irs-helm/values.yaml[lines=104..302]
 ----
 
 <1> Use this to enable or disable the monitoring components
@@ -23,6 +23,12 @@ include::../../../../charts/irs-helm/values.yaml[lines=104..287]
 === Values explained
 ==== <irs-url>
 The hostname where the IRS will be made available.
+
+==== <api-key-admin>
+Api key to access API with admin role.
+
+==== <api-key-regular>
+Api key to access API with regular/view role.
 
 === <ingress>
 To expose the IRS service, you need to add an ingress for the default port 8080.
@@ -64,15 +70,26 @@ The URL of the BPDM service. The IRS uses this service to fetch business partner
 ==== <oauth2-token-uri>
 The URL of the OAuth2 token API. Used by the IRS for token creation to authenticate with other services.
 
-==== <oauth2-jwkset-uri>
-The URL of the OAuth2 JWK Set. Used by the IRS to validate tokens when the IRS API is called.
-
 ==== <grafana-url>
 The hostname where Grafana will be made available.
 
 ==== <edc-controlplane-endpoint-data>
 The EDC consumer controlplane endpoint URL for data management, including the protocol.
 If left empty, this defaults to the internal endpoint of the controlplane provided by the irs-edc-consumer Helm chart.
+
+==== <discoveryFinderClient.cacheTTL>
+
+When IRS calls the Discovery Finder URL for BPNLs, the results are cached to improve performance.
+This parameter defines how long the cache is maintained before it is cleared.
+Data is in ISO 8601.
+
+==== <connectorEndpointService.cacheTTL>
+
+When IRS calls EDC Discovery Service to fetch connector endpoints for BPNLs, the results are cached to improve performance.
+This parameter define how long cache is maintained before it is cleared. Data is in ISO 8601.
+
+== OAuth2 Configuration
+Previously, OAuth2 protocol was used by IRS to protect the APIs and other resources. As a reference, latest IRS version that supported OAuth2 protocol was 4.3.0, which can be found here: https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.3.0.
 
 === Semantic Model Provisioning
 The IRS can retrieve semantic models in two ways:

@@ -1,7 +1,7 @@
 {
     "submodels": [
         {
-            "identification": "urn:uuid:1f3aa77d-975a-426d-a6d3-8ad74a841111",
+            "identification": "urn:uuid:cd43ab3a-83c3-42a5-9c93-53a82223c7b8",
             "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
@@ -17,23 +17,7 @@
             }
         },
         {
-            "identification": "urn:uuid:db9468d1-16cd-4654-8be0-792a909b4fec",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
-            "payload": {
-                "validityPeriod": {
-                    "validFrom": "2019-11-02T11:14:15.000Z",
-                    "validTo": "2024-07-17T02:07:07.000Z"
-                },
-                "catenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123564887-01",
-                    "classification": "product",
-                    "nameAtManufacturer": "Tire Model A"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:f7c9b5df-cc49-483b-bb8d-fd86f5f37933",
+            "identification": "urn:uuid:8d5bcf49-7d09-4d98-a3b6-3e4253f5bb46",
             "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
@@ -49,7 +33,23 @@
             }
         },
         {
-            "identification": "urn:uuid:be7932d4-f324-4d39-9e4c-8b29b38d6026",
+            "identification": "urn:uuid:6692c07a-6771-48a2-a729-331d1a488037",
+            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "payload": {
+                "validityPeriod": {
+                    "validFrom": "2019-11-02T11:14:15.000Z",
+                    "validTo": "2024-07-17T02:07:07.000Z"
+                },
+                "catenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
+                "partTypeInformation": {
+                    "manufacturerPartId": "123564887-01",
+                    "classification": "product",
+                    "nameAtManufacturer": "Tire Model A"
+                }
+            }
+        },
+        {
+            "identification": "urn:uuid:879aef49-f000-4f1a-b749-def9d4807b22",
             "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
@@ -65,7 +65,7 @@
             }
         },
         {
-            "identification": "urn:uuid:926d13f9-96d4-4e1c-830b-e9a32f4fcaae",
+            "identification": "urn:uuid:bcfeab97-b97b-47c4-8fae-9f88e83d4579",
             "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {
@@ -81,7 +81,7 @@
             }
         },
         {
-            "identification": "urn:uuid:964ad117-e6a9-4ff7-a70b-64965ff4f156",
+            "identification": "urn:uuid:374b82cd-8038-4feb-8ae8-f9907c082623",
             "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
             "payload": {
                 "validityPeriod": {

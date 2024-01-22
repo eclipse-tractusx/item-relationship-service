@@ -1,7 +1,7 @@
 {
     "submodels" : [
         {
-            "identification": "urn:uuid:6c71839b-3bca-4df6-bbd6-2496cf37ce6c",
+            "identification": "urn:uuid:7a3ba22d-a6e1-4096-b34a-f2afc42fe17f",
             "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
             "payload": {
                 "component": [
@@ -42,7 +42,7 @@
             }
         },
         {
-            "identification": "urn:uuid:d4df8f2a-2993-4e73-b140-b1698e9a905b",
+            "identification": "urn:uuid:8178ed3b-9c23-4dea-b252-d37338934eb4",
             "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
             "payload": {
                 "materialName": "Engineering Plastics",
@@ -69,6 +69,56 @@
                         },
                         "aggregateState": "solid",
                         "materialAbbreviation": "GF30"
+                    }
+                ]
+            }
+        },
+        {
+            "identification": "urn:uuid:b24ed803-9cf0-4b5c-bbea-5e518f2764cb",
+            "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+            "payload": {
+                "materialName": "NTIER Product",
+                "materialClass": "5.5",
+                "component": [
+                    {
+                        "materialName": "Aluminium oxide",
+                        "recycledContent": 83,
+                        "materialClass": "5.5.1",
+                        "quantity": {
+                            "unit": "unit:percent",
+                            "value": 60
+                        },
+                        "aggregateState": "solid",
+                        "materialAbbreviation": ""
+                    },
+                    {
+                        "materialName": "Other",
+                        "recycledContent": 4,
+                        "materialClass": "5.5.2",
+                        "quantity": {
+                            "unit": "unit:percent",
+                            "value": 40
+                        },
+                        "aggregateState": "solid",
+                        "materialAbbreviation": ""
+                    }
+                ]
+            }
+        },
+        {
+            "identification": "urn:uuid:07bddbb1-df63-4a25-81c0-f1d6d7a4273c",
+            "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+            "payload": {
+                "component": [
+                    {
+                        "materialName": "Glue",
+                        "materialClass": "6.2",
+                        "quantity": {
+                            "unit": "unit:kilogram",
+                            "value": 2.5
+                        },
+                        "weight": "0.2341",
+                        "materialAbbreviation": "GL338"
                     }
                 ]
             }

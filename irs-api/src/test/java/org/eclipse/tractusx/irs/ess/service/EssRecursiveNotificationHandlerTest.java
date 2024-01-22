@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -57,7 +57,8 @@ class EssRecursiveNotificationHandlerTest {
     @Test
     void shouldDoNothingWhenThereIsNoInvestigationJob() {
         // when
-        cut.handleNotification(UUID.randomUUID(), SupplyChainImpacted.UNKNOWN);
+        cut.handleNotification(UUID.randomUUID(), SupplyChainImpacted.UNKNOWN, "bpn",
+                0);
 
         // then
         verifyNoInteractions(edcNotificationSender);
@@ -66,19 +67,22 @@ class EssRecursiveNotificationHandlerTest {
     @Test
     void shouldReplyWhenJobIsPresentAndSupplyChainIsImpacted() {
         // given
+        final int hops = 0;
         relatedInvestigationJobsCache.store("notification-id", createRelatedJobsWith(List.of(jobId)));
 
         // when
-        cut.handleNotification(jobId, SupplyChainImpacted.YES);
+        cut.handleNotification(jobId, SupplyChainImpacted.YES, "bpn", 0);
 
         // then
-        verify(edcNotificationSender).sendEdcNotification(any(), eq(SupplyChainImpacted.YES));
+        verify(edcNotificationSender).sendEdcNotification(any(), eq(SupplyChainImpacted.YES), eq(hops), eq("bpn"));
     }
 
     @Test
     void shouldReplyOnlyWhenAllJobsAreCompleted() {
         // given
         final UUID anotherJobId = UUID.randomUUID();
+        final int hops = 0;
+        final String bpn = "bpn";
         relatedInvestigationJobsCache.store("notification-id", createRelatedJobsWith(List.of(jobId, anotherJobId)));
         bpnInvestigationJobCache.store(jobId, currentBpnInvestigationJob);
         bpnInvestigationJobCache.store(anotherJobId, pastBpnInvestigationJob);
@@ -87,10 +91,10 @@ class EssRecursiveNotificationHandlerTest {
         when(pastBpnInvestigationJob.getSupplyChainImpacted()).thenReturn(Optional.of(SupplyChainImpacted.NO));
 
         // when
-        cut.handleNotification(jobId, SupplyChainImpacted.NO);
+        cut.handleNotification(jobId, SupplyChainImpacted.NO, bpn, 0);
 
         // then
-        verify(edcNotificationSender, times(1)).sendEdcNotification(any(), eq(SupplyChainImpacted.NO));
+        verify(edcNotificationSender, times(1)).sendEdcNotification(any(), eq(SupplyChainImpacted.NO), eq(hops), eq(bpn));
     }
 
     private RelatedInvestigationJobs createRelatedJobsWith(List<UUID> uuids) {

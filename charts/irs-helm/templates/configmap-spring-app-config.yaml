@@ -3,7 +3,7 @@
 #       2022: ISTOS GmbH
 #       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
 #       2022,2023: BOSCH AG
-# Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+# Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -34,6 +34,11 @@ data:
 
     irs:
       apiUrl: {{ tpl (.Values.irsUrl | default "http://localhost") . | quote }}
+      security:
+        api:
+          keys:
+            admin: {{ tpl (.Values.apiKeyAdmin | default "") . | quote }}
+            regular: {{ tpl (.Values.apiKeyRegular | default "") . | quote }}
 
     blobstore:
       endpoint: {{ tpl (.Values.minioUrl | default "") . | quote }}
@@ -62,9 +67,6 @@ data:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
               portal:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
-          resourceserver:
-            jwt:
-              jwk-set-uri: {{ tpl (.Values.oauth2.jwkSetUri | default "http://localhost") . | quote }}
 
     digitalTwinRegistry:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
@@ -114,12 +116,16 @@ data:
             operator: {{ .operator | quote }}
             rightOperand: {{ .rightOperand | quote }}
           {{- end }}
+      discoveryFinderClient:
+        cacheTTL: {{ .Values.edc.discoveryFinderClient.cacheTTL | quote }}
       connectorEndpointService:
-        cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | int64 }}
+        cacheTTL: {{ .Values.edc.connectorEndpointService.cacheTTL | quote }}
     ess:
       localBpn: {{ tpl (.Values.bpn | default "") . | quote }}
-      localEdcEndpoint: {{ tpl (.Values.edc.provider.host | default "") . | quote }}
-      managementPath: {{ tpl (.Values.ess.managementPath | default "/management/v2") . | quote }}
+      localEdcEndpoint: {{ tpl (.Values.ess.edc.host | default "") . | quote }}
+      assetsPath: {{ tpl (.Values.ess.assetsPath | default "/management/v3/assets") . | quote }}
+      policydefinitionsPath: {{ tpl (.Values.ess.policydefinitionsPath | default "/management/v2/policydefinitions") . | quote }}
+      contractdefinitionsPath: {{ tpl (.Values.ess.contractdefinitionsPath | default "/management/v2/contractdefinitions") . | quote }}
       irs:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:
@@ -135,18 +141,13 @@ data:
     management:
       health:
         dependencies:
-          enabled: {{ tpl (.Values.management.health.dependencies.enabled | default "false") . | quote }}
+          enabled: {{ .Values.management.health.dependencies.enabled | default false }}
           urls:
-            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 10 }}
+            {{- tpl (toYaml .Values.management.health.dependencies.urls) . | nindent 12 }}
     {{- end }}
     {{- end }}
 
     apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
-
-    oauth:
-      resourceClaim: {{ tpl (.Values.oauth.resourceClaim | default "resource_access") . | quote }}
-      irsNamespace: {{ tpl (.Values.oauth.irsNamespace | default "") . | quote }}
-      roles: {{ tpl (.Values.oauth.roles | default "roles") . | quote }}
 
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,6 +42,7 @@ import java.util.UUID;
 import org.eclipse.tractusx.irs.common.JobProcessingFinishedEvent;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
+import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
@@ -148,7 +149,8 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.UNKNOWN));
+        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.UNKNOWN), eq("bpn"),
+                eq(0));
     }
 
     @Test
@@ -225,7 +227,8 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
-        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO));
+        verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO), eq("bpn"),
+                eq(0));
     }
 
     @Test
@@ -371,6 +374,7 @@ class InvestigationJobProcessingEventListenerTest {
                               .job(Job.builder()
                                       .id(mockedJobId)
                                       .globalAssetId(GlobalAssetIdentification.of("dummyGlobalAssetId"))
+                                      .parameter(JobParameter.builder().bpn("bpn").build())
                                       .build())
                               .relationships(relationships)
                               .shells(shells)
