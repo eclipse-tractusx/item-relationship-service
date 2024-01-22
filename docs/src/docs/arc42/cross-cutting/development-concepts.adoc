@@ -13,7 +13,7 @@ Although the Docker image can be deployed in various ways, the standard solution
 There are two methods of code generation in the IRS:
 
 === Lombok
-The Lombok library is heavily used to generate boilerplate code (such as Constructors, Getters, Setters, Builders...).
+The Lombok library is heavily used to generate boilerplate code (such as constructors, getters, setters, builders...).
 This allows code to be written faster and this boilerplate code is excluded from test coverage, keeping the test base lean.
 
 === Swagger / OpenAPI
