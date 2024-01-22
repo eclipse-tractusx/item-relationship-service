@@ -300,6 +300,8 @@ in request POST /irs/jobs. This collects the submodel which include the required
 
 #### Option 1: Provide contractAgreementId for each submodel:
 
+Decision: **Option 1 will be implemented.** Option 2 is too invasive change to JobResponse is required now.
+
 Impact:
 
 - Redundant information in case multiple submodels were received for the same contractAgreementId.
@@ -352,6 +354,7 @@ policy store in order to receice further on assets with the specific policy.
 
 - [ ] Tombstone is extended with policy payload in case policy is invalid AND auditContractNegotiation api parameter is
   enabled.
+- [ ] Policy is extended in case of an UsagePolicyValidation  
 
 `````json 
 "tombstones": [
@@ -380,10 +383,10 @@ policy store in order to receice further on assets with the specific policy.
       }
     },
     "processingError": {
-      "processStep": "DigitalTwinRequest",
-      "errorDetail": "EndpointDataReference was not found. Requested connectorEndpoints: https://test1.doubleSlash.com, https://test2.doubleSlash.com",
-      "lastAttempt": "2024-01-17T09:02:36.648055745Z",
-      "retryCounter": 3
+       "processStep": "UsagePolicyValidation", 
+       "errorDetail": "Consumption of asset (itemId) is not permitted as the required catalog offer policies do not comply with defined IRS policies.",
+       "lastAttempt": "2024-01-17T09:02:36.648055745Z",
+       "retryCounter": 3
     }
   }
 ],
