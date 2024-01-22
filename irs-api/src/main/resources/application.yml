@@ -22,9 +22,7 @@ spring:
             token-uri: ${OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           portal:
             token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
-      resourceserver:
-        jwt:
-          jwk-set-uri: ${OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
+
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -96,6 +94,11 @@ irs: # Application config
         completed: P7D # ISO 8601 Duration
       cron:
         expression: "*/10 * * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
+  security:
+    api:
+      keys:
+        admin: ${API_KEY_ADMIN}  # API Key to access IRS API with admin role
+        regular: ${API_KEY_REGULAR}  # API Key to access IRS API with view role
 
 blobstore:
   endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
@@ -172,8 +175,10 @@ irs-edc-client:
       - leftOperand: "Membership"
         operator: "eq"
         rightOperand: "active"
+  discoveryFinderClient:
+    cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
-    cacheTTL: 86400000
+    cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
@@ -222,8 +227,10 @@ bpdm:
 # ESS Module specific properties
 ess:
   localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
-  localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
-  managementPath: ${EDC_MANAGEMENT_PATH:/management/v2} # EDC management API path - used for notification asset creation
+  localEdcEndpoint: ${ESS_EDC_URL:} # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
+  assetsPath: ${EDC_MANAGEMENT_PATH:/management/v3/assets} # EDC management API "assets" path - used for notification asset creation
+  policydefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/policydefinitions} # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/contractdefinitions} # EDC management API "contractdefinitions" path - used for notification contract definitions creation
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
@@ -235,9 +242,3 @@ ess:
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
 apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API
-
-# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
-oauth:
-  resourceClaim: "resource_access" # Name of the JWT claim for roles
-  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
-  roles: "roles" # Name of the list of roles within the IRS namespace

@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,33 +35,33 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
-import org.eclipse.edc.connector.core.transform.TransformerContextImpl;
-import org.eclipse.edc.connector.core.transform.TypeTransformerRegistryImpl;
+import org.eclipse.edc.core.transform.TransformerContextImpl;
+import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromAssetTransformer;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromCatalogTransformer;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromCriterionTransformer;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromDataAddressTransformer;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromDataServiceTransformer;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromDatasetTransformer;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromDistributionTransformer;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromPolicyTransformer;
+import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromQuerySpecTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToActionTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToAssetTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToCatalogTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToConstraintTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToCriterionTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToDataServiceTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToDatasetTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToDistributionTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToDutyTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToOperatorTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToPermissionTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToPolicyTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToProhibitionTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonObjectToQuerySpecTransformer;
+import org.eclipse.edc.core.transform.transformer.to.JsonValueToGenericTypeTransformer;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
-import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromAssetTransformer;
-import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromCatalogTransformer;
-import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromCriterionTransformer;
-import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromDataServiceTransformer;
-import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromDatasetTransformer;
-import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromDistributionTransformer;
-import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromPolicyTransformer;
-import org.eclipse.edc.jsonld.transformer.from.JsonObjectFromQuerySpecTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToActionTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToAssetTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToCatalogTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToConstraintTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToCriterionTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDataServiceTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDatasetTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDistributionTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToDutyTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToOperatorTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToPermissionTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToPolicyTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToProhibitionTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonObjectToQuerySpecTransformer;
-import org.eclipse.edc.jsonld.transformer.to.JsonValueToGenericTypeTransformer;
-import org.eclipse.edc.protocol.dsp.transferprocess.transformer.type.from.JsonObjectFromDataAddressTransformer;
 import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
@@ -84,7 +84,8 @@ public class EdcTransformer {
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
 
-    public EdcTransformer(@Qualifier("jsonLdObjectMapper") final ObjectMapper objectMapper, final TitaniumJsonLd titaniumJsonLd) {
+    public EdcTransformer(@Qualifier("jsonLdObjectMapper") final ObjectMapper objectMapper,
+            final TitaniumJsonLd titaniumJsonLd) {
         this.titaniumJsonLd = titaniumJsonLd;
         final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 

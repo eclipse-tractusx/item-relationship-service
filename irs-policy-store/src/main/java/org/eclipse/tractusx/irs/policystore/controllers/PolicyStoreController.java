@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,8 +42,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
-import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.springframework.http.HttpStatus;
@@ -99,7 +99,7 @@ public class PolicyStoreController {
     })
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void registerAllowedPolicy(final @Valid @RequestBody CreatePolicyRequest request) {
         service.registerPolicy(request);
     }
@@ -128,7 +128,7 @@ public class PolicyStoreController {
     })
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public List<Policy> getPolicies() {
         return service.getStoredPolicies();
     }
@@ -160,7 +160,7 @@ public class PolicyStoreController {
     })
     @DeleteMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void deleteAllowedPolicy(@PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
     }
@@ -191,7 +191,7 @@ public class PolicyStoreController {
     })
     @PutMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void updateAllowedPolicy(@PathVariable("policyId") final String policyId,
             final @Valid @RequestBody UpdatePolicyRequest request) {
         service.updatePolicy(policyId, request);

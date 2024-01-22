@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -73,11 +73,13 @@ class SingleLevelBomAsBuilt implements RelationshipSubmodel {
         private ZonedDateTime lastModifiedOn;
         private String catenaXId;
         private String businessPartner;
+        private boolean hasAlternatives;
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)
+                                                                      .hasAlternatives(this.hasAlternatives)
                                                                       .assembledOn(this.createdOn)
                                                                       .lastModifiedOn(this.lastModifiedOn);
 

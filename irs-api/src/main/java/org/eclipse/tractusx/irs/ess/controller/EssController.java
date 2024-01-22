@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,7 +41,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.ess.service.EssService;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
@@ -73,7 +72,6 @@ import org.springframework.web.bind.annotation.RestController;
 class EssController {
 
     private final EssService essService;
-    private final AuthorizationService authorizationService;
 
     @Operation(operationId = "registerBPNInvestigation",
                summary = "Registers an IRS job to start an investigation if a given bpn is contained in a part chain of a given globalAssetId.",
@@ -108,7 +106,7 @@ class EssController {
     })
     @PostMapping("/bpn/investigations")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
+    @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public JobHandle registerBPNInvestigation(final @Valid @RequestBody RegisterBpnInvestigationJob request) {
         return essService.startIrsJob(request);
     }
@@ -151,7 +149,7 @@ class EssController {
                                          }),
     })
     @GetMapping("/bpn/investigations/{id}")
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
+    @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public Jobs getBPNInvestigation(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
                        example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable final UUID id) {

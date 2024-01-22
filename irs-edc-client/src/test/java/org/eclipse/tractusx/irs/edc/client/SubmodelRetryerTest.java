@@ -3,7 +3,7 @@
  *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -35,6 +36,8 @@ import java.util.concurrent.Executors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.retry.internal.InMemoryRetryRegistry;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +58,8 @@ class SubmodelExponentialRetryTest {
     private RestTemplate restTemplate;
     @Mock
     private PolicyCheckerService policyCheckerService;
+    @Mock
+    private EndpointDataReferenceCacheService endpointDataReferenceCacheService;
     private EdcSubmodelFacade testee;
 
     @BeforeEach
@@ -73,10 +78,12 @@ class SubmodelExponentialRetryTest {
         final ContractNegotiationService negotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
-        final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
+        final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
+                Duration.ofMinutes(1));
 
-        final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient, storage,
-                pollingService, retryRegistry, catalogFacade);
+        final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient,
+                endpointDataReferenceStorage,
+                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
         testee = new EdcSubmodelFacade(client);
     }
 
@@ -86,6 +93,8 @@ class SubmodelExponentialRetryTest {
         given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
                 eq(String.class))).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "EDC remote exception"));
+
+        when(endpointDataReferenceCacheService.getEndpointDataReference("9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(
@@ -104,6 +113,7 @@ class SubmodelExponentialRetryTest {
         // Arrange
         given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
                 eq(String.class))).willThrow(new RuntimeException("EDC remote exception"));
+        when(endpointDataReferenceCacheService.getEndpointDataReference("9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
         assertThatThrownBy(() -> testee.getSubmodelRawPayload(

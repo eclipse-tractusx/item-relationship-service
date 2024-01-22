@@ -4,7 +4,7 @@
  *       2022: ISTOS GmbH
  *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -329,7 +329,7 @@ class EdcTransformerTest {
         final String providerConnector = "https://provider.edc/api/v1/dsp";
         final String protocol = "dataspace-protocol-http";
         final CatalogRequest catalogRequest = CatalogRequest.Builder.newInstance()
-                                                                    .providerUrl(providerConnector)
+                                                                    .counterPartyAddress(providerConnector)
                                                                     .protocol(protocol)
                                                                     .build();
         final JsonObject requestJson = edcTransformer.transformCatalogRequestToJson(catalogRequest);

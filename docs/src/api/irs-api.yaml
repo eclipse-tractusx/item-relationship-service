@@ -362,8 +362,8 @@ paths:
             format: uuid
             maxLength: 36
             minLength: 36
-        - description: "<true> Return job with current processed item graph. <false>\
-          \ Return job with item graph if job is in state <COMPLETED>, otherwise job."
+        - description: "\\<true\\> Return job with current processed item graph. \\<false\\>
+         Return job with item graph if job is in state COMPLETED, otherwise job."
           in: query
           name: returnUncompletedJob
           required: false
@@ -992,7 +992,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1043,7 +1042,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1068,6 +1066,7 @@ components:
             linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+              hasAlternatives: false
               lastModifiedOn: 2022-02-03T14:48:54.709Z
               lifecycleContext: asBuilt
               quantity:
@@ -1165,7 +1164,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1187,6 +1185,7 @@ components:
             linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+              hasAlternatives: false
               lastModifiedOn: 2022-02-03T14:48:54.709Z
               lifecycleContext: asBuilt
               quantity:
@@ -1315,7 +1314,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1353,7 +1351,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1375,6 +1372,7 @@ components:
             linkedItem:
               assembledOn: 2022-02-03T14:48:54.709Z
               childCatenaXId: urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9
+              hasAlternatives: false
               lastModifiedOn: 2022-02-03T14:48:54.709Z
               lifecycleContext: asBuilt
               quantity:
@@ -1467,7 +1465,6 @@ components:
           globalAssetId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           id: e5347c88-a921-11ec-b909-0242ac120002
           lastModifiedOn: 2022-02-03T14:48:54.709Z
-          owner: ""
           parameter:
             aspects:
               - SerialPart
@@ -1915,9 +1912,6 @@ components:
           type: string
           format: date-time
           example: 2022-02-03T14:48:54.709Z
-        owner:
-          type: string
-          description: The IRS api consumer.
         parameter:
           $ref: '#/components/schemas/JobParameter'
         startedOn:
@@ -2105,20 +2099,24 @@ components:
           maxLength: 45
           minLength: 45
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        hasAlternatives:
+          type: boolean
+          description: Expresses whether the part is built-in or whether it is one
+            of several options.
         lastModifiedOn:
           type: string
-          example: 2022-02-03T14:48:54.709Z
           format: date-time
           description: Last datetime item was modified.
+          example: 2022-02-03T14:48:54.709Z
         lifecycleContext:
           type: string
-          example: asBuilt
           description: The lifecycle context in which the child part was assembled
             into the parent part.
           enum:
             - asBuilt
             - asPlanned
             - asSpecified
+          example: asBuilt
         quantity:
           $ref: '#/components/schemas/Quantity'
     MeasurementUnit:
@@ -2458,6 +2456,8 @@ components:
       properties:
         aspects:
           type: array
+          description: List of aspect names that will be collected if \<collectAspects\>
+            flag is set to true.
           items:
             type: string
           maxItems: 2147483647
@@ -2524,6 +2524,11 @@ components:
       type: object
       additionalProperties: false
       properties:
+        hops:
+          type: integer
+          format: int32
+        bpn:
+          type: string
         result:
           type: string
     SemanticId:
@@ -2566,9 +2571,9 @@ components:
           items:
             $ref: '#/components/schemas/Endpoint'
           maxItems: 2147483647
-        idShort:
-          type: string
         id:
+          type: string
+        idShort:
           type: string
         semanticId:
           $ref: '#/components/schemas/Reference'
