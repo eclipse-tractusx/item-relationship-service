@@ -28,8 +28,8 @@ A job can be in one of the following states:
 |UNSAVED |The job was created, but not yet stored by the system.
 |INITIAL |The job was stored by the system and is now queued for processing.
 |IN_PROGRESS |The job is currently being processed.
-|TRANSFERS_FINISHED |All transfers for the job have been finished, and it is now being finalized.
-|COMPLETED |The job has completed. See the job response for details on the data.
+|TRANSFERS_FINISHED |All transfers for the job have been completed, and it is now being finalized.
+|COMPLETED |The job has completed. See the job response for details of the data.
 |ERROR |The job could not be processed correctly by the IRS due to a technical problem.
 |===
 
