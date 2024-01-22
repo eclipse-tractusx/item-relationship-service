@@ -25,7 +25,7 @@ Orchestration of application components and integration with other libraries/fra
 |Deployments are made on reliable production-ready images. Avoiding repetitive, mundane configuration tasks for container orchestration.
 
 |Docker Compose is used to define and tune multi-container applications based on Docker container technologies.
-|Docker containers to develop independently of the underlying OS.
+|Docker containers for independent development from the underlying operating system.
 |===
 
 == Organizational Constraints
