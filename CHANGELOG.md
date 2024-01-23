@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
+- Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
 
 ## [4.4.0] - 2024-01-15
 ### Added
 - Added EDR token cache to reuse token after contract negotiation
 - Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints
+- Add concept docs/#322-Provisioning-of-contractAgreementId-for-assets.md
 
 ### Changed
 - Authentication was redesigned to use API keys, instead of OAuth2 protocol. The api key has to be sent as a X-API-KEY request header. IRS is supporting two types of API keys - one for admin and one for regular/view usage. Use new ``apiKeyAdmin`` and ``apiKeyRegular`` config entries to set up API keys.

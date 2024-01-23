@@ -1,8 +1,8 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
@@ -203,11 +203,12 @@ class DecentralDigitalTwinRegistryServiceTest {
                 expectedShell);
 
         // when
-        final Collection<String> globalAssetIds = decentralDigitalTwinRegistryService.lookupGlobalAssetIds(
+        final Collection<AssetAdministrationShellDescriptor> assetAdministrationShellDescriptors = decentralDigitalTwinRegistryService.lookupShellsByBPN(
                 digitalTwinRegistryKey.bpn());
 
+        String actualGlobalAssetId = assetAdministrationShellDescriptors.stream().findFirst().map(AssetAdministrationShellDescriptor::getGlobalAssetId).get();
         // then
-        Assertions.assertThat(globalAssetIds).containsExactly(expectedGlobalAssetId);
+        Assertions.assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
     }
 
 }
