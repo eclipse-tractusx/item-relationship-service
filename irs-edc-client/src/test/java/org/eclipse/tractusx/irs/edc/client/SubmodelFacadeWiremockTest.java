@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_CID;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,6 +50,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
@@ -74,23 +77,23 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+@WireMockTest
 class SubmodelFacadeWiremockTest {
+    private static final String PROXY_SERVER_HOST = "127.0.0.1";
     private final static String connectorEndpoint = "https://connector.endpoint.com";
     private final static String submodelDataplanePath = "/api/public/shells/12345/submodels/5678/submodel";
+    private final static String submodelDataplaneUrl = "http://dataplane.test" + submodelDataplanePath;
     private final static String assetId = "12345";
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
-    private WireMockServer wireMockServer;
     private EdcSubmodelClient edcSubmodelClient;
     private AcceptedPoliciesProvider acceptedPoliciesProvider;
 
     @BeforeEach
-    void configureSystemUnderTest() {
-        this.wireMockServer = new WireMockServer(options().dynamicPort());
-        this.wireMockServer.start();
-        configureFor(this.wireMockServer.port());
+    void configureSystemUnderTest(WireMockRuntimeInfo wireMockRuntimeInfo) {
+        final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
-        config.getControlplane().getEndpoint().setData(buildApiMethodUrl());
+        config.getControlplane().getEndpoint().setData("http://controlplane.test");
         config.getControlplane().getEndpoint().setCatalog("/catalog/request");
         config.getControlplane().getEndpoint().setContractNegotiation("/contractnegotiations");
         config.getControlplane().getEndpoint().setTransferProcess("/transferprocesses");
@@ -99,7 +102,6 @@ class SubmodelFacadeWiremockTest {
         config.getControlplane().setProviderSuffix("/api/v1/dsp");
         config.getSubmodel().setUrnPrefix("/urn");
 
-        final RestTemplate restTemplate = new RestTemplateBuilder().build();
         final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
         for (final HttpMessageConverter<?> converter : messageConverters) {
             if (converter instanceof final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
@@ -135,11 +137,6 @@ class SubmodelFacadeWiremockTest {
                 pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
-    @AfterEach
-    void tearDown() {
-        this.wireMockServer.stop();
-    }
-
     @Test
     void shouldReturnAssemblyPartRelationshipAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
@@ -152,7 +149,7 @@ class SubmodelFacadeWiremockTest {
                                                                                            "singleLevelBomAsBuilt.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl,
                 assetId).get();
 
         // Assert
@@ -224,7 +221,7 @@ class SubmodelFacadeWiremockTest {
                                                                                            "materialForRecycling.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl,
                 assetId).get();
 
         // Assert
@@ -242,7 +239,7 @@ class SubmodelFacadeWiremockTest {
                                                                                    .withBody("test")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl,
                 assetId).get();
 
         // Assert
@@ -271,7 +268,7 @@ class SubmodelFacadeWiremockTest {
         // Act & Assert
         final String errorMessage = "Consumption of asset '58505404-4da1-427a-82aa-b79482bcd1f0' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
         assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
-                () -> edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(), assetId)
+                () -> edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl, assetId)
                                        .get()).withMessageEndingWith(errorMessage);
     }
 
@@ -286,7 +283,7 @@ class SubmodelFacadeWiremockTest {
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
-                connectorEndpoint, buildWiremockDataplaneUrl(), assetId).get(5, TimeUnit.SECONDS);
+                connectorEndpoint, submodelDataplaneUrl, assetId).get(5, TimeUnit.SECONDS);
 
         // Assert
         assertThatExceptionOfType(ExecutionException.class).isThrownBy(throwingCallable)
@@ -304,20 +301,13 @@ class SubmodelFacadeWiremockTest {
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
-                connectorEndpoint, buildWiremockDataplaneUrl(), assetId).get(5, TimeUnit.SECONDS);
+                connectorEndpoint, submodelDataplaneUrl, assetId).get(5, TimeUnit.SECONDS);
 
         // Assert
         assertThatExceptionOfType(ExecutionException.class).isThrownBy(throwingCallable)
                                                            .withCauseInstanceOf(RestClientException.class);
     }
 
-    private String buildWiremockDataplaneUrl() {
-        return buildApiMethodUrl() + submodelDataplanePath;
-    }
-
-    private String buildApiMethodUrl() {
-        return String.format("http://localhost:%d", this.wireMockServer.port());
-    }
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId, List<Permission> permissions) {
         return new org.eclipse.tractusx.irs.edc.client.policy.Policy(policyId, OffsetDateTime.now(),
