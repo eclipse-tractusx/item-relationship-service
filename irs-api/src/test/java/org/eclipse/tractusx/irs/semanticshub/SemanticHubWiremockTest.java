@@ -29,42 +29,33 @@ import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.eclipse.tractusx.irs.configuration.SemanticsHubConfiguration;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
+@WireMockTest
 class SemanticHubWiremockTest {
-    private WireMockServer wireMockServer;
-
+    private static final String PROXY_SERVER_HOST = "127.0.0.1";
     private SemanticsHubFacade semanticsHubFacade;
-    private SemanticsHubConfiguration config;
 
     @BeforeEach
-    void configureSystemUnderTest() {
-        this.wireMockServer = new WireMockServer(options().dynamicPort());
-        this.wireMockServer.start();
-        configureFor(this.wireMockServer.port());
+    void configureSystemUnderTest(WireMockRuntimeInfo wireMockRuntimeInfo) {
+        final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
-        config = new SemanticsHubConfiguration();
+        final SemanticsHubConfiguration config = new SemanticsHubConfiguration();
         config.setPageSize(10);
-        config.setUrl(String.format("http://localhost:%d/models", this.wireMockServer.port()));
-        config.setModelJsonSchemaEndpoint("sem.hub/models/{urn}/json-schema");
+        config.setUrl("http://semantic.hub/models");
+        config.setModelJsonSchemaEndpoint("http://semantic.hub/models/{urn}/json-schema");
 
-        final RestTemplate restTemplate = new RestTemplate();
         final SemanticsHubClient semanticsHubClient = new SemanticsHubClientImpl(restTemplate, config);
         semanticsHubFacade = new SemanticsHubFacade(semanticsHubClient);
-    }
-
-    @AfterEach
-    void tearDown() {
-        this.wireMockServer.stop();
     }
 
     @Test
