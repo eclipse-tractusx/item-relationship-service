@@ -45,12 +45,11 @@ import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfi
 import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.postDiscoveryFinder404;
 import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.postEdcDiscovery200;
 import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.postEdcDiscovery404;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,6 @@ import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientIm
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -77,12 +75,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
 
     @BeforeEach
     void setUp(WireMockRuntimeInfo wireMockRuntimeInfo) throws EdcRetrieverException {
-        // Configure RestTemplate to proxy all requests to localhost
-        final int httpPort = wireMockRuntimeInfo.getHttpPort();
-        final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(PROXY_SERVER_HOST, httpPort));
-        final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setProxy(proxy);
-        final var restTemplate = new RestTemplate(requestFactory);
+        final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
         final var discoveryFinderClient = new DiscoveryFinderClientImpl(DISCOVERY_FINDER_URL, restTemplate);
         final var connectorEndpointsService = new ConnectorEndpointsService(discoveryFinderClient);
