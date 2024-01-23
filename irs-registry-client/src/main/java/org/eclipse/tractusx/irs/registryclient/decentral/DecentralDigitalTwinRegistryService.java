@@ -127,7 +127,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.debug("InterruptedException occurred while fetching shells for bpn '%s'".formatted(bpn), e);
             Thread.currentThread().interrupt();
             return emptyList();
-        } catch (ExecutionException e) {
+        } catch (ResultFinder.CompletionExceptions | ExecutionException e) {
+            // TODO do not log and throw, this is just for temporary debugging
+            log.error(e.getMessage(), e);
             throw new RegistryServiceRuntimeException(
                     "Exception occurred while fetching shells for bpn '%s'".formatted(bpn), e);
         } finally {
@@ -194,7 +196,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.debug("InterruptedException occurred while looking up shells ids for bpn '%s'".formatted(bpn), e);
             Thread.currentThread().interrupt();
             return emptyList();
-        } catch (ExecutionException e) {
+        } catch (ResultFinder.CompletionExceptions | ExecutionException e) {
+            // TODO do not log and throw, this is just for temporary debugging
+            log.error(e.getMessage(), e);
             throw new RegistryServiceRuntimeException(
                     "Exception occurred while looking up shell ids for bpn '%s'".formatted(bpn), e);
         }
