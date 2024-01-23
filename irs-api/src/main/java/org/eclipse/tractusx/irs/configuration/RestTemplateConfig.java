@@ -41,6 +41,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -66,6 +67,7 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.ExcessiveImports")
+@Profile("!integrationtest")
 public class RestTemplateConfig {
 
     public static final String DTR_REST_TEMPLATE = "dtrRestTemplate";
