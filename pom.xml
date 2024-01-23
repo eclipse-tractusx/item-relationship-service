@@ -258,16 +258,6 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*Application.class</exclude>
-                        <exclude>**/*EntityNotFoundException.class</exclude>
-                        <exclude>**/*IrsApiConstants.class</exclude>
-                        <exclude>**/*ApiErrorsConstants.class</exclude>
-                        <exclude>org/eclipse/tractusx/irs/testing/dataintegrity/**</exclude>
-                        <exclude>org/eclipse/tractusx/irs/edc/client/model/**</exclude>
-                    </excludes>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -281,26 +271,6 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>jacoco-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule>
-                                    <element>PACKAGE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>LINE</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.8</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>

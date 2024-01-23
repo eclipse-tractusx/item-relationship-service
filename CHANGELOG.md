@@ -8,10 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
+- Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
 - Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
 
 ### Fixed
-
 - Fixed CVE-2023-6378 by custom dependency management entry for logback (1.4.14).
 
 ## [4.4.0] - 2024-01-15
