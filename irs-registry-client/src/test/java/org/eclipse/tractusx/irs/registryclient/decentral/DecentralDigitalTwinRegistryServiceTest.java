@@ -225,9 +225,12 @@ class DecentralDigitalTwinRegistryServiceTest {
                     expectedShell);
 
             // when
-            final var assetAdministrationShellDescriptors = sut.lookupGlobalAssetIds(digitalTwinRegistryKey.bpn());
+            final var assetAdministrationShellDescriptors = sut.lookupShellsByBPN(digitalTwinRegistryKey.bpn());
 
-            String actualGlobalAssetId = assetAdministrationShellDescriptors.stream().findFirst().map(AssetAdministrationShellDescriptor::getGlobalAssetId).get();// then
+            String actualGlobalAssetId = assetAdministrationShellDescriptors.stream()
+                                                                            .findFirst()
+                                                                            .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
+                                                                            .get();// then
             assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
         }
 
@@ -237,7 +240,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             simulateResultFinderInterrupted();
 
             // when
-            final ThrowingCallable call = () -> sut.lookupGlobalAssetIds("dummyBpn");
+            final ThrowingCallable call = () -> sut.lookupShellsByBPN("dummyBpn");
 
             // then
             assertThatThrownBy(call).isInstanceOf(ShellNotFoundException.class)
@@ -251,7 +254,7 @@ class DecentralDigitalTwinRegistryServiceTest {
 
             // when
             final var bpn = "dummyBpn";
-            final ThrowingCallable call = () -> sut.lookupGlobalAssetIds(bpn);
+            final ThrowingCallable call = () -> sut.lookupShellsByBPN(bpn);
 
             // then
             assertThatThrownBy(call).isInstanceOf(RegistryServiceRuntimeException.class)
