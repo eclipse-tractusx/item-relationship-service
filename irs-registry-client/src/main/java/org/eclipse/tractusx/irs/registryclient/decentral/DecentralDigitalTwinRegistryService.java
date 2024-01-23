@@ -144,8 +144,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         } catch (ResultFinder.CompletionExceptions e) {
 
             log.debug("fetchShellDescriptorsForConnectorEndpoints#4 " + e.getMessage(), e);
-            e.getCauses()
-             .forEach(ex -> log.debug("fetchShellDescriptorsForConnectorEndpoints#5 " + ex.getMessage(), ex));
+            e.getCauses().forEach(ex -> log.debug("fetchShellDescriptorsForConnectorEndpoints#5 " //
+                    + ex.getMessage(), ex));
 
             throw new RegistryServiceRuntimeException(
                     "Exception occurred while fetching shells for bpn '%s'".formatted(bpn), e);
