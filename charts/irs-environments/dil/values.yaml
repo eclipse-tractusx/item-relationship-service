@@ -5,7 +5,7 @@ irs-helm:
   irsUrl: "https://irs-dil.dev.demo.catena-x.net"
   image:
     repository: ghcr.io/catenax-ng/irs-api
-    tag: PR-469
+    tag: PR-521
   bpn: BPNL00000001CRHK
   apiKeyAdmin: <path:traceability-irs/data/dil/irs#apiKeyAdmin>
   apiKeyRegular: <path:traceability-irs/data/dil/irs#apiKeyRegular>
