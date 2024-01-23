@@ -2,13 +2,10 @@ irs-helm:
   #####################
   # IRS Configuration #
   #####################
-  irsUrl: "https://irs-dil.dev.demo.catena-x.net"
   image:
     repository: ghcr.io/catenax-ng/irs-api
     tag: PR-521
   bpn: BPNL00000001CRHK
-  apiKeyAdmin: <path:traceability-irs/data/dil/irs#apiKeyAdmin>
-  apiKeyRegular: <path:traceability-irs/data/dil/irs#apiKeyRegular>
   ingress:
     enabled: true
     className: "nginx"
@@ -25,15 +22,7 @@ irs-helm:
       - hosts:
           - "irs-dil.dev.demo.catena-x.net"
         secretName: tls-secret
-  digitalTwinRegistry:
-    url: https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0
-    discoveryFinderUrl: https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search
-    shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
-    lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
-  semanticshub:
-    url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
-  bpdm:
-    url: https://partners-pool.int.demo.catena-x.net
+
   minioUser: <path:traceability-irs/data/dev/minio#minioUser>
   minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
   oauth2:
@@ -53,6 +42,11 @@ irs-helm:
 
       irs:
         apiUrl: "https://irs-dil.dev.demo.catena-x.net"
+        security:
+          api:
+            keys:
+              admin: <path:traceability-irs/data/dil/irs#apiKeyAdmin>
+              regular: <path:traceability-irs/data/dil/irs#apiKeyRegular>
 
       blobstore:
         endpoint: "http://irs-dil-minio:9000"
@@ -81,9 +75,6 @@ irs-helm:
                   token-uri: "<path:traceability-irs/data/dil/oauth2#tokenUri>"
                 portal:
                   token-uri: "<path:traceability-irs/data/dil/oauth2#tokenUri>"
-            resourceserver:
-              jwt:
-                jwk-set-uri: "<path:traceability-irs/data/dil/oauth2#jwkSetUri>"
 
       digitalTwinRegistry:
         descriptorEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/shell-descriptors/{aasIdentifier}"
@@ -121,27 +112,38 @@ irs-helm:
 
         submodel:
           request-ttl: "PT10M"
-          path: "/submodel"
           urn-prefix: "/urn"
 
         catalog:
-          policies:
-            acceptedRightOperands: "active"
-            acceptedLeftOperands: "PURPOSE"
-
-      edc:
-        catalog:
-          policies:
-            allowedNames: "ID 3.0 Trace, ID 3.1 Trace, R2_Traceability, FrameworkAgreement.traceability, Membership"
-
+          acceptedPolicies:
+            - leftOperand: "PURPOSE"
+              operator: "eq"
+              rightOperand: "ID 3.0 Trace"
+            - leftOperand: "PURPOSE"
+              operator: "eq"
+              rightOperand: "ID 3.1 Trace"
+            - leftOperand: "PURPOSE"
+              operator: "eq"
+              rightOperand: "R2_Traceability"
+            - leftOperand: "FrameworkAgreement.traceability"
+              operator: "eq"
+              rightOperand: "active"
+            - leftOperand: "Membership"
+              operator: "eq"
+              rightOperand: "active"
+        discoveryFinderClient:
+          cacheTTL: "PT24H"
+        connectorEndpointService:
+          cacheTTL: "PT24H"
       ess:
         localBpn: "BPNL00000001CRHK"
         localEdcEndpoint: ""
-        managementPath: "/management/v2"
+        assetsPath: "/management/v3/assets"
+        policydefinitionsPath: "/management/v2/policydefinitions"
+        contractdefinitionsPath: "/management/v2/contractdefinitions"
         irs:
           url: "https://irs-dil.dev.demo.catena-x.net"
         discovery:
-          endpoint: ""
           oAuthClientId: portal
 
       integrity:
