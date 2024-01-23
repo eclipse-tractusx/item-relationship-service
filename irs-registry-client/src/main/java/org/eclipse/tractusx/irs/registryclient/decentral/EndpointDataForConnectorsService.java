@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -49,25 +50,37 @@ public class EndpointDataForConnectorsService {
     public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
             final List<String> connectorEndpoints) {
 
-        log.debug("createFindEndpointDataForConnectorsFutures for connector endpoints: {}", connectorEndpoints);
-        return connectorEndpoints.stream()
-                                 .map(connectorEndpoint -> supplyAsync(
-                                         () -> getEndpointReferenceForAsset(connectorEndpoint)))
-                                 .toList();
+        List<CompletableFuture<EndpointDataReference>> futures = Collections.emptyList();
+        try {
+            log.debug(
+                    "createFindEndpointDataForConnectorsFutures#1 creating futures to get EndpointDataReferences for endpoints: {}",
+                    connectorEndpoints);
+            futures = connectorEndpoints.stream()
+                                        .map(connectorEndpoint -> supplyAsync(
+                                                () -> getEndpointReferenceForAsset(connectorEndpoint)))
+                                        .toList();
+            return futures;
+        } finally {
+            log.debug("createFindEndpointDataForConnectorsFutures#2 created {} futures", futures.size());
+        }
     }
 
     private EndpointDataReference getEndpointReferenceForAsset(final String connector) {
-        log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
+        log.info("getEndpointReferenceForAsset#1 Trying to retrieve EndpointDataReference for connector {}", connector);
         try {
             final var endpointDataReference = edcSubmodelFacade.getEndpointReferenceForAsset(connector,
                     DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE);
 
-            log.debug("Got EndpointDataReference for connector {}", connector);
+            log.debug("getEndpointReferenceForAsset#2 Got EndpointDataReference for connector {}", connector);
 
             return endpointDataReference;
         } catch (EdcRetrieverException e) {
-            log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector, e);
+            log.warn(
+                    "getEndpointReferenceForAsset#3 Exception occurred when retrieving EndpointDataReference from connector {}",
+                    connector, e);
             throw new CompletionException(e.getMessage(), e);
+        } finally {
+            log.debug("getEndpointReferenceForAsset#4 finally");
         }
 
     }

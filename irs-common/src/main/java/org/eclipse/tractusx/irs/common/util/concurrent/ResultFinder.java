@@ -54,11 +54,11 @@ public class ResultFinder {
     public <T> CompletableFuture<T> getFastestResult(final List<CompletableFuture<T>> futures) {
 
         if (futures == null || futures.isEmpty()) {
-            log.warn("Called getFastestResult with empty list of futures");
+            log.warn("getFastestResult#0 Called getFastestResult with empty list of futures");
             return CompletableFuture.completedFuture(null);
         }
 
-        log.debug("Trying to get fastest result from list of futures");
+        log.debug("getFastestResult#1 Trying to get fastest result from list of futures");
 
         final CompletableFuture<T> fastestResultPromise = new CompletableFuture<>();
 
@@ -69,17 +69,19 @@ public class ResultFinder {
                                                             .handle(completingOnFirstSuccessful(fastestResultPromise)))
                                        .toList();
 
+        log.debug("getFastestResult#2");
+
         allOf(toArray(futuresList)).whenComplete((value, ex) -> {
 
-            log.debug("List of futures completed");
+            log.debug("getFastestResult#3 List of futures completed");
 
             if (ex != null) {
-                log.error("Exception occurred: " + ex.getMessage(), ex);
+                log.error("getFastestResult#4 Exception occurred: " + ex.getMessage(), ex);
                 fastestResultPromise.completeExceptionally(new CompletionExceptions(exceptions));
             } else if (fastestResultPromise.isDone()) {
-                log.debug("Fastest result already found, ignoring the others");
+                log.debug("getFastestResult#5 Fastest result already found, ignoring the others");
             } else {
-                log.debug("Completing");
+                log.debug("getFastestResult#6 Completing");
                 fastestResultPromise.complete(null);
             }
         });
@@ -96,20 +98,26 @@ public class ResultFinder {
 
         return (value, throwable) -> {
 
+            log.debug("completingOnFirstSuccessful#1 value: {}, throwable: {}", value, throwable);
+
             final boolean notFinishedByOtherFuture = !resultPromise.isDone();
+            log.debug("completingOnFirstSuccessful#2 notFinishedByOtherFuture {} ", notFinishedByOtherFuture);
+
             final boolean currentFutureSuccessful = throwable == null && value != null;
 
             if (notFinishedByOtherFuture && currentFutureSuccessful) {
 
                 // first future that completes successfully completes the overall future
-                log.debug("First future that completed successfully");
+                log.debug("completingOnFirstSuccessful#3 First future that completed successfully");
                 resultPromise.complete(value);
                 return true;
 
             } else {
                 if (throwable != null) {
-                    log.warn("Exception occurred: " + throwable.getMessage(), throwable);
+                    log.warn("completingOnFirstSuccessful#4 Exception occurred: " + throwable.getMessage(), throwable);
                     throw new CompletionException(throwable.getMessage(), throwable);
+                } else {
+                    log.debug("completingOnFirstSuccessful#5 log just for debugging");
                 }
                 return false;
             }
@@ -118,7 +126,7 @@ public class ResultFinder {
 
     private static <T> Function<Throwable, T> collectingExceptionsAndThrow(final List<Throwable> exceptions) {
         return t -> {
-            log.error("Exception occurred: " + t.getMessage(), t);
+            log.error("collectingExceptionsAndThrow -- Exception occurred: " + t.getMessage(), t);
             exceptions.add(t);
             throw new CompletionException(t);
         };
