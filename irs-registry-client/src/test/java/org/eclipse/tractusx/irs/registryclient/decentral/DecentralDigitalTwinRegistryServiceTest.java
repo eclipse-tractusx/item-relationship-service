@@ -225,10 +225,10 @@ class DecentralDigitalTwinRegistryServiceTest {
                     expectedShell);
 
             // when
-            final var globalAssetIds = sut.lookupGlobalAssetIds(digitalTwinRegistryKey.bpn());
+            final var assetAdministrationShellDescriptors = sut.lookupGlobalAssetIds(digitalTwinRegistryKey.bpn());
 
-            // then
-            assertThat(globalAssetIds).containsExactly(expectedGlobalAssetId);
+            String actualGlobalAssetId = assetAdministrationShellDescriptors.stream().findFirst().map(AssetAdministrationShellDescriptor::getGlobalAssetId).get();// then
+            assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
         }
 
         @Test
