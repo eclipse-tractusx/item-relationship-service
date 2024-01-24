@@ -92,7 +92,7 @@ data:
 
     bpdm:
       bpnEndpoint: {{ tpl (.Values.bpdm.bpnEndpoint | default "") . | quote }}
-      
+
     irs-edc-client:
       callback-url: {{ tpl (.Values.edc.callbackurl | default (printf "http://%s%s" .Release.Name "-irs-helm:8181/internal/endpoint-data-reference")) . | quote }}
       controlplane:
