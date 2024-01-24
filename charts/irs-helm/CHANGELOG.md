@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added configuration parameters `oauth2.semantics.clientId`,`oauth2.semantics.clientSecret`, `oauth2.discovery.clientId`,`oauth2.discovery.clientSecret`, `oauth2.bpdm.clientId`,`oauth2.bpdm.clientSecret`
-- 
+
 ### Removed
 - Removed configuration parameters `oauth2.clientId`,`oauth2.clientSecret`, `portal.oauth2.clientId`,`portal.oauth2.clientSecret`
 
