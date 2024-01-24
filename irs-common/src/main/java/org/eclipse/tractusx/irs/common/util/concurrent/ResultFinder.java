@@ -35,12 +35,16 @@ import java.util.function.Function;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * Helper class to find the relevant result from a list of futures.
  */
 @Slf4j
 public class ResultFinder {
+
+    // TODO (mfischer): Remove when #214 is tested
+    public static final String LOGPREFIX_TO_BE_REMOVED_LATER = "#214@ ";
 
     /**
      * Returns a new {@link CompletableFuture} which completes
@@ -53,12 +57,14 @@ public class ResultFinder {
      */
     public <T> CompletableFuture<T> getFastestResult(final List<CompletableFuture<T>> futures) {
 
+        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "getFastestResult - ";
+
         if (futures == null || futures.isEmpty()) {
-            log.warn("#214@getFastestResult#0 Called getFastestResult with empty list of futures");
+            log.warn(logPrefix + "Called getFastestResult with empty list of futures");
             return CompletableFuture.completedFuture(null);
         }
 
-        log.info("#214@getFastestResult#1 Trying to get fastest result from list of futures");
+        log.info(logPrefix + "Trying to get fastest result from list of futures");
 
         final CompletableFuture<T> fastestResultPromise = new CompletableFuture<>();
 
@@ -69,19 +75,17 @@ public class ResultFinder {
                                                             .handle(completingOnFirstSuccessful(fastestResultPromise)))
                                        .toList();
 
-        log.info("#214@getFastestResult#2");
-
         allOf(toArray(futuresList)).whenComplete((value, ex) -> {
 
-            log.info("#214@getFastestResult#3 List of futures completed");
+            log.info(logPrefix + "All of the futures completed");
 
             if (ex != null) {
-                log.error("g#214@etFastestResult#4 Exception occurred: " + ex.getMessage(), ex);
+                log.error(logPrefix + "Exception occurred: " + ex.getMessage(), ex);
                 fastestResultPromise.completeExceptionally(new CompletionExceptions(exceptions));
             } else if (fastestResultPromise.isDone()) {
-                log.info("#214@getFastestResult#5 Fastest result already found, ignoring the others");
+                log.info(logPrefix + "Fastest result already found, ignoring the others");
             } else {
-                log.info("#214@getFastestResult#6 Completing");
+                log.info(logPrefix + "Completing");
                 fastestResultPromise.complete(null);
             }
         });
@@ -96,29 +100,28 @@ public class ResultFinder {
     private static <T> BiFunction<T, Throwable, Boolean> completingOnFirstSuccessful(
             final CompletableFuture<T> resultPromise) {
 
+        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "completingOnFirstSuccessful - ";
+
         return (value, throwable) -> {
 
-            log.info("#214@completingOnFirstSuccessful#1 value: {}, throwable: {}", value, throwable);
+            log.info(logPrefix + "value: '{}', throwable: {}", value, throwable);
 
             final boolean notFinishedByOtherFuture = !resultPromise.isDone();
-            log.info("#214@completingOnFirstSuccessful#2 notFinishedByOtherFuture {} ", notFinishedByOtherFuture);
+            log.info(logPrefix + "notFinishedByOtherFuture {} ", notFinishedByOtherFuture);
 
             final boolean currentFutureSuccessful = throwable == null && value != null;
 
             if (notFinishedByOtherFuture && currentFutureSuccessful) {
 
                 // first future that completes successfully completes the overall future
-                log.info("#214@completingOnFirstSuccessful#3 First future that completed successfully");
+                log.info(logPrefix + "First future that completed successfully");
                 resultPromise.complete(value);
                 return true;
 
             } else {
                 if (throwable != null) {
-                    log.warn("#214@completingOnFirstSuccessful#4 Exception occurred: " + throwable.getMessage(),
-                            throwable);
+                    log.warn(logPrefix + "Exception occurred: " + throwable.getMessage(), throwable);
                     throw new CompletionException(throwable.getMessage(), throwable);
-                } else {
-                    log.info("#214@completingOnFirstSuccessful#5 log just for debugging");
                 }
                 return false;
             }
@@ -127,7 +130,8 @@ public class ResultFinder {
 
     private static <T> Function<Throwable, T> collectingExceptionsAndThrow(final List<Throwable> exceptions) {
         return t -> {
-            log.error("collectingExceptionsAndThrow -- Exception occurred: " + t.getMessage(), t);
+            log.error(LOGPREFIX_TO_BE_REMOVED_LATER + "collectingExceptionsAndThrow - " + "Exception occurred: "
+                    + t.getMessage(), t);
             exceptions.add(t);
             throw new CompletionException(t);
         };
@@ -143,8 +147,17 @@ public class ResultFinder {
         private final List<Throwable> causes;
 
         public CompletionExceptions(final List<Throwable> causes) {
-            super("All failing, use getCauses() for details");
+            super(LOGPREFIX_TO_BE_REMOVED_LATER + "All failing, use getCauses() for details");
             this.causes = causes;
+        }
+
+        public void logWarn(final Logger log, final String prefix) {
+
+            log.warn("{}{}", prefix, this.getMessage(), this.getCause());
+
+            for (final Throwable cause : this.getCauses()) {
+                log.warn(prefix + cause.getMessage(), cause);
+            }
         }
 
     }

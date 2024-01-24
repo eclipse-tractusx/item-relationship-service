@@ -24,6 +24,9 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder.LOGPREFIX_TO_BE_REMOVED_LATER;
+import static org.eclipse.tractusx.irs.common.util.concurrent.StopwatchUtils.startWatch;
+import static org.eclipse.tractusx.irs.common.util.concurrent.StopwatchUtils.stopWatch;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +36,7 @@ import java.util.concurrent.CompletionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.springframework.util.StopWatch;
 
 /**
  * Service that use edc client to make calls to edc connector endpoints
@@ -50,10 +54,11 @@ public class EndpointDataForConnectorsService {
     public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
             final List<String> connectorEndpoints) {
 
+        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "createFindEndpointDataForConnectorsFutures - ";
+
         List<CompletableFuture<EndpointDataReference>> futures = Collections.emptyList();
         try {
-            log.info(
-                    "#214#createFindEndpointDataForConnectorsFutures#1 creating futures to get EndpointDataReferences for endpoints: {}",
+            log.info(logPrefix + "Creating futures to get EndpointDataReferences for endpoints: {}",
                     connectorEndpoints);
             futures = connectorEndpoints.stream()
                                         .map(connectorEndpoint -> supplyAsync(
@@ -61,27 +66,27 @@ public class EndpointDataForConnectorsService {
                                         .toList();
             return futures;
         } finally {
-            log.info("#214@createFindEndpointDataForConnectorsFutures#2 created {} futures", futures.size());
+            log.info(logPrefix + "Created {} futures", futures.size());
         }
     }
 
     private EndpointDataReference getEndpointReferenceForAsset(final String connector) {
-        log.info("#214@getEndpointReferenceForAsset#1 Trying to retrieve EndpointDataReference for connector {}",
-                connector);
+
+        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "getEndpointReferenceForAsset - ";
+
+        final var watch = new StopWatch();
+        startWatch(log, watch,
+                logPrefix + "Trying to retrieve EndpointDataReference for connector '%s'".formatted(connector));
+
         try {
-            final var endpointDataReference = edcSubmodelFacade.getEndpointReferenceForAsset(connector,
-                    DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE);
-
-            log.info("#214@getEndpointReferenceForAsset#2 Got EndpointDataReference for connector {}", connector);
-
-            return endpointDataReference;
+            return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
+                    DT_REGISTRY_ASSET_VALUE);
         } catch (EdcRetrieverException e) {
-            log.warn(
-                    "#214@getEndpointReferenceForAsset#3 Exception occurred when retrieving EndpointDataReference from connector {}",
+            log.warn(logPrefix + "Exception occurred when retrieving EndpointDataReference from connector '{}'",
                     connector, e);
             throw new CompletionException(e.getMessage(), e);
         } finally {
-            log.info("#214@getEndpointReferenceForAsset#4 finally");
+            stopWatch(log, watch);
         }
 
     }
