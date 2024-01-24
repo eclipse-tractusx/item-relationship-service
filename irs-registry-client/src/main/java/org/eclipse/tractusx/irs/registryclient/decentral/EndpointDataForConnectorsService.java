@@ -52,8 +52,8 @@ public class EndpointDataForConnectorsService {
 
         List<CompletableFuture<EndpointDataReference>> futures = Collections.emptyList();
         try {
-            log.debug(
-                    "createFindEndpointDataForConnectorsFutures#1 creating futures to get EndpointDataReferences for endpoints: {}",
+            log.info(
+                    "#214#createFindEndpointDataForConnectorsFutures#1 creating futures to get EndpointDataReferences for endpoints: {}",
                     connectorEndpoints);
             futures = connectorEndpoints.stream()
                                         .map(connectorEndpoint -> supplyAsync(
@@ -61,26 +61,27 @@ public class EndpointDataForConnectorsService {
                                         .toList();
             return futures;
         } finally {
-            log.debug("createFindEndpointDataForConnectorsFutures#2 created {} futures", futures.size());
+            log.info("#214@createFindEndpointDataForConnectorsFutures#2 created {} futures", futures.size());
         }
     }
 
     private EndpointDataReference getEndpointReferenceForAsset(final String connector) {
-        log.info("getEndpointReferenceForAsset#1 Trying to retrieve EndpointDataReference for connector {}", connector);
+        log.info("#214@getEndpointReferenceForAsset#1 Trying to retrieve EndpointDataReference for connector {}",
+                connector);
         try {
             final var endpointDataReference = edcSubmodelFacade.getEndpointReferenceForAsset(connector,
                     DT_REGISTRY_ASSET_TYPE, DT_REGISTRY_ASSET_VALUE);
 
-            log.debug("getEndpointReferenceForAsset#2 Got EndpointDataReference for connector {}", connector);
+            log.info("#214@getEndpointReferenceForAsset#2 Got EndpointDataReference for connector {}", connector);
 
             return endpointDataReference;
         } catch (EdcRetrieverException e) {
             log.warn(
-                    "getEndpointReferenceForAsset#3 Exception occurred when retrieving EndpointDataReference from connector {}",
+                    "#214@getEndpointReferenceForAsset#3 Exception occurred when retrieving EndpointDataReference from connector {}",
                     connector, e);
             throw new CompletionException(e.getMessage(), e);
         } finally {
-            log.debug("getEndpointReferenceForAsset#4 finally");
+            log.info("#214@getEndpointReferenceForAsset#4 finally");
         }
 
     }
