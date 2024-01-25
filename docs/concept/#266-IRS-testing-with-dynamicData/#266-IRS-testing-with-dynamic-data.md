@@ -22,7 +22,7 @@ Following use cases have to be testable with dynamic data as it was possible wit
 * **hops count** and **impacted supplier on first tier level**
 * ESS specific tombstone checks
 * **DIL** features for integrity checks
-* performance tests
+* duration and load tests
 
 # Assumption
 Registered _globalAssetId_ and _BPN_ which can be used for tests are provided.
@@ -94,7 +94,7 @@ Direction is decided based on the given submodel-aspects:
 ### What depth can be expected?
 Currently, there is no effective way to find out the depth of desired globalAssetId. Decided could be the following:
 * IRS tests are requested with depth = 10
-* Performance tests will be run with depth > 50
+* Load tests will be run with depth > 50
 
 
 ## Testing tombstones with negative scenarios.
@@ -131,13 +131,17 @@ Same as for ESS features the DIL-tests are based on a specific testdata set whic
 
 Therefore, it has to be discussed if a test approach for DIL-features with dynamic data is necessary and relevant at all.
 
-## How to run performance tests with "dynamic testdata"? **WIP**
-TBD: take from part one with bigger depth and check runtime, amount of finished "asyncFetchedItems = completed".
-* To observe the performance topic the expected duration of jobs complete should be set dependent on the amount of requested aspects and the depth.
+## How to run duration and load tests with "dynamic testdata"? **WIP**
+Current cucumber tests have already a timeout step in use to wait for the job to COMPLETE within a given time. This can be adjusted for each test.
+
+Currently the load test is set up as one request which is requested a given amount of times. For this the given globalAssetId + BPN can be set.
+The test can be adjusted with more aspects and higher _depth_ but this is not dependent on kind of data provision.
+This procedure can be adjusted with more requested aspects but no big changes necessary. 
 
 Hints:
-* Basis set of constraints are defined and implemented in cucumber tests and could be extended later on.
 * Concept for performance and duration issues the amount of AAS data used for testing could be configured for a specific environment (DEV, INT, STABLE, etc.)
+* Basis set of constraints are defined and implemented in cucumber tests and could be extended later on.
+
 
 # LOP
 
