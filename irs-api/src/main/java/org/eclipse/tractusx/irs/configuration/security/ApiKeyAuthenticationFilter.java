@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -62,7 +62,8 @@ class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    private void unauthorizedResponse(final HttpServletResponse servletResponse, final Exception exception) throws IOException {
+    private void unauthorizedResponse(final HttpServletResponse servletResponse, final Exception exception)
+            throws IOException {
         servletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         servletResponse.setContentType(MediaType.APPLICATION_JSON_VALUE);
         servletResponse.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -71,7 +72,6 @@ class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
                                                          .withStatusCode(HttpStatus.UNAUTHORIZED)
                                                          .withError(exception.getMessage())
                                                          .build();
-
 
         try (PrintWriter writer = servletResponse.getWriter()) {
             writer.print(jsonUtil.asString(errorResponse));

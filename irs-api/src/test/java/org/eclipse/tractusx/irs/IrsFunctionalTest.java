@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,7 +41,6 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.controllers.IrsController;
-import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
 import org.eclipse.tractusx.irs.util.TestMother;

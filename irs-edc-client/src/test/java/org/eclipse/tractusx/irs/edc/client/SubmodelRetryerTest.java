@@ -3,7 +3,7 @@
  *       2022: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- * Copyright (c) 2021,2022 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -36,9 +36,9 @@ import java.util.concurrent.Executors;
 
 import io.github.resilience4j.retry.RetryRegistry;
 import io.github.resilience4j.retry.internal.InMemoryRetryRegistry;
-import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

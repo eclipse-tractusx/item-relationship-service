@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -39,7 +39,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
-
 import org.eclipse.tractusx.irs.IrsApplication;
 import org.eclipse.tractusx.irs.common.ApiConstants;
 import org.junit.jupiter.api.Test;

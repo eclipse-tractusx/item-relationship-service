@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -34,15 +34,13 @@ import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceExcepti
 public interface DigitalTwinRegistryService {
 
     /**
-     * Retrieves the global asset IDs of all asset administration shells for a given BPN.
+     * Retrieves the shell details of all asset administration shells for a given BPN.
      *
      * @param bpn the BPN to retrieve the shells for
-     * @return the collection of global asset IDs
+     * @return the collection of asset administration shells
      */
-    default Collection<String> lookupGlobalAssetIds(final String bpn) throws RegistryServiceException {
-        return fetchShells(lookupShellIdentifiers(bpn)).stream()
-                                                       .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
-                                                       .toList();
+    default Collection<AssetAdministrationShellDescriptor> lookupShellsByBPN(final String bpn) throws RegistryServiceException {
+        return fetchShells(lookupShellIdentifiers(bpn)).stream().toList();
     }
 
     /**

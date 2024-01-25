@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,12 +40,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.ess.service.EssService;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
+import org.eclipse.tractusx.irs.ess.service.EssService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;

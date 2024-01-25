@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -35,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
@@ -44,7 +45,6 @@ import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.Response;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
-import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
