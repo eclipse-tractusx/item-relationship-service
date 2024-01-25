@@ -30,9 +30,9 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        This vulnerability does not apply to Java deployments, typically in servers, that load and run only trusted code (e.g., code installed by an administrator). This is not exploitable in IRS.
+        Only used in tests.
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
-        <vulnerabilityName>CVE-2024-20932</vulnerabilityName>
+        <packageUrl regex="true">^pkg:maven/com\.jayway\.jsonpath@.*$</packageUrl>
+        <vulnerabilityName>CVE-2023-51074</vulnerabilityName>
     </suppress>
 </suppressions>
