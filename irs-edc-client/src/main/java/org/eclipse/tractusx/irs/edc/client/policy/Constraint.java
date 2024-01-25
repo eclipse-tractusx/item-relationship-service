@@ -23,9 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import java.util.List;
-
-import io.swagger.v3.oas.annotations.media.ArraySchema;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,10 +39,13 @@ import lombok.NoArgsConstructor;
 public class Constraint {
 
     @Schema(implementation = String.class, example = "string")
+    @JsonAlias({"odrl:leftOperand"})
     private String leftOperand;
-    @Schema(implementation = OperatorType.class, example = "eq")
-    private OperatorType operator;
-    @ArraySchema(arraySchema = @Schema(example = "[\"string\"]", implementation = String.class))
-    private List<String> rightOperand;
+    @JsonAlias("odrl:operator")
+    @Schema
+    private Operator operator;
+    @Schema(implementation = String.class, example = "string")
+    @JsonProperty("odrl:rightOperand")
+    private String rightOperand;
 
 }

@@ -168,8 +168,8 @@ class ConstraintCheckerServiceTest {
 
     private Policy createPolicyWithAndConstraint(List<Operand> operands) {
         List<Constraint> and = operands.stream()
-                                       .map(operand -> new Constraint(operand.left, OperatorType.EQ,
-                                               List.of(operand.right)))
+                                       .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
+                                               operand.right))
                                        .toList();
         Constraints constraints = new Constraints(and, new ArrayList<>());
         return createPolicyWithConstraint(constraints);
@@ -177,16 +177,15 @@ class ConstraintCheckerServiceTest {
 
     private Policy createPolicyWithOrConstraint(List<Operand> operands) {
         List<Constraint> or = operands.stream()
-                                      .map(operand -> new Constraint(operand.left, OperatorType.EQ,
-                                              List.of(operand.right)))
+                                      .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
+                                              operand.right))
                                       .toList();
         Constraints constraints = new Constraints(new ArrayList<>(), or);
         return createPolicyWithConstraint(constraints);
     }
 
     private Policy createPolicyWithConstraint(Constraints constraints) {
-        List<Constraints> constraintsList = List.of(constraints);
-        Permission permission = new Permission(PolicyType.ACCESS, constraintsList);
+        Permission permission = new Permission(PolicyType.ACCESS, constraints);
         List<Permission> permissions = List.of(permission);
         final String policyId = "policyId";
         return new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now().plusYears(1), permissions);

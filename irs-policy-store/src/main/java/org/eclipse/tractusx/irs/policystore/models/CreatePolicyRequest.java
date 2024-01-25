@@ -24,23 +24,53 @@
 package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
-import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.json.JsonObject;
 import jakarta.validation.constraints.NotNull;
-import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 
 /**
- * Request object for policy creation
- *
- * @param policyId   the ID of the policy
- * @param validUntil the timestamp after which the policy should no longer be accepted
+ * Object for API to create policty
  */
+@SuppressWarnings("FileTabCharacter")
 @Schema(description = "Request to add a policy")
-public record CreatePolicyRequest(@Schema(description = "The ID of the policy to add") @NotNull String policyId,
-
-                                  @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil,
-                                  @Schema(description = "List of permissions that will be added to the Policy on creation.") @NotNull List<Permission> permissions
-                                  ) {
-
+public record CreatePolicyRequest(
+        @NotNull @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations")  OffsetDateTime validUntil,
+        @NotNull @Schema(example = CreatePolicyRequest.EXAMPLE_PAYLOAD) JsonObject payload) {
+    public static final String EXAMPLE_PAYLOAD = """
+                {
+                 	"validUntil": "2025-12-12T23:59:59.999Z",
+                 	"payload": {
+                 		"@context": {
+                 			"odrl": "http://www.w3.org/ns/odrl/2/"
+                 		},
+                 		"@id": "policy-id",
+                 		"policy": {
+                 			"odrl:permission": [
+                 				{
+                 					"odrl:action": "USE",
+                 					"odrl:constraint": {
+                 						"odrl:and": [
+                 							{
+                 								"odrl:leftOperand": "Membership",
+                 								"odrl:operator": {
+                 									"@id": "odrl:eq"
+                 								},
+                 								"odrl:rightOperand": "active"
+                 							},
+                 							{
+                 								"odrl:leftOperand": "PURPOSE",
+                 								"odrl:operator": {
+                 									"@id": "odrl:eq"
+                 								},
+                 								"odrl:rightOperand": "ID 3.1 Trace"
+                 							}
+                 						]
+                 					}
+                 				}
+                 			]
+                 		}
+                 	}
+                 }
+                """;
 }

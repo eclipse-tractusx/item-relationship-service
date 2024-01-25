@@ -23,43 +23,22 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonAlias;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.extern.jackson.Jacksonized;
 
 /**
- * A stored policy object.
+ * Wrapper for OperatorType
  */
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Schema
-@Jacksonized
-public class Policy {
+public class Operator {
 
-    @Schema(implementation = String.class, example = "f253718e-a270-4367-901b-9d50d9bd8462")
-    private String policyId;
-    @Schema(implementation = OffsetDateTime.class)
-    private OffsetDateTime createdOn;
-    @Schema(implementation = OffsetDateTime.class)
-    private OffsetDateTime validUntil;
-    @ArraySchema(schema = @Schema)
-    @JsonAlias({ "odrl:permission" })
-    private List<Permission> permissions;
-
-    public Policy update(final OffsetDateTime validUntil) {
-        this.validUntil = validUntil;
-        return this;
-    }
+    @JsonProperty("@id")
+    @Schema(implementation = OperatorType.class, example = "odrl:eq")
+    private OperatorType operatorType;
 }

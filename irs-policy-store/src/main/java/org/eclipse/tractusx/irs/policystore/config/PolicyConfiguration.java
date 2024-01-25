@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.config;
 
+import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
+import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
@@ -43,5 +45,10 @@ public class PolicyConfiguration {
     public BlobPersistence blobStore(final PolicyBlobstoreConfiguration config) throws BlobPersistenceException {
         return new MinioBlobPersistence(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(),
                 config.getBucketName(), config.getDaysToLive());
+    }
+
+    @Bean
+    public TypeTransformerRegistry typeTransformerRegistry() {
+        return new TypeTransformerRegistryImpl();
     }
 }

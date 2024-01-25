@@ -24,20 +24,29 @@
 package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import org.eclipse.edc.jsonld.TitaniumJsonLd;
+import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
-import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.edc.client.policy.Operator;
 import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
+import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,26 +58,68 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PolicyStoreControllerTest {
 
+    public static final String EXAMPLE_PAYLOAD = """
+                {
+                 	"validUntil": "2025-12-12T23:59:59.999Z",
+                 	"payload": {
+                 		"@context": {
+                 			"odrl": "http://www.w3.org/ns/odrl/2/"
+                 		},
+                 		"@id": "policy-id",
+                 		"policy": {
+                 			"odrl:permission": [
+                 				{
+                 					"odrl:action": "USE",
+                 					"odrl:constraint": {
+                 						"odrl:and": [
+                 							{
+                 								"odrl:leftOperand": "Membership",
+                 								"odrl:operator": {
+                 									"@id": "odrl:eq"
+                 								},
+                 								"odrl:rightOperand": "active"
+                 							},
+                 							{
+                 								"odrl:leftOperand": "PURPOSE",
+                 								"odrl:operator": {
+                 									"@id": "odrl:eq"
+                 								},
+                 								"odrl:rightOperand": "ID 3.1 Trace"
+                 							}
+                 						]
+                 					}
+                 				}
+                 			]
+                 		}
+                 	}
+                 }
+                """;
+
     private PolicyStoreController testee;
+    private final TitaniumJsonLd titaniumJsonLd = new TitaniumJsonLd(new ConsoleMonitor());
+    private final EdcTransformer edcTransformer = new EdcTransformer(new com.fasterxml.jackson.databind.ObjectMapper(), titaniumJsonLd);
 
     @Mock
     private PolicyStoreService service;
 
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreController(service);
+        testee = new PolicyStoreController(service, edcTransformer);
     }
 
     @Test
     void registerAllowedPolicy() {
         // arrange
-        final CreatePolicyRequest request = new CreatePolicyRequest("policyId", OffsetDateTime.now(), createPermissions());
+        final OffsetDateTime now = OffsetDateTime.now();
+        JsonReader jsonReader = Json.createReader(new StringReader(EXAMPLE_PAYLOAD));
+        JsonObject jsonObject = jsonReader.readObject();
+        jsonReader.close();
 
         // act
-        testee.registerAllowedPolicy(request);
+        testee.registerAllowedPolicy(new CreatePolicyRequest(now.plusMinutes(1), jsonObject.get("payload").asJsonObject()));
 
         // assert
-        verify(service).registerPolicy(request);
+        verify(service).registerPolicy(any());
     }
 
     @Test
@@ -108,8 +159,8 @@ class PolicyStoreControllerTest {
 
     private List<Permission> createPermissions() {
         return List.of(
-                new Permission(PolicyType.USE, List.of(createConstraints())),
-                new Permission(PolicyType.ACCESS, List.of(createConstraints()))
+                new Permission(PolicyType.USE, createConstraints()),
+                new Permission(PolicyType.ACCESS, createConstraints())
         );
     }
 
@@ -117,9 +168,9 @@ class PolicyStoreControllerTest {
         return new Constraints(
                 Collections.emptyList(),
                 List.of(
-                        new Constraint("Membership", OperatorType.EQ, List.of("active")),
-                        new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active")),
-                        new Constraint("PURPOSE", OperatorType.EQ, List.of("ID 3.1 Trace")))
+                        new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
+                        new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"),
+                        new Constraint("PURPOSE", new Operator(OperatorType.EQ), "ID 3.1 Trace"))
         );
     }
 }
