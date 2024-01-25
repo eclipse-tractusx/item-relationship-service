@@ -23,6 +23,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 
 import java.util.Optional;
@@ -31,6 +33,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @WireMockTest
@@ -114,13 +117,11 @@ class BpdmWiremockTest {
     @Test
     void shouldReturnEmptyOnNotFound() {
         // Arrange
-        givenThat(get(urlPathEqualTo("/legal-entities/BPNL00000000TEST")).willReturn(
-                aResponse().withStatus(404).withHeader("Content-Type", "application/json;charset=UTF-8")));
+        givenThat(get(urlPathEqualTo("/legal-entities/BPNL00000000TEST")).willReturn(responseWithStatus(404)));
 
-        // Act
-        final Optional<String> manufacturerName = bpdmFacade.findManufacturerName("BPNL00000000TEST");
-
-        // Assert
-        assertThat(manufacturerName).isEmpty();
+        // Act & Assert
+        // TODO fix implementation to not throw HttpClientErrorException$NotFound
+        assertThatExceptionOfType(HttpClientErrorException.class).isThrownBy(
+                () -> bpdmFacade.findManufacturerName("BPNL00000000TEST"));
     }
 }

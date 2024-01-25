@@ -27,24 +27,24 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.DATAPLANE_URL;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.DISCOVERY_FINDER_PATH;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.DISCOVERY_FINDER_URL;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.EDC_DISCOVERY_PATH;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.LOOKUP_SHELLS_PATH;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.LOOKUP_SHELLS_TEMPLATE;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.SHELL_DESCRIPTORS_PATH;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.SHELL_DESCRIPTORS_TEMPLATE;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.TEST_BPN;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.getLookupShells200;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.getLookupShells200Empty;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.getLookupShells404;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.getShellDescriptor200;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.getShellDescriptor404;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.postDiscoveryFinder200;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.postDiscoveryFinder404;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.postEdcDiscovery200;
-import static org.eclipse.tractusx.irs.registryclient.decentral.DtrWiremockConfig.postEdcDiscovery404;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.DISCOVERY_FINDER_PATH;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.DISCOVERY_FINDER_URL;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.EDC_DISCOVERY_PATH;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.TEST_BPN;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.postDiscoveryFinder200;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.postDiscoveryFinder404;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.postEdcDiscovery200;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.postEdcDiscovery404;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.DATAPLANE_URL;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.LOOKUP_SHELLS_PATH;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.LOOKUP_SHELLS_TEMPLATE;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.SHELL_DESCRIPTORS_PATH;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.SHELL_DESCRIPTORS_TEMPLATE;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.getLookupShells200;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.getLookupShells200Empty;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.getLookupShells404;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.getShellDescriptor200;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.getShellDescriptor404;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -121,6 +121,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
+        // TODO fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -134,6 +135,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
+        // TODO fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -149,6 +151,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
+        // TODO fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -166,6 +169,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
+        // TODO fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -184,11 +188,12 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
+        // TODO fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
         verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
         verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
-        verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+        verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
     }
 }

@@ -26,11 +26,17 @@ import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.NO_ERROR
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.SEMHUB_REST_TEMPLATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 
+import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 @TestConfiguration
@@ -49,7 +55,16 @@ public class WireMockTestConfig {
     @Profile("integrationtest")
     @Bean(EDC_REST_TEMPLATE)
     RestTemplate edcRestTemplate() {
-        return restTemplateProxy(PROXY_SERVER_HOST, HTTP_PORT);
+        final RestTemplate edcRestTemplate = restTemplateProxy(PROXY_SERVER_HOST, HTTP_PORT);
+        final List<HttpMessageConverter<?>> messageConverters = edcRestTemplate.getMessageConverters();
+        for (final HttpMessageConverter<?> converter : messageConverters) {
+            if (converter instanceof final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
+                final ObjectMapper mappingJackson2HttpMessageConverterObjectMapper = mappingJackson2HttpMessageConverter.getObjectMapper();
+                PolicyRegistrationTypes.TYPES.forEach(
+                        mappingJackson2HttpMessageConverterObjectMapper::registerSubtypes);
+            }
+        }
+        return edcRestTemplate;
     }
 
     @Primary

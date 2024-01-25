@@ -18,9 +18,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.testing.wiremock;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
+import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,5 +46,9 @@ public final class WireMockConfig {
         final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setProxy(proxy);
         return new RestTemplate(requestFactory);
+    }
+
+    public static ResponseDefinitionBuilder responseWithStatus(final int statusCode) {
+        return aResponse().withStatus(statusCode).withHeader("Content-Type", "application/json;charset=UTF-8");
     }
 }
