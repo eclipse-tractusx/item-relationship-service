@@ -119,7 +119,7 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
 
         final Stream<T> requests;
         try {
-            requests = handler.initiate(multiJob);
+            requests = z.initiate(multiJob);
         } catch (RuntimeException e) {
             markJobInError(multiJob, e, JOB_EXECUTION_FAILED);
             meterService.incrementJobFailed();
