@@ -37,7 +37,6 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
-import org.springframework.web.client.RestClientException;
 
 /**
  * Retrieves AAShell from Digital Twin Registry service and storing it inside {@link ItemContainer}.
@@ -55,8 +54,10 @@ public class DigitalTwinDelegate extends AbstractDelegate {
     }
 
     @Override
-    public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final JobParameter jobData,
-            final AASTransferProcess aasTransferProcess, final PartChainIdentificationKey itemId) {
+    @SuppressWarnings("PMD.AvoidCatchingGenericException")
+    public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess,
+            final PartChainIdentificationKey itemId) {
 
         if (StringUtils.isBlank(itemId.getBpn())) {
             log.warn("Could not process item with id {} because no BPN was provided. Creating Tombstone.",
@@ -65,7 +66,9 @@ public class DigitalTwinDelegate extends AbstractDelegate {
                     Tombstone.from(itemId.getGlobalAssetId(), null, "Can't get relationship without a BPN", 0,
                             ProcessStep.DIGITAL_TWIN_REQUEST)).build();
         }
+
         try {
+
             final AssetAdministrationShellDescriptor shell = digitalTwinRegistryService.fetchShells(
                                                                                                List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn())))
                                                                                        .stream()
@@ -79,9 +82,13 @@ public class DigitalTwinDelegate extends AbstractDelegate {
                 // filter submodel descriptors if next delegate will not be executed
                 itemContainerBuilder.shell(shell.withFilteredSubmodelDescriptors(jobData.getAspects()));
             }
-        } catch (final RestClientException | RegistryServiceException e) {
+
+        } catch (final RegistryServiceException | RuntimeException e) {
+            // catching generic exception is intended here,
+            // otherwise Jobs stay in state RUNNING forever
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
-            itemContainerBuilder.tombstone(Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
+            itemContainerBuilder.tombstone(
+                    Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));
         }
 
         if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {

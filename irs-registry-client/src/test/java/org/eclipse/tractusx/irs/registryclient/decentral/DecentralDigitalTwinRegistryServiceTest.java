@@ -45,12 +45,14 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescr
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
-import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceRuntimeException;
 import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class DecentralDigitalTwinRegistryServiceTest {
 
     private final ConnectorEndpointsService connectorEndpointsService = mock(ConnectorEndpointsService.class);
@@ -80,7 +82,7 @@ class DecentralDigitalTwinRegistryServiceTest {
     class FetchShellsTests {
 
         @Test
-        void shouldReturnExpectedShell() throws RegistryServiceException {
+        void should_return_expected_shell() throws RegistryServiceException {
             // given
             final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                     "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
@@ -107,7 +109,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException {
+        void when_InterruptedException_occurs() throws ExecutionException, InterruptedException {
 
             // given
             simulateResultFinderInterrupted();
@@ -141,7 +143,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void whenExecutionExceptionOccurs() {
+        void when_ExecutionException_occurs() {
 
             // given
             simulateGetFastestResultFailedFuture();
@@ -166,14 +168,13 @@ class DecentralDigitalTwinRegistryServiceTest {
                     List.of(new DigitalTwinRegistryKey("dummyShellId", bpn)));
 
             // then
-            assertThatThrownBy(call).isInstanceOf(RegistryServiceRuntimeException.class)
-                                    .hasMessageContaining("Exception occurred while fetching shells for bpn")
-                                    .hasMessageContaining("'" + bpn + "'");
+            assertThatThrownBy(call).isInstanceOf(ShellNotFoundException.class)
+                                    .hasMessageContaining("Unable to find any of the requested shells");
 
         }
 
         @Test
-        void shouldThrowShellNotFound_IfNoDigitalTwinRegistryKeys() {
+        void should_throw_ShellNotFoundException_if_no_digital_twin_registry_keys_given() {
             assertThatThrownBy(() -> sut.fetchShells(emptyList())).isInstanceOf(ShellNotFoundException.class);
         }
 
@@ -203,7 +204,7 @@ class DecentralDigitalTwinRegistryServiceTest {
     class LookupGlobalAssetIdsTests {
 
         @Test
-        void shouldReturnExpectedGlobalAssetId() throws RegistryServiceException {
+        void should_return_the_expected_globalAssetId() throws RegistryServiceException {
             // given
             final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                     "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
@@ -235,7 +236,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException {
+        void when_InterruptedException_occurs() throws ExecutionException, InterruptedException {
             // given
             simulateResultFinderInterrupted();
 
@@ -243,12 +244,14 @@ class DecentralDigitalTwinRegistryServiceTest {
             final ThrowingCallable call = () -> sut.lookupShellsByBPN("dummyBpn");
 
             // then
-            assertThatThrownBy(call).isInstanceOf(ShellNotFoundException.class)
-                                    .hasMessage("Unable to find any of the requested shells");
+            assertThatThrownBy(call).isInstanceOf(RegistryServiceException.class)
+                                    .hasMessageContaining(
+                                            "InterruptedException occurred while looking up shell ids for bpn")
+                                    .hasMessageContaining("dummyBpn");
         }
 
         @Test
-        void whenExecutionExceptionOccurs() {
+        void when_ExecutionException_occurs() {
             // given
             simulateGetFastestResultFailedFuture();
 
@@ -257,7 +260,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             final ThrowingCallable call = () -> sut.lookupShellsByBPN(bpn);
 
             // then
-            assertThatThrownBy(call).isInstanceOf(RegistryServiceRuntimeException.class)
+            assertThatThrownBy(call).isInstanceOf(RegistryServiceException.class)
                                     .hasMessageContaining("Exception occurred while looking up shell ids for bpn")
                                     .hasMessageContaining("'" + bpn + "'");
         }

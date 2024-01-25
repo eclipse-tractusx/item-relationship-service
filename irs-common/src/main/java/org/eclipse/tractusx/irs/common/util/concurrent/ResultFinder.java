@@ -31,11 +31,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 /**
  * Helper class to find the relevant result from a list of futures.
@@ -80,8 +81,15 @@ public class ResultFinder {
             log.info(logPrefix + "All of the futures completed");
 
             if (ex != null) {
-                log.error(logPrefix + "Exception occurred: " + ex.getMessage(), ex);
-                fastestResultPromise.completeExceptionally(new CompletionExceptions(exceptions));
+
+                log.warn("All failed: " + System.lineSeparator() //
+                        + exceptions.stream()
+                                    .map(ExceptionUtils::getStackTrace)
+                                    .collect(Collectors.joining(System.lineSeparator())), ex);
+
+                fastestResultPromise.completeExceptionally(
+                        new CompletionExceptions(LOGPREFIX_TO_BE_REMOVED_LATER + "None successful", exceptions));
+
             } else if (fastestResultPromise.isDone()) {
                 log.info(logPrefix + "Fastest result already found, ignoring the others");
             } else {
@@ -145,19 +153,10 @@ public class ResultFinder {
     public static class CompletionExceptions extends CompletionException {
 
         private final List<Throwable> causes;
-
-        public CompletionExceptions(final List<Throwable> causes) {
-            super(LOGPREFIX_TO_BE_REMOVED_LATER + "All failing, use getCauses() for details");
+        
+        public CompletionExceptions(final String msg, final List<Throwable> causes) {
+            super(msg);
             this.causes = causes;
-        }
-
-        public void logWarn(final Logger log, final String prefix) {
-
-            log.warn("{}{}", prefix, this.getMessage(), this.getCause());
-
-            for (final Throwable cause : this.getCauses()) {
-                log.warn(prefix + cause.getMessage(), cause);
-            }
         }
 
     }
