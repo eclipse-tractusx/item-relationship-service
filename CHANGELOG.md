@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - CVE-2023-6378 serialization vulnerability in logback
   - CVE-2023-51074 json-path v2.8.0 stack overflow
   - CVE-2024-22233 Spring Framework server Web DoS Vulnerability
+  - 
 ## [4.4.0] - 2024-01-15
 ### Added
 - Added EDR token cache to reuse token after contract negotiation
