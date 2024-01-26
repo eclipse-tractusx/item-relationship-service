@@ -29,16 +29,21 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockConfig.DATAPLANE_HOST;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockConfig.PATH_DATAPLANE_PUBLIC;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -49,9 +54,13 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
@@ -61,6 +70,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -71,10 +81,10 @@ import org.springframework.web.client.RestTemplate;
 @WireMockTest
 class SubmodelFacadeWiremockTest {
     private static final String PROXY_SERVER_HOST = "127.0.0.1";
-    private final static String connectorEndpoint = "https://connector.endpoint.com";
-    private final static String submodelDataplanePath = "/api/public/shells/12345/submodels/5678/submodel";
-    private final static String submodelDataplaneUrl = "http://dataplane.test" + submodelDataplanePath;
-    private final static String assetId = "12345";
+    private final static String CONNECTOR_ENDPOINT_URL = "https://connector.endpoint.com";
+    private final static String SUBMODEL_DATAPLANE_PATH = "/api/public/shells/12345/submodels/5678/submodel";
+    private final static String SUBMODEL_DATAPLANE_URL = "http://dataplane.test" + SUBMODEL_DATAPLANE_PATH;
+    private final static String ASSET_ID = "12345";
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
     private EdcSubmodelClient edcSubmodelClient;
@@ -133,13 +143,13 @@ class SubmodelFacadeWiremockTest {
     void shouldReturnAssemblyPartRelationshipAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
-        SubmodelFacadeWiremockConfig.prepareNegotiation(storage);
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
                 responseWithStatus(200).withBodyFile("singleLevelBomAsBuilt.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl,
-                assetId).get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get();
 
         // Assert
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
@@ -149,13 +159,13 @@ class SubmodelFacadeWiremockTest {
     void shouldReturnMaterialForRecyclingAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
-        SubmodelFacadeWiremockConfig.prepareNegotiation(storage);
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
                 responseWithStatus(200).withBodyFile("materialForRecycling.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl,
-                assetId).get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get();
 
         // Assert
         assertThat(submodel).contains("\"materialName\": \"Cooper\",");
@@ -165,12 +175,12 @@ class SubmodelFacadeWiremockTest {
     void shouldReturnObjectAsStringWhenResponseNotJSON()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
-        SubmodelFacadeWiremockConfig.prepareNegotiation(storage);
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(responseWithStatus(200).withBody("test")));
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl,
-                assetId).get();
+        final String submodel = edcSubmodelClient.getSubmodelRawPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
@@ -189,26 +199,26 @@ class SubmodelFacadeWiremockTest {
 
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(acceptedPolicy));
 
-        SubmodelFacadeWiremockConfig.prepareNegotiation(storage);
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(responseWithStatus(200).withBody("test")));
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
 
         // Act & Assert
         final String errorMessage = "Consumption of asset '58505404-4da1-427a-82aa-b79482bcd1f0' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
         assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
-                                                                     () -> edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get())
-                                                             .withMessageEndingWith(errorMessage);
+                () -> edcSubmodelClient.getSubmodelRawPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID)
+                                       .get()).withMessageEndingWith(errorMessage);
     }
 
     @Test
     void shouldThrowExceptionWhenResponse_400() {
         // Arrange
-        SubmodelFacadeWiremockConfig.prepareNegotiation(storage);
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
                 responseWithStatus(400).withBody("{ error: '400'}")));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
-                connectorEndpoint, submodelDataplaneUrl, assetId).get(5, TimeUnit.SECONDS);
+                CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID).get(5, TimeUnit.SECONDS);
 
         // Assert
         assertThatExceptionOfType(ExecutionException.class).isThrownBy(throwingCallable)
@@ -218,17 +228,42 @@ class SubmodelFacadeWiremockTest {
     @Test
     void shouldThrowExceptionWhenResponse_500() {
         // Arrange
-        SubmodelFacadeWiremockConfig.prepareNegotiation(storage);
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(
+        prepareNegotiation();
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
                 responseWithStatus(500).withBody("{ error: '500'}")));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
-                connectorEndpoint, submodelDataplaneUrl, assetId).get(5, TimeUnit.SECONDS);
+                CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID).get(5, TimeUnit.SECONDS);
 
         // Assert
         assertThatExceptionOfType(ExecutionException.class).isThrownBy(throwingCallable)
                                                            .withCauseInstanceOf(RestClientException.class);
+    }
+
+    private void prepareNegotiation() {
+        final String contractAgreementId = SubmodelFacadeWiremockConfig.prepareNegotiation();
+        final EndpointDataReference ref = createEndpointDataReference(contractAgreementId);
+        storage.put(contractAgreementId, ref);
+    }
+
+    public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
+        final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
+                                                   .cid(contractAgreementId)
+                                                   .dad("test")
+                                                   .exp(9999999999L)
+                                                   .build();
+        final String b64EncodedAuthCode = Base64.getUrlEncoder()
+                                                .encodeToString(StringMapper.mapToString(edrAuthCode)
+                                                                            .getBytes(StandardCharsets.UTF_8));
+        final String jwtToken = "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
+        return EndpointDataReference.Builder.newInstance()
+                                            .authKey("testkey")
+                                            .authCode(jwtToken)
+                                            .properties(
+                                                    Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
+                                            .endpoint(DATAPLANE_HOST + PATH_DATAPLANE_PUBLIC)
+                                            .build();
     }
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId, List<Permission> permissions) {

@@ -18,12 +18,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.bpdm;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockConfig.BPDM_TEST;
+import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockConfig.bpdmResponse;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 
@@ -45,67 +46,14 @@ class BpdmWiremockTest {
     void setUp(WireMockRuntimeInfo wireMockRuntimeInfo) {
         final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
-        bpdmFacade = new BpdmFacade(
-                new BpdmClientImpl(restTemplate, "http://bpdm.test/legal-entities/{partnerId}?idType={idType}"));
+        bpdmFacade = new BpdmFacade(new BpdmClientImpl(restTemplate, BPDM_TEST));
     }
 
     @Test
     void shouldResolveManufacturerName() {
         // Arrange
         givenThat(get(urlPathEqualTo("/legal-entities/BPNL00000000TEST")).willReturn(
-                aResponse().withStatus(200).withHeader("Content-Type", "application/json;charset=UTF-8").withBody("""
-                        {
-                        	"bpn": "BPNL00000000TEST",
-                        	"identifiers": [
-                        		{
-                        			"value": "BPNL00000000TEST",
-                        			"type": {
-                        				"technicalKey": "BPN",
-                        				"name": "Business Partner Number",
-                        				"url": ""
-                        			},
-                        			"issuingBody": {
-                        				"technicalKey": "CATENAX",
-                        				"name": "Catena-X",
-                        				"url": ""
-                        			},
-                        			"status": {
-                        				"technicalKey": "UNKNOWN",
-                        				"name": "Unknown"
-                        			}
-                        		}
-                        	],
-                        	"names": [
-                        		{
-                        			"value": "TEST_BPN_DFT_1",
-                        			"shortName": null,
-                        			"type": {
-                        				"technicalKey": "OTHER",
-                        				"name": "Any other alternative name used for a company, such as a specific language variant.",
-                        				"url": ""
-                        			},
-                        			"language": {
-                        				"technicalKey": "undefined",
-                        				"name": "Undefined"
-                        			}
-                        		}
-                        	],
-                        	"legalForm": null,
-                        	"status": null,
-                        	"profileClassifications": [],
-                        	"types": [
-                        		{
-                        			"technicalKey": "UNKNOWN",
-                        			"name": "Unknown",
-                        			"url": ""
-                        		}
-                        	],
-                        	"bankAccounts": [],
-                        	"roles": [],
-                        	"relations": [],
-                        	"currentness": "2022-07-26T08:17:38.737578Z"
-                        }
-                         """)));
+                responseWithStatus(200).withBody(bpdmResponse("BPNL00000000TEST", "TEST_BPN_DFT_1"))));
 
         // Act
         final Optional<String> manufacturerName = bpdmFacade.findManufacturerName("BPNL00000000TEST");

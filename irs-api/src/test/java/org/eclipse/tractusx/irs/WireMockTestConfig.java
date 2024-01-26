@@ -24,12 +24,21 @@ import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.DTR_REST
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.EDC_REST_TEMPLATE;
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.NO_ERROR_REST_TEMPLATE;
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.SEMHUB_REST_TEMPLATE;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockConfig.DATAPLANE_HOST;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockConfig.PATH_DATAPLANE_PUBLIC;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
+import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +52,25 @@ import org.springframework.web.client.RestTemplate;
 public class WireMockTestConfig {
     public static final int HTTP_PORT = 8085;
     private static final String PROXY_SERVER_HOST = "127.0.0.1";
+
+    public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
+        final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
+                                                   .cid(contractAgreementId)
+                                                   .dad("test")
+                                                   .exp(9999999999L)
+                                                   .build();
+        final String b64EncodedAuthCode = Base64.getUrlEncoder()
+                                                .encodeToString(StringMapper.mapToString(edrAuthCode)
+                                                                            .getBytes(StandardCharsets.UTF_8));
+        final String jwtToken = "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
+        return EndpointDataReference.Builder.newInstance()
+                                            .authKey("testkey")
+                                            .authCode(jwtToken)
+                                            .properties(
+                                                    Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
+                                            .endpoint(DATAPLANE_HOST + PATH_DATAPLANE_PUBLIC)
+                                            .build();
+    }
 
     @Primary
     @Profile("integrationtest")

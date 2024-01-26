@@ -27,18 +27,28 @@ import java.util.List;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 
-public class DtrWiremockConfig {
+/**
+ * WireMock configurations and requests used for testing the decentralized DigitalTwinRegistry flow.
+ */
+public final class DtrWiremockConfig {
     public static final String DATAPLANE_URL = "http://dataplane.test";
-    public static final String DATAPLANE_PUBLIC_URL = DATAPLANE_URL + "/api/public/data/";
+    public static final String DATAPLANE_PUBLIC_PATH = "/api/public";
+    public static final String DATAPLANE_PUBLIC_URL = DATAPLANE_URL + DATAPLANE_PUBLIC_PATH;
     public static final String SHELL_DESCRIPTORS_PATH = "/shell-descriptors/";
+    public static final String PUBLIC_SHELL_DESCRIPTORS_PATH = DATAPLANE_PUBLIC_PATH + SHELL_DESCRIPTORS_PATH;
     public static final String SHELL_DESCRIPTORS_TEMPLATE = SHELL_DESCRIPTORS_PATH + "{aasIdentifier}";
     public static final String LOOKUP_SHELLS_PATH = "/lookup/shells";
+    public static final String PUBLIC_LOOKUP_SHELLS_PATH = DATAPLANE_PUBLIC_PATH + LOOKUP_SHELLS_PATH;
     public static final String LOOKUP_SHELLS_TEMPLATE = LOOKUP_SHELLS_PATH + "?assetIds={assetIds}";
 
     private DtrWiremockConfig() {
     }
 
     public static MappingBuilder getShellDescriptor200() {
+        return getShellDescriptor200(SHELL_DESCRIPTORS_PATH + ".*");
+    }
+
+    public static MappingBuilder getShellDescriptor200(final String urlRegex) {
         final String materialForRecycling = submodelDescriptor(DATAPLANE_PUBLIC_URL,
                 "urn:uuid:19b0338f-6d03-4198-b3b8-5c43f8958d60", DiscoveryServiceWiremockConfig.CONTROLPLANE_PUBLIC_URL,
                 "MaterialForRecycling", "urn:uuid:cf06d5d5-e3f8-4bd4-bfcf-81815310701f",
@@ -48,15 +58,15 @@ public class DtrWiremockConfig {
                 DiscoveryServiceWiremockConfig.CONTROLPLANE_PUBLIC_URL, "Batch",
                 "urn:uuid:f53db6ef-7a58-4326-9169-0ae198b85dbf", "urn:samm:io.catenax.batch:2.0.0#Batch");
 
-        final String singleLevelUsageAsBuilt = submodelDescriptor(DATAPLANE_PUBLIC_URL,
-                "urn:uuid:f8196d6a-1664-4531-bdee-f15dbb1daf26", DiscoveryServiceWiremockConfig.CONTROLPLANE_PUBLIC_URL,
-                "SingleLevelUsageAsBuilt", "urn:uuid:e2899f43-eca8-4aec-b877-4a69691f0487",
-                "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt");
+        final String singleLevelBomAsBuilt = submodelDescriptor(DATAPLANE_PUBLIC_URL,
+                "urn:uuid:234edd2f-0223-47c7-9fe4-3984ab14c4f9", DiscoveryServiceWiremockConfig.CONTROLPLANE_PUBLIC_URL,
+                "SingleLevelBomAsBuilt", "urn:uuid:0e413809-966b-4107-aae5-aeb28bcdaadf",
+                "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt");
 
-        final List<String> submodelDescriptors = List.of(materialForRecycling, batch, singleLevelUsageAsBuilt);
+        final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt, materialForRecycling);
         final List<String> specificAssetIds = List.of(specificAssetId("manufacturerId", "BPNL00000003B0Q0"),
                 specificAssetId("batchId", "BID12345678"));
-        return get(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")).willReturn(responseWithStatus(200).withBody(
+        return get(urlPathMatching(urlRegex)).willReturn(responseWithStatus(200).withBody(
                 assetAdministrationShellResponse(submodelDescriptors, "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5",
                         "EngineeringPlastics", "urn:uuid:9ce43b21-75e3-4cea-b13e-9a34f4f6822a", specificAssetIds)));
     }
@@ -103,7 +113,7 @@ public class DtrWiremockConfig {
 
     public static String submodelDescriptor(final String dataplaneUrl, final String assetId, final String dspEndpoint,
             final String idShort, final String submodelDescriptorId, final String semanticId) {
-        final String href = dataplaneUrl + submodelDescriptorId;
+        final String href = dataplaneUrl + "/" + submodelDescriptorId;
         return """
                 {
                   "endpoints": [
@@ -147,7 +157,11 @@ public class DtrWiremockConfig {
     }
 
     public static MappingBuilder getLookupShells200() {
-        return get(urlPathEqualTo(LOOKUP_SHELLS_PATH)).willReturn(responseWithStatus(200).withBody(
+        return getLookupShells200(LOOKUP_SHELLS_PATH);
+    }
+
+    public static MappingBuilder getLookupShells200(final String lookupShellsPath) {
+        return get(urlPathEqualTo(lookupShellsPath)).willReturn(responseWithStatus(200).withBody(
                 lookupShellsResponse(List.of("urn:uuid:21f7ebea-fa8a-410c-a656-bd9082e67dcf"))));
     }
 

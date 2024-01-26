@@ -34,6 +34,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockConfig.SEMANTIC_HUB_SCHEMA_URL;
+import static org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockConfig.batchSchemaResponse200;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 
@@ -67,7 +69,7 @@ class SemanticHubWiremockTest {
         final SemanticsHubConfiguration config = new SemanticsHubConfiguration();
         config.setPageSize(10);
         config.setUrl("http://semantic.hub/models");
-        config.setModelJsonSchemaEndpoint("http://semantic.hub/models/{urn}/json-schema");
+        config.setModelJsonSchemaEndpoint(SEMANTIC_HUB_SCHEMA_URL);
 
         final SemanticsHubClient semanticsHubClient = new SemanticsHubClientImpl(restTemplate, config);
         semanticsHubFacade = new SemanticsHubFacade(semanticsHubClient);
@@ -107,12 +109,7 @@ class SemanticHubWiremockTest {
     @Test
     void shouldReturnJsonSchema() throws SchemaNotFoundException {
         // Arrange
-        stubFor(get(urlPathMatching("/models/urn:samm:io.catenax.batch:2.0.0%23Batch/json-schema")).withHost(
-                                                                                                           equalTo("semantic.hub"))
-                                                                                                   .willReturn(
-                                                                                                           responseWithStatus(
-                                                                                                                   200).withBodyFile(
-                                                                                                                   "semantichub/batch-2.0.0-schema.json")));
+        stubFor(batchSchemaResponse200());
 
         // Act
         final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema("urn:samm:io.catenax.batch:2.0.0#Batch");

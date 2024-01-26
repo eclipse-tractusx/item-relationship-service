@@ -20,24 +20,33 @@ package org.eclipse.tractusx.irs.testing.wiremock;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.*;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 
 import java.util.List;
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 
-public class DiscoveryServiceWiremockConfig {
-    public static final String CONTROLPLANE_PUBLIC_URL = "https://controlplane.test";
+/**
+ * WireMock configurations and requests used for testing the Discovery Service flow.
+ */
+public final class DiscoveryServiceWiremockConfig {
+    public static final String CONTROLPLANE_PUBLIC_URL = "https://test.edc.io";
     public static final String EDC_DISCOVERY_PATH = "/edcDiscovery";
     public static final String TEST_BPN = "BPNL00000000TEST";
     public static final String DISCOVERY_FINDER_PATH = "/discoveryFinder";
     public static final String DISCOVERY_HOST = "http://discovery.finder";
     public static final String EDC_DISCOVERY_URL = DISCOVERY_HOST + EDC_DISCOVERY_PATH;
-    public static final String DISCOVERY_FINDER_URL = DISCOVERY_HOST + DiscoveryServiceWiremockConfig.DISCOVERY_FINDER_PATH;
+    public static final String DISCOVERY_FINDER_URL = DISCOVERY_HOST + DISCOVERY_FINDER_PATH;
+    private DiscoveryServiceWiremockConfig() {
+    }
 
     public static MappingBuilder postEdcDiscovery200() {
+        return postEdcDiscovery200(TEST_BPN, List.of(CONTROLPLANE_PUBLIC_URL));
+    }
+
+    public static MappingBuilder postEdcDiscovery200(final String bpn, final List<String> edcUrls) {
         return post(urlPathEqualTo(EDC_DISCOVERY_PATH)).willReturn(
-                responseWithStatus(200).withBody(edcDiscoveryResponse(TEST_BPN, List.of(CONTROLPLANE_PUBLIC_URL))));
+                responseWithStatus(200).withBody(edcDiscoveryResponse(bpn, edcUrls)));
     }
 
     public static String edcDiscoveryResponse(final String bpn, final List<String> connectorEndpoints) {
@@ -72,15 +81,6 @@ public class DiscoveryServiceWiremockConfig {
                    ]
                  }
                 """.formatted(discoveryFinderUrl);
-    }
-
-    public static String discoveryFinderEmtpyResponse() {
-        return """
-                {
-                   "endpoints": [
-                   ]
-                 }
-                """;
     }
 
     public static MappingBuilder postDiscoveryFinder404() {

@@ -16,27 +16,19 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client;
+package org.eclipse.tractusx.irs.testing.wiremock;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.data.StringMapper;
-import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
-import org.jetbrains.annotations.NotNull;
-
-public class SubmodelFacadeWiremockConfig {
-
+/**
+ * WireMock configurations and requests used for testing the EDC Flow.
+ */
+public final class SubmodelFacadeWiremockConfig {
     public static final String PATH_CATALOG = "/catalog/request";
     public static final String PATH_NEGOTIATE = "/contractnegotiations";
     public static final String PATH_TRANSFER = "/transferprocesses";
@@ -54,46 +46,50 @@ public class SubmodelFacadeWiremockConfig {
                 }""";
     public static final String EDC_PROVIDER_DUMMY_URL = "https://edc.io/api/v1/dsp";
     public static final String IRS_INTERNAL_CALLBACK_URL = "https://irs.test/internal/endpoint-data-reference";
+    public static final String EDC_PROVIDER_BPN = "BPNL00000003CRHK";
 
-    // TODO move to irs-testing
+    private SubmodelFacadeWiremockConfig() {
+    }
 
-    public static void prepareNegotiation(final EndpointDataReferenceStorage storage) {
-        prepareNegotiation(storage, "1bbaec6e-c316-4e1e-8258-c07a648cc43c", "1b21e963-0bc5-422a-b30d-fd3511861d88",
+    public static String prepareNegotiation() {
+        return prepareNegotiation("1bbaec6e-c316-4e1e-8258-c07a648cc43c", "1b21e963-0bc5-422a-b30d-fd3511861d88",
                 "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f",
                 "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7");
     }
 
-    public static void prepareNegotiation(final EndpointDataReferenceStorage storage, final String negotiationId,
-            final String transferProcessId, final String contractAgreementId, final String edcAssetId) {
-        givenThat(post(urlPathEqualTo(PATH_CATALOG)).willReturn(
-                responseWithStatus(200).withBody(getCatalogResponse(edcAssetId, "USE", "BPNL00000003CRHK"))));
-        System.out.println(getCatalogResponse(edcAssetId, "USE", "BPNL00000003CRHK"));
-        givenThat(post(urlPathEqualTo(PATH_NEGOTIATE)).willReturn(
-                responseWithStatus(200).withBody(startNegotiationResponse(negotiationId))));
+    public static String prepareNegotiation(final String negotiationId, final String transferProcessId,
+            final String contractAgreementId, final String edcAssetId) {
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(200)
+                                                                            .withBody(getCatalogResponse(edcAssetId,
+                                                                                    "USE", EDC_PROVIDER_BPN))));
+
+        stubFor(post(urlPathEqualTo(PATH_NEGOTIATE)).willReturn(
+                WireMockConfig.responseWithStatus(200).withBody(startNegotiationResponse(negotiationId))));
 
         final String negotiationState = "FINALIZED";
-        givenThat(get(urlPathEqualTo(PATH_NEGOTIATE + "/" + negotiationId)).willReturn(responseWithStatus(200).withBody(
-                getNegotiationConfirmedResponse(negotiationId, negotiationState, contractAgreementId))));
+        stubFor(get(urlPathEqualTo(PATH_NEGOTIATE + "/" + negotiationId)).willReturn(
+                WireMockConfig.responseWithStatus(200)
+                              .withBody(getNegotiationConfirmedResponse(negotiationId, negotiationState,
+                                      contractAgreementId))));
 
-        givenThat(get(urlPathEqualTo(PATH_NEGOTIATE + "/" + negotiationId + PATH_STATE)).willReturn(
-                responseWithStatus(200).withBody(getNegotiationStateResponse(negotiationState))));
+        stubFor(get(urlPathEqualTo(PATH_NEGOTIATE + "/" + negotiationId + PATH_STATE)).willReturn(
+                WireMockConfig.responseWithStatus(200).withBody(getNegotiationStateResponse(negotiationState))));
 
-        givenThat(post(urlPathEqualTo(PATH_TRANSFER)).willReturn(
-                responseWithStatus(200).withBody(startTransferProcessResponse(transferProcessId))
+        stubFor(post(urlPathEqualTo(PATH_TRANSFER)).willReturn(
+                WireMockConfig.responseWithStatus(200).withBody(startTransferProcessResponse(transferProcessId))
 
         ));
         final String transferProcessState = "COMPLETED";
-        givenThat(get(urlPathEqualTo(PATH_TRANSFER + "/" + transferProcessId + PATH_STATE)).willReturn(
-                responseWithStatus(200).withBody(getTransferProcessStateResponse(transferProcessState))
+        stubFor(get(urlPathEqualTo(PATH_TRANSFER + "/" + transferProcessId + PATH_STATE)).willReturn(
+                WireMockConfig.responseWithStatus(200).withBody(getTransferProcessStateResponse(transferProcessState))
 
         ));
-        givenThat(get(urlPathEqualTo(PATH_TRANSFER + "/" + transferProcessId)).willReturn(
-                responseWithStatus(200).withBody(
-                        getTransferConfirmedResponse(transferProcessId, transferProcessState, edcAssetId,
-                                contractAgreementId))));
-
-        final EndpointDataReference ref = createEndpointDataReference(contractAgreementId);
-        storage.put(contractAgreementId, ref);
+        stubFor(get(urlPathEqualTo(PATH_TRANSFER + "/" + transferProcessId)).willReturn(
+                WireMockConfig.responseWithStatus(200)
+                              .withBody(
+                                      getTransferConfirmedResponse(transferProcessId, transferProcessState, edcAssetId,
+                                              contractAgreementId))));
+        return contractAgreementId;
     }
 
     private static String startTransferProcessResponse(final String transferProcessId) {
@@ -164,16 +160,16 @@ public class SubmodelFacadeWiremockConfig {
                         "@id": "%s",
                         "edc:assetId": "%s",
                         "edc:contractId": "%s",
-                        "edc:connectorId": "BPNL00000003CRHK"
+                        "edc:connectorId": "%s"
                     },
                     "edc:receiverHttpEndpoint": "%s",
                     "@context": %s
                 }
                 """.formatted(transferProcessId, transferState, transferProcessId, edcAssetId, contractAgreementId,
-                IRS_INTERNAL_CALLBACK_URL, CONTEXT);
+                EDC_PROVIDER_BPN, IRS_INTERNAL_CALLBACK_URL, CONTEXT);
     }
 
-    private static String getCatalogResponse(final String edcAssetId, final String permissionType,
+    public static String getCatalogResponse(final String edcAssetId, final String permissionType,
             final String edcProviderBpn) {
         return """
                 {
@@ -221,7 +217,6 @@ public class SubmodelFacadeWiremockConfig {
                 EDC_PROVIDER_DUMMY_URL, edcProviderBpn, CONTEXT);
     }
 
-    @NotNull
     private static String createConstraints() {
         final List<String> atomitConstraints = List.of(createAtomicConstraint("Membership", "active"),
                 createAtomicConstraint("FrameworkAgreement.traceability", "active"));
@@ -244,22 +239,4 @@ public class SubmodelFacadeWiremockConfig {
                 }""".formatted(leftOperand, rightOperand);
     }
 
-    public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
-        final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
-                                                   .cid(contractAgreementId)
-                                                   .dad("test")
-                                                   .exp(9999999999L)
-                                                   .build();
-        final String b64EncodedAuthCode = Base64.getUrlEncoder()
-                                                .encodeToString(StringMapper.mapToString(edrAuthCode)
-                                                                            .getBytes(StandardCharsets.UTF_8));
-        final String jwtToken = "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
-        return EndpointDataReference.Builder.newInstance()
-                                            .authKey("testkey")
-                                            .authCode(jwtToken)
-                                            .properties(
-                                                    Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
-                                            .endpoint(DATAPLANE_HOST + PATH_DATAPLANE_PUBLIC)
-                                            .build();
-    }
 }
