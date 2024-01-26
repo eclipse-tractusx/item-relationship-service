@@ -62,3 +62,11 @@ local/testing/api-tests/__pycache__/
 
 ### Cucumber ###
 /irs-cucumber-tests/report.json
+
+### Local documentation build ###
+node_modules
+docs/src/diagram-replacer/generated-adocs
+docs/src/diagram-replacer/package-lock.json
+docs/src/diagram-replacer/package.json
+docs/src/diagram-replacer/plantuml.jar
+
