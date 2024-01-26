@@ -81,36 +81,26 @@ spec:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
                   key: minioPassword
-            - name: SEMANTICS_OAUTH2_CLIENT_ID
+            - name: OAUTH2_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
-                  key: semanticsId
-            - name: SEMANTICS_OAUTH2_CLIENT_SECRET
+                  key: clientId
+            - name: OAUTH2_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
-                  key: semanticsSecret
-            - name: DISCOVERY_OAUTH2_CLIENT_ID
+                  key: clientSecret
+            - name: PORTAL_OAUTH2_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
-                  key: discoveryClientId
-            - name: DISCOVERY_OAUTH2_CLIENT_SECRET
+                  key: portalClientId
+            - name: PORTAL_OAUTH2_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: {{ template "irs.secretName" . }}
-                  key: discoveryClientSecret
-            - name: BPDM_OAUTH2_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "irs.secretName" . }}
-                  key: bpdmClientId
-            - name: BPDM_OAUTH2_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "irs.secretName" . }}
-                  key: bpdmClientSecret
+                  key: portalClientSecret
             - name: EDC_API_KEY_SECRET
               valueFrom:
                 secretKeyRef:
