@@ -81,7 +81,7 @@ public class BatchController {
 
     @Operation(operationId = "registerOrder", summary = "Registers an IRS order with an array of {globalAssetIds}. "
             + "Each globalAssetId will be processed in an IRS Job, grouped in batches.",
-               security = @SecurityRequirement(name = "oAuth2"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
                description = "Registers an IRS order with an array of {globalAssetIds}. "
                        + "Each globalAssetId will be processed in an IRS Job, grouped in batches.")
     @ApiResponses(
@@ -121,7 +121,7 @@ public class BatchController {
 
     @Operation(operationId = "registerESSInvestigationOrder",
                summary = "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.",
-               security = @SecurityRequirement(name = "oAuth2"), tags = { "Environmental and Social Standards" },
+               security = @SecurityRequirement(name = "api_key"), tags = { "Environmental and Social Standards" },
                description = "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches.")
     @ApiResponses(
             value = { @ApiResponse(responseCode = "201", description = "Returns orderId of registered Batch order.",
@@ -160,7 +160,7 @@ public class BatchController {
     }
 
     @Operation(description = "Get a batch order for a given orderId.", operationId = "getBatchOrder",
-               summary = "Get a batch order for a given orderId.", security = @SecurityRequirement(name = "oAuth2"),
+               summary = "Get a batch order for a given orderId.", security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Get a batch order for a given orderId.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(
@@ -206,7 +206,7 @@ public class BatchController {
 
     @Operation(description = "Get a batch with a given batchId for a given orderId.", operationId = "getBatch",
                summary = "Get a batch with a given batchId for a given orderId.",
-               security = @SecurityRequirement(name = "oAuth2"), tags = { "Item Relationship Service" })
+               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Get a batch with a given batchId for a given orderId.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -255,7 +255,7 @@ public class BatchController {
     }
 
     @Operation(description = "Cancel a batch order for a given orderId.", operationId = "cancelBatchOrder",
-               summary = "Cancel a batch order for a given orderId.", security = @SecurityRequirement(name = "oAuth2"),
+               summary = "Cancel a batch order for a given orderId.", security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" })
     @ApiResponses(
             value = { @ApiResponse(responseCode = "200", description = "Cancel a batch order for a given orderId.",
