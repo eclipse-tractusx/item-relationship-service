@@ -15,10 +15,6 @@
     <name>IRS Spring Boot Parent</name>
     <description>Parent module for Spring Boot modules.</description>
 
-    <properties>
-        <logback.version>1.4.14</logback.version>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -27,16 +23,6 @@
                 <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-classic</artifactId>
-                <version>${logback.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>${logback.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
