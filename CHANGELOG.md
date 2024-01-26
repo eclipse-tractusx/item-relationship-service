@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
 - Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
+- Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
+
+### Fixed
+- Update to Spring Boot 3.1.8. This fixes the following CVEs:
+  - CVE-2023-6378 serialization vulnerability in logback
+  - CVE-2023-51074 json-path v2.8.0 stack overflow
+  - CVE-2024-22233 Spring Framework server Web DoS Vulnerability
 
 ## [4.4.0] - 2024-01-15
 ### Added
