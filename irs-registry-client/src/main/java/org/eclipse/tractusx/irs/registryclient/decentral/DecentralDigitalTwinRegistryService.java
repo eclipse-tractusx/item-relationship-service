@@ -258,14 +258,15 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "lookupShellIds - ";
         log.info(logPrefix + "Looking up shell ids for bpn {}", bpn);
 
-        final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-        log.info(logPrefix + "Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, connectorEndpoints);
-
-        final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                connectorEndpoints);
-        log.info(logPrefix + "Created endpointDataReferenceFutures");
-
         try {
+
+            final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            log.info(logPrefix + "Looking up shell ids for bpn '{}' with connector endpoints {}", bpn,
+                    connectorEndpoints);
+
+            final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
+                    connectorEndpoints);
+            log.info(logPrefix + "Created endpointDataReferenceFutures");
 
             return lookupShellIds(bpn, endpointDataReferenceFutures, logPrefix);
 
