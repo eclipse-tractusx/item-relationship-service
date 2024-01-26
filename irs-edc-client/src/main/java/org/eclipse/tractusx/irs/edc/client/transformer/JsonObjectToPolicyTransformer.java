@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client.transformer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.JsonObject;
 import org.eclipse.edc.jsonld.spi.transformer.AbstractJsonLdTransformer;
@@ -49,7 +50,7 @@ public class JsonObjectToPolicyTransformer extends AbstractJsonLdTransformer<Jso
     public @Nullable Policy transform(@NotNull final JsonObject jsonObject,
             @NotNull final TransformerContext transformerContext) {
         final Policy.PolicyBuilder builder = Policy.builder();
-        builder.policyId(jsonObject.get("@id").toString());
+        builder.policyId(getId(jsonObject));
 
         this.visitProperties(jsonObject, (key) -> v -> {
             try {
@@ -61,5 +62,14 @@ public class JsonObjectToPolicyTransformer extends AbstractJsonLdTransformer<Jso
         });
 
         return builder.build();
+    }
+
+    private String getId(final JsonObject jsonObject) {
+        try {
+            final JsonNode jsonNode = objectMapper.readTree(jsonObject.toString());
+            return jsonNode.path("@id").asText();
+        } catch (JsonProcessingException e) {
+            throw new JsonParseException(e);
+        }
     }
 }

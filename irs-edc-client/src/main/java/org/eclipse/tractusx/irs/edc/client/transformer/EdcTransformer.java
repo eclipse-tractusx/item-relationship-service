@@ -87,7 +87,7 @@ public class EdcTransformer {
     private final TransformerContextImpl transformerContext;
 
     public EdcTransformer(@Qualifier("jsonLdObjectMapper") final ObjectMapper objectMapper,
-            final TitaniumJsonLd titaniumJsonLd) {
+            final TitaniumJsonLd titaniumJsonLd, final TypeTransformerRegistry typeTransformerRegistry) {
         this.titaniumJsonLd = titaniumJsonLd;
         final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 
@@ -101,7 +101,6 @@ public class EdcTransformer {
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
         jsonObjectToPolicyTransformer = new org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer(objectMapper);
 
-        final TypeTransformerRegistry typeTransformerRegistry = new TypeTransformerRegistryImpl();
         transformerContext = new TransformerContextImpl(typeTransformerRegistry);
 
         // JSON to Object

@@ -36,6 +36,7 @@ import java.util.List;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
@@ -97,7 +98,7 @@ class PolicyStoreControllerTest {
 
     private PolicyStoreController testee;
     private final TitaniumJsonLd titaniumJsonLd = new TitaniumJsonLd(new ConsoleMonitor());
-    private final EdcTransformer edcTransformer = new EdcTransformer(new com.fasterxml.jackson.databind.ObjectMapper(), titaniumJsonLd);
+    private final EdcTransformer edcTransformer = new EdcTransformer(new com.fasterxml.jackson.databind.ObjectMapper(), titaniumJsonLd, new TypeTransformerRegistryImpl());
 
     @Mock
     private PolicyStoreService service;
