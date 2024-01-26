@@ -36,7 +36,6 @@ import jakarta.json.JsonReader;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.core.transform.TransformerContextImpl;
-import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromAssetTransformer;
 import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromCatalogTransformer;
 import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromCriterionTransformer;
