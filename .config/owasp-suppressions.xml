@@ -32,7 +32,7 @@
         <notes><![CDATA[
         Only used in tests.
         ]]></notes>
-        <packageUrl regex="true">^pkg:maven/com\.jayway\.jsonpath@.*$</packageUrl>
+        <packageUrl regex="true">^pkg:maven/com.jayway.jsonpath/json-path@2.8.0$</packageUrl>
         <vulnerabilityName>CVE-2023-51074</vulnerabilityName>
     </suppress>
 </suppressions>
