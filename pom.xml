@@ -121,7 +121,7 @@
         <gatling-maven-plugin.version>4.3.0</gatling-maven-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
-        <license-tool-plugin.version>1.0.3-SNAPSHOT</license-tool-plugin.version>
+        <license-tool-plugin.version>1.1.0</license-tool-plugin.version>
         <snappy-java.version>1.1.10.5</snappy-java.version>
     </properties>
 
@@ -158,10 +158,10 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>dash-licenses-snapshots</id>
-            <url>https://repo.eclipse.org/content/repositories/dash-licenses-snapshots/</url>
+            <id>dash-licenses-releases</id>
+            <url>https://repo.eclipse.org/content/repositories/dash-licenses-releases/</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
