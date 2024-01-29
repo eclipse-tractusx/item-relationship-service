@@ -40,6 +40,8 @@ public final class DtrWiremockConfig {
     public static final String LOOKUP_SHELLS_PATH = "/lookup/shells";
     public static final String PUBLIC_LOOKUP_SHELLS_PATH = DATAPLANE_PUBLIC_PATH + LOOKUP_SHELLS_PATH;
     public static final String LOOKUP_SHELLS_TEMPLATE = LOOKUP_SHELLS_PATH + "?assetIds={assetIds}";
+    public static final int STATUS_CODE_OK = 200;
+    public static final int STATUS_CODE_NOT_FOUND = 404;
 
     private DtrWiremockConfig() {
     }
@@ -66,7 +68,7 @@ public final class DtrWiremockConfig {
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt, materialForRecycling);
         final List<String> specificAssetIds = List.of(specificAssetId("manufacturerId", "BPNL00000003B0Q0"),
                 specificAssetId("batchId", "BID12345678"));
-        return get(urlPathMatching(urlRegex)).willReturn(responseWithStatus(200).withBody(
+        return get(urlPathMatching(urlRegex)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
                 assetAdministrationShellResponse(submodelDescriptors, "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5",
                         "EngineeringPlastics", "urn:uuid:9ce43b21-75e3-4cea-b13e-9a34f4f6822a", specificAssetIds)));
     }
@@ -111,6 +113,7 @@ public final class DtrWiremockConfig {
                 """.formatted(key, value);
     }
 
+    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
     public static String submodelDescriptor(final String dataplaneUrl, final String assetId, final String dspEndpoint,
             final String idShort, final String submodelDescriptorId, final String semanticId) {
         final String href = dataplaneUrl + "/" + submodelDescriptorId;
@@ -161,13 +164,13 @@ public final class DtrWiremockConfig {
     }
 
     public static MappingBuilder getLookupShells200(final String lookupShellsPath) {
-        return get(urlPathEqualTo(lookupShellsPath)).willReturn(responseWithStatus(200).withBody(
+        return get(urlPathEqualTo(lookupShellsPath)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
                 lookupShellsResponse(List.of("urn:uuid:21f7ebea-fa8a-410c-a656-bd9082e67dcf"))));
     }
 
     public static MappingBuilder getLookupShells200Empty() {
         return get(urlPathMatching(LOOKUP_SHELLS_PATH + ".*")).willReturn(
-                responseWithStatus(200).withBody(lookupShellsResponse(List.of())));
+                responseWithStatus(STATUS_CODE_OK).withBody(lookupShellsResponse(List.of())));
     }
 
     public static String lookupShellsResponse(final List<String> shellIds) {
@@ -182,10 +185,11 @@ public final class DtrWiremockConfig {
     }
 
     public static MappingBuilder getLookupShells404() {
-        return get(urlPathEqualTo(LOOKUP_SHELLS_PATH)).willReturn(responseWithStatus(404));
+        return get(urlPathEqualTo(LOOKUP_SHELLS_PATH)).willReturn(responseWithStatus(STATUS_CODE_NOT_FOUND));
     }
 
     public static MappingBuilder getShellDescriptor404() {
-        return get(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")).willReturn(responseWithStatus(404));
+        return get(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")).willReturn(
+                responseWithStatus(STATUS_CODE_NOT_FOUND));
     }
 }

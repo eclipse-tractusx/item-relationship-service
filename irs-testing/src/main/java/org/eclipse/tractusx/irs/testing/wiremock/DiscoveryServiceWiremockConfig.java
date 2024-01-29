@@ -37,6 +37,9 @@ public final class DiscoveryServiceWiremockConfig {
     public static final String DISCOVERY_HOST = "http://discovery.finder";
     public static final String EDC_DISCOVERY_URL = DISCOVERY_HOST + EDC_DISCOVERY_PATH;
     public static final String DISCOVERY_FINDER_URL = DISCOVERY_HOST + DISCOVERY_FINDER_PATH;
+    public static final int STATUS_CODE_OK = 200;
+    public static final int STATUS_CODE_NOT_FOUND = 404;
+
     private DiscoveryServiceWiremockConfig() {
     }
 
@@ -46,7 +49,7 @@ public final class DiscoveryServiceWiremockConfig {
 
     public static MappingBuilder postEdcDiscovery200(final String bpn, final List<String> edcUrls) {
         return post(urlPathEqualTo(EDC_DISCOVERY_PATH)).willReturn(
-                responseWithStatus(200).withBody(edcDiscoveryResponse(bpn, edcUrls)));
+                responseWithStatus(STATUS_CODE_OK).withBody(edcDiscoveryResponse(bpn, edcUrls)));
     }
 
     public static String edcDiscoveryResponse(final String bpn, final List<String> connectorEndpoints) {
@@ -64,7 +67,7 @@ public final class DiscoveryServiceWiremockConfig {
 
     public static MappingBuilder postDiscoveryFinder200() {
         return post(urlPathEqualTo(DISCOVERY_FINDER_PATH)).willReturn(
-                responseWithStatus(200).withBody(discoveryFinderResponse(EDC_DISCOVERY_URL)));
+                responseWithStatus(STATUS_CODE_OK).withBody(discoveryFinderResponse(EDC_DISCOVERY_URL)));
     }
 
     public static String discoveryFinderResponse(final String discoveryFinderUrl) {
@@ -84,10 +87,10 @@ public final class DiscoveryServiceWiremockConfig {
     }
 
     public static MappingBuilder postDiscoveryFinder404() {
-        return post(urlPathEqualTo(DISCOVERY_FINDER_PATH)).willReturn(responseWithStatus(404));
+        return post(urlPathEqualTo(DISCOVERY_FINDER_PATH)).willReturn(responseWithStatus(STATUS_CODE_NOT_FOUND));
     }
 
     public static MappingBuilder postEdcDiscovery404() {
-        return post(urlPathEqualTo(EDC_DISCOVERY_PATH)).willReturn(responseWithStatus(404));
+        return post(urlPathEqualTo(EDC_DISCOVERY_PATH)).willReturn(responseWithStatus(STATUS_CODE_NOT_FOUND));
     }
 }

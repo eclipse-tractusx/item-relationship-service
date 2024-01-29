@@ -47,6 +47,7 @@ public final class SubmodelFacadeWiremockConfig {
     public static final String EDC_PROVIDER_DUMMY_URL = "https://edc.io/api/v1/dsp";
     public static final String IRS_INTERNAL_CALLBACK_URL = "https://irs.test/internal/endpoint-data-reference";
     public static final String EDC_PROVIDER_BPN = "BPNL00000003CRHK";
+    public static final int STATUS_CODE_OK = 200;
 
     private SubmodelFacadeWiremockConfig() {
     }
@@ -57,35 +58,37 @@ public final class SubmodelFacadeWiremockConfig {
                 "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7");
     }
 
+    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
     public static String prepareNegotiation(final String negotiationId, final String transferProcessId,
             final String contractAgreementId, final String edcAssetId) {
-        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(200)
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                                                                             .withBody(getCatalogResponse(edcAssetId,
                                                                                     "USE", EDC_PROVIDER_BPN))));
 
         stubFor(post(urlPathEqualTo(PATH_NEGOTIATE)).willReturn(
-                WireMockConfig.responseWithStatus(200).withBody(startNegotiationResponse(negotiationId))));
+                WireMockConfig.responseWithStatus(STATUS_CODE_OK).withBody(startNegotiationResponse(negotiationId))));
 
         final String negotiationState = "FINALIZED";
         stubFor(get(urlPathEqualTo(PATH_NEGOTIATE + "/" + negotiationId)).willReturn(
-                WireMockConfig.responseWithStatus(200)
+                WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                               .withBody(getNegotiationConfirmedResponse(negotiationId, negotiationState,
                                       contractAgreementId))));
 
         stubFor(get(urlPathEqualTo(PATH_NEGOTIATE + "/" + negotiationId + PATH_STATE)).willReturn(
-                WireMockConfig.responseWithStatus(200).withBody(getNegotiationStateResponse(negotiationState))));
+                WireMockConfig.responseWithStatus(STATUS_CODE_OK)
+                              .withBody(getNegotiationStateResponse(negotiationState))));
 
-        stubFor(post(urlPathEqualTo(PATH_TRANSFER)).willReturn(
-                WireMockConfig.responseWithStatus(200).withBody(startTransferProcessResponse(transferProcessId))
+        stubFor(post(urlPathEqualTo(PATH_TRANSFER)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
+                                                                             .withBody(startTransferProcessResponse(
+                                                                                     transferProcessId))
 
         ));
         final String transferProcessState = "COMPLETED";
         stubFor(get(urlPathEqualTo(PATH_TRANSFER + "/" + transferProcessId + PATH_STATE)).willReturn(
-                WireMockConfig.responseWithStatus(200).withBody(getTransferProcessStateResponse(transferProcessState))
-
-        ));
+                WireMockConfig.responseWithStatus(STATUS_CODE_OK)
+                              .withBody(getTransferProcessStateResponse(transferProcessState))));
         stubFor(get(urlPathEqualTo(PATH_TRANSFER + "/" + transferProcessId)).willReturn(
-                WireMockConfig.responseWithStatus(200)
+                WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                               .withBody(
                                       getTransferConfirmedResponse(transferProcessId, transferProcessState, edcAssetId,
                                               contractAgreementId))));
@@ -238,5 +241,4 @@ public final class SubmodelFacadeWiremockConfig {
                   "odrl:rightOperand": "%s"
                 }""".formatted(leftOperand, rightOperand);
     }
-
 }
