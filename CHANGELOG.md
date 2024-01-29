@@ -6,14 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Added
+- Added helper script for building documentation locally.
 
+### Changed
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
+- Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
+- Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
+
+### Fixed
+- Update to Spring Boot 3.1.8. This fixes the following CVEs:
+  - CVE-2023-6378 serialization vulnerability in logback
+  - CVE-2023-51074 json-path v2.8.0 stack overflow
+  - CVE-2024-22233 Spring Framework server Web DoS Vulnerability
 
 ## [4.4.0] - 2024-01-15
 ### Added
 - Added EDR token cache to reuse token after contract negotiation
 - Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints
+- Add concept docs/#322-Provisioning-of-contractAgreementId-for-assets.md
 
 ### Changed
 - Authentication was redesigned to use API keys, instead of OAuth2 protocol. The api key has to be sent as a X-API-KEY request header. IRS is supporting two types of API keys - one for admin and one for regular/view usage. Use new ``apiKeyAdmin`` and ``apiKeyRegular`` config entries to set up API keys.
