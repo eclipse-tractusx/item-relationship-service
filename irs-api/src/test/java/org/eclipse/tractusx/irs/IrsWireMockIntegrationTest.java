@@ -26,7 +26,6 @@ package org.eclipse.tractusx.irs;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -42,7 +41,9 @@ import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremock
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.EDC_DISCOVERY_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.TEST_BPN;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.postDiscoveryFinder200;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.postDiscoveryFinder404;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.postEdcDiscovery200;
+import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockConfig.postEdcDiscoveryEmpty200;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.DATAPLANE_PUBLIC_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.LOOKUP_SHELLS_TEMPLATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockConfig.PUBLIC_LOOKUP_SHELLS_PATH;
@@ -86,6 +87,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -96,9 +98,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @WireMockTest(httpPort = 8085)
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = WireMockTestConfig.class)
-@ContextConfiguration(initializers = IrsWireMockIT.MinioConfigInitializer.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@ContextConfiguration(initializers = IrsWireMockIntegrationTest.MinioConfigInitializer.class)
 @ActiveProfiles("integrationtest")
-class IrsWireMockIT {
+class IrsWireMockIntegrationTest {
     public static final String SEMANTIC_HUB_URL = "http://semantic.hub/models";
     public static final String EDC_URL = "http://edc.test";
     private static final String ACCESS_KEY = "accessKey";
@@ -116,8 +119,7 @@ class IrsWireMockIT {
     @BeforeAll
     static void startContainer() {
         minioContainer.start();
-        givenThat(get(urlPathEqualTo("/models")).willReturn(
-                responseWithStatus(200).withBodyFile("semantichub/all-models-page-IT.json")));
+        successfulSemanticModelRequest();
     }
 
     @AfterAll
@@ -134,6 +136,7 @@ class IrsWireMockIT {
         registry.add("digitalTwinRegistry.type", () -> "decentral");
         registry.add("semanticshub.url", () -> SEMANTIC_HUB_URL);
         registry.add("semanticshub.modelJsonSchemaEndpoint", () -> SemanticHubWireMockConfig.SEMANTIC_HUB_SCHEMA_URL);
+        registry.add("semanticshub.defaultUrns", () -> "");
         registry.add("irs-edc-client.controlplane.endpoint.data", () -> EDC_URL);
         registry.add("irs-edc-client.controlplane.endpoint.catalog", () -> PATH_CATALOG);
         registry.add("irs-edc-client.controlplane.endpoint.contract-negotiation", () -> PATH_NEGOTIATE);
@@ -146,6 +149,9 @@ class IrsWireMockIT {
 
     @Test
     void shouldStartApplicationAndCollectSemanticModels() throws SchemaNotFoundException {
+        // Arrange
+        successfulSemanticModelRequest();
+
         // Act
         final AspectModels allAspectModels = semanticHubService.getAllAspectModels();
 
@@ -156,40 +162,25 @@ class IrsWireMockIT {
     @Test
     void shouldStartJob() {
         // Arrange
-        final String startId = "globalAssetId";
+        final String globalAssetId = "globalAssetId";
 
+        successfulSemanticModelRequest();
         successfulSemanticHubRequests();
         successfulDiscovery();
         successfulRegistryNegotiation();
-        successfulDtrRequest(startId);
+        successfulDtrRequest(globalAssetId);
         successfulAssetNegotiation();
 
         successfulDataRequests();
 
         successfulBpdmRequests();
 
-        final RegisterJob request = RegisterJob.builder()
-                                               .key(PartChainIdentificationKey.builder()
-                                                                              .bpn(TEST_BPN)
-                                                                              .globalAssetId(startId)
-                                                                              .build())
-                                               .depth(1)
-                                               .aspects(List.of("Batch", "SingleLevelBomAsBuilt"))
-                                               .collectAspects(true)
-                                               .lookupBPNs(true)
-                                               .direction(Direction.DOWNWARD)
-                                               .build();
+        final RegisterJob request = jobRequest(globalAssetId, TEST_BPN);
 
         // Act
         final JobHandle jobHandle = irsService.registerItemJob(request);
         assertThat(jobHandle.getId()).isNotNull();
-        Awaitility.await()
-                  .timeout(Duration.ofSeconds(35))
-                  .pollInterval(Duration.ofSeconds(1))
-                  .until(() -> irsService.getJobForJobId(jobHandle.getId(), false)
-                                         .getJob()
-                                         .getState()
-                                         .equals(JobState.COMPLETED));
+        waitForCompletion(jobHandle);
 
         Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
 
@@ -201,6 +192,82 @@ class IrsWireMockIT {
         assertThat(jobForJobId.getShells()).hasSize(2);
         assertThat(jobForJobId.getRelationships()).hasSize(1);
         assertThat(jobForJobId.getTombstones()).isEmpty();
+    }
+
+    @Test
+    void shouldCreateTombstoneWhenDiscoveryServiceNotAvailable() {
+        // Arrange
+        successfulSemanticModelRequest();
+        stubFor(postDiscoveryFinder404());
+        final String globalAssetId = "globalAssetId";
+        final RegisterJob request = jobRequest(globalAssetId, TEST_BPN);
+
+        // Act
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+
+        // Assert
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle);
+        final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
+
+        verify(1, postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+        verify(0, postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getTombstones()).hasSize(1);
+    }
+
+    @Test
+    void shouldCreateTombstoneWhenEdcDiscoveryIsEmpty() {
+        // Arrange
+        successfulSemanticModelRequest();
+        stubFor(postDiscoveryFinder200());
+        stubFor(postEdcDiscoveryEmpty200());
+        final String globalAssetId = "globalAssetId";
+        final RegisterJob request = jobRequest(globalAssetId, TEST_BPN);
+        // Act
+        final JobHandle jobHandle = irsService.registerItemJob(request);
+
+        // Assert
+        assertThat(jobHandle.getId()).isNotNull();
+        waitForCompletion(jobHandle);
+        final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), true);
+
+        verify(1, postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+        verify(1, postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+
+        assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
+        assertThat(jobForJobId.getShells()).isEmpty();
+        assertThat(jobForJobId.getRelationships()).isEmpty();
+        assertThat(jobForJobId.getTombstones()).hasSize(1);
+    }
+
+    private static void successfulSemanticModelRequest() {
+        stubFor(get(urlPathEqualTo("/models")).willReturn(
+                responseWithStatus(200).withBodyFile("semantichub/all-models-page-IT.json")));
+    }
+
+    private static RegisterJob jobRequest(final String globalAssetId, final String bpn) {
+        return RegisterJob.builder()
+                          .key(PartChainIdentificationKey.builder().bpn(bpn).globalAssetId(globalAssetId).build())
+                          .depth(1)
+                          .aspects(List.of("Batch", "SingleLevelBomAsBuilt"))
+                          .collectAspects(true)
+                          .lookupBPNs(true)
+                          .direction(Direction.DOWNWARD)
+                          .build();
+    }
+
+    private void waitForCompletion(final JobHandle jobHandle) {
+        Awaitility.await()
+                  .timeout(Duration.ofSeconds(35))
+                  .pollInterval(Duration.ofSeconds(1))
+                  .until(() -> irsService.getJobForJobId(jobHandle.getId(), false)
+                                         .getJob()
+                                         .getState()
+                                         .equals(JobState.COMPLETED));
     }
 
     private void successfulRegistryNegotiation() {
@@ -254,11 +321,11 @@ class IrsWireMockIT {
     }
 
     private static void successfulDataRequests() {
-        givenThat(get(urlPathMatching(
-                DATAPLANE_PUBLIC_PATH + "/urn:uuid:f53db6ef-7a58-4326-9169-0ae198b85dbf")).willReturn(
+        stubFor(get(
+                urlPathMatching(DATAPLANE_PUBLIC_PATH + "/urn:uuid:f53db6ef-7a58-4326-9169-0ae198b85dbf")).willReturn(
                 responseWithStatus(200).withBodyFile("integrationtesting/batch-1.json")));
-        givenThat(get(urlPathMatching(
-                DATAPLANE_PUBLIC_PATH + "/urn:uuid:0e413809-966b-4107-aae5-aeb28bcdaadf")).willReturn(
+        stubFor(get(
+                urlPathMatching(DATAPLANE_PUBLIC_PATH + "/urn:uuid:0e413809-966b-4107-aae5-aeb28bcdaadf")).willReturn(
                 responseWithStatus(200).withBodyFile("integrationtesting/singleLevelBomAsBuilt-1.json")));
     }
 
