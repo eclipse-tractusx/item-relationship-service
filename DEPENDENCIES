@@ -473,7 +473,7 @@ maven/mavencentral/org.testcontainers/testcontainers/1.19.1, Apache-2.0 AND MIT,
 maven/mavencentral/org.typelevel/spire-macros_2.13/0.17.0, MIT, approved, clearlydefined
 maven/mavencentral/org.unbescape/unbescape/1.1.6.RELEASE, Apache-2.0, approved, CQ18904
 maven/mavencentral/org.webjars/swagger-ui/5.2.0, Apache-2.0, approved, #10221
-maven/mavencentral/org.wiremock/wiremock-standalone/3.3.1, , restricted, clearlydefined
+maven/mavencentral/org.wiremock/wiremock-standalone/3.3.1, MIT AND Apache-2.0, approved, #12941
 maven/mavencentral/org.xerial.snappy/snappy-java/1.1.10.5, Apache-2.0 AND (Apache-2.0 AND BSD-3-Clause), approved, #9098
 maven/mavencentral/org.xmlunit/xmlunit-core/2.9.1, Apache-2.0, approved, #6272
 maven/mavencentral/org.yaml/snakeyaml/1.33, Apache-2.0, approved, clearlydefined
