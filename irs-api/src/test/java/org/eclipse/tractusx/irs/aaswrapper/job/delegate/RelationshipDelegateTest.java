@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterUpward;
+import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,6 +47,7 @@ import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
@@ -69,15 +71,16 @@ class RelationshipDelegateTest {
     void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess()
             throws EdcClientException, URISyntaxException, IOException {
         // given
-        when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenReturn(Files.readString(
-                Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelBomAsBuilt.json")).toURI())));
+        final String payload = Files.readString(
+                Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelBomAsBuilt.json")).toURI()));
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString())).thenReturn(new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shellDescriptor(
+                                                                                       .shell(shell("", shellDescriptor(
                                                                                                List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelBomAsBuiltAspectName,
-                                                                                                       "address"))));
+                                                                                                       "address")))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -95,15 +98,16 @@ class RelationshipDelegateTest {
     void shouldFillItemContainerWithUpwardRelationshipAndAddChildIdsToProcess()
             throws EdcClientException, URISyntaxException, IOException {
         // given
-        when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenReturn(Files.readString(
-                Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelUsageAsBuilt.json")).toURI())));
+        final String payload = Files.readString(
+                Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelUsageAsBuilt.json")).toURI()));
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString())).thenReturn(new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shellDescriptor(
+                                                                                       .shell(shell("", shellDescriptor(
                                                                                                List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelUsageAsBuiltAspectName,
-                                                                                                       "address"))));
+                                                                                                       "address")))));
         final AASTransferProcess aasTransferProcess = new AASTransferProcess();
 
         // when
@@ -121,10 +125,10 @@ class RelationshipDelegateTest {
     @Test
     void shouldPutTombstoneForMissingBpn() {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shellDescriptor(
+                                                                                       .shell(shell("", shellDescriptor(
                                                                                                List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelBomAsBuiltAspectName,
-                                                                                                       "address"))));
+                                                                                                       "address")))));
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 new AASTransferProcess(), PartChainIdentificationKey.builder().globalAssetId("testId").build());
@@ -140,15 +144,15 @@ class RelationshipDelegateTest {
     @Test
     void shouldCatchRestClientExceptionAndPutTombstone() throws EdcClientException {
         // given
-        when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenThrow(
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString())).thenThrow(
                 new EdcClientException("Unable to call endpoint"));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shellDescriptor(
+                                                                                       .shell(shell("", shellDescriptor(
                                                                                                List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelBomAsBuiltAspectName,
-                                                                                                       "address"))));
+                                                                                                       "address")))));
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
@@ -165,14 +169,14 @@ class RelationshipDelegateTest {
     @Test
     void shouldCatchJsonParseExceptionAndPutTombstone() throws EdcClientException {
         // given
-        when(submodelFacade.getSubmodelRawPayload(anyString(), anyString(), anyString())).thenThrow(
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString())).thenThrow(
                 new EdcClientException(new Exception("Payload did not match expected submodel")));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
-                                                                                       .shell(shellDescriptor(
+                                                                                       .shell(shell("", shellDescriptor(
                                                                                                List.of(submodelDescriptorWithDspEndpoint(
                                                                                                        singleLevelBomAsBuiltAspectName,
-                                                                                                       "address"))));
+                                                                                                       "address")))));
 
         // when
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),

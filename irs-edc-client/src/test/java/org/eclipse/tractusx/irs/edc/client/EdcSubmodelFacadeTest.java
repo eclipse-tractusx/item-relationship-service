@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,11 +61,11 @@ class EdcSubmodelFacadeTest {
     void shouldThrowExecutionExceptionForSubmodel() throws EdcClientException {
         // arrange
         final ExecutionException e = new ExecutionException(new EdcClientException("test"));
-        final CompletableFuture<String> future = CompletableFuture.failedFuture(e);
-        when(client.getSubmodelRawPayload(any(), any(), any())).thenReturn(future);
+        final CompletableFuture<SubmodelDescriptor> future = CompletableFuture.failedFuture(e);
+        when(client.getSubmodelPayload(any(), any(), any())).thenReturn(future);
 
         // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
+        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
 
         // assert
         assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -74,10 +75,10 @@ class EdcSubmodelFacadeTest {
     void shouldThrowEdcClientExceptionForSubmodel() throws EdcClientException {
         // arrange
         final EdcClientException e = new EdcClientException("test");
-        when(client.getSubmodelRawPayload(any(), any(), any())).thenThrow(e);
+        when(client.getSubmodelPayload(any(), any(), any())).thenThrow(e);
 
         // act
-        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
+        ThrowableAssert.ThrowingCallable action = () -> testee.getSubmodelPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
 
         // assert
         assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -87,13 +88,13 @@ class EdcSubmodelFacadeTest {
     void shouldRestoreInterruptOnInterruptExceptionForSubmodel()
             throws EdcClientException, ExecutionException, InterruptedException {
         // arrange
-        final CompletableFuture<String> future = mock(CompletableFuture.class);
+        final CompletableFuture<SubmodelDescriptor> future = mock(CompletableFuture.class);
         final InterruptedException e = new InterruptedException();
         when(future.get()).thenThrow(e);
-        when(client.getSubmodelRawPayload(any(), any(), any())).thenReturn(future);
+        when(client.getSubmodelPayload(any(), any(), any())).thenReturn(future);
 
         // act
-        testee.getSubmodelRawPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
+        testee.getSubmodelPayload(CONNECTOR_ENDPOINT, SUBMODEL_SUFIX, ASSET_ID);
 
         // assert
         assertThat(Thread.currentThread().isInterrupted()).isTrue();

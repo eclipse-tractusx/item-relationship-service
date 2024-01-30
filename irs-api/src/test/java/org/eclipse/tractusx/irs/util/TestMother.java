@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -249,6 +250,10 @@ public class TestMother {
 
     public static SubmodelDescriptor submodelDescriptorWithoutHref(final String semanticId) {
         return submodelDescriptorWithDspEndpoint(semanticId, null);
+    }
+
+    public static Shell shell(String contractAgreementId, AssetAdministrationShellDescriptor shell) {
+        return new Shell(contractAgreementId, shell);
     }
 
     public static AssetAdministrationShellDescriptor shellDescriptor(

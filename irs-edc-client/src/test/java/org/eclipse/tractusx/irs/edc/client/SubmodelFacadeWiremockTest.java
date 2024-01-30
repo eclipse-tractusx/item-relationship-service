@@ -37,10 +37,12 @@ import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcT
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -53,6 +55,7 @@ import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
@@ -65,6 +68,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.edc.client.testutil.TestMother;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,7 +145,7 @@ class SubmodelFacadeWiremockTest {
     }
 
     @Test
-    void shouldReturnAssemblyPartRelationshipAsString()
+    void shouldReturnAssemblyPartRelationshipPayloadAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
@@ -152,8 +156,8 @@ class SubmodelFacadeWiremockTest {
                                                                                            "singleLevelBomAsBuilt.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
-                assetId).get();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+                assetId).get().getPayload();
 
         // Assert
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
@@ -202,9 +206,10 @@ class SubmodelFacadeWiremockTest {
                                                                                                             "edc/responseGetTransferConfirmed.json")));
 
         final var contractAgreementId = "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
+
         final EndpointDataReference ref = EndpointDataReference.Builder.newInstance()
                                                                        .authKey("testkey")
-                                                                       .authCode("testcode")
+                                                                       .authCode(TestMother.edrAuthCode(contractAgreementId))
                                                                        .properties(Map.of(NAMESPACE_EDC_CID,
                                                                                contractAgreementId))
                                                                        .endpoint("http://provider.dataplane/api/public")
@@ -213,7 +218,7 @@ class SubmodelFacadeWiremockTest {
     }
 
     @Test
-    void shouldReturnMaterialForRecyclingAsString()
+    void shouldReturnMaterialForRecyclingPayloadAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
@@ -224,15 +229,15 @@ class SubmodelFacadeWiremockTest {
                                                                                            "materialForRecycling.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
-                assetId).get();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+                assetId).get().getPayload();
 
         // Assert
         assertThat(submodel).contains("\"materialName\": \"Cooper\",");
     }
 
     @Test
-    void shouldReturnObjectAsStringWhenResponseNotJSON()
+    void shouldReturnPayloadObjectAsStringWhenResponseNotJSON()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
@@ -242,8 +247,8 @@ class SubmodelFacadeWiremockTest {
                                                                                    .withBody("test")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
-                assetId).get();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
+                assetId).get().getPayload();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
@@ -271,7 +276,7 @@ class SubmodelFacadeWiremockTest {
         // Act & Assert
         final String errorMessage = "Consumption of asset '58505404-4da1-427a-82aa-b79482bcd1f0' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
         assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
-                () -> edcSubmodelClient.getSubmodelRawPayload(connectorEndpoint, buildWiremockDataplaneUrl(), assetId)
+                () -> edcSubmodelClient.getSubmodelPayload(connectorEndpoint, buildWiremockDataplaneUrl(), assetId)
                                        .get()).withMessageEndingWith(errorMessage);
     }
 
@@ -285,7 +290,7 @@ class SubmodelFacadeWiremockTest {
                                                                                    .withBody("{ error: '400'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelPayload(
                 connectorEndpoint, buildWiremockDataplaneUrl(), assetId).get(5, TimeUnit.SECONDS);
 
         // Assert
@@ -303,7 +308,7 @@ class SubmodelFacadeWiremockTest {
                                                                                    .withBody("{ error: '500'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelPayload(
                 connectorEndpoint, buildWiremockDataplaneUrl(), assetId).get(5, TimeUnit.SECONDS);
 
         // Assert

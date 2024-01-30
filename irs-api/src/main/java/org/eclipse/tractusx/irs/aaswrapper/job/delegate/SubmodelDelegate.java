@@ -82,22 +82,22 @@ public class SubmodelDelegate extends AbstractDelegate {
             final PartChainIdentificationKey itemId) {
 
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(shell -> {
-            final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.getSubmodelDescriptors();
+            final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.payload().getSubmodelDescriptors();
             log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
-            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
+            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.payload().filterDescriptorsByAspectTypes(
                     jobData.getAspects());
 
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
                 filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
                         getSubmodels(submodelDescriptor, itemContainerBuilder, itemId.getGlobalAssetId(),
-                                itemId.getBpn())));
+                                itemId.getBpn(), jobData.isAuditContractNegotiation())));
             }
             log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
             log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
 
-            shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
+            shell.payload().setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
 
         });
 
@@ -105,7 +105,8 @@ public class SubmodelDelegate extends AbstractDelegate {
     }
 
     private List<Submodel> getSubmodels(final SubmodelDescriptor submodelDescriptor,
-            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId, final String bpn) {
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId, final String bpn,
+            final boolean auditContractNegotiation) {
         final List<Submodel> submodels = new ArrayList<>();
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
 
@@ -118,15 +119,16 @@ public class SubmodelDelegate extends AbstractDelegate {
 
             try {
                 final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
-                final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
-                        endpoint, bpn);
+                final org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor submodel = requestSubmodel(
+                        submodelFacade, connectorEndpointsService, endpoint, bpn);
+                final String submodelRawPayload = submodel.getPayload();
+                final String cid = auditContractNegotiation ? submodel.getCid() : null;
 
                 final ValidationResult validationResult = jsonValidatorService.validate(jsonSchema, submodelRawPayload);
 
                 if (validationResult.isValid()) {
-                    final Submodel submodel = Submodel.from(submodelDescriptor.getId(),
-                            submodelDescriptor.getAspectType(), jsonUtil.fromString(submodelRawPayload, Map.class));
-                    submodels.add(submodel);
+                    submodels.add(Submodel.from(submodelDescriptor.getId(), submodelDescriptor.getAspectType(),
+                            cid, jsonUtil.fromString(submodelRawPayload, Map.class)));
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
@@ -144,7 +146,7 @@ public class SubmodelDelegate extends AbstractDelegate {
             } catch (final UsagePolicyException e) {
                 log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                        ProcessStep.USAGE_POLICY_VALIDATION));
+                        ProcessStep.USAGE_POLICY_VALIDATION, jsonUtil.asMap(e.getPolicy())));
             } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,

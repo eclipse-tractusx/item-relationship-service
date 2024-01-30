@@ -31,8 +31,8 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
@@ -65,20 +65,19 @@ public class DigitalTwinDelegate extends AbstractDelegate {
                     Tombstone.from(itemId.getGlobalAssetId(), null, "Can't get relationship without a BPN", 0,
                             ProcessStep.DIGITAL_TWIN_REQUEST)).build();
         }
-        try {
-            final AssetAdministrationShellDescriptor shell = digitalTwinRegistryService.fetchShells(
-                                                                                               List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn())))
-                                                                                       .stream()
-                                                                                       .findFirst()
-                                                                                       .orElseThrow();
 
-            if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
-                // traversal submodel descriptors are needed in next Delegate, and will be filtered out there
-                itemContainerBuilder.shell(shell);
-            } else {
+        try {
+            final Shell shell = digitalTwinRegistryService.fetchShells(List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn())))
+                                                          .stream()
+                                                          .findFirst()
+                                                          .orElseThrow();
+
+            if (!expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
                 // filter submodel descriptors if next delegate will not be executed
-                itemContainerBuilder.shell(shell.withFilteredSubmodelDescriptors(jobData.getAspects()));
+                shell.payload().withFilteredSubmodelDescriptors(jobData.getAspects());
             }
+
+            itemContainerBuilder.shell(jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
         } catch (final RestClientException | RegistryServiceException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));

@@ -33,6 +33,8 @@ import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfigurat
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_TRACTUSX;
 import static org.mockito.Mockito.mock;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -60,6 +62,10 @@ import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.policy.model.XoneConstraint;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
+import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.jetbrains.annotations.NotNull;
 
@@ -148,5 +154,27 @@ public class TestMother {
         final XoneConstraint orConstraint = XoneConstraint.Builder.newInstance().constraints(constraints).build();
         final Permission permission = createUsePermission(orConstraint);
         return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    public static EndpointDataReference endpointDataReference(final String contractAgreementId) {
+        return EndpointDataReference.Builder.newInstance()
+                                            .authKey("testkey")
+                                            .authCode(edrAuthCode(contractAgreementId))
+                                            .properties(
+                                                    Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
+                                            .endpoint("http://provider.dataplane/api/public")
+                                            .build();
+    }
+
+    public static String edrAuthCode(final String contractAgreementId) {
+        final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
+                                                   .cid(contractAgreementId)
+                                                   .dad("test")
+                                                   .exp(9999999999L)
+                                                   .build();
+        final String b64EncodedAuthCode = Base64.getUrlEncoder()
+                                                .encodeToString(StringMapper.mapToString(edrAuthCode)
+                                                                            .getBytes(StandardCharsets.UTF_8));
+        return "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
     }
 }

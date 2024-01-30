@@ -81,6 +81,9 @@ public class RegisterJob {
     @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.")
     private boolean lookupBPNs;
 
+    @Schema(description = "Flag enables and disables auditing, including provisioning of ContractAgreementId inside submodels and shells objects. Default is true.")
+    private boolean auditContractNegotiation = true;
+
     @URL(regexp = "^(http|https).*")
     @Schema(description = "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: id and state.",
             example = "https://hostname.com/callback?id={id}&state={state}")

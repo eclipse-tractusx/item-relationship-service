@@ -23,12 +23,20 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.exceptions;
 
+import lombok.Getter;
+import org.eclipse.edc.policy.model.Policy;
+
 /**
  * Usage Policy Exception errors in the contract negotiation.
  */
 public class UsagePolicyException extends EdcClientException {
-    public UsagePolicyException(final String itemId) {
+
+    @Getter
+    private final Policy policy;
+
+    public UsagePolicyException(final String itemId, final Policy policy) {
         super("Consumption of asset '" + itemId
                 + "' is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
+        this.policy = policy;
     }
 }

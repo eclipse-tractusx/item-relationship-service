@@ -40,6 +40,7 @@ import java.util.function.Function;
 
 import org.assertj.core.api.Assertions;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
@@ -87,7 +88,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         // given
         final DigitalTwinRegistryKey digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                 "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
-        final AssetAdministrationShellDescriptor expectedShell = shellDescriptor(Collections.emptyList());
+        final Shell expectedShell = new Shell("", shellDescriptor(Collections.emptyList()));
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
                                                                                    .build();
@@ -100,10 +101,10 @@ class DecentralDigitalTwinRegistryServiceTest {
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                 ArgumentMatchers.anyList())).thenReturn(lookupShellsResponse);
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
-                expectedShell);
+                expectedShell.payload());
 
         // when
-        final Collection<AssetAdministrationShellDescriptor> actualShell = decentralDigitalTwinRegistryService.fetchShells(
+        final Collection<Shell> actualShell = decentralDigitalTwinRegistryService.fetchShells(
                 List.of(digitalTwinRegistryKey));
 
         // then
@@ -115,7 +116,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         // given
         final DigitalTwinRegistryKey digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                 "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
-        final AssetAdministrationShellDescriptor expectedShell = shellDescriptor(Collections.emptyList());
+        final Shell expectedShell = new Shell("", shellDescriptor(Collections.emptyList()));
         final var authCode = "test." + createAuthCode(exp -> exp.minus(1, ChronoUnit.DAYS));
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
@@ -134,10 +135,10 @@ class DecentralDigitalTwinRegistryServiceTest {
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                 ArgumentMatchers.anyList())).thenReturn(lookupShellsResponse);
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
-                expectedShell);
+                expectedShell.payload());
 
         // when
-        final Collection<AssetAdministrationShellDescriptor> actualShell = decentralDigitalTwinRegistryService.fetchShells(
+        final Collection<Shell> actualShell = decentralDigitalTwinRegistryService.fetchShells(
                 List.of(digitalTwinRegistryKey, digitalTwinRegistryKey));
 
         // then
@@ -151,7 +152,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         // given
         final DigitalTwinRegistryKey digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                 "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
-        final AssetAdministrationShellDescriptor expectedShell = shellDescriptor(Collections.emptyList());
+        final Shell expectedShell = new Shell("", shellDescriptor(Collections.emptyList()));
         final var authCode = "test." + createAuthCode(exp -> exp.plus(1, ChronoUnit.DAYS));
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
@@ -167,10 +168,10 @@ class DecentralDigitalTwinRegistryServiceTest {
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                 ArgumentMatchers.anyList())).thenReturn(lookupShellsResponse);
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
-                expectedShell);
+                expectedShell.payload());
 
         // when
-        final Collection<AssetAdministrationShellDescriptor> actualShell = decentralDigitalTwinRegistryService.fetchShells(
+        final Collection<Shell> actualShell = decentralDigitalTwinRegistryService.fetchShells(
                 List.of(digitalTwinRegistryKey, digitalTwinRegistryKey, digitalTwinRegistryKey));
 
         // then
@@ -186,9 +187,9 @@ class DecentralDigitalTwinRegistryServiceTest {
                 "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
 
         final String expectedGlobalAssetId = "urn:uuid:4132cd2b-cbe7-4881-a6b4-aaaaaaaaaaaa";
-        final var expectedShell = shellDescriptor(Collections.emptyList()).toBuilder()
+        final var expectedShell = new Shell("", shellDescriptor(Collections.emptyList()).toBuilder()
                                                                           .globalAssetId(expectedGlobalAssetId)
-                                                                          .build();
+                                                                          .build());
         final var endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint("url.to.host").build();
         final LookupShellsResponse lookupShellsResponse = LookupShellsResponse.builder()
                                                                               .result(List.of(
@@ -200,14 +201,14 @@ class DecentralDigitalTwinRegistryServiceTest {
         when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                 ArgumentMatchers.anyList())).thenReturn(lookupShellsResponse);
         when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
-                expectedShell);
+                expectedShell.payload());
 
         // when
-        final Collection<AssetAdministrationShellDescriptor> assetAdministrationShellDescriptors = decentralDigitalTwinRegistryService.lookupShellsByBPN(
+        final Collection<Shell> shell = decentralDigitalTwinRegistryService.lookupShellsByBPN(
                 digitalTwinRegistryKey.bpn());
 
-        String actualGlobalAssetId = assetAdministrationShellDescriptors.stream().findFirst().map(AssetAdministrationShellDescriptor::getGlobalAssetId).get();
         // then
+        String actualGlobalAssetId = shell.stream().findFirst().map(Shell::payload).map(AssetAdministrationShellDescriptor::getGlobalAssetId).get();
         Assertions.assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
     }
 

@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,6 +37,7 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
@@ -63,7 +65,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     @Override
-    public Collection<AssetAdministrationShellDescriptor> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
+    public Collection<Shell> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
             throws RegistryServiceException {
         log.info("Fetching shell(s) for {} key(s)", keys.size());
         final var calledEndpoints = new HashSet<String>();
@@ -78,19 +80,20 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     @NotNull
-    private Stream<AssetAdministrationShellDescriptor> fetchShellDescriptors(final Set<String> calledEndpoints,
+    private Stream<Shell> fetchShellDescriptors(final Set<String> calledEndpoints,
             final String bpn, final List<DigitalTwinRegistryKey> keys) {
         log.info("Fetching {} shells for bpn {}", keys.size(), bpn);
         final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
         calledEndpoints.addAll(connectorEndpoints);
 
-        final List<AssetAdministrationShellDescriptor> descriptors = new ArrayList<>();
+        final List<Shell> descriptors = new ArrayList<>();
 
         EndpointDataReference endpointDataReference = null;
 
         for (final DigitalTwinRegistryKey key : keys) {
             endpointDataReference = renewIfNecessary(endpointDataReference, connectorEndpoints);
-            descriptors.add(fetchShellDescriptor(endpointDataReference, key));
+            descriptors.add(new Shell(contractNegotiationId(endpointDataReference.getAuthCode()),
+                    fetchShellDescriptor(endpointDataReference, key)));
         }
 
         return descriptors.stream();
@@ -108,6 +111,13 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             }
             return endpointDataReference;
         }
+    }
+
+    private String contractNegotiationId(final String token) {
+        return Optional.ofNullable(token)
+                       .map(EDRAuthCode::fromAuthCodeToken)
+                       .map(EDRAuthCode::getCid)
+                       .orElse("");
     }
 
     private Instant extractTokenExpiration(final String token) {

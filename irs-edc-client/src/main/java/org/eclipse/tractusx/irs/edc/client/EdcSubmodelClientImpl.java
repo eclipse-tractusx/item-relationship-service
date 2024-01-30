@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
@@ -86,14 +87,15 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
                              .schedule();
     }
 
-    private Optional<String> retrieveSubmodelData(final String submodelDataplaneUrl, final StopWatch stopWatch,
+    private Optional<SubmodelDescriptor> retrieveSubmodelData(final String submodelDataplaneUrl, final StopWatch stopWatch,
             final EndpointDataReference endpointDataReference) {
         if (endpointDataReference != null) {
             log.info("Retrieving data from EDC data plane for dataReference with id {}", endpointDataReference.getId());
-            final String data = edcDataPlaneClient.getData(endpointDataReference, submodelDataplaneUrl);
+            final String payload = edcDataPlaneClient.getData(endpointDataReference, submodelDataplaneUrl);
             stopWatchOnEdcTask(stopWatch);
+            final String cid = EDRAuthCode.fromAuthCodeToken(endpointDataReference.getAuthCode()).getCid();
 
-            return Optional.of(data);
+            return Optional.of(new SubmodelDescriptor(cid, payload));
         }
 
         return Optional.empty();
@@ -129,7 +131,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint,
+    public CompletableFuture<SubmodelDescriptor> getSubmodelPayload(final String connectorEndpoint,
             final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             log.info("Requesting raw SubmodelPayload for endpoint '{}'.", connectorEndpoint);
@@ -138,7 +140,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
             final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId);
 
-            return pollingService.<String>createJob()
+            return pollingService.<SubmodelDescriptor>createJob()
                                  .action(() -> retrieveSubmodelData(submodelDataplaneUrl, stopWatch,
                                          endpointDataReference))
                                  .timeToLive(config.getSubmodel().getRequestTtl())
@@ -150,7 +152,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId)
             throws EdcClientException {
-        log.info("Retrieving endpoint data reference from cache for assed id: {}", assetId);
+        log.info("Retrieving endpoint data reference from cache for asset id: {}", assetId);
         final EndpointDataReferenceStatus cachedEndpointDataReference = endpointDataReferenceCacheService.getEndpointDataReference(
                 assetId);
         EndpointDataReference endpointDataReference;

@@ -43,7 +43,7 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
@@ -178,8 +178,8 @@ class ItemGraphSmokeTest {
         assertThat(completedJobs.getTombstones().size()).isNotNegative();
         assertThat(completedJobs.getBpns()).isNotEmpty();
 
-        final AssetAdministrationShellDescriptor assDescriptor = completedJobs.getShells().get(0);
-        final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.getSubmodelDescriptors();
+        final Shell assDescriptor = completedJobs.getShells().get(0);
+        final List<SubmodelDescriptor> submodelDescriptors = assDescriptor.payload().getSubmodelDescriptors();
         assertThat(submodelDescriptors).isNotEmpty();
     }
 

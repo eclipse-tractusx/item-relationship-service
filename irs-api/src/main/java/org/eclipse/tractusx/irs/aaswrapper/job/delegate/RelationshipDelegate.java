@@ -76,7 +76,7 @@ public class RelationshipDelegate extends AbstractDelegate {
                             .getShells()
                             .stream()
                             .findFirst()
-                            .ifPresent(shell -> shell.findRelationshipEndpointAddresses(
+                            .ifPresent(shell -> shell.payload().findRelationshipEndpointAddresses(
                                                              AspectType.fromValue(relationshipAspect.getName()))
                                                      .forEach(endpoint -> processEndpoint(endpoint, relationshipAspect,
                                                              aasTransferProcess, itemContainerBuilder, itemId)));
@@ -98,8 +98,8 @@ public class RelationshipDelegate extends AbstractDelegate {
         }
 
         try {
-            final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
-                    endpoint, itemId.getBpn());
+            final String submodelRawPayload = requestSubmodel(submodelFacade, connectorEndpointsService,
+                    endpoint, itemId.getBpn()).getPayload();
 
             final var relationships = jsonUtil.fromString(submodelRawPayload, relationshipAspect.getSubmodelClazz())
                                               .asRelationships();
