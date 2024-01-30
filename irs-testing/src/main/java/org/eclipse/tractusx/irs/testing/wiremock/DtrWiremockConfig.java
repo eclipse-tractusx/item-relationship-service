@@ -74,6 +74,14 @@ public final class DtrWiremockConfig {
                         "EngineeringPlastics", "urn:uuid:9ce43b21-75e3-4cea-b13e-9a34f4f6822a", specificAssetIds)));
     }
 
+    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
+    public static MappingBuilder getShellDescriptor200(final String urlRegex, final String bpn, final List<String> submodelDescriptors,
+            final String globalAssetId, final String shellId, final String idShort) {
+        final List<String> specificAssetIds = List.of(specificAssetId("manufacturerId", bpn));
+        return get(urlPathMatching(urlRegex)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
+                assetAdministrationShellResponse(submodelDescriptors, globalAssetId, idShort, shellId, specificAssetIds)));
+    }
+
     public static String assetAdministrationShellResponse(final List<String> submodelDescriptors,
             final String globalAssetId, final String idShort, final String shellId,
             final List<String> specificAssetIds) {
@@ -167,6 +175,11 @@ public final class DtrWiremockConfig {
     public static MappingBuilder getLookupShells200(final String lookupShellsPath) {
         return get(urlPathEqualTo(lookupShellsPath)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
                 lookupShellsResponse(List.of("urn:uuid:21f7ebea-fa8a-410c-a656-bd9082e67dcf"))));
+    }
+
+    public static MappingBuilder getLookupShells200(final String lookupShellsPath, final List<String> shellIds) {
+        return get(urlPathEqualTo(lookupShellsPath)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
+                lookupShellsResponse(shellIds)));
     }
 
     public static MappingBuilder getLookupShells200Empty() {
