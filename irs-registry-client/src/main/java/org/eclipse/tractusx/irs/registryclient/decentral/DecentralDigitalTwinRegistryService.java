@@ -145,13 +145,12 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                 LOGPREFIX_TO_BE_REMOVED_LATER + "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn));
 
         try {
-            final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
 
-            log.info(LOGPREFIX_TO_BE_REMOVED_LATER + "Found {} connector endpoints for bpn '{}'",
-                    connectorEndpoints.size(), bpn);
-            calledEndpoints.addAll(connectorEndpoints);
+            log.info(LOGPREFIX_TO_BE_REMOVED_LATER + "Found {} connector endpoints for bpn '{}'", edcUrls.size(), bpn);
+            calledEndpoints.addAll(edcUrls);
 
-            return fetchShellDescriptorsForConnectorEndpoints(keys, connectorEndpoints);
+            return fetchShellDescriptorsForConnectorEndpoints(keys, edcUrls);
 
         } finally {
             StopwatchUtils.stopWatch(log, watch);
