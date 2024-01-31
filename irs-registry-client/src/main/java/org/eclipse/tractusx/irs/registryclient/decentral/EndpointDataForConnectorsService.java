@@ -23,7 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder.LOGPREFIX_TO_BE_REMOVED_LATER;
 import static org.eclipse.tractusx.irs.common.util.concurrent.StopwatchUtils.startWatch;
 import static org.eclipse.tractusx.irs.common.util.concurrent.StopwatchUtils.stopWatch;
@@ -52,38 +51,37 @@ public class EndpointDataForConnectorsService {
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
     public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
-            final List<String> connectorEndpoints) {
+            final List<String> edcUrls) {
 
         final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "createFindEndpointDataForConnectorsFutures - ";
 
         List<CompletableFuture<EndpointDataReference>> futures = Collections.emptyList();
         try {
-            log.info(logPrefix + "Creating futures to get EndpointDataReferences for endpoints: {}",
-                    connectorEndpoints);
-            futures = connectorEndpoints.stream()
-                                        .map(connectorEndpoint -> supplyAsync(
-                                                () -> getEndpointReferenceForAsset(connectorEndpoint)))
-                                        .toList();
+            log.info(logPrefix + "Creating futures to get EndpointDataReferences for endpoints: {}", edcUrls);
+            futures = edcUrls.stream()
+                             .flatMap(edcUrl -> createGetEndpointReferencesForAssetFutures(edcUrl).stream())
+                             .toList();
             return futures;
         } finally {
             log.info(logPrefix + "Created {} futures", futures.size());
         }
     }
 
-    private EndpointDataReference getEndpointReferenceForAsset(final String connector) {
+    private List<CompletableFuture<EndpointDataReference>> createGetEndpointReferencesForAssetFutures(
+            final String edcUrl) {
 
         final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "getEndpointReferenceForAsset - ";
 
         final var watch = new StopWatch();
         startWatch(log, watch,
-                logPrefix + "Trying to retrieve EndpointDataReference for connector '%s'".formatted(connector));
+                logPrefix + "Trying to retrieve EndpointDataReference for connector '%s'".formatted(edcUrl));
 
         try {
-            return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
+            return edcSubmodelFacade.getEndpointReferenceForAsset(edcUrl, DT_REGISTRY_ASSET_TYPE,
                     DT_REGISTRY_ASSET_VALUE);
         } catch (EdcRetrieverException e) {
-            log.warn(logPrefix + "Exception occurred when retrieving EndpointDataReference from connector '{}'",
-                    connector, e);
+            log.warn(logPrefix + "Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl,
+                    e);
             throw new CompletionException(e.getMessage(), e);
         } finally {
             stopWatch(log, watch);

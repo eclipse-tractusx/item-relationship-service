@@ -343,7 +343,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         endpointDataReferenceStorage.put(agreementId, expected);
 
         // act
-        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS, filterKey, filterValue,
+        final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue,
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
         final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
 
@@ -366,7 +366,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         endpointDataReferenceStorage.put(agreementId, expected);
 
         // act
-        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS, filterKey, filterValue);
+        final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue);
         final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
 
         // assert

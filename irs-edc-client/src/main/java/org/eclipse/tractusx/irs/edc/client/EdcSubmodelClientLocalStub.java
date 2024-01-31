@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -65,14 +66,14 @@ public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue,
             final EndpointDataReferenceStatus cachedEndpointDataReference) throws EdcClientException {
         throw new EdcClientException("Not implemented");
     }
 
     @Override
-    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue) throws EdcClientException {
         throw new EdcClientException("Not implemented");
     }

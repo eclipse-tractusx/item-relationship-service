@@ -40,7 +40,10 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
+import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
@@ -153,6 +156,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         log.info("Retrieving endpoint data reference from cache for assed id: {}", assetId);
         final EndpointDataReferenceStatus cachedEndpointDataReference = endpointDataReferenceCacheService.getEndpointDataReference(
                 assetId);
+
         EndpointDataReference endpointDataReference;
 
         if (cachedEndpointDataReference.tokenStatus() == TokenStatus.VALID) {
@@ -170,7 +174,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final String assetId, final EndpointDataReferenceStatus cachedEndpointDataReference)
             throws EdcClientException {
         try {
-            final EndpointDataReference endpointDataReference = getEndpointReferenceForAsset(connectorEndpoint,
+            final EndpointDataReference endpointDataReference = getEndpointReferencesForAsset(connectorEndpoint,
                     NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference).get();
             endpointDataReferenceStorage.put(assetId, endpointDataReference);
 
@@ -196,36 +200,63 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue) throws EdcClientException {
-        return execute(endpointAddress, () -> getEndpointReferenceForAsset(endpointAddress, filterKey, filterValue,
+        return execute(endpointAddress, () -> getEndpointReferencesForAsset(endpointAddress, filterKey, filterValue,
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)));
     }
 
     @Override
-    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue,
             final EndpointDataReferenceStatus endpointDataReferenceStatus) throws EdcClientException {
+
         final StopWatch stopWatch = new StopWatch();
-
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
-        final String providerWithSuffix = appendSuffix(endpointAddress,
-                config.getControlplane().getProviderSuffix());
 
-        final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey,
-                filterValue);
+        final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
+        final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey, filterValue);
 
-        final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
-                items.stream().findFirst().orElseThrow(), endpointDataReferenceStatus);
+        final List<CatalogItem> catalogItems = items.stream().toList();
+        if (catalogItems.isEmpty()) {
+            throw new EdcClientException(
+                    "Catalog is empty for endpointAddress '%s' filterKey '%s', filterValue '%s'".formatted(
+                            endpointAddress, filterKey, filterValue));
+        }
 
-        final String storageId = getStorageId(endpointDataReferenceStatus, response);
+        return catalogItems.stream().map(catalogItem -> {
 
-        return pollingService.<EndpointDataReference>createJob()
-                             .action(() -> retrieveEndpointReference(storageId, stopWatch))
-                             .timeToLive(config.getSubmodel().getRequestTtl())
-                             .description("waiting for Endpoint Reference retrieval")
-                             .build()
-                             .schedule();
+            final NegotiationResponse negotiationResponse = negotiateContract(endpointDataReferenceStatus, catalogItem,
+                    providerWithSuffix);
+
+            final String storageId = getStorageId(endpointDataReferenceStatus, negotiationResponse);
+
+            return pollingService.<EndpointDataReference>createJob()
+                                 .action(() -> retrieveEndpointReference(storageId, stopWatch))
+                                 .timeToLive(config.getSubmodel().getRequestTtl())
+                                 .description("waiting for Endpoint Reference retrieval")
+                                 .build()
+                                 .schedule();
+
+        }).toList();
+    }
+
+    private NegotiationResponse negotiateContract(final EndpointDataReferenceStatus endpointDataReferenceStatus,
+            final CatalogItem catalogItem, final String providerWithSuffix) {
+        final NegotiationResponse response;
+        try {
+            response = contractNegotiationService.negotiate(providerWithSuffix, catalogItem,
+                    endpointDataReferenceStatus);
+
+            // FIXME (mfischer) #214 how to handle?
+        } catch (ContractNegotiationException e) {
+            throw new RuntimeException(e);
+        } catch (UsagePolicyException e) {
+            throw new RuntimeException(e);
+        } catch (TransferProcessException e) {
+            throw new RuntimeException(e);
+        }
+        return response;
     }
 
     private static String getStorageId(final EndpointDataReferenceStatus endpointDataReferenceStatus,
