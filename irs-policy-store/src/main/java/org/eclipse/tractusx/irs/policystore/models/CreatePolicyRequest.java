@@ -37,7 +37,10 @@ import jakarta.validation.constraints.NotNull;
 public record CreatePolicyRequest(
         @NotNull @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations")  OffsetDateTime validUntil,
         @NotNull @Schema(example = CreatePolicyRequest.EXAMPLE_PAYLOAD) JsonObject payload) {
-    @SuppressWarnings("java:S2479") // this value is used by open-api to show example payload, \u0009 character is required for this value to be correctly shown in open-api
+
+    @SuppressWarnings("java:S2479")
+    // this value is used by open-api to show example payload
+    // \u0009 character is required for this value to be correctly shown in open-api
     public static final String EXAMPLE_PAYLOAD = """
                 {
                  	"validUntil": "2025-12-12T23:59:59.999Z",
