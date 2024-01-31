@@ -187,10 +187,15 @@ digitalTwinRegistry:
   shellDescriptorTemplate: ${DIGITALTWINREGISTRY_SHELL_DESCRIPTOR_TEMPLATE:/shell-descriptors/{aasIdentifier}} # The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}
   lookupShellsTemplate: ${DIGITALTWINREGISTRY_QUERY_SHELLS_PATH:/lookup/shells?assetIds={assetIds}} # The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}
   oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-  discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
   timeout:
     read: PT90S # HTTP read timeout for the digital twin registry client
     connect: PT90S # HTTP connect timeout for the digital twin registry client
+  discovery:
+    oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+    discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
+    timeout:
+      read: PT90S # HTTP read timeout for the discovery client
+      connect: PT90S # HTTP connect timeout for the discovery client
 
 semanticshub:
   # The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.
@@ -234,10 +239,6 @@ ess:
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
-    oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-    timeout:
-      read: PT90S # HTTP read timeout for the discovery client
-      connect: PT90S # HTTP connect timeout for the discovery client
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 

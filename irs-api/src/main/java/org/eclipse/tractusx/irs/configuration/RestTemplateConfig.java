@@ -130,9 +130,9 @@ public class RestTemplateConfig {
 
     @Bean(DISCOVERY_REST_TEMPLATE)
         /* package */ RestTemplate discoveryRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${ess.discovery.timeout.read}") final Duration readTimeout,
-            @Value("${ess.discovery.timeout.connect}") final Duration connectTimeout,
-            @Value("${ess.discovery.oAuthClientId}") final String clientRegistrationId) {
+            @Value("${digitalTwinRegistry.discovery.timeout.read}") final Duration readTimeout,
+            @Value("${digitalTwinRegistry.discovery.timeout.connect}") final Duration connectTimeout,
+            @Value("${digitalTwinRegistry.discovery.oAuthClientId}") final String clientRegistrationId) {
         return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId).build();
     }
 
