@@ -71,11 +71,13 @@ data:
     digitalTwinRegistry:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
       shellLookupEndpoint: {{ tpl (.Values.digitalTwinRegistry.shellLookupEndpoint | default "") . | quote }}
-      discoveryFinderUrl: {{ tpl (.Values.digitalTwinRegistry.discoveryFinderUrl | default "") . | quote }}
       shellDescriptorTemplate: {{ .Values.digitalTwinRegistry.shellDescriptorTemplate | default "" | quote }}
       lookupShellsTemplate: {{ .Values.digitalTwinRegistry.lookupShellsTemplate | default "" | quote }}
       type: {{ tpl (.Values.digitalTwinRegistry.type | default "") . | quote }}
-      oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }}
+      oAuthClientId: {{ .Values.digitalTwinRegistry.oAuthClientId | default "portal" }}
+        discovery:
+          oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+          discoveryFinderUrl: {{ tpl (.Values.discovery.discoveryFinderUrl | default "") . | quote }} # The endpoint to discover EDC endpoints to a particular BPN.
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
