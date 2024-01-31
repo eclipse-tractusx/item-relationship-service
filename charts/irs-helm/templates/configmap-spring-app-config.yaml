@@ -56,21 +56,16 @@ data:
         oauth2:
           client:
             registration:
-              semantics:
-                client-id: "${SEMANTICS_OAUTH2_CLIENT_ID}" # taken from secret ENV
-                client-secret: "${SEMANTICS_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
-              discovery:
-                client-id: ${DISCOVERY_OAUTH2_CLIENT_ID} # taken from secret ENV
-                client-secret: ${DISCOVERY_OAUTH2_CLIENT_SECRET} # taken from secret ENV
-              bpdm:
-                client-id: ${BPDM_OAUTH2_CLIENT_ID} # taken from secret ENV
-                client-secret: ${BPDM_OAUTH2_CLIENT_SECRET} # taken from secret ENV
+              common:
+                client-id: "${OAUTH2_CLIENT_ID}" # taken from secret ENV
+                client-secret: "${OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+              portal:
+                client-id: ${PORTAL_OAUTH2_CLIENT_ID} # taken from secret ENV
+                client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # taken from secret ENV
             provider:
-              semantics:
+              common:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
-              discovery:
-                token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
-              bpdm:
+              portal:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
 
     digitalTwinRegistry:
@@ -134,7 +129,7 @@ data:
       irs:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:
-        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "discovery" }}
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }}
         {{- if .Values.ess.mockEdcResult }}
         mockEdcResult:
         {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 10 }}
