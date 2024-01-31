@@ -21,6 +21,8 @@ package org.eclipse.tractusx.irs.edc.client.contract.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.ToString;
+import org.eclipse.edc.connector.contract.spi.event.contractdefinition.ContractDefinitionCreated;
+import org.eclipse.edc.connector.contract.spi.types.offer.ContractDefinition;
 import org.eclipse.tractusx.irs.edc.client.asset.model.EdcContext;
 
 @ToString

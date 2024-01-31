@@ -63,7 +63,10 @@ import org.eclipse.edc.core.transform.transformer.to.JsonObjectToQuerySpecTransf
 import org.eclipse.edc.core.transform.transformer.to.JsonValueToGenericTypeTransformer;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.spi.result.Result;
+import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
+import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
+import org.eclipse.tractusx.irs.edc.client.asset.transformer.JsonObjectFromAssetRequestTransformer;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
@@ -81,12 +84,23 @@ public class EdcTransformer {
     private final JsonObjectFromTransferProcessRequestTransformer jsonObjectFromTransferProcessRequestTransformer;
     private final JsonObjectFromContractOfferDescriptionTransformer jsonObjectFromContractOfferDescriptionTransformer;
     private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
+    private final JsonObjectFromAssetTransformer jsonObjectFromAssetTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
+    private final JsonObjectFromAssetRequestTransformer jsonObjectFromAssetRequestTransformer;
 
     public EdcTransformer(@Qualifier("jsonLdObjectMapper") final ObjectMapper objectMapper,
             final TitaniumJsonLd titaniumJsonLd) {
         this.titaniumJsonLd = titaniumJsonLd;
+        this.titaniumJsonLd.registerNamespace("type", "https://w3id.org/edc/v0.0.1/ns/dataAddress/type");
+        this.titaniumJsonLd.registerNamespace("baseUrl", "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl");
+        this.titaniumJsonLd.registerNamespace("proxyMethod", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod");
+        this.titaniumJsonLd.registerNamespace("proxyBody", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody");
+        this.titaniumJsonLd.registerNamespace("method", "https://w3id.org/edc/v0.0.1/ns/dataAddress/method");
+        this.titaniumJsonLd.registerNamespace("asset", "https://w3id.org/edc/v0.0.1/ns/asset");
+        this.titaniumJsonLd.registerNamespace("dataAddress", "https://w3id.org/edc/v0.0.1/ns/dataAddress");
+        this.titaniumJsonLd.registerNamespace("proxyPath", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath");
+        this.titaniumJsonLd.registerNamespace("proxyQueryParams", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams");
         final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(
@@ -97,6 +111,8 @@ public class EdcTransformer {
         jsonObjectFromContractOfferDescriptionTransformer = new JsonObjectFromContractOfferDescriptionTransformer(
                 jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
+        jsonObjectFromAssetTransformer = new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper);
+        jsonObjectFromAssetRequestTransformer = new JsonObjectFromAssetRequestTransformer(jsonBuilderFactory, objectMapper);
 
         final TypeTransformerRegistry typeTransformerRegistry = new TypeTransformerRegistryImpl();
         transformerContext = new TransformerContextImpl(typeTransformerRegistry);
@@ -128,9 +144,10 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectFromPolicyTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromDistributionTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromDataServiceTransformer(jsonBuilderFactory));
-        typeTransformerRegistry.register(new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper));
+        typeTransformerRegistry.register(jsonObjectFromAssetTransformer);
         typeTransformerRegistry.register(new JsonObjectFromCriterionTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromDataAddressTransformer(jsonBuilderFactory));
+        typeTransformerRegistry.register(jsonObjectFromAssetRequestTransformer);
     }
 
     public Catalog transformCatalog(final String jsonString, final Charset charset) {
@@ -165,6 +182,16 @@ public class EdcTransformer {
     public JsonObject transformCatalogRequestToJson(final CatalogRequest catalogRequest) {
         final JsonObject transform = jsonObjectFromCatalogRequestTransformer.transform(catalogRequest,
                 transformerContext);
+        return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
+    }
+
+    public JsonObject transformAssetToJson(Asset asset) {
+        final JsonObject transform = jsonObjectFromAssetTransformer.transform(asset, transformerContext);
+        return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
+    }
+
+    public JsonObject transformAssetRequestToJson(AssetRequest assetRequest) {
+        final JsonObject transform = jsonObjectFromAssetRequestTransformer.transform(assetRequest, transformerContext);
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 }
