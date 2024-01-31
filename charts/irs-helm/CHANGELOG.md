@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Changed configuration for discovery finder url from `digitalTwinRegistry.discoveryFinderUrl` to `discovery.discoveryFinderUrl`
 
 ## [6.13.0] - 2024-01-15
 - Update IRS version to 4.4.0
