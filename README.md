@@ -152,3 +152,13 @@ from the base distribution, along with any direct or indirect dependencies of th
 
 As for any pre-built image usage, it is the image user's responsibility to ensure that any use of this image complies
 with any relevant licenses for all software contained within.
+
+## Contact
+
+Contact the project developers via the project's "dev" list.
+
+* https://accounts.eclipse.org/mailing-list/tractusx-dev
+
+Contact the project developers via eclipse matrix chat.
+
+* Eclipse Matrix Chat https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org
