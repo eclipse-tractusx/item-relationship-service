@@ -155,7 +155,7 @@ with any relevant licenses for all software contained within.
 
 ## Contact
 
-Contact the project developers via the project's "dev" list.
+Contact the Eclipse Tractus-X developers via the developer mailing list.
 
 * https://accounts.eclipse.org/mailing-list/tractusx-dev
 
