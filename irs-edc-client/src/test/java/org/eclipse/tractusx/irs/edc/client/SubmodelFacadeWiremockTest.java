@@ -64,6 +64,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.ConstraintCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
+import org.eclipse.tractusx.irs.edc.client.policy.Operator;
 import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
@@ -125,10 +126,10 @@ class SubmodelFacadeWiremockTest {
 
         acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
-                List.of(new Permission(PolicyType.USE, List.of(new Constraints(
-                        List.of(new Constraint("Membership", OperatorType.EQ, List.of("active")),
-                                new Constraint("FrameworkAgreement.traceability", OperatorType.EQ, List.of("active"))),
-                        new ArrayList<>()))))), OffsetDateTime.now().plusYears(1))));
+                List.of(new Permission(PolicyType.USE, new Constraints(
+                        List.of(new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
+                                new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active")),
+                        new ArrayList<>())))), OffsetDateTime.now().plusYears(1))));
         final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider,
                 new ConstraintCheckerService());
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
@@ -258,10 +259,10 @@ class SubmodelFacadeWiremockTest {
     void shouldThrowExceptionWhenPoliciesAreNotAccepted() {
         // Arrange
         final List<Constraint> andConstraints = List.of(
-                new Constraint("Membership", OperatorType.EQ, List.of("active")));
+                new Constraint("Membership", new Operator(OperatorType.EQ), "active"));
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
         final Permission permission = new Permission(PolicyType.USE,
-                List.of(new Constraints(andConstraints, orConstraints)));
+                new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
 
