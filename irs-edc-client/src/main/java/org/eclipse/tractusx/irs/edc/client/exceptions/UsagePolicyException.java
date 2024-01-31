@@ -29,10 +29,10 @@ import org.eclipse.edc.policy.model.Policy;
 /**
  * Usage Policy Exception errors in the contract negotiation.
  */
+@Getter
 public class UsagePolicyException extends EdcClientException {
 
-    @Getter
-    private final Policy policy;
+    private final transient Policy policy;
 
     public UsagePolicyException(final String itemId, final Policy policy) {
         super("Consumption of asset '" + itemId

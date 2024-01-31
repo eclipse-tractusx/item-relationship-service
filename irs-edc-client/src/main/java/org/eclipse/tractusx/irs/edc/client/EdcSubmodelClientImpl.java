@@ -36,6 +36,7 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
@@ -49,6 +50,7 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StopWatch;
 
 /**
@@ -93,12 +95,16 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             log.info("Retrieving data from EDC data plane for dataReference with id {}", endpointDataReference.getId());
             final String payload = edcDataPlaneClient.getData(endpointDataReference, submodelDataplaneUrl);
             stopWatchOnEdcTask(stopWatch);
-            final String cid = EDRAuthCode.fromAuthCodeToken(endpointDataReference.getAuthCode()).getCid();
 
-            return Optional.of(new SubmodelDescriptor(cid, payload));
+            return Optional.of(new SubmodelDescriptor(getContractAgreementId(endpointDataReference.getAuthCode()), payload));
         }
 
         return Optional.empty();
+    }
+
+    @Nullable
+    private String getContractAgreementId(final String authCode) {
+        return StringUtils.isNotBlank(authCode) ? EDRAuthCode.fromAuthCodeToken(authCode).getCid() : null;
     }
 
     private Optional<EndpointDataReference> retrieveEndpointReference(final String storageId,
