@@ -273,7 +273,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         } catch (RuntimeException e) {
             // catching generic exception is intended here,
             // otherwise Jobs stay in state RUNNING forever
-            log.error(logPrefix + e.getMessage(), e); // TODO (mfischer) #214 do not log and throw
+            log.error(logPrefix + e.getMessage(), e);
             final var msg = logPrefix + e.getClass().getSimpleName()
                     + " occurred while looking up shell ids for bpn '%s'".formatted(bpn);
             throw new RegistryServiceException(msg, e);
@@ -298,12 +298,12 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         } catch (InterruptedException e) {
             log.error(logPrefix + "InterruptedException occurred while looking up shells ids for bpn '%s': ".formatted(
-                    bpn) + e.getMessage(), e); // #214 do not log and throw
+                    bpn) + e.getMessage(), e);
             Thread.currentThread().interrupt();
             throw new RegistryServiceException(LOGPREFIX_TO_BE_REMOVED_LATER + e.getClass().getSimpleName()
                     + " occurred while looking up shell ids for bpn '%s'".formatted(bpn), e);
         } catch (ExecutionException e) {
-            log.error(logPrefix + e.getMessage(), e); // TODO (mfischer) #214 do not log and throw
+            log.error(logPrefix + e.getMessage(), e);
             throw new RegistryServiceException(LOGPREFIX_TO_BE_REMOVED_LATER + e.getClass().getSimpleName()
                     + " occurred while looking up shell ids for bpn '%s'".formatted(bpn), e);
         }
