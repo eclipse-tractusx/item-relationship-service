@@ -89,7 +89,7 @@ class JsonObjectToPolicyTransformerTest {
     }
 
     @Test
-    public void shouldTransformJsonObjectToPolicyCorrectly() {
+    void shouldTransformJsonObjectToPolicyCorrectly() {
         // given
         JsonReader jsonReader = Json.createReader(new StringReader(EXAMPLE_PAYLOAD));
         JsonObject jsonObject = jsonReader.readObject();

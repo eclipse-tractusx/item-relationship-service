@@ -52,7 +52,7 @@ public class JsonObjectToPolicyTransformer extends AbstractJsonLdTransformer<Jso
         final Policy.PolicyBuilder builder = Policy.builder();
         builder.policyId(getId(jsonObject));
 
-        this.visitProperties(jsonObject, (key) -> v -> {
+        this.visitProperties(jsonObject, key -> v -> {
             try {
                 final Object result = objectMapper.readerFor(Policy.class).readValue(v.asJsonObject().toString());
                 builder.permissions(((Policy) result).getPermissions());
