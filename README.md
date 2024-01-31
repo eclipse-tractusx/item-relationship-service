@@ -1,4 +1,5 @@
-# ![Item Relationship Service (IRS)](https://raw.githubusercontent.com/eclipse-tractusx/item-relationship-service/main/logo.png)
+# ![Item Relationship Service (IRS)](https://github.com/catenax-ng/tx-item-relationship-service/blob/main/docs/logo/IRS_Logo.png)
+
 
 [![Apache 2 License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/LICENSE)  
 [![Build](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml)
