@@ -75,9 +75,9 @@ data:
       lookupShellsTemplate: {{ .Values.digitalTwinRegistry.lookupShellsTemplate | default "" | quote }}
       type: {{ tpl (.Values.digitalTwinRegistry.type | default "") . | quote }}
       oAuthClientId: {{ .Values.digitalTwinRegistry.oAuthClientId | default "portal" }}
-        discovery:
-          oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-          discoveryFinderUrl: {{ tpl (.Values.discovery.discoveryFinderUrl | default "") . | quote }} # The endpoint to discover EDC endpoints to a particular BPN.
+      discovery:
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+        discoveryFinderUrl: {{ tpl (.Values.discovery.discoveryFinderUrl | default "") . | quote }} # The endpoint to discover EDC endpoints to a particular BPN.
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
