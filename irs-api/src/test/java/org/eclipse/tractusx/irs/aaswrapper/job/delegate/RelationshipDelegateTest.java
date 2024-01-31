@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameterCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterUpward;
 import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
@@ -47,6 +48,7 @@ import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -62,10 +64,6 @@ class RelationshipDelegateTest {
 
     final String singleLevelBomAsBuiltAspectName = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt";
     final String singleLevelUsageAsBuiltAspectName = "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
-
-    private static PartChainIdentificationKey createKey() {
-        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
-    }
 
     @Test
     void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess()
@@ -188,6 +186,33 @@ class RelationshipDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.SUBMODEL_REQUEST);
+    }
+
+    @Test
+    void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
+        // given
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                                       .shell(shell("", shellDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
+                                                                                                       singleLevelBomAsBuiltAspectName,
+                                                                                                       "address")))));
+
+        // when
+        when(submodelFacade.getSubmodelPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId", null));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
+                new AASTransferProcess(), createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getTombstones()).hasSize(1);
+        assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
+                ProcessStep.USAGE_POLICY_VALIDATION);
+    }
+
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
     }
 
 }

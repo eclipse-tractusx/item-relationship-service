@@ -42,6 +42,7 @@ import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 
@@ -112,17 +113,22 @@ public class RelationshipDelegate extends AbstractDelegate {
             aasTransferProcess.addIdsToProcess(idsToProcess);
             itemContainerBuilder.relationships(relationships);
             itemContainerBuilder.bpns(getBpnsFrom(relationships));
+        } catch (final UsagePolicyException e) {
+            log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
+            itemContainerBuilder.tombstone(
+                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
+                            0, ProcessStep.USAGE_POLICY_VALIDATION, jsonUtil.asMap(e.getPolicy())));
         } catch (final EdcClientException e) {
             log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                     endpoint.getProtocolInformation().getHref());
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
-                            retryCount, ProcessStep.SUBMODEL_REQUEST));
+                            0, ProcessStep.SUBMODEL_REQUEST));
         } catch (final JsonParseException e) {
             log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
-                            retryCount, ProcessStep.SUBMODEL_REQUEST));
+                            0, ProcessStep.SUBMODEL_REQUEST));
         }
     }
 

@@ -65,10 +65,6 @@ class SubmodelDelegateTest {
     final SubmodelDelegate submodelDelegate = new SubmodelDelegate(submodelFacade, semanticsHubFacade,
             jsonValidatorService, new JsonUtil(), connectorEndpointsService);
 
-    private static PartChainIdentificationKey createKey() {
-        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
-    }
-
     @Test
     void shouldFilterSubmodelDescriptorsByAspectTypeFilter() {
         // given
@@ -220,6 +216,10 @@ class SubmodelDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.SCHEMA_REQUEST);
+    }
+
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
     }
 
 }
