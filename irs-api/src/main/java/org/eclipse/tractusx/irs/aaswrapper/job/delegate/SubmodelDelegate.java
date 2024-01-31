@@ -49,6 +49,7 @@ import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.services.validation.ValidationResult;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -122,13 +123,13 @@ public class SubmodelDelegate extends AbstractDelegate {
                 final org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor submodel = requestSubmodel(
                         submodelFacade, connectorEndpointsService, endpoint, bpn);
                 final String submodelRawPayload = submodel.getPayload();
-                final String cid = auditContractNegotiation ? submodel.getCid() : null;
+                final String contractAgreementId = getContractAgreementId(auditContractNegotiation, submodel);
 
                 final ValidationResult validationResult = jsonValidatorService.validate(jsonSchema, submodelRawPayload);
 
                 if (validationResult.isValid()) {
                     submodels.add(Submodel.from(submodelDescriptor.getId(), submodelDescriptor.getAspectType(),
-                            cid, jsonUtil.fromString(submodelRawPayload, Map.class)));
+                            contractAgreementId, jsonUtil.fromString(submodelRawPayload, Map.class)));
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
@@ -154,6 +155,12 @@ public class SubmodelDelegate extends AbstractDelegate {
             }
         });
         return submodels;
+    }
+
+    @Nullable
+    private String getContractAgreementId(final boolean auditContractNegotiation,
+            final org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor submodel) {
+        return auditContractNegotiation ? submodel.getCid() : null;
     }
 
 }
