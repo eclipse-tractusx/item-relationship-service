@@ -75,6 +75,7 @@ data:
       shellDescriptorTemplate: {{ .Values.digitalTwinRegistry.shellDescriptorTemplate | default "" | quote }}
       lookupShellsTemplate: {{ .Values.digitalTwinRegistry.lookupShellsTemplate | default "" | quote }}
       type: {{ tpl (.Values.digitalTwinRegistry.type | default "") . | quote }}
+      oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }}
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
