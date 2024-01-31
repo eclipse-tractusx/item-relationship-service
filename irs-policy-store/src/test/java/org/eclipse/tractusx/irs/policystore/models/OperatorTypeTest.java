@@ -27,4 +27,28 @@ class OperatorTypeTest {
         assertThat(OperatorType.GTEQ.toString()).isEqualTo(OperatorType.GTEQ.getCode());
     }
 
+    @Test
+    void whenFromValueShouldRemovePrefixIfPresent() {
+        // given
+        final String prefix = "odrl:";
+        final String operator = "eq";
+
+        // when
+        final OperatorType result = OperatorType.fromValue(prefix + operator);
+
+        // then
+        assertThat(result.toString().toLowerCase()).isEqualTo(operator);
+    }
+
+    @Test
+    void whenFromValueShouldNotRemovePrefixIfNotPresent() {
+        // given
+        final String operator = "eq";
+
+        // when
+        final OperatorType result = OperatorType.fromValue(operator);
+
+        // then
+        assertThat(result.toString().toLowerCase()).isEqualTo(operator);
+    }
 }

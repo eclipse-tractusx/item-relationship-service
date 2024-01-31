@@ -48,6 +48,7 @@ import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.DataService;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.catalog.spi.Distribution;
+import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.policy.model.Action;
 import org.eclipse.edc.policy.model.AndConstraint;
@@ -73,7 +74,7 @@ public class TestMother {
         titaniumJsonLd.registerNamespace("edc", NAMESPACE_EDC);
         titaniumJsonLd.registerNamespace("dcat", NAMESPACE_DCAT);
         titaniumJsonLd.registerNamespace("dspace", NAMESPACE_DSPACE);
-        return new EdcTransformer(objectMapper(), titaniumJsonLd);
+        return new EdcTransformer(objectMapper(), titaniumJsonLd, new TypeTransformerRegistryImpl());
     }
 
     public static ObjectMapper objectMapper() {
