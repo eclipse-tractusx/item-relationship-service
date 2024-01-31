@@ -1,4 +1,4 @@
-# \[Concept\] \[#ID#\] Summary
+# \[Concept\] \[#207\] Redesign metrics used in summary inside Job Response
 
 | Key           | Value                                                                         |
 |---------------|-------------------------------------------------------------------------------|
