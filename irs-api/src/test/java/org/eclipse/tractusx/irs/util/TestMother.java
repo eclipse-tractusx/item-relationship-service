@@ -155,6 +155,7 @@ public class TestMother {
                            .direction(Direction.DOWNWARD)
                            .aspects(List.of(AspectType.SERIAL_PART.toString(),
                                    AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .auditContractNegotiation(false)
                            .build();
     }
 
@@ -194,6 +195,17 @@ public class TestMother {
                            .aspects(List.of(AspectType.SERIAL_PART.toString(),
                                    AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
                            .lookupBPNs(true)
+                           .build();
+    }
+
+    public static JobParameter jobParameterAuditContractNegotiation() {
+        return JobParameter.builder()
+                           .depth(5)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .auditContractNegotiation(true)
                            .build();
     }
 

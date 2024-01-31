@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameterAuditContractNegotiation;
 import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
@@ -64,6 +65,24 @@ class DigitalTwinDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
         assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
+        assertThat(result.getShells().get(0).contractAgreementId()).isNull();
+    }
+
+    @Test
+    void shouldFillItemContainerWithShellAndContractAgreementIdWhenAuditFlag() throws RegistryServiceException {
+        // given
+        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
+                List.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
+
+        // when
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameterAuditContractNegotiation(),
+                new AASTransferProcess("id", 0), createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getShells()).isNotEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
+        assertThat(result.getShells().get(0).contractAgreementId()).isNotNull();
     }
 
     @Test
