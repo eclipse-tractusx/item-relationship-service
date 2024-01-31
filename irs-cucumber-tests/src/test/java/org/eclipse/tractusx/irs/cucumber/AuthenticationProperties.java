@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,11 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.cucumber;
 
-import static io.restassured.RestAssured.given;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import lombok.Builder;
@@ -35,35 +30,16 @@ import lombok.Builder;
 @Builder
 /* package */ class AuthenticationProperties {
     private final String uri;
-    private final String clientId;
-    private final String clientSecret;
-    private final String keycloakUrl;
-    private final String grantType;
-    private final String tokenPath;
+    private final String apiKey;
 
-    /* package */ AuthenticationProperties(final String uri, final String clientId, final String clientSecret,
-            final String keycloakUrl, final String grantType, final String tokenPath) {
+    /* package */ AuthenticationProperties(final String uri, final String apiKey) {
         this.uri = uri;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.keycloakUrl = keycloakUrl;
-        this.grantType = grantType;
-        this.tokenPath = tokenPath;
-    }
-
-    private String obtainAccessToken() {
-        final Map<String, String> oauth2Payload = new HashMap<>();
-        oauth2Payload.put("grant_type", grantType);
-        oauth2Payload.put("client_id", clientId);
-        oauth2Payload.put("client_secret", clientSecret);
-
-        return given().params(oauth2Payload).post(keycloakUrl).then().extract().jsonPath().getString(tokenPath);
+        this.apiKey = apiKey;
     }
 
     /* package */ RequestSpecification getNewAuthenticationRequestSpecification() {
-        final String accessToken = obtainAccessToken();
         final RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.addHeader("Authorization", "Bearer " + accessToken);
+        builder.addHeader("X-API-KEY", apiKey);
         builder.setBaseUri(uri);
 
         return builder.build();

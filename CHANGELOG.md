@@ -5,10 +5,105 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+- Added helper script for building documentation locally.
+
+### Changed
+- Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
+- Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
+- Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
+
+### Fixed
+- Update to Spring Boot 3.1.8. This fixes the following CVEs:
+  - CVE-2023-6378 serialization vulnerability in logback
+  - CVE-2023-51074 json-path v2.8.0 stack overflow
+  - CVE-2024-22233 Spring Framework server Web DoS Vulnerability
+
+## [4.4.0] - 2024-01-15
+### Added
+- Added EDR token cache to reuse token after contract negotiation
+- Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints
+- Add concept docs/#322-Provisioning-of-contractAgreementId-for-assets.md
+
+### Changed
+- Authentication was redesigned to use API keys, instead of OAuth2 protocol. The api key has to be sent as a X-API-KEY request header. IRS is supporting two types of API keys - one for admin and one for regular/view usage. Use new ``apiKeyAdmin`` and ``apiKeyRegular`` config entries to set up API keys.
+
+### Removed
+- Removed ``oauth.resourceClaim``, ``oauth.irsNamespace``,``oauth.roles``,``oauth2.jwkSetUri`` config entries
+
+## [4.3.0] - 2023-12-08
+### Added
+- Added support for `hasAlternatives` property in SingleLevelBomAsBuilt aspect
+
+### Changed
+- Updated edc dependencies to 0.2.1
+- Update deprecated field `providerUrl` to `counterPartyAddress` in EDC catalog request
+- Update ESS EDC notification creation asset endpoint to v3
+
+## [4.2.0] - 2023-11-28
+### Changed
+- Changed default behaviour of IRS - when aspects list is not provided or empty in request body, IRS will not collect any submodel now (previously default aspects were collected).
+- ESS
+  - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
+  - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
+- Exported health endpoints to prometheus (see HealthMetricsExportConfiguration,
+  DependenciesHealthMetricsExportConfiguration) and
+  added [system health dashboard](charts/irs-helm/dashboards/system-health-dashboard.json) in order to visualize health
+  metrics of IRS and its dependencies
+
+### Fixed
+- Fixed incorrect passing of incidentBPNS for ESS Orders
+
+### Known knowns
+- [#253] Cancelation of order jobs is not working stable
+
+## [4.1.0] - 2023-11-15
 ### Added
 - IRS can now check the readiness of external services. Use the new ``management.health.dependencies.enabled`` config entry to determine if external dependencies health checks should be checked (false by default).
   - The map of external services healthcheck endpoints can be configured with ``management.health.dependencies.urls`` property, eg. ``service_name: http://service_name_host/health``
-  
+- Added cache mechanism for ConnectorEndpointService for fetchConnectorEndpoints method cache
+
+### Changed
+- Changed name of spring's OAuth2 client registration from 'keycloak' to 'common' like below:
+  ```
+  spring:
+    security:
+      oauth2:
+        client:
+          registration:
+            keycloak:
+              authorization-grant-type: client_credentials
+              client-id: 
+              client-secret: 
+          provider:
+            keycloak:
+              token-uri:
+  ```
+  to:
+  ```
+  spring:
+    security:
+      oauth2:
+        client:
+          registration:
+            common:
+              authorization-grant-type: client_credentials
+              client-id: 
+              client-secret: 
+          provider:
+            common:
+              token-uri:
+  ```
+- Update IRS API Swagger documentation to match AAS 3.0.0
+
+### Fixed
+- IRS will return 206 Http status from GET /jobs/{id} endpoint if Job is still running
+
+## [4.0.2] - 2023-11-20
+### Changed
+- Remove `apk upgrade --no-cache libssl3 libcrypto3` in Docker base image to be TRG compliant
+
 ## [4.0.1] - 2023-11-10
 ### Changed
 - Added state `STARTED` as acceptable state to complete the EDC transfer process to be compatible with EDC 0.5.1
@@ -408,7 +503,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...HEAD
+[4.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.3.0...4.4.0
+[4.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.2.0...4.3.0
+[4.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...4.2.0
+[4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.2...4.1.0
+[4.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.4...4.0.0
 [3.5.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...3.5.4

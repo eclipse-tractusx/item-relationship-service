@@ -1,36 +1,29 @@
 # testing_utils.py
 from datetime import datetime
 
-import requests
 import os
 from box import Box
 
 
-def supplyChainImpacted_is_Yes(response):
+def supplyChainImpacted_is_as_expected(response, expectedSupplyChainImpacted):
     submodels = response.json().get("submodels")
     print("submodels ", submodels)
     assert len(submodels) <= 1
     for i in submodels:
         assert 'supply_chain_impacted' in i.get('aspectType')
-        assert 'Yes' in i.get("payload").get('supplyChainImpacted')
+        assert expectedSupplyChainImpacted in i.get("payload").get('supplyChainImpacted')
 
 
-def supplyChainImpacted_is_No(response):
+def supplyChainFirstLevelBpn_is_as_expected(response, expectedBpnl):
     submodels = response.json().get("submodels")
-    print("submodels ", submodels)
-    assert len(submodels) <= 1
     for i in submodels:
-        assert 'supply_chain_impacted' in i.get('aspectType')
-        assert 'No' in i.get("payload").get('supplyChainImpacted')
+        assert expectedBpnl in i.get("payload").get("impactedSuppliersOnFirstTier").get("bpnl")
 
 
-def supplyChainImpacted_is_Unknown(response):
+def supplyChainhops_is_as_expected(response, expectedHops):
     submodels = response.json().get("submodels")
-    print("submodels ", submodels)
-    assert len(submodels) <= 1
     for i in submodels:
-        assert 'supply_chain_impacted' in i.get('aspectType')
-        assert 'Unknown' in i.get("payload").get('supplyChainImpacted')
+        assert expectedHops is i.get("payload").get("impactedSuppliersOnFirstTier").get("hops")
 
 
 def errors_for_invalid_investigation_request_are_correct(response):
@@ -47,6 +40,7 @@ def relationships_for_BPN_investigations_contains_several_childs(response):
     print("Länge: ", len(relationships))
     assert len(relationships) != 0
 
+
 def ESS_job_parameter_are_as_requested(response):
     print("Check if ESS-job parameter are as requested:")
     parameter = response.json().get('job').get('parameter')
@@ -60,6 +54,7 @@ def ESS_job_parameter_are_as_requested(response):
     aspects_list = parameter.get("aspects")
     assert 'PartSiteInformationAsPlanned' in aspects_list
     assert 'PartAsPlanned' in aspects_list
+
 
 def tombstone_for_EssValidation_are_correct(response, expectedTombstone):
     error_list = response.json().get("tombstones")
@@ -115,14 +110,11 @@ def relationships_are_not_empty(response):
 
 
 def submodels_are_empty(response):
-    print(response.json().get("submodels"))
     print("Check if submodels are empty", len(response.json().get("submodels")))
     assert len(response.json().get("submodels")) == 0
 
 
 def submodels_are_not_empty(response):
-    print(response)
-    print(response.json().get("submodels"))
     print("Check if submodels are not empty", len(response.json().get("submodels")))
     assert len(response.json().get("submodels")) != 0
 
@@ -138,6 +130,20 @@ def errors_for_invalid_depth_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
     assert 'depth:must be greater than or equal to 1' in error_list
+
+
+def submodelDescriptors_in_shells_are_empty(response):
+    shells = response.json().get("shells")
+    print("shells ", shells)
+    for i in shells:
+        assert len(i.get("submodelDescriptors")) == 0
+
+
+def aspects_in_job_parameter_are_empty(response):
+    parameter = response.json().get('job').get('parameter')
+    print(parameter)
+    assert parameter.get('collectAspects') is True
+    assert len(parameter.get("aspects")) == 0
 
 
 def errors_for_unknown_globalAssetId_are_correct(response):
@@ -339,11 +345,13 @@ def job_parameter_are_as_requested(response):
     assert 'PartAsPlanned' in aspects_list
 
 
-def create_bearer_token():
-    url = os.getenv('KEYCLOAK_HOST')
-    client_id = os.getenv('KEYCLOAK_CLIENT_ID')
-    client_secret = os.getenv('KEYCLOAK_CLIENT_SECRET')
+def create_api_key():
+    api_key = os.getenv('ADMIN_USER_API_KEY')
 
-    data = {"grant_type": "client_credentials", "client_id": client_id, "client_secret": client_secret}
-    token = requests.post(url, data).json().get('access_token')
-    return {"Authorization": f"Bearer {token}"}
+    return {"X-API-KEY": api_key}
+
+
+def create_api_key_ess():
+    api_key = os.getenv('ADMIN_USER_API_KEY_ESS')
+
+    return {"X-API-KEY": api_key}

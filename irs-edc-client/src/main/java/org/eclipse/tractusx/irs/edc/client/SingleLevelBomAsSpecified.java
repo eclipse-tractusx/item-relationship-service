@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -79,6 +79,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_SPECIFIED)
+                                                                      .hasAlternatives(Boolean.FALSE)
                                                                       .assembledOn(childPart.getCreatedOn())
                                                                       .lastModifiedOn(childPart.getLastModifiedOn());
 

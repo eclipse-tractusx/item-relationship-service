@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -39,34 +39,6 @@ class AssetAdministrationShellDescriptorTest {
     final String singleLevelBomAsBuiltIdWithAspectName = "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt";
     final String serialPartId = "urn:bamm:com.catenax.serial_part:1.0.0";
     final String serialPartIdWithAspectName = "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart";
-
-    @Test
-    void shouldFilterByAssemblyPartRelationshipWhenEndingWithAspectName() {
-        // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltIdWithAspectName)));
-        // Act
-        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
-                                                               .getSubmodelDescriptors();
-
-        // Assert
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltIdWithAspectName);
-    }
-
-    @Test
-    void shouldFilterByAssemblyPartRelationshipWhenNotEndingWithAspectName() {
-        // Arrange
-        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltId)));
-        // Act
-        final List<SubmodelDescriptor> result = shellDescriptor.withFilteredSubmodelDescriptors(List.of())
-                                                               .getSubmodelDescriptors();
-
-        // Assert
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltId);
-    }
 
     @Test
     void shouldFilterByAspectTypeWhenEndingWithAspectName() {

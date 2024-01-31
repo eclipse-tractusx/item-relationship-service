@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -77,39 +77,6 @@ class PolicyCheckerServiceTest {
         // given
         Policy policy = createAtomicConstraintPolicy(TestConstants.PURPOSE, TestConstants.ID_3_0_TRACE);
         when(policyStore.getAcceptedPolicies()).thenReturn(List.of());
-        // when
-        boolean result = policyCheckerService.isValid(policy);
-
-        // then
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void shouldConfirmValidPolicyWhenWildcardIsSet() {
-        // given
-        final String wildcardPolicyId = "*";
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(TestConstants.ID_3_0_TRACE), OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(wildcardPolicyId), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAtomicConstraintPolicy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                TestConstants.STATUS_ACTIVE);
-        // when
-        boolean result = policyCheckerService.isValid(policy);
-
-        // then
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void shouldRejectWhenWildcardIsPartOfPolicy() {
-        // given
-        final String invalidWildcardPolicy = "Policy*";
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(invalidWildcardPolicy), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
-        Policy policy = createAtomicConstraintPolicy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
-                TestConstants.STATUS_ACTIVE);
         // when
         boolean result = policyCheckerService.isValid(policy);
 

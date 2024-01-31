@@ -1,0 +1,34 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam linetype ortho
+skinparam defaultFontName "Architects daughter"
+
+actor APIConsumer
+activate APIConsumer
+
+box "IRS" #LightBlue
+participant WebService as "ESS API"
+activate WebService
+
+APIConsumer -> WebService : POST /ess/bpn/investigations
+opt
+APIConsumer <-- WebService : 201: Returns jobId of registered Investigation job.
+
+    loop poll is "200" http
+         APIConsumer -> WebService : GET /ess/bpn/investigations/{jobId}
+
+         opt job.hasCompleted()
+                APIConsumer <-- WebService : "200" Item Graph for given jobId with additional supplyChainImpacted information.
+         else job.isRunning()
+               APIConsumer <-- WebService : "200" Item Graph for given jobId with partial results about supplyChainImpacted information.
+         end opt
+    end loop
+
+else
+APIConsumer <-- WebService : 400: Registering Investigation job failed.
+end opt
+
+
+
+@enduml

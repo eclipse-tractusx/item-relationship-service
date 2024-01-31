@@ -16,3 +16,5 @@ The following people have contributed to this repository:
 - Sebastian Bezold, Mercedes Benz AG, https://github.com/SebastianBezold
 - Zied Belkhiria, MHP, https://github.com/Zied-Belkhiria-Mhp
 - Adam Bugajewski, doubleSlash Net-Business GmbH, https://github.com/ds-ext-abugajewski
+- Matthias Fischer, doubleSlash Net-Business GmbH, https://github.com/dsmf
+

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -42,8 +42,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
-import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.springframework.http.HttpStatus;
@@ -74,7 +74,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" },
                description = "Register a policy that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201"),
@@ -99,14 +99,14 @@ public class PolicyStoreController {
     })
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void registerAllowedPolicy(final @Valid @RequestBody CreatePolicyRequest request) {
         service.registerPolicy(request);
     }
 
     @Operation(operationId = "getAllowedPolicies",
                summary = "Lists the registered policies that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies.",
@@ -128,14 +128,14 @@ public class PolicyStoreController {
     })
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public List<Policy> getPolicies() {
         return service.getStoredPolicies();
     }
 
     @Operation(operationId = "deleteAllowedPolicy",
                summary = "Removes a policy that should no longer be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" },
                description = "Removes a policy that should no longer be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
@@ -160,13 +160,13 @@ public class PolicyStoreController {
     })
     @DeleteMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void deleteAllowedPolicy(@PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
     }
 
     @Operation(operationId = "updateAllowedPolicy", summary = "Updates an existing policy with new validUntil value.",
-               security = @SecurityRequirement(name = "oAuth2", scopes = "profile email"),
+               security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" },
                description = "Updates an existing policy with new validUntil value.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
@@ -191,7 +191,7 @@ public class PolicyStoreController {
     })
     @PutMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@authorizationService.verifyBpn() && hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void updateAllowedPolicy(@PathVariable("policyId") final String policyId,
             final @Valid @RequestBody UpdatePolicyRequest request) {
         service.updatePolicy(policyId, request);

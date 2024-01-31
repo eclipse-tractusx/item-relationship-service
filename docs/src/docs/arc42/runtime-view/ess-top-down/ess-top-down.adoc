@@ -14,7 +14,7 @@ The BoM as planned aspect models consists of three aspect models:
 
 == Overall flow
 
-[plantuml,target=submodel-processing,format=svg]
+[plantuml, target=ess-top-down, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/0-ess-top-down-sequence.puml[]
 ....
@@ -49,12 +49,12 @@ Note: ESS supplier responses are involved in each step of the process.
 
 == Flow on company level
 
-[plantuml,target=submodel-processing,format=svg]
+[plantuml, target=ess-top-down-highlevel, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/1_ess-top-down-sequence-highlevel.puml[]
 ....
 
-=== Step 0: Process initiation:
+=== Step 0: Process initiation
 
 The process is initiated by an ESS incident, that is received by (or created within) the inquiring company.
 This ESS incident acts as the root incident for the overall process The incident contains a company name (incl. address) and a valid BPN exists for that company.
@@ -92,47 +92,71 @@ The response of each direct supplier may contain the following results;
 
 In case at least one "YES" is received, the process step 3 ends
 
+[cols="6,1,1,1"]
+|===
+|Case |YES |NO |UNKNOWN
+|All assets on all nodes does not contain assets with incidentBPNs |x | |
+|At least one node contains assets with  incidentBPNs | |x |
+|At least one node does not contain PartSiteInformationAsPlanned aspect OR for at least one node PartSiteInformationAsPlanned  aspect  is not accessible | | |x
+|At least one node contains PartSiteInformationAsPlanned  with missing BPNS | | |x
+|At least one child node does not exist or is not accessible | | |x
+|===
+
+[cols="1,1,1,2,5"]
+|===
+| State 1 | State 2 | State n | Result State | Description
+| YES     | NO      | UNKOWN  | YES          | If any part is impacted then whole Supply is impactes
+| YES     | NO      | NO      | YES          | Yes if any BPN is impacted even if all are not impacted.
+| NO      | UNKNOW  | NO      | UNKNOW       | Unknown if no Yes and at leat one bpn is unknown state.
+| NO      | NO      | NO      | NO           | No if complete SupplyChain is not impacted
+|===
+
+[plantuml, target=ess_top_down_sequence-result, format=svg]
+....
+include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/5_ess_top_down_sequence_determine_result.puml[]
+....
+
 == Application Functionality Overview
 
-== Register an Ess-Investigation-Order
+=== Register an Ess-Investigation-Order
 
-[plantuml,target=submodel-processing,format=svg]
+[plantuml, target=ess-top-down-highlevel, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/use-case-ess-top-down/1_ess-top-down-sequence-highlevel.puml[]
 ....
 
-== 1. Client Request
+==== 1. Client Request
 
 The _Client App (Script)_ initiates a request to the IRS (Item Relationship Service) by sending a GET request for shell lookup based on a specific BPN (Business Partner Number).
 
-== 2. Shell Lookup
+==== 2. Shell Lookup
 
 IRS, along with other services like DiscoveryFinder, EDCDiscoveryService, and Digital Twin Registry, collaborates to look up shells for the given BPN, returning an array of AAS identifiers.
 
-== 3. AAS Descriptor Retrieval
+==== 3. AAS Descriptor Retrieval
 
 For each AAS identifier, the client requests the IRS for the corresponding shell descriptors, adding them to a collection.
 
-== 4. Filtering AAS
+==== 4. Filtering AAS
 
 The _Client App (Script)_ filters the AAS collection for SubmodelDescriptors marked _asPlanned_, based on certain criteria.
 
-== 5. Incident Registration
+==== 5. Incident Registration
 
 The client then initiates an IRS incident registration by sending a POST request with specific parameters, including bomLifecycle and callback URL.
 
-== 6. Incident Handling Loop
+==== 6. Incident Handling Loop
 
 IRS proceeds to handle the incident by iterating through AAS identifiers, extracting child CXIds, and performing checks on associated data.
 
-== 7. Data Validation
+==== 7. Data Validation
 
 The system checks the validity period of the received data and, if valid, proceeds to extract additional information.
 
-== 8. Incident Response
+==== 8. Incident Response
 
 If certain conditions are met (e.g., incidentBpns contain catenaXsiteId), the system responds to the client indicating a part-chain infection.
 
-== 9. Notification Handling
+==== 9. Notification Handling
 
 Otherwise, the system sends an ess-request notification to the next tier level IRS, and after processing the request on the next tier level, receives an ess-response notification.

@@ -13,9 +13,11 @@
                 "lifecycleContext": "asBuilt",
                 "assembledOn": "2022-02-03T14:48:54.709Z",
                 "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c"
+                "childCatenaXId": "urn:uuid:4db3b19e-1152-4e4e-8b4b-63c2f4fccc5c",
+                "hasAlternatives": false
             },
-            "aspectType": "SingleLevelUsageAsBuilt"
+            "aspectType": "SingleLevelUsageAsBuilt",
+            "bpn": "BPNL00000003AVTH"
         }
     ]
 }

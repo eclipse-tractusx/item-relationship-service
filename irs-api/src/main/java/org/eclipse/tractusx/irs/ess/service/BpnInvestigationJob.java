@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,55 +27,42 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.ResponseNotificationContent;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 
 /**
  * Object to store in cache
  */
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class BpnInvestigationJob {
 
     private static final String SUPPLY_CHAIN_ASPECT_TYPE = "supply_chain_impacted";
 
     private Jobs jobSnapshot;
     private List<String> incidentBpns;
-    private List<String> unansweredNotifications;
-    private List<String> answeredNotifications;
+    private List<Notification> unansweredNotifications;
+    private List<EdcNotification<ResponseNotificationContent>> answeredNotifications;
     private JobState state;
 
     public BpnInvestigationJob(final Jobs jobSnapshot, final List<String> incidentBpns) {
         this(jobSnapshot, incidentBpns, new ArrayList<>(), new ArrayList<>(), JobState.RUNNING);
-    }
-
-    private static Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob,
-            final SupplyChainImpacted supplyChainImpacted) {
-        final Submodel supplyChainImpactedSubmodel = Submodel.builder()
-                                                             .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
-                                                             .payload(Map.of("supplyChainImpacted",
-                                                                     supplyChainImpacted.getDescription()))
-                                                             .build();
-
-        return irsJob.toBuilder()
-                     .clearSubmodels()
-                     .submodels(Collections.singletonList(supplyChainImpactedSubmodel))
-                     .build();
-    }
-
-    private static Jobs updateLastModified(final Jobs irsJob, final ZonedDateTime lastModifiedOn) {
-        final Job job = irsJob.getJob().toBuilder().completedOn(lastModifiedOn).lastModifiedOn(lastModifiedOn).build();
-        return irsJob.toBuilder().job(job).build();
     }
 
     public BpnInvestigationJob update(final Jobs jobSnapshot, final SupplyChainImpacted newSupplyChain) {
@@ -90,6 +77,42 @@ public class BpnInvestigationJob {
         return this;
     }
 
+    public BpnInvestigationJob withUnansweredNotifications(final List<Notification> notifications) {
+        this.unansweredNotifications.addAll(notifications);
+        return this;
+    }
+
+    public BpnInvestigationJob withAnsweredNotification(
+            final EdcNotification<ResponseNotificationContent> notification) {
+        final Optional<String> bpn = getChildBpn(notification);
+        removeFromUnansweredNotification(notification);
+        notification.getContent().setBpn(bpn.orElse(null));
+        notification.getContent().incrementHops();
+        this.answeredNotifications.add(notification);
+
+        return this;
+    }
+
+    private Optional<String> getChildBpn(final EdcNotification<ResponseNotificationContent> notification) {
+        return this.unansweredNotifications.stream()
+                                           .filter(unansweredNotification -> unansweredNotification.notificationId()
+                                                                                                   .equals(notification.getHeader()
+                                                                                                                       .getOriginalNotificationId()))
+                                           .map(Notification::childBpn)
+                                           .findAny();
+    }
+
+    private void removeFromUnansweredNotification(final EdcNotification<ResponseNotificationContent> notification) {
+        this.unansweredNotifications.removeIf(unansweredNotification -> unansweredNotification.notificationId()
+                                                                                              .equals(notification.getHeader()
+                                                                                                                  .getOriginalNotificationId()));
+    }
+
+    public BpnInvestigationJob complete() {
+        this.state = JobState.COMPLETED;
+        return this;
+    }
+
     /* package */ Optional<SupplyChainImpacted> getSupplyChainImpacted() {
         return this.getJobSnapshot()
                    .getSubmodels()
@@ -99,6 +122,46 @@ public class BpnInvestigationJob {
                    .map(Object::toString)
                    .map(SupplyChainImpacted::fromString)
                    .findFirst();
+    }
+
+    private Jobs extendJobWithSupplyChainSubmodel(final Jobs irsJob, final SupplyChainImpacted supplyChainImpacted) {
+        final SupplyChainImpactedAspect.SupplyChainImpactedAspectBuilder supplyChainImpactedAspectBuilder = SupplyChainImpactedAspect.builder()
+                                                                                                                                     .supplyChainImpacted(
+                                                                                                                                             supplyChainImpacted);
+
+        if (getUnansweredNotifications().isEmpty()) {
+            final Optional<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> impactedSupplierWithLowestHopsNumber = getImpactedSupplierWithLowestHopsNumber();
+            supplyChainImpactedAspectBuilder.impactedSuppliersOnFirstTier(
+                    impactedSupplierWithLowestHopsNumber.orElse(null));
+        }
+
+        return irsJob.toBuilder()
+                     .clearSubmodels()
+                     .submodels(Collections.singletonList(
+                             createSupplyChainImpactedSubmodel(supplyChainImpactedAspectBuilder)))
+                     .build();
+    }
+
+    private Optional<SupplyChainImpactedAspect.ImpactedSupplierFirstLevel> getImpactedSupplierWithLowestHopsNumber() {
+        return getAnsweredNotifications().stream()
+                                         .map(EdcNotification::getContent)
+                                         .filter(ResponseNotificationContent::thereIsIncident)
+                                         .min(Comparator.comparing(ResponseNotificationContent::getHops))
+                                         .map(impacted -> new SupplyChainImpactedAspect.ImpactedSupplierFirstLevel(
+                                                 impacted.getBpn(), impacted.getHops()));
+    }
+
+    private static Submodel createSupplyChainImpactedSubmodel(
+            final SupplyChainImpactedAspect.SupplyChainImpactedAspectBuilder supplyChainImpactedAspectBuilder) {
+        return Submodel.builder()
+                       .aspectType(SUPPLY_CHAIN_ASPECT_TYPE)
+                       .payload(new JsonUtil().asMap(supplyChainImpactedAspectBuilder.build()))
+                       .build();
+    }
+
+    private Jobs updateLastModified(final Jobs irsJob, final ZonedDateTime lastModifiedOn) {
+        final Job job = irsJob.getJob().toBuilder().completedOn(lastModifiedOn).lastModifiedOn(lastModifiedOn).build();
+        return irsJob.toBuilder().job(job).build();
     }
 
     private Jobs extendSummary(final Jobs irsJob) {
@@ -111,19 +174,4 @@ public class BpnInvestigationJob {
         return irsJob.toBuilder().job(job).build();
     }
 
-    public BpnInvestigationJob withNotifications(final List<String> notifications) {
-        this.unansweredNotifications.addAll(notifications);
-        return this;
-    }
-
-    public BpnInvestigationJob withAnsweredNotification(final String notificationId) {
-        this.unansweredNotifications.remove(notificationId);
-        this.answeredNotifications.add(notificationId);
-        return this;
-    }
-
-    public BpnInvestigationJob complete() {
-        this.state = JobState.COMPLETED;
-        return this;
-    }
 }

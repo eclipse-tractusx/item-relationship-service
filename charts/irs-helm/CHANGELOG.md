@@ -6,11 +6,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [6.9.1]
+## [6.13.0] - 2024-01-15
+- Update IRS version to 4.4.0
+
+## [6.12.0] - 2023-12-08
+### Changed 
+- Changed configuration from `ess.managementPath` to options for each endpoint `ess.assetsPath` `ess.policydefinitionsPath` `ess.contractdefinitionsPath`. E.g. `ess.assetsPath: /management/v3/assets`
+- Rename property `edc.provider.host` to `ess.edc.host`
+
+## [6.11.0] - 2023-11-28
+### Fixed
+- Fixed templating for `management.health.dependencies`
+
+### Added
+- Added [system health dashboard](dashboards/system-health-dashboard.json) in order to visualize health metrics of IRS
+  and its dependencies
+- Added configuration for the Discovery Finder cache time to live value in `edc.connectorEndpointService.cacheTTL`
+
+## [6.10.0] - 2023-11-15
+### Changed
+- Update IRS version to 4.1.0
+- Changed configuration for OAuth2 client from:
+  ```
+  keycloak:
+    oauth2:
+      clientId: 
+      clientSecret:  
+      clientTokenUri: 
+      jwkSetUri:  
+  ```
+  to:
+  ```
+  oauth2:
+    clientId: 
+    clientSecret:  
+    clientTokenUri: 
+    jwkSetUri:  
+  ```
+
+## [6.9.2] - 2023-11-20
+### Changed
+- Update IRS version to 4.0.2
+
+## [6.9.1] - 2023-11-10
 ### Changed
 - Update IRS version to 4.0.1
 
-## [6.9.0]
+## [6.9.0] - 2023-10-27
 ### Changed
 - Update IRS version to 4.0.0
 

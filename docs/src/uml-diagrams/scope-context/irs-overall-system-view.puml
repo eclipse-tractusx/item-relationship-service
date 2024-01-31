@@ -17,7 +17,7 @@ node "Group of Submodel Endpoints" {
   [**Submodel-Server**] <<Component>> as SN
 }
 node "IAM" {
-    [**Keycloak**] <<Component>> as KIAM
+    [**OAuth2**] <<Component>> as OAuth2
 }
 actor Consumer
 
@@ -37,5 +37,5 @@ IRS --( IRAPI
 IRAPI -- AASR
 IRS --down( IAMAPI
 AASR --( IAMAPI
-KIAM -- IAMAPI
+OAuth2 -- IAMAPI
 @enduml

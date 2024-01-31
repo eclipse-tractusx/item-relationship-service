@@ -28,4 +28,11 @@
         <packageUrl regex="true">^pkg:maven/org\.graalvm\.sdk/graal\-sdk@.*$</packageUrl>
         <vulnerabilityName>CVE-2023-22006</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Only used in tests.
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/com.jayway.jsonpath/json-path@2.8.0$</packageUrl>
+        <vulnerabilityName>CVE-2023-51074</vulnerabilityName>
+    </suppress>
 </suppressions>

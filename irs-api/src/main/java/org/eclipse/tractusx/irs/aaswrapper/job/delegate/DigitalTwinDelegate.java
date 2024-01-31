@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -32,6 +32,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.Tombstone;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
@@ -65,9 +66,19 @@ public class DigitalTwinDelegate extends AbstractDelegate {
                             ProcessStep.DIGITAL_TWIN_REQUEST)).build();
         }
         try {
-            itemContainerBuilder.shell(digitalTwinRegistryService.fetchShells(
-                    List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()))
-            ).stream().findFirst().orElseThrow());
+            final AssetAdministrationShellDescriptor shell = digitalTwinRegistryService.fetchShells(
+                                                                                               List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn())))
+                                                                                       .stream()
+                                                                                       .findFirst()
+                                                                                       .orElseThrow();
+
+            if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
+                // traversal submodel descriptors are needed in next Delegate, and will be filtered out there
+                itemContainerBuilder.shell(shell);
+            } else {
+                // filter submodel descriptors if next delegate will not be executed
+                itemContainerBuilder.shell(shell.withFilteredSubmodelDescriptors(jobData.getAspects()));
+            }
         } catch (final RestClientException | RegistryServiceException e) {
             log.info("Shell Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
             itemContainerBuilder.tombstone(Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.DIGITAL_TWIN_REQUEST));

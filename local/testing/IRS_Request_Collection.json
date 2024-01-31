@@ -1,14 +1,14 @@
 {
 	"_type": "export",
 	"__export_format": 4,
-	"__export_date": "2023-10-03T14:17:54.580Z",
-	"__export_source": "insomnia.desktop.app:v2023.5.8",
+	"__export_date": "2024-01-23T10:32:11.813Z",
+	"__export_source": "insomnia.desktop.app:v8.6.0",
 	"resources": [
 		{
-			"_id": "req_0d87b4e10fb44787826d9283f86230b2",
-			"parentId": "fld_be8c2610cff74eb59ed09055773d60be",
-			"modified": 1687243172179,
-			"created": 1687243056648,
+			"_id": "req_1267e02eed7b49a28ea7e8b70bfe1cf6",
+			"parentId": "fld_9988da1681c94a2a8ce76b85d744325f",
+			"modified": 1705006817408,
+			"created": 1705005887617,
 			"url": "{{IRS_HOST}}/irs/policies",
 			"name": "Get all policies",
 			"description": "",
@@ -17,14 +17,15 @@
 			"parameters": [],
 			"headers": [],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.ADMIN_ID }}",
-				"clientSecret": "{{ _.ADMIN_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.ADMIN_API_KEY }}",
+				"addTo": "header"
 			},
-			"metaSortKey": -1687243056648,
+			"metaSortKey": -1705005887617,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -34,8 +35,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_a9821240386945ec8f185fab7c7456bc",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_9988da1681c94a2a8ce76b85d744325f",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1687243055015,
 			"created": 1687243055015,
 			"name": "Policy Store",
@@ -46,7 +47,7 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
 			"modified": 1691572726194,
 			"created": 1680682418636,
@@ -68,9 +69,9 @@
 			"_type": "workspace"
 		},
 		{
-			"_id": "req_a0fd3fecf398435eb2eaecd58ce49e61",
-			"parentId": "fld_a9821240386945ec8f185fab7c7456bc",
-			"modified": 1687243241313,
+			"_id": "req_f4ed2f142c40439998f72e2ceb85380e",
+			"parentId": "fld_9988da1681c94a2a8ce76b85d744325f",
+			"modified": 1702990529632,
 			"created": 1687243204155,
 			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'policyId', '', 'traceability-test', '', false, true %}",
 			"name": "Delete policy",
@@ -80,14 +81,15 @@
 			"parameters": [],
 			"headers": [],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.ADMIN_ID }}",
-				"clientSecret": "{{ _.ADMIN_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.ADMIN_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1685602897140.75,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -97,9 +99,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_0d95630e3b284521a29914cbad3d6336",
-			"parentId": "fld_a9821240386945ec8f185fab7c7456bc",
-			"modified": 1693576028823,
+			"_id": "req_990267ff2ba049fa8e0bfff912088b84",
+			"parentId": "fld_9988da1681c94a2a8ce76b85d744325f",
+			"modified": 1702990565006,
 			"created": 1693576003390,
 			"url": "{{IRS_HOST}}/irs/policies/{% prompt 'id', '', 'traceability-test', '', false, true %}",
 			"name": "Update policy",
@@ -117,14 +119,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.ADMIN_ID }}",
-				"clientSecret": "{{ _.ADMIN_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.ADMIN_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1684874704117.875,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -134,9 +137,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_b98662fb4f0c476cb8569015d2886457",
-			"parentId": "fld_a9821240386945ec8f185fab7c7456bc",
-			"modified": 1687243190523,
+			"_id": "req_73b6af41486b4910883d91dea050839e",
+			"parentId": "fld_9988da1681c94a2a8ce76b85d744325f",
+			"modified": 1705006437142,
 			"created": 1687243182397,
 			"url": "{{IRS_HOST}}/irs/policies",
 			"name": "Register policy",
@@ -154,14 +157,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.ADMIN_ID }}",
-				"clientSecret": "{{ _.ADMIN_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.ADMIN_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1683962737633.5,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -171,9 +175,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_d3262b8c87c04ba5a7e375b65292e496",
-			"parentId": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"modified": 1691502818583,
+			"_id": "req_d5741df44ed441d39c6b9325e6cb60ee",
+			"parentId": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"modified": 1706003275081,
 			"created": 1680682418619,
 			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors/{% prompt 'aasIdentifier', '', _.GLOBAL_ASSET_ID, '', false, true %}",
 			"name": "Get Shell by aasIdentifier",
@@ -184,22 +188,16 @@
 			"headers": [
 				{
 					"id": "pair_7877c58fd3ae46758cabf9f6cb397818",
-					"name": "",
-					"value": "",
+					"name": "Edc-Bpn",
+					"value": "BPNL00000001CRHK",
 					"description": "",
-					"disabled": true
+					"disabled": false
 				}
 			],
-			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}",
-				"credentialsInBody": false
-			},
+			"authentication": {},
 			"metaSortKey": -1680682418619,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -209,8 +207,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1691504187689,
 			"created": 1680682418630,
 			"name": "Digital Twin Registry",
@@ -221,9 +219,9 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_9756d034d3c64d12bfba7708299f9550",
-			"parentId": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"modified": 1690529037286,
+			"_id": "req_c9f7bc41a36e4d41b9bf26073e7feb98",
+			"parentId": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"modified": 1706002920212,
 			"created": 1690529035794,
 			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors",
 			"name": "Get Shells",
@@ -234,22 +232,16 @@
 			"headers": [
 				{
 					"id": "pair_7877c58fd3ae46758cabf9f6cb397818",
-					"name": "",
-					"value": "",
+					"name": "Edc-Bpn",
+					"value": "BPNL00000001CRHK",
 					"description": "",
-					"disabled": true
+					"disabled": false
 				}
 			],
-			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}",
-				"credentialsInBody": false
-			},
+			"authentication": {},
 			"metaSortKey": -1680682418614,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -259,9 +251,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_e1cc20a33b7b4e39a67455e0cd066843",
-			"parentId": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"modified": 1690366224607,
+			"_id": "req_4d2cf605282f41ae82adef74435aec12",
+			"parentId": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"modified": 1706003278149,
 			"created": 1680682418609,
 			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
 			"name": "Query Registry By BPN",
@@ -272,7 +264,7 @@
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AYRE\"}],",
-					"disabled": false,
+					"disabled": true,
 					"id": "pair_c8a20aa6fd7647a98da9b91abfe0cfa8"
 				},
 				{
@@ -284,7 +276,7 @@
 				{
 					"name": "assetIds",
 					"value": "[{\"name\": \"manufacturerId\",\"value\":\"BPNL00000003AZQP\"}]",
-					"disabled": true,
+					"disabled": false,
 					"id": "pair_4187c8b0b8894410a17eb0ff2cf1523a"
 				},
 				{
@@ -318,17 +310,18 @@
 					"id": "pair_406c9da4dc014fb297f70bb3da7128c1"
 				}
 			],
-			"headers": [],
-			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"credentialsInBody": false,
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
-			},
+			"headers": [
+				{
+					"id": "pair_72e0b43ab2ba4417bbc72bf08182edd0",
+					"name": "Edc-Bpn",
+					"value": "BPNL00000001CRHK",
+					"description": ""
+				}
+			],
+			"authentication": {},
 			"metaSortKey": -1680682418609,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -338,9 +331,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_12330e717b5649629e051622db00a848",
-			"parentId": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"modified": 1690366542261,
+			"_id": "req_1619abe9652b4b12b38aa24cbd40a7a1",
+			"parentId": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"modified": 1706003280850,
 			"created": 1680682418595,
 			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
 			"name": "Query Registry By VAN",
@@ -355,16 +348,18 @@
 					"id": "pair_50d86e928e9f448d97da8ada0390e12f"
 				}
 			],
-			"headers": [],
-			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
-			},
+			"headers": [
+				{
+					"id": "pair_ed11c2a6df9248e292914df944e8ba93",
+					"name": "Edc-Bpn",
+					"value": "BPNL00000001CRHK",
+					"description": ""
+				}
+			],
+			"authentication": {},
 			"metaSortKey": -1680682418595,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -374,9 +369,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_1bba1f291816490098ac164753a1ab1c",
-			"parentId": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"modified": 1691061418395,
+			"_id": "req_d6f383445f204a948970420dcda640d0",
+			"parentId": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"modified": 1706003354109,
 			"created": 1680682418581,
 			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
 			"name": "Query Registry By globalAssetId",
@@ -391,16 +386,18 @@
 					"id": "pair_f5f3d12fb2224c1d9e577c42128aa3d9"
 				}
 			],
-			"headers": [],
-			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
-			},
+			"headers": [
+				{
+					"id": "pair_71ae5e562e9c414a82e84220f3c00343",
+					"name": "Edc-Bpn",
+					"value": "BPNL00000001CRHK",
+					"description": ""
+				}
+			],
+			"authentication": {},
 			"metaSortKey": -1680682418581,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -410,9 +407,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_ea94bfdec10f449ba82559681a64037d",
-			"parentId": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"modified": 1691500553894,
+			"_id": "req_a6b3fee73a4c43e8a5e0449c3c620da7",
+			"parentId": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"modified": 1706003284715,
 			"created": 1680682418570,
 			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells/query",
 			"name": "Query Registry By VAN",
@@ -426,18 +423,20 @@
 			"headers": [
 				{
 					"name": "Content-Type",
-					"value": "application/json"
+					"value": "application/json",
+					"id": "pair_2f4c445074514f92a4dee92554053d0a"
+				},
+				{
+					"id": "pair_35fe7a71647f4aea91ba03bfc87f0cd0",
+					"name": "Edc-Bpn",
+					"value": "BPNL00000001CRHK",
+					"description": ""
 				}
 			],
-			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
-			},
+			"authentication": {},
 			"metaSortKey": -1680682418570,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -447,9 +446,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_c90fd02dd0874beab32e0dd6a32680b1",
-			"parentId": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"modified": 1691571903257,
+			"_id": "req_7245f1e26dea444f97742f993492e803",
+			"parentId": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"modified": 1706003286642,
 			"created": 1691408320970,
 			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells/query",
 			"name": "Query Registry By globalAssetId",
@@ -463,18 +462,20 @@
 			"headers": [
 				{
 					"name": "Content-Type",
-					"value": "application/json"
+					"value": "application/json",
+					"id": "pair_c1f8de03ff8f4f92aeeeef63510f755e"
+				},
+				{
+					"id": "pair_5dc1d703196747318faff9a8dd96be0c",
+					"name": "Edc-Bpn",
+					"value": "BPNL00000001CRHK",
+					"description": ""
 				}
 			],
-			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
-			},
+			"authentication": {},
 			"metaSortKey": -1680682418560.5,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -484,9 +485,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_49381cd212ab46aaa69917647db696be",
-			"parentId": "fld_aedfd7a2f8b240fd8a0d4237e3106c84",
-			"modified": 1690366857910,
+			"_id": "req_8ac0e8a9fe334e6a96dbb168a304ae18",
+			"parentId": "fld_bb755d1cb6a244aca3c64d9a7e5ac10b",
+			"modified": 1706003289343,
 			"created": 1689167429413,
 			"url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors/{% prompt 'id', '', '', '', false, true %}",
 			"name": "Delete Shell by aasIdentifier",
@@ -505,22 +506,16 @@
 			"headers": [
 				{
 					"id": "pair_7877c58fd3ae46758cabf9f6cb397818",
-					"name": "",
-					"value": "",
+					"name": "Edc-Bpn",
+					"value": "BPNL00000001CRHK",
 					"description": "",
-					"disabled": true
+					"disabled": false
 				}
 			],
-			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}",
-				"credentialsInBody": false
-			},
+			"authentication": {},
 			"metaSortKey": -1680682418470,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -530,9 +525,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_6876042c0fd442129709052f593eac17",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572360476,
+			"_id": "req_c1523dcf97d14b58bb72cf3253d4fb4b",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991054859,
 			"created": 1680682418551,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.0.0 [Register Job]",
@@ -550,14 +545,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418551,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -567,8 +563,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_c517b707380249f3bd7290d8d22a9138",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1680682418562,
 			"created": 1680682418562,
 			"name": "IRS Test Collection",
@@ -579,9 +575,9 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_fa164b4c409b40db827aff0e79a41878",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572904486,
+			"_id": "req_dc3918d6fa9843ffb4fe8e268888a0c4",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991058493,
 			"created": 1680682418539,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.1.0 [Register Job globalAssetId <Unknown>]",
@@ -599,14 +595,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418539,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -616,9 +613,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_627740b85e2b44afbede59bee38efb55",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572915877,
+			"_id": "req_add3363de5c941c1864c49fa8313468e",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991063641,
 			"created": 1680682418524,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.1.1 [Register Job globalAssetId <Invalid>]",
@@ -636,14 +633,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418524,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -653,9 +651,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_5915b9d5fd834fc88abf5b2dcf5d4e14",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572926461,
+			"_id": "req_daffa8d4fd694e388086286b52583a30",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991067797,
 			"created": 1680682418514,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.2.0 [Register Job with depth and bomLifecycle asBuilt]",
@@ -673,14 +671,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418514,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -690,9 +689,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_50b0a15282cb4d9eb74d022bc331bf07",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572936024,
+			"_id": "req_4741e3623c0a4649807af10b573a1ffb",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991071709,
 			"created": 1680682418504,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.2.1 [Register Job with depth and bomLifecycle asPlanned]",
@@ -710,14 +709,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418504,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -727,9 +727,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_8b66e84b065e4631b480a48ba57a054f",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1695042911082,
+			"_id": "req_4103f9f43731449c964103eec0aee11d",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991076696,
 			"created": 1695042901876,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.2.2 [Register Job with depth and bomLifecycle asSpecified]",
@@ -747,14 +747,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418496,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -764,9 +765,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_67a54df7c551456bb988d5433d15a3f3",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572943357,
+			"_id": "req_af000a718cd94c38aecbff4f182f5a0b",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991080833,
 			"created": 1680682418488,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.0 [Register Job with aspect SerialPart]",
@@ -784,14 +785,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418488,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -801,9 +803,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_df79b6f9718740739fb2956a5e793ee9",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572949775,
+			"_id": "req_60460ded5ba94b33b7f9f2373cdea348",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991084713,
 			"created": 1680682418479,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.1 [Register Job with aspect SerialPart and SingleLevelBomAsBuilt]",
@@ -821,14 +823,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418479,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -838,9 +841,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_ea02d5cd06b14599b748a7a5c7074597",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572957454,
+			"_id": "req_4e91ca97acf14f019fac724fe25e1e6c",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991088495,
 			"created": 1680682418469,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.2 [Register Job with aspect MaterialForRecycling and BatteryPass]",
@@ -858,14 +861,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418469,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -875,9 +879,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_de68bf2f27af483ea3d57c2faa382c92",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572965207,
+			"_id": "req_f269dfad4827462aae4bea5367b442e7",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991094498,
 			"created": 1680682418460,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.3 [Register Job with aspect type Batch and CertificateOfDestruction]",
@@ -895,14 +899,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418460,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -912,9 +917,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_32a42ffab57e468891cb3738e0cbd2f6",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572975641,
+			"_id": "req_1d5b7da6d6b54735a6166251c0a1edfb",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991098918,
 			"created": 1680682418451,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.4 [Register Job with aspect SerialPart and AddressAspect]",
@@ -932,14 +937,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418451,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -949,9 +955,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_fcd677768e4749e6890e742c5535cf20",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572985624,
+			"_id": "req_378c52bc81b64e8b95f641c4f655a1d5",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991103182,
 			"created": 1680682418442,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.5 [Register Job with aspect PartAsPlanned]",
@@ -969,14 +975,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418442,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -986,9 +993,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_7aea0fe27d264ccaae4dabca55908a18",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572678250,
+			"_id": "req_38b875ef05d14595b892e65914a6df24",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991107672,
 			"created": 1680682418432,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.6 [Register Job with upward direction]",
@@ -1006,14 +1013,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418432,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1023,9 +1031,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_418468c2c71944c183e14a118dad3ba1",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1695192994847,
+			"_id": "req_c96be1a03513429184f85283557a8d65",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991113717,
 			"created": 1695192937155,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.7 [Register Job with aspect JustInSequencePart]",
@@ -1043,14 +1051,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418428,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1060,9 +1069,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_1745c53de4f14d8e9458f7095e7a9bd9",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1695192982633,
+			"_id": "req_33ea4f68b3904bc6bb7ad50dde23632a",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991120609,
 			"created": 1695192971825,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.3.8 [Register Job with aspect TractionBatteryCode]",
@@ -1080,14 +1089,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418426,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1097,9 +1107,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_1f462787c52b4241a9d4906ddfe7940a",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691574126936,
+			"_id": "req_e18ad8582e204828b06e0de32d30390e",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991125292,
 			"created": 1680682418424,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.4.0 [Register Job with invalid or not exisiting aspect type]",
@@ -1117,14 +1127,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418424,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1134,9 +1145,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_f1385d39b501424caebc7067b1b809aa",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691574130454,
+			"_id": "req_d52411aa0a6249449a3e99c91b262e4e",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991130711,
 			"created": 1680682418414,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.4.1 [Register Job with invalid or not exisiting aspect type]",
@@ -1154,14 +1165,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418414,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1171,9 +1183,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_55c8aaff89644752833d4118fc3ff830",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691574133572,
+			"_id": "req_c610dd3176ae49d8a96884de371de3c9",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991137603,
 			"created": 1680682418401,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.5.0 [Register Job with all aspect type]",
@@ -1191,14 +1203,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418401,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1208,9 +1221,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_69728c86c252433c865341fc37da469a",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691574328481,
+			"_id": "req_07403288d3394387926cd9f0926b3ea4",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991145487,
 			"created": 1680682418392,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.6.0 [Register Job with BPN lookup]",
@@ -1228,14 +1241,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418392,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1245,9 +1259,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_beb0d36b302f44559ff1bc4e6734a537",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691574334421,
+			"_id": "req_ae4eeade6f854a3b845f1c4b0d1f351d",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991149742,
 			"created": 1683184048412,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.7.0 [Register Job with invalid policy]",
@@ -1265,14 +1279,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418386.5,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1282,9 +1297,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_fd07a6b6d4a8403db523585b610bf24a",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1693562089788,
+			"_id": "req_d2763c0b68e649debd563be84a2e7ac5",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991154342,
 			"created": 1693493383337,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.8.0 [Register Job with data integrity success]",
@@ -1302,14 +1317,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418382.375,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1319,9 +1335,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_f18b57a3b69348708c80adda421a8de5",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1693566189520,
+			"_id": "req_67e70efe4a904805b6d8d614401097f5",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991159838,
 			"created": 1693493584873,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.8.1 [Register Job with data integrity wrong hash]",
@@ -1339,14 +1355,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418381.6875,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1356,9 +1373,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_a70bf616e5a24b71b13967f1d186977d",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1693566192319,
+			"_id": "req_329716a740284e9d92c0e98b08ef8c4d",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991164094,
 			"created": 1693493594373,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.8.2 [Register Job with data integrity wrong signature]",
@@ -1376,14 +1393,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418381.3438,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1393,9 +1411,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_d043eb6376b74f8391dd76eeb2c7a8da",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1693566195101,
+			"_id": "req_1e84830bf707450c9aec67763df4db4d",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991168363,
 			"created": 1693493604521,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "1.8.3 [Register Job with data integrity integrity aspect missing]",
@@ -1413,14 +1431,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418381.1719,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1430,9 +1449,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_dbb0d4a0d96c40249e5cb92fab9a2d0e",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691571995584,
+			"_id": "req_846efa768fa4440e92d62d103f8268f0",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991173689,
 			"created": 1680682418381,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "2.0.0 [Search for completed Jobs]",
@@ -1453,14 +1472,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418381,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1470,9 +1490,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_92e80cc8681e4c90bea0403b289955a6",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691571999161,
+			"_id": "req_f44e4fb2955e45b4822b3579a5953370",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991177973,
 			"created": 1680682418372,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "2.0.1 [Search for Jobs in error state]",
@@ -1493,14 +1513,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418372,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1510,9 +1531,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_871b00bc6448477d8db16cd8bbbf0b53",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572006985,
+			"_id": "req_94e9199eebac41d4aaa24b79a529e712",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991182139,
 			"created": 1680682418358,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "2.0.2 [Search for Jobs in initial state]",
@@ -1533,14 +1554,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418358,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1550,9 +1572,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_96b1fac11f9c4f4fa6b54ac4eb624790",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572010448,
+			"_id": "req_bead38a2831748b0908dea7f60b75fcd",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991186114,
 			"created": 1680682418348,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "2.0.3 [Search for all Jobs in JobStore]",
@@ -1567,14 +1589,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418348,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1584,9 +1607,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_1fffeb148a6b45e78178b06add79b01f",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572013890,
+			"_id": "req_3388b98dfadf4ca29be1a8c20eb32540",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991190326,
 			"created": 1680682418339,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "2.1.0 [Search for running Jobs]",
@@ -1607,14 +1630,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418339,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1624,9 +1648,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_193d95ec37f2484faf57ee77eb357528",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572169302,
+			"_id": "req_690f2cd5e1ad46e497a8c25694fe37ec",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991196283,
 			"created": 1680682418325,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
 			"name": "3.0.0 [Search for given jobId with uncomplete]",
@@ -1647,14 +1671,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418325,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1664,9 +1689,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_9bc4c2adfa114f45add0ca894813ad42",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572020954,
+			"_id": "req_a232e153a891470e8b82c7e42a86f95f",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991200399,
 			"created": 1680682418316,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
 			"name": "3.1.0 [Search for given jobId]",
@@ -1681,14 +1706,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418316,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1698,9 +1724,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_e493fba73d7a47fe9a7c8932530337fa",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572140559,
+			"_id": "req_8448f684adbd409eaeb7c017af4b1508",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991205447,
 			"created": 1680682418307,
 			"url": "{{IRS_HOST}}/irs/jobs/test",
 			"name": "3.1.1 [Search for invalid jobId]",
@@ -1715,14 +1741,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418307,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1732,9 +1759,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_e07fffc2ca084f29ba5ed283b0f1ac48",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572133946,
+			"_id": "req_0a5dc1223ebc49ca9aed7114eb470dd7",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991214202,
 			"created": 1680682418297,
 			"url": "{{IRS_HOST}}/irs/jobs/00000000-0000-0000-0000-000000000000",
 			"name": "3.1.2 [Search for unknown jobId]",
@@ -1749,14 +1776,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418297,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1766,9 +1794,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_ae4b145a965e4280b1c7e2cc8e300fec",
-			"parentId": "fld_16ae74914cc44a8d8d2f9304ae33f98a",
-			"modified": 1691572032383,
+			"_id": "req_bc8199a1ea134828a0c61c8ce39e5f94",
+			"parentId": "fld_c517b707380249f3bd7290d8d22a9138",
+			"modified": 1702991218362,
 			"created": 1680682418280,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
 			"name": "6.0.0 [Cancel Job for given jobId]",
@@ -1783,14 +1811,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418280,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1800,9 +1829,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_3d1821920e254c2aba58dadf2f78eb76",
-			"parentId": "fld_21deb0c7ffae4da8973c95277bf03da1",
-			"modified": 1683630958934,
+			"_id": "req_71ca4eb08f894036866e35931ca370c9",
+			"parentId": "fld_476c769969fd4ad7a5d83e31b2a861d9",
+			"modified": 1705942015684,
 			"created": 1682672699249,
 			"url": "{{ _.BPN_DISCOVERY }}/api/administration/connectors/bpnDiscovery/search",
 			"name": "Find BPN endpoints for manufacturer numbers",
@@ -1822,13 +1851,14 @@
 			"authentication": {
 				"type": "oauth2",
 				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}",
+				"accessTokenUrl": "{{ _.OAUTH2_TOKEN_URL }}",
+				"clientId": "{{ _.DISCOVERY_CLIENT_ID }}",
+				"clientSecret": "{{ _.DISCOVERY_CLIENT_SECRET }}",
 				"disabled": false
 			},
 			"metaSortKey": -1683630902023,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1838,8 +1868,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_21deb0c7ffae4da8973c95277bf03da1",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_476c769969fd4ad7a5d83e31b2a861d9",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1683630931664,
 			"created": 1683630887514,
 			"name": "Discovery",
@@ -1850,9 +1880,9 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_c3662319534748e9b612767fd09d4ca8",
-			"parentId": "fld_21deb0c7ffae4da8973c95277bf03da1",
-			"modified": 1683630963691,
+			"_id": "req_d7248e0a7b1f4393a5a390b265482415",
+			"parentId": "fld_476c769969fd4ad7a5d83e31b2a861d9",
+			"modified": 1705942027574,
 			"created": 1683031718699,
 			"url": "{{ _.DISCOVERY_FINDER }}/api/administration/connectors/discovery/search",
 			"name": "Find BPN Discovery Endpoints of type BPN",
@@ -1872,13 +1902,14 @@
 			"authentication": {
 				"type": "oauth2",
 				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}",
+				"accessTokenUrl": "{{ _.OAUTH2_TOKEN_URL }}",
+				"clientId": "{{ _.DISCOVERY_CLIENT_ID }}",
+				"clientSecret": "{{ _.DISCOVERY_CLIENT_SECRET }}",
 				"disabled": false
 			},
 			"metaSortKey": -1683630901923,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1888,9 +1919,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_0e546b5d6c0f4541a6fac63c1d893498",
-			"parentId": "fld_21deb0c7ffae4da8973c95277bf03da1",
-			"modified": 1691567913468,
+			"_id": "req_77fa47273bf343c7b674d6f6062a4699",
+			"parentId": "fld_476c769969fd4ad7a5d83e31b2a861d9",
+			"modified": 1705942036978,
 			"created": 1683560906453,
 			"url": "{{ _.EDC_DISCOVERY }}/api/administration/connectors/discovery",
 			"name": "Find EDC endpoints for BPNs",
@@ -1910,13 +1941,14 @@
 			"authentication": {
 				"type": "oauth2",
 				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}",
+				"accessTokenUrl": "{{ _.OAUTH2_TOKEN_URL }}",
+				"clientId": "{{ _.DISCOVERY_CLIENT_ID }}",
+				"clientSecret": "{{ _.DISCOVERY_CLIENT_SECRET }}",
 				"disabled": false
 			},
 			"metaSortKey": -1683630901873,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1926,9 +1958,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_a192b4ad61964bf6b67c675643e7e7ba",
-			"parentId": "fld_1848735731fd4d88811e9f8d1817eeb6",
-			"modified": 1691567746933,
+			"_id": "req_b02ac0bfc4704c83a5c5f8b24175d61a",
+			"parentId": "fld_a78746c77e5042fe9a16e9c07c428503",
+			"modified": 1705006665175,
 			"created": 1680682418265,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "Register Job",
@@ -1946,14 +1978,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418265,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -1963,8 +1996,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_1848735731fd4d88811e9f8d1817eeb6",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_a78746c77e5042fe9a16e9c07c428503",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1680682418273,
 			"created": 1680682418273,
 			"name": "IRS Basic API Calls",
@@ -1975,9 +2008,50 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_9b0e07548239476c90d11680d6b6708c",
-			"parentId": "fld_1848735731fd4d88811e9f8d1817eeb6",
-			"modified": 1680686256003,
+			"_id": "req_8ba77f0c79bd4a3cbb0b9f661a05b03e",
+			"parentId": "fld_a78746c77e5042fe9a16e9c07c428503",
+			"modified": 1705942154792,
+			"created": 1680682418238,
+			"url": "{{IRS_HOST}}/irs/jobs/{% response 'body', 'req_b02ac0bfc4704c83a5c5f8b24175d61a', 'b64::JC5pZA==::46b', 'never', 60 %} ",
+			"name": "Get registered Job",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "returnUncompletedJob",
+					"value": "true",
+					"disabled": false
+				}
+			],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1680682418261,
+			"isPrivate": false,
+			"pathParameters": [],
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_58c35dbebe62459182db7768eb9cfe38",
+			"parentId": "fld_a78746c77e5042fe9a16e9c07c428503",
+			"modified": 1702991288793,
 			"created": 1680682418257,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "Search for all Jobs in JobStore",
@@ -1992,14 +2066,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418257,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2009,9 +2084,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_f3afcc4ee068463da501a91ac13299ef",
-			"parentId": "fld_1848735731fd4d88811e9f8d1817eeb6",
-			"modified": 1691567830017,
+			"_id": "req_6e01d4795fcd4ec4be9ca7fdc6922fa8",
+			"parentId": "fld_a78746c77e5042fe9a16e9c07c428503",
+			"modified": 1702991284435,
 			"created": 1680682418247,
 			"url": "{{IRS_HOST}}/irs/jobs",
 			"name": "Search for Jobs for given state",
@@ -2046,14 +2121,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418247,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2063,9 +2139,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_2a2ddcde35b242d89d8f403da790869b",
-			"parentId": "fld_1848735731fd4d88811e9f8d1817eeb6",
-			"modified": 1691567881065,
+			"_id": "req_78f9f14b26df47858339421fa25b4692",
+			"parentId": "fld_a78746c77e5042fe9a16e9c07c428503",
+			"modified": 1703236659047,
 			"created": 1690384427379,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
 			"name": "Get Job for jobId",
@@ -2086,14 +2162,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418238,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2103,9 +2180,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_4baeca1b42c54f9da0e3c80fe99f25ce",
-			"parentId": "fld_1848735731fd4d88811e9f8d1817eeb6",
-			"modified": 1691567884778,
+			"_id": "req_ed05f65eded245b88f2e0e8d345c3aea",
+			"parentId": "fld_a78746c77e5042fe9a16e9c07c428503",
+			"modified": 1702991276045,
 			"created": 1680682418229,
 			"url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
 			"name": "Cancel Job for jobId",
@@ -2120,14 +2197,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418229,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2137,9 +2215,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_b70e24c7208646acac2471ac4869f7dc",
-			"parentId": "fld_1848735731fd4d88811e9f8d1817eeb6",
-			"modified": 1690365987561,
+			"_id": "req_5e18d4a7284c43f5aa60ec7e6123a1c7",
+			"parentId": "fld_a78746c77e5042fe9a16e9c07c428503",
+			"modified": 1702991272198,
 			"created": 1682498338739,
 			"url": "{{IRS_HOST}}/irs/aspectmodels",
 			"name": "Get all available Aspect Models",
@@ -2154,14 +2232,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418179,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2171,9 +2250,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_f37d5de67a72409b93523b2dbb643c3a",
-			"parentId": "fld_4bb1e94d94264daa959e9378a3ea93d3",
-			"modified": 1691504888870,
+			"_id": "req_6a09b68cf4244a0cb956df180e5f4c82",
+			"parentId": "fld_f4db18660b724e548809bade6bfce615",
+			"modified": 1705942066941,
 			"created": 1680682418213,
 			"url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models",
 			"name": "Get all models",
@@ -2198,12 +2277,13 @@
 			"authentication": {
 				"type": "oauth2",
 				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"accessTokenUrl": "{{ _.OAUTH2_TOKEN_URL }}",
+				"clientId": "{{ _.SEMANTIC_HUB_CLIENT_ID }}",
+				"clientSecret": "{{ _.SEMANTIC_HUB_CLIENT_SECRET }}"
 			},
 			"metaSortKey": -1680682418213,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2213,8 +2293,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_4bb1e94d94264daa959e9378a3ea93d3",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_f4db18660b724e548809bade6bfce615",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1680682418222,
 			"created": 1680682418222,
 			"name": "Semantics Hub",
@@ -2225,9 +2305,9 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_c380161c8ac1481bb230e34d6d2bb2ef",
-			"parentId": "fld_4bb1e94d94264daa959e9378a3ea93d3",
-			"modified": 1691504864710,
+			"_id": "req_b1a321440a2e4dfe902ecca571dc62f5",
+			"parentId": "fld_f4db18660b724e548809bade6bfce615",
+			"modified": 1705942077015,
 			"created": 1680682418204,
 			"url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
 			"name": "Get SerialPartTypization",
@@ -2239,12 +2319,13 @@
 			"authentication": {
 				"type": "oauth2",
 				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"accessTokenUrl": "{{ _.OAUTH2_TOKEN_URL }}",
+				"clientId": "{{ _.SEMANTIC_HUB_CLIENT_ID }}",
+				"clientSecret": "{{ _.SEMANTIC_HUB_CLIENT_SECRET }}"
 			},
 			"metaSortKey": -1680682418204,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2254,9 +2335,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_4d6d3cde8e564122ba7da812ba5d60ad",
-			"parentId": "fld_4bb1e94d94264daa959e9378a3ea93d3",
-			"modified": 1691504802561,
+			"_id": "req_f7f18c23f9ed4b26ba84b6fa81fd5a30",
+			"parentId": "fld_f4db18660b724e548809bade6bfce615",
+			"modified": 1705942085733,
 			"created": 1680682418192,
 			"url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization/json-schema",
 			"name": "Get SerialPartTypization Json Schema",
@@ -2268,12 +2349,13 @@
 			"authentication": {
 				"type": "oauth2",
 				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"accessTokenUrl": "{{ _.OAUTH2_TOKEN_URL }}",
+				"clientId": "{{ _.SEMANTIC_HUB_CLIENT_ID }}",
+				"clientSecret": "{{ _.SEMANTIC_HUB_CLIENT_SECRET }}"
 			},
 			"metaSortKey": -1680682418192,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2283,9 +2365,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_550db8730d764aaaad53c25956475f8f",
-			"parentId": "fld_b8389a897e144a9bae1d42c8437cf137",
-			"modified": 1681718801853,
+			"_id": "req_76a27e96d5d342e8a7354566da95312a",
+			"parentId": "fld_91009c5cad114695877a204d8fb6e2d1",
+			"modified": 1705942100313,
 			"created": 1680682418174,
 			"url": "{{ _.BPDM_URL }}/v1/api/catena/business-partner/{% prompt 'BPN', '', '', '', false, true %}",
 			"name": "Get business partner by id",
@@ -2303,12 +2385,13 @@
 			"authentication": {
 				"type": "oauth2",
 				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"accessTokenUrl": "{{ _.OAUTH2_TOKEN_URL }}",
+				"clientId": "{{ _.BPDM_CLIENT_ID }}",
+				"clientSecret": "{{ _.BPDM_CLIENT_SECRET }}"
 			},
 			"metaSortKey": -1680682418174,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2318,8 +2401,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_b8389a897e144a9bae1d42c8437cf137",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_91009c5cad114695877a204d8fb6e2d1",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1680682418184,
 			"created": 1680682418184,
 			"name": "Business partner data management",
@@ -2330,9 +2413,9 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_652cf8ddc2b94dedb2c21c55a5e1643b",
-			"parentId": "fld_c7dab8f730bb4cf38993366d008e9e8c",
-			"modified": 1681717263599,
+			"_id": "req_281c172641d04743b5f4b916639a0fde",
+			"parentId": "fld_91e10c4c8a0345d6b3a46c5146c12ceb",
+			"modified": 1702991347797,
 			"created": 1680682418157,
 			"url": "{{IRS_HOST}}/esr/esr-statistics/{% prompt 'globalAssetId', 'Provide global asset ID or use default', _.GLOBAL_ASSET_ID, '', false, true %}/{% prompt 'BOM Lifecycle', '', '', '', false, true %}/{% prompt 'Certificate', '', '', '', false, true %}/submodel",
 			"name": "Get Esr Statistics",
@@ -2347,14 +2430,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418158,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2364,8 +2448,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_c7dab8f730bb4cf38993366d008e9e8c",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_91e10c4c8a0345d6b3a46c5146c12ceb",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1680682418167,
 			"created": 1680682418167,
 			"name": "ESR Spike",
@@ -2376,9 +2460,9 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_cbe1d8a34c5a4b78a9e94e2b22049ca7",
-			"parentId": "fld_54d58b9eb7d9460e9e1b3ce1fdd27532",
-			"modified": 1696342652388,
+			"_id": "req_ec674952c1114bce8fb71ea1ed6d9ef7",
+			"parentId": "fld_e9093d47fe4445c5b0f7a051e4b0f5ad",
+			"modified": 1702991361578,
 			"created": 1680682418143,
 			"url": "{{IRS_HOST}}/ess/bpn/investigations",
 			"name": "Register Job Investigation",
@@ -2396,14 +2480,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418143,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2413,8 +2498,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_54d58b9eb7d9460e9e1b3ce1fdd27532",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_e9093d47fe4445c5b0f7a051e4b0f5ad",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1680682418151,
 			"created": 1680682418151,
 			"name": "ESS Spike",
@@ -2425,9 +2510,44 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_840fb7da94fa482aa52c8f97fc05b310",
-			"parentId": "fld_54d58b9eb7d9460e9e1b3ce1fdd27532",
-			"modified": 1681717309378,
+			"_id": "req_98098b47c80842ee9fa4d8a1c00b90cd",
+			"parentId": "fld_e9093d47fe4445c5b0f7a051e4b0f5ad",
+			"modified": 1705942138125,
+			"created": 1680682418134,
+			"url": "{{IRS_HOST}}/ess/bpn/investigations/{% response 'body', 'req_ec674952c1114bce8fb71ea1ed6d9ef7', 'b64::JC5pZA==::46b', 'never', 60 %}",
+			"name": "Get registered investigation",
+			"description": "",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1680682418138.5,
+			"isPrivate": false,
+			"pathParameters": [],
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_53b8324bea944948ae6156efa74b35a2",
+			"parentId": "fld_e9093d47fe4445c5b0f7a051e4b0f5ad",
+			"modified": 1702991370481,
 			"created": 1680682418134,
 			"url": "{{IRS_HOST}}/ess/bpn/investigations/{% prompt 'Job ID', '', '', '', false, true %}",
 			"name": "Search for investigation by jobId",
@@ -2442,14 +2562,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418134,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2459,9 +2580,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_a88fd80bc95349088039a21c4e841af9",
-			"parentId": "fld_6bfeda181e9f46b4b85bb345457e97f9",
-			"modified": 1691504578204,
+			"_id": "req_92b9561d03a54fe79c34d95a93ba0955",
+			"parentId": "fld_3112c2de59e04e4ea40e8d82a8844ccc",
+			"modified": 1702991381651,
 			"created": 1680682418118,
 			"url": "{{IRS_HOST}}/irs/orders",
 			"name": "Register Batch Order",
@@ -2479,14 +2600,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418118,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2496,8 +2618,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_6bfeda181e9f46b4b85bb345457e97f9",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_3112c2de59e04e4ea40e8d82a8844ccc",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1680682418128,
 			"created": 1680682418128,
 			"name": "Batch Processing",
@@ -2508,9 +2630,9 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_df3c4c4901924ac7b2aaba87a7bfe690",
-			"parentId": "fld_6bfeda181e9f46b4b85bb345457e97f9",
-			"modified": 1696342658242,
+			"_id": "req_7b406e4b799c4c06b26b8989cccdfca9",
+			"parentId": "fld_3112c2de59e04e4ea40e8d82a8844ccc",
+			"modified": 1702991390349,
 			"created": 1696342619602,
 			"url": "{{IRS_HOST}}/irs/ess/orders",
 			"name": "Register ESS Batch Order",
@@ -2528,14 +2650,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418113.5,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2545,31 +2668,36 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_ee1cc65156a04cf3a3a07987e393df48",
-			"parentId": "fld_23fae21795994f76a61c93c8c8699b7d",
-			"modified": 1697020037992,
-			"created": 1697017836306,
-			"url": "{{IRS_HOST}}/irs/orders/{% prompt 'Job ID', '', '', '', false, true %}",
+			"_id": "req_78db20c6fbec4ef4a64a15f2b28fe8b9",
+			"parentId": "fld_3112c2de59e04e4ea40e8d82a8844ccc",
+			"modified": 1705006936944,
+			"created": 1705006139836,
+			"url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}",
 			"name": "Cancel order job for given orderId",
-			"description": "Cancel either regular or ess order job",
+			"description": "",
 			"method": "PUT",
-			"body": {},
+			"body": {
+				"mimeType": "application/json",
+				"text": "{}"
+			},
 			"parameters": [],
 			"headers": [
 				{
 					"name": "Content-Type",
-					"value": "application/json"
+					"value": "application/json",
+					"id": "pair_88db8badf4ea4a0d9968c769167407c8"
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418111.25,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2579,9 +2707,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_daeca07fd8be473b9688e8653cf8940d",
-			"parentId": "fld_6bfeda181e9f46b4b85bb345457e97f9",
-			"modified": 1681717455311,
+			"_id": "req_963d3326f7554d41b6730a3b5f293e21",
+			"parentId": "fld_3112c2de59e04e4ea40e8d82a8844ccc",
+			"modified": 1702991398473,
 			"created": 1680682418109,
 			"url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}",
 			"name": "Search for given orderId",
@@ -2596,14 +2724,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418109,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2613,9 +2742,9 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_e711ec22b32f40b8a42dc11923145239",
-			"parentId": "fld_6bfeda181e9f46b4b85bb345457e97f9",
-			"modified": 1681717669066,
+			"_id": "req_0b2b42f0de3d445eb2dfebe7338cba2f",
+			"parentId": "fld_3112c2de59e04e4ea40e8d82a8844ccc",
+			"modified": 1702991409664,
 			"created": 1680682418099,
 			"url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}/batches/{% prompt 'Batch ID', '', '', '', false, true %}",
 			"name": "Search for given orderId and batchId",
@@ -2630,14 +2759,15 @@
 				}
 			],
 			"authentication": {
-				"type": "oauth2",
-				"grantType": "client_credentials",
-				"accessTokenUrl": "{{ _.KEYCLOAK_TOKEN_URL }}",
-				"clientId": "{{ _.CLIENT_ID }}",
-				"clientSecret": "{{ _.CLIENT_SECRET }}"
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-API-KEY",
+				"value": "{{ _.REGULAR_API_KEY }}",
+				"addTo": "header"
 			},
 			"metaSortKey": -1680682418099,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2647,8 +2777,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_839742b4f8ce43d7b5ae69ba5a14d97a",
-			"parentId": "fld_fb3faef0045744f1ad69a211005b9087",
+			"_id": "req_c94c97ae6a724112b590952b9a7a0dea",
+			"parentId": "fld_d5e9b62b127847188e1e4b518720a102",
 			"modified": 1690472186478,
 			"created": 1678358655308,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/catalog/request",
@@ -2675,6 +2805,7 @@
 			},
 			"metaSortKey": -1686195722939.1875,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2684,8 +2815,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_fb3faef0045744f1ad69a211005b9087",
-			"parentId": "fld_f8dea31e10f445708d36c2244897cf08",
+			"_id": "fld_d5e9b62b127847188e1e4b518720a102",
+			"parentId": "fld_0839b47b8e964caa9174f954735ab106",
 			"modified": 1690362660167,
 			"created": 1690362660167,
 			"name": "Catalog",
@@ -2696,8 +2827,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "fld_f8dea31e10f445708d36c2244897cf08",
-			"parentId": "fld_34550c646cf24dd592e4fcb218d0d169",
+			"_id": "fld_0839b47b8e964caa9174f954735ab106",
+			"parentId": "fld_1810e742cdde46ab9d50b692c5b8da98",
 			"modified": 1690363778601,
 			"created": 1675675609576,
 			"name": "EDC-Requests",
@@ -2708,8 +2839,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_cc9b4eed1663402ebd5472ce519b83c6",
-			"parentId": "fld_fb3faef0045744f1ad69a211005b9087",
+			"_id": "req_13e43b7f93484f80b8006c04b582e128",
+			"parentId": "fld_d5e9b62b127847188e1e4b518720a102",
 			"modified": 1691500654267,
 			"created": 1685521485278,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/catalog/request",
@@ -2736,6 +2867,7 @@
 			},
 			"metaSortKey": -1686195722889.1875,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2745,8 +2877,46 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_868e9bff0cfe46a69e552a3ede820079",
-			"parentId": "fld_bd70e484a29f4b76a6ee0750f33ff878",
+			"_id": "req_d10e25e171d44f0581305ceec28c90bc",
+			"parentId": "fld_d5e9b62b127847188e1e4b518720a102",
+			"modified": 1705940987109,
+			"created": 1691654388376,
+			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/catalog/request",
+			"name": "Get catalog with asset filter",
+			"description": "",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:querySpec\": {\n\t\t\"edc:filterExpression\": {\n\t\t\t\"edc:operandLeft\": \"https://w3id.org/edc/v0.0.1/ns/id\",\n\t\t\t\"edc:operator\": \"=\",\n\t\t\t\"edc:operandRight\": \"{% prompt 'assetId', '', '', '', false, true %}\"\n\t\t}\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "apikey",
+				"disabled": false,
+				"key": "X-Api-Key",
+				"value": "{{ _.EDC_API_KEY }}",
+				"addTo": "header"
+			},
+			"metaSortKey": -1686195722789.1875,
+			"isPrivate": false,
+			"pathParameters": [],
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_080fffcbca8246cca56c1b89e2ee87d7",
+			"parentId": "fld_1e28df04607146aa953989fb9b878c79",
 			"modified": 1691578280640,
 			"created": 1675675609557,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations",
@@ -2773,6 +2943,7 @@
 			},
 			"metaSortKey": -1684146511095,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2782,8 +2953,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_bd70e484a29f4b76a6ee0750f33ff878",
-			"parentId": "fld_f8dea31e10f445708d36c2244897cf08",
+			"_id": "fld_1e28df04607146aa953989fb9b878c79",
+			"parentId": "fld_0839b47b8e964caa9174f954735ab106",
 			"modified": 1684146626847,
 			"created": 1684146519491,
 			"name": "Negotiation",
@@ -2794,8 +2965,8 @@
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_412f266365f34990a1b26daebad9f45d",
-			"parentId": "fld_bd70e484a29f4b76a6ee0750f33ff878",
+			"_id": "req_4b81e1450a7044f4b495396a3c6beec5",
+			"parentId": "fld_1e28df04607146aa953989fb9b878c79",
 			"modified": 1690362123962,
 			"created": 1675675609549,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/{% prompt 'id', '', '', '', false, true %}",
@@ -2819,6 +2990,7 @@
 			},
 			"metaSortKey": -1684146511045,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2828,8 +3000,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_ed0bd6ec35a243fb804701c52e502c1d",
-			"parentId": "fld_bd70e484a29f4b76a6ee0750f33ff878",
+			"_id": "req_941858a9157241bdb4b143f49461378e",
+			"parentId": "fld_1e28df04607146aa953989fb9b878c79",
 			"modified": 1690362117725,
 			"created": 1685444139708,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/{% prompt 'id', '', '', '', false, true %}/cancel",
@@ -2848,6 +3020,7 @@
 			},
 			"metaSortKey": -1684146511020,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2857,8 +3030,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_452421dea5734da2868081f18a75e6fe",
-			"parentId": "fld_bd70e484a29f4b76a6ee0750f33ff878",
+			"_id": "req_d321712166e0404798f4c201b8928aba",
+			"parentId": "fld_1e28df04607146aa953989fb9b878c79",
 			"modified": 1690361721223,
 			"created": 1681911985730,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/request",
@@ -2885,6 +3058,7 @@
 			},
 			"metaSortKey": -1684146510995,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2894,8 +3068,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_7852cfb1b84d4ef585c3b674703e7f1e",
-			"parentId": "fld_bd70e484a29f4b76a6ee0750f33ff878",
+			"_id": "req_4ef3b469eec84623ba6fb1558baf732d",
+			"parentId": "fld_1e28df04607146aa953989fb9b878c79",
 			"modified": 1691578311420,
 			"created": 1675675609541,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses",
@@ -2922,6 +3096,7 @@
 			},
 			"metaSortKey": -1684146510945,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2931,8 +3106,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_899e227f501b40259260d3dcb95eaca1",
-			"parentId": "fld_bd70e484a29f4b76a6ee0750f33ff878",
+			"_id": "req_e86d72124f744590931f5cdf6d4ba618",
+			"parentId": "fld_1e28df04607146aa953989fb9b878c79",
 			"modified": 1691503370103,
 			"created": 1679993996270,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses/{% prompt 'id', '', '', '', false, true %}",
@@ -2956,6 +3131,7 @@
 			},
 			"metaSortKey": -1684146510895,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -2965,8 +3141,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_362e6ed4968e4ac8b619c86091f3b73d",
-			"parentId": "fld_bd70e484a29f4b76a6ee0750f33ff878",
+			"_id": "req_a4cd5461e45d44d1b0ce29c5076dd8ab",
+			"parentId": "fld_1e28df04607146aa953989fb9b878c79",
 			"modified": 1690361795179,
 			"created": 1675675609525,
 			"url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses/request",
@@ -2993,6 +3169,7 @@
 			},
 			"metaSortKey": -1684146510845,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3002,8 +3179,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_1ee05f63f5484782802d69c3fd243321",
-			"parentId": "fld_bd70e484a29f4b76a6ee0750f33ff878",
+			"_id": "req_c13b0227ea6649c185319bddf09e1ff4",
+			"parentId": "fld_1e28df04607146aa953989fb9b878c79",
 			"modified": 1690361763512,
 			"created": 1681910653593,
 			"url": "{{CONSUMER_CONTROLPLANE}}/management/v2/contractagreements/request",
@@ -3030,6 +3207,7 @@
 			},
 			"metaSortKey": -1684146510795,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3039,8 +3217,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_f243a1f0fc1b44d6b56ec8b870009292",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_cd795997401045719846198f474ac6c4",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362947546,
 			"created": 1681907482278,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets",
@@ -3067,6 +3245,7 @@
 			},
 			"metaSortKey": -1679911033461.75,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3076,20 +3255,20 @@
 			"_type": "request"
 		},
 		{
-			"_id": "fld_e8032633835c44fdbc7d9560a86c7418",
-			"parentId": "fld_f8dea31e10f445708d36c2244897cf08",
-			"modified": 1684146621298,
+			"_id": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
+			"parentId": "fld_0839b47b8e964caa9174f954735ab106",
+			"modified": 1705940929752,
 			"created": 1684146457388,
 			"name": "Provider",
 			"description": "",
 			"environment": {},
 			"environmentPropertyOrder": null,
-			"metaSortKey": -1675675609471,
+			"metaSortKey": -1678852197613.5625,
 			"_type": "request_group"
 		},
 		{
-			"_id": "req_a0b4406e7f684608b27e134d96773527",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_1b5a18e8940948b3b0593152919f0f98",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362407763,
 			"created": 1685444139630,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/{% prompt 'id', '', '', '', false, true %}",
@@ -3108,6 +3287,7 @@
 			},
 			"metaSortKey": -1679911033452.375,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3117,8 +3297,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_199174c5910d48098078adb952355b0b",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_b00faefd0be84da8972cfe82c018103f",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362438115,
 			"created": 1685444139625,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/request",
@@ -3145,6 +3325,7 @@
 			},
 			"metaSortKey": -1679911033447.6875,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3154,8 +3335,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_d953ff0384684fdcb7ac68aab5b599e9",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_7705a8d515234eeda8a00b72b33c0810",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362400081,
 			"created": 1685444139636,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/{% prompt 'id', '', '', '', false, true %}",
@@ -3174,6 +3355,7 @@
 			},
 			"metaSortKey": -1679911033433.625,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3183,8 +3365,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_3c2f9830ee4d4ce889f4355fc739e800",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_b3df4c26f45442b0969e2601ba943f91",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362581978,
 			"created": 1685444139641,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions",
@@ -3211,6 +3393,7 @@
 			},
 			"metaSortKey": -1679911033403.9375,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3220,8 +3403,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_b647a877abad40499106f0597ec3c6e9",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_cccc83c71e834cac9e1e7e1562930645",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362549290,
 			"created": 1685444139647,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/{% prompt 'id', '', '', '', false, true %}",
@@ -3238,8 +3421,9 @@
 				"value": "{{ _.EDC_API_KEY }}",
 				"addTo": "header"
 			},
-			"metaSortKey": -1679911033364.0937,
+			"metaSortKey": -1679911033364.0938,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3249,8 +3433,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_6856fb9a7df2479594a10b5f7e5f5222",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_b628dd4600654a57a3d1c4abd71f032f",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362591799,
 			"created": 1685444139653,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/request",
@@ -3277,6 +3461,7 @@
 			},
 			"metaSortKey": -1679911033344.1719,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3286,8 +3471,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_764f4b4d89ae404987e5dfeb096042b9",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_c2c69580f2014ea0af92c45b3efa1a0a",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362559324,
 			"created": 1685444139659,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/{% prompt 'id', '', '', '', false, true %}",
@@ -3306,6 +3491,7 @@
 			},
 			"metaSortKey": -1679911033299.25,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3315,8 +3501,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_240c7fb162414bb1b1afaa4ae0ae4c91",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_9de3020e595e4a79ade1de9bbb5645bd",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690363080444,
 			"created": 1685444139665,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions",
@@ -3343,6 +3529,7 @@
 			},
 			"metaSortKey": -1679911033261.75,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3352,8 +3539,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_6e828c55562f411894f470ecf3b34f0d",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_30779ac0b772473094ad1ab750784f72",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690362691392,
 			"created": 1685444139672,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/{% prompt 'id', '', '', '', false, true %}",
@@ -3372,6 +3559,7 @@
 			},
 			"metaSortKey": -1679911033199.25,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3381,8 +3569,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_5c2ea72a67064a44997bef55fdccb321",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_30af5f472981473c9cfec7fe1cceacd6",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690363126919,
 			"created": 1685444139678,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/request",
@@ -3409,6 +3597,7 @@
 			},
 			"metaSortKey": -1679911033174.25,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3418,8 +3607,8 @@
 			"_type": "request"
 		},
 		{
-			"_id": "req_bf5e0064bb994fafaf4343cab248395e",
-			"parentId": "fld_e8032633835c44fdbc7d9560a86c7418",
+			"_id": "req_dbc8413f51774f0bab4afdbee92b9b21",
+			"parentId": "fld_b72920a81fc94ba7ac254f87c04e4bdc",
 			"modified": 1690363136216,
 			"created": 1685444139684,
 			"url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/{% prompt 'id', '', '', '', false, true %}",
@@ -3446,6 +3635,7 @@
 			},
 			"metaSortKey": -1679911033149.25,
 			"isPrivate": false,
+			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -3457,11 +3647,11 @@
 		{
 			"_id": "env_d2b7eb1621841465ea24b73343568b286aa8ac9a",
 			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-			"modified": 1680782486844,
+			"modified": 1683638503332,
 			"created": 1680782486844,
 			"name": "Base Environment",
 			"data": {},
-			"dataPropertyOrder": null,
+			"dataPropertyOrder": {},
 			"color": null,
 			"isPrivate": false,
 			"metaSortKey": 1680782486844,
@@ -3470,7 +3660,7 @@
 		{
 			"_id": "jar_d2b7eb1621841465ea24b73343568b286aa8ac9a",
 			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-			"modified": 1696335454338,
+			"modified": 1705938127468,
 			"created": 1680782486851,
 			"name": "Default Jar",
 			"cookies": [
@@ -3486,8 +3676,115 @@
 					],
 					"hostOnly": true,
 					"creation": "2023-04-06T13:30:18.499Z",
-					"lastAccessed": "2023-10-03T12:17:34.338Z",
-					"id": "8321371195331124"
+					"lastAccessed": "2024-01-22T15:42:07.467Z",
+					"id": "352618e3-4618-4778-9693-f76be3b538d4"
+				},
+				{
+					"key": "KC_RESTART",
+					"expires": "1970-01-01T00:00:10.000Z",
+					"maxAge": 0,
+					"domain": "centralidp.beta.demo.catena-x.net",
+					"path": "/auth/realms/CX-Central/",
+					"httpOnly": true,
+					"extensions": [
+						"Version=1"
+					],
+					"hostOnly": true,
+					"creation": "2023-04-28T12:09:23.681Z",
+					"lastAccessed": "2023-05-02T09:14:02.169Z",
+					"id": "44bc1771-1687-42bb-beb0-9d9474131a95"
+				},
+				{
+					"key": "rack.session",
+					"value": "5579bbaf14b5ac5c004f6806ca10d35363aca208e5d17e4b6b07da103e23f219",
+					"domain": "daps1.int.demo.catena-x.net",
+					"path": "/",
+					"secure": true,
+					"httpOnly": true,
+					"hostOnly": true,
+					"creation": "2023-06-14T15:30:53.779Z",
+					"lastAccessed": "2023-06-14T15:30:53.779Z",
+					"id": "59744b74-474c-47c6-8765-cf287a936c5e"
+				},
+				{
+					"key": "rack.session",
+					"value": "26cd0504acae7aa1a40aff58b15b72989eba6ff7efb7890d035d97d7d96129e8",
+					"domain": "daps-irs.dev.demo.catena-x.net",
+					"path": "/",
+					"secure": true,
+					"httpOnly": true,
+					"hostOnly": true,
+					"creation": "2023-06-26T13:21:41.705Z",
+					"lastAccessed": "2023-06-26T13:21:41.705Z",
+					"id": "76f1eca0-1990-491d-8e48-55862a864050"
+				},
+				{
+					"key": "KC_RESTART",
+					"expires": "1970-01-01T00:00:10.000Z",
+					"maxAge": 0,
+					"domain": "localhost",
+					"path": "/realms/miw_test/",
+					"httpOnly": true,
+					"extensions": [
+						"Version=1"
+					],
+					"hostOnly": true,
+					"creation": "2023-06-29T14:17:50.058Z",
+					"lastAccessed": "2023-06-29T14:38:54.694Z",
+					"id": "1f19c6ad-ee86-410b-baa9-40d9d2a2664b"
+				},
+				{
+					"key": "JSESSIONID",
+					"value": "AA8B41248817CEF92F54E92816BA4E0C",
+					"domain": "managed-identity-wallets-new.int.demo.catena-x.net",
+					"path": "/",
+					"secure": true,
+					"httpOnly": true,
+					"hostOnly": true,
+					"creation": "2023-07-03T14:36:17.598Z",
+					"lastAccessed": "2023-07-03T14:39:34.758Z",
+					"id": "d4252d5d-5ba0-4841-a995-0405d9106af4"
+				},
+				{
+					"key": "KC_RESTART",
+					"expires": "1970-01-01T00:00:10.000Z",
+					"maxAge": 0,
+					"domain": "centralidp-pen.dev.demo.catena-x.net",
+					"path": "/auth/realms/CX-Central/",
+					"httpOnly": true,
+					"extensions": [
+						"Version=1"
+					],
+					"hostOnly": true,
+					"creation": "2023-07-11T15:11:58.167Z",
+					"lastAccessed": "2023-11-13T09:10:13.699Z",
+					"id": "d1322e15-2207-4bda-a8ae-6f98e5b92d48"
+				},
+				{
+					"key": "AWSALB",
+					"value": "XBr2pDKiJ9eB9tgdQ1S7WNGW6LVV4e4wBnXgbPFZ7pDre9G+02ZrS8VGFUYjlmLgaW909IJIXDy+o9jIE5Q4vphrsvI3ezlFhYjmbXJp9jz5APwKavVG3/gt2YZw",
+					"expires": "2023-08-15T14:12:54.000Z",
+					"domain": "connector.cx-rel.edc.aws.bmw.cloud",
+					"path": "/",
+					"hostOnly": true,
+					"creation": "2023-08-07T10:43:07.218Z",
+					"lastAccessed": "2023-08-08T14:12:54.582Z",
+					"id": "c6451ae9-9bd5-4e83-b39c-d92af9e9c1a5"
+				},
+				{
+					"key": "AWSALBCORS",
+					"value": "XBr2pDKiJ9eB9tgdQ1S7WNGW6LVV4e4wBnXgbPFZ7pDre9G+02ZrS8VGFUYjlmLgaW909IJIXDy+o9jIE5Q4vphrsvI3ezlFhYjmbXJp9jz5APwKavVG3/gt2YZw",
+					"expires": "2023-08-15T14:12:54.000Z",
+					"domain": "connector.cx-rel.edc.aws.bmw.cloud",
+					"path": "/",
+					"secure": true,
+					"extensions": [
+						"SameSite=None"
+					],
+					"hostOnly": true,
+					"creation": "2023-08-07T10:43:07.218Z",
+					"lastAccessed": "2023-08-08T14:12:54.582Z",
+					"id": "eace0316-1260-4915-953a-e1c27f76df22"
 				}
 			],
 			"_type": "cookie_jar"
@@ -3497,16 +3794,6 @@
 			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
 			"modified": 1680782484284,
 			"created": 1680782484284,
-			"fileName": "IRS",
-			"contents": "",
-			"contentType": "yaml",
-			"_type": "api_spec"
-		},
-		{
-			"_id": "spc_3a573993100a40b3bc2b0a5bd8e5cc48",
-			"parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
-			"modified": 1681726479575,
-			"created": 1681726479575,
 			"fileName": "IRS",
 			"contents": "",
 			"contentType": "yaml",

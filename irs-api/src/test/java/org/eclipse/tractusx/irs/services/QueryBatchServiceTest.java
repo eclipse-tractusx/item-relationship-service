@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -70,7 +70,6 @@ class QueryBatchServiceTest {
         // given
         final UUID batchOrderId = UUID.randomUUID();
         batchOrderStore.save(batchOrderId, createBatchOrder(batchOrderId));
-        when(securityHelperService.getClientIdForViewIrs()).thenReturn(owner);
 
         final UUID batchId = UUID.randomUUID();
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
@@ -111,8 +110,6 @@ class QueryBatchServiceTest {
         batchStore.save(batchId, createBatch(batchId, batchOrderId));
         batchStore.save(secondBatchId, createBatch(secondBatchId, batchOrderId));
 
-        when(securityHelperService.getClientIdForViewIrs()).thenReturn(owner);
-
         // when
         final BatchResponse response = service.findBatchById(batchOrderId, batchId);
 
@@ -141,11 +138,11 @@ class QueryBatchServiceTest {
     }
 
     private BatchOrder createBatchOrder(final UUID batchOrderId) {
-        return BatchOrder.builder().batchOrderId(batchOrderId).owner(owner).build();
+        return BatchOrder.builder().batchOrderId(batchOrderId).build();
     }
 
     private Batch createBatch(final UUID batchId, final UUID batchOrderId) {
-        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId).owner(owner)
+        return Batch.builder().batchId(batchId).batchOrderId(batchOrderId)
                     .jobProgressList(List.of(
                             JobProgress.builder().jobId(UUID.randomUUID()).build(),
                             JobProgress.builder().jobId(UUID.randomUUID()).build(),

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -141,12 +141,12 @@ public class OpenApiExamples {
                                                                 .type("BAMM")
                                                                 .build();
         final AspectModel serialPart = AspectModel.builder()
-                                                            .name("SerialPart")
-                                                            .urn("urn:bamm:io.catenax.serial_part:1.0.0#SerialPart")
-                                                            .version("1.0.0")
-                                                            .status("RELEASED")
-                                                            .type("BAMM")
-                                                            .build();
+                                                  .name("SerialPart")
+                                                  .urn("urn:bamm:io.catenax.serial_part:1.0.0#SerialPart")
+                                                  .version("1.0.0")
+                                                  .status("RELEASED")
+                                                  .type("BAMM")
+                                                  .build();
 
         return toExample(AspectModels.builder()
                                      .lastUpdated("2023-02-13T08:18:11.990659500Z")
@@ -175,7 +175,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.ERROR)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
@@ -192,7 +191,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.RUNNING)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
@@ -235,12 +233,10 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.COMPLETED)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                      .completedOn(EXAMPLE_ZONED_DATETIME)
-                                     .owner("")
                                      .summary(createSummary())
                                      .parameter(createJobParameter())
                                      .exception(createJobException())
@@ -259,12 +255,10 @@ public class OpenApiExamples {
                                              .id(UUID.fromString(JOB_ID))
                                              .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                              .state(JobState.COMPLETED)
-                                             .owner("")
                                              .createdOn(EXAMPLE_ZONED_DATETIME)
                                              .startedOn(EXAMPLE_ZONED_DATETIME)
                                              .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
                                              .completedOn(EXAMPLE_ZONED_DATETIME)
-                                             .owner("")
                                              .summary(createSummary())
                                              .parameter(createJobParameter())
                                              .exception(createJobException())
@@ -275,8 +269,12 @@ public class OpenApiExamples {
                                      .submodel(createEssSubmodel())
                                      .bpn(Bpn.withManufacturerId(EXAMPLE_BPN).updateManufacturerName("AB CD"))
                                      .build();
-        final NotificationSummary newSummary = new NotificationSummary(
-                AsyncFetchedItems.builder().running(NO_RUNNING_OR_FAILED_ITEMS).completed(FETCHED_ITEMS_SIZE).failed(NO_RUNNING_OR_FAILED_ITEMS).build(),
+        final NotificationSummary newSummary = new NotificationSummary(AsyncFetchedItems.builder()
+                                                                                        .running(
+                                                                                                NO_RUNNING_OR_FAILED_ITEMS)
+                                                                                        .completed(FETCHED_ITEMS_SIZE)
+                                                                                        .failed(NO_RUNNING_OR_FAILED_ITEMS)
+                                                                                        .build(),
                 FetchedItems.builder().completed(FETCHED_ITEMS_SIZE).failed(NO_RUNNING_OR_FAILED_ITEMS).build(),
                 SENT_NOTIFICATIONS_SIZE, SENT_NOTIFICATIONS_SIZE);
         final Job job = essJobsJobs.getJob().toBuilder().summary(newSummary).build();
@@ -381,7 +379,7 @@ public class OpenApiExamples {
                                                                                 .build()))
                                                  .globalAssetId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
                                                  .idShort("future concept x")
-                                                 .id("882fc530-b69b-4707-95f6-5dbc5e9baaa8")
+                                                 .id("urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8")
                                                  .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
                                                                                                  .name("engineserialid")
                                                                                                  .value("12309481209312")
@@ -427,12 +425,12 @@ public class OpenApiExamples {
                                                                 .language("en")
                                                                 .text("Provides base vehicle information")
                                                                 .build()))
-                                 .idShort("vehicle base details")
-                                 .id("4a738a24-b7d8-4989-9cd6-387772f40565")
+                                 .idShort("SingleLevelBomAsPlanned")
+                                 .id("urn:uuid:5d25a897-6571-4800-b98c-a3352fbf996d")
                                  .semanticId(Reference.builder()
                                                       .keys(List.of(SemanticId.builder()
-                                                                              .type("Submodel")
-                                                                              .value("urn:bamm:com.catenax.vehicle:0.1.1")
+                                                                              .type("ExternalReference")
+                                                                              .value("urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned")
                                                                               .build()))
                                                       .type("ModelReference")
                                                       .build())
@@ -447,6 +445,10 @@ public class OpenApiExamples {
                                                                .href(endpointAddress)
                                                                .endpointProtocol("HTTPS")
                                                                .endpointProtocolVersion(List.of("1.0"))
+                                                               .subprotocol("DSP")
+                                                               .subprotocolBody(
+                                                                       "id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net")
+                                                               .subprotocolBodyEncoding("plain")
                                                                .build())
                        .build();
     }
@@ -458,7 +460,7 @@ public class OpenApiExamples {
                                                                 .text("Provides base vehicle information")
                                                                 .build()))
                                  .idShort("vehicle part details")
-                                 .id("dae4d249-6d66-4818-b576-bf52f3b9ae90")
+                                 .id("urn:uuid:dae4d249-6d66-4818-b576-bf52f3b9ae90")
                                  .semanticId(Reference.builder()
                                                       .keys(List.of(SemanticId.builder()
                                                                               .type("Submodel")
@@ -476,7 +478,6 @@ public class OpenApiExamples {
                                      .id(UUID.fromString(JOB_ID))
                                      .globalAssetId(createGAID(GLOBAL_ASSET_ID))
                                      .state(JobState.CANCELED)
-                                     .owner("")
                                      .createdOn(EXAMPLE_ZONED_DATETIME)
                                      .startedOn(EXAMPLE_ZONED_DATETIME)
                                      .lastModifiedOn(EXAMPLE_ZONED_DATETIME)
