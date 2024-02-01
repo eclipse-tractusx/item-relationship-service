@@ -19,7 +19,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.contract.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcCreateContractDefinitionRequest;
+import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcContractDefinitionException;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +33,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,6 +81,55 @@ class EdcContractDefinitionServiceTest {
                         	}
                         }
                 """, objectMapper.writeValueAsString(request), false);
+    }
+
+    @Test
+    void givenCreateContractDefinition_whenOK_thenReturnPolicyId() {
+        // given
+        String assetId = "Asset1";
+        String policyId = "Policy1";
+        when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
+                any())).thenReturn(ResponseEntity.ok("test"));
+
+        String result = service.createContractDefinition(assetId, policyId, restTemplate);
+
+        assertThat(result).isEqualTo(policyId);
+    }
+
+    @Test
+    void givenCreateContractDefinition_whenConflict_thenThrowException() {
+        // given
+        String assetId = "Asset1";
+        String policyId = "Policy1";
+        when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
+                any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
+
+        assertThrows(CreateEdcContractDefinitionException.class,
+                () -> service.createContractDefinition(assetId, policyId, restTemplate));
+    }
+
+    @Test
+    void givenCreateContractDefinition_whenBadRequest_thenThrowException() {
+        // given
+        String assetId = "Asset1";
+        String policyId = "Policy1";
+        when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
+                any())).thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).build());
+
+        assertThrows(CreateEdcContractDefinitionException.class,
+                () -> service.createContractDefinition(assetId, policyId, restTemplate));
+    }
+
+    @Test
+    void givenCreateContractDefinition_whenRestClientException_thenThrowException() {
+        // given
+        String assetId = "Asset1";
+        String policyId = "Policy1";
+        when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
+                any())).thenThrow(new RestClientException("Surprise"));
+
+        assertThrows(CreateEdcContractDefinitionException.class,
+                () -> service.createContractDefinition(assetId, policyId, restTemplate));
     }
 
 }

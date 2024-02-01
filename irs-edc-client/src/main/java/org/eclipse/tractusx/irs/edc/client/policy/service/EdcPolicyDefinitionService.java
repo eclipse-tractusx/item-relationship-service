@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermission;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermissionConstraint;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermissionConstraintExpression;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolicyDefinitionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -131,6 +132,7 @@ public class EdcPolicyDefinitionService {
             restTemplate.delete(deleteUri);
         } catch (RestClientException e) {
             log.error("Failed to delete EDC notification asset policy {}. Reason: ", accessPolicyId, e);
+            throw new DeleteEdcPolicyDefinitionException(e);
         }
     }
 }

@@ -19,15 +19,36 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolicyDefinitionException;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
+@ExtendWith(MockitoExtension.class)
 class EdcPolicyDefinitionServiceTest {
+
+    @Mock
+    private RestTemplate restTemplate;
 
     private ObjectMapper objectMapper;
     private EdcPolicyDefinitionService service;
@@ -78,6 +99,76 @@ class EdcPolicyDefinitionServiceTest {
                         	}
                         }
                 """, false);
+    }
+
+    @Test
+    void givenPolicy_WhenCreateAccessPolicy_ThenCreateIt() {
+        // given
+        String policyName = "policyName";
+        when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
+                any())).thenReturn(ResponseEntity.ok("test"));
+
+        // when
+        String result = service.createAccessPolicy(policyName, restTemplate);
+
+        // then
+        assertThat(result).isNotBlank();
+    }
+
+    @Test
+    void givenCreatePolicy_whenConflict_thenThrowException() {
+        // given
+        String policyName = "policyName";
+        when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
+                any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
+
+        assertThrows(CreateEdcPolicyDefinitionException.class,
+                () -> service.createAccessPolicy(policyName, restTemplate));
+    }
+
+    @Test
+    void givenCreatePolicy_whenBadRequest_thenThrowException() {
+        // given
+        String policyName = "policyName";
+        when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
+                any())).thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).build());
+
+        assertThrows(CreateEdcPolicyDefinitionException.class,
+                () -> service.createAccessPolicy(policyName, restTemplate));
+    }
+
+    @Test
+    void givenCreatePolicy_whenRestClientException_thenThrowException() {
+        // given
+        String policyName = "policyName";
+        when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
+                any())).thenThrow(new RestClientException("Surprise"));
+
+        assertThrows(CreateEdcPolicyDefinitionException.class,
+                () -> service.createAccessPolicy(policyName, restTemplate));
+    }
+
+    @Test
+    void givenDeletePolicy_whenRestClientException_thenThrowException() {
+        // given
+        String policyName = "policyName";
+        doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
+
+        // when/then
+        assertThrows(DeleteEdcPolicyDefinitionException.class,
+                () -> service.deleteAccessPolicy(policyName, restTemplate));
+    }
+
+    @Test
+    void givenDeletePolicy_whenOk_thenCallRestTemplate() {
+        // given
+        String policyName = "policyName";
+
+        // when
+        service.deleteAccessPolicy(policyName, restTemplate);
+
+        // then
+        verify(restTemplate, times(1)).delete(any(String.class));
     }
 
 }
