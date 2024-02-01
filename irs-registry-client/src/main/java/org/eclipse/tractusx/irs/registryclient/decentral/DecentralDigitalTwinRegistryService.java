@@ -39,7 +39,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
-import org.eclipse.tractusx.irs.common.util.concurrent.StopwatchUtils;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
@@ -85,8 +84,9 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             throws RegistryServiceException {
 
         final var watch = new StopWatch();
-        StopwatchUtils.startWatch(log, watch,
-                LOGPREFIX_TO_BE_REMOVED_LATER + "Fetching shell(s) for %s key(s)".formatted(keys.size()));
+        final String msg = LOGPREFIX_TO_BE_REMOVED_LATER + "Fetching shell(s) for %s key(s)".formatted(keys.size());
+        watch.start(msg);
+        log.info(msg);
 
         try {
             final var calledEndpoints = new HashSet<String>();
@@ -114,7 +114,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             }
 
         } finally {
-            StopwatchUtils.stopWatch(log, watch);
+            watch.stop();
+            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -141,8 +142,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             final Set<String> calledEndpoints, final String bpn, final List<DigitalTwinRegistryKey> keys) {
 
         final var watch = new StopWatch();
-        StopwatchUtils.startWatch(log, watch,
-                LOGPREFIX_TO_BE_REMOVED_LATER + "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn));
+        final String msg =
+                LOGPREFIX_TO_BE_REMOVED_LATER + "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn);
+        watch.start(msg);
+        log.info(msg);
 
         try {
             final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
@@ -154,7 +157,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             return fetchShellDescriptorsForConnectorEndpoints(keys, connectorEndpoints);
 
         } finally {
-            StopwatchUtils.stopWatch(log, watch);
+            watch.stop();
+            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -181,13 +185,15 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + " fetchShellDescriptorsForKey - ";
 
         final var watch = new StopWatch();
-        StopwatchUtils.startWatch(log, watch,
-                logPrefix + "Fetching shell descriptors for keys %s from endpoint '%s'".formatted(keys,
-                        endpointDataReference.getEndpoint()));
+        final String msg = logPrefix + "Fetching shell descriptors for keys %s from endpoint '%s'".formatted(keys,
+                endpointDataReference.getEndpoint());
+        watch.start(msg);
+        log.info(msg);
         try {
             return keys.stream().map(key -> fetchShellDescriptor(endpointDataReference, key)).toList();
         } finally {
-            StopwatchUtils.stopWatch(log, watch);
+            watch.stop();
+            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -197,14 +203,16 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + " fetchShellDescriptor - ";
 
         final var watch = new StopWatch();
-        StopwatchUtils.startWatch(log, watch,
-                logPrefix + "Retrieving AAS identification for DigitalTwinRegistryKey: '%s'".formatted(key));
+        final String msg = logPrefix + "Retrieving AAS identification for DigitalTwinRegistryKey: '%s'".formatted(key);
+        watch.start(msg);
+        log.info(msg);
         try {
             final String aaShellIdentification = mapToShellId(endpointDataReference, key.shellId());
             return decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(endpointDataReference,
                     aaShellIdentification);
         } finally {
-            StopwatchUtils.stopWatch(log, watch);
+            watch.stop();
+            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -223,8 +231,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "mapToShellId - ";
 
         final var watch = new StopWatch();
-        StopwatchUtils.startWatch(log, watch, logPrefix + "Mapping '%s' to shell ID for endpoint '%s'".formatted(key,
-                endpointDataReference.getEndpoint()));
+        final String msg = logPrefix + "Mapping '%s' to shell ID for endpoint '%s'".formatted(key,
+                endpointDataReference.getEndpoint());
+        watch.start(msg);
+        log.info(msg);
 
         try {
 
@@ -248,7 +258,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             return aaShellIdentification;
 
         } finally {
-            StopwatchUtils.stopWatch(log, watch);
+            watch.stop();
+            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -313,16 +324,19 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "lookupShellIds - ";
         final var watch = new StopWatch();
-        StopwatchUtils.startWatch(log, watch,
+        final String msg =
                 logPrefix + "Looking up shell IDs for bpn '%s' with endpointDataReference '%s'".formatted(bpn,
-                        endpointDataReference));
+                        endpointDataReference);
+        watch.start(msg);
+        log.info(msg);
 
         try {
             return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                     endpointDataReference,
                     List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())).getResult();
         } finally {
-            StopwatchUtils.stopWatch(log, watch);
+            watch.stop();
+            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 

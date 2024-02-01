@@ -25,8 +25,6 @@ package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder.LOGPREFIX_TO_BE_REMOVED_LATER;
-import static org.eclipse.tractusx.irs.common.util.concurrent.StopwatchUtils.startWatch;
-import static org.eclipse.tractusx.irs.common.util.concurrent.StopwatchUtils.stopWatch;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,19 +52,23 @@ public class EndpointDataForConnectorsService {
     public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
             final List<String> connectorEndpoints) {
 
-        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "createFindEndpointDataForConnectorsFutures - ";
+        final var watch = new StopWatch();
+        final String msg = "Creating futures to get EndpointDataReferences for endpoints: %s".formatted(
+                connectorEndpoints);
+        watch.start(msg);
+        log.info(msg);
 
         List<CompletableFuture<EndpointDataReference>> futures = Collections.emptyList();
         try {
-            log.info(logPrefix + "Creating futures to get EndpointDataReferences for endpoints: {}",
-                    connectorEndpoints);
             futures = connectorEndpoints.stream()
                                         .map(connectorEndpoint -> supplyAsync(
                                                 () -> getEndpointReferenceForAsset(connectorEndpoint)))
                                         .toList();
             return futures;
         } finally {
-            log.info(logPrefix + "Created {} futures", futures.size());
+            log.info("Created {} futures", futures.size());
+            watch.stop();
+            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -75,8 +77,10 @@ public class EndpointDataForConnectorsService {
         final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "getEndpointReferenceForAsset - ";
 
         final var watch = new StopWatch();
-        startWatch(log, watch,
-                logPrefix + "Trying to retrieve EndpointDataReference for connector '%s'".formatted(connector));
+        final String msg =
+                logPrefix + "Trying to retrieve EndpointDataReference for connector '%s'".formatted(connector);
+        watch.start(msg);
+        log.info(msg);
 
         try {
             return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
@@ -86,7 +90,8 @@ public class EndpointDataForConnectorsService {
                     connector, e);
             throw new CompletionException(e.getMessage(), e);
         } finally {
-            stopWatch(log, watch);
+            watch.stop();
+            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
 
     }
