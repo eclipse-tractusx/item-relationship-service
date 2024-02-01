@@ -23,29 +23,22 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * A Permission object gather PolicyType with list of Constraints and its relation
+ * Wrapper for OperatorType
  */
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Permission {
+@Schema
+public class Operator {
 
-    @Schema(implementation = PolicyType.class, example = "USE")
-    @JsonAlias({"odrl:action"})
-    private PolicyType action;
-    @Schema
-    @JsonAlias({"odrl:constraint"})
-    private Constraints constraint;
-
+    @JsonProperty("@id")
+    @Schema(implementation = OperatorType.class, example = "odrl:eq")
+    private OperatorType operatorType;
 }
