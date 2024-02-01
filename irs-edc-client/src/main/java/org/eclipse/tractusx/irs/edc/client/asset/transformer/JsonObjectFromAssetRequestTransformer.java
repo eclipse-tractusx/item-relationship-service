@@ -29,6 +29,10 @@ import org.eclipse.edc.transform.spi.TransformerContext;
 import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Transformer to convert AssetRequest to JSON-LD.
+ */
+
 public class JsonObjectFromAssetRequestTransformer extends AbstractJsonLdTransformer<AssetRequest, JsonObject> {
 
     private final JsonBuilderFactory jsonFactory;

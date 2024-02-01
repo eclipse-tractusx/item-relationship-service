@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermission;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermissionConstraint;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermissionConstraintExpression;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
@@ -70,13 +71,13 @@ public class EdcPolicyDefinitionService {
 
         HttpStatusCode responseCode = createPolicyDefinitionResponse.getStatusCode();
 
-        if (responseCode.value() == 409) {
+        if (responseCode.value() == HttpStatus.CONFLICT.value()) {
             log.info("Notification asset policy definition already exists in the EDC");
 
             throw new CreateEdcPolicyDefinitionException("Asset policy definition already exists in the EDC");
         }
 
-        if (responseCode.value() == 200) {
+        if (responseCode.value() == HttpStatus.OK.value()) {
             return request.getPolicyDefinitionId();
         }
 

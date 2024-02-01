@@ -21,13 +21,12 @@ package org.eclipse.tractusx.irs.edc.client.contract.service;
 
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 
-import java.util.UUID;
-
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.asset.model.EdcContext;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinitionCriteria;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcCreateContractDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcContractDefinitionException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
@@ -57,13 +56,13 @@ public class EdcContractDefinitionService {
 
             HttpStatusCode responseCode = createContractDefinitionResponse.getStatusCode();
 
-            if (responseCode.value() == 409) {
+            if (responseCode.value() == HttpStatus.CONFLICT.value()) {
                 log.info("{} asset contract definition already exists in the EDC", assetId);
 
                 throw new CreateEdcContractDefinitionException("Asset contract definition already exists in the EDC");
             }
 
-            if (responseCode.value() == 200) {
+            if (responseCode.value() == HttpStatus.OK.value()) {
                 return policyId;
             }
 
