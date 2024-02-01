@@ -1,5 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -22,21 +23,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.ToString;
 
+/**
+ * EdcContext used for creating edc notification asset
+ */
+
 @ToString
 @Builder
 public class EdcContext {
-
-    /**
-     * For dtr asset currently following context is created by python script
-     *
-     *         "dct": "https://purl.org/dc/terms/",
-     *         "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
-     *         "edc": "https://w3id.org/edc/v0.0.1/ns/",
-     *         "odrl": "http://www.w3.org/ns/odrl/2/",
-     *         "dcat": "https://www.w3.org/ns/dcat/",
-     *         "dspace": "https://w3id.org/dspace/v0.8/"
-     */
-
     @JsonProperty("edc")
     String edc;
 }

@@ -17,7 +17,6 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-
 package org.eclipse.tractusx.irs.edc.client.asset.model;
 
 import lombok.Builder;
@@ -25,6 +24,10 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
+
+/**
+ * AssetRequest used for creating edc notification asset
+ */
 
 @Value
 @Builder(toBuilder = true)

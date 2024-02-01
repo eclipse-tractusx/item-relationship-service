@@ -1,5 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2024 Contributors to the Eclipse Foundation
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -17,6 +18,10 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.asset.model.exception;
+
+/**
+ * CreateEdcAssetException used for create asset failure
+ */
 
 public class CreateEdcAssetException extends RuntimeException {
 

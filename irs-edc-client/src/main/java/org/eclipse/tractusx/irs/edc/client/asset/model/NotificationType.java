@@ -17,8 +17,11 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-
 package org.eclipse.tractusx.irs.edc.client.asset.model;
+
+/**
+ * NotificationType used for creating edc notification asset
+ */
 
 public enum NotificationType {
     QUALITY_INVESTIGATION("qualityinvestigation"),
