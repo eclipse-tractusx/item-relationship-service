@@ -27,9 +27,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
+import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -54,7 +56,7 @@ public class EdcAssetService {
     private static final String DEFAULT_DATA_ADDRESS_PROPERTY_TYPE = "HttpData";
     private static final String ASSETS_PATH = "/management/v2/assets";
 
-    EdcTransformer edcTransformer;
+    private final EdcTransformer edcTransformer;
 
     public String createNotificationAsset(String baseUrl, String assetName, NotificationMethod notificationMethod,
             NotificationType notificationType, RestTemplate restTemplate) {
@@ -87,16 +89,17 @@ public class EdcAssetService {
         throw new CreateEdcAssetException("Failed to create asset %s".formatted(getAssetId(request)));
     }
 
-    public void deleteAsset(String notificationAssetId, RestTemplate restTemplate) {
+    public void deleteAsset(String assetId, RestTemplate restTemplate) {
         String deleteUri = UriComponentsBuilder.fromPath(ASSETS_PATH)
                                                .pathSegment("{notificationAssetId}")
-                                               .buildAndExpand(notificationAssetId)
+                                               .buildAndExpand(assetId)
                                                .toUriString();
 
         try {
             restTemplate.delete(deleteUri);
         } catch (RestClientException e) {
-            log.error("Failed to delete EDC notification asset {}. Reason: ", notificationAssetId, e);
+            log.error("Failed to delete EDC notification asset {}. Reason: ", assetId, e);
+            throw new DeleteEdcAssetException(e);
         }
     }
 
@@ -127,7 +130,8 @@ public class EdcAssetService {
                                    .properties(properties)
                                    .dataAddress(dataAddress)
                                    .build();
-        return edcTransformer.transformAssetToJson(asset);
+        return edcTransformer.transformAssetRequestToJson(
+                AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
     }
 
     private JsonObject createDtrAssetRequest(String assetName, String baseUrl) {
@@ -159,7 +163,8 @@ public class EdcAssetService {
                                    .properties(properties)
                                    .dataAddress(dataAddress)
                                    .build();
-        return edcTransformer.transformAssetToJson(asset);
+        return edcTransformer.transformAssetRequestToJson(
+                AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
     }
 
     private static String getAssetId(JsonObject jsonObject) {

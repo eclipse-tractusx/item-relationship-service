@@ -19,6 +19,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.asset;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
@@ -37,15 +43,35 @@ import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
+import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
+import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.json.JSONException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
+@ExtendWith(MockitoExtension.class)
 class EdcAssetServiceTest {
 
-    @Test
-    void testAssetCreateRequestStructure() throws JSONException {
+    @Mock
+    private RestTemplate restTemplate;
+    private org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper objectMapper;
+
+    private EdcTransformer edcTransformer;
+    private EdcAssetService service;
+
+    @BeforeEach
+    void setUp() {
+        this.objectMapper = new org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper();
         TitaniumJsonLd jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
         jsonLd.registerNamespace("odrl", "http://www.w3.org/ns/odrl/2/");
         jsonLd.registerNamespace("dct", "https://purl.org/dc/terms/");
@@ -54,7 +80,12 @@ class EdcAssetServiceTest {
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
 
-        EdcTransformer edcTransformer = new EdcTransformer(objectMapper(), jsonLd, new TypeTransformerRegistryImpl());
+        this.edcTransformer = new EdcTransformer(objectMapper(), jsonLd, new TypeTransformerRegistryImpl());
+        this.service = new EdcAssetService(edcTransformer);
+    }
+
+    @Test
+    void testAssetCreateRequestStructure() throws JSONException {
 
         Map<String, Object> properties = Map.of("description", "endpoint to qualityinvestigation receive",
                 "contenttype", "application/json", "policy-id", "use-eu", "type", "receive", "notificationtype",
@@ -79,9 +110,7 @@ class EdcAssetServiceTest {
         JsonObject jsonObject = edcTransformer.transformAssetRequestToJson(
                 AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
 
-        JSONAssert.assertEquals(
-                jsonObject.toString(),
-                """
+        JSONAssert.assertEquals(jsonObject.toString(), """
                 {
                 	"asset": {
                 		"@id": "Asset1",
@@ -118,9 +147,74 @@ class EdcAssetServiceTest {
                 		"asset": "https://w3id.org/edc/v0.0.1/ns/asset"
                 	}
                 }
-                """,
-                false
-        );
+                """, false);
+    }
+
+    @Test
+    void givenCreateNotificationAsset_whenOk_ThenReturnCreatedAssetId() {
+        // given
+        String baseUrl = "http://test.test";
+        String assetName = "asset1";
+        NotificationMethod notificationMethod = NotificationMethod.RECEIVE;
+        NotificationType notificationType = NotificationType.QUALITY_ALERT;
+        when(restTemplate.postForEntity(any(String.class), any(JsonObject.class), any())).thenReturn(
+                ResponseEntity.ok("test"));
+
+        // when
+        String assetId = service.createNotificationAsset(baseUrl, assetName, notificationMethod, notificationType,
+                restTemplate);
+
+        // then
+        assertThat(assetId).isNotBlank();
+    }
+
+    @Test
+    void givenCreateDtrAsset_whenOk_ThenReturnCreatedAssetId() {
+        // given
+        String baseUrl = "http://test.test";
+        String assetName = "asset1";
+        when(restTemplate.postForEntity(any(String.class), any(JsonObject.class), any())).thenReturn(
+                ResponseEntity.ok("test"));
+
+        // when
+        String assetId = service.createDtrAsset(baseUrl, assetName, restTemplate);
+
+        // then
+        assertThat(assetId).isNotBlank();
+    }
+
+    @Test
+    void givenDeleteAsset_whenOk_ThenReturnCreatedAssetId() {
+        // given
+        String assetId = "id";
+
+        // when
+        service.deleteAsset(assetId, restTemplate);
+
+        // then
+        verify(restTemplate).delete(any(String.class));
+    }
+
+    @Test
+    void givenCreateDtrAsset_whenTemplateException_ThenThrowException() {
+        // given
+        String baseUrl = "http://test.test";
+        String assetName = "asset1";
+        doThrow(new RestClientException("Surprise")).when(restTemplate)
+                                                    .postForEntity(any(String.class), any(JsonObject.class), any());
+
+        // when/then
+        assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName, restTemplate));
+    }
+
+    @Test
+    void givenDeleteAsset_whenTemplateException_ThenThrowException() {
+        // given
+        String assetId = "id";
+        doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
+
+        // when/then
+        assertThrows(DeleteEdcAssetException.class, () -> service.deleteAsset(assetId, restTemplate));
     }
 
     ObjectMapper objectMapper() {

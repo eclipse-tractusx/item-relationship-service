@@ -186,11 +186,6 @@ public class EdcTransformer {
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 
-    public JsonObject transformAssetToJson(Asset asset) {
-        final JsonObject transform = jsonObjectFromAssetTransformer.transform(asset, transformerContext);
-        return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
-    }
-
     public JsonObject transformAssetRequestToJson(AssetRequest assetRequest) {
         final JsonObject transform = jsonObjectFromAssetRequestTransformer.transform(assetRequest, transformerContext);
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
