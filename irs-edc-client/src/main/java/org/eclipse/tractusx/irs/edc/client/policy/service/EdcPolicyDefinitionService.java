@@ -50,9 +50,9 @@ public class EdcPolicyDefinitionService {
 
     private static final String POLICY_DEFINITION_PATH = "/management/v2/policydefinitions";
 
-    public String createAccessPolicy(RestTemplate restTemplate) {
-
-        final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition();
+    public String createAccessPolicy(String policyName, RestTemplate restTemplate) {
+        String accessPolicyId = UUID.randomUUID().toString();
+        final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, accessPolicyId);
 
         final ResponseEntity<String> createPolicyDefinitionResponse;
         try {
@@ -78,12 +78,12 @@ public class EdcPolicyDefinitionService {
         throw new CreateEdcPolicyDefinitionException("Failed to create EDC policy definition for asset");
     }
 
-    private EdcCreatePolicyDefinitionRequest createPolicyDefinition() {
+    public EdcCreatePolicyDefinitionRequest createPolicyDefinition(String policyName, String accessPolicyId) {
         EdcPolicyPermissionConstraintExpression constraint = EdcPolicyPermissionConstraintExpression.builder()
                                                                                                     .leftOperand(
-                                                                                                            "PURPOSE") // configurable ? parameter ?
+                                                                                                            "PURPOSE")
                                                                                                     .rightOperand(
-                                                                                                            "ID 3.0 Trace") // parameter
+                                                                                                            policyName)
                                                                                                     .operator(
                                                                                                             new EdcOperator(
                                                                                                                     OPERATOR_PREFIX
@@ -105,7 +105,6 @@ public class EdcPolicyDefinitionService {
 
         EdcPolicy edcPolicy = EdcPolicy.builder().odrlPermissions(List.of(odrlPermissions)).type(POLICY_TYPE).build();
 
-        String accessPolicyId = UUID.randomUUID().toString();
         OdrlContext odrlContext = OdrlContext.builder().odrl(NAMESPACE_ODRL).build();
 
         return EdcCreatePolicyDefinitionRequest.builder()

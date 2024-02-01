@@ -20,8 +20,9 @@ package org.eclipse.tractusx.irs.edc.client.contract.service;
 
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 
+import java.util.UUID;
+
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.tractusx.irs.edc.client.asset.model.EdcContext;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinitionCriteria;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcCreateContractDefinitionRequest;
@@ -73,14 +74,14 @@ public class EdcContractDefinitionService {
 
     }
 
-    private static EdcCreateContractDefinitionRequest createContractDefinitionRequest(final String notificationAssetId,
+    public EdcCreateContractDefinitionRequest createContractDefinitionRequest(final String assetId,
             final String accessPolicyId) {
         EdcContractDefinitionCriteria edcContractDefinitionCriteria = EdcContractDefinitionCriteria.builder()
                                                                                                    .type(ASSET_SELECTOR_TYPE)
                                                                                                    .operandLeft(
                                                                                                            ASSET_SELECTOR_ID)
                                                                                                    .operandRight(
-                                                                                                           notificationAssetId)
+                                                                                                           assetId)
                                                                                                    .operator(
                                                                                                            ASSET_SELECTOR_EQUALITY_OPERATOR)
                                                                                                    .build();

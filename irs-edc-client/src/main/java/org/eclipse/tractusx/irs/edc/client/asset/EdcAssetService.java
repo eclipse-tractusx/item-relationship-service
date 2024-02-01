@@ -46,7 +46,6 @@ public class EdcAssetService {
     private static final String DEFAULT_POLICY_ID = "use-eu";
     private static final String DEFAULT_METHOD = "POST";
     private static final String DEFAULT_DATA_ADDRESS_PROPERTY_TYPE = "HttpData";
-    // TODO: move to config ?
     private static final String ASSETS_PATH = "/management/v2/assets";
 
     EdcTransformer edcTransformer;
@@ -153,6 +152,8 @@ public class EdcAssetService {
     }
 
     private static String getAssetId(JsonObject jsonObject) {
-        return jsonObject.get("asset").asJsonObject().get("@id").toString();
+        return jsonObject.get("asset")
+                         .asJsonObject()
+                         .get("@id").toString();
     }
 }

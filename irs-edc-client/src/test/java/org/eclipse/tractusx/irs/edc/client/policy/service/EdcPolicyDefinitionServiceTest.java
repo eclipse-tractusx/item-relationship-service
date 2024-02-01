@@ -1,0 +1,83 @@
+/********************************************************************************
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Apache License, Version 2.0 which is available at
+ * https://www.apache.org/licenses/LICENSE-2.0.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ ********************************************************************************/
+package org.eclipse.tractusx.irs.edc.client.policy.service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
+import org.json.JSONException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+
+class EdcPolicyDefinitionServiceTest {
+
+    private ObjectMapper objectMapper;
+    private EdcPolicyDefinitionService service;
+
+    @BeforeEach
+    void setUp() {
+        this.objectMapper = new ObjectMapper();
+        this.service = new EdcPolicyDefinitionService();
+    }
+
+    @Test
+    void testCreatePolicyDefinitionRequest() throws JsonProcessingException, JSONException {
+        // given
+        String policyName = "ID 3.0 Trace";
+        String policyId = "4cc0bb57-2d64-4cfb-a13b-aceef3477b7e";
+
+        // when
+        EdcCreatePolicyDefinitionRequest request = service.createPolicyDefinition(policyName, policyId);
+
+        // then
+        JSONAssert.assertEquals(objectMapper.writeValueAsString(request), """
+                        {
+                        	"@context": {
+                        		"odrl": "http://www.w3.org/ns/odrl/2/"
+                        	},
+                        	"@id": "4cc0bb57-2d64-4cfb-a13b-aceef3477b7e",
+                        	"@type": "PolicyDefinitionRequestDto",
+                        	"policy": {
+                        		"@type": "Policy",
+                        		"odrl:permission": [
+                        			{
+                        				"odrl:action": "USE",
+                        				"odrl:constraint": {
+                        					"@type": "AtomicConstraint",
+                        					"odrl:or": [
+                        						{
+                        							"@type": "Constraint",
+                        							"odrl:leftOperand": "PURPOSE",
+                        							"odrl:rightOperand": "ID 3.0 Trace",
+                        							"odrl:operator": {
+                        								"@id": "odrl:eq"
+                        							}
+                        						}
+                        					]
+                        				}
+                        			}
+                        		]
+                        	}
+                        }
+                """, false);
+    }
+
+}

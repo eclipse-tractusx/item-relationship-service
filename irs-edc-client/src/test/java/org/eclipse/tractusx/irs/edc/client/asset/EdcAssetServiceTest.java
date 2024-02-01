@@ -19,7 +19,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.asset;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
@@ -38,12 +37,14 @@ import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 class EdcAssetServiceTest {
 
     @Test
-    void test() {
+    void testAssetCreateRequestStructure() throws JSONException {
         TitaniumJsonLd jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
         jsonLd.registerNamespace("odrl", "http://www.w3.org/ns/odrl/2/");
         jsonLd.registerNamespace("dct", "https://purl.org/dc/terms/");
@@ -51,14 +52,6 @@ class EdcAssetServiceTest {
         jsonLd.registerNamespace("edc", "https://w3id.org/edc/v0.0.1/ns/");
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
-
-        //        jsonLd.registerNamespace("type", "https://w3id.org/edc/v0.0.1/ns/dataAddress/type");
-        //        jsonLd.registerNamespace("baseUrl", "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl");
-        //        jsonLd.registerNamespace("proxyMethod", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod");
-        //        jsonLd.registerNamespace("proxyBody", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody");
-        //        jsonLd.registerNamespace("method", "https://w3id.org/edc/v0.0.1/ns/dataAddress/method");
-        //        jsonLd.registerNamespace("asset", "https://w3id.org/edc/v0.0.1/ns/asset");
-        //        jsonLd.registerNamespace("dataAddress", "https://w3id.org/edc/v0.0.1/ns/dataAddress");
 
         EdcTransformer edcTransformer = new EdcTransformer(objectMapper(), jsonLd);
 
@@ -85,7 +78,48 @@ class EdcAssetServiceTest {
         JsonObject jsonObject = edcTransformer.transformAssetRequestToJson(
                 AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
 
-        assertThat(jsonObject).isNotNull();
+        JSONAssert.assertEquals(
+                jsonObject.toString(),
+                """
+                {
+                	"asset": {
+                		"@id": "Asset1",
+                		"@type": "edc:Asset",
+                		"edc:properties": {
+                			"edc:id": "Asset1",
+                			"edc:contenttype": "Asset"
+                		}
+                	},
+                	"dataAddress": {
+                		"@type": "edc:DataAddress",
+                		"type": "HttpData",
+                		"proxyBody": "true",
+                		"edc:type": "DEFAULT_DATA_ADDRESS_PROPERTY_TYPE",
+                		"baseUrl": "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive",
+                		"method": "POST",
+                		"proxyMethod": "true"
+                	},
+                	"@context": {
+                		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                		"method": "https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
+                		"dataAddress": "https://w3id.org/edc/v0.0.1/ns/dataAddress",
+                		"edc": "https://w3id.org/edc/v0.0.1/ns/",
+                		"proxyQueryParams": "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams",
+                		"proxyBody": "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
+                		"type": "https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
+                		"proxyPath": "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath",
+                		"dspace": "https://w3id.org/dspace/v0.8/",
+                		"baseUrl": "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
+                		"dct": "https://purl.org/dc/terms/",
+                		"proxyMethod": "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
+                		"odrl": "http://www.w3.org/ns/odrl/2/",
+                		"dcat": "https://www.w3.org/ns/dcat/",
+                		"asset": "https://w3id.org/edc/v0.0.1/ns/asset"
+                	}
+                }
+                """,
+                false
+        );
     }
 
     ObjectMapper objectMapper() {
