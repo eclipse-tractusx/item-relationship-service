@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -25,13 +21,23 @@ package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 
 /**
- * Request object for policy update
+ * Policy representation for get all policies response
  */
-@Schema(description = "Request to add a policy")
-public record UpdatePolicyRequest(
-        @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil) {
+@Builder
+public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
+
+    public static PolicyResponse fromPolicy(final Policy policy) {
+        return PolicyResponse.builder()
+                             .validUntil(policy.getValidUntil())
+                             .payload(Payload.builder()
+                                             .policyId(policy.getPolicyId())
+                                             .context(Context.getDefault())
+                                             .policy(policy)
+                                             .build())
+                             .build();
+    }
 }
