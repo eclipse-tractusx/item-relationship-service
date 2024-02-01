@@ -1676,28 +1676,11 @@ components:
         leftOperand:
           type: string
           example: string
-        operator:
+        'odrl:rightOperand':
           type: string
-          example: eq
-          enum:
-            - eq
-            - neq
-            - lt
-            - gt
-            - in
-            - lteq
-            - gteq
-            - isA
-            - hasPart
-            - isPartOf
-            - isOneOf
-            - isAllOf
-            - isNoneOf
-        rightOperand:
-          type: array
-          items:
-            type: string
-          example: [string]
+          example: string
+        operator:
+          $ref: '#/components/schemas/Operator'
     Constraints:
       type: object
       additionalProperties: false
@@ -1715,21 +1698,48 @@ components:
       additionalProperties: false
       description: Request to add a policy
       properties:
-        permissions:
-          type: array
-          description: List of permissions that will be added to the Policy on creation.
-          items:
-            $ref: '#/components/schemas/Permission'
-        policyId:
-          type: string
-          description: The ID of the policy to add
+        payload:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/JsonValue'
+          example:
+            payload:
+              '@context':
+                odrl: http://www.w3.org/ns/odrl/2/
+              '@id': policy-id
+              policy:
+                'odrl:permission':
+                  - 'odrl:action': USE
+                    'odrl:constraint':
+                      'odrl:and':
+                        - 'odrl:leftOperand': Membership
+                          'odrl:operator':
+                            '@id': 'odrl:eq'
+                          'odrl:rightOperand': active
+                        - 'odrl:leftOperand': PURPOSE
+                          'odrl:operator':
+                            '@id': 'odrl:eq'
+                          'odrl:rightOperand': ID 3.1 Trace
+            validUntil: '2025-12-12T23:59:59.999Z'
+          properties:
+            empty:
+              type: boolean
+            valueType:
+              type: string
+              enum:
+                - 'ARRAY'
+                - 'OBJECT'
+                - 'STRING'
+                - 'NUMBER'
+                - 'TRUE'
+                - 'FALSE'
+                - 'NULL'
         validUntil:
           type: string
           format: date-time
           description: Timestamp after which the policy will no longer be accepted in negotiations
       required:
-        - permissions
-        - policyId
+        - payload
         - validUntil
     EdcNotificationResponseNotificationContent:
       type: object
@@ -2071,6 +2081,39 @@ components:
           items:
             $ref: '#/components/schemas/Tombstone'
           maxItems: 2147483647
+    JsonValue:
+      type: object
+      additionalProperties: false
+      properties:
+        valueType:
+          type: string
+          enum:
+            - 'ARRAY'
+            - 'OBJECT'
+            - 'STRING'
+            - 'NUMBER'
+            - 'TRUE'
+            - 'FALSE'
+            - 'NULL'
+      example:
+        payload:
+          '@context':
+            odrl: http://www.w3.org/ns/odrl/2/
+          '@id': policy-id
+          policy:
+            'odrl:permission':
+              - 'odrl:action': USE
+                'odrl:constraint':
+                  'odrl:and':
+                    - 'odrl:leftOperand': Membership
+                      'odrl:operator':
+                        '@id': 'odrl:eq'
+                      'odrl:rightOperand': active
+                    - 'odrl:leftOperand': PURPOSE
+                      'odrl:operator':
+                        '@id': 'odrl:eq'
+                      'odrl:rightOperand': ID 3.1 Trace
+        validUntil: '2025-12-12T23:59:59.999Z'
     LangString:
       type: object
       additionalProperties: false
@@ -2129,6 +2172,27 @@ components:
         lexicalValue:
           type: string
           example: piece
+    Operator:
+      type: object
+      additionalProperties: false
+      properties:
+        '@id':
+          type: string
+          example: 'odrl:eq'
+          enum:
+            - eq
+            - neq
+            - lt
+            - gt
+            - in
+            - lteq
+            - gteq
+            - isA
+            - hasPart
+            - isPartOf
+            - isOneOf
+            - isAllOf
+            - isNoneOf
     PageResult:
       type: object
       additionalProperties: false
@@ -2182,10 +2246,8 @@ components:
           enum:
             - ACCESS
             - USE
-        constraints:
-          type: array
-          items:
-            $ref: '#/components/schemas/Constraints'
+        constraint:
+          $ref: '#/components/schemas/Constraints'
     Policy:
       type: object
       additionalProperties: false

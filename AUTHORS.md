@@ -17,4 +17,5 @@ The following people have contributed to this repository:
 - Zied Belkhiria, MHP, https://github.com/Zied-Belkhiria-Mhp
 - Adam Bugajewski, doubleSlash Net-Business GmbH, https://github.com/ds-ext-abugajewski
 - Matthias Fischer, doubleSlash Net-Business GmbH, https://github.com/dsmf
-
+- Sebastian Ceronik, doubleSlash Net-Business GmbH, https://github.com/ds-ext-sceronik
+- Maximilian Wesener, doubleSlash Net-Business GmbH, https://github.com/ds-mwesener

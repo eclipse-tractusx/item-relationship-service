@@ -36,7 +36,6 @@ import jakarta.json.JsonReader;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.core.transform.TransformerContextImpl;
-import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromAssetTransformer;
 import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromCatalogTransformer;
 import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromCriterionTransformer;
@@ -70,6 +69,7 @@ import org.eclipse.tractusx.irs.edc.client.asset.transformer.JsonObjectFromAsset
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -85,12 +85,13 @@ public class EdcTransformer {
     private final JsonObjectFromContractOfferDescriptionTransformer jsonObjectFromContractOfferDescriptionTransformer;
     private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
     private final JsonObjectFromAssetTransformer jsonObjectFromAssetTransformer;
+    private final org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer jsonObjectToPolicyTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
     private final JsonObjectFromAssetRequestTransformer jsonObjectFromAssetRequestTransformer;
 
     public EdcTransformer(@Qualifier("jsonLdObjectMapper") final ObjectMapper objectMapper,
-            final TitaniumJsonLd titaniumJsonLd) {
+            final TitaniumJsonLd titaniumJsonLd, final TypeTransformerRegistry typeTransformerRegistry) {
         this.titaniumJsonLd = titaniumJsonLd;
         this.titaniumJsonLd.registerNamespace("type", "https://w3id.org/edc/v0.0.1/ns/dataAddress/type");
         this.titaniumJsonLd.registerNamespace("baseUrl", "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl");
@@ -113,8 +114,8 @@ public class EdcTransformer {
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
         jsonObjectFromAssetTransformer = new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper);
         jsonObjectFromAssetRequestTransformer = new JsonObjectFromAssetRequestTransformer(jsonBuilderFactory, objectMapper);
+        jsonObjectToPolicyTransformer = new org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer(objectMapper);
 
-        final TypeTransformerRegistry typeTransformerRegistry = new TypeTransformerRegistryImpl();
         transformerContext = new TransformerContextImpl(typeTransformerRegistry);
 
         // JSON to Object
@@ -193,5 +194,9 @@ public class EdcTransformer {
     public JsonObject transformAssetRequestToJson(AssetRequest assetRequest) {
         final JsonObject transform = jsonObjectFromAssetRequestTransformer.transform(assetRequest, transformerContext);
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
+    }
+
+    public Policy transformToPolicy(final JsonObject body) {
+        return jsonObjectToPolicyTransformer.transform(body, transformerContext);
     }
 }

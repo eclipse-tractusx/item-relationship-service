@@ -29,6 +29,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsonp.JSONPModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.json.JsonObject;
+import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.LiteralExpression;
@@ -53,7 +54,7 @@ class EdcAssetServiceTest {
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
 
-        EdcTransformer edcTransformer = new EdcTransformer(objectMapper(), jsonLd);
+        EdcTransformer edcTransformer = new EdcTransformer(objectMapper(), jsonLd, new TypeTransformerRegistryImpl());
 
         Map<String, Object> properties = Map.of("description", "endpoint to qualityinvestigation receive",
                 "contenttype", "application/json", "policy-id", "use-eu", "type", "receive", "notificationtype",
