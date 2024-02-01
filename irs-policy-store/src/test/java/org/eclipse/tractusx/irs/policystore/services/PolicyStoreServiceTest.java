@@ -214,4 +214,29 @@ class PolicyStoreServiceTest {
         // assert
         assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, request));
     }
+
+    @Test
+    void whenRegisterPolicyWithMissingPermissionsShouldThrowException() {
+        // arrange
+        final Policy policy = new Policy();
+
+        // act
+        // assert
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy));
+    }
+
+    @Test
+    void whenRegisterPolicyWithMissingConstraintShouldThrowException() {
+        // arrange
+        final Policy policy = Policy.builder()
+                                    .permissions(List.of(
+                                            Permission.builder().constraint(new Constraints(emptyList(), emptyList())).build(),
+                                            Permission.builder().build()
+                                            ))
+                                    .build();
+
+        // act
+        // assert
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy));
+    }
 }
