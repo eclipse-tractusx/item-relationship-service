@@ -43,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
@@ -71,6 +72,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PolicyStoreController {
 
     private final PolicyStoreService service;
+    private final EdcTransformer edcTransformer;
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
@@ -100,8 +102,10 @@ public class PolicyStoreController {
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void registerAllowedPolicy(final @Valid @RequestBody CreatePolicyRequest request) {
-        service.registerPolicy(request);
+    public void registerAllowedPolicy(final @RequestBody CreatePolicyRequest request) {
+        final Policy policy = edcTransformer.transformToPolicy(request.payload());
+        policy.setValidUntil(request.validUntil());
+        service.registerPolicy(policy);
     }
 
     @Operation(operationId = "getAllowedPolicies",

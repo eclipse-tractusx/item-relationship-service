@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
 - Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
 - Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
+- Changed structure of Policy creation to match EDC format
 
 ### Fixed
 - Update to Spring Boot 3.1.8. This fixes the following CVEs:

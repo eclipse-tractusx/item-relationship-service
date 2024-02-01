@@ -106,12 +106,12 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldAcceptAndConstraintsWhenAcceptedPolicyContainsMoreConstraintsSuperSetOfProvidedPolicy() {
         // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
         final var policyList = List.of(
                 new AcceptedPolicy(policy("and-policy", List.of(constraint1, constraint2, constraint3), List.of()),
                         OffsetDateTime.now().plusYears(1)));
@@ -131,12 +131,12 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldAcceptOrConstraintsWhenAcceptedPolicyContainsMoreConstraintsSuperSetOfProvidedPolicy() {
         // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
         final var policyList = List.of(
                 new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
                         OffsetDateTime.now().plusYears(1)));
@@ -156,12 +156,12 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldAcceptConstraintsWithDefaultPolicy() {
         // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, OperatorType.EQ,
-                List.of(TestConstants.STATUS_ACTIVE));
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
 
         final var policyList = List.of(new AcceptedPolicy(
                 policy("default-policy", List.of(constraint1, constraint2, constraint3),
@@ -242,7 +242,7 @@ class PolicyCheckerServiceTest {
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(final String policyId,
             final List<Constraint> andConstraint, final List<Constraint> orConstraint) {
-        final List<Constraints> constraints = List.of(new Constraints(andConstraint, orConstraint));
+        final Constraints constraints = new Constraints(andConstraint, orConstraint);
         final List<Permission> permissions = List.of(new Permission(PolicyType.USE, constraints));
         return new org.eclipse.tractusx.irs.edc.client.policy.Policy(policyId, OffsetDateTime.now(),
                 OffsetDateTime.now().plusYears(1), permissions);

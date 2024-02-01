@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.edc.client.policy;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,8 +43,10 @@ import lombok.NoArgsConstructor;
 public class Constraints {
 
     @ArraySchema
+    @JsonAlias({"odrl:and"})
     private List<Constraint> and;
     @ArraySchema
+    @JsonAlias({"odrl:or"})
     private List<Constraint> or;
 
 }
