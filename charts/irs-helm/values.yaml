@@ -127,7 +127,12 @@ digitalTwinRegistry:
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}
   shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}  # The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}
   lookupShellsTemplate: /lookup/shells?assetIds={assetIds}  # The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}
+  oAuthClientId: discovery
+
+discovery:
+  oAuthClientId: discovery  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   discoveryFinderUrl:  # "https://<discovery-finder-url>
+
 semanticshub:
   url:  # https://<semantics-hub-url>
   pageSize: "100"  # Number of aspect models to retrieve per page
@@ -208,9 +213,6 @@ edc:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
     cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
-
-discovery:
-  oAuthClientId: discovery  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:
   edc:
