@@ -79,9 +79,9 @@ data:
       shellDescriptorTemplate: {{ .Values.digitalTwinRegistry.shellDescriptorTemplate | default "" | quote }}
       lookupShellsTemplate: {{ .Values.digitalTwinRegistry.lookupShellsTemplate | default "" | quote }}
       type: {{ tpl (.Values.digitalTwinRegistry.type | default "") . | quote }}
-      oAuthClientId: {{ .Values.digitalTwinRegistry.oAuthClientId | default "portal" }}
+      oAuthClientId: {{ .Values.digitalTwinRegistry.oAuthClientId | default "discovery" }}
       discovery:
-        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "discovery" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
         discoveryFinderUrl: {{ tpl (.Values.discovery.discoveryFinderUrl | default "") . | quote }} # The endpoint to discover EDC endpoints to a particular BPN.
 
     semanticshub:
@@ -89,11 +89,13 @@ data:
       pageSize: {{ tpl (.Values.semanticshub.pageSize | default "100") . }}
       modelJsonSchemaEndpoint: {{ tpl (.Values.semanticshub.modelJsonSchemaEndpoint | default "") . | quote }}
       defaultUrns: {{ tpl (.Values.semanticshub.defaultUrns | default "") . | quote }}
+      oAuthClientId: {{ .Values.semanticshub.oAuthClientId | default "semantics" }}
       {{- if .Values.semanticshub.localModels }}
       localModelDirectory: /app/semantic-models
       {{- end }}
 
     bpdm:
+      oAuthClientId: {{ .Values.bpdm.oAuthClientId | default "bpdm" }}
       bpnEndpoint: {{ tpl (.Values.bpdm.bpnEndpoint | default "") . | quote }}
 
     irs-edc-client:
