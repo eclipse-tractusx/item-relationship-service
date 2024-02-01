@@ -20,7 +20,6 @@
 
 package org.eclipse.tractusx.irs.edc.client.asset.transformer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
@@ -37,7 +36,7 @@ public class JsonObjectFromAssetRequestTransformer extends AbstractJsonLdTransfo
 
     private final JsonBuilderFactory jsonFactory;
 
-    public JsonObjectFromAssetRequestTransformer(final JsonBuilderFactory jsonFactory, ObjectMapper jsonLdMapper) {
+    public JsonObjectFromAssetRequestTransformer(final JsonBuilderFactory jsonFactory) {
         super(AssetRequest.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
     }

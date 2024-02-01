@@ -196,6 +196,18 @@ class EdcAssetServiceTest {
     }
 
     @Test
+    void givenCreateDtrAsset_whenOK_ThenThrowException() {
+        // given
+        String baseUrl = "http://test.test";
+        String assetName = "asset1";
+        doThrow(new RestClientException("Surprise")).when(restTemplate)
+                                                    .postForEntity(any(String.class), any(JsonObject.class), any());
+
+        // when/then
+        assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName, restTemplate));
+    }
+
+    @Test
     void givenCreateDtrAsset_whenTemplateException_ThenThrowException() {
         // given
         String baseUrl = "http://test.test";

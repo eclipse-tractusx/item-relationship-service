@@ -62,7 +62,6 @@ import org.eclipse.edc.core.transform.transformer.to.JsonObjectToQuerySpecTransf
 import org.eclipse.edc.core.transform.transformer.to.JsonValueToGenericTypeTransformer;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.spi.result.Result;
-import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
 import org.eclipse.tractusx.irs.edc.client.asset.transformer.JsonObjectFromAssetRequestTransformer;
@@ -101,7 +100,8 @@ public class EdcTransformer {
         this.titaniumJsonLd.registerNamespace("asset", "https://w3id.org/edc/v0.0.1/ns/asset");
         this.titaniumJsonLd.registerNamespace("dataAddress", "https://w3id.org/edc/v0.0.1/ns/dataAddress");
         this.titaniumJsonLd.registerNamespace("proxyPath", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath");
-        this.titaniumJsonLd.registerNamespace("proxyQueryParams", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams");
+        this.titaniumJsonLd.registerNamespace("proxyQueryParams",
+                "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams");
         final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(
@@ -113,8 +113,9 @@ public class EdcTransformer {
                 jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
         jsonObjectFromAssetTransformer = new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper);
-        jsonObjectFromAssetRequestTransformer = new JsonObjectFromAssetRequestTransformer(jsonBuilderFactory, objectMapper);
-        jsonObjectToPolicyTransformer = new org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer(objectMapper);
+        jsonObjectFromAssetRequestTransformer = new JsonObjectFromAssetRequestTransformer(jsonBuilderFactory);
+        jsonObjectToPolicyTransformer = new org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer(
+                objectMapper);
 
         transformerContext = new TransformerContextImpl(typeTransformerRegistry);
 
