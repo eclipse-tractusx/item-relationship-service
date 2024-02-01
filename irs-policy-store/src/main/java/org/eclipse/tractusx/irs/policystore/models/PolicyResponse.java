@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 
@@ -28,7 +29,49 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
  * Policy representation for get all policies response
  */
 @Builder
+@Schema(example = PolicyResponse.EXAMPLE_PAYLOAD)
 public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
+
+    @SuppressWarnings({"FileTabCharacter", "java:S2479"})
+    // required to show correctly example payload in open-api
+    public static final String EXAMPLE_PAYLOAD = """
+             [
+                {
+                 	"validUntil": "2025-12-12T23:59:59.999Z",
+                 	"payload": {
+                 		"@context": {
+                 			"odrl": "http://www.w3.org/ns/odrl/2/"
+                 		},
+                 		"@id": "policy-id",
+                 		"policy": {
+                 			"odrl:permission": [
+                 				{
+                 					"odrl:action": "USE",
+                 					"odrl:constraint": {
+                 						"odrl:and": [
+                 							{
+                 								"odrl:leftOperand": "Membership",
+                 								"odrl:operator": {
+                 									"@id": "odrl:eq"
+                 								},
+                 								"odrl:rightOperand": "active"
+                 							},
+                 							{
+                 								"odrl:leftOperand": "PURPOSE",
+                 								"odrl:operator": {
+                 									"@id": "odrl:eq"
+                 								},
+                 								"odrl:rightOperand": "ID 3.1 Trace"
+                 							}
+                 						]
+                 					}
+                 				}
+                 			]
+                 		}
+                 	}
+                 }
+              ]
+                """;
 
     public static PolicyResponse fromPolicy(final Policy policy) {
         return PolicyResponse.builder()
