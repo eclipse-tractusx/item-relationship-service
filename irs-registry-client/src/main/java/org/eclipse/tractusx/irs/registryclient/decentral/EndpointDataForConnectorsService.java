@@ -24,7 +24,6 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder.LOGPREFIX_TO_BE_REMOVED_LATER;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +45,7 @@ public class EndpointDataForConnectorsService {
 
     private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
+    private static final String TOOK_MS = "{} took {} ms";
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
@@ -68,17 +68,14 @@ public class EndpointDataForConnectorsService {
         } finally {
             log.info("Created {} futures", futures.size());
             watch.stop();
-            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
     private EndpointDataReference getEndpointReferenceForAsset(final String connector) {
 
-        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "getEndpointReferenceForAsset - ";
-
         final var watch = new StopWatch();
-        final String msg =
-                logPrefix + "Trying to retrieve EndpointDataReference for connector '%s'".formatted(connector);
+        final String msg = "Trying to retrieve EndpointDataReference for connector '%s'".formatted(connector);
         watch.start(msg);
         log.info(msg);
 
@@ -86,12 +83,11 @@ public class EndpointDataForConnectorsService {
             return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
                     DT_REGISTRY_ASSET_VALUE);
         } catch (EdcRetrieverException e) {
-            log.warn(logPrefix + "Exception occurred when retrieving EndpointDataReference from connector '{}'",
-                    connector, e);
+            log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", connector, e);
             throw new CompletionException(e.getMessage(), e);
         } finally {
             watch.stop();
-            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
 
     }

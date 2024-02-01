@@ -23,8 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
-import static org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder.LOGPREFIX_TO_BE_REMOVED_LATER;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -57,6 +55,8 @@ import org.springframework.util.StopWatch;
 @SuppressWarnings("PMD.TooManyMethods")
 public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryService {
 
+    private static final String TOOK_MS = "{} took {} ms";
+
     private final ConnectorEndpointsService connectorEndpointsService;
     private final EndpointDataForConnectorsService endpointDataForConnectorsService;
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
@@ -84,7 +84,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             throws RegistryServiceException {
 
         final var watch = new StopWatch();
-        final String msg = LOGPREFIX_TO_BE_REMOVED_LATER + "Fetching shell(s) for %s key(s)".formatted(keys.size());
+        final String msg = "Fetching shell(s) for %s key(s)".formatted(keys.size());
         watch.start(msg);
         log.info(msg);
 
@@ -105,17 +105,16 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             }).toList();
 
             if (collectedShells.isEmpty()) {
-                log.info(LOGPREFIX_TO_BE_REMOVED_LATER + "No shells found");
+                log.info("No shells found");
                 throw new ShellNotFoundException("Unable to find any of the requested shells", calledEndpoints);
             } else {
-                log.info(LOGPREFIX_TO_BE_REMOVED_LATER + "Found {} shell(s) for {} key(s)", collectedShells.size(),
-                        keys.size());
+                log.info("Found {} shell(s) for {} key(s)", collectedShells.size(), keys.size());
                 return collectedShells;
             }
 
         } finally {
             watch.stop();
-            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -142,30 +141,26 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             final Set<String> calledEndpoints, final String bpn, final List<DigitalTwinRegistryKey> keys) {
 
         final var watch = new StopWatch();
-        final String msg =
-                LOGPREFIX_TO_BE_REMOVED_LATER + "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn);
+        final String msg = "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn);
         watch.start(msg);
         log.info(msg);
 
         try {
             final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
 
-            log.info(LOGPREFIX_TO_BE_REMOVED_LATER + "Found {} connector endpoints for bpn '{}'",
-                    connectorEndpoints.size(), bpn);
+            log.info("Found {} connector endpoints for bpn '{}'", connectorEndpoints.size(), bpn);
             calledEndpoints.addAll(connectorEndpoints);
 
             return fetchShellDescriptorsForConnectorEndpoints(keys, connectorEndpoints);
 
         } finally {
             watch.stop();
-            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
     private CompletableFuture<List<AssetAdministrationShellDescriptor>> fetchShellDescriptorsForConnectorEndpoints(
             final List<DigitalTwinRegistryKey> keys, final List<String> connectorEndpoints) {
-
-        final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "fetchShellDescriptorsForConnectorEndpoints - ";
 
         final var service = endpointDataForConnectorsService;
         final var futures = service.createFindEndpointDataForConnectorsFutures(connectorEndpoints)
@@ -174,7 +169,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                            () -> fetchShellDescriptorsForKey(keys, edr))))
                                    .toList();
 
-        log.info(logPrefix + " Created {} futures", futures.size());
+        log.debug("Created {} futures", futures.size());
 
         return resultFinder.getFastestResult(futures);
     }
@@ -182,10 +177,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private List<AssetAdministrationShellDescriptor> fetchShellDescriptorsForKey(
             final List<DigitalTwinRegistryKey> keys, final EndpointDataReference endpointDataReference) {
 
-        final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + " fetchShellDescriptorsForKey - ";
-
         final var watch = new StopWatch();
-        final String msg = logPrefix + "Fetching shell descriptors for keys %s from endpoint '%s'".formatted(keys,
+        final String msg = "Fetching shell descriptors for keys %s from endpoint '%s'".formatted(keys,
                 endpointDataReference.getEndpoint());
         watch.start(msg);
         log.info(msg);
@@ -193,17 +186,15 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             return keys.stream().map(key -> fetchShellDescriptor(endpointDataReference, key)).toList();
         } finally {
             watch.stop();
-            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
     private AssetAdministrationShellDescriptor fetchShellDescriptor(final EndpointDataReference endpointDataReference,
             final DigitalTwinRegistryKey key) {
 
-        final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + " fetchShellDescriptor - ";
-
         final var watch = new StopWatch();
-        final String msg = logPrefix + "Retrieving AAS identification for DigitalTwinRegistryKey: '%s'".formatted(key);
+        final String msg = "Retrieving AAS identification for DigitalTwinRegistryKey: '%s'".formatted(key);
         watch.start(msg);
         log.info(msg);
         try {
@@ -212,7 +203,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                     aaShellIdentification);
         } finally {
             watch.stop();
-            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -228,10 +219,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     @NotNull
     private String mapToShellId(final EndpointDataReference endpointDataReference, final String key) {
 
-        final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "mapToShellId - ";
-
         final var watch = new StopWatch();
-        final String msg = logPrefix + "Mapping '%s' to shell ID for endpoint '%s'".formatted(key,
+        final String msg = "Mapping '%s' to shell ID for endpoint '%s'".formatted(key,
                 endpointDataReference.getEndpoint());
         watch.start(msg);
         log.info(msg);
@@ -250,50 +239,48 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                                 .orElse(key);
 
             if (key.equals(aaShellIdentification)) {
-                log.info(logPrefix + "Found shell with shellId {} in registry", aaShellIdentification);
+                log.info("Found shell with shellId {} in registry", aaShellIdentification);
             } else {
-                log.info(logPrefix + "Retrieved shellId {} for globalAssetId {}", aaShellIdentification, key);
+                log.info("Retrieved shellId {} for globalAssetId {}", aaShellIdentification, key);
             }
 
             return aaShellIdentification;
 
         } finally {
             watch.stop();
-            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
     private Collection<String> lookupShellIds(final String bpn) throws RegistryServiceException {
 
-        final var logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "lookupShellIds - ";
-        log.info(logPrefix + "Looking up shell ids for bpn {}", bpn);
+        log.info("Looking up shell ids for bpn {}", bpn);
 
         try {
 
             final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-            log.info(logPrefix + "Looking up shell ids for bpn '{}' with connector endpoints {}", bpn,
-                    connectorEndpoints);
+            log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, connectorEndpoints);
 
             final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
                     connectorEndpoints);
-            log.info(logPrefix + "Created endpointDataReferenceFutures");
+            log.debug("Created endpointDataReferenceFutures");
 
-            return lookupShellIds(bpn, endpointDataReferenceFutures, logPrefix);
+            return lookupShellIds(bpn, endpointDataReferenceFutures);
 
         } catch (RuntimeException e) {
             // catching generic exception is intended here,
             // otherwise Jobs stay in state RUNNING forever
-            log.error(logPrefix + e.getMessage(), e);
-            final var msg = logPrefix + e.getClass().getSimpleName()
-                    + " occurred while looking up shell ids for bpn '%s'".formatted(bpn);
-            throw new RegistryServiceException(msg, e);
+            log.error(e.getMessage(), e);
+            throw new RegistryServiceException(
+                    "%s occurred while looking up shell ids for bpn '%s'".formatted(e.getClass().getSimpleName(), bpn),
+                    e);
         }
     }
 
     @NotNull
     private Collection<String> lookupShellIds(final String bpn,
-            final List<CompletableFuture<EndpointDataReference>> endpointDataReferenceFutures, final String logPrefix)
+            final List<CompletableFuture<EndpointDataReference>> endpointDataReferenceFutures)
             throws RegistryServiceException {
 
         try {
@@ -304,29 +291,26 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                             .toList();
             final var shellIds = resultFinder.getFastestResult(futures).get();
 
-            log.info(logPrefix + "Found {} shell id(s) in total", shellIds.size());
+            log.info("Found {} shell id(s) in total", shellIds.size());
             return shellIds;
 
         } catch (InterruptedException e) {
-            log.error(logPrefix + "InterruptedException occurred while looking up shells ids for bpn '%s': ".formatted(
-                    bpn) + e.getMessage(), e);
             Thread.currentThread().interrupt();
-            throw new RegistryServiceException(LOGPREFIX_TO_BE_REMOVED_LATER + e.getClass().getSimpleName()
-                    + " occurred while looking up shell ids for bpn '%s'".formatted(bpn), e);
+            throw new RegistryServiceException(
+                    "%s occurred while looking up shell ids for bpn '%s'".formatted(e.getClass().getSimpleName(), bpn),
+                    e);
         } catch (ExecutionException e) {
-            log.error(logPrefix + e.getMessage(), e);
-            throw new RegistryServiceException(LOGPREFIX_TO_BE_REMOVED_LATER + e.getClass().getSimpleName()
-                    + " occurred while looking up shell ids for bpn '%s'".formatted(bpn), e);
+            throw new RegistryServiceException(
+                    "%s occurred while looking up shell ids for bpn '%s'".formatted(e.getClass().getSimpleName(), bpn),
+                    e);
         }
     }
 
     private Collection<String> lookupShellIds(final String bpn, final EndpointDataReference endpointDataReference) {
 
-        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "lookupShellIds - ";
         final var watch = new StopWatch();
-        final String msg =
-                logPrefix + "Looking up shell IDs for bpn '%s' with endpointDataReference '%s'".formatted(bpn,
-                        endpointDataReference);
+        final String msg = "Looking up shell IDs for bpn '%s' with endpointDataReference '%s'".formatted(bpn,
+                endpointDataReference);
         watch.start(msg);
         log.info(msg);
 
@@ -336,7 +320,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                     List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())).getResult();
         } finally {
             watch.stop();
-            log.info("{} took {} ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
