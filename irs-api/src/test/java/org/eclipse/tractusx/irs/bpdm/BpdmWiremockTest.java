@@ -19,14 +19,12 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.bpdm;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockConfig.BPDM_TEST;
-import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockConfig.bpdmResponse;
-import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
+import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport.BPDM_URL_TEMPLATE;
+import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport.bpdmWillNotFindCompanyName;
+import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport.bpdmWillReturnCompanyName;
+import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport.verifyBpdmWasCalledWithBPN;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 
 import java.util.Optional;
@@ -47,30 +45,34 @@ class BpdmWiremockTest {
     void setUp(WireMockRuntimeInfo wireMockRuntimeInfo) {
         final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
-        bpdmFacade = new BpdmFacade(new BpdmClientImpl(restTemplate, BPDM_TEST));
+        bpdmFacade = new BpdmFacade(new BpdmClientImpl(restTemplate, BPDM_URL_TEMPLATE));
     }
 
     @Test
     void shouldResolveManufacturerName() {
         // Arrange
-        givenThat(get(urlPathEqualTo("/legal-entities/BPNL00000000TEST")).willReturn(
-                responseWithStatus(200).withBody(bpdmResponse("BPNL00000000TEST", "TEST_BPN_DFT_1"))));
+        final String bpn = "BPNL00000000TEST";
+        bpdmWillReturnCompanyName(bpn, "TEST_BPN_DFT_1");
 
         // Act
-        final Optional<String> manufacturerName = bpdmFacade.findManufacturerName("BPNL00000000TEST");
+        final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(bpn);
 
         // Assert
         assertThat(manufacturerName).isPresent().contains("TEST_BPN_DFT_1");
+        verifyBpdmWasCalledWithBPN(bpn, 1);
     }
 
     @Test
     void shouldReturnEmptyOnNotFound() {
         // Arrange
-        givenThat(get(urlPathEqualTo("/legal-entities/BPNL00000000TEST")).willReturn(responseWithStatus(404)));
+        final String bpn = "BPNL00000000TEST";
+        bpdmWillNotFindCompanyName(bpn);
 
         // Act & Assert
         // TODO fix implementation to not throw HttpClientErrorException$NotFound
         assertThatExceptionOfType(HttpClientErrorException.class).isThrownBy(
-                () -> bpdmFacade.findManufacturerName("BPNL00000000TEST"));
+                () -> bpdmFacade.findManufacturerName(bpn));
+        verifyBpdmWasCalledWithBPN(bpn, 1);
     }
+
 }

@@ -29,8 +29,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
-import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockConfig.DATAPLANE_HOST;
-import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockConfig.PATH_DATAPLANE_PUBLIC;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.DATAPLANE_HOST;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_DATAPLANE_PUBLIC;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 import static org.mockito.Mockito.mock;
@@ -70,7 +70,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
-import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockConfig;
+import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -242,7 +242,7 @@ class SubmodelFacadeWiremockTest {
     }
 
     private void prepareNegotiation() {
-        final String contractAgreementId = SubmodelFacadeWiremockConfig.prepareNegotiation();
+        final String contractAgreementId = SubmodelFacadeWiremockSupport.prepareNegotiation();
         final EndpointDataReference ref = createEndpointDataReference(contractAgreementId);
         storage.put(contractAgreementId, ref);
     }

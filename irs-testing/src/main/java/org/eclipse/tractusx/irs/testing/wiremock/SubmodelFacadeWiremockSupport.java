@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * WireMock configurations and requests used for testing the EDC Flow.
  */
-public final class SubmodelFacadeWiremockConfig {
+public final class SubmodelFacadeWiremockSupport {
     public static final String PATH_CATALOG = "/catalog/request";
     public static final String PATH_NEGOTIATE = "/contractnegotiations";
     public static final String PATH_TRANSFER = "/transferprocesses";
@@ -50,7 +50,7 @@ public final class SubmodelFacadeWiremockConfig {
     public static final String EDC_PROVIDER_BPN = "BPNL00000003CRHK";
     public static final int STATUS_CODE_OK = 200;
 
-    private SubmodelFacadeWiremockConfig() {
+    private SubmodelFacadeWiremockSupport() {
     }
 
     public static String prepareNegotiation() {

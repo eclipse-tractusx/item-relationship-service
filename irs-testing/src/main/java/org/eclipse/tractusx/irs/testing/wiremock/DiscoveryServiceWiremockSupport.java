@@ -30,7 +30,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 /**
  * WireMock configurations and requests used for testing the Discovery Service flow.
  */
-public final class DiscoveryServiceWiremockConfig {
+public final class DiscoveryServiceWiremockSupport {
     public static final String CONTROLPLANE_PUBLIC_URL = "https://test.edc.io";
     public static final String EDC_DISCOVERY_PATH = "/edcDiscovery";
     public static final String TEST_BPN = "BPNL00000000TEST";
@@ -41,7 +41,7 @@ public final class DiscoveryServiceWiremockConfig {
     public static final int STATUS_CODE_OK = 200;
     public static final int STATUS_CODE_NOT_FOUND = 404;
 
-    private DiscoveryServiceWiremockConfig() {
+    private DiscoveryServiceWiremockSupport() {
     }
 
     public static MappingBuilder postEdcDiscovery200() {

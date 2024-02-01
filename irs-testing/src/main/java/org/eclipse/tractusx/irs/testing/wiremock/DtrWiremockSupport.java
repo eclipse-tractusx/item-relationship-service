@@ -31,7 +31,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 /**
  * WireMock configurations and requests used for testing the decentralized DigitalTwinRegistry flow.
  */
-public final class DtrWiremockConfig {
+public final class DtrWiremockSupport {
     public static final String DATAPLANE_URL = "http://dataplane.test";
     public static final String DATAPLANE_PUBLIC_PATH = "/api/public";
     public static final String DATAPLANE_PUBLIC_URL = DATAPLANE_URL + DATAPLANE_PUBLIC_PATH;
@@ -44,7 +44,7 @@ public final class DtrWiremockConfig {
     public static final int STATUS_CODE_OK = 200;
     public static final int STATUS_CODE_NOT_FOUND = 404;
 
-    private DtrWiremockConfig() {
+    private DtrWiremockSupport() {
     }
 
     public static MappingBuilder getShellDescriptor200() {
@@ -53,16 +53,16 @@ public final class DtrWiremockConfig {
 
     public static MappingBuilder getShellDescriptor200(final String urlRegex) {
         final String materialForRecycling = submodelDescriptor(DATAPLANE_PUBLIC_URL,
-                "urn:uuid:19b0338f-6d03-4198-b3b8-5c43f8958d60", DiscoveryServiceWiremockConfig.CONTROLPLANE_PUBLIC_URL,
+                "urn:uuid:19b0338f-6d03-4198-b3b8-5c43f8958d60", DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL,
                 "MaterialForRecycling", "urn:uuid:cf06d5d5-e3f8-4bd4-bfcf-81815310701f",
                 "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling");
 
         final String batch = submodelDescriptor(DATAPLANE_PUBLIC_URL, "urn:uuid:234edd2f-0223-47c7-9fe4-3984ab14c4f9",
-                DiscoveryServiceWiremockConfig.CONTROLPLANE_PUBLIC_URL, "Batch",
+                DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, "Batch",
                 "urn:uuid:f53db6ef-7a58-4326-9169-0ae198b85dbf", "urn:samm:io.catenax.batch:2.0.0#Batch");
 
         final String singleLevelBomAsBuilt = submodelDescriptor(DATAPLANE_PUBLIC_URL,
-                "urn:uuid:234edd2f-0223-47c7-9fe4-3984ab14c4f9", DiscoveryServiceWiremockConfig.CONTROLPLANE_PUBLIC_URL,
+                "urn:uuid:234edd2f-0223-47c7-9fe4-3984ab14c4f9", DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL,
                 "SingleLevelBomAsBuilt", "urn:uuid:0e413809-966b-4107-aae5-aeb28bcdaadf",
                 "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt");
 

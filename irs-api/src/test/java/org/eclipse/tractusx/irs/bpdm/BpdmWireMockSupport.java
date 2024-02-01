@@ -19,14 +19,36 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.bpdm;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
+
 /**
  * WireMock configurations and requests used for testing BPDM flow.
  */
-public final class BpdmWireMockConfig {
+public final class BpdmWireMockSupport {
 
-    public static final String BPDM_TEST = "http://bpdm.test/legal-entities/{partnerId}?idType={idType}";
+    public static final String BPN_PATH = "/legal-entities/";
+    public static final String BPDM_URL_TEMPLATE = "http://bpdm.test" + BPN_PATH + "{partnerId}?idType={idType}";
 
-    private BpdmWireMockConfig() {
+    private BpdmWireMockSupport() {
+    }
+
+    public static void bpdmWillReturnCompanyName(final String bpn, final String companyName) {
+        stubFor(get(urlPathEqualTo(BPN_PATH + bpn)).willReturn(
+                responseWithStatus(200).withBody(bpdmResponse(bpn, companyName))));
+    }
+
+    public static void bpdmWillNotFindCompanyName(final String bpn) {
+        stubFor(get(urlPathEqualTo(BPN_PATH + bpn)).willReturn(responseWithStatus(404)));
+    }
+
+    public static void verifyBpdmWasCalledWithBPN(final String bpn, final int times) {
+        verify(exactly(times), getRequestedFor(urlPathEqualTo(BPN_PATH + bpn)));
     }
 
     public static String bpdmResponse(final String bpn, final String companyName) {
@@ -84,4 +106,5 @@ public final class BpdmWireMockConfig {
                 }
                  """.formatted(bpn, bpn, companyName);
     }
+
 }
