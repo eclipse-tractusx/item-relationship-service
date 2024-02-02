@@ -19,10 +19,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.asset.model;
 
+import lombok.Getter;
+
 /**
  * NotificationMethod used for creating edc notification asset
  */
 
+@Getter
 public enum NotificationMethod {
     RECEIVE("receive"),
     UPDATE("update"),
@@ -30,12 +33,8 @@ public enum NotificationMethod {
 
     private final String value;
 
-    NotificationMethod(String value) {
+    NotificationMethod(final String value) {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }
-

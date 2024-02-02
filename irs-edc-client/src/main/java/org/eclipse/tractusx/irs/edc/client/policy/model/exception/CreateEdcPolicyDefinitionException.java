@@ -25,11 +25,11 @@ package org.eclipse.tractusx.irs.edc.client.policy.model.exception;
 
 public class CreateEdcPolicyDefinitionException extends RuntimeException {
 
-    public CreateEdcPolicyDefinitionException(String message) {
+    public CreateEdcPolicyDefinitionException(final String message) {
         super(message);
     }
 
-    public CreateEdcPolicyDefinitionException(Throwable cause) {
+    public CreateEdcPolicyDefinitionException(final Throwable cause) {
         super(cause);
     }
 }

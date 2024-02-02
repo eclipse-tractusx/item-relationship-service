@@ -83,7 +83,6 @@ public class EdcTransformer {
     private final JsonObjectFromTransferProcessRequestTransformer jsonObjectFromTransferProcessRequestTransformer;
     private final JsonObjectFromContractOfferDescriptionTransformer jsonObjectFromContractOfferDescriptionTransformer;
     private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
-    private final JsonObjectFromAssetTransformer jsonObjectFromAssetTransformer;
     private final org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer jsonObjectToPolicyTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
@@ -112,7 +111,7 @@ public class EdcTransformer {
         jsonObjectFromContractOfferDescriptionTransformer = new JsonObjectFromContractOfferDescriptionTransformer(
                 jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
-        jsonObjectFromAssetTransformer = new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper);
+
         jsonObjectFromAssetRequestTransformer = new JsonObjectFromAssetRequestTransformer(jsonBuilderFactory);
         jsonObjectToPolicyTransformer = new org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer(
                 objectMapper);
@@ -146,7 +145,7 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectFromPolicyTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromDistributionTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromDataServiceTransformer(jsonBuilderFactory));
-        typeTransformerRegistry.register(jsonObjectFromAssetTransformer);
+        typeTransformerRegistry.register(new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromCriterionTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromDataAddressTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(jsonObjectFromAssetRequestTransformer);
@@ -187,7 +186,7 @@ public class EdcTransformer {
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 
-    public JsonObject transformAssetRequestToJson(AssetRequest assetRequest) {
+    public JsonObject transformAssetRequestToJson(final AssetRequest assetRequest) {
         final JsonObject transform = jsonObjectFromAssetRequestTransformer.transform(assetRequest, transformerContext);
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }

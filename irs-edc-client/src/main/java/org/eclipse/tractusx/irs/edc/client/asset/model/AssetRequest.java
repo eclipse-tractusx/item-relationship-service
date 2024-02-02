@@ -20,6 +20,7 @@
 package org.eclipse.tractusx.irs.edc.client.asset.model;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.edc.spi.types.domain.DataAddress;
@@ -30,9 +31,10 @@ import org.eclipse.edc.spi.types.domain.asset.Asset;
  */
 
 @Value
+@Data
 @Builder(toBuilder = true)
 @Jacksonized
 public class AssetRequest {
-    Asset asset;
-    DataAddress dataAddress;
+    private Asset asset;
+    private DataAddress dataAddress;
 }

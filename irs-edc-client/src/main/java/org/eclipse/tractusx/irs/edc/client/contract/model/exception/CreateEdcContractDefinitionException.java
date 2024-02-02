@@ -25,11 +25,11 @@ package org.eclipse.tractusx.irs.edc.client.contract.model.exception;
 
 public class CreateEdcContractDefinitionException extends RuntimeException {
 
-    public CreateEdcContractDefinitionException(String message) {
+    public CreateEdcContractDefinitionException(final String message) {
         super(message);
     }
 
-    public CreateEdcContractDefinitionException(Throwable cause) {
+    public CreateEdcContractDefinitionException(final Throwable cause) {
         super(cause);
     }
 }

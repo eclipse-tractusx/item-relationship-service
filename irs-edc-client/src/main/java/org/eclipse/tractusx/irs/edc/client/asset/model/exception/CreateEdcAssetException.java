@@ -25,11 +25,11 @@ package org.eclipse.tractusx.irs.edc.client.asset.model.exception;
 
 public class CreateEdcAssetException extends RuntimeException {
 
-    public CreateEdcAssetException(String message) {
+    public CreateEdcAssetException(final String message) {
         super(message);
     }
 
-    public CreateEdcAssetException(Throwable cause) {
+    public CreateEdcAssetException(final Throwable cause) {
         super(cause);
     }
 }

@@ -22,6 +22,7 @@ package org.eclipse.tractusx.irs.edc.client.asset.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.ToString;
+import lombok.extern.jackson.Jacksonized;
 
 /**
  * EdcContext used for creating edc notification asset
@@ -29,7 +30,8 @@ import lombok.ToString;
 
 @ToString
 @Builder
+@Jacksonized
 public class EdcContext {
     @JsonProperty("edc")
-    String edc;
+    private String edc;
 }

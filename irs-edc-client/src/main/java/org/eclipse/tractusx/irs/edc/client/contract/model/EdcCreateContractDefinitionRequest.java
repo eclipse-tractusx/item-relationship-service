@@ -39,7 +39,7 @@ public class EdcCreateContractDefinitionRequest {
     private String type;
 
     @JsonProperty("@id")
-    private String id;
+    private String contractDefinitionId;
 
     @JsonProperty("accessPolicyId")
     private String accessPolicyId;

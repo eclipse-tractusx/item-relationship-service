@@ -57,8 +57,8 @@ public class EdcPolicyDefinitionService {
 
     private static final String POLICY_DEFINITION_PATH = "/management/v2/policydefinitions";
 
-    public String createAccessPolicy(String policyName, RestTemplate restTemplate) {
-        String accessPolicyId = UUID.randomUUID().toString();
+    public String createAccessPolicy(final String policyName,final  RestTemplate restTemplate) {
+        final String accessPolicyId = UUID.randomUUID().toString();
         final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, accessPolicyId);
 
         final ResponseEntity<String> createPolicyDefinitionResponse;
@@ -70,7 +70,7 @@ public class EdcPolicyDefinitionService {
             throw new CreateEdcPolicyDefinitionException(e);
         }
 
-        HttpStatusCode responseCode = createPolicyDefinitionResponse.getStatusCode();
+        final HttpStatusCode responseCode = createPolicyDefinitionResponse.getStatusCode();
 
         if (responseCode.value() == HttpStatus.CONFLICT.value()) {
             log.info("Notification asset policy definition already exists in the EDC");
@@ -85,8 +85,8 @@ public class EdcPolicyDefinitionService {
         throw new CreateEdcPolicyDefinitionException("Failed to create EDC policy definition for asset");
     }
 
-    public EdcCreatePolicyDefinitionRequest createPolicyDefinition(String policyName, String accessPolicyId) {
-        EdcPolicyPermissionConstraintExpression constraint = EdcPolicyPermissionConstraintExpression.builder()
+    public EdcCreatePolicyDefinitionRequest createPolicyDefinition(final String policyName,final  String accessPolicyId) {
+        final EdcPolicyPermissionConstraintExpression constraint = EdcPolicyPermissionConstraintExpression.builder()
                                                                                                     .leftOperand(
                                                                                                             "PURPOSE")
                                                                                                     .rightOperand(
@@ -98,21 +98,21 @@ public class EdcPolicyDefinitionService {
                                                                                                     .type(CONSTRAINT)
                                                                                                     .build();
 
-        EdcPolicyPermissionConstraint edcPolicyPermissionConstraint = EdcPolicyPermissionConstraint.builder()
+        final EdcPolicyPermissionConstraint edcPolicyPermissionConstraint = EdcPolicyPermissionConstraint.builder()
                                                                                                    .orExpressions(
                                                                                                            List.of(constraint))
                                                                                                    .type(ATOMIC_CONSTRAINT)
                                                                                                    .build();
 
-        EdcPolicyPermission odrlPermissions = EdcPolicyPermission.builder()
+        final EdcPolicyPermission odrlPermissions = EdcPolicyPermission.builder()
                                                                  .action(USE_ACTION)
                                                                  .edcPolicyPermissionConstraints(
                                                                          edcPolicyPermissionConstraint)
                                                                  .build();
 
-        EdcPolicy edcPolicy = EdcPolicy.builder().odrlPermissions(List.of(odrlPermissions)).type(POLICY_TYPE).build();
+        final EdcPolicy edcPolicy = EdcPolicy.builder().odrlPermissions(List.of(odrlPermissions)).type(POLICY_TYPE).build();
 
-        OdrlContext odrlContext = OdrlContext.builder().odrl(NAMESPACE_ODRL).build();
+        final OdrlContext odrlContext = OdrlContext.builder().odrl(NAMESPACE_ODRL).build();
 
         return EdcCreatePolicyDefinitionRequest.builder()
                                                .policyDefinitionId(accessPolicyId)
@@ -122,8 +122,8 @@ public class EdcPolicyDefinitionService {
                                                .build();
     }
 
-    public void deleteAccessPolicy(String accessPolicyId, RestTemplate restTemplate) {
-        String deleteUri = UriComponentsBuilder.fromPath(POLICY_DEFINITION_PATH)
+    public void deleteAccessPolicy(final String accessPolicyId,final  RestTemplate restTemplate) {
+        final String deleteUri = UriComponentsBuilder.fromPath(POLICY_DEFINITION_PATH)
                                                .pathSegment("{accessPolicyId}")
                                                .buildAndExpand(accessPolicyId)
                                                .toUriString();

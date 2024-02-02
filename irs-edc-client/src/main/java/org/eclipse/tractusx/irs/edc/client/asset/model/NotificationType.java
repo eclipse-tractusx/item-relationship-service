@@ -19,21 +19,21 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.asset.model;
 
+import lombok.Getter;
+
 /**
  * NotificationType used for creating edc notification asset
  */
 
+@Getter
 public enum NotificationType {
     QUALITY_INVESTIGATION("qualityinvestigation"),
     QUALITY_ALERT("qualityalert");
 
     private final String value;
 
-    NotificationType(String value) {
+    NotificationType(final String value) {
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
-    }
 }

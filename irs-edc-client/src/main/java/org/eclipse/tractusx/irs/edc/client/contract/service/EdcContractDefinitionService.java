@@ -46,15 +46,16 @@ public class EdcContractDefinitionService {
 
     private static final String CONTRACT_DEFINITION_PATH = "/management/v2/contractdefinitions";
 
-    public String createContractDefinition(String assetId, String policyId, RestTemplate restTemplate) {
-        EdcCreateContractDefinitionRequest createContractDefinitionRequest = createContractDefinitionRequest(assetId,
-                policyId);
+    public String createContractDefinition(final String assetId, final String policyId,
+            final RestTemplate restTemplate) {
+        final EdcCreateContractDefinitionRequest createContractDefinitionRequest = createContractDefinitionRequest(
+                assetId, policyId);
         final ResponseEntity<String> createContractDefinitionResponse;
         try {
             createContractDefinitionResponse = restTemplate.postForEntity(CONTRACT_DEFINITION_PATH,
                     createContractDefinitionRequest, String.class);
 
-            HttpStatusCode responseCode = createContractDefinitionResponse.getStatusCode();
+            final HttpStatusCode responseCode = createContractDefinitionResponse.getStatusCode();
 
             if (responseCode.value() == HttpStatus.CONFLICT.value()) {
                 log.info("{} asset contract definition already exists in the EDC", assetId);
@@ -80,23 +81,23 @@ public class EdcContractDefinitionService {
 
     public EdcCreateContractDefinitionRequest createContractDefinitionRequest(final String assetId,
             final String accessPolicyId) {
-        EdcContractDefinitionCriteria edcContractDefinitionCriteria = EdcContractDefinitionCriteria.builder()
-                                                                                                   .type(ASSET_SELECTOR_TYPE)
-                                                                                                   .operandLeft(
-                                                                                                           ASSET_SELECTOR_ID)
-                                                                                                   .operandRight(
-                                                                                                           assetId)
-                                                                                                   .operator(
-                                                                                                           ASSET_SELECTOR_EQUALITY_OPERATOR)
-                                                                                                   .build();
+        final EdcContractDefinitionCriteria edcContractDefinitionCriteria = EdcContractDefinitionCriteria.builder()
+                                                                                                         .type(ASSET_SELECTOR_TYPE)
+                                                                                                         .operandLeft(
+                                                                                                                 ASSET_SELECTOR_ID)
+                                                                                                         .operandRight(
+                                                                                                                 assetId)
+                                                                                                         .operator(
+                                                                                                                 ASSET_SELECTOR_EQUALITY_OPERATOR)
+                                                                                                         .build();
 
-        EdcContext edcContext = EdcContext.builder().edc(NAMESPACE_EDC).build();
+        final EdcContext edcContext = EdcContext.builder().edc(NAMESPACE_EDC).build();
         return EdcCreateContractDefinitionRequest.builder()
                                                  .contractPolicyId(accessPolicyId)
                                                  .edcContext(edcContext)
                                                  .type(CONTRACT_DEFINITION_TYPE)
                                                  .accessPolicyId(accessPolicyId)
-                                                 .id(accessPolicyId)
+                                                 .contractDefinitionId(accessPolicyId)
                                                  .assetsSelector(edcContractDefinitionCriteria)
                                                  .build();
     }

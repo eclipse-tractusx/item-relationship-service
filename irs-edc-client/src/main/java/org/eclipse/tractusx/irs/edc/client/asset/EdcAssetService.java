@@ -57,14 +57,16 @@ public class EdcAssetService {
 
     private final EdcTransformer edcTransformer;
 
-    public String createNotificationAsset(String baseUrl, String assetName, NotificationMethod notificationMethod,
-            NotificationType notificationType, RestTemplate restTemplate) {
-        JsonObject request = createNotificationAssetRequest(assetName, baseUrl, notificationMethod, notificationType);
+    public String createNotificationAsset(final String baseUrl, final String assetName,
+            final NotificationMethod notificationMethod, final NotificationType notificationType,
+            final RestTemplate restTemplate) {
+        final JsonObject request = createNotificationAssetRequest(assetName, baseUrl, notificationMethod,
+                notificationType);
         return sendRequest(request, restTemplate);
     }
 
-    public String createDtrAsset(String baseUrl, String assetName, RestTemplate restTemplate) {
-        JsonObject request = createDtrAssetRequest(assetName, baseUrl);
+    public String createDtrAsset(final String baseUrl, final String assetName, final RestTemplate restTemplate) {
+        final JsonObject request = createDtrAssetRequest(assetName, baseUrl);
         return sendRequest(request, restTemplate);
     }
 
@@ -72,7 +74,7 @@ public class EdcAssetService {
         final ResponseEntity<String> createEdcDataAssetResponse;
         try {
             createEdcDataAssetResponse = restTemplate.postForEntity(ASSETS_PATH, request, String.class);
-            HttpStatusCode responseCode = createEdcDataAssetResponse.getStatusCode();
+            final HttpStatusCode responseCode = createEdcDataAssetResponse.getStatusCode();
 
             if (responseCode.value() == HttpStatus.CONFLICT.value()) {
                 log.info("{} asset already exists in the EDC", getAssetId(request));
@@ -88,11 +90,11 @@ public class EdcAssetService {
         throw new CreateEdcAssetException("Failed to create asset %s".formatted(getAssetId(request)));
     }
 
-    public void deleteAsset(String assetId, RestTemplate restTemplate) {
-        String deleteUri = UriComponentsBuilder.fromPath(ASSETS_PATH)
-                                               .pathSegment("{notificationAssetId}")
-                                               .buildAndExpand(assetId)
-                                               .toUriString();
+    public void deleteAsset(final String assetId, final RestTemplate restTemplate) {
+        final String deleteUri = UriComponentsBuilder.fromPath(ASSETS_PATH)
+                                                     .pathSegment("{notificationAssetId}")
+                                                     .buildAndExpand(assetId)
+                                                     .toUriString();
 
         try {
             restTemplate.delete(deleteUri);
@@ -102,71 +104,81 @@ public class EdcAssetService {
         }
     }
 
-    private JsonObject createNotificationAssetRequest(String assetName, String baseUrl,
-            NotificationMethod notificationMethod, NotificationType notificationType) {
-        String assetId = UUID.randomUUID().toString();
-        Map<String, Object> properties = Map.of("description", assetName, "contenttype", DEFAULT_CONTENT_TYPE,
+    private JsonObject createNotificationAssetRequest(final String assetName, final String baseUrl,
+            final NotificationMethod notificationMethod, final NotificationType notificationType) {
+        final String assetId = UUID.randomUUID().toString();
+        final Map<String, Object> properties = Map.of("description", assetName, "contenttype", DEFAULT_CONTENT_TYPE,
                 "policy-id", DEFAULT_POLICY_ID, "type", notificationType.getValue(), "notificationtype",
                 notificationType.getValue(), "notificationmethod", notificationMethod.getValue());
 
-        DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                     .type(DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
-                                                             DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
-                                                             baseUrl)
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
-                                                             "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
-                                                             "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
-                                                             DEFAULT_METHOD)
-                                                     .build();
+        final DataAddress dataAddress = DataAddress.Builder.newInstance()
+                                                           .type(DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
+                                                                   DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
+                                                                   baseUrl)
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
+                                                                   Boolean.TRUE.toString())
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
+                                                                   Boolean.TRUE.toString())
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
+                                                                   DEFAULT_METHOD)
+                                                           .build();
 
-        Asset asset = Asset.Builder.newInstance()
-                                   .id(assetId)
-                                   .contentType("Asset")
-                                   .properties(properties)
-                                   .dataAddress(dataAddress)
-                                   .build();
+        final Asset asset = Asset.Builder.newInstance()
+                                         .id(assetId)
+                                         .contentType("Asset")
+                                         .properties(properties)
+                                         .dataAddress(dataAddress)
+                                         .build();
         return edcTransformer.transformAssetRequestToJson(
                 AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
     }
 
-    private JsonObject createDtrAssetRequest(String assetName, String baseUrl) {
-        String assetId = UUID.randomUUID().toString();
-        Map<String, Object> properties = Map.of("description", assetName, "type", "data.core.digitalTwinRegistry");
+    private JsonObject createDtrAssetRequest(final String assetName, final String baseUrl) {
+        final String assetId = UUID.randomUUID().toString();
+        final Map<String, Object> properties = Map.of("description", assetName, "type",
+                "data.core.digitalTwinRegistry");
 
-        DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                     .type("DataAddress")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
-                                                             DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
-                                                             baseUrl)
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
-                                                             "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
-                                                             "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath",
-                                                             "true")
-                                                     .property(
-                                                             "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams",
-                                                             "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
-                                                             DEFAULT_METHOD)
-                                                     .build();
+        final DataAddress dataAddress = DataAddress.Builder.newInstance()
+                                                           .type("DataAddress")
+                                                           .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
+                                                                   DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
+                                                                   baseUrl)
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
+                                                                   Boolean.TRUE.toString())
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
+                                                                   Boolean.TRUE.toString())
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath",
+                                                                   Boolean.TRUE.toString())
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams",
+                                                                   Boolean.TRUE.toString())
+                                                           .property(
+                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
+                                                                   DEFAULT_METHOD)
+                                                           .build();
 
-        Asset asset = Asset.Builder.newInstance()
-                                   .id(assetId)
-                                   .contentType("Asset")
-                                   .properties(properties)
-                                   .dataAddress(dataAddress)
-                                   .build();
+        final Asset asset = Asset.Builder.newInstance()
+                                         .id(assetId)
+                                         .contentType("Asset")
+                                         .properties(properties)
+                                         .dataAddress(dataAddress)
+                                         .build();
         return edcTransformer.transformAssetRequestToJson(
                 AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
     }
 
-    private static String getAssetId(JsonObject jsonObject) {
+    private static String getAssetId(final JsonObject jsonObject) {
         return jsonObject.get("asset").asJsonObject().get("@id").toString();
     }
 }

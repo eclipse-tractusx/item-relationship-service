@@ -33,6 +33,6 @@ import lombok.ToString;
 @AllArgsConstructor
 public class EdcOperator {
     @JsonProperty("@id")
-    String id;
+    final String operatorId;
 
 }

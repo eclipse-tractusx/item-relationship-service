@@ -31,5 +31,5 @@ import lombok.ToString;
 @Builder
 public class OdrlContext {
     @JsonProperty("odrl")
-    String odrl;
+    private String odrl;
 }
