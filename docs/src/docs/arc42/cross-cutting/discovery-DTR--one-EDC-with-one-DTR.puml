@@ -1,0 +1,14 @@
+@startuml
+participant IRS
+participant DiscoveryService
+participant "EDC Provider 3" as EDCProvider3
+participant DTR
+
+IRS ->> DiscoveryService: Get EDCs for BPN
+DiscoveryService ->> IRS: Return list of 1 EDC
+IRS ->> EDCProvider3: Query for DTR contract offer
+EDCProvider3 ->> IRS: DTR contract offer
+IRS -> EDCProvider3: Negotiate contract
+IRS ->> DTR: Query for DT
+DTR ->> IRS: DT
+@enduml

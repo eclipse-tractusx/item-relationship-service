@@ -63,9 +63,9 @@ import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
+import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @WireMockTest
@@ -116,7 +116,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
     }
 
     @Test
-    void shouldThrowHttpClientExceptionInCaseOfDiscoveryError() {
+    void shouldThrowInCaseOfDiscoveryError() {
         // Arrange
         givenThat(postDiscoveryFinder404());
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
@@ -124,27 +124,26 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         // Act & Assert
         // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                HttpClientErrorException.class);
+                ShellNotFoundException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
     }
 
     @Test
-    void shouldThrowHttpClientExceptionInCaseOfEdcDiscoveryError() {
+    void shouldThrowInCaseOfEdcDiscoveryError() {
         // Arrange
         givenThat(postDiscoveryFinder200());
         givenThat(postEdcDiscovery404());
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                HttpClientErrorException.class);
+                ShellNotFoundException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
         verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
     }
 
     @Test
-    void shouldThrowHttpClientExceptionInCaseOfLookupShellsError() {
+    void shouldThrowInCaseOfLookupShellsError() {
         // Arrange
         givenThat(postDiscoveryFinder200());
         givenThat(postEdcDiscovery200());
@@ -152,16 +151,15 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                HttpClientErrorException.class);
+                ShellNotFoundException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
         verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
         verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
     }
 
     @Test
-    void shouldThrowHttpClientExceptionInCaseOfShellDescriptorsError() {
+    void shouldThrowInCaseOfShellDescriptorsError() {
         // Arrange
         givenThat(postDiscoveryFinder200());
         givenThat(postEdcDiscovery200());
@@ -170,9 +168,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                HttpClientErrorException.class);
+                ShellNotFoundException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
         verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
         verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
@@ -189,9 +186,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                HttpClientErrorException.class);
+                ShellNotFoundException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
         verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
         verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));

@@ -168,6 +168,11 @@
             <groupId>org.eclipse.edc</groupId>
             <version>${edc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-common</artifactId>
+            <version>${revision}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
