@@ -34,5 +34,5 @@ import lombok.ToString;
 public class EdcOperator {
 
     @JsonProperty("@id")
-    final String operatorId;
+    private String operatorId;
 }
