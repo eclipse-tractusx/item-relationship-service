@@ -23,17 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_CID;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.DATAPLANE_HOST;
+import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_DATAPLANE_PUBLIC;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,15 +49,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
@@ -69,33 +71,31 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
-import org.eclipse.tractusx.irs.edc.client.testutil.TestMother;
-import org.junit.jupiter.api.AfterEach;
+import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+@WireMockTest
 class SubmodelFacadeWiremockTest {
-    private final static String connectorEndpoint = "https://connector.endpoint.com";
-    private final static String submodelDataplanePath = "/api/public/shells/12345/submodels/5678/submodel";
-    private final static String assetId = "12345";
+    private static final String PROXY_SERVER_HOST = "127.0.0.1";
+    private final static String CONNECTOR_ENDPOINT_URL = "https://connector.endpoint.com";
+    private final static String SUBMODEL_DATAPLANE_PATH = "/api/public/shells/12345/submodels/5678/submodel";
+    private final static String SUBMODEL_DATAPLANE_URL = "http://dataplane.test" + SUBMODEL_DATAPLANE_PATH;
+    private final static String ASSET_ID = "12345";
     private final EdcConfiguration config = new EdcConfiguration();
     private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
-    private WireMockServer wireMockServer;
     private EdcSubmodelClient edcSubmodelClient;
     private AcceptedPoliciesProvider acceptedPoliciesProvider;
 
     @BeforeEach
-    void configureSystemUnderTest() {
-        this.wireMockServer = new WireMockServer(options().dynamicPort());
-        this.wireMockServer.start();
-        configureFor(this.wireMockServer.port());
+    void configureSystemUnderTest(WireMockRuntimeInfo wireMockRuntimeInfo) {
+        final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
-        config.getControlplane().getEndpoint().setData(buildApiMethodUrl());
+        config.getControlplane().getEndpoint().setData("http://controlplane.test");
         config.getControlplane().getEndpoint().setCatalog("/catalog/request");
         config.getControlplane().getEndpoint().setContractNegotiation("/contractnegotiations");
         config.getControlplane().getEndpoint().setTransferProcess("/transferprocesses");
@@ -104,7 +104,6 @@ class SubmodelFacadeWiremockTest {
         config.getControlplane().setProviderSuffix("/api/v1/dsp");
         config.getSubmodel().setUrnPrefix("/urn");
 
-        final RestTemplate restTemplate = new RestTemplateBuilder().build();
         final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
         for (final HttpMessageConverter<?> converter : messageConverters) {
             if (converter instanceof final MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter) {
@@ -122,7 +121,8 @@ class SubmodelFacadeWiremockTest {
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
 
         final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
-        final EndpointDataReferenceCacheService endpointDataReferenceCacheService = new EndpointDataReferenceCacheService(new EndpointDataReferenceStorage(Duration.ofMinutes(1)));
+        final EndpointDataReferenceCacheService endpointDataReferenceCacheService = new EndpointDataReferenceCacheService(
+                new EndpointDataReferenceStorage(Duration.ofMinutes(1)));
 
         acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
@@ -140,116 +140,48 @@ class SubmodelFacadeWiremockTest {
                 pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
-    @AfterEach
-    void tearDown() {
-        this.wireMockServer.stop();
-    }
-
     @Test
-    void shouldReturnAssemblyPartRelationshipPayloadAsString()
+    void shouldReturnAssemblyPartRelationshipAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(200)
-                                                                                   .withHeader("Content-Type",
-                                                                                           "application/json;charset=UTF-8")
-                                                                                   .withBodyFile(
-                                                                                           "singleLevelBomAsBuilt.json")));
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
+                responseWithStatus(200).withBodyFile("singleLevelBomAsBuilt.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
-                assetId).get().getPayload();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get().getPayload();
 
         // Assert
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
     }
 
-    private void prepareNegotiation() {
-        final var contentType = "application/json;charset=UTF-8";
-        final var pathCatalog = "/catalog/request";
-        final var pathNegotiate = "/contractnegotiations";
-        final var pathTransfer = "/transferprocesses";
-        givenThat(post(urlPathEqualTo(pathCatalog)).willReturn(aResponse().withStatus(200)
-                                                                          .withHeader("Content-Type", contentType)
-                                                                          .withBodyFile("edc/responseCatalog.json")));
-
-        givenThat(post(urlPathEqualTo(pathNegotiate)).willReturn(aResponse().withStatus(200)
-                                                                            .withHeader("Content-Type", contentType)
-                                                                            .withBodyFile(
-                                                                                    "edc/responseStartNegotiation.json")));
-
-        final var negotiationId = "1bbaec6e-c316-4e1e-8258-c07a648cc43c";
-        givenThat(get(urlPathEqualTo(pathNegotiate + "/" + negotiationId)).willReturn(aResponse().withStatus(200)
-                                                                                                 .withHeader(
-                                                                                                         "Content-Type",
-                                                                                                         contentType)
-                                                                                                 .withBodyFile(
-                                                                                                         "edc/responseGetNegotiationConfirmed.json")));
-        givenThat(get(urlPathEqualTo(pathNegotiate + "/" + negotiationId + "/state")).willReturn(
-                aResponse().withStatus(200)
-                           .withHeader("Content-Type", contentType)
-                           .withBodyFile("edc/responseGetNegotiationState.json")));
-
-        givenThat(post(urlPathEqualTo(pathTransfer)).willReturn(aResponse().withStatus(200)
-                                                                           .withHeader("Content-Type", contentType)
-                                                                           .withBodyFile(
-                                                                                   "edc/responseStartTransferprocess.json")));
-        final var transferProcessId = "1b21e963-0bc5-422a-b30d-fd3511861d88";
-        givenThat(get(urlPathEqualTo(pathTransfer + "/" + transferProcessId + "/state")).willReturn(
-                aResponse().withStatus(200)
-                           .withHeader("Content-Type", contentType)
-                           .withBodyFile("edc/responseGetTransferState.json")));
-        givenThat(get(urlPathEqualTo(pathTransfer + "/" + transferProcessId)).willReturn(aResponse().withStatus(200)
-                                                                                                    .withHeader(
-                                                                                                            "Content-Type",
-                                                                                                            contentType)
-                                                                                                    .withBodyFile(
-                                                                                                            "edc/responseGetTransferConfirmed.json")));
-
-        final var contractAgreementId = "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
-
-        final EndpointDataReference ref = EndpointDataReference.Builder.newInstance()
-                                                                       .authKey("testkey")
-                                                                       .authCode(TestMother.edrAuthCode(contractAgreementId))
-                                                                       .properties(Map.of(NAMESPACE_EDC_CID,
-                                                                               contractAgreementId))
-                                                                       .endpoint("http://provider.dataplane/api/public")
-                                                                       .build();
-        storage.put(contractAgreementId, ref);
-    }
-
     @Test
-    void shouldReturnMaterialForRecyclingPayloadAsString()
+    void shouldReturnMaterialForRecyclingAsString()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(200)
-                                                                                   .withHeader("Content-Type",
-                                                                                           "application/json;charset=UTF-8")
-                                                                                   .withBodyFile(
-                                                                                           "materialForRecycling.json")));
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
+                responseWithStatus(200).withBodyFile("materialForRecycling.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
-                assetId).get().getPayload();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get().getPayload();
 
         // Assert
         assertThat(submodel).contains("\"materialName\": \"Cooper\",");
     }
 
     @Test
-    void shouldReturnPayloadObjectAsStringWhenResponseNotJSON()
+    void shouldReturnObjectAsStringWhenResponseNotJSON()
             throws EdcClientException, ExecutionException, InterruptedException {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(200)
-                                                                                   .withHeader("Content-Type",
-                                                                                           "application/json;charset=UTF-8")
-                                                                                   .withBody("test")));
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelPayload(connectorEndpoint, buildWiremockDataplaneUrl(),
-                assetId).get().getPayload();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get().getPayload();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
@@ -269,15 +201,12 @@ class SubmodelFacadeWiremockTest {
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(acceptedPolicy));
 
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(200)
-                                                                                   .withHeader("Content-Type",
-                                                                                           "application/json;charset=UTF-8")
-                                                                                   .withBody("test")));
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
 
         // Act & Assert
         final String errorMessage = "Consumption of asset '58505404-4da1-427a-82aa-b79482bcd1f0' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
         assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
-                () -> edcSubmodelClient.getSubmodelPayload(connectorEndpoint, buildWiremockDataplaneUrl(), assetId)
+                () -> edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID)
                                        .get()).withMessageEndingWith(errorMessage);
     }
 
@@ -285,14 +214,12 @@ class SubmodelFacadeWiremockTest {
     void shouldThrowExceptionWhenResponse_400() {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(400)
-                                                                                   .withHeader("Content-Type",
-                                                                                           "application/json;charset=UTF-8")
-                                                                                   .withBody("{ error: '400'}")));
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
+                responseWithStatus(400).withBody("{ error: '400'}")));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelPayload(
-                connectorEndpoint, buildWiremockDataplaneUrl(), assetId).get(5, TimeUnit.SECONDS);
+                CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID).get(5, TimeUnit.SECONDS);
 
         // Assert
         assertThatExceptionOfType(ExecutionException.class).isThrownBy(throwingCallable)
@@ -303,26 +230,41 @@ class SubmodelFacadeWiremockTest {
     void shouldThrowExceptionWhenResponse_500() {
         // Arrange
         prepareNegotiation();
-        givenThat(get(urlPathEqualTo(submodelDataplanePath)).willReturn(aResponse().withStatus(500)
-                                                                                   .withHeader("Content-Type",
-                                                                                           "application/json;charset=UTF-8")
-                                                                                   .withBody("{ error: '500'}")));
+        givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
+                responseWithStatus(500).withBody("{ error: '500'}")));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelPayload(
-                connectorEndpoint, buildWiremockDataplaneUrl(), assetId).get(5, TimeUnit.SECONDS);
+                CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID).get(5, TimeUnit.SECONDS);
 
         // Assert
         assertThatExceptionOfType(ExecutionException.class).isThrownBy(throwingCallable)
                                                            .withCauseInstanceOf(RestClientException.class);
     }
 
-    private String buildWiremockDataplaneUrl() {
-        return buildApiMethodUrl() + submodelDataplanePath;
+    private void prepareNegotiation() {
+        final String contractAgreementId = SubmodelFacadeWiremockSupport.prepareNegotiation();
+        final EndpointDataReference ref = createEndpointDataReference(contractAgreementId);
+        storage.put(contractAgreementId, ref);
     }
 
-    private String buildApiMethodUrl() {
-        return String.format("http://localhost:%d", this.wireMockServer.port());
+    public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
+        final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
+                                                   .cid(contractAgreementId)
+                                                   .dad("test")
+                                                   .exp(9999999999L)
+                                                   .build();
+        final String b64EncodedAuthCode = Base64.getUrlEncoder()
+                                                .encodeToString(StringMapper.mapToString(edrAuthCode)
+                                                                            .getBytes(StandardCharsets.UTF_8));
+        final String jwtToken = "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
+        return EndpointDataReference.Builder.newInstance()
+                                            .authKey("testkey")
+                                            .authCode(jwtToken)
+                                            .properties(
+                                                    Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
+                                            .endpoint(DATAPLANE_HOST + PATH_DATAPLANE_PUBLIC)
+                                            .build();
     }
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId, List<Permission> permissions) {
