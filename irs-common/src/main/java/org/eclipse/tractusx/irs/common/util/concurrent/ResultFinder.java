@@ -85,7 +85,6 @@ public class ResultFinder {
 
                 overallFuture.completeExceptionally(new CompletionExceptions("None successful", exceptions));
             } else {
-                log.debug("Completing");
                 overallFuture.complete(null);
             }
         });
