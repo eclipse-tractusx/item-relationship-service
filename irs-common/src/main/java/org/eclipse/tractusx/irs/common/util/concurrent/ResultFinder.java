@@ -62,13 +62,15 @@ public class ResultFinder {
 
         log.debug("Trying to get fastest result from list of futures");
 
-        final CompletableFuture<T> fastestResultPromise = new CompletableFuture<>();
+        // The purpose of this overall future is to track when the first data request is successful.
+        // This way we do not need to wait for the others to complete.
+        final CompletableFuture<T> overallFuture = new CompletableFuture<>();
 
         final List<Throwable> exceptions = new ArrayList<>();
 
         final var futuresList = futures.stream()
                                        .map(future -> future.exceptionally(collectingExceptionsAndThrow(exceptions))
-                                                            .handle(completingOnFirstSuccessful(fastestResultPromise)))
+                                                            .handle(completingOnFirstSuccessful(overallFuture)))
                                        .toList();
 
         allOf(toArray(futuresList)).whenComplete((value, ex) -> {
@@ -81,14 +83,14 @@ public class ResultFinder {
                                     .map(ExceptionUtils::getStackTrace)
                                     .collect(Collectors.joining(System.lineSeparator())), ex);
 
-                fastestResultPromise.completeExceptionally(new CompletionExceptions("None successful", exceptions));
+                overallFuture.completeExceptionally(new CompletionExceptions("None successful", exceptions));
             } else {
                 log.debug("Completing");
-                fastestResultPromise.complete(null);
+                overallFuture.complete(null);
             }
         });
 
-        return fastestResultPromise;
+        return overallFuture;
     }
 
     private static <T> CompletableFuture<T>[] toArray(final List<CompletableFuture<T>> handledFutures) {
@@ -96,22 +98,21 @@ public class ResultFinder {
     }
 
     private static <T> BiFunction<T, Throwable, Boolean> completingOnFirstSuccessful(
-            final CompletableFuture<T> resultPromise) {
+            final CompletableFuture<T> overallFuture) {
 
         return (value, throwable) -> {
 
             log.debug("value: '{}', throwable: {}", value, throwable);
 
-            final boolean notFinishedByOtherFuture = !resultPromise.isDone();
+            final boolean notFinishedByOtherFuture = !overallFuture.isDone();
             log.debug("notFinishedByOtherFuture {} ", notFinishedByOtherFuture);
 
             final boolean currentFutureSuccessful = throwable == null && value != null;
 
             if (notFinishedByOtherFuture && currentFutureSuccessful) {
 
-                // first future that completes successfully completes the overall future
                 log.debug("First future that completed successfully");
-                resultPromise.complete(value);
+                overallFuture.complete(value);
                 return true;
 
             } else {
