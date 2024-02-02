@@ -122,7 +122,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO fix implementation to not throw HttpClientErrorException$NotFound
+        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -136,7 +136,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO fix implementation to not throw HttpClientErrorException$NotFound
+        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -152,7 +152,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO fix implementation to not throw HttpClientErrorException$NotFound
+        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -170,7 +170,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO fix implementation to not throw HttpClientErrorException$NotFound
+        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
@@ -189,7 +189,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
         // Act & Assert
-        // TODO fix implementation to not throw HttpClientErrorException$NotFound
+        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
                 HttpClientErrorException.class);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));

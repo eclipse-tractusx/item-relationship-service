@@ -69,7 +69,7 @@ class BpdmWiremockTest {
         bpdmWillNotFindCompanyName(bpn);
 
         // Act & Assert
-        // TODO fix implementation to not throw HttpClientErrorException$NotFound
+        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
         assertThatExceptionOfType(HttpClientErrorException.class).isThrownBy(
                 () -> bpdmFacade.findManufacturerName(bpn));
         verifyBpdmWasCalledWithBPN(bpn, 1);
