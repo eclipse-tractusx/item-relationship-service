@@ -58,6 +58,7 @@ import java.util.Map;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -103,12 +104,12 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         givenThat(getShellDescriptor200());
 
         // Act
-        final Collection<AssetAdministrationShellDescriptor> assetAdministrationShellDescriptors = decentralDigitalTwinRegistryService.fetchShells(
+        final Collection<Shell> shells = decentralDigitalTwinRegistryService.fetchShells(
                 List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
 
         // Assert
-        assertThat(assetAdministrationShellDescriptors).hasSize(1);
-        assertThat(assetAdministrationShellDescriptors.stream().findFirst().get().getSubmodelDescriptors()).hasSize(3);
+        assertThat(shells).hasSize(1);
+        assertThat(shells.stream().findFirst().get().payload().getSubmodelDescriptors()).hasSize(3);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
         verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
         verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
