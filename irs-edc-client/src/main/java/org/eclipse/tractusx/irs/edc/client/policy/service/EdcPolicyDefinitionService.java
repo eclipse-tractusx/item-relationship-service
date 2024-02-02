@@ -57,7 +57,7 @@ public class EdcPolicyDefinitionService {
 
     private static final String POLICY_DEFINITION_PATH = "/management/v2/policydefinitions";
 
-    public String createAccessPolicy(final String policyName,final  RestTemplate restTemplate) {
+    public String createAccessPolicy(final String policyName, final RestTemplate restTemplate) {
         final String accessPolicyId = UUID.randomUUID().toString();
         final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, accessPolicyId);
 
@@ -85,32 +85,36 @@ public class EdcPolicyDefinitionService {
         throw new CreateEdcPolicyDefinitionException("Failed to create EDC policy definition for asset");
     }
 
-    public EdcCreatePolicyDefinitionRequest createPolicyDefinition(final String policyName,final  String accessPolicyId) {
+    public EdcCreatePolicyDefinitionRequest createPolicyDefinition(final String policyName,
+            final String accessPolicyId) {
         final EdcPolicyPermissionConstraintExpression constraint = EdcPolicyPermissionConstraintExpression.builder()
-                                                                                                    .leftOperand(
-                                                                                                            "PURPOSE")
-                                                                                                    .rightOperand(
-                                                                                                            policyName)
-                                                                                                    .operator(
-                                                                                                            new EdcOperator(
-                                                                                                                    OPERATOR_PREFIX
-                                                                                                                            + "eq"))
-                                                                                                    .type(CONSTRAINT)
-                                                                                                    .build();
+                                                                                                          .leftOperand(
+                                                                                                                  "PURPOSE")
+                                                                                                          .rightOperand(
+                                                                                                                  policyName)
+                                                                                                          .operator(
+                                                                                                                  new EdcOperator(
+                                                                                                                          OPERATOR_PREFIX
+                                                                                                                                  + "eq"))
+                                                                                                          .type(CONSTRAINT)
+                                                                                                          .build();
 
         final EdcPolicyPermissionConstraint edcPolicyPermissionConstraint = EdcPolicyPermissionConstraint.builder()
-                                                                                                   .orExpressions(
-                                                                                                           List.of(constraint))
-                                                                                                   .type(ATOMIC_CONSTRAINT)
-                                                                                                   .build();
+                                                                                                         .orExpressions(
+                                                                                                                 List.of(constraint))
+                                                                                                         .type(ATOMIC_CONSTRAINT)
+                                                                                                         .build();
 
         final EdcPolicyPermission odrlPermissions = EdcPolicyPermission.builder()
-                                                                 .action(USE_ACTION)
-                                                                 .edcPolicyPermissionConstraints(
-                                                                         edcPolicyPermissionConstraint)
-                                                                 .build();
+                                                                       .action(USE_ACTION)
+                                                                       .edcPolicyPermissionConstraints(
+                                                                               edcPolicyPermissionConstraint)
+                                                                       .build();
 
-        final EdcPolicy edcPolicy = EdcPolicy.builder().odrlPermissions(List.of(odrlPermissions)).type(POLICY_TYPE).build();
+        final EdcPolicy edcPolicy = EdcPolicy.builder()
+                                             .odrlPermissions(List.of(odrlPermissions))
+                                             .type(POLICY_TYPE)
+                                             .build();
 
         final OdrlContext odrlContext = OdrlContext.builder().odrl(NAMESPACE_ODRL).build();
 
@@ -122,11 +126,11 @@ public class EdcPolicyDefinitionService {
                                                .build();
     }
 
-    public void deleteAccessPolicy(final String accessPolicyId,final  RestTemplate restTemplate) {
+    public void deleteAccessPolicy(final String accessPolicyId, final RestTemplate restTemplate) {
         final String deleteUri = UriComponentsBuilder.fromPath(POLICY_DEFINITION_PATH)
-                                               .pathSegment("{accessPolicyId}")
-                                               .buildAndExpand(accessPolicyId)
-                                               .toUriString();
+                                                     .pathSegment("{accessPolicyId}")
+                                                     .buildAndExpand(accessPolicyId)
+                                                     .toUriString();
 
         try {
             restTemplate.delete(deleteUri);
