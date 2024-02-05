@@ -52,14 +52,14 @@ class ResultFinderTest {
 
     @NullAndEmptySource
     @ParameterizedTest
-    void with_null_or_empty_input_list_it_should_return_null(final List<CompletableFuture<String>> list)
+    void withNullOrEmptyInputList_nullShouldBeReturned(final List<CompletableFuture<String>> list)
             throws ExecutionException, InterruptedException {
         final var result = sut.getFastestResult(list).get();
         assertThat(result).isNull();
     }
 
     @Test
-    void with_one_successful_CompletableFuture_it_should_return_the_successful_result()
+    void withOneSuccessfulCompletableFuture_theSuccessfulResultShouldBeReturned()
             throws ExecutionException, InterruptedException {
         final var futures = List.of(supplyAsync(() -> "ok"));
         final String result = sut.getFastestResult(futures).get();
@@ -67,7 +67,7 @@ class ResultFinderTest {
     }
 
     @Test
-    void with_only_successful_and_other_CompletableFutures_failing_it_should_return_the_successful_result()
+    void withOnlyOneSuccessful_andOtherCompletableFuturesFailing_theSuccessfulResultShouldBeReturned()
             throws ExecutionException, InterruptedException {
 
         // given
@@ -88,7 +88,7 @@ class ResultFinderTest {
     }
 
     @Test
-    void with_all_CompletableFutures_failing_it_should_throw() {
+    void withAllCompletableFuturesFailing_itShouldThrow() {
 
         // given
         final List<CompletableFuture<String>> futures = List.of( //
@@ -117,7 +117,7 @@ class ResultFinderTest {
     }
 
     @Test
-    void with_multiple_successful_CompletableFutures_it_should_return_fastest_successful_result()
+    void withMultipleSuccessfulCompletableFutures_theFastestSuccessfulResultShouldBeReturned()
             throws ExecutionException, InterruptedException {
 
         // given
