@@ -70,7 +70,7 @@ The cucumber implementation will have to be extended and adjusted to the new pro
 Given globalAssetId "urn:uuid..." is registered for BPN "BPN..."
         (request shell-descripors with BPN in header and check if globalAssetID is existing)
 And get requestable job parameter
-        (get submodels, lifecycle and direction from AAS-registry)
+        (get submodels, lifecycle and direction from AAS-registry response)
 
 When IRS job for globalAssetId "urn:uuid..." and BPN "BPN..." is registered
 And with "all available" aspects
