@@ -23,7 +23,7 @@ package org.eclipse.tractusx.irs.edc.client.asset.model.exception;
  * CreateEdcAssetException used for create asset failure
  */
 
-public class CreateEdcAssetException extends RuntimeException {
+public class CreateEdcAssetException extends Exception {
 
     public CreateEdcAssetException(final String message) {
         super(message);

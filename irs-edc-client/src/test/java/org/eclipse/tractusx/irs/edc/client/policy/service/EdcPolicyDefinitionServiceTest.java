@@ -29,6 +29,7 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolicyDefinitionException;
@@ -48,6 +49,12 @@ import org.springframework.web.client.RestTemplate;
 class EdcPolicyDefinitionServiceTest {
 
     @Mock
+    EdcConfiguration edcConfiguration;
+    @Mock
+    EdcConfiguration.ControlplaneConfig controlplaneConfig;
+    @Mock
+    EdcConfiguration.ControlplaneConfig.EndpointConfig endpointConfig;
+    @Mock
     private RestTemplate restTemplate;
 
     private ObjectMapper objectMapper;
@@ -56,7 +63,7 @@ class EdcPolicyDefinitionServiceTest {
     @BeforeEach
     void setUp() {
         this.objectMapper = new ObjectMapper();
-        this.service = new EdcPolicyDefinitionService();
+        this.service = new EdcPolicyDefinitionService(edcConfiguration);
     }
 
     @Test
@@ -102,8 +109,11 @@ class EdcPolicyDefinitionServiceTest {
     }
 
     @Test
-    void givenPolicy_WhenCreateAccessPolicy_ThenCreateIt() {
+    void givenPolicy_WhenCreateAccessPolicy_ThenCreateIt() throws CreateEdcPolicyDefinitionException {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.ok("test"));
@@ -118,6 +128,9 @@ class EdcPolicyDefinitionServiceTest {
     @Test
     void givenCreatePolicy_whenConflict_thenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
@@ -129,6 +142,9 @@ class EdcPolicyDefinitionServiceTest {
     @Test
     void givenCreatePolicy_whenBadRequest_thenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).build());
@@ -140,6 +156,9 @@ class EdcPolicyDefinitionServiceTest {
     @Test
     void givenCreatePolicy_whenRestClientException_thenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenThrow(new RestClientException("Surprise"));
@@ -151,6 +170,9 @@ class EdcPolicyDefinitionServiceTest {
     @Test
     void givenDeletePolicy_whenRestClientException_thenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 
@@ -160,8 +182,11 @@ class EdcPolicyDefinitionServiceTest {
     }
 
     @Test
-    void givenDeletePolicy_whenOk_thenCallRestTemplate() {
+    void givenDeletePolicy_whenOk_thenCallRestTemplate() throws DeleteEdcPolicyDefinitionException {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
 
         // when

@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcCreateContractDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcContractDefinitionException;
 import org.json.JSONException;
@@ -45,13 +46,19 @@ class EdcContractDefinitionServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
+    @Mock
+    EdcConfiguration edcConfiguration;
+    @Mock
+    EdcConfiguration.ControlplaneConfig controlplaneConfig;
+    @Mock
+    EdcConfiguration.ControlplaneConfig.EndpointConfig endpointConfig;
     private ObjectMapper objectMapper;
     private EdcContractDefinitionService service;
 
     @BeforeEach
     void setUp() {
         this.objectMapper = new ObjectMapper();
-        this.service = new EdcContractDefinitionService();
+        this.service = new EdcContractDefinitionService(edcConfiguration);
     }
 
     @Test
@@ -84,8 +91,11 @@ class EdcContractDefinitionServiceTest {
     }
 
     @Test
-    void givenCreateContractDefinition_whenOK_thenReturnPolicyId() {
+    void givenCreateContractDefinition_whenOK_thenReturnPolicyId() throws CreateEdcContractDefinitionException {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
         String assetId = "Asset1";
         String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
@@ -99,6 +109,9 @@ class EdcContractDefinitionServiceTest {
     @Test
     void givenCreateContractDefinition_whenConflict_thenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
         String assetId = "Asset1";
         String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
@@ -110,7 +123,9 @@ class EdcContractDefinitionServiceTest {
 
     @Test
     void givenCreateContractDefinition_whenBadRequest_thenThrowException() {
-        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
         String assetId = "Asset1";
         String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
@@ -123,6 +138,9 @@ class EdcContractDefinitionServiceTest {
     @Test
     void givenCreateContractDefinition_whenRestClientException_thenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
         String assetId = "Asset1";
         String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),

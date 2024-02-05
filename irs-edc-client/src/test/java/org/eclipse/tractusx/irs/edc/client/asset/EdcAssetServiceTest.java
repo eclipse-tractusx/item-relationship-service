@@ -42,6 +42,7 @@ import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
@@ -63,6 +64,12 @@ import org.springframework.web.client.RestTemplate;
 class EdcAssetServiceTest {
 
     @Mock
+    EdcConfiguration edcConfiguration;
+    @Mock
+    EdcConfiguration.ControlplaneConfig controlplaneConfig;
+    @Mock
+    EdcConfiguration.ControlplaneConfig.EndpointConfig endpointConfig;
+    @Mock
     private RestTemplate restTemplate;
     private org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper objectMapper;
 
@@ -81,7 +88,7 @@ class EdcAssetServiceTest {
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
 
         this.edcTransformer = new EdcTransformer(objectMapper(), jsonLd, new TypeTransformerRegistryImpl());
-        this.service = new EdcAssetService(edcTransformer);
+        this.service = new EdcAssetService(edcTransformer, edcConfiguration);
     }
 
     @Test
@@ -151,8 +158,11 @@ class EdcAssetServiceTest {
     }
 
     @Test
-    void givenCreateNotificationAsset_whenOk_ThenReturnCreatedAssetId() {
+    void givenCreateNotificationAsset_whenOk_ThenReturnCreatedAssetId() throws CreateEdcAssetException {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         NotificationMethod notificationMethod = NotificationMethod.RECEIVE;
@@ -169,8 +179,11 @@ class EdcAssetServiceTest {
     }
 
     @Test
-    void givenCreateDtrAsset_whenOk_ThenReturnCreatedAssetId() {
+    void givenCreateDtrAsset_whenOk_ThenReturnCreatedAssetId() throws CreateEdcAssetException {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         when(restTemplate.postForEntity(any(String.class), any(JsonObject.class), any())).thenReturn(
@@ -184,8 +197,11 @@ class EdcAssetServiceTest {
     }
 
     @Test
-    void givenDeleteAsset_whenOk_ThenReturnCreatedAssetId() {
+    void givenDeleteAsset_whenOk_ThenReturnCreatedAssetId() throws DeleteEdcAssetException {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String assetId = "id";
 
         // when
@@ -198,6 +214,9 @@ class EdcAssetServiceTest {
     @Test
     void givenCreateDtrAsset_whenOK_ThenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         doThrow(new RestClientException("Surprise")).when(restTemplate)
@@ -210,6 +229,9 @@ class EdcAssetServiceTest {
     @Test
     void givenCreateDtrAsset_whenTemplateException_ThenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         doThrow(new RestClientException("Surprise")).when(restTemplate)
@@ -222,6 +244,9 @@ class EdcAssetServiceTest {
     @Test
     void givenDeleteAsset_whenTemplateException_ThenThrowException() {
         // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String assetId = "id";
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 

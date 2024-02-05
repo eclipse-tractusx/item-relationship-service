@@ -24,7 +24,7 @@ package org.eclipse.tractusx.irs.edc.client.asset.model.exception;
  * DeleteEdcAssetException used for delete asset failure
  */
 
-public class DeleteEdcAssetException extends RuntimeException {
+public class DeleteEdcAssetException extends Exception {
     public DeleteEdcAssetException(final Throwable cause) {
         super(cause);
     }

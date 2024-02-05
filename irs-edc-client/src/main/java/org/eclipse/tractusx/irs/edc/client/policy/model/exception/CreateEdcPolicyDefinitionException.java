@@ -23,7 +23,7 @@ package org.eclipse.tractusx.irs.edc.client.policy.model.exception;
  * CreateEdcPolicyDefinitionException used policy creation failed case
  */
 
-public class CreateEdcPolicyDefinitionException extends RuntimeException {
+public class CreateEdcPolicyDefinitionException extends Exception {
 
     public CreateEdcPolicyDefinitionException(final String message) {
         super(message);

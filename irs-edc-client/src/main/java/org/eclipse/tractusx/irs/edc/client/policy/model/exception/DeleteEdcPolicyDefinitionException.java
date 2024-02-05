@@ -24,7 +24,7 @@ package org.eclipse.tractusx.irs.edc.client.policy.model.exception;
  * DeleteEdcPolicyDefinitionException used policy delete failed case
  */
 
-public class DeleteEdcPolicyDefinitionException extends RuntimeException {
+public class DeleteEdcPolicyDefinitionException extends Exception {
 
     public DeleteEdcPolicyDefinitionException(final Throwable cause) {
         super(cause);

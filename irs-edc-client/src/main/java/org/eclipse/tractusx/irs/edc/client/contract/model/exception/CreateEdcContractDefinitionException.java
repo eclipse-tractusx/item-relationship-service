@@ -23,7 +23,7 @@ package org.eclipse.tractusx.irs.edc.client.contract.model.exception;
  * EdcContractDefinitionCriteria used for create contract failure
  */
 
-public class CreateEdcContractDefinitionException extends RuntimeException {
+public class CreateEdcContractDefinitionException extends Exception {
 
     public CreateEdcContractDefinitionException(final String message) {
         super(message);

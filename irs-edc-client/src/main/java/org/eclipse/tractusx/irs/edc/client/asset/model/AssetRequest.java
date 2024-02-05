@@ -20,9 +20,6 @@
 package org.eclipse.tractusx.irs.edc.client.asset.model;
 
 import lombok.Builder;
-import lombok.Data;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
 
@@ -30,11 +27,10 @@ import org.eclipse.edc.spi.types.domain.asset.Asset;
  * AssetRequest used for creating edc notification asset
  */
 
-@Value
-@Data
 @Builder(toBuilder = true)
-@Jacksonized
-public class AssetRequest {
-    private Asset asset;
-    private DataAddress dataAddress;
+public record AssetRequest(
+        Asset asset,
+        DataAddress dataAddress) {
+    public static final String ASSET_CREATION_ASSET = "https://w3id.org/edc/v0.0.1/ns/asset";
+    public static final String ASSET_CREATION_DATA_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/dataAddress";
 }

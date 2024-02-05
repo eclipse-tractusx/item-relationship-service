@@ -27,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
@@ -53,27 +54,32 @@ public class EdcAssetService {
     private static final String DEFAULT_POLICY_ID = "use-eu";
     private static final String DEFAULT_METHOD = "POST";
     private static final String DEFAULT_DATA_ADDRESS_PROPERTY_TYPE = "HttpData";
-    private static final String ASSETS_PATH = "/management/v2/assets";
 
     private final EdcTransformer edcTransformer;
+    private final EdcConfiguration config;
 
     public String createNotificationAsset(final String baseUrl, final String assetName,
             final NotificationMethod notificationMethod, final NotificationType notificationType,
-            final RestTemplate restTemplate) {
+            final RestTemplate restTemplate) throws CreateEdcAssetException {
         final JsonObject request = createNotificationAssetRequest(assetName, baseUrl, notificationMethod,
                 notificationType);
         return sendRequest(request, restTemplate);
     }
 
-    public String createDtrAsset(final String baseUrl, final String assetName, final RestTemplate restTemplate) {
+    public String createDtrAsset(final String baseUrl, final String assetName, final RestTemplate restTemplate)
+            throws CreateEdcAssetException {
         final JsonObject request = createDtrAssetRequest(assetName, baseUrl);
         return sendRequest(request, restTemplate);
     }
 
-    private String sendRequest(final JsonObject request, final RestTemplate restTemplate) {
+    private String sendRequest(final JsonObject request, final RestTemplate restTemplate)
+            throws CreateEdcAssetException {
         final ResponseEntity<String> createEdcDataAssetResponse;
         try {
-            createEdcDataAssetResponse = restTemplate.postForEntity(ASSETS_PATH, request, String.class);
+            createEdcDataAssetResponse = restTemplate.postForEntity(
+                    config.getControlplane().getEndpoint().getAsset(),
+                    request,
+                    String.class);
             final HttpStatusCode responseCode = createEdcDataAssetResponse.getStatusCode();
 
             if (responseCode.value() == HttpStatus.CONFLICT.value()) {
@@ -90,8 +96,8 @@ public class EdcAssetService {
         throw new CreateEdcAssetException("Failed to create asset %s".formatted(getAssetId(request)));
     }
 
-    public void deleteAsset(final String assetId, final RestTemplate restTemplate) {
-        final String deleteUri = UriComponentsBuilder.fromPath(ASSETS_PATH)
+    public void deleteAsset(final String assetId, final RestTemplate restTemplate) throws DeleteEdcAssetException {
+        final String deleteUri = UriComponentsBuilder.fromPath(config.getControlplane().getEndpoint().getAsset())
                                                      .pathSegment("{notificationAssetId}")
                                                      .buildAndExpand(assetId)
                                                      .toUriString();

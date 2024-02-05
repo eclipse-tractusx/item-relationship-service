@@ -24,7 +24,9 @@ import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfigurat
 import java.util.List;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.asset.model.OdrlContext;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcOperator;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
@@ -37,6 +39,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolic
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -46,6 +49,8 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class EdcPolicyDefinitionService {
 
     private static final String USE_ACTION = "USE";
@@ -55,15 +60,19 @@ public class EdcPolicyDefinitionService {
     private static final String CONSTRAINT = "Constraint";
     private static final String OPERATOR_PREFIX = "odrl:";
 
-    private static final String POLICY_DEFINITION_PATH = "/management/v2/policydefinitions";
+    private final EdcConfiguration config;
 
-    public String createAccessPolicy(final String policyName, final RestTemplate restTemplate) {
+    public String createAccessPolicy(final String policyName, final RestTemplate restTemplate)
+            throws CreateEdcPolicyDefinitionException {
         final String accessPolicyId = UUID.randomUUID().toString();
         final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, accessPolicyId);
 
         final ResponseEntity<String> createPolicyDefinitionResponse;
         try {
-            createPolicyDefinitionResponse = restTemplate.postForEntity(POLICY_DEFINITION_PATH, request, String.class);
+            createPolicyDefinitionResponse = restTemplate.postForEntity(
+                    config.getControlplane().getEndpoint().getPolicyDefinition(),
+                    request,
+                    String.class);
         } catch (RestClientException e) {
             log.error("Failed to create EDC notification asset policy. Reason: ", e);
 
@@ -126,8 +135,9 @@ public class EdcPolicyDefinitionService {
                                                .build();
     }
 
-    public void deleteAccessPolicy(final String accessPolicyId, final RestTemplate restTemplate) {
-        final String deleteUri = UriComponentsBuilder.fromPath(POLICY_DEFINITION_PATH)
+    public void deleteAccessPolicy(final String accessPolicyId, final RestTemplate restTemplate)
+            throws DeleteEdcPolicyDefinitionException {
+        final String deleteUri = UriComponentsBuilder.fromPath(config.getControlplane().getEndpoint().getPolicyDefinition())
                                                      .pathSegment("{accessPolicyId}")
                                                      .buildAndExpand(accessPolicyId)
                                                      .toUriString();

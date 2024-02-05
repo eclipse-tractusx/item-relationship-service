@@ -20,6 +20,9 @@
 
 package org.eclipse.tractusx.irs.edc.client.asset.transformer;
 
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_ASSET;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS;
+
 import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
@@ -44,10 +47,10 @@ public class JsonObjectFromAssetRequestTransformer extends AbstractJsonLdTransfo
     @Override
     public JsonObject transform(@NotNull final AssetRequest assetRequest, @NotNull final TransformerContext context) {
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add("https://w3id.org/edc/v0.0.1/ns/asset",
-                context.transform(assetRequest.getAsset(), JsonObject.class));
-        builder.add("https://w3id.org/edc/v0.0.1/ns/dataAddress",
-                context.transform(assetRequest.getDataAddress(), JsonObject.class));
+        builder.add(ASSET_CREATION_ASSET,
+                context.transform(assetRequest.asset(), JsonObject.class));
+        builder.add(ASSET_CREATION_DATA_ADDRESS,
+                context.transform(assetRequest.dataAddress(), JsonObject.class));
         return builder.build();
     }
 }
