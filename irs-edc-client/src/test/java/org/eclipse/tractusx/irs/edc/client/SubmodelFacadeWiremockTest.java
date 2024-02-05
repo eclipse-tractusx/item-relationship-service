@@ -149,8 +149,8 @@ class SubmodelFacadeWiremockTest {
                 responseWithStatus(200).withBodyFile("singleLevelBomAsBuilt.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
-                ASSET_ID).get();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get().getPayload();
 
         // Assert
         assertThat(submodel).contains("\"catenaXId\": \"urn:uuid:fe99da3d-b0de-4e80-81da-882aebcca978\"");
@@ -165,8 +165,8 @@ class SubmodelFacadeWiremockTest {
                 responseWithStatus(200).withBodyFile("materialForRecycling.json")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
-                ASSET_ID).get();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get().getPayload();
 
         // Assert
         assertThat(submodel).contains("\"materialName\": \"Cooper\",");
@@ -180,8 +180,8 @@ class SubmodelFacadeWiremockTest {
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
 
         // Act
-        final String submodel = edcSubmodelClient.getSubmodelRawPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
-                ASSET_ID).get();
+        final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
+                ASSET_ID).get().getPayload();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
@@ -206,7 +206,7 @@ class SubmodelFacadeWiremockTest {
         // Act & Assert
         final String errorMessage = "Consumption of asset '58505404-4da1-427a-82aa-b79482bcd1f0' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
         assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
-                () -> edcSubmodelClient.getSubmodelRawPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID)
+                () -> edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID)
                                        .get()).withMessageEndingWith(errorMessage);
     }
 
@@ -218,7 +218,7 @@ class SubmodelFacadeWiremockTest {
                 responseWithStatus(400).withBody("{ error: '400'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelPayload(
                 CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID).get(5, TimeUnit.SECONDS);
 
         // Assert
@@ -234,7 +234,7 @@ class SubmodelFacadeWiremockTest {
                 responseWithStatus(500).withBody("{ error: '500'}")));
 
         // Act
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelRawPayload(
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelPayload(
                 CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID).get(5, TimeUnit.SECONDS);
 
         // Assert

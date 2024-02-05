@@ -51,6 +51,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +60,10 @@ import java.util.Map;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.Shell;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
+import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
@@ -85,12 +90,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
                 SHELL_DESCRIPTORS_TEMPLATE, LOOKUP_SHELLS_TEMPLATE);
         decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(connectorEndpointsService,
                 endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
-        final var endpointDataReference = EndpointDataReference.Builder.newInstance()
-                                                                       .endpoint(DATAPLANE_URL)
-                                                                       .authCode("TEST")
-                                                                       .authKey("X-API-KEY")
-                                                                       .properties(Map.of())
-                                                                       .build();
+        final var endpointDataReference = endpointDataReference("assetId");
         when(edcSubmodelFacadeMock.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(endpointDataReference);
     }
 
@@ -103,12 +103,12 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         givenThat(getShellDescriptor200());
 
         // Act
-        final Collection<AssetAdministrationShellDescriptor> assetAdministrationShellDescriptors = decentralDigitalTwinRegistryService.fetchShells(
+        final Collection<Shell> shells = decentralDigitalTwinRegistryService.fetchShells(
                 List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
 
         // Assert
-        assertThat(assetAdministrationShellDescriptors).hasSize(1);
-        assertThat(assetAdministrationShellDescriptors.stream().findFirst().get().getSubmodelDescriptors()).hasSize(3);
+        assertThat(shells).hasSize(1);
+        assertThat(shells.stream().findFirst().get().payload().getSubmodelDescriptors()).hasSize(3);
         verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
         verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
         verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
@@ -192,5 +192,27 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
         verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
         verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+    }
+
+    private EndpointDataReference endpointDataReference(final String contractAgreementId) {
+        return EndpointDataReference.Builder.newInstance()
+                                            .authKey("X-API-KEY")
+                                            .authCode(edrAuthCode(contractAgreementId))
+                                            .properties(
+                                                    Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
+                                            .endpoint(DATAPLANE_URL)
+                                            .build();
+    }
+
+    private String edrAuthCode(final String contractAgreementId) {
+        final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
+                                                   .cid(contractAgreementId)
+                                                   .dad("test")
+                                                   .exp(9999999999L)
+                                                   .build();
+        final String b64EncodedAuthCode = Base64.getUrlEncoder()
+                                                .encodeToString(StringMapper.mapToString(edrAuthCode)
+                                                                            .getBytes(StandardCharsets.UTF_8));
+        return "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
     }
 }

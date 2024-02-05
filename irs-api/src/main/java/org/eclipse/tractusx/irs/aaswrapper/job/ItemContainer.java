@@ -33,9 +33,9 @@ import lombok.extern.jackson.Jacksonized;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 
 /**
  * Container class to store item data
@@ -52,7 +52,7 @@ public class ItemContainer {
     private List<Tombstone> tombstones;
 
     @Singular
-    private List<AssetAdministrationShellDescriptor> shells;
+    private List<Shell> shells;
 
     @Singular
     private List<Submodel> submodels;

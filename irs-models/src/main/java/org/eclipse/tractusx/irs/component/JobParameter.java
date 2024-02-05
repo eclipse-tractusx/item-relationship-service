@@ -72,6 +72,9 @@ public class JobParameter {
     @Schema(implementation = Boolean.class, example = "false")
     private boolean lookupBPNs;
 
+    @Schema(implementation = Boolean.class, example = "false")
+    private boolean auditContractNegotiation;
+
     @Schema(implementation = String.class, example = "https://hostname.com/callback?id={id}&state={state}")
     private String callbackUrl;
 
@@ -91,6 +94,7 @@ public class JobParameter {
                                    : aspectTypeValues)
                            .collectAspects(request.isCollectAspects())
                            .lookupBPNs(request.isLookupBPNs())
+                           .auditContractNegotiation(request.isAuditContractNegotiation())
                            .callbackUrl(request.getCallbackUrl())
                            .build();
     }

@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -37,8 +38,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -80,7 +83,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
     @Override
     @SuppressWarnings("PMD.AvoidCatchingGenericException")
-    public Collection<AssetAdministrationShellDescriptor> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
+    public Collection<Shell> fetchShells(final Collection<DigitalTwinRegistryKey> keys)
             throws RegistryServiceException {
 
         final var watch = new StopWatch();
@@ -118,7 +121,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private Stream<AssetAdministrationShellDescriptor> fetchShellDescriptors(
+    private Stream<Shell> fetchShellDescriptors(
             final Map.Entry<String, List<DigitalTwinRegistryKey>> entry, final Set<String> calledEndpoints) {
 
         try {
@@ -137,7 +140,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private CompletableFuture<List<AssetAdministrationShellDescriptor>> fetchShellDescriptors(
+    private CompletableFuture<List<Shell>> fetchShellDescriptors(
             final Set<String> calledEndpoints, final String bpn, final List<DigitalTwinRegistryKey> keys) {
 
         final var watch = new StopWatch();
@@ -159,7 +162,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private CompletableFuture<List<AssetAdministrationShellDescriptor>> fetchShellDescriptorsForConnectorEndpoints(
+    private CompletableFuture<List<Shell>> fetchShellDescriptorsForConnectorEndpoints(
             final List<DigitalTwinRegistryKey> keys, final List<String> connectorEndpoints) {
 
         final var service = endpointDataForConnectorsService;
@@ -174,7 +177,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         return resultFinder.getFastestResult(futures);
     }
 
-    private List<AssetAdministrationShellDescriptor> fetchShellDescriptorsForKey(
+    private List<Shell> fetchShellDescriptorsForKey(
             final List<DigitalTwinRegistryKey> keys, final EndpointDataReference endpointDataReference) {
 
         final var watch = new StopWatch();
@@ -183,7 +186,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         watch.start(msg);
         log.info(msg);
         try {
-            return keys.stream().map(key -> fetchShellDescriptor(endpointDataReference, key)).toList();
+            return keys.stream().map(key -> new Shell(contractNegotiationId(endpointDataReference.getAuthCode()),
+                    fetchShellDescriptor(endpointDataReference, key))).toList();
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
@@ -205,6 +209,13 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
+    }
+
+    private String contractNegotiationId(final String token) {
+        return Optional.ofNullable(token)
+                       .map(EDRAuthCode::fromAuthCodeToken)
+                       .map(EDRAuthCode::getCid)
+                       .orElse("");
     }
 
     /**

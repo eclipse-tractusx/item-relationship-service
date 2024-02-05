@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
@@ -44,10 +45,10 @@ public class EdcSubmodelFacade {
     private final EdcSubmodelClient client;
 
     @SuppressWarnings("PMD.PreserveStackTrace")
-    public String getSubmodelRawPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
+    public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId) throws EdcClientException {
         try {
-            return client.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get();
+            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get();
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred.", e);
             Thread.currentThread().interrupt();

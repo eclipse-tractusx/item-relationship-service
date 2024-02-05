@@ -21,27 +21,22 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.edc.client.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Communication endpoint
+ * SubmodelDescriptor
  */
-@Schema(description = "Communication endpoint.")
 @Value
-@Builder(toBuilder = true)
+@Builder
 @Jacksonized
-public class Endpoint {
+@RequiredArgsConstructor
+public class SubmodelDescriptor {
 
-    @Schema(description = "Communication interface type.", example = "HTTP", implementation = String.class,
-            defaultValue = "HTTP")
-    private String interfaceType;
-
-    @Schema(description = "Information to the interface used.", implementation = ProtocolInformation.class)
-    private ProtocolInformation protocolInformation;
-
+    private final String cid;
+    private final String payload;
 }

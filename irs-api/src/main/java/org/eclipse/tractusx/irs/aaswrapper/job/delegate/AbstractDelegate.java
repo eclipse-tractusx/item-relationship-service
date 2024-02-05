@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 
 /**
@@ -85,7 +86,7 @@ public abstract class AbstractDelegate {
         return itemContainerBuilder.build();
     }
 
-    protected String requestSubmodelAsString(final EdcSubmodelFacade submodelFacade,
+    protected SubmodelDescriptor requestSubmodel(final EdcSubmodelFacade submodelFacade,
             final ConnectorEndpointsService connectorEndpointsService, final Endpoint digitalTwinRegistryEndpoint,
             final String bpn)
             throws EdcClientException {
@@ -95,7 +96,7 @@ public abstract class AbstractDelegate {
 
         if (dspEndpoint.isPresent()) {
             log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload", subprotocolBody);
-            return submodelFacade.getSubmodelRawPayload(dspEndpoint.get(),
+            return submodelFacade.getSubmodelPayload(dspEndpoint.get(),
                     digitalTwinRegistryEndpoint.getProtocolInformation().getHref(),
                     extractAssetId(subprotocolBody));
         } else {
@@ -106,11 +107,11 @@ public abstract class AbstractDelegate {
         }
     }
 
-    private String getSubmodel(final EdcSubmodelFacade submodelFacade, final Endpoint digitalTwinRegistryEndpoint,
+    private SubmodelDescriptor getSubmodel(final EdcSubmodelFacade submodelFacade, final Endpoint digitalTwinRegistryEndpoint,
             final List<String> connectorEndpoints) throws EdcClientException {
         for (final String connectorEndpoint : connectorEndpoints) {
             try {
-                return submodelFacade.getSubmodelRawPayload(connectorEndpoint,
+                return submodelFacade.getSubmodelPayload(connectorEndpoint,
                         digitalTwinRegistryEndpoint.getProtocolInformation().getHref(),
                         extractAssetId(digitalTwinRegistryEndpoint.getProtocolInformation().getSubprotocolBody()));
             } catch (EdcClientException e) {

@@ -31,8 +31,8 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
@@ -68,21 +68,17 @@ public class DigitalTwinDelegate extends AbstractDelegate {
         }
 
         try {
+            final Shell shell = digitalTwinRegistryService.fetchShells(List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn())))
+                                                          .stream()
+                                                          .findFirst()
+                                                          .orElseThrow();
 
-            final AssetAdministrationShellDescriptor shell = digitalTwinRegistryService.fetchShells(
-                                                                                               List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn())))
-                                                                                       .stream()
-                                                                                       .findFirst()
-                                                                                       .orElseThrow();
-
-            if (expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
-                // traversal submodel descriptors are needed in next Delegate, and will be filtered out there
-                itemContainerBuilder.shell(shell);
-            } else {
+            if (!expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
                 // filter submodel descriptors if next delegate will not be executed
-                itemContainerBuilder.shell(shell.withFilteredSubmodelDescriptors(jobData.getAspects()));
+                shell.payload().withFilteredSubmodelDescriptors(jobData.getAspects());
             }
 
+            itemContainerBuilder.shell(jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
         } catch (final RegistryServiceException | RuntimeException e) {
             // catching generic exception is intended here,
             // otherwise Jobs stay in state RUNNING forever

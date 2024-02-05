@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
@@ -102,7 +103,7 @@ class DecentralDigitalTwinRegistryServiceTest {
                     expectedShell);
 
             // when
-            final var actualShell = sut.fetchShells(List.of(digitalTwinRegistryKey));
+            final var actualShell = sut.fetchShells(List.of(digitalTwinRegistryKey)).stream().map(Shell::payload);
 
             // then
             assertThat(actualShell).containsExactly(expectedShell);
@@ -230,6 +231,7 @@ class DecentralDigitalTwinRegistryServiceTest {
 
             String actualGlobalAssetId = assetAdministrationShellDescriptors.stream()
                                                                             .findFirst()
+                                                                            .map(Shell::payload)
                                                                             .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
                                                                             .get();// then
             assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);

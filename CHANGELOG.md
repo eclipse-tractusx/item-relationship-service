@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added helper script for building documentation locally.
+- Added new job parameter flag "auditContractNegotiation" which toggles setting contractAgreementId in Shells and Submodels
+- Added "contractAgreementId" field to Submodel model
 - Added Integration Tests for the entire IRS flow using stubbed responses of Discovery Service, Semantic Hub, EDC, Digital Twin Registry and BPDM Pool
 
 ### Changed
@@ -16,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
 - Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
 - Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
+- Redesigned Shell object - wrapped payload and added "contractAgreementId" field
 - Changed structure of Policy creation to match EDC format
 
 ### Fixed
