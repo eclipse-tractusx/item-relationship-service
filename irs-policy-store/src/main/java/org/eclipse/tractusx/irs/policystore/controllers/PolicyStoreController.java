@@ -138,7 +138,7 @@ public class PolicyStoreController {
     public List<PolicyResponse> getPolicies() {
         return service.getStoredPolicies().stream()
                       .map(PolicyResponse::fromPolicy)
-                      .collect(Collectors.toList());
+                      .toList();
     }
 
     @Operation(operationId = "deleteAllowedPolicy",
