@@ -51,4 +51,5 @@ They should be distinguished by the type, so when step 12 (complete) is executed
 ``` 
 Tree is stored as list of nodes in list of Relationships as filed `private List<Relationship> relationships;` in `ItemContainer`.  
 Tree is assebmled in class `ItemTreesAssembler` in method `retrieveItemGraph`. 
-We should get the depth of the tree and add it to the response. Consider using https://www.geeksforgeeks.org/depth-n-ary-tree/
+We should get the depth of the tree and add it to the response. Consider using https://www.geeksforgeeks.org/depth-n-ary-tree/  
+Important to note that determining the depth of a running job like this is only suitable as some sort of progress bar. The actual "completion by depth" criteria still has to be evaluated in the DigitalTwinDelegate and needs to be done independently for every branch of the tree
