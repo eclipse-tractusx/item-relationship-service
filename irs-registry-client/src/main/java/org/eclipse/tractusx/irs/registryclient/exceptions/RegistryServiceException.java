@@ -31,4 +31,8 @@ public class RegistryServiceException extends Exception {
     public RegistryServiceException(final String msg) {
         super(msg);
     }
+
+    public RegistryServiceException(final String msg, final Throwable cause) {
+        super(msg, cause);
+    }
 }
