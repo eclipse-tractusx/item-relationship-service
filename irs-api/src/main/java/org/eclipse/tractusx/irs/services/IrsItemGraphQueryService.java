@@ -57,10 +57,10 @@ import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
 import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -245,7 +245,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     public Jobs getJobForJobId(final MultiTransferJob multiJob, final boolean includePartialResults) {
         final var relationships = new ArrayList<Relationship>();
         final var tombstones = new ArrayList<Tombstone>();
-        final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
+        final var shells = new ArrayList<Shell>();
         final var submodels = new ArrayList<Submodel>();
         final var bpns = new ArrayList<Bpn>();
 
@@ -332,7 +332,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
         final var relationships = new ArrayList<Relationship>();
         final var tombstones = new ArrayList<Tombstone>();
-        final var shells = new ArrayList<AssetAdministrationShellDescriptor>();
+        final var shells = new ArrayList<Shell>();
         final var submodels = new ArrayList<Submodel>();
         final var metrics = new ArrayList<RequestMetric>();
         final var bpns = new ArrayList<Bpn>();

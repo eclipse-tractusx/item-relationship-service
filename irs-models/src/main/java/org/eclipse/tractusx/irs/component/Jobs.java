@@ -33,7 +33,6 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 
 /**
  * List of Job and relationship to parts
@@ -54,7 +53,7 @@ public class Jobs {
     private List<Relationship> relationships;
 
     @ArraySchema(arraySchema = @Schema(description = "AAS shells."), maxItems = Integer.MAX_VALUE)
-    private List<AssetAdministrationShellDescriptor> shells;
+    private List<Shell> shells;
 
     @ArraySchema(arraySchema = @Schema(description = "Collection of not resolvable endpoints as tombstones. Including cause of error and endpoint URL."), maxItems = Integer.MAX_VALUE)
     @Singular

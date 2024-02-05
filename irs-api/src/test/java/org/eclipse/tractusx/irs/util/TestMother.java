@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -154,6 +155,7 @@ public class TestMother {
                            .direction(Direction.DOWNWARD)
                            .aspects(List.of(AspectType.SERIAL_PART.toString(),
                                    AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .auditContractNegotiation(false)
                            .build();
     }
 
@@ -193,6 +195,17 @@ public class TestMother {
                            .aspects(List.of(AspectType.SERIAL_PART.toString(),
                                    AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
                            .lookupBPNs(true)
+                           .build();
+    }
+
+    public static JobParameter jobParameterAuditContractNegotiation() {
+        return JobParameter.builder()
+                           .depth(5)
+                           .bomLifecycle(BomLifecycle.AS_BUILT)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
+                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .auditContractNegotiation(true)
                            .build();
     }
 
@@ -249,6 +262,10 @@ public class TestMother {
 
     public static SubmodelDescriptor submodelDescriptorWithoutHref(final String semanticId) {
         return submodelDescriptorWithDspEndpoint(semanticId, null);
+    }
+
+    public static Shell shell(String contractAgreementId, AssetAdministrationShellDescriptor shell) {
+        return new Shell(contractAgreementId, shell);
     }
 
     public static AssetAdministrationShellDescriptor shellDescriptor(
