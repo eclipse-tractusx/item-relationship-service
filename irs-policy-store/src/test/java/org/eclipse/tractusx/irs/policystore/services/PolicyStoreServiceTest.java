@@ -74,7 +74,7 @@ class PolicyStoreServiceTest {
     void setUp() {
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
         defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of());
-        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence);
+        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence, clock);
     }
 
     @Test
@@ -143,7 +143,7 @@ class PolicyStoreServiceTest {
                 EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
         defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of(acceptedPolicy1, acceptedPolicy2));
-        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence);
+        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence, clock);
 
         // act
         final var defaultPolicies = testee.getStoredPolicies();
