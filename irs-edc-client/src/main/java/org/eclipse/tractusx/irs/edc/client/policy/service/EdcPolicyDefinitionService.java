@@ -49,7 +49,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class EdcPolicyDefinitionService {
 
@@ -61,18 +60,16 @@ public class EdcPolicyDefinitionService {
     private static final String OPERATOR_PREFIX = "odrl:";
 
     private final EdcConfiguration config;
+    private final RestTemplate restTemplate;
 
-    public String createAccessPolicy(final String policyName, final RestTemplate restTemplate)
-            throws CreateEdcPolicyDefinitionException {
+    public String createAccessPolicy(final String policyName) throws CreateEdcPolicyDefinitionException {
         final String accessPolicyId = UUID.randomUUID().toString();
         final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, accessPolicyId);
 
         final ResponseEntity<String> createPolicyDefinitionResponse;
         try {
             createPolicyDefinitionResponse = restTemplate.postForEntity(
-                    config.getControlplane().getEndpoint().getPolicyDefinition(),
-                    request,
-                    String.class);
+                    config.getControlplane().getEndpoint().getPolicyDefinition(), request, String.class);
         } catch (RestClientException e) {
             log.error("Failed to create EDC notification asset policy. Reason: ", e);
 
@@ -137,7 +134,8 @@ public class EdcPolicyDefinitionService {
 
     public void deleteAccessPolicy(final String accessPolicyId, final RestTemplate restTemplate)
             throws DeleteEdcPolicyDefinitionException {
-        final String deleteUri = UriComponentsBuilder.fromPath(config.getControlplane().getEndpoint().getPolicyDefinition())
+        final String deleteUri = UriComponentsBuilder.fromPath(
+                                                             config.getControlplane().getEndpoint().getPolicyDefinition())
                                                      .pathSegment("{accessPolicyId}")
                                                      .buildAndExpand(accessPolicyId)
                                                      .toUriString();

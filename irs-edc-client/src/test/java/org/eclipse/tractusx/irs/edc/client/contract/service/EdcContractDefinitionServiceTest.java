@@ -58,7 +58,7 @@ class EdcContractDefinitionServiceTest {
     @BeforeEach
     void setUp() {
         this.objectMapper = new ObjectMapper();
-        this.service = new EdcContractDefinitionService(edcConfiguration);
+        this.service = new EdcContractDefinitionService(edcConfiguration, restTemplate);
     }
 
     @Test
@@ -101,7 +101,7 @@ class EdcContractDefinitionServiceTest {
         when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.ok("test"));
 
-        String result = service.createContractDefinition(assetId, policyId, restTemplate);
+        String result = service.createContractDefinition(assetId, policyId);
 
         assertThat(result).isEqualTo(policyId);
     }
@@ -118,7 +118,7 @@ class EdcContractDefinitionServiceTest {
                 any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
 
         assertThrows(CreateEdcContractDefinitionException.class,
-                () -> service.createContractDefinition(assetId, policyId, restTemplate));
+                () -> service.createContractDefinition(assetId, policyId));
     }
 
     @Test
@@ -132,7 +132,7 @@ class EdcContractDefinitionServiceTest {
                 any())).thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).build());
 
         assertThrows(CreateEdcContractDefinitionException.class,
-                () -> service.createContractDefinition(assetId, policyId, restTemplate));
+                () -> service.createContractDefinition(assetId, policyId));
     }
 
     @Test
@@ -147,7 +147,7 @@ class EdcContractDefinitionServiceTest {
                 any())).thenThrow(new RestClientException("Surprise"));
 
         assertThrows(CreateEdcContractDefinitionException.class,
-                () -> service.createContractDefinition(assetId, policyId, restTemplate));
+                () -> service.createContractDefinition(assetId, policyId));
     }
 
 }

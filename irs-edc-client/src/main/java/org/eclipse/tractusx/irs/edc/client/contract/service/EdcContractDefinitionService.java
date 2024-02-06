@@ -31,7 +31,6 @@ import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcCon
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,7 +39,6 @@ import org.springframework.web.client.RestTemplate;
  */
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class EdcContractDefinitionService {
 
@@ -50,15 +48,17 @@ public class EdcContractDefinitionService {
     private static final String CONTRACT_DEFINITION_TYPE = "ContractDefinition";
 
     private final EdcConfiguration config;
+    private final RestTemplate restTemplate;
 
-    public String createContractDefinition(final String assetId, final String policyId,
-            final RestTemplate restTemplate) throws CreateEdcContractDefinitionException {
+    public String createContractDefinition(final String assetId, final String policyId)
+            throws CreateEdcContractDefinitionException {
         final EdcCreateContractDefinitionRequest createContractDefinitionRequest = createContractDefinitionRequest(
                 assetId, policyId);
         final ResponseEntity<String> createContractDefinitionResponse;
         try {
-            createContractDefinitionResponse = restTemplate.postForEntity(config.getControlplane().getEndpoint().getContractDefinition(),
-                    createContractDefinitionRequest, String.class);
+            createContractDefinitionResponse = restTemplate.postForEntity(
+                    config.getControlplane().getEndpoint().getContractDefinition(), createContractDefinitionRequest,
+                    String.class);
 
             final HttpStatusCode responseCode = createContractDefinitionResponse.getStatusCode();
 

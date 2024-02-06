@@ -88,7 +88,7 @@ class EdcAssetServiceTest {
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
 
         this.edcTransformer = new EdcTransformer(objectMapper(), jsonLd, new TypeTransformerRegistryImpl());
-        this.service = new EdcAssetService(edcTransformer, edcConfiguration);
+        this.service = new EdcAssetService(edcTransformer, edcConfiguration, restTemplate);
     }
 
     @Test
@@ -171,8 +171,7 @@ class EdcAssetServiceTest {
                 ResponseEntity.ok("test"));
 
         // when
-        String assetId = service.createNotificationAsset(baseUrl, assetName, notificationMethod, notificationType,
-                restTemplate);
+        String assetId = service.createNotificationAsset(baseUrl, assetName, notificationMethod, notificationType);
 
         // then
         assertThat(assetId).isNotBlank();
@@ -190,7 +189,7 @@ class EdcAssetServiceTest {
                 ResponseEntity.ok("test"));
 
         // when
-        String assetId = service.createDtrAsset(baseUrl, assetName, restTemplate);
+        String assetId = service.createDtrAsset(baseUrl, assetName);
 
         // then
         assertThat(assetId).isNotBlank();
@@ -223,7 +222,7 @@ class EdcAssetServiceTest {
                                                     .postForEntity(any(String.class), any(JsonObject.class), any());
 
         // when/then
-        assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName, restTemplate));
+        assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName));
     }
 
     @Test
@@ -238,7 +237,7 @@ class EdcAssetServiceTest {
                                                     .postForEntity(any(String.class), any(JsonObject.class), any());
 
         // when/then
-        assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName, restTemplate));
+        assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName));
     }
 
     @Test

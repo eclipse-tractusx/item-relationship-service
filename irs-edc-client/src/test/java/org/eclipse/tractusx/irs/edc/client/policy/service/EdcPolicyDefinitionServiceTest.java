@@ -63,7 +63,7 @@ class EdcPolicyDefinitionServiceTest {
     @BeforeEach
     void setUp() {
         this.objectMapper = new ObjectMapper();
-        this.service = new EdcPolicyDefinitionService(edcConfiguration);
+        this.service = new EdcPolicyDefinitionService(edcConfiguration, restTemplate);
     }
 
     @Test
@@ -119,7 +119,7 @@ class EdcPolicyDefinitionServiceTest {
                 any())).thenReturn(ResponseEntity.ok("test"));
 
         // when
-        String result = service.createAccessPolicy(policyName, restTemplate);
+        String result = service.createAccessPolicy(policyName);
 
         // then
         assertThat(result).isNotBlank();
@@ -135,8 +135,7 @@ class EdcPolicyDefinitionServiceTest {
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
 
-        assertThrows(CreateEdcPolicyDefinitionException.class,
-                () -> service.createAccessPolicy(policyName, restTemplate));
+        assertThrows(CreateEdcPolicyDefinitionException.class, () -> service.createAccessPolicy(policyName));
     }
 
     @Test
@@ -149,8 +148,7 @@ class EdcPolicyDefinitionServiceTest {
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).build());
 
-        assertThrows(CreateEdcPolicyDefinitionException.class,
-                () -> service.createAccessPolicy(policyName, restTemplate));
+        assertThrows(CreateEdcPolicyDefinitionException.class, () -> service.createAccessPolicy(policyName));
     }
 
     @Test
@@ -163,8 +161,7 @@ class EdcPolicyDefinitionServiceTest {
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenThrow(new RestClientException("Surprise"));
 
-        assertThrows(CreateEdcPolicyDefinitionException.class,
-                () -> service.createAccessPolicy(policyName, restTemplate));
+        assertThrows(CreateEdcPolicyDefinitionException.class, () -> service.createAccessPolicy(policyName));
     }
 
     @Test

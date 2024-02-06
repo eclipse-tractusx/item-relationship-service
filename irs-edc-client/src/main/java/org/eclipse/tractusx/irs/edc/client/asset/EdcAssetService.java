@@ -37,7 +37,6 @@ import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -47,7 +46,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  */
 
 @Slf4j
-@Service
 @RequiredArgsConstructor
 public class EdcAssetService {
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
@@ -57,29 +55,26 @@ public class EdcAssetService {
 
     private final EdcTransformer edcTransformer;
     private final EdcConfiguration config;
+    private final RestTemplate restTemplate;
 
     public String createNotificationAsset(final String baseUrl, final String assetName,
-            final NotificationMethod notificationMethod, final NotificationType notificationType,
-            final RestTemplate restTemplate) throws CreateEdcAssetException {
+            final NotificationMethod notificationMethod, final NotificationType notificationType)
+            throws CreateEdcAssetException {
         final JsonObject request = createNotificationAssetRequest(assetName, baseUrl, notificationMethod,
                 notificationType);
-        return sendRequest(request, restTemplate);
+        return sendRequest(request);
     }
 
-    public String createDtrAsset(final String baseUrl, final String assetName, final RestTemplate restTemplate)
-            throws CreateEdcAssetException {
+    public String createDtrAsset(final String baseUrl, final String assetName) throws CreateEdcAssetException {
         final JsonObject request = createDtrAssetRequest(assetName, baseUrl);
-        return sendRequest(request, restTemplate);
+        return sendRequest(request);
     }
 
-    private String sendRequest(final JsonObject request, final RestTemplate restTemplate)
-            throws CreateEdcAssetException {
+    private String sendRequest(final JsonObject request) throws CreateEdcAssetException {
         final ResponseEntity<String> createEdcDataAssetResponse;
         try {
-            createEdcDataAssetResponse = restTemplate.postForEntity(
-                    config.getControlplane().getEndpoint().getAsset(),
-                    request,
-                    String.class);
+            createEdcDataAssetResponse = restTemplate.postForEntity(config.getControlplane().getEndpoint().getAsset(),
+                    request, String.class);
             final HttpStatusCode responseCode = createEdcDataAssetResponse.getStatusCode();
 
             if (responseCode.value() == HttpStatus.CONFLICT.value()) {
