@@ -93,7 +93,7 @@ public class IrsController {
 
     @Operation(operationId = "registerJobForGlobalAssetId",
                summary = "Register an IRS job to retrieve an item graph for given {globalAssetId}.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = "oAuth2"), tags = { "Item Relationship Service" },
                description = "Register an IRS job to retrieve an item graph for given {globalAssetId}.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201", description = "Returns id of registered job.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -131,7 +131,7 @@ public class IrsController {
 
     @Operation(description = "Return job with optional item graph result for requested id.",
                operationId = "getJobForJobId", summary = "Return job with optional item graph result for requested id.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" })
+               security = @SecurityRequirement(name = "oAuth2"), tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Return job with item graph for the requested id.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -190,7 +190,7 @@ public class IrsController {
     }
 
     @Operation(description = "Cancel job for requested jobId.", operationId = "cancelJobByJobId",
-               summary = "Cancel job for requested jobId.", security = @SecurityRequirement(name = "api_key"),
+               summary = "Cancel job for requested jobId.", security = @SecurityRequirement(name = "oAuth2"),
                tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Job with requested jobId canceled.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -236,7 +236,7 @@ public class IrsController {
 
     @Operation(description = "Returns paginated jobs with state and execution times.",
                operationId = "getJobsByJobStates", summary = "Returns paginated jobs with state and execution times.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" })
+               security = @SecurityRequirement(name = "oAuth2"), tags = { "Item Relationship Service" })
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Paginated list of jobs with state and execution times for requested job states.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -280,7 +280,7 @@ public class IrsController {
 
     @Operation(operationId = "getAllAspectModels",
                summary = "Get all available aspect models from semantic hub or local models.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Aspect Models" },
+               security = @SecurityRequirement(name = "oAuth2"), tags = { "Aspect Models" },
                description = "Get all available aspect models from semantic hub or local models.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns all available aspect models.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
