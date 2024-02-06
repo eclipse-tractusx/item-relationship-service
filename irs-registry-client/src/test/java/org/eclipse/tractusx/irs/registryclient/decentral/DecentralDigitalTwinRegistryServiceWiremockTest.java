@@ -70,6 +70,8 @@ import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientIm
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
@@ -94,103 +96,123 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         when(edcSubmodelFacadeMock.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(endpointDataReference);
     }
 
-    @Test
-    void shouldDiscoverEDCAndRequestRegistry() throws RegistryServiceException {
-        // Arrange
-        givenThat(postDiscoveryFinder200());
-        givenThat(postEdcDiscovery200());
-        givenThat(getLookupShells200());
-        givenThat(getShellDescriptor200());
+    @Nested
+    class FetchShellsTests {
+        @Test
+        void shouldDiscoverEDCAndRequestRegistry() throws RegistryServiceException {
+            // Arrange
+            givenThat(postDiscoveryFinder200());
+            givenThat(postEdcDiscovery200());
+            givenThat(getLookupShells200());
+            givenThat(getShellDescriptor200());
 
-        // Act
-        final Collection<Shell> shells = decentralDigitalTwinRegistryService.fetchShells(
-                List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
+            // Act
+            final Collection<Shell> shells = decentralDigitalTwinRegistryService.fetchShells(
+                    List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
 
-        // Assert
-        assertThat(shells).hasSize(1);
-        assertThat(shells.stream().findFirst().get().payload().getSubmodelDescriptors()).hasSize(3);
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
-        verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
-        verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+            // Assert
+            assertThat(shells).hasSize(1);
+            assertThat(shells.stream().findFirst().get().payload().getSubmodelDescriptors()).hasSize(3);
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+            verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+            verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+        }
+
+        @Test
+        void shouldThrowInCaseOfDiscoveryError() {
+            // Arrange
+            givenThat(postDiscoveryFinder404());
+            final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
+
+            // Act & Assert
+            assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
+                    ShellNotFoundException.class);
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+        }
+
+        @Test
+        void shouldThrowInCaseOfEdcDiscoveryError() {
+            // Arrange
+            givenThat(postDiscoveryFinder200());
+            givenThat(postEdcDiscovery404());
+            final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
+
+            // Act & Assert
+            assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
+                    ShellNotFoundException.class);
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+        }
+
+        @Test
+        void shouldThrowInCaseOfLookupShellsError() {
+            // Arrange
+            givenThat(postDiscoveryFinder200());
+            givenThat(postEdcDiscovery200());
+            givenThat(getLookupShells404());
+            final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
+
+            // Act & Assert
+            assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
+                    ShellNotFoundException.class);
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+            verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+        }
+
+        @Test
+        void shouldThrowInCaseOfShellDescriptorsError() {
+            // Arrange
+            givenThat(postDiscoveryFinder200());
+            givenThat(postEdcDiscovery200());
+            givenThat(getLookupShells200());
+            givenThat(getShellDescriptor404());
+            final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
+
+            // Act & Assert
+            assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
+                    ShellNotFoundException.class);
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+            verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+            verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+        }
+
+        @Test
+        void shouldThrowExceptionOnEmptyShells() {
+            // Arrange
+            givenThat(postDiscoveryFinder200());
+            givenThat(postEdcDiscovery200());
+            givenThat(getLookupShells200Empty());
+            givenThat(getShellDescriptor404());
+            final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
+
+            // Act & Assert
+            assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
+                    ShellNotFoundException.class);
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+            verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+            verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+        }
     }
 
-    @Test
-    void shouldThrowInCaseOfDiscoveryError() {
-        // Arrange
-        givenThat(postDiscoveryFinder404());
-        final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
+    @Nested
+    class LookupShellIdentifiersTests {
 
-        // Act & Assert
-        assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                ShellNotFoundException.class);
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
-    }
+        @Test
+        // TODO(mfischer): add tests for lookupShellIdentifiers
+        @Disabled("not yet implemented")
+        void test() {
+            // Arrange
+            // ...
 
-    @Test
-    void shouldThrowInCaseOfEdcDiscoveryError() {
-        // Arrange
-        givenThat(postDiscoveryFinder200());
-        givenThat(postEdcDiscovery404());
-        final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
-
-        // Act & Assert
-        assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                ShellNotFoundException.class);
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
-    }
-
-    @Test
-    void shouldThrowInCaseOfLookupShellsError() {
-        // Arrange
-        givenThat(postDiscoveryFinder200());
-        givenThat(postEdcDiscovery200());
-        givenThat(getLookupShells404());
-        final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
-
-        // Act & Assert
-        assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                ShellNotFoundException.class);
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
-        verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
-    }
-
-    @Test
-    void shouldThrowInCaseOfShellDescriptorsError() {
-        // Arrange
-        givenThat(postDiscoveryFinder200());
-        givenThat(postEdcDiscovery200());
-        givenThat(getLookupShells200());
-        givenThat(getShellDescriptor404());
-        final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
-
-        // Act & Assert
-        assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                ShellNotFoundException.class);
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
-        verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
-        verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
-    }
-
-    @Test
-    void shouldThrowExceptionOnEmptyShells() {
-        // Arrange
-        givenThat(postDiscoveryFinder200());
-        givenThat(postEdcDiscovery200());
-        givenThat(getLookupShells200Empty());
-        givenThat(getShellDescriptor404());
-        final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
-
-        // Act & Assert
-        assertThatThrownBy(() -> decentralDigitalTwinRegistryService.fetchShells(testId)).isInstanceOf(
-                ShellNotFoundException.class);
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
-        verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
-        verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
-        verify(exactly(1), getRequestedFor(urlPathMatching(SHELL_DESCRIPTORS_PATH + ".*")));
+            // Act & Assert
+            assertThatThrownBy(() -> decentralDigitalTwinRegistryService.lookupShellIdentifiers(TEST_BPN)).isInstanceOf(
+                    ShellNotFoundException.class);
+            // ...
+        }
     }
 
     private EndpointDataReference endpointDataReference(final String contractAgreementId) {
