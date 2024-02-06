@@ -158,4 +158,4 @@ with any relevant licenses for all software contained within.
 Contact the project developers via the project's "dev" list.
 
 * https://accounts.eclipse.org/mailing-list/tractusx-dev
-* Eclipse Matrix Chat https://chat.eclipse.org/#/room/#tractusx-trace-x:matrix.eclipse.org
+* Eclipse Matrix Chat https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org

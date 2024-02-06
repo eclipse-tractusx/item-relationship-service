@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.ess.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.ess.service.EdcRegistration.ASSET_ID_REQUEST_RECURSIVE;
+import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -46,6 +47,7 @@ import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -87,27 +89,6 @@ class InvestigationJobProcessingEventListenerTest {
 
     @Captor
     ArgumentCaptor<EdcNotification<NotificationContent>> edcNotificationCaptor;
-
-    private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
-        return AssetAdministrationShellDescriptor.builder()
-                                                 .globalAssetId(catenaXId)
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .name("manufacturerId")
-                                                                                                 .value(bpn)
-                                                                                                 .build()))
-                                                 .build();
-    }
-
-    private static Relationship createRelationship(final String lifecycle, final String bpn, final String parentId,
-            final String childId) {
-        return Relationship.builder()
-                           .aspectType(lifecycle)
-                           .bpn(bpn)
-                           .catenaXId(GlobalAssetIdentification.of(parentId))
-                           .linkedItem(
-                                   LinkedItem.builder().childCatenaXId(GlobalAssetIdentification.of(childId)).build())
-                           .build();
-    }
 
     @BeforeEach
     void mockInit() {
@@ -345,7 +326,7 @@ class InvestigationJobProcessingEventListenerTest {
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
             final List<Relationship> relationships, final List<String> incindentBPNSs, final List<Submodel> submodels) {
         createMockJob(mockedJobId, relationships, incindentBPNSs, submodels,
-                List.of(createShell(UUID.randomUUID().toString(), mockedShell)));
+                List.of(shell("", createShell(UUID.randomUUID().toString(), mockedShell))));
     }
 
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
@@ -364,12 +345,12 @@ class InvestigationJobProcessingEventListenerTest {
     private void createMockForJobIdAndShells(final UUID mockedJobId, final List<String> bpns,
             final List<Submodel> submodels) {
         createMockJob(mockedJobId, List.of(), List.of("BPNS000000000DDD"), submodels,
-                bpns.stream().map(bpn -> createShell(UUID.randomUUID().toString(), bpn)).toList());
+                bpns.stream().map(bpn -> shell("", createShell(UUID.randomUUID().toString(), bpn))).toList());
     }
 
     private void createMockJob(final UUID mockedJobId, final List<Relationship> relationships,
             final List<String> incindentBPNSs, final List<Submodel> submodels,
-            final List<AssetAdministrationShellDescriptor> shells) {
+            final List<Shell> shells) {
         final Jobs jobs = Jobs.builder()
                               .job(Job.builder()
                                       .id(mockedJobId)
@@ -403,7 +384,7 @@ class InvestigationJobProcessingEventListenerTest {
                 }
                 """;
         return Submodel.from("test2",
-                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
+                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned", "cid",
                 StringMapper.mapFromString(partSiteInformationAsPlannedRaw, Map.class));
     }
 
@@ -421,7 +402,7 @@ class InvestigationJobProcessingEventListenerTest {
                 }
                 """;
         return Submodel.from("test2",
-                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned",
+                "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned", "cid",
                 StringMapper.mapFromString(partSiteInformationAsPlannedRaw, Map.class));
     }
 
@@ -440,8 +421,29 @@ class InvestigationJobProcessingEventListenerTest {
                   }
                 }
                 """;
-        return Submodel.from("test1", "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+        return Submodel.from("test1", "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned", "cid",
                 StringMapper.mapFromString(partAsPlannedRaw, Map.class));
+    }
+
+    private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
+        return AssetAdministrationShellDescriptor.builder()
+                                                 .globalAssetId(catenaXId)
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                                                                 .name("manufacturerId")
+                                                                                                 .value(bpn)
+                                                                                                 .build()))
+                                                 .build();
+    }
+
+    private static Relationship createRelationship(final String lifecycle, final String bpn, final String parentId,
+            final String childId) {
+        return Relationship.builder()
+                           .aspectType(lifecycle)
+                           .bpn(bpn)
+                           .catenaXId(GlobalAssetIdentification.of(parentId))
+                           .linkedItem(
+                                   LinkedItem.builder().childCatenaXId(GlobalAssetIdentification.of(childId)).build())
+                           .build();
     }
 
 }

@@ -21,27 +21,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.edc.client.policy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
- * Communication endpoint
+ * Wrapper for OperatorType
  */
-@Schema(description = "Communication endpoint.")
-@Value
-@Builder(toBuilder = true)
-@Jacksonized
-public class Endpoint {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Schema
+public class Operator {
 
-    @Schema(description = "Communication interface type.", example = "HTTP", implementation = String.class,
-            defaultValue = "HTTP")
-    private String interfaceType;
-
-    @Schema(description = "Information to the interface used.", implementation = ProtocolInformation.class)
-    private ProtocolInformation protocolInformation;
-
+    @JsonProperty("@id")
+    @Schema(implementation = OperatorType.class, example = "odrl:eq")
+    private OperatorType operatorType;
 }

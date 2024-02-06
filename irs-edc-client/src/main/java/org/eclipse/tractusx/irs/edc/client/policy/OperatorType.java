@@ -55,6 +55,8 @@ public enum OperatorType {
     private final String code;
     private final String label;
 
+    private static final int ODRL_PREFIX_INDEX = 5;
+
     OperatorType(final String code, final String label) {
         this.code = code;
         this.label = label;
@@ -62,10 +64,17 @@ public enum OperatorType {
 
     @JsonCreator
     public static OperatorType fromValue(final String value) {
+        String operator;
+        if (value.startsWith("odrl:")) {
+            operator = value.substring(ODRL_PREFIX_INDEX);
+        } else {
+            operator = value;
+        }
+
         return Stream.of(OperatorType.values())
-                     .filter(operatorType -> operatorType.code.equals(value))
+                     .filter(operatorType -> operatorType.code.equals(operator))
                      .findFirst()
-                     .orElseThrow(() -> new NoSuchElementException("Unsupported OperatorType: " + value));
+                     .orElseThrow(() -> new NoSuchElementException("Unsupported OperatorType: " + operator));
     }
 
     /**

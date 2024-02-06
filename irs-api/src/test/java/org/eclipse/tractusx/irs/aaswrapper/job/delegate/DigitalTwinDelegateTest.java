@@ -25,6 +25,8 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
+import static org.eclipse.tractusx.irs.util.TestMother.jobParameterAuditContractNegotiation;
+import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,7 +55,7 @@ class DigitalTwinDelegateTest {
     void shouldFillItemContainerWithShell() throws RegistryServiceException {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))));
+                List.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
@@ -62,14 +64,32 @@ class DigitalTwinDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
-        assertThat(result.getShells().get(0).getSubmodelDescriptors()).isNotEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
+        assertThat(result.getShells().get(0).contractAgreementId()).isNull();
+    }
+
+    @Test
+    void shouldFillItemContainerWithShellAndContractAgreementIdWhenAuditFlag() throws RegistryServiceException {
+        // given
+        when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
+                List.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
+
+        // when
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameterAuditContractNegotiation(),
+                new AASTransferProcess("id", 0), createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getShells()).isNotEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
+        assertThat(result.getShells().get(0).contractAgreementId()).isNotNull();
     }
 
     @Test
     void shouldFillItemContainerWithShellAndFilteredSubmodelDescriptorsWhenDepthReached() throws RegistryServiceException {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))));
+                List.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
         final JobParameter jobParameter = JobParameter.builder().depth(1).aspects(List.of()).build();
 
         // when
@@ -79,7 +99,7 @@ class DigitalTwinDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
-        assertThat(result.getShells().get(0).getSubmodelDescriptors()).isEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isEmpty();
     }
 
     @Test
