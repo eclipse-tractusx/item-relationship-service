@@ -86,14 +86,14 @@ public class RegistryConfiguration {
     @Bean
     public ConnectorEndpointsService connectorEndpointsService(
             @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
-            @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String finderUrl) {
+            @Value("${digitalTwinRegistry.discovery.discoveryFinderUrl:}") final String finderUrl) {
         return new ConnectorEndpointsService(discoveryFinderClient(dtrRestTemplate, finderUrl));
     }
 
     @Bean
     public DiscoveryFinderClient discoveryFinderClient(
             @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
-            @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String finderUrl) {
+            @Value("${digitalTwinRegistry.discovery.discoveryFinderUrl:}") final String finderUrl) {
         return new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate);
     }
 

@@ -76,7 +76,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" },
                description = "Register a policy that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201"),
@@ -110,7 +110,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "getAllowedPolicies",
                summary = "Lists the registered policies that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies.",
@@ -141,7 +141,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "deleteAllowedPolicy",
                summary = "Removes a policy that should no longer be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" },
                description = "Removes a policy that should no longer be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
@@ -172,7 +172,7 @@ public class PolicyStoreController {
     }
 
     @Operation(operationId = "updateAllowedPolicy", summary = "Updates an existing policy with new validUntil value.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" },
                description = "Updates an existing policy with new validUntil value.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),

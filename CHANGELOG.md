@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
 - Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
 - Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
+- Updated configuration of `DISCOVERY_REST_TEMPLATE` from `ess.discovery.*` to `digitalTwinRegistry.discovery.*` and discovery finder URL from `digitalTwinRegistry.discoveryFinderUrl` to `digitalTwinRegistry.discovery.discoveryFinderUrl`
 - Redesigned Shell object - wrapped payload and added "contractAgreementId" field
 - Changed structure of Policy creation to match EDC format
 
