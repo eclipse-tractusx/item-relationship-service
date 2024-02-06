@@ -34,6 +34,7 @@ import org.eclipse.edc.policy.model.AtomicConstraint;
 import org.eclipse.edc.policy.model.LiteralExpression;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.monitor.Monitor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -52,7 +53,6 @@ public class JsonLdConfiguration {
     public static final String NAMESPACE_EDC_ID = NAMESPACE_EDC + "id";
     public static final String NAMESPACE_TRACTUSX = "https://w3id.org/tractusx/v0.0.1/ns/";
     public static final String NAMESPACE_DCT = "https://purl.org/dc/terms/";
-    public static final String JSON_LD_OBJECT_MAPPER = "jsonLdObjectMapper";
 
     @Bean /* package */ TitaniumJsonLd titaniumJsonLd(final Monitor monitor) {
         final TitaniumJsonLd titaniumJsonLd = new TitaniumJsonLd(monitor);
@@ -69,7 +69,8 @@ public class JsonLdConfiguration {
         return new ConsoleMonitor();
     }
 
-    @Bean(JSON_LD_OBJECT_MAPPER)
+    @Bean
+    @Qualifier("jsonLdObjectMapper")
         /* package */ ObjectMapper objectMapper() {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
