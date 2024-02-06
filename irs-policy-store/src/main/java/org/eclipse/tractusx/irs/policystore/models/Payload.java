@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,27 +17,20 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.policystore.models;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 
 /**
- * Communication endpoint
+ * Payload representation for get all policies response
  */
-@Schema(description = "Communication endpoint.")
-@Value
-@Builder(toBuilder = true)
-@Jacksonized
-public class Endpoint {
-
-    @Schema(description = "Communication interface type.", example = "HTTP", implementation = String.class,
-            defaultValue = "HTTP")
-    private String interfaceType;
-
-    @Schema(description = "Information to the interface used.", implementation = ProtocolInformation.class)
-    private ProtocolInformation protocolInformation;
+@Builder
+public record Payload(
+        @JsonProperty("@context") Context context,
+        @JsonProperty("@id") String policyId,
+        Policy policy
+) {
 
 }

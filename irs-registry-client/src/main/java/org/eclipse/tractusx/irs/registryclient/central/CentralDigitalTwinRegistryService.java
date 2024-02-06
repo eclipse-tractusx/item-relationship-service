@@ -29,7 +29,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
@@ -44,12 +44,12 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
     private final DigitalTwinRegistryClient digitalTwinRegistryClient;
 
     @Override
-    public Collection<AssetAdministrationShellDescriptor> fetchShells(final Collection<DigitalTwinRegistryKey> keys) {
+    public Collection<Shell> fetchShells(final Collection<DigitalTwinRegistryKey> keys) {
         return keys.stream().map(key -> {
             final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.shellId());
             log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.shellId());
 
-            return digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification);
+            return new Shell("", digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification));
         }).toList();
     }
 

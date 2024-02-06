@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.component;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Map;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -51,14 +52,25 @@ public class Tombstone {
     private final String catenaXId;
     private final String endpointURL;
     private final ProcessingError processingError;
+    private final Map<String, Object> policy;
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep) {
-        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep);
+        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep, null);
     }
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
             final int retryCount, final ProcessStep processStep) {
+        return from(catenaXId, endpointURL, errorDetails, retryCount, processStep, null);
+    }
+
+    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
+            final int retryCount, final ProcessStep processStep, final Map<String, Object> policy) {
+        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep, policy);
+    }
+
+    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
+            final int retryCount, final ProcessStep processStep, final Map<String, Object> policy) {
 
         final ProcessingError processingError = ProcessingError.builder()
                                                                .withProcessStep(processStep)
@@ -70,6 +82,8 @@ public class Tombstone {
                         .endpointURL(endpointURL)
                         .catenaXId(catenaXId)
                         .processingError(processingError)
+                        .policy(policy)
                         .build();
     }
+
 }

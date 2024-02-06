@@ -97,7 +97,7 @@ class SubmodelExponentialRetryTest {
         when(endpointDataReferenceCacheService.getEndpointDataReference("9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
-        assertThatThrownBy(() -> testee.getSubmodelRawPayload(
+        assertThatThrownBy(() -> testee.getSubmodelPayload(
                 "https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
                 "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(
@@ -116,7 +116,7 @@ class SubmodelExponentialRetryTest {
         when(endpointDataReferenceCacheService.getEndpointDataReference("9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
-        assertThatThrownBy(() -> testee.getSubmodelRawPayload(
+        assertThatThrownBy(() -> testee.getSubmodelPayload(
                 "https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
                 "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(RuntimeException.class);

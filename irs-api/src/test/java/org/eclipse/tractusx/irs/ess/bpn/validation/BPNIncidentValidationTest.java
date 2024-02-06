@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.ess.bpn.validation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.util.TestMother.shell;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.Map;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.Jobs;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.partasplanned.PartAsPlanned;
@@ -43,24 +45,6 @@ import org.eclipse.tractusx.irs.ess.service.SupplyChainImpacted;
 import org.junit.jupiter.api.Test;
 
 class BPNIncidentValidationTest {
-
-    private static Jobs jobResult(final String parentId, final Map<String, String> cxIdBPNMap) {
-        final List<AssetAdministrationShellDescriptor> shells = new ArrayList<>();
-        cxIdBPNMap.forEach((s, s2) -> shells.add(createShell(s, s2)));
-        final GlobalAssetIdentification globalAssetId = GlobalAssetIdentification.of(parentId);
-        final Job job = Job.builder().globalAssetId(globalAssetId).build();
-        return Jobs.builder().job(job).shells(shells).build();
-    }
-
-    private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
-        return AssetAdministrationShellDescriptor.builder()
-                                                 .globalAssetId(catenaXId)
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
-                                                                                                 .name("manufacturerId")
-                                                                                                 .value(bpn)
-                                                                                                 .build()))
-                                                 .build();
-    }
 
     @Test
     void shouldReturnNoWhenBPNsDoNotContainShellBPNs() {
@@ -77,7 +61,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.NO);
@@ -98,7 +82,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.YES);
@@ -114,7 +98,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.YES);
@@ -130,7 +114,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.NO);
@@ -145,7 +129,7 @@ class BPNIncidentValidationTest {
         final Jobs jobs = jobResult(parentId, cxIdBPNMap);
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
@@ -163,11 +147,11 @@ class BPNIncidentValidationTest {
                                                                       .build();
         final Jobs jobs = Jobs.builder()
                               .job(Job.builder().globalAssetId(GlobalAssetIdentification.of(parentId)).build())
-                              .shells(List.of(shellDescriptor))
+                              .shells(List.of(shell("", shellDescriptor)))
                               .build();
 
         // Act
-        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells(), bpns);
+        final SupplyChainImpacted actual = BPNIncidentValidation.jobContainsIncidentBPNs(jobs.getShells().stream().map(Shell::payload).toList(), bpns);
 
         // Assert
         assertThat(actual).isEqualTo(SupplyChainImpacted.UNKNOWN);
@@ -283,5 +267,23 @@ class BPNIncidentValidationTest {
 
         // Assert
         assertThat(supplyChainImpacted).isEqualTo(SupplyChainImpacted.YES);
+    }
+
+    private static Jobs jobResult(final String parentId, final Map<String, String> cxIdBPNMap) {
+        final List<Shell> shells = new ArrayList<>();
+        cxIdBPNMap.forEach((s, s2) -> shells.add(shell("", createShell(s, s2))));
+        final GlobalAssetIdentification globalAssetId = GlobalAssetIdentification.of(parentId);
+        final Job job = Job.builder().globalAssetId(globalAssetId).build();
+        return Jobs.builder().job(job).shells(shells).build();
+    }
+
+    private static AssetAdministrationShellDescriptor createShell(final String catenaXId, final String bpn) {
+        return AssetAdministrationShellDescriptor.builder()
+                                                 .globalAssetId(catenaXId)
+                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                                                                 .name("manufacturerId")
+                                                                                                 .value(bpn)
+                                                                                                 .build()))
+                                                 .build();
     }
 }

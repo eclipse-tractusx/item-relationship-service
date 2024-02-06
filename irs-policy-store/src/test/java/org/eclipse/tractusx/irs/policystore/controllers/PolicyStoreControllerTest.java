@@ -32,6 +32,7 @@ import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
@@ -48,6 +49,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,45 +62,46 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PolicyStoreControllerTest {
 
     public static final String EXAMPLE_PAYLOAD = """
-                {
-                 	"validUntil": "2025-12-12T23:59:59.999Z",
-                 	"payload": {
-                 		"@context": {
-                 			"odrl": "http://www.w3.org/ns/odrl/2/"
-                 		},
-                 		"@id": "policy-id",
-                 		"policy": {
-                 			"odrl:permission": [
-                 				{
-                 					"odrl:action": "USE",
-                 					"odrl:constraint": {
-                 						"odrl:and": [
-                 							{
-                 								"odrl:leftOperand": "Membership",
-                 								"odrl:operator": {
-                 									"@id": "odrl:eq"
-                 								},
-                 								"odrl:rightOperand": "active"
-                 							},
-                 							{
-                 								"odrl:leftOperand": "PURPOSE",
-                 								"odrl:operator": {
-                 									"@id": "odrl:eq"
-                 								},
-                 								"odrl:rightOperand": "ID 3.1 Trace"
-                 							}
-                 						]
-                 					}
-                 				}
-                 			]
-                 		}
-                 	}
-                 }
-                """;
+            {
+             	"validUntil": "2025-12-12T23:59:59.999Z",
+             	"payload": {
+             		"@context": {
+             			"odrl": "http://www.w3.org/ns/odrl/2/"
+             		},
+             		"@id": "policy-id",
+             		"policy": {
+             			"odrl:permission": [
+             				{
+             					"odrl:action": "USE",
+             					"odrl:constraint": {
+             						"odrl:and": [
+             							{
+             								"odrl:leftOperand": "Membership",
+             								"odrl:operator": {
+             									"@id": "odrl:eq"
+             								},
+             								"odrl:rightOperand": "active"
+             							},
+             							{
+             								"odrl:leftOperand": "PURPOSE",
+             								"odrl:operator": {
+             									"@id": "odrl:eq"
+             								},
+             								"odrl:rightOperand": "ID 3.1 Trace"
+             							}
+             						]
+             					}
+             				}
+             			]
+             		}
+             	}
+             }
+            """;
 
     private PolicyStoreController testee;
     private final TitaniumJsonLd titaniumJsonLd = new TitaniumJsonLd(new ConsoleMonitor());
-    private final EdcTransformer edcTransformer = new EdcTransformer(new com.fasterxml.jackson.databind.ObjectMapper(), titaniumJsonLd, new TypeTransformerRegistryImpl());
+    private final EdcTransformer edcTransformer = new EdcTransformer(new com.fasterxml.jackson.databind.ObjectMapper(),
+            titaniumJsonLd, new TypeTransformerRegistryImpl());
 
     @Mock
     private PolicyStoreService service;
@@ -117,7 +120,8 @@ class PolicyStoreControllerTest {
         jsonReader.close();
 
         // act
-        testee.registerAllowedPolicy(new CreatePolicyRequest(now.plusMinutes(1), jsonObject.get("payload").asJsonObject()));
+        testee.registerAllowedPolicy(
+                new CreatePolicyRequest(now.plusMinutes(1), jsonObject.get("payload").asJsonObject()));
 
         // assert
         verify(service).registerPolicy(any());
@@ -126,14 +130,16 @@ class PolicyStoreControllerTest {
     @Test
     void getPolicies() {
         // arrange
-        final List<Policy> policies = List.of(new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
+        final List<Policy> policies = List.of(
+                new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
         when(service.getStoredPolicies()).thenReturn(policies);
 
         // act
-        final var returnedPolicies = testee.getPolicies();
+        final List<PolicyResponse> returnedPolicies = testee.getPolicies();
 
         // assert
-        assertThat(returnedPolicies).isEqualTo(policies);
+        assertThat(returnedPolicies).isEqualTo(
+                policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
     }
 
     @Test
@@ -159,19 +165,14 @@ class PolicyStoreControllerTest {
     }
 
     private List<Permission> createPermissions() {
-        return List.of(
-                new Permission(PolicyType.USE, createConstraints()),
-                new Permission(PolicyType.ACCESS, createConstraints())
-        );
+        return List.of(new Permission(PolicyType.USE, createConstraints()),
+                new Permission(PolicyType.ACCESS, createConstraints()));
     }
 
     private Constraints createConstraints() {
-        return new Constraints(
-                Collections.emptyList(),
-                List.of(
-                        new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
+        return new Constraints(Collections.emptyList(),
+                List.of(new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
                         new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"),
-                        new Constraint("PURPOSE", new Operator(OperatorType.EQ), "ID 3.1 Trace"))
-        );
+                        new Constraint("PURPOSE", new Operator(OperatorType.EQ), "ID 3.1 Trace")));
     }
 }

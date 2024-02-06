@@ -74,7 +74,7 @@ class PolicyStoreServiceTest {
     void setUp() {
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
         defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of());
-        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence);
+        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence, clock);
     }
 
     @Test
@@ -143,7 +143,7 @@ class PolicyStoreServiceTest {
                 EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
         defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of(acceptedPolicy1, acceptedPolicy2));
-        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence);
+        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence, clock);
 
         // act
         final var defaultPolicies = testee.getStoredPolicies();
@@ -213,5 +213,30 @@ class PolicyStoreServiceTest {
 
         // assert
         assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, request));
+    }
+
+    @Test
+    void whenRegisterPolicyWithMissingPermissionsShouldThrowException() {
+        // arrange
+        final Policy policy = new Policy();
+
+        // act
+        // assert
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy));
+    }
+
+    @Test
+    void whenRegisterPolicyWithMissingConstraintShouldThrowException() {
+        // arrange
+        final Policy policy = Policy.builder()
+                                    .permissions(List.of(
+                                            Permission.builder().constraint(new Constraints(emptyList(), emptyList())).build(),
+                                            Permission.builder().build()
+                                            ))
+                                    .build();
+
+        // act
+        // assert
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy));
     }
 }
