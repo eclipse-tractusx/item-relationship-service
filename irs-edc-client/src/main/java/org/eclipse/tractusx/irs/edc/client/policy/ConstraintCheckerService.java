@@ -23,7 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import java.util.Collection;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,8 +44,7 @@ public class ConstraintCheckerService {
     public boolean hasAllConstraint(final Policy acceptedPolicy, final List<Constraint> constraints) {
         final List<Constraints> acceptedConstraintsList = acceptedPolicy.getPermissions()
                                                                         .stream()
-                                                                        .map(Permission::getConstraints)
-                                                                        .flatMap(Collection::stream)
+                                                                        .map(Permission::getConstraint)
                                                                         .toList();
 
         return constraints.stream().allMatch(constraint -> isValidOnList(constraint, acceptedConstraintsList));
@@ -90,8 +88,8 @@ public class ConstraintCheckerService {
                                         .atomicConstraint(atomicConstraint)
                                         .leftExpressionValue(acceptedConstraint.getLeftOperand())
                                         .rightExpressionValue(
-                                                acceptedConstraint.getRightOperand().stream().findFirst().orElse(""))
-                                        .expectedOperator(Operator.valueOf(acceptedConstraint.getOperator().name()))
+                                                acceptedConstraint.getRightOperand())
+                                        .expectedOperator(Operator.valueOf(acceptedConstraint.getOperator().getOperatorType().name()))
                                         .build()
                                         .isValid();
     }

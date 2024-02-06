@@ -17,36 +17,20 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.common.util.concurrent;
+package org.eclipse.tractusx.irs.policystore.models;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.util.StopWatch;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 
 /**
- * Utilities for stop watches.
+ * Payload representation for get all policies response
  */
-public final class StopwatchUtils {
+@Builder
+public record Payload(
+        @JsonProperty("@context") Context context,
+        @JsonProperty("@id") String policyId,
+        Policy policy
+) {
 
-    /**
-     * utility class, therefore private constructor
-     */
-    private StopwatchUtils() {
-        super();
-    }
-
-    public static void startWatch(final Logger log, final StopWatch stopWatch, final String msg) {
-        stopWatch.start(msg);
-        log.info(msg);
-    }
-
-    public static void stopWatch(final Logger log, final StopWatch stopWatch) {
-        stopWatch(log, stopWatch, "");
-    }
-
-    public static void stopWatch(final Logger log, final StopWatch stopWatch, final String messagePrefix) {
-        stopWatch.stop();
-        final String prefix = StringUtils.isNotBlank(messagePrefix) ? messagePrefix + " - " : "";
-        log.info("{}{} took {} ms", prefix, stopWatch.getLastTaskName(), stopWatch.getLastTaskTimeMillis());
-    }
 }

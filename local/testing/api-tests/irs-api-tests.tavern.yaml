@@ -3202,3 +3202,117 @@ stages:
         function: local.testing.api-tests.tavern_helpers:check_batches_are_canceled_correctly
       headers:
         content-type: application/json
+
+
+---
+
+
+test_name: Make sure jobs are responsed with contractAgreementIds in shells and submodels if auditContractNegotiation activated
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+    - name: create a job and check for success
+      request:
+        url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+        json:
+          key:
+            globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+            bpn: "{tavern.env_vars.BPN_AS_BUILT}"
+          collectAspects: true
+          auditContractNegotiation: true
+          depth: 2
+          aspects:
+            - SerialPart
+          direction: "downward"
+        method: POST
+        headers:
+          content-type: application/json
+          $ext:
+            function: local.testing.api-tests.tavern_helpers:create_api_key
+      response:
+        status_code: 201
+        headers:
+          content-type: application/json
+        save:
+          json:
+            job_id: id
+
+    - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+
+    - name: verify job response with desired test steps
+      request:
+        url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+        params:
+          returnUncompletedJob: true
+        method: GET
+        headers:
+          content-type: application/json
+          $ext:
+            function: local.testing.api-tests.tavern_helpers:create_api_key
+      response:
+        status_code: 200
+        verify_response_with:
+          - function: local.testing.api-tests.tavern_helpers:contractAgreementId_in_shells_existing
+          - function: local.testing.api-tests.tavern_helpers:contractAgreementId_in_submodels_existing
+        headers:
+          content-type: application/json
+
+
+---
+
+
+test_name: Make sure jobs are not responsed with contractAgreementIds in shells and submodels if auditContractNegotiation deactivated
+
+strict:
+  - headers:off
+  - json:off
+
+stages:
+  - name: create a job and check for success
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+      json:
+        key:
+          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
+        collectAspects: true
+        auditContractNegotiation: false
+        depth: 2
+        aspects:
+          - SerialPart
+        direction: "downward"
+      method: POST
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_api_key
+    response:
+      status_code: 201
+      headers:
+        content-type: application/json
+      save:
+        json:
+          job_id: id
+
+  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+
+  - name: verify job response with desired test steps
+    request:
+      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+      params:
+        returnUncompletedJob: true
+      method: GET
+      headers:
+        content-type: application/json
+        $ext:
+          function: local.testing.api-tests.tavern_helpers:create_api_key
+    response:
+      status_code: 200
+      verify_response_with:
+        - function: local.testing.api-tests.tavern_helpers:contractAgreementId_in_shells_not_existing
+        - function: local.testing.api-tests.tavern_helpers:contractAgreementId_in_submodels_not_existing
+      headers:
+        content-type: application/json

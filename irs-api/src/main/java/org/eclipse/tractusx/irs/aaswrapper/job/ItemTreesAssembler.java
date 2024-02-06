@@ -34,9 +34,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Bpn;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Tombstone;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 
 /**
  * Assembles multiple partial item graphs into one overall item graph.
@@ -55,7 +55,7 @@ public class ItemTreesAssembler {
         final var relationships = new LinkedHashSet<Relationship>();
         final var numberOfPartialTrees = new AtomicInteger();
         final ArrayList<Tombstone> tombstones = new ArrayList<>();
-        final ArrayList<AssetAdministrationShellDescriptor> shells = new ArrayList<>();
+        final ArrayList<Shell> shells = new ArrayList<>();
         final ArrayList<Submodel> submodels = new ArrayList<>();
         final Set<Bpn> bpns = new HashSet<>();
 

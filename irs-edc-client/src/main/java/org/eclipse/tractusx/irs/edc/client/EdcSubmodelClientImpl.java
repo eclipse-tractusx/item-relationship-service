@@ -36,8 +36,10 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
@@ -47,10 +49,12 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StopWatch;
 
 /**
@@ -89,17 +93,23 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
                              .schedule();
     }
 
-    private Optional<String> retrieveSubmodelData(final String submodelDataplaneUrl, final StopWatch stopWatch,
-            final EndpointDataReference endpointDataReference) {
+    private Optional<SubmodelDescriptor> retrieveSubmodelData(final String submodelDataplaneUrl,
+            final StopWatch stopWatch, final EndpointDataReference endpointDataReference) {
         if (endpointDataReference != null) {
             log.info("Retrieving data from EDC data plane for dataReference with id {}", endpointDataReference.getId());
-            final String data = edcDataPlaneClient.getData(endpointDataReference, submodelDataplaneUrl);
+            final String payload = edcDataPlaneClient.getData(endpointDataReference, submodelDataplaneUrl);
             stopWatchOnEdcTask(stopWatch);
 
-            return Optional.of(data);
+            return Optional.of(
+                    new SubmodelDescriptor(getContractAgreementId(endpointDataReference.getAuthCode()), payload));
         }
 
         return Optional.empty();
+    }
+
+    @Nullable
+    private String getContractAgreementId(final String authCode) {
+        return StringUtils.isNotBlank(authCode) ? EDRAuthCode.fromAuthCodeToken(authCode).getCid() : null;
     }
 
     private Optional<EndpointDataReference> retrieveEndpointReference(final String storageId,
@@ -132,7 +142,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     }
 
     @Override
-    public CompletableFuture<String> getSubmodelRawPayload(final String connectorEndpoint,
+    public CompletableFuture<SubmodelDescriptor> getSubmodelPayload(final String connectorEndpoint,
             final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             log.info("Requesting raw SubmodelPayload for endpoint '{}'.", connectorEndpoint);
@@ -141,7 +151,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
             final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId);
 
-            return pollingService.<String>createJob()
+            return pollingService.<SubmodelDescriptor>createJob()
                                  .action(() -> retrieveSubmodelData(submodelDataplaneUrl, stopWatch,
                                          endpointDataReference))
                                  .timeToLive(config.getSubmodel().getRequestTtl())
@@ -153,7 +163,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId)
             throws EdcClientException {
-        log.info("Retrieving endpoint data reference from cache for assed id: {}", assetId);
+        log.info("Retrieving endpoint data reference from cache for asset id: {}", assetId);
         final EndpointDataReferenceStatus cachedEndpointDataReference = endpointDataReferenceCacheService.getEndpointDataReference(
                 assetId);
 
@@ -174,11 +184,15 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final String assetId, final EndpointDataReferenceStatus cachedEndpointDataReference)
             throws EdcClientException {
         try {
-            final EndpointDataReference endpointDataReference = getEndpointReferencesForAsset(connectorEndpoint,
-                    NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference).get();
-            endpointDataReferenceStorage.put(assetId, endpointDataReference);
+            final List<CompletableFuture<EndpointDataReference>> endpointDataReferences = getEndpointReferencesForAsset(
+                    connectorEndpoint, NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference);
 
-            return endpointDataReference;
+            // TODO (mfischer): #395 clarify if we need to use the fastest result here or return the list of futures
+            //         in the latter case we need to move endpointDataReferenceStorage.put somewhere else
+            final EndpointDataReference fastest = new ResultFinder().getFastestResult(endpointDataReferences).get();
+            endpointDataReferenceStorage.put(assetId, fastest);
+
+            return fastest;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new EdcClientException(e);
@@ -247,8 +261,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         try {
             response = contractNegotiationService.negotiate(providerWithSuffix, catalogItem,
                     endpointDataReferenceStatus);
-
-            // FIXME (mfischer) #214 how to handle?
+            // TODO(mfischer): #395 how to handle?
         } catch (ContractNegotiationException e) {
             throw new RuntimeException(e);
         } catch (UsagePolicyException e) {

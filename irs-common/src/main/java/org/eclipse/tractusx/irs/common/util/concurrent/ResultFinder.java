@@ -44,9 +44,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 @Slf4j
 public class ResultFinder {
 
-    // TODO (mfischer): Remove when #214 is tested
-    public static final String LOGPREFIX_TO_BE_REMOVED_LATER = "#214@ ";
-
     /**
      * Returns a new {@link CompletableFuture} which completes
      * when at least one of the given futures completes successfully or all fail.
@@ -58,47 +55,41 @@ public class ResultFinder {
      */
     public <T> CompletableFuture<T> getFastestResult(final List<CompletableFuture<T>> futures) {
 
-        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "getFastestResult - ";
-
         if (futures == null || futures.isEmpty()) {
-            log.warn(logPrefix + "Called getFastestResult with empty list of futures");
+            log.warn("Called getFastestResult with empty list of futures");
             return CompletableFuture.completedFuture(null);
         }
 
-        log.info(logPrefix + "Trying to get fastest result from list of futures");
+        log.debug("Trying to get fastest result from list of futures");
 
-        final CompletableFuture<T> fastestResultPromise = new CompletableFuture<>();
+        // The purpose of this overall future is to track when the first data request is successful.
+        // This way we do not need to wait for the others to complete.
+        final CompletableFuture<T> overallFuture = new CompletableFuture<>();
 
         final List<Throwable> exceptions = new ArrayList<>();
 
         final var futuresList = futures.stream()
                                        .map(future -> future.exceptionally(collectingExceptionsAndThrow(exceptions))
-                                                            .handle(completingOnFirstSuccessful(fastestResultPromise)))
+                                                            .handle(completingOnFirstSuccessful(overallFuture)))
                                        .toList();
 
         allOf(toArray(futuresList)).whenComplete((value, ex) -> {
 
-            log.info(logPrefix + "All of the futures completed");
+            log.debug("All of the futures completed");
 
             if (ex != null) {
-
                 log.warn("All failed: " + System.lineSeparator() //
                         + exceptions.stream()
                                     .map(ExceptionUtils::getStackTrace)
                                     .collect(Collectors.joining(System.lineSeparator())), ex);
 
-                fastestResultPromise.completeExceptionally(
-                        new CompletionExceptions(LOGPREFIX_TO_BE_REMOVED_LATER + "None successful", exceptions));
-
-            } else if (fastestResultPromise.isDone()) {
-                log.info(logPrefix + "Fastest result already found, ignoring the others");
+                overallFuture.completeExceptionally(new CompletionExceptions("None successful", exceptions));
             } else {
-                log.info(logPrefix + "Completing");
-                fastestResultPromise.complete(null);
+                overallFuture.complete(null);
             }
         });
 
-        return fastestResultPromise;
+        return overallFuture;
     }
 
     private static <T> CompletableFuture<T>[] toArray(final List<CompletableFuture<T>> handledFutures) {
@@ -106,29 +97,26 @@ public class ResultFinder {
     }
 
     private static <T> BiFunction<T, Throwable, Boolean> completingOnFirstSuccessful(
-            final CompletableFuture<T> resultPromise) {
-
-        final String logPrefix = LOGPREFIX_TO_BE_REMOVED_LATER + "completingOnFirstSuccessful - ";
+            final CompletableFuture<T> overallFuture) {
 
         return (value, throwable) -> {
 
-            log.info(logPrefix + "value: '{}', throwable: {}", value, throwable);
+            log.debug("value: '{}', throwable: {}", value, throwable);
 
-            final boolean notFinishedByOtherFuture = !resultPromise.isDone();
-            log.info(logPrefix + "notFinishedByOtherFuture {} ", notFinishedByOtherFuture);
+            final boolean notFinishedByOtherFuture = !overallFuture.isDone();
+            log.debug("notFinishedByOtherFuture {} ", notFinishedByOtherFuture);
 
             final boolean currentFutureSuccessful = throwable == null && value != null;
 
             if (notFinishedByOtherFuture && currentFutureSuccessful) {
 
-                // first future that completes successfully completes the overall future
-                log.info(logPrefix + "First future that completed successfully");
-                resultPromise.complete(value);
+                log.debug("First future that completed successfully");
+                overallFuture.complete(value);
                 return true;
 
             } else {
                 if (throwable != null) {
-                    log.warn(logPrefix + "Exception occurred: " + throwable.getMessage(), throwable);
+                    log.warn("Exception occurred: " + throwable.getMessage(), throwable);
                     throw new CompletionException(throwable.getMessage(), throwable);
                 }
                 return false;
@@ -138,8 +126,7 @@ public class ResultFinder {
 
     private static <T> Function<Throwable, T> collectingExceptionsAndThrow(final List<Throwable> exceptions) {
         return t -> {
-            log.error(LOGPREFIX_TO_BE_REMOVED_LATER + "collectingExceptionsAndThrow - " + "Exception occurred: "
-                    + t.getMessage(), t);
+            log.error("Exception occurred: " + t.getMessage(), t);
             exceptions.add(t);
             throw new CompletionException(t);
         };
@@ -153,7 +140,7 @@ public class ResultFinder {
     public static class CompletionExceptions extends CompletionException {
 
         private final List<Throwable> causes;
-        
+
         public CompletionExceptions(final String msg, final List<Throwable> causes) {
             super(msg);
             this.causes = causes;

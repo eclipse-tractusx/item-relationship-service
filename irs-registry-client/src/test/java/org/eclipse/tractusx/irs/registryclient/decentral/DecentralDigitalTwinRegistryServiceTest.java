@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
@@ -82,7 +83,7 @@ class DecentralDigitalTwinRegistryServiceTest {
     class FetchShellsTests {
 
         @Test
-        void should_return_expected_shell() throws RegistryServiceException {
+        void shouldReturnExpectedShell() throws RegistryServiceException {
             // given
             final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                     "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
@@ -102,14 +103,14 @@ class DecentralDigitalTwinRegistryServiceTest {
                     expectedShell);
 
             // when
-            final var actualShell = sut.fetchShells(List.of(digitalTwinRegistryKey));
+            final var actualShell = sut.fetchShells(List.of(digitalTwinRegistryKey)).stream().map(Shell::payload);
 
             // then
             assertThat(actualShell).containsExactly(expectedShell);
         }
 
         @Test
-        void when_InterruptedException_occurs() throws ExecutionException, InterruptedException {
+        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException {
 
             // given
             simulateResultFinderInterrupted();
@@ -143,7 +144,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void when_ExecutionException_occurs() {
+        void whenExecutionExceptionOccurs() {
 
             // given
             simulateGetFastestResultFailedFuture();
@@ -174,7 +175,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void should_throw_ShellNotFoundException_if_no_digital_twin_registry_keys_given() {
+        void shouldThrowShellNotFoundException_ifNoDigitalTwinRegistryKeysGiven() {
             assertThatThrownBy(() -> sut.fetchShells(emptyList())).isInstanceOf(ShellNotFoundException.class);
         }
 
@@ -204,7 +205,7 @@ class DecentralDigitalTwinRegistryServiceTest {
     class LookupGlobalAssetIdsTests {
 
         @Test
-        void should_return_the_expected_globalAssetId() throws RegistryServiceException {
+        void shouldReturnTheExpectedGlobalAssetId() throws RegistryServiceException {
             // given
             final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                     "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
@@ -230,13 +231,14 @@ class DecentralDigitalTwinRegistryServiceTest {
 
             String actualGlobalAssetId = assetAdministrationShellDescriptors.stream()
                                                                             .findFirst()
+                                                                            .map(Shell::payload)
                                                                             .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
                                                                             .get();// then
             assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
         }
 
         @Test
-        void when_InterruptedException_occurs() throws ExecutionException, InterruptedException {
+        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException {
             // given
             simulateResultFinderInterrupted();
 
@@ -251,7 +253,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void when_ExecutionException_occurs() {
+        void whenExecutionExceptionOccurs() {
             // given
             simulateGetFastestResultFailedFuture();
 

@@ -152,16 +152,13 @@ minioUser: "minio"  # <minio-username>
 minioPassword:  # <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
 oauth2:
+  clientId:  # <oauth2-client-id>
+  clientSecret:  # <oauth2-client-secret>
   clientTokenUri:  # <oauth2-token-uri>
-  semantics:
-    clientId:  # <semantics-client-id>
-    clientSecret:  # <semantics-client-secret>
-  discovery:
-    clientId:  # <discovery-client-id>
-    clientSecret:  # <discovery-client-secret>
-  bpdm:
-    clientId:  # <bpdm-client-id>
-    clientSecret:  # <bpdm-client-secret>
+portal:
+  oauth2:
+    clientId:  # <portal-client-id>
+    clientSecret:  # <portal-client-secret>
 edc:
   controlplane:
     endpoint:
@@ -210,7 +207,7 @@ edc:
     cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 discovery:
-  oAuthClientId: discovery  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+  oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:
   edc:
