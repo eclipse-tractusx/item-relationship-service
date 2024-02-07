@@ -80,13 +80,15 @@ jobs:
           mkdir -p irs-edc-client/src/main/resources/META-INF/
           mkdir -p irs-models/src/main/resources/META-INF/
           mkdir -p irs-testing/src/main/resources/META-INF/
+          mkdir -p irs-common/src/main/resources/META-INF/
           cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-registry-client/src/main/resources/META-INF/
           cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-edc-client/src/main/resources/META-INF/
           cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-models/src/main/resources/META-INF/
           cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-testing/src/main/resources/META-INF/
+          cp LICENSE NOTICE.md DEPENDENCIES SECURITY.md irs-common/src/main/resources/META-INF/
 
       # publish snapshots or releases
       - name: Publish version
         run: |-
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout -pl irs-registry-client)
-          mvn clean deploy -s $HOME/.m2/settings.xml --batch-mode -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -Prelease -pl irs-testing,irs-models,irs-edc-client,irs-registry-client -Drevision=$VERSION
+          mvn clean deploy -s $HOME/.m2/settings.xml --batch-mode -Dgpg.passphrase="${{ secrets.ORG_GPG_PASSPHRASE }}" -Prelease -pl irs-testing,irs-models,irs-edc-client,irs-registry-client,irs-common -Drevision=$VERSION
