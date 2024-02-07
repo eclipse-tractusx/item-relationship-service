@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
 - Redesigned Shell object - wrapped payload and added "contractAgreementId" field
 - Changed structure of Policy creation to match EDC format
+- Update irs-registry-client to 1.6.0-SNAPSHOT
 
 ### Fixed
 - Update to Spring Boot 3.1.8. This fixes the following CVEs:
