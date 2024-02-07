@@ -124,7 +124,7 @@ class IrsWireMockIntegrationTest {
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("bpdm.bpnEndpoint", () -> BpdmWireMockSupport.BPDM_URL_TEMPLATE);
-        registry.add("digitalTwinRegistry.discoveryFinderUrl", () -> DISCOVERY_FINDER_URL);
+        registry.add("digitalTwinRegistry.discovery.discoveryFinderUrl", () -> DISCOVERY_FINDER_URL);
         registry.add("digitalTwinRegistry.shellDescriptorTemplate", () -> SHELL_DESCRIPTORS_TEMPLATE);
         registry.add("digitalTwinRegistry.lookupShellsTemplate", () -> LOOKUP_SHELLS_TEMPLATE);
         registry.add("digitalTwinRegistry.type", () -> "decentral");
