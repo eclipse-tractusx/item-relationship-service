@@ -463,8 +463,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BoM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bill of Materials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bill of Materials (BoM)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A Bill of Materials is a comprehensive list of materials, components, sub-assemblies, and the quantities of each needed to manufacture or build a product. It serves as a structured document that provides information about the raw materials, parts, and components required for the production process.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BPN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Business Partner Number</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Space</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Data Spaces are the key concept for a large-scale, cross-border data economy. This is also the vision of the Gaia-X initiative for a data infrastructure in Europe. The International Data Space Association (IDSA) contributes significantly to this with the architectural model, interfaces, and standards.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DTR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin Registry. The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse Dataspace Connector (EDC)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Eclipse Data Space Connector (EDC) is a standard and policy-compliant connector that can be used within the scope of Catena-X, but also more generally as a connector for Data Spaces. It is split up into Control-Plane and Data-Plane, whereas the Control-Plane functions as administration layer and has responsibility of resource management, contract negotiation and administer data transfer. The Data-Plane does the heavy lifting of transferring and receiving data streams. For more information see:
+<a href="https://github.com/eclipse-edc/Connector">EDC Connector</a> , <a href="https://github.com/eclipse-tractusx/tractusx-edc">Tractus-X EDC (Eclipse Dataspace Connector)</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Edge</p></td>
@@ -479,12 +500,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">The result returned via the IRS. This corresponds to a tree structure in which each node represents a part of a virtual asset.</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Managed Identity Wallet (MIW)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Managed Identity Wallets (MIW) service implements the Self-Sovereign-Identity (SSI) readiness by providing a wallet hosting platform including a decentralized identifier (DID) resolver, service endpoints and the company wallets itself.
+For more information see:
+<a href="https://github.com/eclipse-tractusx/managed-identity-wallet">eclipse-tractusx/managed-identity-wallet</a> , <a href="https://github.com/catenax-ng/tx-managed-identity-wallets">catenax-ng/tx-managed-identity-wallets</a></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MTPDC</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Formerly known Service Name: Multi Tier Parts Data Chain</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PolicyStore</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases.
+For more information see:
+<a href="https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction">Policy specification for Catena-X verifiable credentials</a></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PRS</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Formerly known Service Name: Parts Relationship Service</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Self-Sovereign Identity (SSI)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">For more information see: <a href="https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2">ssi-docu</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Traversal Aspect</p></td>
@@ -495,28 +532,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">Verifiable Credential (VC)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">For more information see: <a href="https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2/3.%20Verifiable%20Credentials">Verifiable Credentials</a></p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse Dataspace Connector (EDC)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For more information see: <a href="https://github.com/eclipse-tractusx/tractusx-edc" class="bare">https://github.com/eclipse-tractusx/tractusx-edc</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Managed Identity Wallet (MIW)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For more information see: <a href="https://github.com/eclipse-tractusx/managed-identity-wallet" class="bare">https://github.com/eclipse-tractusx/managed-identity-wallet</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Self-Sovereign Identity (SSI)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">For more information see: <a href="https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2" class="bare">https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PolicyStore</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: <a href="https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction" class="bare">https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction</a></p></td>
-</tr>
 </tbody>
 </table>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-01-29 13:22:33 UTC
+Last updated 2024-02-07 07:44:30 UTC
 </div>
 </div>
 </body>

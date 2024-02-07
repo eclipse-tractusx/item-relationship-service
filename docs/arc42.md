@@ -1007,12 +1007,15 @@ The IRS stores two types of data in a persistent way:
 * Job metadata
 * Job payloads, e.g. AAS shells or submodel data
 
-All of this is data is stored in an object store. The currently used implementation is Minio (Amazon S3 compatible).
-This reduces the complexity in storing and retrieving data. There also is no predefined model for the data, every document can be stored as it is.
+All of this is data is stored in an object store.
+The currently used implementation is Minio (Amazon S3 compatible).
+This reduces the complexity in storing and retrieving data.
+There also is no predefined model for the data, every document can be stored as it is.
 The downside of this approach is lack of query functionality, as we can only search through the keys of the entries but not based on the value data.
 In the future, another approach or an additional way to to index the data might be required.
 
-To let the data survive system restarts, Minio needs to use a persistent volume for the data storage. A default configuration for this is provided in the Helm charts.
+To let the data survive system restarts, Minio needs to use a persistent volume for the data storage.
+A default configuration for this is provided in the Helm charts.
 
 ### Transaction handling
 
@@ -1024,7 +1027,8 @@ There is no session handling in the IRS, access is solely based on bearer tokens
 
 ### Communication and integration
 
-All interfaces to other systems are using RESTful calls over HTTP(S). Where central authentication is required, a common OAuth2 provider is used.
+All interfaces to other systems are using RESTful calls over HTTP(S).
+Where central authentication is required, a common OAuth2 provider is used.
 
 For outgoing calls, the Spring RestTemplate mechanism is used and separate RestTemplates are created for the different ways of authentication.
 
@@ -1036,13 +1040,15 @@ There are two types of potential errors in the IRS:
 
 #### Technical errors
 
-Technical errors occur when there is a problem with the application itself, its configuration or directly connected infrastructure, e.g. the Minio persistence. Usually, the application cannot solve these problems by itself and requires some external support (manual work or automated recovery mechanisms, e.g. Kubernetes liveness probes).
+Technical errors occur when there is a problem with the application itself, its configuration or directly connected infrastructure, e.g. the Minio persistence.
+Usually, the application cannot solve these problems by itself and requires some external support (manual work or automated recovery mechanisms, e.g. Kubernetes liveness probes).
 
 These errors are printed mainly to the application log and are relevant for the healthchecks.
 
 #### Functional errors
 
-Functional errors occur when there is a problem with the data that is being processed or external systems are unavailable and data cannot be sent / fetched as required for the process. While the system might not be able to provide the required function at that moment, it may work with a different dataset or as soon as the external systems recover.
+Functional errors occur when there is a problem with the data that is being processed or external systems are unavailable and data cannot be sent / fetched as required for the process.
+While the system might not be able to provide the required function at that moment, it may work with a different dataset or as soon as the external systems recover.
 
 These errors are reported in the Job response and do not directly affect application health.
 
@@ -1050,45 +1056,60 @@ These errors are reported in the Job response and do not directly affect applica
 
 ##### Throw or log, don't do both
 
-When catching an exception, either log the exception and handle the problem or rethrow it, so it can be handled at a higher level of the code. By doing both, an exception might be written to the log multiple times, which can be confusing.
+When catching an exception, either log the exception and handle the problem or rethrow it, so it can be handled at a higher level of the code.
+By doing both, an exception might be written to the log multiple times, which can be confusing.
 
 ##### Write own base exceptions for (internal) interfaces
 
-By defining a common (checked) base exception for an interface, the caller is forced to handle potential errors, but can keep the logic simple. On the other hand, you still have the possibility to derive various, meaningful exceptions for different error cases, which can then be thrown via the API.
+By defining a common (checked) base exception for an interface, the caller is forced to handle potential errors, but can keep the logic simple.
+On the other hand, you still have the possibility to derive various, meaningful exceptions for different error cases, which can then be thrown via the API.
 
 Of course, when using only RuntimeExceptions, this is not necessary - but those can be overlooked quite easily, so be careful there.
 
 ##### Central fallback exception handler
 
-There will always be some exception that cannot be handled inside of the code correctly - or it may just have been unforeseen. A central fallback exception handler is required so all problems are visible in the log and the API always returns meaningful responses. In some cases, this is as simple as a HTTP 500.
+There will always be some exception that cannot be handled inside of the code correctly - or it may just have been unforeseen.
+A central fallback exception handler is required so all problems are visible in the log and the API always returns meaningful responses.
+In some cases, this is as simple as a HTTP 500.
 
 ##### Dont expose too much exception details over API
 
-It’s good to inform the user, why their request did not work, but only if they can do something about it (HTTP 4xx). So in case of application problems, you should not expose details of the problem to the caller. This way, we avoid opening potential attack vectors.
+It’s good to inform the user, why their request did not work, but only if they can do something about it (HTTP 4xx).
+So in case of application problems, you should not expose details of the problem to the caller.
+This way, we avoid opening potential attack vectors.
 
 ### Parallelization and threading
 
-The heart of the IRS is the parallel execution of planned jobs. As almost each job requires multiple calls to various endpoints, those are done in parallel as well to reduce the total execution time for each job.
+The heart of the IRS is the parallel execution of planned jobs.
+As almost each job requires multiple calls to various endpoints, those are done in parallel as well to reduce the total execution time for each job.
 
-Tasks execution is orchestrated by the JobOrchestrator class. It utilizes a central ExecutorService, which manages the number of threads and schedules new Task as they come in.
+Tasks execution is orchestrated by the JobOrchestrator class.
+It utilizes a central ExecutorService, which manages the number of threads and schedules new Task as they come in.
 
 ### Plausibility checks and validation
 
 Data validation happens at two points:
 
-* IRS API: the data sent by the client is validated to match the model defined in the IRS. If the validation fails, the IRS sends a HTTP 400 response and indicates the problem to the caller.
+* IRS API: the data sent by the client is validated to match the model defined in the IRS.
+If the validation fails, the IRS sends a HTTP 400 response and indicates the problem to the caller.
 * Submodel payload: each time a submodel payload is requested from via EDC, the data is validated against the model defined in the SemanticHub for the matching aspect type.
-* EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated. IDs of so-called "Rahmenverträgen" or Framework-Agreements can be added to the IRS Policy Store to be accepted by the IRS. If a Contract Offer does not match any of the IDs store in Policy Store, the contract offer will be declined and no data will be consumed.
+* EDC Contract Offer Policy: each time IRS consumes data over the EDC, the policies of the offered contract will be validated.
+IDs of so-called "Rahmenverträgen" or Framework-Agreements can be added to the IRS Policy Store to be accepted by the IRS.
+If a Contract Offer does not match any of the IDs store in Policy Store, the contract offer will be declined and no data will be consumed.
 
 ### Policy Store
 
-The IRS gives its users the ability to manage, create and delete complex policies containing permissions and constraints in order to obtain the most precise control over access and use of data received from the edc provider. Policies stored in Policy Store will serve as input with allowed restriction and will be checked against every item from EDC Catalog.
+The IRS gives its users the ability to manage, create and delete complex policies containing permissions and constraints in order to obtain the most precise control over access and use of data received from the edc provider.
+Policies stored in Policy Store will serve as input with allowed restriction and will be checked against every item from EDC Catalog.
 
-The structure of a Policy that can be stored in storage can be easily viewed by using Policy Store endpoints in the published API documentation. Each policy may contain more than one permission, which in turn consists of constraints linked together by AND or OR relationships. This model provides full flexibility and control over stored access and use policies.
+The structure of a Policy that can be stored in storage can be easily viewed by using Policy Store endpoints in the published API documentation.
+Each policy may contain more than one permission, which in turn consists of constraints linked together by AND or OR relationships.
+This model provides full flexibility and control over stored access and use policies.
 
 ### Digital Twin / EDC requirements
 
-In order to work with the decentral network approach, IRS requires the Digital Twin to contain a `"subprotocolBody"` in each of the submodelDescriptor endpoints. This `"subprotocolBody"` has to contain the `"id"` of the EDC asset, as well as the `"dspEndpoint"` of the EDC, separated by a semicolon (e.g. `"subprotocolBody": "id=123;dspEndpoint=http://edc.control.plane/api/v1/dsp"`).
+In order to work with the decentral network approach, IRS requires the Digital Twin to contain a `"subprotocolBody"` in each of the submodelDescriptor endpoints.
+This `"subprotocolBody"` has to contain the `"id"` of the EDC asset, as well as the `"dspEndpoint"` of the EDC, separated by a semicolon (e.g. `"subprotocolBody": "id=123;dspEndpoint=http://edc.control.plane/api/v1/dsp"`).
 
 The `"dspEndpoint"` is used to request the EDC catalog of the dataprovider and the `"id"` to filter for the exact asset inside this catalog.
 
@@ -1106,7 +1127,8 @@ Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as 
 
 #### Semantics Hub
 
-Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable). The IRS can preload configured schema models on startup to reduce on demand call times.
+Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable).
+The IRS can preload configured schema models on startup to reduce on demand call times.
 
 Additionally, models can be deployed with the system as a backup to the real Semantic Hub service.
 
@@ -1121,44 +1143,61 @@ The time to live for both caches can be configured separately as described in th
 
 Further information on Discovery Service can be found in the chapter "System scope and context".
 
+### Discovery Process
+
+#### Digital Twin Registry
+
+The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
+This applies to the following scenarios.
+
+Please note that the expression "the first result" in the subsequent sections means the first successful answer.__
+
+##### Scenario 1: EDC with multiple DTRs
+
+IRS queries all DTRs for the globalAssetId and will take the first result it gets.
+If none of the DTRs return a result, IRS will create a tombstone.
+
+##### Scenario 2: Multiple EDCs with one DTR
+
+IRS starts a contract negotiation for all registry contract offers in parallel and queries the DTRs for all successful negotiations.
+The first registry which responds with a DT will be the one used by IRS.
+
+##### Scenario 3: One EDC with one DTR
+
+Only one EDC found for BPN and the catalog only contains one offer for the DTR.
+IRS will use this registry and will create a tombstone if no DT could be found for the globalAssetId.
+
+##### Scenario 4: Multiple EDCs with multiple DTRs
+
+IRS starts a contract negotiation for all the registry offers.
+
+##### Scenario 5: Multiple EDCs with no DTRs
+
+IRS starts a contract negotiation for all the registry offers and creates a tombstone since no DTR could be discovered.
+
+##### Special Scenario: Same DT in multiple DTRs
+
+IRS will use all registries to query for the globalAssetId and takes the first result which is returned.
+If no DT could be found in any of the DTRs, IRS will create a tombstone.
+
+##### Special Scenario: Multiple DTs (with the same globalAssetId) in one DTR
+
+IRS uses the `/query` endpoint of the DTR to get the DT id based on the globalAssetId.
+If more than one id is present for a globalAssetId, IRS will use the first of the list.
+
 #### EDC
 
 EndpointDataReferenceStorage is in-memory local storage that holds records (EndpointDataReferences) by either assetId or contractAgreementId.
 
 When EDC gets EndpointDataReference describing endpoint serving data it uses EndpointDataReferenceStorage and query it by assetId.
-This allows reuse of already existing EndpointDataReference if it is present, valid, and it’s token is not expired,
-rather than starting whole new contract negotiation process.
+This allows reuse of already existing EndpointDataReference if it is present, valid, and it’s token is not expired, rather than starting whole new contract negotiation process.
 
-In case token is expired the process is also shortened. We don’t have to start new contract negotiation process,
-since we can obtain required contractAgreementId from present authCode. This improves request processing time.
+In case token is expired the process is also shortened.
+We don’t have to start new contract negotiation process, since we can obtain required contractAgreementId from present authCode.
+This improves request processing time.
 
 ```bash
-sequenceDiagram
-    autonumber
-    participant EdcSubmodelClient
-    participant ContractNegotiationService
-    participant EndpointDataReferenceStorage
-    participant EdcCallbackController
-    participant EdcDataPlaneClient
-    EdcSubmodelClient ->> EndpointDataReferenceStorage: Get EDR Token for EDC asset id
-    EndpointDataReferenceStorage ->> EdcSubmodelClient: Return Optional<EDR Token>
-    alt Token is present and not expired
-        EdcSubmodelClient ->> EdcSubmodelClient: Optional.get
-    else
-        alt Token is expired
-            EdcSubmodelClient ->> ContractNegotiationService: Renew EDR Token based on existing Token
-        else Token is not present
-            EdcSubmodelClient ->> ContractNegotiationService: Negotiate new EDR Token
-        end
-        ContractNegotiationService -->> EdcCallbackController: EDC flow
-        EdcCallbackController ->> EndpointDataReferenceStorage: Store EDR token by EDC asset id after EDC callback
-        loop While EDR Token is not present
-            EdcSubmodelClient ->> EndpointDataReferenceStorage: Poll for EDR Token
-        end
-        EndpointDataReferenceStorage ->> EdcSubmodelClient: Return EDR Token
-    end
-    EdcSubmodelClient ->> EdcDataPlaneClient: Get data(EDR Token, Dataplane URL)
-    EdcDataPlaneClient ->> EdcSubmodelClient: Return data
+
 ```
 
 ## Development concepts
@@ -1280,18 +1319,22 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | --- | --- |
 | AAS | Asset Administration Shell (Industry 4.0) |
 | Aspect servers (submodel endpoints) | Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X. |
-| BoM | Bill of Materials |
+| Bill of Materials (BoM) | A Bill of Materials is a comprehensive list of materials, components, sub-assemblies, and the quantities of each needed to manufacture or build a product. It serves as a structured document that provides information about the raw materials, parts, and components required for the production process. |
+| BPN | Business Partner Number |
+| Data Space | Data Spaces are the key concept for a large-scale, cross-border data economy. This is also the vision of the Gaia-X initiative for a data infrastructure in Europe. The International Data Space Association (IDSA) contributes significantly to this with the architectural model, interfaces, and standards. |
+| DT | Digital Twin |
+| DTR | Digital Twin Registry. The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints). |
+| Eclipse Dataspace Connector (EDC) | The Eclipse Data Space Connector (EDC) is a standard and policy-compliant connector that can be used within the scope of Catena-X, but also more generally as a connector for Data Spaces. It is split up into Control-Plane and Data-Plane, whereas the Control-Plane functions as administration layer and has responsibility of resource management, contract negotiation and administer data transfer. The Data-Plane does the heavy lifting of transferring and receiving data streams. For more information see: [EDC Connector](https://github.com/eclipse-edc/Connector) , [Tractus-X EDC (Eclipse Dataspace Connector)](https://github.com/eclipse-tractusx/tractusx-edc) |
 | Edge | see Traversal Aspect |
 | IRS | Item Relationship Service |
 | Item Graph | The result returned via the IRS. This corresponds to a tree structure in which each node represents a part of a virtual asset. |
+| Managed Identity Wallet (MIW) | The Managed Identity Wallets (MIW) service implements the Self-Sovereign-Identity (SSI) readiness by providing a wallet hosting platform including a decentralized identifier (DID) resolver, service endpoints and the company wallets itself. For more information see: [eclipse-tractusx/managed-identity-wallet](https://github.com/eclipse-tractusx/managed-identity-wallet) , [catenax-ng/tx-managed-identity-wallets](https://github.com/catenax-ng/tx-managed-identity-wallets) |
 | MTPDC | Formerly known Service Name: Multi Tier Parts Data Chain |
+| PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: [Policy specification for Catena-X verifiable credentials](https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction) |
 | PRS | Formerly known Service Name: Parts Relationship Service |
+| Self-Sovereign Identity (SSI) | For more information see: [ssi-docu](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2) |
 | Traversal Aspect | aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship. Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt |
 | Verifiable Credential (VC) | For more information see: [Verifiable Credentials](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2/3.%20Verifiable%20Credentials) |
-| Eclipse Dataspace Connector (EDC) | For more information see: <https://github.com/eclipse-tractusx/tractusx-edc> |
-| Managed Identity Wallet (MIW) | For more information see: <https://github.com/eclipse-tractusx/managed-identity-wallet> |
-| Self-Sovereign Identity (SSI) | For more information see: <https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2> |
-| PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: <https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction> |
 
 ### NOTICE
 
