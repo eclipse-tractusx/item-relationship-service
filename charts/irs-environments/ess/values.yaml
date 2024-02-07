@@ -24,9 +24,10 @@ irs-helm:
         secretName: tls-secret
   digitalTwinRegistry:
     url: https://irs-aas-registry-ess.int.demo.catena-x.net/semantics/registry
-    discoveryFinderUrl: https://irs-ess-discovery-mock.int.demo.catena-x.net/api/administration/connectors/discovery/search
     shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
     lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
+  discovery:
+    discoveryFinderUrl: https://irs-ess-discovery-mock.int.demo.catena-x.net/api/administration/connectors/discovery/search
   semanticshub:
     url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
     pageSize: "200"

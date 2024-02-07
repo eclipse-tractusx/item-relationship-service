@@ -35,9 +35,11 @@ irs-helm:
           controlPlane3: http://irs-provider3-tractusx-connector-controlplane:8080/api/check/liveness
   digitalTwinRegistry:
     url: https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0
-    discoveryFinderUrl: https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search
     shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
     lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
+  discovery:
+    discoveryFinderUrl: https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search
+
   semanticshub:
     url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
   bpdm:
