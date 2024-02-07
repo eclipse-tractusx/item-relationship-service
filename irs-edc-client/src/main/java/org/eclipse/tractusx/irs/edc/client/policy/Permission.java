@@ -23,9 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import java.util.List;
-
-import io.swagger.v3.oas.annotations.media.ArraySchema;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,11 +38,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Permission {
 
     @Schema(implementation = PolicyType.class, example = "USE")
+    @JsonAlias({"odrl:action"})
     private PolicyType action;
-    @ArraySchema
-    private List<Constraints> constraints;
+    @Schema
+    @JsonAlias({"odrl:constraint"})
+    private Constraints constraint;
 
 }

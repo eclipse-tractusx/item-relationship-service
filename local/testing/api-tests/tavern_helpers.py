@@ -1,4 +1,3 @@
-# testing_utils.py
 from datetime import datetime
 
 import os
@@ -355,3 +354,35 @@ def create_api_key_ess():
     api_key = os.getenv('ADMIN_USER_API_KEY_ESS')
 
     return {"X-API-KEY": api_key}
+
+
+def contractAgreementId_in_shells_existing(response):
+    shells = response.json().get("shells")
+    print("shells ", shells)
+    assert len(shells) >= 1
+    for i in shells:
+        assert i.get("contractAgreementId") is not None
+
+
+def contractAgreementId_in_submodels_existing(response):
+    submodels = response.json().get("submodels")
+    print("submodels ", submodels)
+    assert len(submodels) >= 1
+    for i in submodels:
+        assert i.get("contractAgreementId") is not None
+
+
+def contractAgreementId_in_shells_not_existing(response):
+    shells = response.json().get("shells")
+    print("shells ", shells)
+    assert len(shells) >= 1
+    for i in shells:
+        assert i.get("contractAgreementId") is None
+
+
+def contractAgreementId_in_submodels_not_existing(response):
+    submodels = response.json().get("submodels")
+    print("submodels ", submodels)
+    assert len(submodels) >= 1
+    for i in submodels:
+        assert i.get("contractAgreementId") is None

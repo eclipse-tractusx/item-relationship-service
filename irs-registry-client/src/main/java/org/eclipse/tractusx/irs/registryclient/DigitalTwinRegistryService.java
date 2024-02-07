@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.registryclient;
 
 import java.util.Collection;
 
-import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 
 /**
@@ -39,7 +39,7 @@ public interface DigitalTwinRegistryService {
      * @param bpn the BPN to retrieve the shells for
      * @return the collection of asset administration shells
      */
-    default Collection<AssetAdministrationShellDescriptor> lookupShellsByBPN(final String bpn) throws RegistryServiceException {
+    default Collection<Shell> lookupShellsByBPN(final String bpn) throws RegistryServiceException {
         return fetchShells(lookupShellIdentifiers(bpn)).stream().toList();
     }
 
@@ -69,6 +69,6 @@ public interface DigitalTwinRegistryService {
      * @param identifiers the shell identifiers
      * @return the shell descriptors
      */
-    Collection<AssetAdministrationShellDescriptor> fetchShells(Collection<DigitalTwinRegistryKey> identifiers)
+    Collection<Shell> fetchShells(Collection<DigitalTwinRegistryKey> identifiers)
             throws RegistryServiceException;
 }

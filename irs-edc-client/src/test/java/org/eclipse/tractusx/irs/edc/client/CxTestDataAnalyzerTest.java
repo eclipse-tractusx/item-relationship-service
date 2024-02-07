@@ -348,7 +348,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
     private void checkAndAddSubmodel(final boolean shouldCountSubmodel, final Optional<Map<String, Object>> payload,
             final List<Submodel> submodels, final String aspectType) {
         if (shouldCountSubmodel && payload.isPresent()) {
-            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, payload.get()));
+            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, UUID.randomUUID().toString(), payload.get()));
         }
     }
 

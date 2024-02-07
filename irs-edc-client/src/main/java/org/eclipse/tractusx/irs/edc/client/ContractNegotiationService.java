@@ -62,12 +62,6 @@ public class ContractNegotiationService {
     private final PolicyCheckerService policyCheckerService;
     private final EdcConfiguration config;
 
-    public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem)
-            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
-        return this.negotiate(providerConnectorUrl, catalogItem,
-                new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
-    }
-
     public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
             final EndpointDataReferenceStatus endpointDataReferenceStatus)
             throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
@@ -130,7 +124,7 @@ public class ContractNegotiationService {
 
         if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
             log.info("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyException(catalogItem.getItemId());
+            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy());
         }
 
         final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,

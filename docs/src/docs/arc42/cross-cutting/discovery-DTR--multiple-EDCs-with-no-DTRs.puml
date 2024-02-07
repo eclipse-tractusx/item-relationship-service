@@ -1,0 +1,34 @@
+@startuml
+actor IRS
+actor "Discovery Service" as DiscoveryService
+
+participant "EDC 1" as EDCProvider1
+participant "EDC 2" as EDCProvider2
+participant "EDC 3" as EDCProvider3
+
+IRS -> DiscoveryService: Get EDCs for BPN
+DiscoveryService -> IRS: Return list of 3 EDCs
+
+par
+    group Catalog Request to EDC 1
+        IRS -> EDCProvider1: Query for DTR contract offer
+        EDCProvider1 -> IRS: No offer
+    end
+
+    else
+
+    group Catalog Request to EDC 2
+        IRS -> EDCProvider2: Query for DTR contract offer
+        EDCProvider2 -> IRS: No offer
+    end
+
+    else
+
+    group Catalog Request to EDC 3
+        IRS -> EDCProvider3: Query for DTR contract offer
+        EDCProvider3 -> IRS: No offer
+    end
+end
+
+IRS -> IRS: Tombstone
+@enduml
