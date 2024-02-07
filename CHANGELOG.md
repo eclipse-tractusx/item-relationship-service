@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [4.5.0] - 2024-02-07
 ### Added
 - Added helper script for building documentation locally.
 - Added new job parameter flag "auditContractNegotiation" which toggles setting contractAgreementId in Shells and Submodels
@@ -13,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Integration Tests for the entire IRS flow using stubbed responses of Discovery Service, Semantic Hub, EDC, Digital Twin Registry and BPDM Pool
 
 ### Changed
-
 - Dataspace Discovery Service handles multiple EDC-Urls received for BPN now
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
 - Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
@@ -511,7 +512,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...HEAD
+[4.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...4.5.0
 [4.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.3.0...4.4.0
 [4.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...4.2.0
