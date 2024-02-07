@@ -26,9 +26,16 @@ irs-helm:
   minioUser: <path:traceability-irs/data/dev/minio#minioUser>
   minioPassword: <path:traceability-irs/data/dev/minio#minioPassword>
   oauth2:
-    clientId: <path:traceability-irs/data/dil/oauth2#clientId>
-    clientSecret: <path:traceability-irs/data/dil/oauth2#clientSecret>
     clientTokenUri: <path:traceability-irs/data/dil/oauth2#tokenUri>
+    semantics:
+      clientId: <path:traceability-irs/data/oauth2/semantics#clientId>
+      clientSecret: <path:traceability-irs/data/oauth2/semantics#clientSecret>
+    discovery:
+      clientId: <path:traceability-irs/data/oauth2/discovery#clientId>
+      clientSecret: <path:traceability-irs/data/oauth2/discovery#clientSecret>
+    bpdm:
+      clientId: <path:traceability-irs/data/oauth2/bpdm#clientId>
+      clientSecret: <path:traceability-irs/data/oauth2/bpdm#clientSecret>
   edc:
     controlplane:
       apikey:
@@ -79,10 +86,11 @@ irs-helm:
       digitalTwinRegistry:
         descriptorEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/shell-descriptors/{aasIdentifier}"
         shellLookupEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/lookup/shells?assetIds={assetIds}"
-        discoveryFinderUrl: "https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search"
         shellDescriptorTemplate: "/shell-descriptors/{aasIdentifier}"
         lookupShellsTemplate: "/lookup/shells?assetIds={assetIds}"
         type: "decentral"
+        discovery:
+          discoveryFinderUrl: "https://discovery-mock.dev.demo.catena-x.net/api/administration/connectors/discovery/search"
 
       semanticshub:
         url: "https://semantics.int.demo.catena-x.net/hub/api/v1/models"

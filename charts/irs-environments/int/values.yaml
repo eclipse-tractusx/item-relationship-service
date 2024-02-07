@@ -24,9 +24,10 @@ irs-helm:
         secretName: tls-secret
   digitalTwinRegistry:
     url: https://semantics.int.demo.catena-x.net/registry
-    discoveryFinderUrl: https://semantics.int.demo.catena-x.net/discoveryfinder/api/v1.0/administration/connectors/discovery/search
     shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
     lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
+  discovery:
+    discoveryFinderUrl: https://semantics.int.demo.catena-x.net/discoveryfinder/api/v1.0/administration/connectors/discovery/search
   semanticshub:
     url: https://semantics.int.demo.catena-x.net/hub/api/v1/models
     pageSize: "200"
@@ -35,14 +36,16 @@ irs-helm:
   minioUser: <path:traceability-irs/data/int/minio#minioUser>
   minioPassword: <path:traceability-irs/data/int/minio#minioPassword>
   oauth2:
-    clientId: <path:traceability-irs/data/int/oauth2#clientId>
-    clientSecret: <path:traceability-irs/data/int/oauth2#clientSecret>
     clientTokenUri: <path:traceability-irs/data/int/oauth2#tokenUri>
-    jwkSetUri: <path:traceability-irs/data/int/oauth2#jwkSetUri>
-  portal:
-    oauth2:
-      clientId: <path:traceability-irs/data/int/dataspacediscovery#clientId>
-      clientSecret: <path:traceability-irs/data/int/dataspacediscovery#clientSecret>
+    semantics:
+      clientId: <path:traceability-irs/data/oauth2/semantics#clientId>
+      clientSecret: <path:traceability-irs/data/oauth2/semantics#clientSecret>
+    discovery:
+      clientId: <path:traceability-irs/data/oauth2/discovery#clientId>
+      clientSecret: <path:traceability-irs/data/oauth2/discovery#clientSecret>
+    bpdm:
+      clientId: <path:traceability-irs/data/oauth2/bpdm#clientId>
+      clientSecret: <path:traceability-irs/data/oauth2/bpdm#clientSecret>
   edc:
     submodel:
       request:
