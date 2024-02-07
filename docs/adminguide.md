@@ -75,20 +75,25 @@ spring:
     oauth2:
       client:
         registration:
-          common:
+          semantics :
             authorization-grant-type: client_credentials
-            client-id: ${OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
-            client-secret: ${OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
-          portal:
+            client-id: ${SEMANTICS_OAUTH2_CLIENT_ID} # Semantic Hub OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${SEMANTICS_OAUTH2_CLIENT_SECRET} # Semantic Hub OAuth2 client secret used to authenticate with the IAM
+          discovery:
             authorization-grant-type: client_credentials
-            client-id: ${PORTAL_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
-            client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
+            client-id: ${DISCOVERY_OAUTH2_CLIENT_ID} # Dataspace Discovery OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${DISCOVERY_OAUTH2_CLIENT_SECRET} # Dataspace Discovery OAuth2 client secret used to authenticate with the IAM
+          bpdm:
+            authorization-grant-type: client_credentials
+            client-id: ${BPDM_OAUTH2_CLIENT_ID} # BPDM Pool OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${BPDM_OAUTH2_CLIENT_SECRET} # BPDM Pool OAuth2 client secret used to authenticate with the IAM
         provider:
-          common:
-            token-uri: ${OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
-          portal:
-            token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
-
+          semantics:
+            token-uri: ${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+          discovery:
+            token-uri: ${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+          bpdm:
+            token-uri: ${BPDM_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -252,11 +257,16 @@ digitalTwinRegistry:
   shellLookupEndpoint: ${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:} # The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}
   shellDescriptorTemplate: ${DIGITALTWINREGISTRY_SHELL_DESCRIPTOR_TEMPLATE:/shell-descriptors/{aasIdentifier}} # The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}
   lookupShellsTemplate: ${DIGITALTWINREGISTRY_QUERY_SHELLS_PATH:/lookup/shells?assetIds={assetIds}} # The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}
-  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-  discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
+  oAuthClientId: discovery # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the digital twin registry client
     connect: PT90S # HTTP connect timeout for the digital twin registry client
+  discovery:
+    oAuthClientId: discovery # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+    discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
+    timeout:
+      read: PT90S # HTTP read timeout for the discovery client
+      connect: PT90S # HTTP connect timeout for the discovery client
 
 semanticshub:
   # The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.
@@ -277,7 +287,7 @@ semanticshub:
     #          │ │ │  │ │ │
     scheduler: 0 0 23 * * * # How often to clear the semantic model cache
   defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part:1.0.0#SerialPart}" # IDs of models to cache at IRS startup
-  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+  oAuthClientId: semantics # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the semantic hub client
     connect: PT90S # HTTP connect timeout for the semantic hub client
@@ -285,7 +295,7 @@ semanticshub:
 
 bpdm:
   bpnEndpoint: "${BPDM_URL:}" # Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}
-  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+  oAuthClientId: bpdm # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the bpdm client
     connect: PT90S # HTTP connect timeout for the bpdm client
@@ -300,10 +310,6 @@ ess:
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
-    oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-    timeout:
-      read: PT90S # HTTP read timeout for the discovery client
-      connect: PT90S # HTTP connect timeout for the discovery client
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
 
@@ -339,7 +345,12 @@ digitalTwinRegistry:
     {{ tpl (.Values.digitalTwinRegistry.url | default "") . }}/lookup/shells?assetIds={assetIds}
   shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}  # The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}
   lookupShellsTemplate: /lookup/shells?assetIds={assetIds}  # The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}
+  oAuthClientId: discovery
+
+discovery:
+  oAuthClientId: discovery  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   discoveryFinderUrl:  # "https://<discovery-finder-url>
+
 semanticshub:
   url:  # https://<semantics-hub-url>
   pageSize: "100"  # Number of aspect models to retrieve per page
@@ -347,6 +358,7 @@ semanticshub:
     {{- if .Values.semanticshub.url }}
     {{- tpl (.Values.semanticshub.url | default "" ) . }}/{urn}/json-schema
     {{- end }}
+  oAuthClientId: semantics
   defaultUrns: >-
   #    urn:bamm:io.catenax.serial_part:1.0.0#SerialPart
   #    ,urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt
@@ -356,6 +368,7 @@ semanticshub:
 #    dXJuOmJhbW06aW8uY2F0ZW5heC5zZXJpYWxfcGFydDoxLjAuMCNTZXJpYWxQYXJ0: ewoJIiRzY2hlbWEiOiAiaHR0cDovL2pzb24tc2NoZW1hLm9yZy9kcmFmdC0wNC9zY2hlbWEiLAoJImRlc2NyaXB0aW9uIjogIkEgc2VyaWFsaXplZCBwYXJ0IGlzIGFuIGluc3RhbnRpYXRpb24gb2YgYSAoZGVzaWduLSkgcGFydCwgd2hlcmUgdGhlIHBhcnRpY3VsYXIgaW5zdGFudGlhdGlvbiBjYW4gYmUgdW5pcXVlbHkgaWRlbnRpZmllZCBieSBtZWFucyBvZiBhIHNlcmlhbCBudW1iZXIgb3IgYSBzaW1pbGFyIGlkZW50aWZpZXIgKGUuZy4gVkFOKSBvciBhIGNvbWJpbmF0aW9uIG9mIG11bHRpcGxlIGlkZW50aWZpZXJzIChlLmcuIGNvbWJpbmF0aW9uIG9mIG1hbnVmYWN0dXJlciwgZGF0ZSBhbmQgbnVtYmVyKSIsCgkidHlwZSI6ICJvYmplY3QiLAoJImNvbXBvbmVudHMiOiB7CgkJInNjaGVtYXMiOiB7CgkJCSJ1cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX0NhdGVuYVhJZFRyYWl0IjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJkZXNjcmlwdGlvbiI6ICJUaGUgcHJvdmlkZWQgcmVndWxhciBleHByZXNzaW9uIGVuc3VyZXMgdGhhdCB0aGUgVVVJRCBpcyBjb21wb3NlZCBvZiBmaXZlIGdyb3VwcyBvZiBjaGFyYWN0ZXJzIHNlcGFyYXRlZCBieSBoeXBoZW5zLCBpbiB0aGUgZm9ybSA4LTQtNC00LTEyIGZvciBhIHRvdGFsIG9mIDM2IGNoYXJhY3RlcnMgKDMyIGhleGFkZWNpbWFsIGNoYXJhY3RlcnMgYW5kIDQgaHlwaGVucyksIG9wdGlvbmFsbHkgcHJlZml4ZWQgYnkgXCJ1cm46dXVpZDpcIiB0byBtYWtlIGl0IGFuIElSSS4iLAoJCQkJInBhdHRlcm4iOiAiKF51cm46dXVpZDpbMC05YS1mQS1GXXs4fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXs0fS1bMC05YS1mQS1GXXsxMn0kKSIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfS2V5Q2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkidHlwZSI6ICJzdHJpbmciLAoJCQkJImRlc2NyaXB0aW9uIjogIlRoZSBrZXkgY2hhcmFjdGVyaXN0aWMgb2YgYSBsb2NhbCBpZGVudGlmaWVyLiBBIHNwZWNpZmljIHN1YnNldCBvZiBrZXlzIGlzIHByZWRlZmluZWQsIGJ1dCBhZGRpdGlvbmFsbHkgYW55IG90aGVyIGN1c3RvbSBrZXkgaXMgYWxsb3dlZC4gUHJlZGVmaW5lZCBrZXlzICh0byBiZSB1c2VkIHdoZW4gYXBwbGljYWJsZSk6XG4tIFwibWFudWZhY3R1cmVySWRcIiAtIFRoZSBCdXNpbmVzcyBQYXJ0bmVyIE51bWJlciAoQlBOKSBvZiB0aGUgbWFudWZhY3R1cmVyLiBWYWx1ZTogQlBOLU51bW1lclxuLSBcInBhcnRJbnN0YW5jZUlkXCIgLSBUaGUgaWRlbnRpZmllciBvZiB0aGUgbWFudWZhY3R1cmVyIGZvciB0aGUgc2VyaWFsaXplZCBpbnN0YW5jZSBvZiB0aGUgcGFydCwgZS5nLiB0aGUgc2VyaWFsIG51bWJlclxuLSBcImJhdGNoSWRcIiAtIFRoZSBpZGVudGlmaWVyIG9mIHRoZSBiYXRjaCwgdG8gd2hpY2ggdGhlIHNlcmlhbHplZCBwYXJ0IGJlbG9uZ3Ncbi0gXCJ2YW5cIiAtIFRoZSBhbm9ueW1pemVkIHZlaGljbGUgaWRlbnRpZmljYXRpb24gbnVtYmVyIChWSU4pLiBWYWx1ZTogYW5vbnltaXplZCBWSU4gYWNjb3JkaW5nIHRvIE9FTSBhbm9ueW1pemF0aW9uIHJ1bGVzLiBOb3RlOiBJZiB0aGUga2V5IFwidmFuXCIgaXMgYXZhaWxhYmxlLCBcInBhcnRJbnN0YW5jZUlkXCIgbXVzdCBhbHNvIGJlIGF2YWlsYWJsZSBhbmQgaG9sZCB0aGUgaWRlbnRpY2FsIHZhbHVlLiIKCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfVmFsdWVDaGFyYWN0ZXJpc3RpYyI6IHsKCQkJCSJ0eXBlIjogInN0cmluZyIsCgkJCQkiZGVzY3JpcHRpb24iOiAiVGhlIHZhbHVlIG9mIGFuIGlkZW50aWZpZXIuIgoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9LZXlWYWx1ZUxpc3QiOiB7CgkJCQkiZGVzY3JpcHRpb24iOiAiQSBsaXN0IG9mIGtleSB2YWx1ZSBwYWlycyBmb3IgbG9jYWwgaWRlbnRpZmllcnMsIHdoaWNoIGFyZSBjb21wb3NlZCBvZiBhIGtleSBhbmQgYSBjb3JyZXNwb25kaW5nIHZhbHVlLiIsCgkJCQkidHlwZSI6ICJvYmplY3QiLAoJCQkJInByb3BlcnRpZXMiOiB7CgkJCQkJImtleSI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIlRoZSBrZXkgb2YgYSBsb2NhbCBpZGVudGlmaWVyLiAiLAoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX0tleUNoYXJhY3RlcmlzdGljIgoJCQkJCX0sCgkJCQkJInZhbHVlIjogewoJCQkJCQkiZGVzY3JpcHRpb24iOiAiVGhlIHZhbHVlIG9mIGFuIGlkZW50aWZpZXIuIiwKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9WYWx1ZUNoYXJhY3RlcmlzdGljIgoJCQkJCX0KCQkJCX0sCgkJCQkicmVxdWlyZWQiOiBbCgkJCQkJImtleSIsCgkJCQkJInZhbHVlIgoJCQkJXQoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9Mb2NhbElkZW50aWZpZXJDaGFyYWN0ZXJpc3RpYyI6IHsKCQkJCSJkZXNjcmlwdGlvbiI6ICJBIHNpbmdsZSBzZXJpYWxpemVkIHBhcnQgbWF5IGhhdmUgbXVsdGlwbGUgYXR0cmlidXRlcywgdGhhdCB1bmlxdWVseSBpZGVudGlmeSBhIHRoYXQgcGFydCBpbiBhIHNwZWNpZmljIGRhdGFzcGFjZSAoZS5nLiB0aGUgbWFudWZhY3R1cmVyYHMgZGF0YXNwYWNlKSIsCgkJCQkidHlwZSI6ICJhcnJheSIsCgkJCQkiaXRlbXMiOiB7CgkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9LZXlWYWx1ZUxpc3QiCgkJCQl9LAoJCQkJInVuaXF1ZUl0ZW1zIjogdHJ1ZQoJCQl9LAoJCQkidXJuX2JhbW1faW8ub3Blbm1hbnVmYWN0dXJpbmdfY2hhcmFjdGVyaXN0aWNfMi4wLjBfVGltZXN0YW1wIjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJwYXR0ZXJuIjogIi0/KFsxLTldWzAtOV17Myx9fDBbMC05XXszfSktKDBbMS05XXwxWzAtMl0pLSgwWzEtOV18WzEyXVswLTldfDNbMDFdKVQoKFswMV1bMC05XXwyWzAtM10pOlswLTVdWzAtOV06WzAtNV1bMC05XShcXC5bMC05XSspP3woMjQ6MDA6MDAoXFwuMCspPykpKFp8KFxcK3wtKSgoMFswLTldfDFbMC0zXSk6WzAtNV1bMC05XXwxNDowMCkpPyIsCgkJCQkiZGVzY3JpcHRpb24iOiAiRGVzY3JpYmVzIGEgUHJvcGVydHkgd2hpY2ggY29udGFpbnMgdGhlIGRhdGUgYW5kIHRpbWUgd2l0aCBhbiBvcHRpb25hbCB0aW1lem9uZS4iCgkJCX0sCgkJCSJ1cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX1Byb2R1Y3Rpb25Db3VudHJ5Q29kZVRyYWl0IjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJkZXNjcmlwdGlvbiI6ICJSZWd1bGFyIEV4cHJlc3Npb24gdGhhdCBlbnN1cmVzIGEgdGhyZWUtbGV0dGVyIGNvZGUgIiwKCQkJCSJwYXR0ZXJuIjogIl5bQS1aXVtBLVpdW0EtWl0kIgoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9NYW51ZmFjdHVyaW5nQ2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkiZGVzY3JpcHRpb24iOiAiQ2hhcmFjdGVyaXN0aWMgdG8gZGVzY3JpYmUgbWFudWZhY3R1cmluZyByZWxhdGVkIGRhdGEiLAoJCQkJInR5cGUiOiAib2JqZWN0IiwKCQkJCSJwcm9wZXJ0aWVzIjogewoJCQkJCSJkYXRlIjogewoJCQkJCQkiZGVzY3JpcHRpb24iOiAiVGltZXN0YW1wIG9mIHRoZSBtYW51ZmFjdHVyaW5nIGRhdGUgYXMgdGhlIGZpbmFsIHN0ZXAgaW4gcHJvZHVjdGlvbiBwcm9jZXNzIChlLmcuIGZpbmFsIHF1YWxpdHkgY2hlY2ssIHJlYWR5LWZvci1zaGlwbWVudCBldmVudCkiLAoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5vcGVubWFudWZhY3R1cmluZ19jaGFyYWN0ZXJpc3RpY18yLjAuMF9UaW1lc3RhbXAiCgkJCQkJfSwKCQkJCQkiY291bnRyeSI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIkNvdW50cnkgY29kZSB3aGVyZSB0aGUgcGFydCB3YXMgbWFudWZhY3R1cmVkIiwKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9Qcm9kdWN0aW9uQ291bnRyeUNvZGVUcmFpdCIKCQkJCQl9CgkJCQl9LAoJCQkJInJlcXVpcmVkIjogWwoJCQkJCSJkYXRlIgoJCQkJXQoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0SWRDaGFyYWN0ZXJpc3RpYyI6IHsKCQkJCSJ0eXBlIjogInN0cmluZyIsCgkJCQkiZGVzY3JpcHRpb24iOiAiVGhlIHBhcnQgSUQgaXMgYSBtdWx0aS1jaGFyYWN0ZXIgc3RyaW5nLCB1c3VzYWxseSBhc3NpZ25lZCBieSBhbiBFUlAgc3lzdGVtIgoJCQl9LAoJCQkidXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0TmFtZUNoYXJhY3RlcmlzdGljIjogewoJCQkJInR5cGUiOiAic3RyaW5nIiwKCQkJCSJkZXNjcmlwdGlvbiI6ICJQYXJ0IE5hbWUgaW4gc3RyaW5nIGZvcm1hdCBmcm9tIHRoZSByZXNwZWN0aXZlIHN5c3RlbSBpbiB0aGUgdmFsdWUgY2hhaW4iCgkJCX0sCgkJCSJ1cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX0NsYXNzaWZpY2F0aW9uQ2hhcmFjdGVyaXN0aWMiOiB7CgkJCQkidHlwZSI6ICJzdHJpbmciLAoJCQkJImRlc2NyaXB0aW9uIjogIkEgcGFydCB0eXBlIG11c3QgYmUgcGxhY2VkIGludG8gb25lIG9mIHRoZSBmb2xsb3dpbmcgY2xhc3NlczogJ2NvbXBvbmVudCcsICdwcm9kdWN0JywgJ3NvZnR3YXJlJywgJ2Fzc2VtYmx5JywgJ3Rvb2wnLCBvciAncmF3IG1hdGVyaWFsJy4iLAoJCQkJImVudW0iOiBbCgkJCQkJInByb2R1Y3QiLAoJCQkJCSJyYXcgbWF0ZXJpYWwiLAoJCQkJCSJzb2Z0d2FyZSIsCgkJCQkJImFzc2VtYmx5IiwKCQkJCQkidG9vbCIsCgkJCQkJImNvbXBvbmVudCIKCQkJCV0KCQkJfSwKCQkJInVybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfUGFydFR5cGVJbmZvcm1hdGlvbkNoYXJhY3RlcmlzdGljIjogewoJCQkJImRlc2NyaXB0aW9uIjogIlRoZSBjaGFyYWN0ZXJpc3RpY3Mgb2YgdGhlIHBhcnQgdHlwZSIsCgkJCQkidHlwZSI6ICJvYmplY3QiLAoJCQkJInByb3BlcnRpZXMiOiB7CgkJCQkJIm1hbnVmYWN0dXJlclBhcnRJZCI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIlBhcnQgSUQgYXMgYXNzaWduZWQgYnkgdGhlIG1hbnVmYWN0dXJlciBvZiB0aGUgcGFydC4gVGhlIFBhcnQgSUQgaWRlbnRpZmllcyB0aGUgcGFydCAoYXMgZGVzaWduZWQpIGluIHRoZSBtYW51ZmFjdHVyZXJgcyBkYXRhc3BhY2UuIFRoZSBQYXJ0IElEIGRvZXMgbm90IHJlZmVyZW5jZSBhIHNwZWNpZmljIGluc3RhbmNlIG9mIGEgcGFydCBhbmQgdGh1cyBzaG91bGQgbm90IGJlIGNvbmZ1c2VkIHdpdGggdGhlIHNlcmlhbCBudW1iZXIuIiwKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0SWRDaGFyYWN0ZXJpc3RpYyIKCQkJCQl9LAoJCQkJCSJjdXN0b21lclBhcnRJZCI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIlBhcnQgSUQgYXMgYXNzaWduZWQgYnkgdGhlIG1hbnVmYWN0dXJlciBvZiB0aGUgcGFydC4gVGhlIFBhcnQgSUQgaWRlbnRpZmllcyB0aGUgcGFydCAoYXMgZGVzaWduZWQpIGluIHRoZSBjdXN0b21lcmBzIGRhdGFzcGFjZS4gVGhlIFBhcnQgSUQgZG9lcyBub3QgcmVmZXJlbmNlIGEgc3BlY2lmaWMgaW5zdGFuY2Ugb2YgYSBwYXJ0IGFuZCB0aHVzIHNob3VsZCBub3QgYmUgY29uZnVzZWQgd2l0aCB0aGUgc2VyaWFsIG51bWJlci4iLAoJCQkJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX1BhcnRJZENoYXJhY3RlcmlzdGljIgoJCQkJCX0sCgkJCQkJIm5hbWVBdE1hbnVmYWN0dXJlciI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIk5hbWUgb2YgdGhlIHBhcnQgYXMgYXNzaWduZWQgYnkgdGhlIG1hbnVmYWN0dXJlciIsCgkJCQkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfUGFydE5hbWVDaGFyYWN0ZXJpc3RpYyIKCQkJCQl9LAoJCQkJCSJuYW1lQXRDdXN0b21lciI6IHsKCQkJCQkJImRlc2NyaXB0aW9uIjogIk5hbWUgb2YgdGhlIHBhcnQgYXMgYXNzaWduZWQgYnkgdGhlIGN1c3RvbWVyIiwKCQkJCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0TmFtZUNoYXJhY3RlcmlzdGljIgoJCQkJCX0sCgkJCQkJImNsYXNzaWZpY2F0aW9uIjogewoJCQkJCQkiZGVzY3JpcHRpb24iOiAiVGhlIGNsYXNzaWZpY2F0aW9uIG9mIHRoZSBwYXJ0IHR5cGUgYWNjb3JkaW5nIHRvIFNURVAgc3RhbmRhcmQgZGVmaW5pdGlvbiIsCgkJCQkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfQ2xhc3NpZmljYXRpb25DaGFyYWN0ZXJpc3RpYyIKCQkJCQl9CgkJCQl9LAoJCQkJInJlcXVpcmVkIjogWwoJCQkJCSJtYW51ZmFjdHVyZXJQYXJ0SWQiLAoJCQkJCSJuYW1lQXRNYW51ZmFjdHVyZXIiLAoJCQkJCSJjbGFzc2lmaWNhdGlvbiIKCQkJCV0KCQkJfQoJCX0KCX0sCgkicHJvcGVydGllcyI6IHsKCQkiY2F0ZW5hWElkIjogewoJCQkiZGVzY3JpcHRpb24iOiAiVGhlIGZ1bGx5IGFub255bW91cyBDYXRlbmEtWCBJRCBvZiB0aGUgc2VyaWFsaXplZCBwYXJ0LCB2YWxpZCBmb3IgdGhlIENhdGVuYS1YIGRhdGFzcGFjZS4iLAoJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX0NhdGVuYVhJZFRyYWl0IgoJCX0sCgkJImxvY2FsSWRlbnRpZmllcnMiOiB7CgkJCSJkZXNjcmlwdGlvbiI6ICJBIGxvY2FsIGlkZW50aWZpZXIgZW5hYmxlcyBpZGVudGlmaWNhdGlvbiBvZiBhIHBhcnQgaW4gYSBzcGVjaWZpYyBkYXRhc3BhY2UsIGJ1dCBpcyBub3QgdW5pcXVlIGluIENhdGVuYS1YIGRhdGFzcGFjZS4gTXVsdGlwbGUgbG9jYWwgaWRlbnRpZmllcnMgbWF5IGV4aXN0LiIsCgkJCSIkcmVmIjogIiMvY29tcG9uZW50cy9zY2hlbWFzL3Vybl9iYW1tX2lvLmNhdGVuYXguc2VyaWFsX3BhcnRfMS4wLjBfTG9jYWxJZGVudGlmaWVyQ2hhcmFjdGVyaXN0aWMiCgkJfSwKCQkibWFudWZhY3R1cmluZ0luZm9ybWF0aW9uIjogewoJCQkiZGVzY3JpcHRpb24iOiAiSW5mb3JtYXRpb24gZnJvbSBtYW51ZmFjdHVyaW5nIHByb2Nlc3MsIHN1Y2ggYXMgbWFudWZhY3R1cmluZyBkYXRlIGFuZCBtYW51ZmFjdHVyaW5nIGNvdW50cnkiLAoJCQkiJHJlZiI6ICIjL2NvbXBvbmVudHMvc2NoZW1hcy91cm5fYmFtbV9pby5jYXRlbmF4LnNlcmlhbF9wYXJ0XzEuMC4wX01hbnVmYWN0dXJpbmdDaGFyYWN0ZXJpc3RpYyIKCQl9LAoJCSJwYXJ0VHlwZUluZm9ybWF0aW9uIjogewoJCQkiZGVzY3JpcHRpb24iOiAiVGhlIHBhcnQgdHlwZSBmcm9tIHdoaWNoIHRoZSBzZXJpYWxpemVkIHBhcnQgaGFzIGJlZW4gaW5zdGFudGlhdGVkIiwKCQkJIiRyZWYiOiAiIy9jb21wb25lbnRzL3NjaGVtYXMvdXJuX2JhbW1faW8uY2F0ZW5heC5zZXJpYWxfcGFydF8xLjAuMF9QYXJ0VHlwZUluZm9ybWF0aW9uQ2hhcmFjdGVyaXN0aWMiCgkJfQoJfSwKCSJyZXF1aXJlZCI6IFsKCQkiY2F0ZW5hWElkIiwKCQkibG9jYWxJZGVudGlmaWVycyIsCgkJIm1hbnVmYWN0dXJpbmdJbmZvcm1hdGlvbiIsCgkJInBhcnRUeXBlSW5mb3JtYXRpb24iCgldCn0=
 bpdm:
   url:  # https://<bpdm-url>
+  oAuthClientId: bpdm
   bpnEndpoint: >-
     {{- if .Values.bpdm.url }}
     {{- tpl (.Values.bpdm.url | default "") . }}/api/catena/legal-entities/{partnerId}?idType={idType}
@@ -364,13 +377,16 @@ minioUser: "minio"  # <minio-username>
 minioPassword:  # <minio-password>
 minioUrl: "http://{{ .Release.Name }}-minio:9000"
 oauth2:
-  clientId:  # <oauth2-client-id>
-  clientSecret:  # <oauth2-client-secret>
   clientTokenUri:  # <oauth2-token-uri>
-portal:
-  oauth2:
-    clientId:  # <portal-client-id>
-    clientSecret:  # <portal-client-secret>
+  semantics:
+    clientId:  # <semantics-client-id>
+    clientSecret:  # <semantics-client-secret>
+  discovery:
+    clientId:  # <discovery-client-id>
+    clientSecret:  # <discovery-client-secret>
+  bpdm:
+    clientId:  # <bpdm-client-id>
+    clientSecret:  # <bpdm-client-secret>
 edc:
   controlplane:
     endpoint:
@@ -417,9 +433,6 @@ edc:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
     cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
-
-discovery:
-  oAuthClientId: portal  # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
 
 ess:
   edc:
@@ -505,13 +518,6 @@ prometheus:
 
 
 #########################
-# Grafana Configuration #
-#########################
-grafana:
-  enabled: false  # ①
-  rbac:
-    create: false
-  persistence:
 ```
 
 1. Use this to enable or disable the monitoring components
@@ -668,13 +674,29 @@ This is a list of all secrets used in the deployment.
 **⚠️ WARNING**\
 Keep the values for these settings safe and do not publish them!
 
-#### common-client-id
+#### semantics-client-id
 
-Client ID for OAuth2 provider. Request this from your OAuth2 operator.
+Semantic Hub client ID for OAuth2 provider. Request this from your OAuth2 operator.
 
-#### common-client-secret
+#### semantics-client-secret
 
-Client secret for OAuth2 provider. Request this from your OAuth2 operator.
+Semantic Hub client secret for OAuth2 provider. Request this from your OAuth2 operator.
+
+#### discovery-client-id
+
+Dataspace Discovery  client ID for OAuth2 provider. Request this from your OAuth2 operator.
+
+#### discovery-client-secret
+
+Dataspace Discovery  client secret for OAuth2 provider. Request this from your OAuth2 operator.
+
+#### bpdm-client-id
+
+BPDM client ID for OAuth2 provider. Request this from your OAuth2 operator.
+
+#### bpdm-client-secret
+
+BPDM client secret for OAuth2 provider. Request this from your OAuth2 operator.
 
 #### minio-username
 

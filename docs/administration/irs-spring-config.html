@@ -673,20 +673,25 @@ pre.rouge {
     <span class="na">oauth2</span><span class="pi">:</span>
       <span class="na">client</span><span class="pi">:</span>
         <span class="na">registration</span><span class="pi">:</span>
-          <span class="na">common</span><span class="pi">:</span>
+          <span class="na">semantics </span><span class="pi">:</span>
             <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
-            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${OAUTH2_CLIENT_ID}</span> <span class="c1"># OAuth2 client ID used to authenticate with the IAM</span>
-            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${OAUTH2_CLIENT_SECRET}</span> <span class="c1"># OAuth2 client secret used to authenticate with the IAM</span>
-          <span class="na">portal</span><span class="pi">:</span>
+            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${SEMANTICS_OAUTH2_CLIENT_ID}</span> <span class="c1"># Semantic Hub OAuth2 client ID used to authenticate with the IAM</span>
+            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${SEMANTICS_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># Semantic Hub OAuth2 client secret used to authenticate with the IAM</span>
+          <span class="na">discovery</span><span class="pi">:</span>
             <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
-            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_ID}</span> <span class="c1"># OAuth2 client ID used to authenticate with the IAM</span>
-            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># OAuth2 client secret used to authenticate with the IAM</span>
+            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${DISCOVERY_OAUTH2_CLIENT_ID}</span> <span class="c1"># Dataspace Discovery OAuth2 client ID used to authenticate with the IAM</span>
+            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${DISCOVERY_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># Dataspace Discovery OAuth2 client secret used to authenticate with the IAM</span>
+          <span class="na">bpdm</span><span class="pi">:</span>
+            <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
+            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${BPDM_OAUTH2_CLIENT_ID}</span> <span class="c1"># BPDM Pool OAuth2 client ID used to authenticate with the IAM</span>
+            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${BPDM_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># BPDM Pool OAuth2 client secret used to authenticate with the IAM</span>
         <span class="na">provider</span><span class="pi">:</span>
-          <span class="na">common</span><span class="pi">:</span>
-            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
-          <span class="na">portal</span><span class="pi">:</span>
-            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
-
+          <span class="na">semantics</span><span class="pi">:</span>
+            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
+          <span class="na">discovery</span><span class="pi">:</span>
+            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
+          <span class="na">bpdm</span><span class="pi">:</span>
+            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${BPDM_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
 
 <span class="na">management</span><span class="pi">:</span> <span class="c1"># Spring management API config, see https://spring.io/guides/gs/centralized-configuration/</span>
   <span class="na">endpoints</span><span class="pi">:</span>
@@ -850,11 +855,16 @@ pre.rouge {
   <span class="na">shellLookupEndpoint</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:}</span> <span class="c1"># The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}</span>
   <span class="na">shellDescriptorTemplate</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_SHELL_DESCRIPTOR_TEMPLATE:/shell-descriptors/{aasIdentifier}}</span> <span class="c1"># The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}</span>
   <span class="na">lookupShellsTemplate</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_QUERY_SHELLS_PATH:/lookup/shells?assetIds={assetIds}}</span> <span class="c1"># The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}</span>
-  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">common</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
-  <span class="na">discoveryFinderUrl</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:}</span> <span class="c1"># The endpoint to discover EDC endpoints to a particular BPN.</span>
+  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">discovery</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the digital twin registry client</span>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the digital twin registry client</span>
+  <span class="na">discovery</span><span class="pi">:</span>
+    <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">discovery</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
+    <span class="na">discoveryFinderUrl</span><span class="pi">:</span> <span class="s">${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:}</span> <span class="c1"># The endpoint to discover EDC endpoints to a particular BPN.</span>
+    <span class="na">timeout</span><span class="pi">:</span>
+      <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the discovery client</span>
+      <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the discovery client</span>
 
 <span class="na">semanticshub</span><span class="pi">:</span>
   <span class="c1"># The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.</span>
@@ -875,7 +885,7 @@ pre.rouge {
     <span class="c1">#          │ │ │  │ │ │</span>
     <span class="na">scheduler</span><span class="pi">:</span> <span class="s">0 0 23 * * *</span> <span class="c1"># How often to clear the semantic model cache</span>
   <span class="na">defaultUrns</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part:1.0.0#SerialPart}"</span> <span class="c1"># IDs of models to cache at IRS startup</span>
-  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">common</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
+  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">semantics</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the semantic hub client</span>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the semantic hub client</span>
@@ -883,7 +893,7 @@ pre.rouge {
 
 <span class="na">bpdm</span><span class="pi">:</span>
   <span class="na">bpnEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${BPDM_URL:}"</span> <span class="c1"># Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}</span>
-  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">common</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
+  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">bpdm</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
   <span class="na">timeout</span><span class="pi">:</span>
     <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the bpdm client</span>
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the bpdm client</span>
@@ -898,10 +908,6 @@ pre.rouge {
   <span class="na">irs</span><span class="pi">:</span>
     <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
   <span class="na">discovery</span><span class="pi">:</span>
-    <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">portal</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
-    <span class="na">timeout</span><span class="pi">:</span>
-      <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the discovery client</span>
-      <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the discovery client</span>
     <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked BPN Investigation results</span>
     <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
 
@@ -911,7 +917,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-07 07:44:30 UTC
+Last updated 2024-02-07 10:45:14 UTC
 </div>
 </div>
 </body>
