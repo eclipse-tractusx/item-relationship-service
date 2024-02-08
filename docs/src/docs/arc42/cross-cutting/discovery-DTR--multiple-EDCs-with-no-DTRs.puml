@@ -1,6 +1,6 @@
 @startuml
-actor IRS
-actor "Discovery Service" as DiscoveryService
+participant IRS
+participant "Discovery Service" as DiscoveryService
 
 participant "EDC 1" as EDCProvider1
 participant "EDC 2" as EDCProvider2

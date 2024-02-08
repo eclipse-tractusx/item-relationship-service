@@ -1,5 +1,5 @@
 @startuml
-actor IRS
+participant IRS
 participant DTR
 
 IRS -> DTR: /query for globalAssetId

@@ -8,9 +8,9 @@ __Please note that the expression "the first result" in the subsequent sections 
 IRS queries all DTRs for the globalAssetId and will take the first result it gets.
 If none of the DTRs return a result, IRS will create a tombstone.
 
-[plantuml,target=discovery-DTR--EDC-with-multiple-DTRs,format=svg]
+[plantuml,target=discovery-DTR--one-EDC-with-multiple-DTRs,format=svg]
 ....
-include::discovery-DTR--EDC-with-multiple-DTRs.puml[]
+include::discovery-DTR--one-EDC-with-multiple-DTRs.puml[]
 ....
 
 ==== Scenario 2: Multiple EDCs with one DTR
