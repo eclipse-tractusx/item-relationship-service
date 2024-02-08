@@ -7,6 +7,7 @@ participant "DTR 2" as DTR2
 
 IRS -> DiscoveryService: Get EDCs for BPN
 DiscoveryService -> IRS: Return list of 1 EDC
+
 IRS -> EDCProvider: Query for DTR contract offer
 EDCProvider -> IRS: 2 DTR contract offers
 

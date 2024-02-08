@@ -11,6 +11,7 @@ DiscoveryService -> IRS: Return list of 3 EDCs
 
 par
     group CatalogRequestEDC1
+        ' == EDC Control Plane ==
         IRS -> EDCProvider1: Query for DTR contract offer
         EDCProvider1 -> IRS: No offer
     end
@@ -18,9 +19,12 @@ par
     else
 
     group CatalogRequestEDC2
+       ' == EDC Control Plane ==
         IRS -> EDCProvider2: Query for DTR contract offer
         EDCProvider2 -> IRS: DTR contract offer
         IRS -> EDCProvider2: Negotiate contract
+
+        '== EDC Data Plane ==
         IRS -> DTR: Query for DT
         DTR -> IRS: DT
     end
@@ -28,9 +32,12 @@ par
     else
 
     group CatalogRequestEDC3
+        '== EDC Control Plane ==
         IRS -> EDCProvider3: Query for DTR contract offer
         EDCProvider3 -> IRS: DTR contract offer
         IRS -> EDCProvider3: Negotiate contract
+
+        '== EDC Data Plane ==
         IRS -> DTR: Query for DT
         DTR -> IRS: No DT
     end
