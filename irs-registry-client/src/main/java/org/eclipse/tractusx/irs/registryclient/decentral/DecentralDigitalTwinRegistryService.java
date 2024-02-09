@@ -121,8 +121,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private Stream<Shell> fetchShellDescriptors(
-            final Map.Entry<String, List<DigitalTwinRegistryKey>> entry, final Set<String> calledEndpoints) {
+    private Stream<Shell> fetchShellDescriptors(final Map.Entry<String, List<DigitalTwinRegistryKey>> entry,
+            final Set<String> calledEndpoints) {
 
         try {
 
@@ -140,8 +140,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private CompletableFuture<List<Shell>> fetchShellDescriptors(
-            final Set<String> calledEndpoints, final String bpn, final List<DigitalTwinRegistryKey> keys) {
+    private CompletableFuture<List<Shell>> fetchShellDescriptors(final Set<String> calledEndpoints, final String bpn,
+            final List<DigitalTwinRegistryKey> keys) {
 
         final var watch = new StopWatch();
         final String msg = "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn);
@@ -149,6 +149,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         log.info(msg);
 
         try {
+
             final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
 
             log.info("Found {} connector endpoints for bpn '{}'", edcUrls.size(), bpn);
@@ -166,19 +167,19 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             final List<DigitalTwinRegistryKey> keys, final List<String> connectorEndpoints) {
 
         final var service = endpointDataForConnectorsService;
-        final var futures = service.createFindEndpointDataForConnectorsFutures(connectorEndpoints)
-                                   .stream()
-                                   .map(edrFuture -> edrFuture.thenCompose(edr -> CompletableFuture.supplyAsync(
-                                           () -> fetchShellDescriptorsForKey(keys, edr))))
-                                   .toList();
+        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(connectorEndpoints)
+                                        .stream()
+                                        .map(edrFuture -> edrFuture.thenCompose(edr -> CompletableFuture.supplyAsync(
+                                                () -> fetchShellDescriptorsForKey(keys, edr))))
+                                        .toList();
 
-        log.debug("Created {} futures", futures.size());
+        log.debug("Created {} futures", shellsFuture.size());
 
-        return resultFinder.getFastestResult(futures);
+        return resultFinder.getFastestResult(shellsFuture);
     }
 
-    private List<Shell> fetchShellDescriptorsForKey(
-            final List<DigitalTwinRegistryKey> keys, final EndpointDataReference endpointDataReference) {
+    private List<Shell> fetchShellDescriptorsForKey(final List<DigitalTwinRegistryKey> keys,
+            final EndpointDataReference endpointDataReference) {
 
         final var watch = new StopWatch();
         final String msg = "Fetching shell descriptors for keys %s from endpoint '%s'".formatted(keys,
@@ -186,13 +187,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         watch.start(msg);
         log.info(msg);
         try {
-            return keys.stream().map(
-                key ->
-                    new Shell(
-                        contractNegotiationId(endpointDataReference.getAuthCode()),
-                        fetchShellDescriptor(endpointDataReference, key)
-                    )
-             ).toList();
+            return keys.stream()
+                       .map(key -> new Shell(contractNegotiationId(endpointDataReference.getAuthCode()),
+                               fetchShellDescriptor(endpointDataReference, key)))
+                       .toList();
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
@@ -217,10 +215,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private String contractNegotiationId(final String token) {
-        return Optional.ofNullable(token)
-                       .map(EDRAuthCode::fromAuthCodeToken)
-                       .map(EDRAuthCode::getCid)
-                       .orElse("");
+        return Optional.ofNullable(token).map(EDRAuthCode::fromAuthCodeToken).map(EDRAuthCode::getCid).orElse("");
     }
 
     /**
