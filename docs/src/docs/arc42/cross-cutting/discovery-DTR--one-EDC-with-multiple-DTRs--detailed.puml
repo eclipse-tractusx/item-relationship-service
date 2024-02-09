@@ -1,0 +1,49 @@
+@startuml
+
+box IRS
+    participant DecentralDigitalTwinRegistryService as DTRS
+    participant EdcSubmodelClientImpl as EdcClient
+end box
+
+participant DiscoveryService
+participant "EDC Provider" as EDCProvider
+participant "DTR 1" as DTR1
+participant "DTR 2" as DTR2
+
+' ConnectorEndpointsService.fetchConnectorEndpoints(String bpn) -- cacheable
+DTRS -> DiscoveryService: Get EDCs for BPN
+' discoveryFinderClient.findDiscoveryEndpoints(DiscoveryFinderRequest request)
+DiscoveryService -> DTRS: Return list of 1 EDC
+
+==  EDC Control Plane ==
+
+DTRS -> EdcClient: Get EDR Token for asset
+EdcClient ->> EDCProvider: Query for DTR contract offer
+EDCProvider -> EdcClient: 2 DTR contract offers
+
+par
+    group Query DTR 1
+        EdcClient -> EDCProvider: Negotiate contract
+        EDCProvider -> EdcClient: EDR Token callback
+        EdcClient -> DTRS: EDR token
+
+        ==  EDC Data Plane ==
+
+        DTRS -> DTR1: Query for DT
+        DTR1 -> DTRS: no DT
+    end
+
+    else
+
+    group Query DTR 2
+        EdcClient -> EDCProvider: Negotiate contract
+        EDCProvider -> EdcClient: EDR Token callback
+        EdcClient -> DTRS: EDR token
+
+        ==  EDC Data Plane ==
+
+        DTRS -> DTR2: Query for DT
+        DTR2 -> DTRS: DT
+    end
+end
+@enduml

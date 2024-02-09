@@ -1,0 +1,84 @@
+@startuml
+
+
+box IRS
+    participant DecentralDigitalTwinRegistryService as DTRS
+    participant EdcSubmodelClientImpl as EdcClient
+end box
+
+
+participant DiscoveryService
+participant "EDC Provider 1" as EDCProvider1
+participant "EDC Provider 2" as EDCProvider2
+participant "EDC Provider 3" as EDCProvider3
+participant "DTR" as DTR
+
+' DigitalTwinDelegate.process
+' DecentralDigitalTwinRegistryService.fetchShells
+' ConnectorEndpointsService.fetchConnectorEndpoints(String bpn) -- cacheable
+DTRS -> DiscoveryService: Get EDCs for BPN
+' discoveryFinderClient.findDiscoveryEndpoints(DiscoveryFinderRequest request)
+DiscoveryService -> DTRS: Return list of 3 EDCs
+
+' Turned into futures to get the EDR tokens by
+' EndpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(List<String> edcUrls)
+
+par
+    group CatalogRequestEDC1
+
+        == EDC Control Plane ==
+        DTRS -> EdcClient: Get EDR Token for asset
+        EdcClient -> EDCProvider1: Query for DTR contract offer
+        EDCProvider1 -> EdcClient: No offer
+        EdcClient -> DTRS: No token
+    end
+
+    else
+
+    group CatalogRequestEDC2
+
+        == EDC Control Plane ==
+
+        ' this happens in DecentralDigitalTwinRegistryService.fetchShellDescriptorsForConnectorEndpoints
+        ' when each of List<CompletableFuture<EndpointDataReference>> is composed
+        ' with fetchShellDescriptorsForKey
+        DTRS -> EdcClient: Get EDR Token for asset
+        ' EdcSubmodelFacade.getEndpointReferenceForAsset
+        ' EdcSubmodelClientImpl.getEndpointReferenceForAsset
+        EdcClient -> EDCProvider2: Query for DTR contract offer
+        EDCProvider2 -> EdcClient: DTR contract offer
+        ' EdcSubmodelClientImpl.negotiateContract
+        EdcClient -> EDCProvider2: Negotiate contract
+        EDCProvider2 -> EdcClient: EDR Token callback
+        EdcClient -> DTRS: EDR token
+
+
+        == EDC Data Plane ==
+
+        ' DecentralDigitalTwinRegistryService
+        '      .fetchShellDescriptor(EndpointDataReference, DigitalTwinRegistryKey)
+        DTRS -> DTR: Query for DT
+        DTR -> DTRS: DT
+        ' result is AssetAdministrationShellDescriptor which is the actual data
+    end
+
+    else
+
+    group CatalogRequestEDC3
+
+        == EDC Control Plane ==
+
+        DTRS -> EdcClient: Get EDR Token for asset
+        EdcClient -> EDCProvider3: Query for DTR contract offer
+        EDCProvider3 -> EdcClient: DTR contract offer
+        EdcClient -> EDCProvider3: Negotiate contract
+        EDCProvider3 -> EdcClient: EDR Token callback
+        EdcClient -> DTRS: EDR token
+
+        == EDC Data Plane ==
+
+        DTRS -> DTR: Query for DT
+        DTR -> DTRS: No DT
+    end
+end
+@enduml
