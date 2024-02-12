@@ -69,5 +69,6 @@ public interface DigitalTwinRegistryService {
      * @param identifiers the shell identifiers
      * @return the shell descriptors
      */
-    Collection<Shell> fetchShells(Collection<DigitalTwinRegistryKey> identifiers) throws RegistryServiceException;
+    Collection<Shell> fetchShells(Collection<DigitalTwinRegistryKey> identifiers)
+            throws RegistryServiceException;
 }

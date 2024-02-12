@@ -1,6 +1,5 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -10,25 +9,15 @@ import static org.mockito.Mockito.when;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.SecurityAttribute;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
-import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 class DecentralDigitalTwinRegistryClientTest {
 
