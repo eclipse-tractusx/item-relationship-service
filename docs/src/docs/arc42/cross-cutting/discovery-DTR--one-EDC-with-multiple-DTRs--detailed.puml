@@ -17,9 +17,13 @@ DiscoveryService -> DTRS: Return list of 1 EDC
 
 ==  EDC Control Plane ==
 
+' see EdcSubmodelFacade.getEndpointReferenceForAsset,
+' EdcSubmodelClient.getEndpointReferencesForAsset,
+' EdcSubmodelClientImpl.getEndpointReferencesForAsset
 DTRS -> EdcClient: Get EDR Token for asset
 EdcClient ->> EDCProvider: Query for DTR contract offer
 EDCProvider -> EdcClient: 2 DTR contract offers
+' TODO (mfischer) #395: Contract offer = CatalogItem?
 
 par
     group Query DTR 1
@@ -39,6 +43,7 @@ par
         EdcClient -> EDCProvider: Negotiate contract
         EDCProvider -> EdcClient: EDR Token callback
         EdcClient -> DTRS: EDR token
+        ' TODO (mfischer) #395: EDR token = EndpointDataReference?
 
         ==  EDC Data Plane ==
 

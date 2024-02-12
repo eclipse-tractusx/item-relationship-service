@@ -1,7 +1,7 @@
 The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
 This applies to the following scenarios.
 
-==== Scenario 1: EDC with multiple DTRs
+==== Scenario 1: One EDC with multiple DTRs
 
 IRS queries all DTRs for the globalAssetId and will take the first result it gets.
 If none of the DTRs return a result, IRS will create a tombstone.

@@ -11,7 +11,8 @@ participant DiscoveryService
 participant "EDC Provider 1" as EDCProvider1
 participant "EDC Provider 2" as EDCProvider2
 participant "EDC Provider 3" as EDCProvider3
-participant "DTR" as DTR
+participant "DTR1" as DTR1
+participant "DTR2" as DTR2
 
 ' DigitalTwinDelegate.process
 ' DecentralDigitalTwinRegistryService.fetchShells
@@ -28,14 +29,14 @@ par
 
         == EDC Control Plane ==
         DTRS -> EdcClient: Get EDR Token for asset
-        EdcClient -> EDCProvider1: Query for DTR contract offer
+        EdcClient -> EDCProvider1: Query for DTR1 contract offer
         EDCProvider1 -> EdcClient: No offer
         EdcClient -> DTRS: No token
     end
 
     else
 
-    group CatalogRequestEDC2
+    group CatalogRequestEDC2 DTR1
 
         == EDC Control Plane ==
 
@@ -45,11 +46,12 @@ par
         DTRS -> EdcClient: Get EDR Token for asset
         ' EdcSubmodelFacade.getEndpointReferenceForAsset
         ' EdcSubmodelClientImpl.getEndpointReferenceForAsset
-        EdcClient -> EDCProvider2: Query for DTR contract offer
-        EDCProvider2 -> EdcClient: DTR contract offer
+        EdcClient -> EDCProvider2: Query for DTR1 contract offer
+        EDCProvider2 -> EdcClient: DTR1 contract offer
         ' EdcSubmodelClientImpl.negotiateContract
         EdcClient -> EDCProvider2: Negotiate contract
         EDCProvider2 -> EdcClient: EDR Token callback
+
         EdcClient -> DTRS: EDR token
 
 
@@ -57,9 +59,30 @@ par
 
         ' DecentralDigitalTwinRegistryService
         '      .fetchShellDescriptor(EndpointDataReference, DigitalTwinRegistryKey)
-        DTRS -> DTR: Query for DT
-        DTR -> DTRS: DT
+        DTRS -> DTR1: Query for DT
+        DTR1 -> DTRS: DT
         ' result is AssetAdministrationShellDescriptor which is the actual data
+    end
+
+    else
+
+    group CatalogRequestEDC2 DTR2
+
+        == EDC Control Plane ==
+
+        DTRS -> EdcClient: Get EDR Token for asset
+        EdcClient -> EDCProvider2: Query for DTR1 contract offer
+        EDCProvider2 -> EdcClient: DTR1 contract offer
+        EdcClient -> EDCProvider2: Negotiate contract
+        EDCProvider2 -> EdcClient: EDR Token callback
+
+        EdcClient -> DTRS: EDR token
+
+
+        == EDC Data Plane ==
+
+        DTRS -> DTR2: Query for DT
+        DTR2 -> DTRS: DT
     end
 
     else
@@ -69,16 +92,20 @@ par
         == EDC Control Plane ==
 
         DTRS -> EdcClient: Get EDR Token for asset
-        EdcClient -> EDCProvider3: Query for DTR contract offer
-        EDCProvider3 -> EdcClient: DTR contract offer
+        EdcClient -> EDCProvider3: Query for DTR1 contract offer
+        EDCProvider3 -> EdcClient: DTR1 contract offer
         EdcClient -> EDCProvider3: Negotiate contract
         EDCProvider3 -> EdcClient: EDR Token callback
         EdcClient -> DTRS: EDR token
 
         == EDC Data Plane ==
 
-        DTRS -> DTR: Query for DT
-        DTR -> DTRS: No DT
+        DTRS -> DTR1: Query for DT
+        DTR1 -> DTRS: No DT
     end
 end
+
+' TODO(mfischer): #395: how do we visualize the following behaviour in the diagram?:
+'    fastest successful response from DTR will be returned
+
 @enduml
