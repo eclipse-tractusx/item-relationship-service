@@ -76,6 +76,8 @@ public class RelationshipDelegate extends AbstractDelegate {
         itemContainerBuilder.build()
                             .getShells()
                             .stream()
+                            // TODO (mfischer): #395 is this part of the story too? need to change?
+                            //       if yes, which step in the diagrams is this?
                             .findFirst()
                             .ifPresent(shell -> shell.payload().findRelationshipEndpointAddresses(
                                                              AspectType.fromValue(relationshipAspect.getName()))
