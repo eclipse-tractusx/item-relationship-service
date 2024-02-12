@@ -24,6 +24,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * SecurityAttribute
+ */
 @Data
 @Builder
 @Jacksonized
