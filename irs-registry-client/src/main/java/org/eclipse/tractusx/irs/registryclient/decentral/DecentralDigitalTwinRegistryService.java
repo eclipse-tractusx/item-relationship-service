@@ -270,11 +270,11 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         try {
 
-            final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-            log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, connectorEndpoints);
+            final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, edcUrls);
 
             final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    connectorEndpoints);
+                    edcUrls);
             log.debug("Created endpointDataReferenceFutures");
 
             return lookupShellIds(bpn, endpointDataReferenceFutures);
