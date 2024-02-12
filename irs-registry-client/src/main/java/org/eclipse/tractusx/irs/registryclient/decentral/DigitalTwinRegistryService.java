@@ -33,6 +33,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * implementation of DigitalTwinRegistryService used to create shells in DTR
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class DigitalTwinRegistryService {

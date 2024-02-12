@@ -23,7 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
