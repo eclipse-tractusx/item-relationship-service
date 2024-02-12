@@ -70,6 +70,7 @@ public class RegistryConfiguration {
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
             @Qualifier(RestTemplateConfig.EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate,
             final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade facade,
+            @Value("${digitalTwinRegistry.createShellDescriptorTemplate:}") final String createShellDescriptorTemplate,
             @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
             @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate) {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService,
@@ -79,8 +80,8 @@ public class RegistryConfiguration {
                     } catch (EdcClientException e) {
                         throw new EdcRetrieverException(e);
                     }
-                }),
-                new DecentralDigitalTwinRegistryClient(edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate));
+                }), new DecentralDigitalTwinRegistryClient(edcRestTemplate, createShellDescriptorTemplate,
+                shellDescriptorTemplate, lookupShellsTemplate));
     }
 
     @Bean

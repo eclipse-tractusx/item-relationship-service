@@ -66,5 +66,9 @@ public class ProtocolInformation {
      * subprotocolBodyEncoding
      */
     private String subprotocolBodyEncoding;
+    /**
+     * securityAttributes
+     */
+    private List<SecurityAttribute> securityAttributes;
 
 }

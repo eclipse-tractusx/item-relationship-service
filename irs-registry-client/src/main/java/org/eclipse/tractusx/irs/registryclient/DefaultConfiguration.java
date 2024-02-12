@@ -146,9 +146,11 @@ public class DefaultConfiguration {
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient(
             @Qualifier(EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate,
+            @Value("${digitalTwinRegistryClient.createShellDescriptorTemplate:}") final String createShellDescriptorTemplate,
             @Value("${digitalTwinRegistryClient.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
             @Value("${digitalTwinRegistryClient.lookupShellsTemplate:}") final String lookupShellsTemplate) {
-        return new DecentralDigitalTwinRegistryClient(edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate);
+        return new DecentralDigitalTwinRegistryClient(edcRestTemplate, createShellDescriptorTemplate,
+                shellDescriptorTemplate, lookupShellsTemplate);
     }
 
     @Bean

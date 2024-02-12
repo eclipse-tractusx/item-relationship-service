@@ -36,6 +36,7 @@ import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremock
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.postDiscoveryFinder404;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.postEdcDiscovery200;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.postEdcDiscovery404;
+import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.CREATE_SHELL_DESCRIPTOR_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.DATAPLANE_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.LOOKUP_SHELLS_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.LOOKUP_SHELLS_TEMPLATE;
@@ -87,7 +88,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final var connectorEndpointsService = new ConnectorEndpointsService(discoveryFinderClient);
         final var endpointDataForConnectorsService = new EndpointDataForConnectorsService(edcSubmodelFacadeMock);
         final var decentralDigitalTwinRegistryClient = new DecentralDigitalTwinRegistryClient(restTemplate,
-                SHELL_DESCRIPTORS_TEMPLATE, LOOKUP_SHELLS_TEMPLATE);
+                CREATE_SHELL_DESCRIPTOR_PATH, SHELL_DESCRIPTORS_TEMPLATE, LOOKUP_SHELLS_TEMPLATE);
         decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(connectorEndpointsService,
                 endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
         final var endpointDataReference = endpointDataReference("assetId");

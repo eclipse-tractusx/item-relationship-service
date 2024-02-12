@@ -35,6 +35,8 @@ public final class DtrWiremockSupport {
     public static final String DATAPLANE_URL = "http://dataplane.test";
     public static final String DATAPLANE_PUBLIC_PATH = "/api/public";
     public static final String DATAPLANE_PUBLIC_URL = DATAPLANE_URL + DATAPLANE_PUBLIC_PATH;
+
+    public static final String CREATE_SHELL_DESCRIPTOR_PATH = "/shell-descriptors";
     public static final String SHELL_DESCRIPTORS_PATH = "/shell-descriptors/";
     public static final String PUBLIC_SHELL_DESCRIPTORS_PATH = DATAPLANE_PUBLIC_PATH + SHELL_DESCRIPTORS_PATH;
     public static final String SHELL_DESCRIPTORS_TEMPLATE = SHELL_DESCRIPTORS_PATH + "{aasIdentifier}";
