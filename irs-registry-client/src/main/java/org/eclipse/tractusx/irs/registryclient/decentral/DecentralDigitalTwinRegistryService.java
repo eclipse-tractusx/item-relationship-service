@@ -275,7 +275,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
             final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
                     edcUrls);
-            log.debug("Created endpointDataReferenceFutures");
 
             return lookupShellIds(bpn, endpointDataReferenceFutures);
 
