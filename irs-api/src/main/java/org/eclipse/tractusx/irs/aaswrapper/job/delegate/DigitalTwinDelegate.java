@@ -68,9 +68,18 @@ public class DigitalTwinDelegate extends AbstractDelegate {
         }
 
         try {
-            final Shell shell = digitalTwinRegistryService.fetchShells(List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn())))
-                                                          .stream()
+            final Shell shell = digitalTwinRegistryService.fetchShells(
+                                                                  List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()))).stream()
+                                                          // TODO (mfischer): #395: clarify whether this is correct
+                                                          // Special Scenario:
+                                                          // Multiple DTs with the same globalAssetId in one DTR:
+                                                          // If there are multiple shells in this place this means
+                                                          // that there were multiple DTs with the same globalAssetId
+                                                          // in one DTR.
+                                                          // Because there is no defined way which one to select
+                                                          // the first is returned.
                                                           .findFirst()
+                                                          // No result should result in tombstone, therefore throw.
                                                           .orElseThrow();
 
             if (!expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
