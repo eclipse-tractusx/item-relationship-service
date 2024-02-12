@@ -36,7 +36,6 @@ public final class DtrWiremockSupport {
     public static final String DATAPLANE_PUBLIC_PATH = "/api/public";
     public static final String DATAPLANE_PUBLIC_URL = DATAPLANE_URL + DATAPLANE_PUBLIC_PATH;
 
-    public static final String CREATE_SHELL_DESCRIPTOR_PATH = "/shell-descriptors";
     public static final String SHELL_DESCRIPTORS_PATH = "/shell-descriptors/";
     public static final String PUBLIC_SHELL_DESCRIPTORS_PATH = DATAPLANE_PUBLIC_PATH + SHELL_DESCRIPTORS_PATH;
     public static final String SHELL_DESCRIPTORS_TEMPLATE = SHELL_DESCRIPTORS_PATH + "{aasIdentifier}";
@@ -55,8 +54,9 @@ public final class DtrWiremockSupport {
 
     public static MappingBuilder getShellDescriptor200(final String urlRegex) {
         final String materialForRecycling = submodelDescriptor(DATAPLANE_PUBLIC_URL,
-                "urn:uuid:19b0338f-6d03-4198-b3b8-5c43f8958d60", DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL,
-                "MaterialForRecycling", "urn:uuid:cf06d5d5-e3f8-4bd4-bfcf-81815310701f",
+                "urn:uuid:19b0338f-6d03-4198-b3b8-5c43f8958d60",
+                DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, "MaterialForRecycling",
+                "urn:uuid:cf06d5d5-e3f8-4bd4-bfcf-81815310701f",
                 "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling");
 
         final String batch = submodelDescriptor(DATAPLANE_PUBLIC_URL, "urn:uuid:234edd2f-0223-47c7-9fe4-3984ab14c4f9",
@@ -64,8 +64,9 @@ public final class DtrWiremockSupport {
                 "urn:uuid:f53db6ef-7a58-4326-9169-0ae198b85dbf", "urn:samm:io.catenax.batch:2.0.0#Batch");
 
         final String singleLevelBomAsBuilt = submodelDescriptor(DATAPLANE_PUBLIC_URL,
-                "urn:uuid:234edd2f-0223-47c7-9fe4-3984ab14c4f9", DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL,
-                "SingleLevelBomAsBuilt", "urn:uuid:0e413809-966b-4107-aae5-aeb28bcdaadf",
+                "urn:uuid:234edd2f-0223-47c7-9fe4-3984ab14c4f9",
+                DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, "SingleLevelBomAsBuilt",
+                "urn:uuid:0e413809-966b-4107-aae5-aeb28bcdaadf",
                 "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt");
 
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt, materialForRecycling);
@@ -77,11 +78,13 @@ public final class DtrWiremockSupport {
     }
 
     @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
-    public static MappingBuilder getShellDescriptor200(final String urlRegex, final String bpn, final List<String> submodelDescriptors,
-            final String globalAssetId, final String shellId, final String idShort) {
+    public static MappingBuilder getShellDescriptor200(final String urlRegex, final String bpn,
+            final List<String> submodelDescriptors, final String globalAssetId, final String shellId,
+            final String idShort) {
         final List<String> specificAssetIds = List.of(specificAssetId("manufacturerId", bpn));
         return get(urlPathMatching(urlRegex)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
-                assetAdministrationShellResponse(submodelDescriptors, globalAssetId, idShort, shellId, specificAssetIds)));
+                assetAdministrationShellResponse(submodelDescriptors, globalAssetId, idShort, shellId,
+                        specificAssetIds)));
     }
 
     public static String assetAdministrationShellResponse(final List<String> submodelDescriptors,
@@ -180,8 +183,8 @@ public final class DtrWiremockSupport {
     }
 
     public static MappingBuilder getLookupShells200(final String lookupShellsPath, final List<String> shellIds) {
-        return get(urlPathEqualTo(lookupShellsPath)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody(
-                lookupShellsResponse(shellIds)));
+        return get(urlPathEqualTo(lookupShellsPath)).willReturn(
+                responseWithStatus(STATUS_CODE_OK).withBody(lookupShellsResponse(shellIds)));
     }
 
     public static MappingBuilder getLookupShells200Empty() {

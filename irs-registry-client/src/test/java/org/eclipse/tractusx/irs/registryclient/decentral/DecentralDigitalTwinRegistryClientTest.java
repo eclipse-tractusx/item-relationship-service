@@ -32,7 +32,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 class DecentralDigitalTwinRegistryClientTest {
 
-    public static final String CREATE_SHELL_DESCRIPTORS = "/shell-descriptors";
     public static final String SHELL_DESCRIPTORS = "/shell-descriptors/{aasIdentifier}";
     public static final String LOOKUP_SHELLS = "/lookup/shells";
     RestTemplate restTemplate = mock(RestTemplate.class);
@@ -40,7 +39,7 @@ class DecentralDigitalTwinRegistryClientTest {
 
     @BeforeEach
     void setUp() {
-        client = new DecentralDigitalTwinRegistryClient(restTemplate, CREATE_SHELL_DESCRIPTORS, SHELL_DESCRIPTORS, LOOKUP_SHELLS);
+        client = new DecentralDigitalTwinRegistryClient(restTemplate, SHELL_DESCRIPTORS, LOOKUP_SHELLS);
     }
 
     @Test
@@ -75,72 +74,6 @@ class DecentralDigitalTwinRegistryClientTest {
 
         // then
         verify(restTemplate).exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class));
-    }
-
-    @Test
-    void test() throws JsonProcessingException {
-        AssetAdministrationShellDescriptor test = AssetAdministrationShellDescriptor.builder()
-                                                                                    .globalAssetId(
-                                                                                            "urn:uuid:254604ab-2153-45fb-8cad-54ef09f4080f")
-                                                                                    .idShort("test")
-                                                                                    .id("urn:uuid:25300562-aa66-4840-8952-5cef4ed667c2")
-                                                                                    .specificAssetIds(
-                                                                                            List.of(IdentifierKeyValuePair.builder()
-                                                                                                                          .name("manufacturerId")
-                                                                                                                          .value("BPNL00000003CNKC")
-                                                                                                                          .subjectId(
-                                                                                                                                  Reference.builder()
-                                                                                                                                           .keys(List.of(
-                                                                                                                                                   SemanticId.builder()
-                                                                                                                                                             .type("GlobalReference")
-                                                                                                                                                             .value("PUBLIC_READABLE")
-                                                                                                                                                             .build()))
-                                                                                                                                           .build())
-                                                                                                                          .build()))
-                                                                                    .submodelDescriptors(
-                                                                                            List.of(SubmodelDescriptor.builder()
-                                                                                                                      .idShort(
-                                                                                                                              "SingleLevelUsageAsBuilt")
-                                                                                                                      .id("urn:uuid:e401ccb7-a8f5-499a-9340-93746822d775")
-                                                                                                                      .semanticId(
-                                                                                                                              Reference.builder()
-                                                                                                                                       .type("ExternalReference")
-                                                                                                                                       .keys(List.of(
-                                                                                                                                               SemanticId.builder()
-                                                                                                                                                         .type("GlobalReference")
-                                                                                                                                                         .value("urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt")
-                                                                                                                                                         .build()))
-                                                                                                                                       .build()
-
-                                                                                                                      )
-                                                                                                                      .endpoints(
-                                                                                                                              List.of(Endpoint.builder()
-                                                                                                                                              .interfaceInformation(
-                                                                                                                                                      "SUBMODEL-3.0")
-                                                                                                                                              .protocolInformation(
-                                                                                                                                                      ProtocolInformation.builder()
-                                                                                                                                                                         .href("https://trace-x-edc-dataplane.dev.demo.catena-x.net/api/public/data/urn:uuid:e401ccb7-a8f5-499a-9340-93746822d775")
-                                                                                                                                                                         .endpointProtocol(
-                                                                                                                                                                                 "HTTP")
-                                                                                                                                                                         .endpointProtocolVersion(
-                                                                                                                                                                                 List.of("1.1"))
-                                                                                                                                                                         .subprotocol(
-                                                                                                                                                                                 "DSP")
-                                                                                                                                                                         .subprotocolBody(
-                                                                                                                                                                                 "id=urn:uuid:cb6d86b5-b8ea-4fc0-b10b-ff2dd62f793d;dspEndpoint=https://trace-x-edc.dev.demo.catena-x.net")
-                                                                                                                                                                         .subprotocolBodyEncoding(
-                                                                                                                                                                                 "plain")
-                                                                                                                                                                         .securityAttributes(
-                                                                                                                                                                                 List.of(SecurityAttribute.none()))
-
-                                                                                                                                                                         .build())
-                                                                                                                                              .build()))
-                                                                                                                      .build()))
-                                                                                    .build();
-
-        ObjectMapper m = new ObjectMapper();
-
-        assertThat(m.writeValueAsString(test)).isNotBlank();
     }
 
 }

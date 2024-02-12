@@ -55,7 +55,6 @@ public class DecentralDigitalTwinRegistryClient {
     private final String lookupShellsTemplate;
 
     public DecentralDigitalTwinRegistryClient(final RestTemplate edcRestTemplate,
-            @Value("${digitalTwinRegistry.createShellDescriptorTemplate:}") final String createShellDescriptorTemplate,
             @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
             @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate) {
         this.edcRestTemplate = edcRestTemplate;
@@ -65,15 +64,6 @@ public class DecentralDigitalTwinRegistryClient {
 
     private static String encodeWithBase64(final String aasIdentifier) {
         return Base64.getEncoder().encodeToString(aasIdentifier.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public AssetAdministrationShellDescriptor createShell(
-            AssetAdministrationShellDescriptor assetAdministrationShellDescriptor,
-            EndpointDataReference endpointDataReference) {
-        final String descriptorEndpoint = endpointDataReference.getEndpoint() + shellDescriptorTemplate;
-        return edcRestTemplate.exchange(URI.create(descriptorEndpoint), HttpMethod.POST,
-                new HttpEntity<>(assetAdministrationShellDescriptor, headers(endpointDataReference)),
-                AssetAdministrationShellDescriptor.class).getBody();
     }
 
     @Retry(name = "registry")

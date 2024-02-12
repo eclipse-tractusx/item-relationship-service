@@ -121,12 +121,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    @Override
-    public AssetAdministrationShellDescriptor createShell(
-            final AssetAdministrationShellDescriptor assetAdministrationShellDescriptor) {
-
-    }
-
     private Stream<Shell> fetchShellDescriptors(final Map.Entry<String, List<DigitalTwinRegistryKey>> entry,
             final Set<String> calledEndpoints) {
 
