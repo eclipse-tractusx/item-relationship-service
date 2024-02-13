@@ -69,6 +69,7 @@ public class ProtocolInformation {
     /**
      * securityAttributes
      */
+    @ArraySchema(arraySchema = @Schema(implementation = SecurityAttribute.class), maxItems = Integer.MAX_VALUE)
     private List<SecurityAttribute> securityAttributes;
 
 }
