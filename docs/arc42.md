@@ -46,53 +46,53 @@ The following table entries define overall IRS quality goals. The order of the t
 | Name | Description |
 | --- | --- |
 | Cloud Agnostic Architecture approach | IRS provides a reference application/implementation which is deployable on any cloud ecosystem. There is no vendor lock to any cloud vendor. |
-| Spring Boot and the Spring framework is used as underlying framework for Java development. | Spring Boot and Framework is used to build an easy and production-grade based application which could be deployed without any further infrastructure components. Orchestrating application components and integrating with other libraries/frameworks. |
-| Lombok | Lombok for generating boilerplate code. Keeping code concise increases quality and maintainability. |
-| Kubernetes is used for Container Orchestration | Kubernetes as container orchestration system used for software deployment, scaling and management of the IRS application.  This supports our software infrastructure and ensures efficient management and scalability of the IRS reference application. |
-| Docker Container are used to provide a microservice oriented architecture | Deployment made on reliable production ready images. Avoiding repetitive, mundane configuration tasks for container orchestration. |
-| Docker Compose is used to define and tune multi container application based on docker container technologies. | Docker container to develop independently of the underlying OS. |
+| Spring Boot and the Spring Framework are used as the underlying framework for Java development. | Spring Boot and the Spring Framework are used to create a simple, production-grade based application that can be deployed without any additional infrastructure components. Orchestration of application components and integration with other libraries/frameworks. |
+| Lombok | Lombok for boilerplate code generation. Keeping code concise improves quality and maintainability. |
+| Kubernetes is used for container orchestration | Kubernetes as container orchestration system used for software deployment, scaling and management of the IRS application.  This supports our software infrastructure and ensures efficient management and scalability of the IRS reference application. |
+| Docker containers are used to provide a microservice oriented architecture | Deployments are made on reliable production-ready images. Avoiding repetitive, mundane configuration tasks for container orchestration. |
+| Docker Compose is used to define and tune multi-container-applications based on Docker container technologies. | Docker containers to develop independently of the underlying OS. |
 
 ### Organizational Constraints
 
 | Name | Description | Comment |
 | --- | --- | --- |
 | CX-Services | Provide IRS as a C-X Shared Data Service. |  |
-| App Marketplace & API Connection | IRS Application has to be accessible for the user in the App Marketplace. | App Marketplace & API Connection |
+| App Marketplace & API Connection | The IRS Application must be available to the user in the App Marketplace. | App Marketplace & API Connection |
 | Federal Ministry for Economic Affairs and Energy (BMWi) promotion | The Federal Ministry for Economic Affairs and Energy (BMWi) promotes the project and provides funds for the project. |  |
-| Technology Readiness Level (TRL) for products developed within the CX Consortia | As IRS is a reference implementation, the Technology Readiness Level (TRL) must not be above TRL 8. |  |
-| Operational Readiness for Release 1 has to be fulfilled | Minimum requirements for release 1 has to be archived. Later on, the Operational Readiness for Release has to be fulfilled accordingly to the requirements of the C-X consortia. |  |
+| Technology Readiness Level (TRL) for products developed within the CX consortia | As IRS is a reference implementation, the Technology Readiness Level (TRL) must not be above TRL 8. |  |
+| Operational Readiness for Release 1 has to be fulfilled | The minimum requirements for release 1 has to be archived. Later on, the Operational Readiness for Release has to be fulfilled according to the requirements of the C-X consortia. |  |
 
 ### Political constraints
 
 | Name | Description |
 | --- | --- |
-| Open Source | FOSS licenses approved by the eclipse foundation has to be used. It could represent the initial set that the CX community agrees on to regulate the content contribution under FOSS licenses. |
-| Apache License 2.0 | Apache License 2.0 is one of the approved licenses which should be used to respect and guarantee Intellectual property (IP). |
-| Java OpenJDK Version JDK >= 17 | IRS provides an open source application standard. OpenJDK is used, which is licensed under GNU General Public License (GNU GPL) Version 2. |
+| Open Source | FOSS licenses approved by the Eclipse Foundation must be used. This could represent the initial set that the CX community agrees on to regulate the content contribution under FOSS licenses. |
+| Apache License 2.0 | Apache License 2.0 is one of the approved licenses that should be used to respect and guarantee Intellectual Property (IP). |
+| Java OpenJDK Version JDK >= 17 | IRS provides an open source application standard. It uses OpenJDK, which is licensed under the GNU General Public License (GNU GPL) version 2. |
 
 ### Development conventions
 
 | Name | Description |
 | --- | --- |
-| Architecture documentation | Architectural documentation of IRS reference application/implementation according to ARC42 template. |
-| Coding guidelines | We follow the Google Java Style Guide. That is ensured by using the unified code formatter in the team and enforcing the style via Maven and Checkstyle / PMD. |
-| Executable Bundle provided over the App Marketplace | As IRS is available in the App Marketplace, the application should be provided in one executable bundle. |
-| Module structure | The entire build is driven from a Maven file, itself run from a single Dockerfile. |
-| Code Analysis, Linting and Code Coverage | Consistent style increases readability and maintainability of the code base. Hence, we use analyzers to enforce consistency and style rules. We enforce the code style and rules in the CI to avoid merging code that does not comply with standards. |
+| Architecture documentation | Architectural documentation of the IRS reference application/implementation following the ARC42 template. |
+| Coding guidelines | We follow the Google Java Style Guide. This is ensured by using the unified code formatter in the team and enforcing the style via Maven and Checkstyle / PMD. |
+| Executable Bundle provided via the App Marketplace | Since IRS is available in the App Marketplace, the application should be provided in one executable bundle. |
+| Module structure | The entire build is driven by a Maven file, which runs itself from a single Dockerfile. |
+| Code Analysis, Linting and Code Coverage | A consistent style increases the readability and maintainability of the code base. Hence, we use analyzers to enforce consistency and style rules. We enforce the code style and rules in the CI to avoid merging non-compliant code. |
 
 #### Code analysis, linting and code coverage
 
 | Tool | Scope | Rule | Configuration (via files / annotations) |
 | --- | --- | --- | --- |
-| Tidy | Enforce Maven POM Code Convention | Fail build on untidy pom.xml | N/A |
-| SpotBugs | Static analysis to look for bugs in Java code. Successor of popular FindBugs tool | Fail build on violations | .config/spotbugs-excludes.xml @SuppressFBWarnings(...) |
-| FindSecBugs | SpotBugs plugin adding security bugs coverage | Fail build on violations | N/A |
-| Checkstyle | Enforce coding standard | Fail build on violations | .config/checkstyle-suppressions.xml @SuppressWarnings("checkstyle:XXX") |
-| PMD | Source code analyzer to finds common programming flaws | Fail build on violations | .config/pmd-rules.xml @SuppressWarnings("PMD.XXX") |
+| Tidy | Enforce Maven POM code convention | Fail build on untidy pom.xml | N/A |
+| SpotBugs | Static analysis to find bugs in Java code. Successor to the popular FindBugs tool | Fail build on violations | .config/spotbugs-excludes.xml @SuppressFBWarnings(...) |
+| FindSecBugs | SpotBugs plugin to add security bug coverage | Fail build on violations | N/A |
+| Checkstyle | Enforce coding standards | Fail build on violations | .config/checkstyle-suppressions.xml @SuppressWarnings("checkstyle:XXX") |
+| PMD | Source code analyzer to find common programming flaws | Fail build on violations | .config/pmd-rules.xml @SuppressWarnings("PMD.XXX") |
 | JaCoCo | Test coverage | Fail build on coverage &lt; 80% | pom.xml @ExcludeFromCodeCoverageGeneratedReport |
-| Veracode | - Scan source code for vulnerabilities (SAST) - Scan dependencies for known vulnerabilities (SCA) - Check used licenses (FOSS Licenses) |  | <https://web.analysiscenter.veracode.com/> |
-| Dependabot | Automated dependency updates built into GitHub. Provided pull requests on dependency updates. | Any dependency update generates a pull request automatically. | .github/dependabot.yml |
-| CodeQl | Discover vulnerabilities across a codebase. |  | .github/workflows/codeql.yml |
+| Veracode | - Scan source code for vulnerabilities (SAST) - Scan dependencies for known vulnerabilities (SCA) - Check used licenses (FOSS licenses) |  | <https://web.analysiscenter.veracode.com/> |
+| Dependabot | Automated dependency updates built into GitHub. Provides pull requests for dependency updates. | Every dependency update automatically generates a pull request. | .github/dependabot.yml |
+| CodeQl | Discover vulnerabilities across a code base. |  | .github/workflows/codeql.yml |
 
 ## System scope and context
 
