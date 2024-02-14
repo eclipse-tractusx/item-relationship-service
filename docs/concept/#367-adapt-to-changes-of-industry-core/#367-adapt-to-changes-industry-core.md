@@ -123,6 +123,12 @@ Parameter is configurable for dDTR instance and has to be configured for integra
 - [Values.yaml](https://github.com/eclipse-tractusx/sldt-digital-twin-registry/blob/f438fe96a7ae1f1b920e8e4fb4114fb7af32643d/charts/registry/values.yaml#L51)
 - [README.md](https://github.com/eclipse-tractusx/sldt-digital-twin-registry/blob/f438fe96a7ae1f1b920e8e4fb4114fb7af32643d/charts/registry/README.md#:~:text=externalSubjectIdWildcardAllowedTypes)
 
+values.yaml
+````json
+   registry.externalSubjectIdWildcardAllowedTypes = manufacturerPartId,assetLifecyclePhase,digitalTwinType
+````
+
+
 ### Visibility of Specific Asset IDs in the DTR
 * Usage of parameter 'externalSubjectIds' which contains 'specificAssetIds'.  Parameter 'externalSubjectIds' restricts visibility exclusively to manufacturer.
 
