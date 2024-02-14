@@ -3,7 +3,7 @@
         {
             "identification": "urn:uuid:5fbf0548-8119-4550-852e-3c58eac4a36c",
             "aspectType": "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-            "contractAgreementId": "NDQ2MWJhZmQtOGY5My00MGI2LWEzY2ItYmFiNmExNmM1M2I0:dXJuOnV1aWQ6YjU2ZGQ0NTAtNzg2MS00MGM1LTkxNzgtNGRhYjQ1NTk4ZWQ4:ZThjZjU1YjYtYTgyNy00OWI3LTljN2YtMDhkNDJiNWJlZmM4",
+            "contractAgreementId": null,
             "payload": {
                 "component": [
                     {
