@@ -1569,13 +1569,13 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:334cce52-1f52-4bc9-9dd1-410bbe497bbc"
-          bpn: "BPNL00000003B2OM"
+          globalAssetId: "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5"
+          bpn: "BPNL00000003AVTH"
         aspects:
           - Batch
         collectAspects: true
         bomLifecycle: "asBuilt"
-        depth: 2
+        depth: 10
       method: POST
       headers:
         content-type: application/json
