@@ -150,6 +150,15 @@ The plugin will be disabled by default. To enable it in the current project, go 
 More info:  
 https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config
 
+### Create a release
+
+1. Choose a release version. Use semantic versioning!
+2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md) and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md) (e.g. https://github.com/catenax-ng/tx-item-relationship-service/pull/328)
+3. Create Git tag for the desired release version `git tag x.x.x`
+4. Push Git tag to repository `git push origin x.x.x`
+5. Wait for release workflow to complete
+6. Merge the automatically opened PR by github-actions bot
+7. Notify about the release in IRS Matrix Chat 
 
 ## Contact
 
