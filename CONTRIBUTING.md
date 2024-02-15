@@ -154,11 +154,12 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 1. Choose a release version. Use semantic versioning!
 2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md) and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md) (e.g. https://github.com/catenax-ng/tx-item-relationship-service/pull/328)
-3. Create Git tag for the desired release version `git tag x.x.x`
-4. Push Git tag to repository `git push origin x.x.x`
-5. Wait for release workflow to complete
-6. Merge the automatically opened PR by github-actions bot
-7. Notify about the release in IRS Matrix Chat 
+3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md)
+4. Create Git tag for the desired release version `git tag x.x.x`
+5. Push Git tag to repository `git push origin x.x.x`
+6. Wait for release workflow to complete
+7. Merge the automatically opened PR by github-actions bot
+8. Notify about the release in IRS Matrix Chat 
 
 ## Contact
 
