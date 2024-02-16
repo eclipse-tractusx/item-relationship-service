@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 
@@ -33,14 +34,14 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 public interface EdcEndpointReferenceRetriever {
 
     /**
-     * Retrieves the EDC endpoint reference from the specified connector endpoint and asset combination
+     * Retrieves the EDC endpoint references from the specified connector endpoint and asset combination
      *
      * @param edcConnectorEndpoint the endpoint URL
      * @param assetType            the asset type id
      * @param assetValue           the asset type value
-     * @return the endpoint data reference
+     * @return the endpoint data references as {@link List<CompletableFuture<EndpointDataReference>>}
      * @throws EdcRetrieverException on any EDC errors
      */
-    List<EndpointDataReference> getEndpointReferenceForAsset(String edcConnectorEndpoint, String assetType,
-            String assetValue) throws EdcRetrieverException;
+    List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String edcConnectorEndpoint,
+            String assetType, String assetValue) throws EdcRetrieverException;
 }

@@ -30,7 +30,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
@@ -39,7 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
@@ -166,7 +167,6 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         log.info("Retrieving endpoint data reference from cache for asset id: {}", assetId);
         final EndpointDataReferenceStatus cachedEndpointDataReference = endpointDataReferenceCacheService.getEndpointDataReference(
                 assetId);
-
         EndpointDataReference endpointDataReference;
 
         if (cachedEndpointDataReference.tokenStatus() == TokenStatus.VALID) {
@@ -184,19 +184,15 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final String assetId, final EndpointDataReferenceStatus cachedEndpointDataReference)
             throws EdcClientException {
         try {
-            final List<CompletableFuture<EndpointDataReference>> endpointDataReferences = getEndpointReferencesForAsset(
-                    connectorEndpoint, NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference);
+            final EndpointDataReference endpointDataReference = getEndpointReferenceForAsset(connectorEndpoint,
+                    NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference).get();
+            endpointDataReferenceStorage.put(assetId, endpointDataReference);
 
-            // TODO (mfischer): #395 clarify if we need to use the fastest result here or return the list of futures
-            //         in the latter case we need to move endpointDataReferenceStorage.put somewhere else
-            final EndpointDataReference fastest = new ResultFinder().getFastestResult(endpointDataReferences).get();
-            endpointDataReferenceStorage.put(assetId, fastest);
-
-            return fastest;
+            return endpointDataReference;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new EdcClientException(e);
-        } catch (ExecutionException e) {
+        } catch (CompletionException | ExecutionException e) {
             throw new EdcClientException(e);
         }
     }
@@ -229,47 +225,80 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
 
         final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
-        final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey, filterValue);
 
-        final List<CatalogItem> catalogItems = items.stream().toList();
-        if (catalogItems.isEmpty()) {
+        // CatalogItem = contract offer
+        final List<CatalogItem> contractOffers = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey,
+                filterValue);
+
+        if (contractOffers.isEmpty()) {
             throw new EdcClientException(
                     "Catalog is empty for endpointAddress '%s' filterKey '%s', filterValue '%s'".formatted(
                             endpointAddress, filterKey, filterValue));
         }
 
-        return catalogItems.stream().map(catalogItem -> {
+        // We need to process each contract offer in parallel
+        // (see src/docs/arc42/cross-cutting/discovery-DTR--multiple-EDCs-with-multiple-DTRs.puml
+        // and src/docs/arc42/cross-cutting/discovery-DTR--multiple-EDCs-with-multiple-DTRs--detailed.puml)
+        return contractOffers.stream().map(contractOffer -> {
 
-            final NegotiationResponse negotiationResponse = negotiateContract(endpointDataReferenceStatus, catalogItem,
-                    providerWithSuffix);
+            final NegotiationResponse negotiationResponse;
+            try {
+                negotiationResponse = negotiateContract(endpointDataReferenceStatus, contractOffer, providerWithSuffix);
 
-            final String storageId = getStorageId(endpointDataReferenceStatus, negotiationResponse);
+                final String storageId = getStorageId(endpointDataReferenceStatus, negotiationResponse);
 
-            return pollingService.<EndpointDataReference>createJob()
-                                 .action(() -> retrieveEndpointReference(storageId, stopWatch))
-                                 .timeToLive(config.getSubmodel().getRequestTtl())
-                                 .description("waiting for Endpoint Reference retrieval")
-                                 .build()
-                                 .schedule();
+                return pollingService.<EndpointDataReference>createJob()
+                                     .action(() -> retrieveEndpointReference(storageId, stopWatch))
+                                     .timeToLive(config.getSubmodel().getRequestTtl())
+                                     .description("waiting for Endpoint Reference retrieval")
+                                     .build()
+                                     .schedule();
+            } catch (EdcClientException e) {
+                log.warn(("Negotiate contract failed for "
+                        + "endpointDataReferenceStatus = '%s', catalogItem = '%s', providerWithSuffix = '%s' ").formatted(
+                        endpointDataReferenceStatus, contractOffer, providerWithSuffix));
+                return (CompletableFuture<EndpointDataReference>) Stream.empty();
+            }
 
         }).toList();
     }
 
     private NegotiationResponse negotiateContract(final EndpointDataReferenceStatus endpointDataReferenceStatus,
-            final CatalogItem catalogItem, final String providerWithSuffix) {
+            final CatalogItem catalogItem, final String providerWithSuffix) throws EdcClientException {
         final NegotiationResponse response;
         try {
             response = contractNegotiationService.negotiate(providerWithSuffix, catalogItem,
                     endpointDataReferenceStatus);
-            // TODO(mfischer): #395 how to handle?
-        } catch (ContractNegotiationException e) {
-            throw new RuntimeException(e);
-        } catch (UsagePolicyException e) {
-            throw new RuntimeException(e);
-        } catch (TransferProcessException e) {
-            throw new RuntimeException(e);
+        } catch (TransferProcessException | UsagePolicyException | ContractNegotiationException e) {
+            throw new EdcClientException(("Negotiation failed for endpoint '%s', " + "tokenStatus '%s', "
+                    + "providerWithSuffix '%s', catalogItem '%s'").formatted(
+                    endpointDataReferenceStatus.endpointDataReference(), endpointDataReferenceStatus.tokenStatus(),
+                    providerWithSuffix, endpointDataReferenceStatus), e);
         }
         return response;
+    }
+
+    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+            final String filterKey, final String filterValue,
+            final EndpointDataReferenceStatus endpointDataReferenceStatus) throws EdcClientException {
+        final StopWatch stopWatch = new StopWatch();
+
+        stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
+        final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
+
+        final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey, filterValue);
+
+        final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
+                items.stream().findFirst().orElseThrow(), endpointDataReferenceStatus);
+
+        final String storageId = getStorageId(endpointDataReferenceStatus, response);
+
+        return pollingService.<EndpointDataReference>createJob()
+                             .action(() -> retrieveEndpointReference(storageId, stopWatch))
+                             .timeToLive(config.getSubmodel().getRequestTtl())
+                             .description("waiting for Endpoint Reference retrieval")
+                             .build()
+                             .schedule();
     }
 
     private static String getStorageId(final EndpointDataReferenceStatus endpointDataReferenceStatus,

@@ -78,7 +78,7 @@ public class EndpointDataForConnectorsService {
         log.info(msg);
 
         try {
-            return edcSubmodelFacade.getEndpointReferenceForAsset(edcUrl, DT_REGISTRY_ASSET_TYPE,
+            return edcSubmodelFacade.getEndpointReferencesForAsset(edcUrl, DT_REGISTRY_ASSET_TYPE,
                     DT_REGISTRY_ASSET_VALUE);
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);

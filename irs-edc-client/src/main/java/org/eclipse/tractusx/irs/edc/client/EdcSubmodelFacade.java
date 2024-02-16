@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import lombok.RequiredArgsConstructor;
@@ -83,20 +84,9 @@ public class EdcSubmodelFacade {
     }
 
     @SuppressWarnings("PMD.PreserveStackTrace")
-    public List<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue) throws EdcClientException {
-        try {
-            return client.getEndpointReferencesForAsset(endpointAddress, filterKey, filterValue).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return null;
-        } catch (ExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof EdcClientException exceptionCause) {
-                throw exceptionCause;
-            }
-            throw new EdcClientException(cause);
-        }
+        return client.getEndpointReferencesForAsset(endpointAddress, filterKey, filterValue);
     }
 
 }
