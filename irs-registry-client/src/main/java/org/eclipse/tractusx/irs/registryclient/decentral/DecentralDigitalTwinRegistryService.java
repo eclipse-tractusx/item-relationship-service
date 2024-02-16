@@ -225,14 +225,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
      * If the ID is a globalAssetId, the corresponding shellId will be returned.
      *
      * @param endpointDataReference the reference to access the digital twin registry
-     * @param key                   the ambiguous key (shellId or globalAssetId)
-     * @return the shellId
+     * @param providedId            the ambiguous ID (shellId or globalAssetId)
+     * @return the corresponding asset administration shell ID
      */
     @NotNull
-    private String mapToShellId(final EndpointDataReference endpointDataReference, final String key) {
+    private String mapToShellId(final EndpointDataReference endpointDataReference, final String providedId) {
 
         final var watch = new StopWatch();
-        final String msg = "Mapping '%s' to shell ID for endpoint '%s'".formatted(key,
+        final String msg = "Mapping '%s' to shell ID for endpoint '%s'".formatted(providedId,
                 endpointDataReference.getEndpoint());
         watch.start(msg);
         log.info(msg);
@@ -241,22 +241,27 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
             final var identifierKeyValuePair = IdentifierKeyValuePair.builder()
                                                                      .name("globalAssetId")
-                                                                     .value(key)
+                                                                     .value(providedId)
                                                                      .build();
-            final var aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                                                                                        endpointDataReference, List.of(identifierKeyValuePair))
-                                                                                .getResult()
-                                                                                .stream()
-                                                                                .findFirst()
-                                                                                .orElse(key);
 
-            if (key.equals(aaShellIdentification)) {
-                log.info("Found shell with shellId {} in registry", aaShellIdentification);
+            // Try to map the provided ID to the corresponding asset administration shell ID
+            final var mappingResultStream = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
+                    endpointDataReference, List.of(identifierKeyValuePair)).getResult().stream();
+
+            // Special scenario: Multiple DTs with the same globalAssetId in one DTR:
+            // see docs/src/docs/arc42/cross-cutting/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml
+            final var mappingResult = mappingResultStream.findFirst();
+
+            // Empty Optional means that the ID is already a shellId
+            final var shellId = mappingResult.orElse(providedId);
+
+            if (providedId.equals(shellId)) {
+                log.info("Found shell with shellId {} in registry", shellId);
             } else {
-                log.info("Retrieved shellId {} for globalAssetId {}", aaShellIdentification, key);
+                log.info("Retrieved shellId {} for globalAssetId {}", shellId, providedId);
             }
 
-            return aaShellIdentification;
+            return shellId;
 
         } finally {
             watch.stop();
