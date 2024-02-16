@@ -71,7 +71,6 @@ public class DecentralDigitalTwinRegistryClient {
         final String descriptorEndpoint = endpointDataReference.getEndpoint() + shellDescriptorTemplate;
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(descriptorEndpoint);
         final Map<String, String> values = Map.of(PLACEHOLDER_AAS_IDENTIFIER, encodeWithBase64(aasIdentifier));
-        // TODO (mfischer): #395: clarify: shouldn't this be dtrRestTemplate?!
         return edcRestTemplate.exchange(uriBuilder.build(values), HttpMethod.GET,
                                       new HttpEntity<>(null, headers(endpointDataReference)), AssetAdministrationShellDescriptor.class)
                               .getBody();
