@@ -29,6 +29,7 @@ https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/
 |PRS | Formerly known Service Name: Parts Relationship Service
 |Self-Sovereign Identity (SSI)
 | For more information see: https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2[ssi-docu]
+|Shell | see "Asset Administration Shell"
 |Traversal Aspect |aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship.
 
 Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt
