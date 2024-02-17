@@ -196,7 +196,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).contains(existingCatenaXId);
     }
@@ -211,7 +212,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).contains("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
     }
@@ -226,7 +228,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).contains("urn:uuid:2afbac90-a662-4f16-9058-4f030e692631");
     }
@@ -241,7 +244,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).isNotEmpty();
     }
@@ -257,7 +261,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).isEqualTo("{}");
     }
@@ -272,8 +277,9 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("https://connector.endpoint.com",
-                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
@@ -290,8 +296,9 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("https://connector.endpoint.com",
-                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID)
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID)
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
@@ -348,7 +355,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // act
         final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue,
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
-        final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
+        final EndpointDataReference actual = result.get(0).get(5, TimeUnit.SECONDS);
 
         // assert
         assertThat(actual).isEqualTo(expected);
@@ -370,7 +377,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // act
         final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue);
-        final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
+        final EndpointDataReference actual = result.get(0).get(5, TimeUnit.SECONDS);
 
         // assert
         assertThat(actual).isEqualTo(expected);
@@ -381,8 +388,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
             throws EdcClientException, ExecutionException, InterruptedException {
         // given
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
-                new EndpointDataReferenceStatus(TestMother.endpointDataReference("assetId"),
-                        TokenStatus.VALID));
+                new EndpointDataReferenceStatus(TestMother.endpointDataReference("assetId"), TokenStatus.VALID));
         final String value = "result";
         when(edcDataPlaneClient.getData(any(), any())).thenReturn(value);
 
