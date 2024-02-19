@@ -17,14 +17,11 @@
 
 # Overview
 
-The "Industry Core" is a fundamental element in the C-X network or system architecture.
-It provides essential functions for identification, traversal, data flow, configuration, and communication in a modular and
-interconnected environment.
-The goal is to make components identifiable and discoverable at type and instance levels.
-Enable seamless traversal across different tier levels.
-Facilitate the creation of data chains.
-Crucial role in configuring enablement services for component-based data exchange
-Notification base message exchange.
+The "Industry Core" is a fundamental element in the C-X network or system architecture.  It provides essential functions for identification, traversal, data flow, configuration, and communication in a modular and
+interconnected environment.  The goal is to make components identifiable and discoverable at type and instance levels.
+Enable seamless traversal across different tier levels.  Facilitate the creation of data chains.  Crucial role in configuring enablement services for component-based data exchange
+Notification base message exchange.  
+
 
 1. Identifiability and findability
 2. Traversing Across multiple tier levels
@@ -238,13 +235,13 @@ values.yaml
 
 # Glossary
 
-| Abbreviation | Name                    | Description                                              |
-|--------------|-------------------------|----------------------------------------------------------|
-| ECU          | Electronic Control Unit | An ECU's main job is to keep the engine working smoothly |
-| JIS          | Just In Sequence        | Just-in-sequence is a delivery concept where parts are delivered to the production plant at a requested time in the exact order of installation, typically for a 1:1 dependency on the manufactured product. A just-in-sequence-part is a part for which this concept and order of delivery applies and which does not have a dedicated serial number (then it would be considered a serialized part). Examples for JIS-parts are seats and bumpers.                                    |
-| BPN | Business Partner Number | A BPN is the unique identifier of a partner within Catena-x. |
-|  Part Instance|A part instance is a physically produced instance (e.g. serialized part, batch, just-in-sequence-part) of a part type. |
-| Part Type| A part type is a generic (not physically produced) part on material- or catalog-level as a representation for a designed part.|
+| Abbreviation | Name                      | Description                                              |
+|--------------|---------------------------|----------------------------------------------------------|
+| ECU          | Electronic Control Unit   | An ECU's main job is to keep the engine working smoothly |
+| JIS          | Just In Sequence          | Just-in-sequence is a delivery concept where parts are delivered to the production plant at a requested time in the exact order of installation, typically for a 1:1 dependency on the manufactured product. A just-in-sequence-part is a part for which this concept and order of delivery applies and which does not have a dedicated serial number (then it would be considered a serialized part). Examples for JIS-parts are seats and bumpers.                                    |
+| BPN | Business Partner Number   | A BPN is the unique identifier of a partner within Catena-x. |
+|  | Part Instance             |A part instance is a physically produced instance (e.g. serialized part, batch, just-in-sequence-part) of a part type. |
+| | Part Type                 | A part type is a generic (not physically produced) part on material- or catalog-level as a representation for a designed part. |
 | VAN | Vehicle Anonymised Number | A number mapped 1:1 to VIN, but pseudonomised.|
 
 # References
