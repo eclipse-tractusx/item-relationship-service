@@ -28,9 +28,7 @@ import org.eclipse.edc.spi.types.domain.asset.Asset;
  */
 
 @Builder(toBuilder = true)
-public record AssetRequest(
-        Asset asset,
-        DataAddress dataAddress) {
+public record AssetRequest(Asset asset, DataAddress dataAddress) {
     public static final String ASSET_CREATION_ASSET = "https://w3id.org/edc/v0.0.1/ns/asset";
     public static final String ASSET_CREATION_DATA_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/dataAddress";
     public static final String ASSET_CREATION_DATA_ADDRESS_TYPE = "https://w3id.org/edc/v0.0.1/ns/dataAddress/type";
