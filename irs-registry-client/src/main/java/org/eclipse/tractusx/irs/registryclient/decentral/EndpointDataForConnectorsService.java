@@ -26,7 +26,6 @@ package org.eclipse.tractusx.irs.registryclient.decentral;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,7 +81,7 @@ public class EndpointDataForConnectorsService {
                     DT_REGISTRY_ASSET_VALUE);
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
-            throw new CompletionException(e.getMessage(), e);
+            return List.of(CompletableFuture.failedFuture(e));
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
