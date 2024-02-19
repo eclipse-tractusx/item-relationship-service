@@ -48,6 +48,7 @@ import org.eclipse.tractusx.irs.component.PageResult;
 import org.eclipse.tractusx.irs.component.ProcessingError;
 import org.eclipse.tractusx.irs.component.Quantity;
 import org.eclipse.tractusx.irs.component.Relationship;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.Summary;
 import org.eclipse.tractusx.irs.component.Tombstone;
@@ -371,22 +372,23 @@ public class OpenApiExamples {
                         .build();
     }
 
-    private AssetAdministrationShellDescriptor createShell() {
-        return AssetAdministrationShellDescriptor.builder()
-                                                 .description(List.of(LangString.builder()
+    private Shell createShell() {
+        return new Shell("a787aa13-2bd7-488f-9e25-40682003901b",
+                AssetAdministrationShellDescriptor.builder()
+                                                           .description(List.of(LangString.builder()
                                                                                 .language("en")
                                                                                 .text("The shell for a vehicle")
                                                                                 .build()))
-                                                 .globalAssetId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
-                                                 .idShort("future concept x")
-                                                 .id("urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8")
-                                                 .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
+                                                           .globalAssetId("urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9")
+                                                           .idShort("future concept x")
+                                                           .id("urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8")
+                                                           .specificAssetIds(List.of(IdentifierKeyValuePair.builder()
                                                                                                  .name("engineserialid")
                                                                                                  .value("12309481209312")
                                                                                                  .build()))
-                                                 .submodelDescriptors(List.of(createBaseSubmodelDescriptor(),
+                                                           .submodelDescriptors(List.of(createBaseSubmodelDescriptor(),
                                                          createPartSubmodelDescriptor()))
-                                                 .build();
+                                                           .build());
     }
 
     private Relationship createRelationship() {

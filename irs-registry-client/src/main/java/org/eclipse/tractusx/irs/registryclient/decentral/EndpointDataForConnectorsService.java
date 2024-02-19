@@ -23,12 +23,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.springframework.web.client.RestClientException;
+import org.springframework.util.StopWatch;
 
 /**
  * Service that use edc client to make calls to edc connector endpoints
@@ -40,22 +45,51 @@ public class EndpointDataForConnectorsService {
 
     private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
+    private static final String TOOK_MS = "{} took {} ms";
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
-    public EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
-        for (final String connector : connectorEndpoints) {
-            log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
-            try {
-                return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
-                        DT_REGISTRY_ASSET_VALUE);
-            } catch (EdcRetrieverException e) {
-                log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector, e);
-            }
+    public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
+            final List<String> connectorEndpoints) {
+
+        final var watch = new StopWatch();
+        final String msg = "Creating futures to get EndpointDataReferences for endpoints: %s".formatted(
+                connectorEndpoints);
+        watch.start(msg);
+        log.info(msg);
+
+        List<CompletableFuture<EndpointDataReference>> futures = Collections.emptyList();
+        try {
+            futures = connectorEndpoints.stream()
+                                        .map(connectorEndpoint -> supplyAsync(
+                                                () -> getEndpointReferenceForAsset(connectorEndpoint)))
+                                        .toList();
+            return futures;
+        } finally {
+            log.info("Created {} futures", futures.size());
+            watch.stop();
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
-        throw new RestClientException(
-                "EndpointDataReference was not found. Requested connectorEndpoints: " + String.join(", ",
-                        connectorEndpoints));
+    }
+
+    private EndpointDataReference getEndpointReferenceForAsset(final String connector) {
+
+        final var watch = new StopWatch();
+        final String msg = "Trying to retrieve EndpointDataReference for connector '%s'".formatted(connector);
+        watch.start(msg);
+        log.info(msg);
+
+        try {
+            return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
+                    DT_REGISTRY_ASSET_VALUE);
+        } catch (EdcRetrieverException e) {
+            log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", connector, e);
+            throw new CompletionException(e.getMessage(), e);
+        } finally {
+            watch.stop();
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+        }
+
     }
 
 }

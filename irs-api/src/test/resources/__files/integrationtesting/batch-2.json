@@ -1,0 +1,22 @@
+{
+  "localIdentifiers": [
+    {
+      "value": "BPNL00000000TEST",
+      "key": "manufacturerId"
+    },
+    {
+      "value": "BID12345678",
+      "key": "batchId"
+    }
+  ],
+  "manufacturingInformation": {
+    "date": "2022-02-04T14:48:54",
+    "country": "HUR"
+  },
+  "catenaXId": "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5",
+  "partTypeInformation": {
+    "manufacturerPartId": "123-0.740-3434-A",
+    "classification": "product",
+    "nameAtManufacturer": "Polyamid"
+  }
+}

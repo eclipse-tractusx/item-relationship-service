@@ -130,7 +130,25 @@ cp local/development/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/co
 For further information please see https://github.com/hazcod/semantic-commit-hook
 
 ### Code formatting 
+#### Deprecated soon:
 Please use the following code formatter: [.idea/codeStyles](.idea/codeStyles)
+
+#### Upcoming change (not available until whole project base will be formatted to new standard):  
+Google Java Format will be used as code format standard.  
+Please install `google-java-format` plugin and edit customer VM options (for IntelliJ `Help → Edit Custom VM Options...`) and paste following configuration: 
+```
+-Xmx4096m
+--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+```
+The plugin will be disabled by default. To enable it in the current project, go to `File→Settings...→google-java-format` Settings (or `IntelliJ IDEA→Preferences...→Other Settings→google-java-format` Settings on macOS) and check the Enable google-java-format checkbox. (A notification will be presented when you first open a project offering to do this for you.)
+
+More info:  
+https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config
 
 
 ## Contact
