@@ -56,36 +56,46 @@ data:
         oauth2:
           client:
             registration:
-              common:
-                client-id: "${OAUTH2_CLIENT_ID}" # taken from secret ENV
-                client-secret: "${OAUTH2_CLIENT_SECRET}" # taken from secret ENV
-              portal:
-                client-id: ${PORTAL_OAUTH2_CLIENT_ID} # taken from secret ENV
-                client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # taken from secret ENV
+              semantics:
+                client-id: "${SEMANTICS_OAUTH2_CLIENT_ID}" # taken from secret ENV
+                client-secret: "${SEMANTICS_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
+              discovery:
+                client-id: ${DISCOVERY_OAUTH2_CLIENT_ID} # taken from secret ENV
+                client-secret: ${DISCOVERY_OAUTH2_CLIENT_SECRET} # taken from secret ENV
+              bpdm:
+                client-id: ${BPDM_OAUTH2_CLIENT_ID} # taken from secret ENV
+                client-secret: ${BPDM_OAUTH2_CLIENT_SECRET} # taken from secret ENV
             provider:
-              common:
+              semantics:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
-              portal:
+              discovery:
+                token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
+              bpdm:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
 
     digitalTwinRegistry:
       descriptorEndpoint: {{ tpl (.Values.digitalTwinRegistry.descriptorEndpoint | default "") . | quote }}
       shellLookupEndpoint: {{ tpl (.Values.digitalTwinRegistry.shellLookupEndpoint | default "") . | quote }}
-      discoveryFinderUrl: {{ tpl (.Values.digitalTwinRegistry.discoveryFinderUrl | default "") . | quote }}
       shellDescriptorTemplate: {{ .Values.digitalTwinRegistry.shellDescriptorTemplate | default "" | quote }}
       lookupShellsTemplate: {{ .Values.digitalTwinRegistry.lookupShellsTemplate | default "" | quote }}
       type: {{ tpl (.Values.digitalTwinRegistry.type | default "") . | quote }}
+      oAuthClientId: {{ .Values.digitalTwinRegistry.oAuthClientId | default "discovery" }}
+      discovery:
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "discovery" }} # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+        discoveryFinderUrl: {{ tpl (.Values.discovery.discoveryFinderUrl | default "") . | quote }} # The endpoint to discover EDC endpoints to a particular BPN.
 
     semanticshub:
       url: {{ tpl (.Values.semanticshub.url | default "") . | quote }}
       pageSize: {{ tpl (.Values.semanticshub.pageSize | default "100") . }}
       modelJsonSchemaEndpoint: {{ tpl (.Values.semanticshub.modelJsonSchemaEndpoint | default "") . | quote }}
       defaultUrns: {{ tpl (.Values.semanticshub.defaultUrns | default "") . | quote }}
+      oAuthClientId: {{ .Values.semanticshub.oAuthClientId | default "semantics" }}
       {{- if .Values.semanticshub.localModels }}
       localModelDirectory: /app/semantic-models
       {{- end }}
 
     bpdm:
+      oAuthClientId: {{ .Values.bpdm.oAuthClientId | default "bpdm" }}
       bpnEndpoint: {{ tpl (.Values.bpdm.bpnEndpoint | default "") . | quote }}
 
     irs-edc-client:
@@ -129,7 +139,7 @@ data:
       irs:
         url: {{ tpl (.Values.irsUrl | default "") . | quote }}
       discovery:
-        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "portal" }}
+        oAuthClientId: {{ .Values.discovery.oAuthClientId | default "discovery" }}
         {{- if .Values.ess.mockEdcResult }}
         mockEdcResult:
         {{- tpl (toYaml .Values.ess.mockEdcResult) . | nindent 10 }}

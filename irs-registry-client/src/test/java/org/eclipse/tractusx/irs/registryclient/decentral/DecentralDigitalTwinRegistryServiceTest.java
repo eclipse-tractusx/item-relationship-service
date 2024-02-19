@@ -83,7 +83,7 @@ class DecentralDigitalTwinRegistryServiceTest {
     class FetchShellsTests {
 
         @Test
-        void should_return_expected_shell() throws RegistryServiceException {
+        void shouldReturnExpectedShell() throws RegistryServiceException {
             // given
             final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                     "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
@@ -110,7 +110,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void when_InterruptedException_occurs() throws ExecutionException, InterruptedException {
+        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException {
 
             // given
             simulateResultFinderInterrupted();
@@ -144,7 +144,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void when_ExecutionException_occurs() {
+        void whenExecutionExceptionOccurs() {
 
             // given
             simulateGetFastestResultFailedFuture();
@@ -175,7 +175,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void should_throw_ShellNotFoundException_if_no_digital_twin_registry_keys_given() {
+        void shouldThrowShellNotFoundException_ifNoDigitalTwinRegistryKeysGiven() {
             assertThatThrownBy(() -> sut.fetchShells(emptyList())).isInstanceOf(ShellNotFoundException.class);
         }
 
@@ -205,7 +205,7 @@ class DecentralDigitalTwinRegistryServiceTest {
     class LookupGlobalAssetIdsTests {
 
         @Test
-        void should_return_the_expected_globalAssetId() throws RegistryServiceException {
+        void shouldReturnTheExpectedGlobalAssetId() throws RegistryServiceException {
             // given
             final var digitalTwinRegistryKey = new DigitalTwinRegistryKey(
                     "urn:uuid:4132cd2b-cbe7-4881-a6b4-39fdc31cca2b", "bpn");
@@ -238,7 +238,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void when_InterruptedException_occurs() throws ExecutionException, InterruptedException {
+        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException {
             // given
             simulateResultFinderInterrupted();
 
@@ -253,7 +253,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void when_ExecutionException_occurs() {
+        void whenExecutionExceptionOccurs() {
             // given
             simulateGetFastestResultFailedFuture();
 
