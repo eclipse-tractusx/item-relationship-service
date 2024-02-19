@@ -19,6 +19,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.asset;
 
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_BASE_URL;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_METHOD;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_BODY;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_PATH;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_TYPE;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -114,20 +122,14 @@ public class EdcAssetService {
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type(DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
-                                                           .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_TYPE,
                                                                    DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
-                                                                   baseUrl)
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.TRUE.toString())
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_BODY,
                                                                    Boolean.TRUE.toString())
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
-                                                                   DEFAULT_METHOD)
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_METHOD, DEFAULT_METHOD)
                                                            .build();
 
         final Asset asset = Asset.Builder.newInstance()
@@ -147,26 +149,18 @@ public class EdcAssetService {
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type("DataAddress")
-                                                           .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_TYPE,
                                                                    DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
-                                                                   baseUrl)
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.TRUE.toString())
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_BODY,
                                                                    Boolean.TRUE.toString())
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath",
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_PATH,
                                                                    Boolean.TRUE.toString())
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams",
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS,
                                                                    Boolean.TRUE.toString())
-                                                           .property(
-                                                                   "https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
-                                                                   DEFAULT_METHOD)
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_METHOD, DEFAULT_METHOD)
                                                            .build();
 
         final Asset asset = Asset.Builder.newInstance()

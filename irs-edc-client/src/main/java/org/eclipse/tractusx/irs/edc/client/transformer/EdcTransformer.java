@@ -23,6 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.transformer;
 
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_ASSET;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_BASE_URL;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_METHOD;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_BODY;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_PATH;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS;
+import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_TYPE;
+
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.JSON_LD_OBJECT_MAPPER;
 
 import java.io.ByteArrayInputStream;
@@ -93,16 +103,16 @@ public class EdcTransformer {
     public EdcTransformer(@Qualifier(JSON_LD_OBJECT_MAPPER) final ObjectMapper objectMapper,
             final TitaniumJsonLd titaniumJsonLd, final TypeTransformerRegistry typeTransformerRegistry) {
         this.titaniumJsonLd = titaniumJsonLd;
-        this.titaniumJsonLd.registerNamespace("type", "https://w3id.org/edc/v0.0.1/ns/dataAddress/type");
-        this.titaniumJsonLd.registerNamespace("baseUrl", "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl");
-        this.titaniumJsonLd.registerNamespace("proxyMethod", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod");
-        this.titaniumJsonLd.registerNamespace("proxyBody", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody");
-        this.titaniumJsonLd.registerNamespace("method", "https://w3id.org/edc/v0.0.1/ns/dataAddress/method");
-        this.titaniumJsonLd.registerNamespace("asset", "https://w3id.org/edc/v0.0.1/ns/asset");
-        this.titaniumJsonLd.registerNamespace("dataAddress", "https://w3id.org/edc/v0.0.1/ns/dataAddress");
-        this.titaniumJsonLd.registerNamespace("proxyPath", "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath");
+        this.titaniumJsonLd.registerNamespace("type", ASSET_CREATION_DATA_ADDRESS_TYPE);
+        this.titaniumJsonLd.registerNamespace("baseUrl", ASSET_CREATION_DATA_ADDRESS_BASE_URL);
+        this.titaniumJsonLd.registerNamespace("proxyMethod", ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD);
+        this.titaniumJsonLd.registerNamespace("proxyBody", ASSET_CREATION_DATA_ADDRESS_PROXY_BODY);
+        this.titaniumJsonLd.registerNamespace("method", ASSET_CREATION_DATA_ADDRESS_METHOD);
+        this.titaniumJsonLd.registerNamespace("asset", ASSET_CREATION_ASSET);
+        this.titaniumJsonLd.registerNamespace("dataAddress", ASSET_CREATION_DATA_ADDRESS);
+        this.titaniumJsonLd.registerNamespace("proxyPath", ASSET_CREATION_DATA_ADDRESS_PROXY_PATH);
         this.titaniumJsonLd.registerNamespace("proxyQueryParams",
-                "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams");
+                ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS);
         final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(

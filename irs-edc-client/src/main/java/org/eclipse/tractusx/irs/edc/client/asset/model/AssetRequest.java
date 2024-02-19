@@ -33,4 +33,11 @@ public record AssetRequest(
         DataAddress dataAddress) {
     public static final String ASSET_CREATION_ASSET = "https://w3id.org/edc/v0.0.1/ns/asset";
     public static final String ASSET_CREATION_DATA_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/dataAddress";
+    public static final String ASSET_CREATION_DATA_ADDRESS_TYPE = "https://w3id.org/edc/v0.0.1/ns/dataAddress/type";
+    public static final String ASSET_CREATION_DATA_ADDRESS_BASE_URL = "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl";
+    public static final String ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD = "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod";
+    public static final String ASSET_CREATION_DATA_ADDRESS_PROXY_BODY = "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody";
+    public static final String ASSET_CREATION_DATA_ADDRESS_PROXY_PATH = "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath";
+    public static final String ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS = "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams";
+    public static final String ASSET_CREATION_DATA_ADDRESS_METHOD = "https://w3id.org/edc/v0.0.1/ns/dataAddress/method";
 }
