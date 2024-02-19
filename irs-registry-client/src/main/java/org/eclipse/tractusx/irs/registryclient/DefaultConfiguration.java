@@ -36,7 +36,6 @@ import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
@@ -134,12 +133,12 @@ public class DefaultConfiguration {
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
             final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
-            final EndpointDataReferenceStorage endpointDataReferenceStorage, final AsyncPollingService pollingService,
-            final RetryRegistry retryRegistry, final EDCCatalogFacade catalogFacade,
+            final AsyncPollingService pollingService, final RetryRegistry retryRegistry,
+            final EDCCatalogFacade catalogFacade,
             final EndpointDataReferenceCacheService endpointDataReferenceCacheService) {
+
         return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade,
-                endpointDataReferenceCacheService);
+                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
     @Bean

@@ -69,9 +69,6 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
-
-    private final EndpointDataReferenceStorage endpointDataReferenceStorage;
-
     private final AsyncPollingService pollingService;
     private final RetryRegistry retryRegistry;
     private final EDCCatalogFacade catalogFacade;
@@ -120,7 +117,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         log.info("Retrieving dataReference from storage for storageId (assetId or contractAgreementId): {}",
                 Masker.mask(storageId));
-        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.get(storageId);
+        final var dataReference = endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(storageId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
@@ -190,7 +187,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         try {
             final EndpointDataReference endpointDataReference = getEndpointReferenceForAsset(connectorEndpoint,
                     NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference).get();
-            endpointDataReferenceStorage.put(assetId, endpointDataReference);
+            endpointDataReferenceCacheService.putEndpointDataReferenceIntoStorage(assetId, endpointDataReference);
 
             return endpointDataReference;
         } catch (InterruptedException e) {

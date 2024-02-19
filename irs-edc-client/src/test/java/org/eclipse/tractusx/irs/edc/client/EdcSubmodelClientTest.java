@@ -125,9 +125,9 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.setSubmodel(new EdcConfiguration.SubmodelConfig());
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
-        testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade,
-                endpointDataReferenceCacheService);
+
+        testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient, pollingService,
+                retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
     @Test

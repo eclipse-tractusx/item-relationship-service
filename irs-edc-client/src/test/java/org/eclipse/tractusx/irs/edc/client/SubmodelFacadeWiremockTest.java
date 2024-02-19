@@ -128,15 +128,15 @@ class SubmodelFacadeWiremockTest {
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
                 List.of(new Permission(PolicyType.USE, new Constraints(
                         List.of(new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
-                                new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active")),
-                        new ArrayList<>())))), OffsetDateTime.now().plusYears(1))));
+                                new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ),
+                                        "active")), new ArrayList<>())))), OffsetDateTime.now().plusYears(1))));
         final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider,
                 new ConstraintCheckerService());
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
 
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
-        this.edcSubmodelClient = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
+        this.edcSubmodelClient = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient,
                 pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
@@ -193,8 +193,7 @@ class SubmodelFacadeWiremockTest {
         final List<Constraint> andConstraints = List.of(
                 new Constraint("Membership", new Operator(OperatorType.EQ), "active"));
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
-        final Permission permission = new Permission(PolicyType.USE,
-                new Constraints(andConstraints, orConstraints));
+        final Permission permission = new Permission(PolicyType.USE, new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
 

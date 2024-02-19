@@ -81,6 +81,15 @@ public class EndpointDataReferenceCacheService {
         return new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW);
     }
 
+    public Optional<EndpointDataReference> getEndpointDataReferenceFromStorage(final String storageId) {
+        return endpointDataReferenceStorage.get(storageId);
+    }
+
+    public void putEndpointDataReferenceIntoStorage(final String assetId,
+            final EndpointDataReference endpointDataReference) {
+        endpointDataReferenceStorage.put(assetId, endpointDataReference);
+    }
+
     private Optional<EndpointDataReference> retrieveEndpointReferenceByAssetId(final String assetId) {
         log.info("Retrieving dataReference from storage for assetId {}", assetId);
         return endpointDataReferenceStorage.get(assetId);
@@ -94,6 +103,7 @@ public class EndpointDataReferenceCacheService {
     private static Instant extractTokenExpiration(final String token) {
         return Instant.ofEpochSecond(EDRAuthCode.fromAuthCodeToken(token).getExp());
     }
+
 }
 
 
