@@ -5,13 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
+### Added
+- Added helper script for building documentation locally.
+- Added concept to conform with IndustryCore Changes CX-0126 and CX-127
 
 ## [4.5.0] - 2024-02-07
 ### Added
-- Added helper script for building documentation locally.
-- Added helper script for building documentation locally.
-- Added concept to conform with IndustryCore Changes CX-0126 and CX-127
 - Added new job parameter flag "auditContractNegotiation" which toggles setting contractAgreementId in Shells and Submodels
 - Added "contractAgreementId" field to Submodel model
 - Added Integration Tests for the entire IRS flow using stubbed responses of Discovery Service, Semantic Hub, EDC, Digital Twin Registry and BPDM Pool
