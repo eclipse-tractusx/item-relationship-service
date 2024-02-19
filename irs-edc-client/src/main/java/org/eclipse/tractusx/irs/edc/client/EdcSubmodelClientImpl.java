@@ -69,7 +69,9 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
     private final EdcDataPlaneClient edcDataPlaneClient;
+
     private final EndpointDataReferenceStorage endpointDataReferenceStorage;
+
     private final AsyncPollingService pollingService;
     private final RetryRegistry retryRegistry;
     private final EDCCatalogFacade catalogFacade;
@@ -115,16 +117,18 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private Optional<EndpointDataReference> retrieveEndpointReference(final String storageId,
             final StopWatch stopWatch) {
-        final Optional<EndpointDataReference> dataReference = retrieveEndpointDataReferenceByContractAgreementId(
-                storageId);
+
+        log.info("Retrieving dataReference from storage for storageId (assetId or contractAgreementId): {}",
+                Masker.mask(storageId));
+        final Optional<EndpointDataReference> dataReference = endpointDataReferenceStorage.get(storageId);
 
         if (dataReference.isPresent()) {
             final EndpointDataReference ref = dataReference.get();
             log.info("Retrieving Endpoint Reference data from EDC data plane with id: {}", ref.getId());
             stopWatchOnEdcTask(stopWatch);
-
             return Optional.of(ref);
         }
+
         return Optional.empty();
     }
 
@@ -326,12 +330,6 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             addressWithSuffix = endpointAddress + providerSuffix;
         }
         return addressWithSuffix;
-    }
-
-    private Optional<EndpointDataReference> retrieveEndpointDataReferenceByContractAgreementId(final String storageId) {
-        log.info("Retrieving dataReference from storage for storageId (assetId or contractAgreementId): {}",
-                Masker.mask(storageId));
-        return endpointDataReferenceStorage.get(storageId);
     }
 
     @SuppressWarnings({ "PMD.AvoidRethrowingException",
