@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -158,8 +159,8 @@ class EdcSubmodelFacadeTest {
     }
 
     @Nested
-    @DisplayName("getEndpointReferenceForAsset")
-    class GetEndpointReferenceForAssetTests {
+    @DisplayName("getEndpointReferencesForAsset")
+    class GetEndpointReferencesForAssetTests {
 
         @Test
         void shouldThrowEdcClientExceptionForEndpointReference() throws EdcClientException {
@@ -168,40 +169,28 @@ class EdcSubmodelFacadeTest {
             when(client.getEndpointReferencesForAsset(any(), any(), any())).thenThrow(e);
 
             // act
-            ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferenceForAsset("", "", "");
+            ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferencesForAsset("", "", "");
 
             // assert
             assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
         }
 
         @Test
-        void shouldThrowExecutionExceptionForEndpointReference() throws EdcClientException {
+        void shouldReturnFailedFuture() throws EdcClientException {
+
             // arrange
-            final ExecutionException e = new ExecutionException(new EdcClientException("test"));
-            final CompletableFuture<EndpointDataReference> future = CompletableFuture.failedFuture(e);
-            when(client.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(future);
+            when(client.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+                    List.of(CompletableFuture.failedFuture(new EdcClientException("test"))));
 
             // act
-            ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferenceForAsset("", "", "");
+            final List<CompletableFuture<EndpointDataReference>> results = testee.getEndpointReferencesForAsset("", "",
+                    "");
 
             // assert
-            assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
-        }
-
-        @Test
-        void shouldRestoreInterruptOnInterruptExceptionForEndpointReference()
-                throws EdcClientException, ExecutionException, InterruptedException {
-            // arrange
-            final CompletableFuture<EndpointDataReference> future = mock(CompletableFuture.class);
-            final InterruptedException e = new InterruptedException();
-            when(future.get()).thenThrow(e);
-            when(client.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(future);
-
-            // act
-            testee.getEndpointReferenceForAsset("", "", "");
-
-            // assert
-            assertThat(Thread.currentThread().isInterrupted()).isTrue();
+            assertThat(results).hasSize(1);
+            assertThatThrownBy(() -> results.get(0).get()).isInstanceOf(ExecutionException.class)
+                                                          .extracting(Throwable::getCause)
+                                                          .isInstanceOf(EdcClientException.class);
         }
     }
 
