@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
@@ -78,11 +79,12 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() throws RegistryServiceException {
         final String existingCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
 
-        final Collection<AssetAdministrationShellDescriptor> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
+        final Collection<Shell> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
                 List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")));
         final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.stream()
                                                                           .findFirst()
                                                                           .get()
+                                                                          .payload()
                                                                           .getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
@@ -119,7 +121,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                 LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(
-                List.of(new DigitalTwinRegistryKey(catenaXId, ""))).stream().findFirst().get().getSubmodelDescriptors();
+                List.of(new DigitalTwinRegistryKey(catenaXId, ""))).stream().findFirst().get().payload().getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -155,6 +157,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                                                                                    .stream()
                                                                                    .findFirst()
                                                                                    .get()
+                                                                                   .payload()
                                                                                    .getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
@@ -178,6 +181,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                                                                                   .stream()
                                                                                   .findFirst()
                                                                                   .get()
+                                                                                  .payload()
                                                                                   .getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();

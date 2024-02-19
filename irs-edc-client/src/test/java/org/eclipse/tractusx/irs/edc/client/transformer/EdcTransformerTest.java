@@ -42,6 +42,7 @@ import org.eclipse.edc.catalog.spi.CatalogRequest;
 import org.eclipse.edc.catalog.spi.DataService;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.catalog.spi.Distribution;
+import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.policy.model.Action;
 import org.eclipse.edc.policy.model.AtomicConstraint;
@@ -211,7 +212,7 @@ class EdcTransformerTest {
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
 
         ObjectMapper objectMapper = objectMapper();
-        edcTransformer = new EdcTransformer(objectMapper, jsonLd);
+        edcTransformer = new EdcTransformer(objectMapper, jsonLd, new TypeTransformerRegistryImpl());
     }
 
     @Test

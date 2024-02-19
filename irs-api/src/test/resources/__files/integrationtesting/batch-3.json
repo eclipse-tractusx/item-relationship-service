@@ -1,0 +1,22 @@
+{
+  "localIdentifiers": [
+    {
+      "value": "BPNL00000000TEST",
+      "key": "manufacturerId"
+    },
+    {
+      "value": "BID12345678",
+      "key": "batchId"
+    }
+  ],
+  "manufacturingInformation": {
+    "date": "2022-02-04T14:48:54",
+    "country": "HUR"
+  },
+  "catenaXId": "urn:uuid:a314ad6b-77ea-417e-ae2d-193b3e249e99",
+  "partTypeInformation": {
+    "manufacturerPartId": "123-0.740-3434-A",
+    "classification": "product",
+    "nameAtManufacturer": "Generic Chemical"
+  }
+}

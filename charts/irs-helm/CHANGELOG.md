@@ -5,11 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+
+## [6.14.0] - 2024-02-07
 ### Added
 - Added configuration parameters `oauth2.semantics.clientId`,`oauth2.semantics.clientSecret`, `oauth2.discovery.clientId`,`oauth2.discovery.clientSecret`, `oauth2.bpdm.clientId`,`oauth2.bpdm.clientSecret`
 
 ### Removed
 - Removed configuration parameters `oauth2.clientId`,`oauth2.clientSecret`, `portal.oauth2.clientId`,`portal.oauth2.clientSecret`
+
+### Changed
+- Changed configuration for discovery finder url from `digitalTwinRegistry.discoveryFinderUrl` to `discovery.discoveryFinderUrl`
 
 ## [6.13.0] - 2024-01-15
 - Update IRS version to 4.4.0

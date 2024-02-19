@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
@@ -38,7 +39,7 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
 @SuppressWarnings("PMD.ExcessiveImports")
 public interface EdcSubmodelClient {
 
-    CompletableFuture<String> getSubmodelRawPayload(String connectorEndpoint, String submodelDataplaneUrl,
+    CompletableFuture<SubmodelDescriptor> getSubmodelPayload(String connectorEndpoint, String submodelDataplaneUrl,
             String assetId) throws EdcClientException;
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,

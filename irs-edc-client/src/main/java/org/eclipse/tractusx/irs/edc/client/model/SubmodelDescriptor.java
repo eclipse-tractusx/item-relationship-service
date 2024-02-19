@@ -21,34 +21,22 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.component;
+package org.eclipse.tractusx.irs.edc.client.model;
 
-import java.util.List;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * GenericDescription
+ * SubmodelDescriptor
  */
-@Schema(description = "")
 @Value
-@Builder(toBuilder = true)
-@JsonDeserialize(builder = GenericDescription.GenericDescriptionBuilder.class)
-public class GenericDescription {
+@Builder
+@Jacksonized
+@RequiredArgsConstructor
+public class SubmodelDescriptor {
 
-    @Schema(description = "Identification string")
-    private String identification;
-
-    @Schema(description = "Identification short form")
-    private String idShort;
-
-    @Schema(description = "Key value pair for specific asset id")
-    private Map<String, String> specificAssetId;
-
-    @Schema(description = "Description")
-    private List<Description> descriptions;
+    private final String cid;
+    private final String payload;
 }

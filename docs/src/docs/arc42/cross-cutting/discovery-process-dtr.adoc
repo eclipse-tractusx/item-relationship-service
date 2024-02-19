@@ -1,0 +1,67 @@
+The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
+This applies to the following scenarios.
+
+__Please note that the expression "the first result" in the subsequent sections means the first successful answer.__
+
+==== Scenario 1: EDC with multiple DTRs
+
+IRS queries all DTRs for the globalAssetId and will take the first result it gets.
+If none of the DTRs return a result, IRS will create a tombstone.
+
+[plantuml,target=discovery-DTR--EDC-with-multiple-DTRs,format=svg]
+....
+include::discovery-DTR--EDC-with-multiple-DTRs.puml[]
+....
+
+==== Scenario 2: Multiple EDCs with one DTR
+
+IRS starts a contract negotiation for all registry contract offers in parallel and queries the DTRs for all successful negotiations.
+The first registry which responds with a DT will be the one used by IRS.
+
+[plantuml,target=discovery-DTR--multiple-EDCs-with-one-DTR,format=svg]
+....
+include::discovery-DTR--multiple-EDCs-with-one-DTR.puml[]
+....
+
+==== Scenario 3: One EDC with one DTR
+
+Only one EDC found for BPN and the catalog only contains one offer for the DTR.
+IRS will use this registry and will create a tombstone if no DT could be found for the globalAssetId.
+
+[plantuml,target=discovery-DTR--one-EDC-with-one-DTR,format=svg]
+....
+include::discovery-DTR--one-EDC-with-one-DTR.puml[]
+....
+
+==== Scenario 4: Multiple EDCs with multiple DTRs
+
+IRS starts a contract negotiation for all the registry offers.
+
+[plantuml,target=discovery-DTR--multiple-EDCs-with-multiple-DTRs,format=svg]
+....
+include::discovery-DTR--multiple-EDCs-with-multiple-DTRs.puml[]
+....
+
+==== Scenario 5: Multiple EDCs with no DTRs
+
+IRS starts a contract negotiation for all the registry offers and creates a tombstone since no DTR could be discovered.
+
+[plantuml,target=discovery-DTR--multiple-EDCs-with-no-DTRs,format=svg]
+....
+include::discovery-DTR--multiple-EDCs-with-no-DTRs.puml[]
+....
+
+==== Special Scenario: Same DT in multiple DTRs
+
+IRS will use all registries to query for the globalAssetId and takes the first result which is returned.
+If no DT could be found in any of the DTRs, IRS will create a tombstone.
+
+==== Special Scenario: Multiple DTs (with the same globalAssetId) in one DTR
+
+IRS uses the `/query` endpoint of the DTR to get the DT id based on the globalAssetId.
+If more than one id is present for a globalAssetId, IRS will use the first of the list.
+
+[plantuml,target=discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR,format=svg]
+....
+include::discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml[]
+....

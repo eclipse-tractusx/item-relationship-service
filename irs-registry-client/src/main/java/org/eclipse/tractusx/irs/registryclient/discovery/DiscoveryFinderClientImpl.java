@@ -65,9 +65,11 @@ public class DiscoveryFinderClientImpl implements DiscoveryFinderClient {
     @Override
     @Retry(name = "registry")
     public List<EdcDiscoveryResult> findConnectorEndpoints(final String endpointAddress, final List<String> bpns) {
-        final EdcDiscoveryResult[] edcDiscoveryResults = restTemplate.postForObject(endpointAddress, bpns,
-                EdcDiscoveryResult[].class);
-        return edcDiscoveryResults == null ? List.of() : List.of(edcDiscoveryResults);
+        return toList(restTemplate.postForObject(endpointAddress, bpns, EdcDiscoveryResult[].class));
+    }
+
+    private static <T> List<T> toList(final T... arr) {
+        return arr == null ? List.of() : List.of(arr);
     }
 
 }
