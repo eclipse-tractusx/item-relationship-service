@@ -11,8 +11,18 @@
     </parent>
 
     <artifactId>irs-common</artifactId>
+    <version>${irs-registry-client.version}</version>
+
     <name>IRS common classes</name>
     <description>Contains classes shared across the different modules</description>
+    <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+
+    <scm>
+        <connection>scm:git:git://github.com/eclipse-tractusx/item-relationship-service.git</connection>
+        <developerConnection>scm:git:ssh://github.com:eclipse-tractusx/item-relationship-service.git
+        </developerConnection>
+        <url>https://github.com/eclipse-tractusx/item-relationship-service</url>
+    </scm>
 
     <dependencies>
         <dependency>

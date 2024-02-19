@@ -16,13 +16,10 @@ Provide as much information regarding this request as possible
 -->
 - ...
 
-## Outcome / Acceptance Criteria
+## Acceptance Criteria
 <!--
-Describe the Outcome & acceptance criterias the result of the story
+Describe the acceptance criterias the result of the story
 -->
-### Outcome
-- ...
-### Acceptance Criteria
 - ...
 
 ## Out of Scope
