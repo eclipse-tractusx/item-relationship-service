@@ -105,7 +105,4 @@ par
     end
 end
 
-' TODO(mfischer): #395: how do we visualize the following behaviour in the diagram?:
-'    fastest successful response from DTR will be returned
-
 @enduml
