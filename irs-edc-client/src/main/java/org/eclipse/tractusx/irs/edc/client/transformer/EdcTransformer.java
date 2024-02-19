@@ -23,16 +23,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.transformer;
 
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_ASSET;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_BASE_URL;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_METHOD;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_BODY;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_PATH;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_TYPE;
-
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.JSON_LD_OBJECT_MAPPER;
 
 import java.io.ByteArrayInputStream;
@@ -74,9 +64,8 @@ import org.eclipse.edc.core.transform.transformer.to.JsonObjectToQuerySpecTransf
 import org.eclipse.edc.core.transform.transformer.to.JsonValueToGenericTypeTransformer;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.spi.result.Result;
+import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
-import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
-import org.eclipse.tractusx.irs.edc.client.asset.transformer.JsonObjectFromAssetRequestTransformer;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
@@ -98,21 +87,11 @@ public class EdcTransformer {
     private final org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer jsonObjectToPolicyTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
-    private final JsonObjectFromAssetRequestTransformer jsonObjectFromAssetRequestTransformer;
+    private final JsonObjectFromAssetTransformer jsonObjectFromAssetTransformer;
 
     public EdcTransformer(@Qualifier(JSON_LD_OBJECT_MAPPER) final ObjectMapper objectMapper,
             final TitaniumJsonLd titaniumJsonLd, final TypeTransformerRegistry typeTransformerRegistry) {
         this.titaniumJsonLd = titaniumJsonLd;
-        this.titaniumJsonLd.registerNamespace("type", ASSET_CREATION_DATA_ADDRESS_TYPE);
-        this.titaniumJsonLd.registerNamespace("baseUrl", ASSET_CREATION_DATA_ADDRESS_BASE_URL);
-        this.titaniumJsonLd.registerNamespace("proxyMethod", ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD);
-        this.titaniumJsonLd.registerNamespace("proxyBody", ASSET_CREATION_DATA_ADDRESS_PROXY_BODY);
-        this.titaniumJsonLd.registerNamespace("method", ASSET_CREATION_DATA_ADDRESS_METHOD);
-        this.titaniumJsonLd.registerNamespace("asset", ASSET_CREATION_ASSET);
-        this.titaniumJsonLd.registerNamespace("dataAddress", ASSET_CREATION_DATA_ADDRESS);
-        this.titaniumJsonLd.registerNamespace("proxyPath", ASSET_CREATION_DATA_ADDRESS_PROXY_PATH);
-        this.titaniumJsonLd.registerNamespace("proxyQueryParams",
-                ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS);
         final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
 
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(
@@ -123,8 +102,7 @@ public class EdcTransformer {
         jsonObjectFromContractOfferDescriptionTransformer = new JsonObjectFromContractOfferDescriptionTransformer(
                 jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
-
-        jsonObjectFromAssetRequestTransformer = new JsonObjectFromAssetRequestTransformer(jsonBuilderFactory);
+        jsonObjectFromAssetTransformer = new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper);
         jsonObjectToPolicyTransformer = new org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer(
                 objectMapper);
 
@@ -157,10 +135,9 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectFromPolicyTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromDistributionTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromDataServiceTransformer(jsonBuilderFactory));
-        typeTransformerRegistry.register(new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper));
+        typeTransformerRegistry.register(jsonObjectFromAssetTransformer);
         typeTransformerRegistry.register(new JsonObjectFromCriterionTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromDataAddressTransformer(jsonBuilderFactory));
-        typeTransformerRegistry.register(jsonObjectFromAssetRequestTransformer);
     }
 
     public Catalog transformCatalog(final String jsonString, final Charset charset) {
@@ -198,8 +175,8 @@ public class EdcTransformer {
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 
-    public JsonObject transformAssetRequestToJson(final AssetRequest assetRequest) {
-        final JsonObject transform = jsonObjectFromAssetRequestTransformer.transform(assetRequest, transformerContext);
+    public JsonObject transformAssetToJson(final Asset assetRequest) {
+        final JsonObject transform = jsonObjectFromAssetTransformer.transform(assetRequest, transformerContext);
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 

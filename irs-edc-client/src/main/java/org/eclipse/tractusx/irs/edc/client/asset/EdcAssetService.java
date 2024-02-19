@@ -19,13 +19,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.asset;
 
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_BASE_URL;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_METHOD;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_BODY;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_PATH;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS;
-import static org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest.ASSET_CREATION_DATA_ADDRESS_TYPE;
+import static org.eclipse.edc.spi.types.domain.DataAddress.EDC_DATA_ADDRESS_TYPE_PROPERTY;
+import static org.eclipse.edc.spi.types.domain.HttpDataAddress.HTTP_DATA;
 
 import java.util.Map;
 import java.util.UUID;
@@ -36,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
@@ -59,7 +53,12 @@ public class EdcAssetService {
     private static final String DEFAULT_CONTENT_TYPE = "application/json";
     private static final String DEFAULT_POLICY_ID = "use-eu";
     private static final String DEFAULT_METHOD = "POST";
-    private static final String DEFAULT_DATA_ADDRESS_PROPERTY_TYPE = "HttpData";
+    private static final String ASSET_CREATION_DATA_ADDRESS_BASE_URL = "https://w3id.org/edc/v0.0.1/ns/baseUrl";
+    private static final String ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD = "https://w3id.org/edc/v0.0.1/ns/proxyMethod";
+    private static final String ASSET_CREATION_DATA_ADDRESS_PROXY_BODY = "https://w3id.org/edc/v0.0.1/ns/proxyBody";
+    private static final String ASSET_CREATION_DATA_ADDRESS_PROXY_PATH = "https://w3id.org/edc/v0.0.1/ns/proxyPath";
+    private static final String ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS = "https://w3id.org/edc/v0.0.1/ns/proxyQueryParams";
+    private static final String ASSET_CREATION_DATA_ADDRESS_METHOD = "https://w3id.org/edc/v0.0.1/ns/method";
 
     private final EdcTransformer edcTransformer;
     private final EdcConfiguration config;
@@ -68,35 +67,35 @@ public class EdcAssetService {
     public String createNotificationAsset(final String baseUrl, final String assetName,
             final NotificationMethod notificationMethod, final NotificationType notificationType)
             throws CreateEdcAssetException {
-        final JsonObject request = createNotificationAssetRequest(assetName, baseUrl, notificationMethod,
-                notificationType);
+        final Asset request = createNotificationAssetRequest(assetName, baseUrl, notificationMethod, notificationType);
         return sendRequest(request);
     }
 
     public String createDtrAsset(final String baseUrl, final String assetName) throws CreateEdcAssetException {
-        final JsonObject request = createDtrAssetRequest(assetName, baseUrl);
+        final Asset request = createDtrAssetRequest(assetName, baseUrl);
         return sendRequest(request);
     }
 
-    private String sendRequest(final JsonObject request) throws CreateEdcAssetException {
+    private String sendRequest(final Asset request) throws CreateEdcAssetException {
+        final JsonObject transformedPayload = edcTransformer.transformAssetToJson(request);
         final ResponseEntity<String> createEdcDataAssetResponse;
         try {
             createEdcDataAssetResponse = restTemplate.postForEntity(config.getControlplane().getEndpoint().getAsset(),
-                    request, String.class);
+                    transformedPayload, String.class);
             final HttpStatusCode responseCode = createEdcDataAssetResponse.getStatusCode();
 
             if (responseCode.value() == HttpStatus.CONFLICT.value()) {
-                log.info("{} asset already exists in the EDC", getAssetId(request));
-                return getAssetId(request);
+                log.info("{} asset already exists in the EDC", request.getId());
+                return request.getId();
             }
 
             if (responseCode.value() == HttpStatus.OK.value()) {
-                return getAssetId(request);
+                return request.getId();
             }
         } catch (RestClientException e) {
             throw new CreateEdcAssetException(e);
         }
-        throw new CreateEdcAssetException("Failed to create asset %s".formatted(getAssetId(request)));
+        throw new CreateEdcAssetException("Failed to create asset %s".formatted(request.getId()));
     }
 
     public void deleteAsset(final String assetId, final RestTemplate restTemplate) throws DeleteEdcAssetException {
@@ -113,7 +112,7 @@ public class EdcAssetService {
         }
     }
 
-    private JsonObject createNotificationAssetRequest(final String assetName, final String baseUrl,
+    private Asset createNotificationAssetRequest(final String assetName, final String baseUrl,
             final NotificationMethod notificationMethod, final NotificationType notificationType) {
         final String assetId = UUID.randomUUID().toString();
         final Map<String, Object> properties = Map.of("description", assetName, "contenttype", DEFAULT_CONTENT_TYPE,
@@ -121,9 +120,8 @@ public class EdcAssetService {
                 notificationType.getValue(), "notificationmethod", notificationMethod.getValue());
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                           .type(DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
-                                                           .property(ASSET_CREATION_DATA_ADDRESS_TYPE,
-                                                                   DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
+                                                           .type(HTTP_DATA)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.TRUE.toString())
@@ -131,26 +129,22 @@ public class EdcAssetService {
                                                                    Boolean.TRUE.toString())
                                                            .property(ASSET_CREATION_DATA_ADDRESS_METHOD, DEFAULT_METHOD)
                                                            .build();
-
-        final Asset asset = Asset.Builder.newInstance()
-                                         .id(assetId)
-                                         .contentType("Asset")
-                                         .properties(properties)
-                                         .dataAddress(dataAddress)
-                                         .build();
-        return edcTransformer.transformAssetRequestToJson(
-                AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
+        return Asset.Builder.newInstance()
+                            .id(assetId)
+                            .contentType("Asset")
+                            .properties(properties)
+                            .dataAddress(dataAddress)
+                            .build();
     }
 
-    private JsonObject createDtrAssetRequest(final String assetName, final String baseUrl) {
+    private Asset createDtrAssetRequest(final String assetName, final String baseUrl) {
         final String assetId = UUID.randomUUID().toString();
         final Map<String, Object> properties = Map.of("description", assetName, "type",
                 "data.core.digitalTwinRegistry");
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type("DataAddress")
-                                                           .property(ASSET_CREATION_DATA_ADDRESS_TYPE,
-                                                                   DEFAULT_DATA_ADDRESS_PROPERTY_TYPE)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.TRUE.toString())
@@ -163,17 +157,11 @@ public class EdcAssetService {
                                                            .property(ASSET_CREATION_DATA_ADDRESS_METHOD, DEFAULT_METHOD)
                                                            .build();
 
-        final Asset asset = Asset.Builder.newInstance()
-                                         .id(assetId)
-                                         .contentType("Asset")
-                                         .properties(properties)
-                                         .dataAddress(dataAddress)
-                                         .build();
-        return edcTransformer.transformAssetRequestToJson(
-                AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
-    }
-
-    private static String getAssetId(final JsonObject jsonObject) {
-        return jsonObject.get("asset").asJsonObject().get("@id").toString();
+        return Asset.Builder.newInstance()
+                            .id(assetId)
+                            .contentType("Asset")
+                            .properties(properties)
+                            .dataAddress(dataAddress)
+                            .build();
     }
 }

@@ -20,6 +20,7 @@
 package org.eclipse.tractusx.irs.edc.client.asset;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.edc.spi.types.domain.HttpDataAddress.HTTP_DATA;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -43,7 +45,6 @@ import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.asset.model.AssetRequest;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
@@ -71,14 +72,12 @@ class EdcAssetServiceTest {
     EdcConfiguration.ControlplaneConfig.EndpointConfig endpointConfig;
     @Mock
     private RestTemplate restTemplate;
-    private org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper objectMapper;
 
     private EdcTransformer edcTransformer;
     private EdcAssetService service;
 
     @BeforeEach
     void setUp() {
-        this.objectMapper = new org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper();
         TitaniumJsonLd jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
         jsonLd.registerNamespace("odrl", "http://www.w3.org/ns/odrl/2/");
         jsonLd.registerNamespace("dct", "https://purl.org/dc/terms/");
@@ -92,69 +91,60 @@ class EdcAssetServiceTest {
     }
 
     @Test
-    void testAssetCreateRequestStructure() throws JSONException {
+    void testAssetCreateRequestStructure() throws JSONException, JsonProcessingException {
 
         Map<String, Object> properties = Map.of("description", "endpoint to qualityinvestigation receive",
                 "contenttype", "application/json", "policy-id", "use-eu", "type", "receive", "notificationtype",
                 "qualityinvestigation", "notificationmethod", "receive");
 
         DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                     .type("DEFAULT_DATA_ADDRESS_PROPERTY_TYPE")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
-                                                             "HttpData")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
+                                                     .type(HTTP_DATA)
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/type", "HttpData")
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/baseUrl",
                                                              "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
-                                                             "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
-                                                             "true")
-                                                     .property("https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
-                                                             "POST")
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/proxyMethod", "true")
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/proxyBody", "true")
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/method", "POST")
                                                      .build();
 
-        Asset asset = Asset.Builder.newInstance().id("Asset1").contentType("Asset").properties(properties).build();
+        Asset asset = Asset.Builder.newInstance()
+                                   .id("Asset1")
+                                   .contentType("Asset")
+                                   .properties(properties)
+                                   .dataAddress(dataAddress)
+                                   .build();
+        System.out.println(objectMapper().writeValueAsString(asset));
+        System.out.println(objectMapper().writeValueAsString(dataAddress));
+        System.out.println(objectMapper().writeValueAsString(properties));
+        JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
+        System.out.println(objectMapper().writeValueAsString(jsonObject));
 
-        JsonObject jsonObject = edcTransformer.transformAssetRequestToJson(
-                AssetRequest.builder().asset(asset).dataAddress(dataAddress).build());
-
-        JSONAssert.assertEquals(jsonObject.toString(), """
+        JSONAssert.assertEquals("""
                 {
-                	"asset": {
-                		"@id": "Asset1",
-                		"@type": "edc:Asset",
-                		"edc:properties": {
-                			"edc:id": "Asset1",
-                			"edc:contenttype": "Asset"
-                		}
+                	"@id": "Asset1",
+                    "@type": "edc:Asset",
+                	"edc:properties": {
+                		"edc:id": "Asset1",
+                        "edc:contenttype": "Asset"
                 	},
-                	"dataAddress": {
+                	"edc:dataAddress": {
                 		"@type": "edc:DataAddress",
-                		"type": "HttpData",
-                		"proxyBody": "true",
-                		"edc:type": "DEFAULT_DATA_ADDRESS_PROPERTY_TYPE",
-                		"baseUrl": "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive",
-                		"method": "POST",
-                		"proxyMethod": "true"
+                		"edc:type": "HttpData",
+                		"edc:proxyBody": "true",
+                		"edc:baseUrl": "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive",
+                		"edc:method": "POST",
+                		"edc:proxyMethod": "true"
                 	},
                 	"@context": {
-                		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
-                		"method": "https://w3id.org/edc/v0.0.1/ns/dataAddress/method",
-                		"dataAddress": "https://w3id.org/edc/v0.0.1/ns/dataAddress",
-                		"edc": "https://w3id.org/edc/v0.0.1/ns/",
-                		"proxyQueryParams": "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyQueryParams",
-                		"proxyBody": "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyBody",
-                		"type": "https://w3id.org/edc/v0.0.1/ns/dataAddress/type",
-                		"proxyPath": "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyPath",
-                		"dspace": "https://w3id.org/dspace/v0.8/",
-                		"baseUrl": "https://w3id.org/edc/v0.0.1/ns/dataAddress/baseUrl",
                 		"dct": "https://purl.org/dc/terms/",
-                		"proxyMethod": "https://w3id.org/edc/v0.0.1/ns/dataAddress/proxyMethod",
-                		"odrl": "http://www.w3.org/ns/odrl/2/",
+                		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                		"edc": "https://w3id.org/edc/v0.0.1/ns/",
                 		"dcat": "https://www.w3.org/ns/dcat/",
-                		"asset": "https://w3id.org/edc/v0.0.1/ns/asset"
+                		"odrl": "http://www.w3.org/ns/odrl/2/",
+                		"dspace": "https://w3id.org/dspace/v0.8/"
                 	}
                 }
-                """, false);
+                """, jsonObject.toString(), false);
     }
 
     @Test
