@@ -248,8 +248,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             final var mappingResultStream = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                     endpointDataReference, List.of(identifierKeyValuePair)).getResult().stream();
 
-            // Special scenario: Multiple DTs with the same globalAssetId in one DTR:
-            // see docs/src/docs/arc42/cross-cutting/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml
+            // Special scenario: Multiple DTs with the same globalAssetId in one DTR, see:
+            // docs/src/docs/arc42/cross-cutting/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml
             final var mappingResult = mappingResultStream.findFirst();
 
             // Empty Optional means that the ID is already a shellId
