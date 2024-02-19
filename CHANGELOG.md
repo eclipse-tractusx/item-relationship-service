@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - EdcPolicyDefinitionService capable to create polices inside EDC
 - EdcContractDefinitionService capable to create contracts inside EDC
 
+### Changed
+- Updated AUTHORS.md
 
 ### Changed
 - Updated AUTHORS.md
@@ -520,8 +522,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...HEAD
-[4.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...4.5.0
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...HEAD
 [4.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.3.0...4.4.0
 [4.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...4.2.0
