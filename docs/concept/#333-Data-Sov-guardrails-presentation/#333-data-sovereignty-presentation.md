@@ -98,13 +98,28 @@ Out of scope for IRS
 
 ## Concept
 
+* Type
+ * Access
+ * Usage
+ * Purpose
+
+* UseCase
+ * Traceability
+ * Quality
+ * PCF
+ * Behavioraltwin
+ * Sustainability
+
 ## Glossary
 
 | Abbreviation      | Name             | Description | 
 |-------------------|------------------|-------------|
 | DS                | Data Sovereignty | TODO        | 
 | Policy Definition | TODO             |
- | DSP               | TODO             |    
+| DSP               | TODO             |    
 | AAS               | Asset Administration Shell | TODO        |
+ | Policy Hub | | | 
 
 ## References
+* [Swagger Policy Hub](https://policy-hub.dev.demo.catena-x.net/api/policy-hub/swagger/index.html)
+* [API Endpoint usage](https://github.com/eclipse-tractusx/policy-hub/blob/feature/request-docu/docs/developer/Technical-Documentation/requests/example-requests.md)
