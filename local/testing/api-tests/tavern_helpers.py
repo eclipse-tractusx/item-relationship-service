@@ -1,4 +1,3 @@
-# testing_utils.py
 from datetime import datetime
 
 import os
@@ -50,7 +49,6 @@ def ESS_job_parameter_are_as_requested(response):
     assert parameter.get('depth') == 1
     assert parameter.get('direction') == 'downward'
     assert parameter.get('lookupBPNs') is False
-    #assert parameter.get('callbackUrl') == 'https://www.check123.com'
     aspects_list = parameter.get("aspects")
     assert 'PartSiteInformationAsPlanned' in aspects_list
     assert 'PartAsPlanned' in aspects_list
@@ -136,7 +134,7 @@ def submodelDescriptors_in_shells_are_empty(response):
     shells = response.json().get("shells")
     print("shells ", shells)
     for i in shells:
-        assert len(i.get("submodelDescriptors")) == 0
+        assert len(i.get("payload").get("submodelDescriptors")) == 0
 
 
 def aspects_in_job_parameter_are_empty(response):
@@ -163,7 +161,7 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         print("RetryCounter: ", processingErrorRetryCounter)
         assert 'urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa' in catenaXId
         assert 'DigitalTwinRequest' in processingErrorStep
-        #assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail ##commented out since this error message is not possible currently after DTR changes
+        #assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail #commented out since this error message is not possible currently after DTR changes
         assert processingErrorLastAttempt is not None
         assert 3 is processingErrorRetryCounter
 
@@ -355,3 +353,35 @@ def create_api_key_ess():
     api_key = os.getenv('ADMIN_USER_API_KEY_ESS')
 
     return {"X-API-KEY": api_key}
+
+
+def contractAgreementId_in_shells_existing(response):
+    shells = response.json().get("shells")
+    print("shells ", shells)
+    assert len(shells) >= 1
+    for i in shells:
+        assert i.get("contractAgreementId") is not None
+
+
+def contractAgreementId_in_submodels_existing(response):
+    submodels = response.json().get("submodels")
+    print("submodels ", submodels)
+    assert len(submodels) >= 1
+    for i in submodels:
+        assert i.get("contractAgreementId") is not None
+
+
+def contractAgreementId_in_shells_not_existing(response):
+    shells = response.json().get("shells")
+    print("shells ", shells)
+    assert len(shells) >= 1
+    for i in shells:
+        assert i.get("contractAgreementId") is None
+
+
+def contractAgreementId_in_submodels_not_existing(response):
+    submodels = response.json().get("submodels")
+    print("submodels ", submodels)
+    assert len(submodels) >= 1
+    for i in submodels:
+        assert i.get("contractAgreementId") is None

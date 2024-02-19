@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.policy.model.PolicyRegistrationTypes;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -132,9 +131,9 @@ public class RestTemplateConfig {
 
     @Bean(DISCOVERY_REST_TEMPLATE)
         /* package */ RestTemplate discoveryRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${ess.discovery.timeout.read}") final Duration readTimeout,
-            @Value("${ess.discovery.timeout.connect}") final Duration connectTimeout,
-            @Value("${ess.discovery.oAuthClientId}") final String clientRegistrationId) {
+            @Value("${digitalTwinRegistry.discovery.timeout.read}") final Duration readTimeout,
+            @Value("${digitalTwinRegistry.discovery.timeout.connect}") final Duration connectTimeout,
+            @Value("${digitalTwinRegistry.discovery.oAuthClientId}") final String clientRegistrationId) {
         return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId).build();
     }
 
@@ -175,7 +174,6 @@ public class RestTemplateConfig {
     }
 
     @Bean(EDC_REST_TEMPLATE)
-    @Qualifier(EDC_REST_TEMPLATE)
         /* package */ RestTemplate edcRestTemplate(final RestTemplateBuilder restTemplateBuilder,
             @Value("${irs-edc-client.submodel.timeout.read}") final Duration readTimeout,
             @Value("${irs-edc-client.submodel.timeout.connect}") final Duration connectTimeout,

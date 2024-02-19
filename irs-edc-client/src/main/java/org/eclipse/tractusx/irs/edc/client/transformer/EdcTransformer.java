@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.transformer;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.JSON_LD_OBJECT_MAPPER;
+
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -88,7 +90,7 @@ public class EdcTransformer {
     private final TransformerContextImpl transformerContext;
     private final JsonObjectFromAssetRequestTransformer jsonObjectFromAssetRequestTransformer;
 
-    public EdcTransformer(@Qualifier("jsonLdObjectMapper") final ObjectMapper objectMapper,
+    public EdcTransformer(@Qualifier(JSON_LD_OBJECT_MAPPER) final ObjectMapper objectMapper,
             final TitaniumJsonLd titaniumJsonLd, final TypeTransformerRegistry typeTransformerRegistry) {
         this.titaniumJsonLd = titaniumJsonLd;
         this.titaniumJsonLd.registerNamespace("type", "https://w3id.org/edc/v0.0.1/ns/dataAddress/type");

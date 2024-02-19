@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.services;
 
+import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,22 +58,38 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     private final String apiAllowedBpn;
     private final List<Policy> allowedPoliciesFromConfig;
     private final PolicyPersistence persistence;
+    private final Clock clock;
+    private static final String MISSING_REQUEST_FIELD_MESSAGE = "Request does not contain all required fields. Missing: %s";
 
     public PolicyStoreService(@Value("${apiAllowedBpn:}") final String apiAllowedBpn,
-            final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig, final PolicyPersistence persistence) {
+            final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig, final PolicyPersistence persistence, final Clock clock) {
         this.apiAllowedBpn = apiAllowedBpn;
-
         this.allowedPoliciesFromConfig = createDefaultPolicyFromConfig(defaultAcceptedPoliciesConfig);
-
         this.persistence = persistence;
+        this.clock = clock;
     }
 
     public void registerPolicy(final Policy policy) {
+        validatePolicy(policy);
+        policy.setCreatedOn(OffsetDateTime.now(clock));
         log.info("Registering new policy with id {}, valid until {}", policy.getPolicyId(), policy.getValidUntil());
         try {
             persistence.save(apiAllowedBpn, policy);
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Checks whether policy from register policy request has all required fields
+     * @param policy policy to register
+     */
+    private void validatePolicy(final Policy policy) {
+        if (policy.getPermissions() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:permission"));
+        }
+        if (policy.getPermissions().stream().anyMatch(p -> p.getConstraint() == null)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:constraint"));
         }
     }
 
