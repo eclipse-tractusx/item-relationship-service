@@ -122,10 +122,10 @@ class EdcAssetServiceTest {
         JSONAssert.assertEquals("""
                 {
                 	"@id": "Asset1",
-                    "@type": "edc:Asset",
+                	"@type": "edc:Asset",
                 	"edc:properties": {
                 		"edc:id": "Asset1",
-                        "edc:contenttype": "Asset"
+                		"edc:contenttype": "Asset"
                 	},
                 	"edc:dataAddress": {
                 		"@type": "edc:DataAddress",
