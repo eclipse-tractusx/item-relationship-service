@@ -39,7 +39,7 @@ public interface EdcEndpointReferenceRetriever {
      * @param edcConnectorEndpoint the endpoint URL
      * @param assetType            the asset type id
      * @param assetValue           the asset type value
-     * @return the endpoint data references as {@link List<CompletableFuture<EndpointDataReference>>}
+     * @return the endpoint data references as list of futures
      * @throws EdcRetrieverException on any EDC errors
      */
     List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String edcConnectorEndpoint,
