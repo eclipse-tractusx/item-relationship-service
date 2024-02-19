@@ -82,7 +82,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
     private DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService;
 
     @BeforeEach
-    void setUp(WireMockRuntimeInfo wireMockRuntimeInfo) throws EdcRetrieverException {
+    void setUp(WireMockRuntimeInfo wireMockRuntimeInfo) {
         final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
         final var discoveryFinderClient = new DiscoveryFinderClientImpl(DISCOVERY_FINDER_URL, restTemplate);
