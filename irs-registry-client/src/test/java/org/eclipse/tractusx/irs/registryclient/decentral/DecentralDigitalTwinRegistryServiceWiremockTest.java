@@ -56,6 +56,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
@@ -70,7 +71,6 @@ import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientIm
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
@@ -92,19 +92,21 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
                 SHELL_DESCRIPTORS_TEMPLATE, LOOKUP_SHELLS_TEMPLATE);
         decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(connectorEndpointsService,
                 endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
-        final var endpointDataReference = endpointDataReference("assetId");
-        when(edcSubmodelFacadeMock.getEndpointReferenceForAsset(any(), any(), any())).thenReturn(endpointDataReference);
     }
 
     @Nested
     class FetchShellsTests {
         @Test
-        void shouldDiscoverEDCAndRequestRegistry() throws RegistryServiceException {
+        void shouldDiscoverEDCAndRequestRegistry() throws RegistryServiceException, EdcRetrieverException {
             // Arrange
             givenThat(postDiscoveryFinder200());
             givenThat(postEdcDiscovery200());
             givenThat(getLookupShells200());
             givenThat(getShellDescriptor200());
+
+            final var endpointDataReference = endpointDataReference("assetId");
+            when(edcSubmodelFacadeMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act
             final Collection<Shell> shells = decentralDigitalTwinRegistryService.fetchShells(
@@ -146,10 +148,15 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         }
 
         @Test
-        void shouldThrowInCaseOfLookupShellsError() {
+        void shouldThrowInCaseOfLookupShellsError() throws EdcRetrieverException {
             // Arrange
             givenThat(postDiscoveryFinder200());
             givenThat(postEdcDiscovery200());
+
+            final var endpointDataReference = endpointDataReference("assetId");
+            when(edcSubmodelFacadeMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+
             givenThat(getLookupShells404());
             final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
 
@@ -162,10 +169,15 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         }
 
         @Test
-        void shouldThrowInCaseOfShellDescriptorsError() {
+        void shouldThrowInCaseOfShellDescriptorsError() throws EdcRetrieverException {
             // Arrange
             givenThat(postDiscoveryFinder200());
             givenThat(postEdcDiscovery200());
+
+            final var endpointDataReference = endpointDataReference("assetId");
+            when(edcSubmodelFacadeMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+
             givenThat(getLookupShells200());
             givenThat(getShellDescriptor404());
             final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
@@ -180,10 +192,15 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         }
 
         @Test
-        void shouldThrowExceptionOnEmptyShells() {
+        void shouldThrowExceptionOnEmptyShells() throws EdcRetrieverException {
             // Arrange
             givenThat(postDiscoveryFinder200());
             givenThat(postEdcDiscovery200());
+
+            final var endpointDataReference = endpointDataReference("assetId");
+            when(edcSubmodelFacadeMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+
             givenThat(getLookupShells200Empty());
             givenThat(getShellDescriptor404());
             final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
@@ -202,16 +219,55 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
     class LookupShellIdentifiersTests {
 
         @Test
-        // TODO(mfischer): add tests for lookupShellIdentifiers
-        @Disabled("not yet implemented")
-        void test() {
+        void lookupShellIdentifiers_oneEDC_oneDTR() throws RegistryServiceException, EdcRetrieverException {
             // Arrange
-            // ...
+            givenThat(postDiscoveryFinder200());
+            final List<String> edcUrls = List.of("https://test.edc.io");
+            givenThat(postEdcDiscovery200(TEST_BPN, edcUrls));
+            givenThat(getLookupShells200());
+
+            // simulate endpoint data reference
+            final var endpointDataReference = endpointDataReference("assetId");
+            when(edcSubmodelFacadeMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act & Assert
-            assertThatThrownBy(() -> decentralDigitalTwinRegistryService.lookupShellIdentifiers(TEST_BPN)).isInstanceOf(
-                    ShellNotFoundException.class);
-            // ...
+            final Collection<DigitalTwinRegistryKey> digitalTwinRegistryKeys = decentralDigitalTwinRegistryService.lookupShellIdentifiers(
+                    TEST_BPN);
+
+            // Assert
+            assertThat(digitalTwinRegistryKeys).hasSize(1);
+            assertThat(digitalTwinRegistryKeys.stream().findFirst().get().shellId()).isEqualTo(
+                    "urn:uuid:21f7ebea-fa8a-410c-a656-bd9082e67dcf");
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+            verify(exactly(edcUrls.size()), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
+        }
+
+        @Test
+        void lookupShellIdentifiers_multipleEDCs_oneDTR() throws RegistryServiceException, EdcRetrieverException {
+            // Arrange
+            givenThat(postDiscoveryFinder200());
+            final List<String> edcUrls = List.of("https://test.edc1.io", "https://test.edc2.io");
+            givenThat(postEdcDiscovery200(TEST_BPN, edcUrls));
+            givenThat(getLookupShells200());
+
+            // simulate endpoint data reference
+            final var endpointDataReference = endpointDataReference("assetId");
+            when(edcSubmodelFacadeMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+
+            // Act & Assert
+            final Collection<DigitalTwinRegistryKey> digitalTwinRegistryKeys = decentralDigitalTwinRegistryService.lookupShellIdentifiers(
+                    TEST_BPN);
+
+            // Assert
+            assertThat(digitalTwinRegistryKeys).hasSize(1);
+            assertThat(digitalTwinRegistryKeys.stream().findFirst().get().shellId()).isEqualTo(
+                    "urn:uuid:21f7ebea-fa8a-410c-a656-bd9082e67dcf");
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
+            verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
+            verify(exactly(edcUrls.size()), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
         }
     }
 
