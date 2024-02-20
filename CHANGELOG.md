@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Added concept to conform with IndustryCore Changes CX-0126 and CX-127
+- EdcAssetService capable to create assets inside EDC
+- EdcPolicyDefinitionService capable to create polices inside EDC
+- EdcContractDefinitionService capable to create contracts inside EDC
+
+### Changed
+- Updated AUTHORS.md
 
 ## [4.5.0] - 2024-02-07
 ### Added
