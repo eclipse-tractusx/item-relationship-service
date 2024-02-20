@@ -56,25 +56,6 @@
             },
             "aspectType": "SingleLevelBomAsBuilt",
             "bpn": "BPNL00000003AYRE"
-        },
-        {
-            "catenaXId": "urn:uuid:d57a0374-45bc-4d9e-b44c-e6e75cfe84c0",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.1908,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:6cae0932-05e2-467d-98d0-7d580938a23e",
-                "hasAlternatives": true
-            },
-            "aspectType": "SingleLevelBomAsBuilt",
-            "bpn": "BPNL00000003B0Q0"
         }
     ]
 }
