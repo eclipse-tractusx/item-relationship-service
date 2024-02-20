@@ -6,7 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- DigitalTwinRegistryService in irs-registry-client for creating shells in DTR directly
+- Added concept to conform with IndustryCore Changes CX-0126 and CX-127
+- EdcAssetService capable to create assets inside EDC
+- EdcPolicyDefinitionService capable to create polices inside EDC
+- EdcContractDefinitionService capable to create contracts inside EDC
+- DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
+
+### Changed
+- Updated AUTHORS.md
+
+## [4.5.1] - 2024-02-07
+### Changed
+- moved Docker notice to separate file #425
+
 
 ## [4.5.0] - 2024-02-07
 ### Added
@@ -514,7 +526,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.1...HEAD
+[4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1
 [4.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...4.5.0
 [4.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.3.0...4.4.0
 [4.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.2.0...4.3.0
