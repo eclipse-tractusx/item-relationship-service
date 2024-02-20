@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated AUTHORS.md
 - Reduced log level in MeterRegistryService in order to avoid excessive logging
-- Moved Docker notice to separate file #425
 
 ### Fixed
 - Fixed Log4J configuration
