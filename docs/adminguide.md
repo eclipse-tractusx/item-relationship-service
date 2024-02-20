@@ -125,13 +125,7 @@ management: # Spring management API config, see https://spring.io/guides/gs/cent
   server:
     port: 4004
 
-logging:
-  pattern:
-    console: "%d %-5level %logger : %msg%n"
-  level:
-    root: WARN
-    org.springframework: INFO
-    org.eclipse.tractusx.irs: INFO
+logging.config: "classpath:log4j2.xml"
 
 springdoc: # API docs configuration
   api-docs:

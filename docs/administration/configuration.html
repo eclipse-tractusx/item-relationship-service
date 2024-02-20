@@ -773,13 +773,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">server</span><span class="pi">:</span>
     <span class="na">port</span><span class="pi">:</span> <span class="m">4004</span>
 
-<span class="na">logging</span><span class="pi">:</span>
-  <span class="na">pattern</span><span class="pi">:</span>
-    <span class="na">console</span><span class="pi">:</span> <span class="s2">"</span><span class="s">%d</span><span class="nv"> </span><span class="s">%-5level</span><span class="nv"> </span><span class="s">%logger</span><span class="nv"> </span><span class="s">:</span><span class="nv"> </span><span class="s">%msg%n"</span>
-  <span class="na">level</span><span class="pi">:</span>
-    <span class="na">root</span><span class="pi">:</span> <span class="s">WARN</span>
-    <span class="na">org.springframework</span><span class="pi">:</span> <span class="s">INFO</span>
-    <span class="na">org.eclipse.tractusx.irs</span><span class="pi">:</span> <span class="s">INFO</span>
+<span class="na">logging.config</span><span class="pi">:</span> <span class="s2">"</span><span class="s">classpath:log4j2.xml"</span>
 
 <span class="na">springdoc</span><span class="pi">:</span> <span class="c1"># API docs configuration</span>
   <span class="na">api-docs</span><span class="pi">:</span>
@@ -1478,7 +1472,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-14 11:57:50 UTC
+Last updated 2024-02-20 10:18:27 UTC
 </div>
 </div>
 </body>
