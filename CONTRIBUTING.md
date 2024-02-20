@@ -152,14 +152,28 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 ### Create a release
 
-1. Choose a release version. Use semantic versioning!
+1. Choose a release version. Use semantic versioning! Create a respective branch e.g. `chore/prepare-release-2.6.1`.
 2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md) and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md) (e.g. https://github.com/catenax-ng/tx-item-relationship-service/pull/328)
-3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md)
-4. Create Git tag for the desired release version `git tag x.x.x`
-5. Push Git tag to repository `git push origin x.x.x`
-6. Wait for release workflow to complete
-7. Merge the automatically opened PR by github-actions bot
-8. Notify about the release in IRS Matrix Chat 
+3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md) (see [catena-x-environments](https://github.com/catenax-ng/tx-item-relationship-service/tree/catena-x-environments/charts/irs-environments))
+4. Create pull request and merge to main
+5. Create Git tag for the desired release version `git tag x.x.x`
+   (the irs-helm tag will be created by the github workflow based on the version in the irs-helm changelog) 
+6. Push Git tag to repository `git push origin x.x.x`
+7. Wait for release workflow to complete
+8. Merge the automatically opened PR by github-actions bot
+9. Create pull request to eclipse-tractusx
+10. Notify about the release in IRS Matrix Chat. Template: 
+   
+   >   **IRS Release x.x.x**
+   >
+   >   IRS version x.x.x is released. 
+   >
+   >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/x.x.x<br>
+   >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/irs-helm-y.y.y<br>
+   >   **Full Changelog:** https://github.com/eclipse-tractusx/item-relationship-service/compare/w.w.w...x.x.x
+
+   _(replace x.x.x with IRS version to release, y.y.y with IRS helm version to release and w.w.w with previous IRS version)_
+
 
 ## Contact
 
