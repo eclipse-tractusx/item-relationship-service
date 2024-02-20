@@ -40,12 +40,14 @@ import lombok.extern.jackson.Jacksonized;
 public class Submodel {
     private String identification;
     private String aspectType;
+    private String contractAgreementId;
     private Map<String, Object> payload;
 
-    public static Submodel from(final String identification, final String aspectType, final Map<String, Object> payload) {
+    public static Submodel from(final String identification, final String aspectType, final String contractAgreementId, final Map<String, Object> payload) {
         return Submodel.builder()
                        .identification(identification)
                        .aspectType(aspectType)
+                       .contractAgreementId(contractAgreementId)
                        .payload(payload)
                        .build();
     }

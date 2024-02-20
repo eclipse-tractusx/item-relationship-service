@@ -130,7 +130,50 @@ cp local/development/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/co
 For further information please see https://github.com/hazcod/semantic-commit-hook
 
 ### Code formatting 
+#### Deprecated soon:
 Please use the following code formatter: [.idea/codeStyles](.idea/codeStyles)
+
+#### Upcoming change (not available until whole project base will be formatted to new standard):  
+Google Java Format will be used as code format standard.  
+Please install `google-java-format` plugin and edit customer VM options (for IntelliJ `Help → Edit Custom VM Options...`) and paste following configuration: 
+```
+-Xmx4096m
+--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED
+--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+```
+The plugin will be disabled by default. To enable it in the current project, go to `File→Settings...→google-java-format` Settings (or `IntelliJ IDEA→Preferences...→Other Settings→google-java-format` Settings on macOS) and check the Enable google-java-format checkbox. (A notification will be presented when you first open a project offering to do this for you.)
+
+More info:  
+https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config
+
+### Create a release
+
+1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html).
+   and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
+2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md) and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md) (e.g. https://github.com/catenax-ng/tx-item-relationship-service/pull/328).
+3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md) (see [catena-x-environments](https://github.com/catenax-ng/tx-item-relationship-service/tree/catena-x-environments/charts/irs-environments)).
+4. Create pull request from [release branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/main...catenax-ng:tx-item-relationship-service:chore/prepare-release-x.x.x) and merge to main.
+5. Create Git tag for the desired release version `git tag x.x.x`
+   (the irs-helm tag will be created by the github workflow based on the version in the irs-helm changelog).
+6. Push Git tag to repository `git push origin x.x.x`.
+7. Wait for release workflow to complete.
+8. Merge the automatically opened PR by github-actions bot.
+9. Create [pull request to eclipse-tractusx](https://github.com/eclipse-tractusx/item-relationship-service/compare/main...catenax-ng:tx-item-relationship-service:main).
+10. Notify about the release in IRS Matrix Chat using the following template: 
+   
+   >   **IRS Release x.x.x**
+   >
+   >   IRS version x.x.x is released. 
+   >
+   >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/x.x.x<br>
+   >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/irs-helm-y.y.y<br>
+   >   **Full Changelog:** https://github.com/eclipse-tractusx/item-relationship-service/compare/w.w.w...x.x.x
+
+   _(replace x.x.x with IRS version to release, y.y.y with IRS helm version to release and w.w.w with previous IRS version)_
 
 
 ## Contact

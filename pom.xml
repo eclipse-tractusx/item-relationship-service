@@ -73,7 +73,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>1.5.1-SNAPSHOT</irs-registry-client.version>
+        <irs-registry-client.version>1.6.0-SNAPSHOT</irs-registry-client.version>
 
         <!-- Dependencies -->
         <springboot.version>3.1.8</springboot.version>
@@ -86,6 +86,7 @@
         <minio.version>8.5.6</minio.version>
         <rest-assured.version>5.4.0</rest-assured.version>
         <awaitility.version>4.2.0</awaitility.version>
+        <jsonassert.version>1.5.1</jsonassert.version>
         <junit-bom.version>5.9.2</junit-bom.version>
         <cucumber-bom.version>7.11.1</cucumber-bom.version>
         <snakeyaml.version>2.0</snakeyaml.version>
@@ -94,7 +95,7 @@
         <edc.version>0.2.1</edc.version>
         <okio-jvm.version>3.5.0</okio-jvm.version>
         <bc-jdk18on.version>1.76</bc-jdk18on.version>
-        <wiremock-standalone.version>3.2.0</wiremock-standalone.version>
+        <wiremock-standalone.version>3.3.1</wiremock-standalone.version>
         <jsoup.version>1.16.1</jsoup.version>
         <jsonschemafriend.version>0.12.0</jsonschemafriend.version>
         <commons-io.version>2.14.0</commons-io.version>
@@ -121,7 +122,7 @@
         <gatling-maven-plugin.version>4.3.0</gatling-maven-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
-        <license-tool-plugin.version>1.0.3-SNAPSHOT</license-tool-plugin.version>
+        <license-tool-plugin.version>1.1.0</license-tool-plugin.version>
         <snappy-java.version>1.1.10.5</snappy-java.version>
     </properties>
 
@@ -158,10 +159,10 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>dash-licenses-snapshots</id>
-            <url>https://repo.eclipse.org/content/repositories/dash-licenses-snapshots/</url>
+            <id>dash-licenses-releases</id>
+            <url>https://repo.eclipse.org/content/repositories/dash-licenses-releases/</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </pluginRepository>
     </pluginRepositories>

@@ -6,13 +6,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+
+## [4.6.0] - 2024-02-20
 ### Added
-- Added helper script for building documentation locally.
+- Added concept to conform with IndustryCore Changes CX-0126 and CX-127
+- Added release instructions to CONTRIBUTING.md
+- EdcAssetService capable to create assets inside EDC
+- EdcPolicyDefinitionService capable to create polices inside EDC
+- EdcContractDefinitionService capable to create contracts inside EDC
 
 ### Changed
+- Updated AUTHORS.md
+- Reduced log level in MeterRegistryService in order to avoid excessive logging
+
+### Fixed
+- Fixed Log4J configuration
+- Fix tavern and cucumber tests
+
+## [4.5.1] - 2024-02-20
+### Changed
+- Moved Docker notice to separate file #425
+
+## [4.5.0] - 2024-02-07
+### Added
+- Added helper script for building documentation locally.
+- Added new job parameter flag "auditContractNegotiation" which toggles setting contractAgreementId in Shells and Submodels
+- Added "contractAgreementId" field to Submodel model
+- Added Integration Tests for the entire IRS flow using stubbed responses of Discovery Service, Semantic Hub, EDC, Digital Twin Registry and BPDM Pool
+
+### Changed
+- Dataspace Discovery Service handles multiple EDC-Urls received for BPN now
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
 - Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
 - Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
+- Updated configuration of `DISCOVERY_REST_TEMPLATE` from `ess.discovery.*` to `digitalTwinRegistry.discovery.*` and discovery finder URL from `digitalTwinRegistry.discoveryFinderUrl` to `digitalTwinRegistry.discovery.discoveryFinderUrl`
+- Redesigned Shell object - wrapped payload and added "contractAgreementId" field
+- Changed structure of Policy creation to match EDC format
+- Update irs-registry-client to 1.6.0-SNAPSHOT
 
 ### Fixed
 - Update to Spring Boot 3.1.8. This fixes the following CVEs:
@@ -503,7 +534,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.6.0...HEAD
+[4.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.1...4.6.0
+[4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1
+[4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1
+[4.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...4.5.0
 [4.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.3.0...4.4.0
 [4.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...4.2.0

@@ -27,8 +27,6 @@ import static org.eclipse.tractusx.irs.common.ApiConstants.FORBIDDEN_DESC;
 import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.util.List;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,12 +36,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.springframework.http.HttpStatus;
@@ -71,10 +72,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PolicyStoreController {
 
     private final PolicyStoreService service;
+    private final EdcTransformer edcTransformer;
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" },
                description = "Register a policy that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201"),
@@ -100,13 +102,15 @@ public class PolicyStoreController {
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void registerAllowedPolicy(final @Valid @RequestBody CreatePolicyRequest request) {
-        service.registerPolicy(request);
+    public void registerAllowedPolicy(final @RequestBody CreatePolicyRequest request) {
+        final Policy policy = edcTransformer.transformToPolicy(request.payload());
+        policy.setValidUntil(request.validUntil());
+        service.registerPolicy(policy);
     }
 
     @Operation(operationId = "getAllowedPolicies",
                summary = "Lists the registered policies that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies.",
@@ -129,13 +133,15 @@ public class PolicyStoreController {
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public List<Policy> getPolicies() {
-        return service.getStoredPolicies();
+    public List<PolicyResponse> getPolicies() {
+        return service.getStoredPolicies().stream()
+                      .map(PolicyResponse::fromPolicy)
+                      .toList();
     }
 
     @Operation(operationId = "deleteAllowedPolicy",
                summary = "Removes a policy that should no longer be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" },
                description = "Removes a policy that should no longer be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
@@ -166,7 +172,7 @@ public class PolicyStoreController {
     }
 
     @Operation(operationId = "updateAllowedPolicy", summary = "Updates an existing policy with new validUntil value.",
-               security = @SecurityRequirement(name = "oAuth2"),
+               security = @SecurityRequirement(name = "api_key"),
                tags = { "Item Relationship Service" },
                description = "Updates an existing policy with new validUntil value.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),

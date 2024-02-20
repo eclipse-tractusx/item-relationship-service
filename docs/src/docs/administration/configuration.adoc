@@ -156,11 +156,23 @@ This is a list of all secrets used in the deployment.
 
 WARNING: Keep the values for these settings safe and do not publish them!
 
-=== <common-client-id>
-Client ID for OAuth2 provider. Request this from your OAuth2 operator.
+=== <semantics-client-id>
+Semantic Hub client ID for OAuth2 provider. Request this from your OAuth2 operator.
 
-=== <common-client-secret>
-Client secret for OAuth2 provider. Request this from your OAuth2 operator.
+=== <semantics-client-secret>
+Semantic Hub client secret for OAuth2 provider. Request this from your OAuth2 operator.
+
+=== <discovery-client-id>
+Dataspace Discovery  client ID for OAuth2 provider. Request this from your OAuth2 operator.
+
+=== <discovery-client-secret>
+Dataspace Discovery  client secret for OAuth2 provider. Request this from your OAuth2 operator.
+
+=== <bpdm-client-id>
+BPDM client ID for OAuth2 provider. Request this from your OAuth2 operator.
+
+=== <bpdm-client-secret>
+BPDM client secret for OAuth2 provider. Request this from your OAuth2 operator.
 
 === <minio-username>
 Login username for Minio. To be defined by you.

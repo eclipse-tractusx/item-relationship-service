@@ -168,6 +168,11 @@
             <groupId>org.eclipse.edc</groupId>
             <version>${edc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-common</artifactId>
+            <version>${irs-registry-client.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
@@ -223,6 +228,12 @@
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>${jsonassert.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
