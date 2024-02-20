@@ -48,16 +48,16 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
-class DigitalTwinRegistryServiceTest {
+class DigitalTwinRegistryCreateShellServiceTest {
 
     private static final String CREATE_SHELL_URL = "/shell-descriptors";
     @Mock
     private RestTemplate restTemplate;
-    private DigitalTwinRegistryService service;
+    private DigitalTwinRegistryCreateShellService service;
 
     @BeforeEach
     void setUp() {
-        service = new DigitalTwinRegistryService(restTemplate, CREATE_SHELL_URL);
+        service = new DigitalTwinRegistryCreateShellService(restTemplate, CREATE_SHELL_URL);
     }
 
     @Test

@@ -38,7 +38,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class DigitalTwinRegistryService {
+public class DigitalTwinRegistryCreateShellService {
 
     private final RestTemplate restTemplate;
     private final String createShellUrl;
