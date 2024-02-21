@@ -1077,7 +1077,7 @@ components:
                   lexicalValue: piece
                 quantityNumber: 1.0
         shells:
-        - contractAgreementId: a787aa13-2bd7-488f-9e25-40682003901b
+        - contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
           payload:
             description:
               - language: en
@@ -1131,6 +1131,7 @@ components:
                   type: ModelReference
         submodels:
           - aspectType: supply_chain_impacted
+            contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
             payload:
               supplyChainImpacted: "YES"
@@ -1199,7 +1200,7 @@ components:
                   lexicalValue: piece
                 quantityNumber: 1.0
         shells:
-        - contractAgreementId: a787aa13-2bd7-488f-9e25-40682003901b
+        - contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
           payload:
             description:
             - language: en
@@ -1253,6 +1254,7 @@ components:
                   type: ModelReference
         submodels:
           - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
+            contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
             payload:
               catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
@@ -1390,7 +1392,7 @@ components:
                   lexicalValue: piece
                 quantityNumber: 1.0
         shells:
-        - contractAgreementId: a787aa13-2bd7-488f-9e25-40682003901b
+        - contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
           payload:
             description:
             - language: en
@@ -1442,6 +1444,7 @@ components:
                       value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
         submodels:
           - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
+            contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
             payload:
               catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
@@ -2326,6 +2329,11 @@ components:
           type: string
         subprotocolBodyEncoding:
           type: string
+        securityAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityAttribute'
+          maxItems: 2147483647
     Quantity:
       type: object
       additionalProperties: false
@@ -2622,6 +2630,16 @@ components:
         value:
           type: string
           example: Submodel
+    SecurityAttribute:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        key:
+          type: string
+        value:
+          type: string
     Shell:
       type: object
       additionalProperties: false
