@@ -72,6 +72,9 @@ The product IRS MUST align with the Industry Code Standard CX-126 and CX-127.
 For serialized parts, batches, and JIS parts this will be deprecated with new version 3.x.x of AAS.
 ASS parameter assetLifecyclePhase will not be used anymore to detect BOMLifecycle. Parameter  'digitalTwinType' is used instead.
 
+**assetLifecyclePhase is not used to detect BomLifecyle any more.**
+
+
 ### Use parameter 'digitalTwinType' to detect  BOMLifecycle
 
 **Parameter 'digitalTwinType'**
@@ -99,17 +102,9 @@ alt aas contains 'digitalTwinType'
     else digitalTwinType any other value or null
        BOMLifecycleDetector -->>  IRS : throw Exception
     end
-else   aas contains 'assetLifecyclePhase'
-   alt assetLifecyclePhase="AsBuilt"
-        BOMLifecycleDetector -->>  IRS : return asBuilt  
-   else assetLifecyclePhase="AsPlanned"
-        BOMLifecycleDetector -->>  IRS : return asPlanned
-   else assetLifecyclePhase any other value or null
-        BOMLifecycleDetector -->>  IRS :   throw Exception
-   end
 else
    IRS -->> BOMLifecycleDetector : throw Exception (BOMLifecylce could not be detected)
-   BOMLifecycleDetector -->> IRS : retrun BOMLifecyle
+   BOMLifecycleDetector -->> IRS : return BOMLifecyle
 end   
 
 ````
