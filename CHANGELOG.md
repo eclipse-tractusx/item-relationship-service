@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
+### Added
+- DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
 
 
 ## [4.6.0] - 2024-02-20
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [4.5.1] - 2024-02-20
 ### Changed
 - Moved Docker notice to separate file #425
+
 
 ## [4.5.0] - 2024-02-07
 ### Added

@@ -2329,6 +2329,11 @@ components:
           type: string
         subprotocolBodyEncoding:
           type: string
+        securityAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecurityAttribute'
+          maxItems: 2147483647
     Quantity:
       type: object
       additionalProperties: false
@@ -2625,6 +2630,16 @@ components:
         value:
           type: string
           example: Submodel
+    SecurityAttribute:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        key:
+          type: string
+        value:
+          type: string
     Shell:
       type: object
       additionalProperties: false
