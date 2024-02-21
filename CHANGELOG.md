@@ -5,7 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
+### Added
+- DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
 
 
 ## [4.6.0] - 2024-02-20
@@ -15,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - EdcAssetService capable to create assets inside EDC
 - EdcPolicyDefinitionService capable to create polices inside EDC
 - EdcContractDefinitionService capable to create contracts inside EDC
-- DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
 
 ### Changed
 - Updated AUTHORS.md
