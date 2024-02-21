@@ -111,13 +111,14 @@ end
 
 #### Configuration of parameter 'digitalTwinType'
 Parameter is configurable for dDTR instance and has to be configured for integration test.
+Setup dDTR registry on used environments. INT, DEV, PEN, STABLE 
 
 - [Values.yaml](https://github.com/eclipse-tractusx/sldt-digital-twin-registry/blob/f438fe96a7ae1f1b920e8e4fb4114fb7af32643d/charts/registry/values.yaml#L51)
 - [README.md](https://github.com/eclipse-tractusx/sldt-digital-twin-registry/blob/f438fe96a7ae1f1b920e8e4fb4114fb7af32643d/charts/registry/README.md#:~:text=externalSubjectIdWildcardAllowedTypes)
 
 values.yaml
 ````json
-   registry.externalSubjectIdWildcardAllowedTypes = manufacturerPartId,assetLifecyclePhase,digitalTwinType
+   registry.externalSubjectIdWildcardAllowedTypes = manufacturerPartId,digitalTwinType
 ````
 
 
@@ -181,7 +182,7 @@ values.yaml
 |manufacturerId | Mandatory                                | The Business Partner Number (BPNL) of the manufacturer of the part.                                                                                                                                                                                   |
 |manufacturerPartId | Mandatory                                |                                                                                                                                                                                                                                                       |
 |customerPartId | Optional                                 |                                                                                                                                                                                                                                                       |
-|assetLifecyclePhase | asPlanned(Mandatory) / asBuilt(Optional) | @Deprecated For serialized parts, batches, and JIS parts, use the value AsBuilt. For catalog parts in a Digital Twin As-Planned lifecycle phase, use the value AsPlanned.                                                                             |
+|assetLifecyclePhase | asPlanned(Mandatory) / asBuilt(Optional) | @Deprecated Not used any more. For serialized parts, batches, and JIS parts, use the value AsBuilt. For catalog parts in a Digital Twin As-Planned lifecycle phase, use the value AsPlanned.                                                          |
 |digitalTwinType | Mandatory                                | digitalTwinType="PartType" OR digitalTwinType="PartInstance" For parts on an instance level (e.g. serialized parts, batches, and JIS parts), use the value PartInstance. For parts on a part type level (e.g. catalog parts), use the value PartType. |                                                                                                                                                                       | |
 
 # PartAsPlanned
