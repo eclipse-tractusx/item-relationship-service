@@ -6,7 +6,7 @@ In order to download latest feature files from jira execute following command
 
 Replace username and password with Your own Jira credentials
 
-after that extract features.zip to irs-cucumber-tests/src/test/resources/features
+After that extract features.zip to `irs-cucumber-tests/src/test/resources/features`
 
 # Execute cucumber tests with Maven
 
