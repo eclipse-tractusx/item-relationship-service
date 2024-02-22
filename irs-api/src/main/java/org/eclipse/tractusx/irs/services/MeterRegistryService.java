@@ -186,7 +186,7 @@ public class MeterRegistryService {
     }
 
     public void setStateSnapShot(final JobState state, final long value) {
-        log.debug("Update State {} snapshot to {} ", state, value);
+        log.trace("Update State {} snapshot to {} ", state, value);
         switch (state) {
             case COMPLETED:
                 snapshotCompletedValue.set(value);
@@ -201,7 +201,7 @@ public class MeterRegistryService {
                 snapshotFailedValue.set(value);
                 break;
             default:
-                log.debug("Unused State {} value {} ", state, value);
+                log.trace("Unused State {} value {} ", state, value);
                 break;
         }
     }
