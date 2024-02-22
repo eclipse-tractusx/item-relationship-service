@@ -40,7 +40,7 @@ version: 6.15.0
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "4.6.0"
+appVersion: "4.5.2"
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
