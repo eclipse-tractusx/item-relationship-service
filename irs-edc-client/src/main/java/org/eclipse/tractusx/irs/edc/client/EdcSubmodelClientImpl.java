@@ -63,7 +63,9 @@ import org.springframework.util.StopWatch;
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods",
+                    "PMD.ExcessiveImports"
+})
 public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private final EdcConfiguration config;
