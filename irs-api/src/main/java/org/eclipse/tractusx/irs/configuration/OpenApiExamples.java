@@ -284,6 +284,7 @@ public class OpenApiExamples {
 
     private Submodel createEssSubmodel() {
         return Submodel.builder()
+                       .contractAgreementId(EXAMPLE_ID)
                        .aspectType(SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE)
                        .identification(SUBMODEL_IDENTIFICATION)
                        .payload(Map.of(SUPPLY_CHAIN_IMPACTED_KEY, SUPPLY_CHAIN_IMPACTER_RESULT))
@@ -343,6 +344,7 @@ public class OpenApiExamples {
 
     private Submodel createSubmodel() {
         return Submodel.builder()
+                       .contractAgreementId(EXAMPLE_ID)
                        .aspectType("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0")
                        .identification(SUBMODEL_IDENTIFICATION)
                        .payload(createAssemblyPartRelationshipPayloadMap())
@@ -373,7 +375,7 @@ public class OpenApiExamples {
     }
 
     private Shell createShell() {
-        return new Shell("a787aa13-2bd7-488f-9e25-40682003901b",
+        return new Shell(EXAMPLE_ID,
                 AssetAdministrationShellDescriptor.builder()
                                                            .description(List.of(LangString.builder()
                                                                                 .language("en")
