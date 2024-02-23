@@ -157,7 +157,7 @@ class EdcAssetServiceTest {
         String assetName = "asset1";
         NotificationMethod notificationMethod = NotificationMethod.RECEIVE;
         NotificationType notificationType = NotificationType.QUALITY_ALERT;
-        when(restTemplate.postForEntity(any(String.class), any(JsonObject.class), any())).thenReturn(
+        when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
                 ResponseEntity.ok("test"));
 
         // when
@@ -175,7 +175,7 @@ class EdcAssetServiceTest {
         when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String baseUrl = "http://test.test";
         String assetName = "asset1";
-        when(restTemplate.postForEntity(any(String.class), any(JsonObject.class), any())).thenReturn(
+        when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
                 ResponseEntity.ok("test"));
 
         // when
@@ -194,7 +194,7 @@ class EdcAssetServiceTest {
         String assetId = "id";
 
         // when
-        service.deleteAsset(assetId, restTemplate);
+        service.deleteAsset(assetId);
 
         // then
         verify(restTemplate).delete(any(String.class));
@@ -209,7 +209,7 @@ class EdcAssetServiceTest {
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         doThrow(new RestClientException("Surprise")).when(restTemplate)
-                                                    .postForEntity(any(String.class), any(JsonObject.class), any());
+                                                    .postForEntity(any(String.class), any(String.class), any());
 
         // when/then
         assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName));
@@ -224,7 +224,7 @@ class EdcAssetServiceTest {
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         doThrow(new RestClientException("Surprise")).when(restTemplate)
-                                                    .postForEntity(any(String.class), any(JsonObject.class), any());
+                                                    .postForEntity(any(String.class), any(String.class), any());
 
         // when/then
         assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName));
@@ -240,7 +240,7 @@ class EdcAssetServiceTest {
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 
         // when/then
-        assertThrows(DeleteEdcAssetException.class, () -> service.deleteAsset(assetId, restTemplate));
+        assertThrows(DeleteEdcAssetException.class, () -> service.deleteAsset(assetId));
     }
 
     ObjectMapper objectMapper() {

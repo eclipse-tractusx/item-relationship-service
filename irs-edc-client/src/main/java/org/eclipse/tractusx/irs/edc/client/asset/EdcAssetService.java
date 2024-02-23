@@ -81,7 +81,7 @@ public class EdcAssetService {
         final ResponseEntity<String> createEdcDataAssetResponse;
         try {
             createEdcDataAssetResponse = restTemplate.postForEntity(config.getControlplane().getEndpoint().getAsset(),
-                    transformedPayload, String.class);
+                    transformedPayload.toString(), String.class);
             final HttpStatusCode responseCode = createEdcDataAssetResponse.getStatusCode();
 
             if (responseCode.value() == HttpStatus.CONFLICT.value()) {
@@ -98,7 +98,7 @@ public class EdcAssetService {
         throw new CreateEdcAssetException("Failed to create asset %s".formatted(request.getId()));
     }
 
-    public void deleteAsset(final String assetId, final RestTemplate restTemplate) throws DeleteEdcAssetException {
+    public void deleteAsset(final String assetId) throws DeleteEdcAssetException {
         final String deleteUri = UriComponentsBuilder.fromPath(config.getControlplane().getEndpoint().getAsset())
                                                      .pathSegment("{notificationAssetId}")
                                                      .buildAndExpand(assetId)
