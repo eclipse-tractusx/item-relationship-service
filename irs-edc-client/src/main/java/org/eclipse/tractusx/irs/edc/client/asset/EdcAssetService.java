@@ -148,7 +148,7 @@ public class EdcAssetService {
 
     private Asset createDtrAssetRequest(final String assetName, final String baseUrl) {
         final String assetId = UUID.randomUUID().toString();
-        final Map<String, Object> properties = Map.of("description", assetName, "type",
+        final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, assetName, ASSET_CREATION_PROPERTY_TYPE,
                 "data.core.digitalTwinRegistry");
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
