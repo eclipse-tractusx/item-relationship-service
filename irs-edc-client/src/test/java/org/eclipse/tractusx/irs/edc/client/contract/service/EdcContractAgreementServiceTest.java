@@ -136,8 +136,8 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .getForEntity(eq("/management/v2/contractagreements/contractAgreementId/negotiation"),
-                       eq(ContractNegotiation.class));
+               .getForEntity("/management/v2/contractagreements/contractAgreementId/negotiation",
+                       ContractNegotiation.class);
         assertNotNull(contractAgreementNegotiation);
     }
 }
