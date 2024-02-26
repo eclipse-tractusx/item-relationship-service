@@ -68,7 +68,7 @@ public class EdcContractAgreementService {
         return contractNegotiationResponseEntity.getBody();
     }
 
-    private QuerySpec buildQuerySpec(final String[] contractAgreementIds) {
+    private QuerySpec buildQuerySpec(final String... contractAgreementIds) {
 
         final List<Criterion> criterionList = Arrays.stream(contractAgreementIds)
                                                     .map(id -> Criterion.Builder.newInstance()
