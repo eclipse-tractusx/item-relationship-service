@@ -100,18 +100,6 @@ class EdcContractAgreementServiceTest {
         when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
                 "/management/v2/contractagreements/request");
 
-        final ContractAgreement contractAgreement = ContractAgreement.Builder.newInstance()
-                                                                             .id("id")
-                                                                             .assetId("assetId")
-                                                                             .consumerId("consumerId")
-                                                                             .providerId("providerId")
-                                                                             .policy(Policy.Builder.newInstance()
-                                                                                                   .build())
-                                                                             .build();
-        final EdcContractAgreementListWrapper edcContractAgreementListWrapper = EdcContractAgreementListWrapper.builder()
-                                                                                                               .contractAgreementList(
-                                                                                                                       List.of(contractAgreement))
-                                                                                                               .build();
         when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementListWrapper.class))).thenReturn(
                 ResponseEntity.ok().build());
 
