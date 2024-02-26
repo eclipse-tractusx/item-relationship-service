@@ -28,8 +28,8 @@ import lombok.ToString;
 import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 
 /**
- * EdcContractAgreementListWrapper used for wrapping the response of /management/v2/contractagreements/request
- * where a List of {@link ContractAgreement} is returned.
+ * EdcContractAgreementListWrapper used for wrapping the response of
+ * /management/v2/contractagreements/request where a List of {@link ContractAgreement} is returned.
  */
 @ToString
 @Builder
