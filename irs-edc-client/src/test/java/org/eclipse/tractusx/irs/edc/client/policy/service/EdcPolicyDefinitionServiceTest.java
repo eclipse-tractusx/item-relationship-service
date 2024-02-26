@@ -175,7 +175,7 @@ class EdcPolicyDefinitionServiceTest {
 
         // when/then
         assertThrows(DeleteEdcPolicyDefinitionException.class,
-                () -> service.deleteAccessPolicy(policyName, restTemplate));
+                () -> service.deleteAccessPolicy(policyName));
     }
 
     @Test
@@ -187,7 +187,7 @@ class EdcPolicyDefinitionServiceTest {
         String policyName = "policyName";
 
         // when
-        service.deleteAccessPolicy(policyName, restTemplate);
+        service.deleteAccessPolicy(policyName);
 
         // then
         verify(restTemplate, times(1)).delete(any(String.class));

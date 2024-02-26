@@ -131,7 +131,7 @@ public class EdcPolicyDefinitionService {
                                                .build();
     }
 
-    public void deleteAccessPolicy(final String accessPolicyId, final RestTemplate restTemplate)
+    public void deleteAccessPolicy(final String accessPolicyId)
             throws DeleteEdcPolicyDefinitionException {
         final String deleteUri = UriComponentsBuilder.fromPath(
                                                              config.getControlplane().getEndpoint().getPolicyDefinition())

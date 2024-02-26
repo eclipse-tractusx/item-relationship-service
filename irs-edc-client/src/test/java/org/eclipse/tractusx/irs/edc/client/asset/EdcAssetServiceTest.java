@@ -93,9 +93,9 @@ class EdcAssetServiceTest {
     @Test
     void testAssetCreateRequestStructure() throws JSONException, JsonProcessingException {
 
-        Map<String, Object> properties = Map.of("description", "endpoint to qualityinvestigation receive",
-                "contenttype", "application/json", "policy-id", "use-eu", "type", "receive", "notificationtype",
-                "qualityinvestigation", "notificationmethod", "receive");
+        Map<String, Object> properties = Map.of("https://w3id.org/edc/v0.0.1/ns/description", "endpoint to qualityinvestigation receive",
+                "https://w3id.org/edc/v0.0.1/ns/contenttype", "application/json", "https://w3id.org/edc/v0.0.1/ns/policy-id", "use-eu", "https://w3id.org/edc/v0.0.1/ns/type", "receive", "https://w3id.org/edc/v0.0.1/ns/notificationtype",
+                "qualityinvestigation", "https://w3id.org/edc/v0.0.1/ns/notificationmethod", "receive");
 
         DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                      .type(HTTP_DATA)
@@ -124,23 +124,28 @@ class EdcAssetServiceTest {
                 	"@id": "Asset1",
                 	"@type": "edc:Asset",
                 	"edc:properties": {
+                		"edc:type": "receive",
+                		"edc:notificationtype": "qualityinvestigation",
+                		"edc:policy-id": "use-eu",
+                		"edc:description": "endpoint to qualityinvestigation receive",
                 		"edc:id": "Asset1",
-                		"edc:contenttype": "Asset"
+                		"edc:contenttype": "application/json",
+                		"edc:notificationmethod": "receive"
                 	},
                 	"edc:dataAddress": {
                 		"@type": "edc:DataAddress",
-                		"edc:type": "HttpData",
-                		"edc:proxyBody": "true",
-                		"edc:baseUrl": "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive",
                 		"edc:method": "POST",
-                		"edc:proxyMethod": "true"
+                		"edc:type": "HttpData",
+                		"edc:proxyMethod": "true",
+                		"edc:proxyBody": "true",
+                		"edc:baseUrl": "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive"
                 	},
                 	"@context": {
                 		"dct": "https://purl.org/dc/terms/",
                 		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
                 		"edc": "https://w3id.org/edc/v0.0.1/ns/",
-                		"dcat": "https://www.w3.org/ns/dcat/",
                 		"odrl": "http://www.w3.org/ns/odrl/2/",
+                		"dcat": "https://www.w3.org/ns/dcat/",
                 		"dspace": "https://w3id.org/dspace/v0.8/"
                 	}
                 }
@@ -157,7 +162,7 @@ class EdcAssetServiceTest {
         String assetName = "asset1";
         NotificationMethod notificationMethod = NotificationMethod.RECEIVE;
         NotificationType notificationType = NotificationType.QUALITY_ALERT;
-        when(restTemplate.postForEntity(any(String.class), any(JsonObject.class), any())).thenReturn(
+        when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
                 ResponseEntity.ok("test"));
 
         // when
@@ -175,7 +180,7 @@ class EdcAssetServiceTest {
         when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String baseUrl = "http://test.test";
         String assetName = "asset1";
-        when(restTemplate.postForEntity(any(String.class), any(JsonObject.class), any())).thenReturn(
+        when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
                 ResponseEntity.ok("test"));
 
         // when
@@ -194,7 +199,7 @@ class EdcAssetServiceTest {
         String assetId = "id";
 
         // when
-        service.deleteAsset(assetId, restTemplate);
+        service.deleteAsset(assetId);
 
         // then
         verify(restTemplate).delete(any(String.class));
@@ -209,7 +214,7 @@ class EdcAssetServiceTest {
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         doThrow(new RestClientException("Surprise")).when(restTemplate)
-                                                    .postForEntity(any(String.class), any(JsonObject.class), any());
+                                                    .postForEntity(any(String.class), any(String.class), any());
 
         // when/then
         assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName));
@@ -224,7 +229,7 @@ class EdcAssetServiceTest {
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         doThrow(new RestClientException("Surprise")).when(restTemplate)
-                                                    .postForEntity(any(String.class), any(JsonObject.class), any());
+                                                    .postForEntity(any(String.class), any(String.class), any());
 
         // when/then
         assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName));
@@ -240,7 +245,7 @@ class EdcAssetServiceTest {
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 
         // when/then
-        assertThrows(DeleteEdcAssetException.class, () -> service.deleteAsset(assetId, restTemplate));
+        assertThrows(DeleteEdcAssetException.class, () -> service.deleteAsset(assetId));
     }
 
     ObjectMapper objectMapper() {

@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update IRS version to 4.6.0
 
+## [6.14.2] - 2024-02-22
+### Changed
+- Update IRS version to 4.5.2
+
+## [6.14.1] - 2024-02-20
+### Changed
+- Update IRS version to 4.5.1
+
 ## [6.14.0] - 2024-02-07
 ### Added
 - Added configuration parameters `oauth2.semantics.clientId`,`oauth2.semantics.clientSecret`, `oauth2.discovery.clientId`,`oauth2.discovery.clientSecret`, `oauth2.bpdm.clientId`,`oauth2.bpdm.clientSecret`
