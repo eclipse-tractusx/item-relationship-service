@@ -33,7 +33,7 @@ import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementListWrapper;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,11 +61,11 @@ class EdcContractAgreementServiceTest {
     }
 
     @Test
-    void shouldReturnContractAgreements() {
+    void shouldReturnContractAgreements() throws ContractAgreementException {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
         when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
-                "/management/v2/contractagreements/request");
+                "/management/v2/contractagreements");
 
         final ContractAgreement contractAgreement = ContractAgreement.Builder.newInstance()
                                                                              .id("id")
@@ -75,12 +75,12 @@ class EdcContractAgreementServiceTest {
                                                                              .policy(Policy.Builder.newInstance()
                                                                                                    .build())
                                                                              .build();
-        final EdcContractAgreementListWrapper edcContractAgreementListWrapper = EdcContractAgreementListWrapper.builder()
-                                                                                                               .contractAgreementList(
+        final EdcContractAgreementsResponse edcContractAgreementsResponse = EdcContractAgreementsResponse.builder()
+                                                                                                         .contractAgreementList(
                                                                                                                        List.of(contractAgreement))
-                                                                                                               .build();
-        when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementListWrapper.class))).thenReturn(
-                ResponseEntity.ok(edcContractAgreementListWrapper));
+                                                                                                         .build();
+        when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
+                ResponseEntity.ok(edcContractAgreementsResponse));
 
         //WHEN
         final List<ContractAgreement> contractAgreements = edcContractAgreementService.getContractAgreements(
@@ -89,7 +89,7 @@ class EdcContractAgreementServiceTest {
         //THEN
         Mockito.verify(restTemplate)
                .postForEntity(eq("/management/v2/contractagreements/request"), any(),
-                       eq(EdcContractAgreementListWrapper.class));
+                       eq(EdcContractAgreementsResponse.class));
         assertNotNull(contractAgreements);
     }
 
@@ -98,9 +98,9 @@ class EdcContractAgreementServiceTest {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
         when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
-                "/management/v2/contractagreements/request");
+                "/management/v2/contractagreements");
 
-        when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementListWrapper.class))).thenReturn(
+        when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
                 ResponseEntity.ok().build());
 
         //WHEN
@@ -110,7 +110,7 @@ class EdcContractAgreementServiceTest {
         //THEN
         Mockito.verify(restTemplate)
                .postForEntity(eq("/management/v2/contractagreements/request"), any(),
-                       eq(EdcContractAgreementListWrapper.class));
+                       eq(EdcContractAgreementsResponse.class));
         assertEquals("Empty message body on edc response: <200 OK OK,[]>", contractAgreementException.getMessage());
     }
 

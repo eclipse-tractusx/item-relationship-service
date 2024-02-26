@@ -29,11 +29,10 @@ import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiat
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementListWrapper;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
 
 /**
  * EdcContractAgreementService used for contract agreements and contract agreement negotiation details
@@ -42,17 +41,20 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class EdcContractAgreementService {
 
+    public static final String EDC_REQUEST_SUFFIX = "/request";
+    public static final String EDC_ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
     private final EdcConfiguration config;
     private final RestTemplate restTemplate;
 
-    public List<ContractAgreement> getContractAgreements(final String... contractAgreementIds) {
+    public List<ContractAgreement> getContractAgreements(final String... contractAgreementIds)
+            throws ContractAgreementException {
 
         final QuerySpec querySpec = buildQuerySpec(contractAgreementIds);
-        final ResponseEntity<EdcContractAgreementListWrapper> edcContractAgreementListResponseEntity = restTemplate.postForEntity(
-                config.getControlplane().getEndpoint().getContractAgreements(), querySpec,
-                EdcContractAgreementListWrapper.class);
+        final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = restTemplate.postForEntity(
+                config.getControlplane().getEndpoint().getContractAgreements() + EDC_REQUEST_SUFFIX, querySpec,
+                EdcContractAgreementsResponse.class);
 
-        final EdcContractAgreementListWrapper contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
+        final EdcContractAgreementsResponse contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
         if (contractAgreementListWrapper != null) {
             return contractAgreementListWrapper.getContractAgreementList();
         } else {
@@ -73,8 +75,7 @@ public class EdcContractAgreementService {
 
         final List<Criterion> criterionList = Arrays.stream(contractAgreementIds)
                                                     .map(id -> Criterion.Builder.newInstance()
-                                                                                .operandLeft(
-                                                                                        "https://w3id.org/edc/v0.0.1/ns/assetId")
+                                                                                .operandLeft(EDC_ASSET_ID)
                                                                                 .operator("=")
                                                                                 .operandRight(id)
                                                                                 .build())

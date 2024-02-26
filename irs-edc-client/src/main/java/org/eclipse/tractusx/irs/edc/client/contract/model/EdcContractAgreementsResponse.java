@@ -35,7 +35,7 @@ import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 @Builder
 @RequiredArgsConstructor
 @Getter
-public class EdcContractAgreementListWrapper {
+public class EdcContractAgreementsResponse {
     private final List<ContractAgreement> contractAgreementList;
 
 }
