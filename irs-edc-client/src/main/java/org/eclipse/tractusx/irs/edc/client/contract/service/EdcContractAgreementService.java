@@ -52,8 +52,9 @@ public class EdcContractAgreementService {
                 config.getControlplane().getEndpoint().getContractAgreements(), querySpec,
                 EdcContractAgreementListWrapper.class);
 
-        if (edcContractAgreementListResponseEntity.getBody() != null) {
-            return edcContractAgreementListResponseEntity.getBody().getContractAgreementList();
+        final EdcContractAgreementListWrapper contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
+        if (contractAgreementListWrapper != null) {
+            return contractAgreementListWrapper.getContractAgreementList();
         } else {
             throw new ContractAgreementException(
                     "Empty message body on edc response: " + edcContractAgreementListResponseEntity);
