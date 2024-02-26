@@ -59,6 +59,12 @@ public class EdcAssetService {
     private static final String ASSET_CREATION_DATA_ADDRESS_PROXY_PATH = "https://w3id.org/edc/v0.0.1/ns/proxyPath";
     private static final String ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS = "https://w3id.org/edc/v0.0.1/ns/proxyQueryParams";
     private static final String ASSET_CREATION_DATA_ADDRESS_METHOD = "https://w3id.org/edc/v0.0.1/ns/method";
+    private static final String ASSET_CREATION_PROPERTY_DESCRIPTION = "https://w3id.org/edc/v0.0.1/ns/description";
+    private static final String ASSET_CREATION_PROPERTY_CONTENT_TYPE = "https://w3id.org/edc/v0.0.1/ns/contenttype";
+    private static final String ASSET_CREATION_PROPERTY_POLICY_ID = "https://w3id.org/edc/v0.0.1/ns/policy-id";
+    private static final String ASSET_CREATION_PROPERTY_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
+    private static final String ASSET_CREATION_PROPERTY_NOTIFICATION_TYPE = "https://w3id.org/edc/v0.0.1/ns/notificationtype";
+    private static final String ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD = "https://w3id.org/edc/v0.0.1/ns/notificationmethod";
 
     private final EdcTransformer edcTransformer;
     private final EdcConfiguration config;
@@ -115,9 +121,12 @@ public class EdcAssetService {
     private Asset createNotificationAssetRequest(final String assetName, final String baseUrl,
             final NotificationMethod notificationMethod, final NotificationType notificationType) {
         final String assetId = UUID.randomUUID().toString();
-        final Map<String, Object> properties = Map.of("description", assetName, "contenttype", DEFAULT_CONTENT_TYPE,
-                "policy-id", DEFAULT_POLICY_ID, "type", notificationType.getValue(), "notificationtype",
-                notificationType.getValue(), "notificationmethod", notificationMethod.getValue());
+        final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, assetName,
+                ASSET_CREATION_PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE,
+                ASSET_CREATION_PROPERTY_POLICY_ID, DEFAULT_POLICY_ID, ASSET_CREATION_PROPERTY_TYPE,
+                notificationType.getValue(), ASSET_CREATION_PROPERTY_NOTIFICATION_TYPE,
+                notificationType.getValue(), ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD,
+                notificationMethod.getValue());
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type(HTTP_DATA)
@@ -139,7 +148,7 @@ public class EdcAssetService {
 
     private Asset createDtrAssetRequest(final String assetName, final String baseUrl) {
         final String assetId = UUID.randomUUID().toString();
-        final Map<String, Object> properties = Map.of("description", assetName, "type",
+        final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, assetName, ASSET_CREATION_PROPERTY_TYPE,
                 "data.core.digitalTwinRegistry");
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
