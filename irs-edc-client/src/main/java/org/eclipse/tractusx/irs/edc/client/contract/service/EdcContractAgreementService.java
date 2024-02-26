@@ -45,14 +45,12 @@ public class EdcContractAgreementService {
     private final EdcConfiguration config;
     private final RestTemplate restTemplate;
 
-    public List<ContractAgreement> getContractAgreements(String... contractAgreementIds) {
+    public List<ContractAgreement> getContractAgreements(final String... contractAgreementIds) {
 
-        QuerySpec querySpec = buildQuerySpec(contractAgreementIds);
+        final QuerySpec querySpec = buildQuerySpec(contractAgreementIds);
         final ResponseEntity<EdcContractAgreementListWrapper> edcContractAgreementListResponseEntity = restTemplate.postForEntity(
                 config.getControlplane().getEndpoint().getContractAgreements(), querySpec,
                 EdcContractAgreementListWrapper.class);
-
-        System.out.println("QuerySpec: " + querySpec.toString());
 
         if (edcContractAgreementListResponseEntity.getBody() != null) {
             return edcContractAgreementListResponseEntity.getBody().getContractAgreementList();
@@ -63,7 +61,7 @@ public class EdcContractAgreementService {
 
     }
 
-    public ContractNegotiation getContractAgreementNegotiation(String contractAgreementId) {
+    public ContractNegotiation getContractAgreementNegotiation(final String contractAgreementId) {
         final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = restTemplate.getForEntity(
                 config.getControlplane().getEndpoint().getContractAgreements() + "/" + contractAgreementId
                         + "/negotiation", ContractNegotiation.class);
