@@ -34,6 +34,10 @@ import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgre
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+
+/**
+ * EdcContractAgreementService used for contract agreements and contract agreement negotiation details
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class EdcContractAgreementService {

@@ -19,6 +19,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.contract.model.exception;
 
+/**
+ * ContractAgreementException used for failures in {@link org.eclipse.tractusx.irs.edc.client.contract.service.EdcContractAgreementService}
+ */
 public class ContractAgreementException extends RuntimeException {
 
     public ContractAgreementException(final String message) {

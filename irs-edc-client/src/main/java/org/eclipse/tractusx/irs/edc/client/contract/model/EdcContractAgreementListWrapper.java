@@ -27,11 +27,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 
+/**
+ * EdcContractAgreementListWrapper used for wrapping the response of /management/v2/contractagreements/request where a List of
+ * {@link ContractAgreement} is returned.
+ */
 @ToString
 @Builder
 @RequiredArgsConstructor
 @Getter
 public class EdcContractAgreementListWrapper {
-    final private List<ContractAgreement> contractAgreementList;
+    private final List<ContractAgreement> contractAgreementList;
 
 }
