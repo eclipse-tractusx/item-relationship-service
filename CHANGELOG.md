@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
 
 ### Changed
-- EDC client handles multiple DTRs and DTs now
+- EDC client handles multiple Digital Twin Registries and Digital Twins now
 - Change logo of irs
 
 ## [4.6.0] - 2024-02-20
