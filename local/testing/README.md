@@ -2,9 +2,7 @@
 
 # README
 
-A brief description of how to use the insomnia request collection with environments.
-
-
+A brief description of how to use the [insomnia](https://insomnia.rest/) request collection with environments.
 
 
 ## Import a Request Collection
@@ -17,7 +15,7 @@ To export the request collection you can click the "Export Data" button under Ap
 It is important not to export environments used in the collection, since these are usually exported automatically with the collection. To prevent this, each environment must be created as a private environment.
 
 ## Import an Environment
-To import one of the environments open the desired environment file and copy the whole content. Create a new **private** Environment (so its not included if you need to export the collection) for your collection and paste it in the created file.
+To import one of the environments open the desired environment file and copy the whole content. Create a new **private** Environment (to make sure that it is not included if you need to export the collection) for your collection and paste it in the created file.
 
 ## Export an Environment
 If an environment has been changed to update it for the project, it is suggested to replace or add the content of the original environment file.

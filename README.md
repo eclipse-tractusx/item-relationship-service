@@ -19,9 +19,12 @@
 
 ### Vision and Mission Statement
 
-The IRS is providing a technical API Endpoint in the Catena-X Network, which builds an item tree representation of given digital twins stored across the industry. Therefore, it is a key component for the Network to provide data chains along the value chain in the industry.
+The IRS is providing a technical API Endpoint in the Catena-X Network, which builds an item tree representation of given
+digital twins stored across the industry. Therefore, it is a key component for the Network to provide data chains along
+the value chain in the industry.
 
-The vision for the Item Relationship Service is to provide an easy access endpoint for complex distributed digital twins across Catena-X members.
+The vision for the Item Relationship Service is to provide an easy access endpoint for complex distributed digital twins
+across Catena-X members.
 It abstracts the access from separated digital twins towards a connected data chain of twins and provides those.
 It enables to apply business logic on complex distributed digital twins across company borders.
 
@@ -43,6 +46,30 @@ business areas by means of data chains along the value chain in the automotive i
 
 The IRS project consists of several different parts:
 
+| Folder / Module            | Description                                                                                                                                                                                               | Further information                                                  |
+|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| charts/irs-helm/           | [HELM](https://helm.sh/) charts for running the IRS with and its direct dependencies in [kubernetes](https://kubernetes.io/).                                                                             | [IRS HELM charts documentation](charts/irs-helm/README.md)           |
+| docs/                      | Concepts and documentation.                                                                                                                                                                               | [Docs README](docs/README.md)                                        |
+| irs-api/                   | The IRS API.                                                                                                                                                                                              |                                                                      |
+| irs-common/                | Common classes of the IRS.                                                                                                                                                                                |                                                                      |
+| irs-cucumber-tests/        | The [Cucumber](https://cucumber.io/) tests for the IRS.                                                                                                                                                   | [Cucumber Tests README](irs-cucumber-tests/README.md)                |
+| irs-edc-client/            | The EDC client module. This module is responsible for communication with the EDC.                                                                                                                         |                                                                      |
+| irs-integration-tests/     | Integration tests of the IRS.                                                                                                                                                                             |                                                                      |
+| irs-load-tests/            | Load tests for the IRS.                                                                                                                                                                                   | [IRS Load Tests README](irs-load-tests/README.md)                    |
+| irs-models/                | Model classes.                                                                                                                                                                                            |                                                                      |
+| irs-parent-spring-boot/    | [Spring Boot](https://spring.io/projects/spring-boot) parent POM.                                                                                                                                         |                                                                      |  
+| irs-policy-store/          | The IRS policy store, an API to store and retrieve accepted EDC policies.                                                                                                                                 |                                                                      |
+| irs-registry-client/       | Digital Twin Registry Client.                                                                                                                                                                             | [Digital Twin Registry Client README](irs-registry-client/README.md) |  
+| irs-report-aggregate/      | This module aggregates the test coverage reports of all modules.                                                                                                                                          |                                                                      |   
+| irs-testdata-upload/       | <!-- TODO(mfischer): #393: explain-->                                                                                                                                                                     |                                                                      | 
+| irs-testing/               | This module contains testing utilities for the IRS like testcontainers, wiremock configurations and requests etc.                                                                                         |                                                                      |
+| local/                     | This folder contains resources for local development and demonstration.                                                                                                                                   |                                                                      | 
+| local/demo                 | Showcases the IRS ESS top-down investigation use-case. Also see the specific [README.md]                                                                                                                  |                                                                      | 
+| local/deployment           | [HELM](https://helm.sh/) charts for local deployment of the IRS.                                                                                                                                          |                                                                      |  
+| local/development          | This folder contains resources relevant for setting up the local development environment such as the [commit message check hook](CONTRIBUTING.md#commit-messages).                                        |                                                                      | 
+| local/testing              | [REST Request Collection](local/testing/IRS_Request_Collection.json) for [Insomnia](https://insomnia.rest/) and further resources concerning testing in the respective sub-directories described below.   | [REST Request Collection README](local/testing/README.md)            |
+| local/testing/api-tests    | [Tavern](https://tavern.readthedocs.io) API tests for the IRS.                                                                                                                                            | [Tavern API Tests README](local/testing/api-tests/README.md)         | 
+| local/testing/testdata     | Test data.                                                                                                                                                                                                | [Test data README](local/testing/testdata/README.md)                 | 
 
 | Folder / Module                      | Description                                                                                                                                                                                 |
 |--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -94,9 +121,7 @@ the IDE.
 
 ## Notice for Docker image
 
-<!-- TODO -->
-
-Bellow you can find the information regarding Docker Notice for this application.
+Below you can find the information regarding Docker Notice for this application.
 
 - [Item Relationship Service](./DOCKER_NOTICE.md)
 
@@ -108,15 +133,13 @@ Bellow you can find the information regarding Docker Notice for this application
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
+
 ### Helm deployment
 
 see [INSTALL.md](INSTALL.md)
 
 
-
 ## Usage
-
-
 
 ### Sample calls
 
@@ -180,14 +203,17 @@ curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept:
 - [Item Relationship Service Documentation](https://eclipse-tractusx.github.io/item-relationship-service/docs/)
 
 
-
 ## Changelog and Compatibility Matrix
 
 - [Changelog IRS](CHANGELOG.md)
 - [Changelog IRS Helm](charts/irs-helm/CHANGELOG.md)
 - [Compatibility Matrix](COMPATIBILITY_MATRIX.md)
 
-## Troubleshooting and FAQs
+
+## Known Issues and Limitations
+
+See [Bugs & Security Incidents](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
+
 
 <!-- TODO According to https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-1/ 
 we should have a troubleshooting and FAQ section -->
@@ -200,6 +226,16 @@ Contact the project developers via the project's "dev" list.
 
 * [Mailing List](https://accounts.eclipse.org/mailing-list/tractusx-dev)
 * [Eclipse Matrix Chat]( https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org)
+
+
+## Reporting Bugs and Vulnerabilities
+
+Please distinguish bugs and vulnerabilities when reporting: 
+
+- **Vulnerabilities:** For vulnerabilities see [SECURITY.md](SECURITY.md#reporting-a-vulnerability).
+
+- **Bugs:** Normal bugs may be reported [as public GitHub issues](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
+
 
 
 ## Contributing

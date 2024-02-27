@@ -83,9 +83,7 @@ For more information on the tool and how to acquire the token, check https://git
 3. Copy file /docs/Concept_TEMPLATE.md into new directory  /docs/#<DDD>-<target-name>
 
 ### Diagrams
-PlantUML and Mermaid is used for conceptual work.
-https://mermaid.js.org/
-https://plantuml.com/
+[PlantUML](https://plantuml.com/) and [Mermaid](https://mermaid.js.org/) is used for conceptual work.
 
 
 #### PlantUML 
@@ -112,6 +110,7 @@ sequenceDiagram
 ## Contributing as a Developer
 
 ### Commit messages
+
 The commit messages have to match a pattern in the form of:  
 ``< type >(scope):[<Ticket_ID>] < description >``  
 where type is: `build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test`
@@ -129,7 +128,8 @@ cp local/development/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/co
 
 For further information please see https://github.com/hazcod/semantic-commit-hook
 
-### Code formatting 
+### Code formatting
+
 #### Deprecated soon:
 Please use the following code formatter: [.idea/codeStyles](.idea/codeStyles)
 

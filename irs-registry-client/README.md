@@ -1,12 +1,13 @@
-[[Back to main README](../README.md)]
+[[Back to IRS main README](../README.md)]
 
 # Digital Twin Registry Client Library
 
 This library assists in communicating with the Digital Twin Registry in a central or decentral approach.
+<!-- TODO (mfischer): #410: remove mention of the central approach after-->
 
 In the decentral approach, it also handles the communication via the Discovery Finder and EDC.
 
-The library is based on Spring Boot and uses its configuration features.
+The library is based on [Spring Boot](https://spring.io/projects/spring-boot) and uses its configuration features.
 
 ## Usage
 

@@ -1,3 +1,7 @@
 [[Back to main README](../README.md)]
 
-tbd
+
+# IRS Load Tests
+
+IRS load tests executed via github workflow [irs-load-test](../.github/workflows/irs-load-test.yaml).
+

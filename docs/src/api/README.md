@@ -1,4 +1,4 @@
-[[Back to main README](../../README.md)]
+[[Back to parent README](../../README.md)]
 
 # Item Relationship Service API documentation
 
