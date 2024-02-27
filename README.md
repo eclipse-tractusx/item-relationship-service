@@ -231,7 +231,7 @@ see [FAQ](FAQ.md)
 Contact the project developers via the project's "dev" list.
 
 * [Mailing List](https://accounts.eclipse.org/mailing-list/tractusx-dev)
-* [Eclipse Matrix Chat]( https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org)
+* [Eclipse Matrix Chat](https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org)
 
 
 ## Reporting Bugs and Vulnerabilities
