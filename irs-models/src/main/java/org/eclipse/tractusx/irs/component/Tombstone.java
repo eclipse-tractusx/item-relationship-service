@@ -57,35 +57,39 @@ public class Tombstone {
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep) {
-        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep, null, null);
-    }
-
-    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
-            final int retryCount, final ProcessStep processStep) {
-        return from(catenaXId, endpointURL, errorDetails, retryCount, processStep, null, null);
+        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep);
     }
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep, final String businessPartnerNumber, final Map<String, Object> policy) {
-        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep, businessPartnerNumber, policy);
-    }
 
-    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
-            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber, final Map<String, Object> policy) {
-
-        final ProcessingError processingError = ProcessingError.builder()
-                                                               .withProcessStep(processStep)
-                                                               .withRetryCounter(retryCount)
-                                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                                               .withErrorDetail(errorDetails)
-                                                               .build();
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(catenaXId)
-                        .processingError(processingError)
+                        .processingError(withProcessingError(processStep, retryCount, exception.getMessage()))
                         .businessPartnerNumber(businessPartnerNumber)
                         .policy(policy)
                         .build();
+    }
+
+    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
+            final int retryCount, final ProcessStep processStep) {
+
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(catenaXId)
+                        .processingError(withProcessingError(processStep, retryCount, errorDetails))
+                        .build();
+    }
+
+    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
+            final String exception) {
+        return ProcessingError.builder()
+                              .withProcessStep(processStep)
+                              .withRetryCounter(retryCount)
+                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                              .withErrorDetail(exception)
+                              .build();
     }
 
 }
