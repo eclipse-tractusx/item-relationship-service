@@ -14,7 +14,10 @@
 [![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
 [![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)
 
-## Vision and Mission Statement
+
+## Introduction
+
+### Vision and Mission Statement
 
 The IRS is providing a technical API Endpoint in the Catena-X Network, which builds an item tree representation of given digital twins stored across the industry. Therefore, it is a key component for the Network to provide data chains along the value chain in the industry.
 
@@ -22,7 +25,7 @@ The vision for the Item Relationship Service is to provide an easy access endpoi
 It abstracts the access from separated digital twins towards a connected data chain of twins and provides those.
 It enables to apply business logic on complex distributed digital twins across company borders.
 
-## What is the IRS?
+### What is the IRS?
 
 Within the [Catena-X network](https://catena-x.net/), the so-called Item Relationship Service (IRS) forms an essential
 foundation for various services and products. Within the Catena-X use cases, the IRS serves to increase business value.
