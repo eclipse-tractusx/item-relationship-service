@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - EDC client handles multiple DTRs and DTs now
-
+- Change logo of irs
 
 ## [4.6.0] - 2024-02-20
 ### Added
