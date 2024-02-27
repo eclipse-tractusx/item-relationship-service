@@ -71,34 +71,8 @@ The IRS project consists of several different parts:
 | local/testing/api-tests    | [Tavern](https://tavern.readthedocs.io) API tests for the IRS.                                                                                                                                            | [Tavern API Tests README](local/testing/api-tests/README.md)         | 
 | local/testing/testdata     | Test data.                                                                                                                                                                                                | [Test data README](local/testing/testdata/README.md)                 | 
 
-| Folder / Module                      | Description                                                                                                                                                                                 |
-|--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| charts/irs-helm/                     | [HELM](https://helm.sh/) charts for running the IRS with and its direct dependencies in [kubernetes](https://kubernetes.io/). Also see the specific [README.md](charts/irs-helm/README.md). |
-| docs/                                | Concepts and documentation. For more information see the specific [README.md](docs/README.md).                                                                                              |
-| irs-api/                             | The IRS API.                                                                                                                                                                                |
-| irs-common/                          | Common classes.                                                                                                                                                                             |
-| irs-cucumber-tests/                  | The [Cucumber](https://cucumber.io/) tests for the IRS. Also see the specific [README.md](irs-cucumber-tests/README.md).                                                                    |
-| irs-edc-client/                      | tbd                                                                                                                                                                                         |
-| irs-ess/                             | tbd                                                                                                                                                                                         |
-| irs-integration-tests/               | Integration tests.                                                                                                                                                                          |
-| irs-load-tests/                      | Load tests. Also see the specific [README.md](irs-load-tests/README.md).                                                                                                                    |
-| irs-models/                          | tbd                                                                                                                                                                                         |
-| irs-parent-spring-boot/              | tbd                                                                                                                                                                                         |  
-| irs-policy-store/                    | tbd                                                                                                                                                                                         |
-| irs-registry-client/                 | tbd                                                                                                                                                                                         |  
-| irs-report-aggregate/                | tbd                                                                                                                                                                                         |   
-| irs-testdata-upload/                 | tbd                                                                                                                                                                                         | 
-| irs-testing/                         | tbd                                                                                                                                                                                         |
-|                                      |                                                                                                                                                                                             |
-| local/                               | tbd                                                                                                                                                                                         | 
-| local/demo                           | Showcases the IRS ESS top-down investigation use-case. Also see the specific [README.md]                                                                                                    | 
-| local/deployment                     | [HELM](https://helm.sh/) charts for local deployment of the IRS.                                                                                                                            |  
-| local/development                    | tbd                                                                                                                                                                                         | 
-| local/testing                        | tbd                                                                                                                                                                                         | 
-| local/testing/api-tests              | tbd                                                                                                                                                                                         | 
-| local/testing/testdata               | tbd                                                                                                                                                                                         | 
-| local/testing/testdata/dil           | tbd                                                                                                                                                                                         |    
-  
+ <!-- TODO (mfischer): #393: local/testing: In order to avoid confusion the request collection 
+and its README should be moved to a sub-directory too -->
 
 ## Installation
 
@@ -127,7 +101,7 @@ Below you can find the information regarding Docker Notice for this application.
 
 #### Local IRS API
 
-<!-- TODO 393: this should be under the documentation section -->
+<!-- TODO (mfischer): #393: this should be under the documentation section -->
 
 - Swagger UI: http://localhost:8080/api/swagger-ui
 - API docs: http://localhost:8080/api/api-docs
@@ -215,11 +189,8 @@ curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept:
 See [Bugs & Security Incidents](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
 
 
-<!-- TODO According to https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-1/ 
+<!-- TODO(mfischer): #393: According to https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-1/ 
 we should have a troubleshooting and FAQ section -->
-
-tbd
-
 
 ## FAQ
 
