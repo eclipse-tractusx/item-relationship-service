@@ -80,7 +80,7 @@ For more information on the tool and how to acquire the token, check https://git
 ### Conceptual work and specification guidelines
 1. The prerequisite for a concept is always a github issue that defines the business value and the acceptance criteria that are to be implemented with the concept
 2. Copy and rename directory /docs/#000-concept-name-template /docs/#<DDD>-<target-name>
-3. Copy file /docs/Concept_TEMPLATE.md into new directory  /docs/#<DDD>-<target-name>
+3. Copy the template [/docs/concept/TEMPLATE_Concept.md](docs/concept/TEMPLATE_Concept.md) into new directory `/docs/#<DDD>-<target-name>`.
 
 ### Diagrams
 [PlantUML](https://plantuml.com/) and [Mermaid](https://mermaid.js.org/) is used for conceptual work.
