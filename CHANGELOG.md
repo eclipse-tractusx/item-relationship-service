@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
-- POST /management/v2/contractagreements/request and GET  /management/v2/contractagreements/{contractAgreementId}/negotiation to irs-edc-client lib
+- POST /management/v2/contractagreements/request and GET /management/v2/contractagreements/{contractAgreementId}/negotiation to irs-edc-client lib
 
 
 ## [4.6.0] - 2024-02-20
