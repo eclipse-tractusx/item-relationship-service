@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
 
 ### Changed
+- Change logo of irs
 - Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created.
 
 ### Fixed
