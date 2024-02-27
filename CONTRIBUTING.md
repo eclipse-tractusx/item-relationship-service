@@ -7,9 +7,10 @@ Thanks for your interest in this project.
 2. [Developer resources](#developer-resources)
 3. [Eclipse Development Process](#eclipse-development-process)
 4. [Eclipse Contributor Agreement](#eclipse-contributor-agreement)
-5. [General contribution to the project](#general-contribution-to-the-project)
-6. [Contributing as a Consultant](#contributing-as-a-consultant)
-7. [Contributing as a Developer](#contributing-as-a-developer)
+5. [Code of Conduct](#code-of-conduct)
+6. [General contribution to the project](#general-contribution-to-the-project)
+7. [Contributing as a Consultant](#contributing-as-a-consultant)
+8. [Contributing as a Developer](#contributing-as-a-developer)
 9. [Contact](#contact)
 
 ## Project description
@@ -62,6 +63,10 @@ fulfills the DCO's requirement that you sign-off on your contributions.
 
 For more information, please see the Eclipse Committer Handbook:
 https://www.eclipse.org/projects/handbook/#resources-commit
+
+## Code of Conduct
+
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 
 ## Eclipse Dependency License Check
 
