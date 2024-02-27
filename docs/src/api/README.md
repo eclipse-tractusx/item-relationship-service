@@ -1,3 +1,5 @@
+[[Back to main README](../../README.md)]
+
 # Item Relationship Service API documentation
 
 This documentation is manually downloaded from Swagger UI (see Swagger UI section in the

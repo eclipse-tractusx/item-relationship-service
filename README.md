@@ -43,68 +43,35 @@ business areas by means of data chains along the value chain in the automotive i
 
 The IRS project consists of several different parts:
 
-```
-charts/                                 tbd
-charts/irs-helm                         tbd
-charts/irs-helm/dashboards              tbd
-charts/irs-helm/templates               tbd
-charts/irs-helm/templates/tests         tbd
-    
-docs/                                   tbd
-docs/concept                            tbd
-docs/src/logo                           tbd
-docs/src/api                            tbd
-docs/src/diagram-replacer               tbd
-docs/src/docs                           tbd
-docs/src/post-processing                tbd
-docs/src/uml-diagrams                   tbd
-docs/target                             tbd
 
-irs-api/                                tbd   
+| Folder / Module                      | Description                                                                                                                                                                                 |
+|--------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| charts/irs-helm/                     | [HELM](https://helm.sh/) charts for running the IRS with and its direct dependencies in [kubernetes](https://kubernetes.io/). Also see the specific [README.md](charts/irs-helm/README.md). |
+| docs/                                | Concepts and documentation. For more information see the specific [README.md](docs/README.md).                                                                                              |
+| irs-api/                             | The IRS API.                                                                                                                                                                                |
+| irs-common/                          | Common classes.                                                                                                                                                                             |
+| irs-cucumber-tests/                  | The [Cucumber](https://cucumber.io/) tests for the IRS. Also see the specific [README.md](irs-cucumber-tests/README.md).                                                                    |
+| irs-edc-client/                      | tbd                                                                                                                                                                                         |
+| irs-ess/                             | tbd                                                                                                                                                                                         |
+| irs-integration-tests/               | Integration tests.                                                                                                                                                                          |
+| irs-load-tests/                      | Load tests. Also see the specific [README.md](irs-load-tests/README.md).                                                                                                                    |
+| irs-models/                          | tbd                                                                                                                                                                                         |
+| irs-parent-spring-boot/              | tbd                                                                                                                                                                                         |  
+| irs-policy-store/                    | tbd                                                                                                                                                                                         |
+| irs-registry-client/                 | tbd                                                                                                                                                                                         |  
+| irs-report-aggregate/                | tbd                                                                                                                                                                                         |   
+| irs-testdata-upload/                 | tbd                                                                                                                                                                                         | 
+| irs-testing/                         | tbd                                                                                                                                                                                         |
+|                                      |                                                                                                                                                                                             |
+| local/                               | tbd                                                                                                                                                                                         | 
+| local/demo                           | Showcases the IRS ESS top-down investigation use-case. Also see the specific [README.md]                                                                                                    | 
+| local/deployment                     | [HELM](https://helm.sh/) charts for local deployment of the IRS.                                                                                                                            |  
+| local/development                    | tbd                                                                                                                                                                                         | 
+| local/testing                        | tbd                                                                                                                                                                                         | 
+| local/testing/api-tests              | tbd                                                                                                                                                                                         | 
+| local/testing/testdata               | tbd                                                                                                                                                                                         | 
+| local/testing/testdata/dil           | tbd                                                                                                                                                                                         |    
   
-irs-common/                             tbd
-
-irs-cucumber-tests/                     tbd  
-
-irs-edc-client/                         tbd
-
-irs-ess/                                tbd
-
-irs-integration-tests/                  tbd   
- 
-irs-load-tests/                         tbd
-
-irs-models/                             tbd
-
-irs-parent-spring-boot/                 tbd  
-
-irs-policy-store/                       tbd
-
-irs-registry-client/                    tbd  
-  
-irs-report-aggregate/                   tbd   
-
-irs-testdata-upload/                    tbd 
- 
-irs-testing/                            tbd    
-
-local/                                  tbd
-local/demo                              tbd
-local/deployment                        tbd
-local/deployment/full-irs               tbd
-local/deployment/full-irs/charts        tbd
-local/deployment/full-irs/daps          tbd
-local/deployment/full-irs/dashboards    tbd
-local/deployment/full-irs/img           tbd
-local/deployment/full-irs/subcharts     tbd   
-local/deployment/full-irs/templates     tbd
-local/deployment/full-irs/test          tbd
-local/development                       tbd
-local/testing                           tbd
-local/testing/api-tests                 tbd
-local/testing/testdata                  tbd
-local/testing/testdata/dil              tbd   
-```
 
 ## Installation
 
@@ -125,7 +92,17 @@ the IDE.
 
 - Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
 
+## Notice for Docker image
+
+<!-- TODO -->
+
+Bellow you can find the information regarding Docker Notice for this application.
+
+- [Item Relationship Service](./DOCKER_NOTICE.md)
+
 #### Local IRS API
+
+<!-- TODO 393: this should be under the documentation section -->
 
 - Swagger UI: http://localhost:8080/api/swagger-ui
 - API docs: http://localhost:8080/api/api-docs
@@ -135,14 +112,6 @@ the IDE.
 
 see [INSTALL.md](INSTALL.md)
 
-
-## Notice for Docker image
-
-<!-- TODO -->
-
-Bellow you can find the information regarding Docker Notice for this application.
-
-- [Item Relationship Service](./DOCKER_NOTICE.md)
 
 
 ## Usage
