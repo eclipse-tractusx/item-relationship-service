@@ -182,7 +182,5 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 ## Contact
 
-Contact the project developers via the project's "dev" list.
+See [Getting in Touch](README.md#getting-in-touch)
 
-* https://accounts.eclipse.org/mailing-list/tractusx-dev
-* Eclipse Matrix Chat https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org
