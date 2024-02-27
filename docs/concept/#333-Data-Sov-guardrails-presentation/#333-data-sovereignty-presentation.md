@@ -25,7 +25,7 @@ New data sovereignty guardrails have been developed for release 24.05 DS, which 
 ## Summary
 The IRS acts as a data consumer. It is therefore necessary to analyse the new DS Guardrails requirements for data consumers.
 Here it is important to fulfil these requirements against the current implementation of the IRS. 
-If there are any deviations, these must be named and concepts created for them.
+If there are any deviations, these must be named, and concepts created for them.
 
 ## Problem Statement
 Analyse and check new data sovereignty guardrails for release 24.05 against current implementation of IRS. 
@@ -35,9 +35,9 @@ Analyse and check new data sovereignty guardrails for release 24.05 against curr
 - [ ] Part of the required logic for such a negotiation process is already available
 - [ ] Application Providers must ensure a proper negotiation process
 
-Core requirement for  data consumers 
-- [ ] Establish a legally binding framework agreement 
-- [ ] Check whether Data Contract Offer matches Data Provider Offer
+Core requirement for  data consumers. 
+- [ ] Establish a legally binding framework agreement. 
+- [ ] Check whether Data Contract Offer matches Data Provider Offer.
 
 1. Data provider: Selection of a data offer from Catalog offer
 2. Data provider: 

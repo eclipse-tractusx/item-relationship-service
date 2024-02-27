@@ -239,16 +239,17 @@ POST {{baseUrl}}/api/policy-hub/policy-content
 
 
 * Type
- * Access
- * Usage
- * Purpose
+  * Access
+  * Usage
+  * Purpose
+
 
 * UseCase
- * Traceability
- * Quality
- * PCF
- * Behavioraltwin
- * Sustainability
+  * Traceability
+  * Quality
+  * PCF
+  * Behavioraltwin
+  * Sustainability
 
 
 ## Glossary
