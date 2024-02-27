@@ -67,6 +67,9 @@ public class EdcConfiguration {
             private String data;
             private String catalog;
             private String contractNegotiation;
+            private String asset;
+            private String contractDefinition;
+            private String policyDefinition;
             private String transferProcess;
             private String stateSuffix;
 
