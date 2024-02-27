@@ -220,6 +220,12 @@ we should have a troubleshooting and FAQ section -->
 
 tbd
 
+
+## FAQ
+
+see [FAQ](FAQ.md)
+
+
 ## Getting in Touch
 
 Contact the project developers via the project's "dev" list.
