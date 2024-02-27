@@ -1,0 +1,50 @@
+irs-helm:
+  #####################
+  # IRS Configuration #
+  #####################
+  irsUrl: "http://localhost:8080"
+  bpn: "BPNL000000000000"
+  apiKeyAdmin: "01234567890123456789"
+  apiKeyRegular: "09876543210987654321"
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: local
+
+  digitalTwinRegistry:
+    type: central
+  discovery:
+    discoveryFinderUrl: https://localhost
+  semanticshub:
+    url: https://localhost
+  bpdm:
+    url: https://localhost
+
+  minioUser: "testtest"
+  minioPassword: "testtest"
+
+  resources:
+    limits:
+      cpu: "1000m"
+      memory: "500Mi"
+    requests:
+      cpu: "50m"
+      memory: "100Mi"
+
+  #######################
+  # Minio Configuration #
+  #######################
+  minio:
+    rootUser: "testtest"
+    rootPassword: "testtest"
+
+  #########################
+  # Grafana Configuration #
+  #########################
+  grafana:
+    enabled: false
+
+  ############################
+  # Prometheus Configuration #
+  ############################
+  prometheus:
+    enabled: false
