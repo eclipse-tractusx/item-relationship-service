@@ -248,7 +248,10 @@ Please distinguish bugs and vulnerabilities when reporting:
 
 see [CONTRIBUTING](CONTRIBUTING.md)
 
-## License
+
+## Licensing
+
+This code is licensed under the [Apache 2.0 License](LICENSE).
 
 For used licenses, please see
 the [NOTICE](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/NOTICE.md).
