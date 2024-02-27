@@ -147,7 +147,7 @@ public class SubmodelDelegate extends AbstractDelegate {
             } catch (final UsagePolicyException e) {
                 log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                        ProcessStep.USAGE_POLICY_VALIDATION, jsonUtil.asMap(e.getPolicy())));
+                        ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(), jsonUtil.asMap(e.getPolicy())));
             } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,

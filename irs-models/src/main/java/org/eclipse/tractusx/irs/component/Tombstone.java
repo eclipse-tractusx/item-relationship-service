@@ -51,26 +51,27 @@ public class Tombstone {
             pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     private final String catenaXId;
     private final String endpointURL;
+    private final String businessPartnerNumber;
     private final ProcessingError processingError;
     private final Map<String, Object> policy;
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep) {
-        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep, null);
+        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep, null, null);
     }
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
             final int retryCount, final ProcessStep processStep) {
-        return from(catenaXId, endpointURL, errorDetails, retryCount, processStep, null);
+        return from(catenaXId, endpointURL, errorDetails, retryCount, processStep, null, null);
     }
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
-            final int retryCount, final ProcessStep processStep, final Map<String, Object> policy) {
-        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep, policy);
+            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber, final Map<String, Object> policy) {
+        return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep, businessPartnerNumber, policy);
     }
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
-            final int retryCount, final ProcessStep processStep, final Map<String, Object> policy) {
+            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber, final Map<String, Object> policy) {
 
         final ProcessingError processingError = ProcessingError.builder()
                                                                .withProcessStep(processStep)
@@ -82,6 +83,7 @@ public class Tombstone {
                         .endpointURL(endpointURL)
                         .catenaXId(catenaXId)
                         .processingError(processingError)
+                        .businessPartnerNumber(businessPartnerNumber)
                         .policy(policy)
                         .build();
     }
