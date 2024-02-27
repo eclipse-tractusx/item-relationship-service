@@ -82,8 +82,7 @@ public class EdcSubmodelFacade {
             throw new EdcClientException(cause);
         }
     }
-
-    @SuppressWarnings("PMD.PreserveStackTrace")
+    
     public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue) throws EdcClientException {
         return client.getEndpointReferencesForAsset(endpointAddress, filterKey, filterValue);
