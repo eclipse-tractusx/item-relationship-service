@@ -16,11 +16,11 @@
 
 ## Vision and Mission Statement
 
-"The IRS is providing a technical API Endpoint in the Catena-X Network, which builds an item tree representation of given digital twins stored across the industry. Therefore, it is a key component for the Network to provide data chains along the value chain in the industry."
+The IRS is providing a technical API Endpoint in the Catena-X Network, which builds an item tree representation of given digital twins stored across the industry. Therefore, it is a key component for the Network to provide data chains along the value chain in the industry.
 
-``The vision for the Item Relationship Service is to provide an easy access endpoint for complex distributed digital twins across Catena-X members.
+The vision for the Item Relationship Service is to provide an easy access endpoint for complex distributed digital twins across Catena-X members.
 It abstracts the access from separated digital twins towards a connected data chain of twins and provides those.
-It enables to apply business logic on complex distributed digital twins across company borders.``
+It enables to apply business logic on complex distributed digital twins across company borders.
 
 ## What is the IRS?
 
@@ -36,7 +36,80 @@ To realize these data chains, the IRS relies on data models of the Traceability 
 data chains to customers or applications. Furthermore, the target picture of the IRS includes the enablement of new
 business areas by means of data chains along the value chain in the automotive industry.
 
-## Usage
+## Source Layout
+
+The IRS project consists of several different parts:
+
+```
+charts/                                 tbd
+charts/irs-helm                         tbd
+charts/irs-helm/dashboards              tbd
+charts/irs-helm/templates               tbd
+charts/irs-helm/templates/tests         tbd
+    
+docs/                                   tbd
+docs/concept                            tbd
+docs/src/logo                           tbd
+docs/src/api                            tbd
+docs/src/diagram-replacer               tbd
+docs/src/docs                           tbd
+docs/src/post-processing                tbd
+docs/src/uml-diagrams                   tbd
+docs/target                             tbd
+
+irs-api/                                tbd   
+  
+irs-common/                             tbd
+
+irs-cucumber-tests/                     tbd  
+
+irs-edc-client/                         tbd
+
+irs-ess/                                tbd
+
+irs-integration-tests/                  tbd   
+ 
+irs-load-tests/                         tbd
+
+irs-models/                             tbd
+
+irs-parent-spring-boot/                 tbd  
+
+irs-policy-store/                       tbd
+
+irs-registry-client/                    tbd  
+  
+irs-report-aggregate/                   tbd   
+
+irs-testdata-upload/                    tbd 
+ 
+irs-testing/                            tbd    
+
+local/                                  tbd
+local/demo                              tbd
+local/deployment                        tbd
+local/deployment/full-irs               tbd
+local/deployment/full-irs/charts        tbd
+local/deployment/full-irs/daps          tbd
+local/deployment/full-irs/dashboards    tbd
+local/deployment/full-irs/img           tbd
+local/deployment/full-irs/subcharts     tbd   
+local/deployment/full-irs/templates     tbd
+local/deployment/full-irs/test          tbd
+local/development                       tbd
+local/testing                           tbd
+local/testing/api-tests                 tbd
+local/testing/testdata                  tbd
+local/testing/testdata/dil              tbd   
+```
+
+## Installation
+
+<!-- 
+TODO according to https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-2 
+we should probably move all documentation concerning installation / deployment 
+to INSTALL.md? 
+--> 
 
 ### Local deployment
 
@@ -58,6 +131,20 @@ the IDE.
 ### Helm deployment
 
 see [INSTALL.md](INSTALL.md)
+
+
+## Notice for Docker image
+
+<!-- TODO -->
+
+Bellow you can find the information regarding Docker Notice for this application.
+
+- [Item Relationship Service](./DOCKER_NOTICE.md)
+
+
+## Usage
+
+
 
 ### Sample calls
 
@@ -120,20 +207,34 @@ curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept:
 
 - [Item Relationship Service Documentation](https://eclipse-tractusx.github.io/item-relationship-service/docs/)
 
-## Licenses
 
-For used licenses, please see
-the [NOTICE](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/NOTICE.md).
 
-## Notice for Docker image
+## Changelog and Compatibility Matrix
 
-Bellow you can find the information regarding Docker Notice for this application.
+- [Changelog IRS](CHANGELOG.md)
+- [Changelog IRS Helm](charts/irs-helm/CHANGELOG.md)
+- [Compatibility Matrix](COMPATIBILITY_MATRIX.md)
 
-- [Item Relationship Service](./DOCKER_NOTICE.md)
+## Troubleshooting and FAQs
 
-## Contact
+<!-- TODO According to https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-1/ 
+we should have a troubleshooting and FAQ section -->
+
+tbd
+
+## Getting in Touch
 
 Contact the project developers via the project's "dev" list.
 
-* https://accounts.eclipse.org/mailing-list/tractusx-dev
-* Eclipse Matrix Chat https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org
+* [Mailing List](https://accounts.eclipse.org/mailing-list/tractusx-dev)
+* [Eclipse Matrix Chat]( https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org)
+
+
+## Contributing
+
+see [CONTRIBUTING](CONTRIBUTING.md)
+
+## License
+
+For used licenses, please see
+the [NOTICE](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/NOTICE.md).
