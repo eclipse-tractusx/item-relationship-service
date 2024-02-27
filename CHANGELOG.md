@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created.
 
+### Fixed
+- Update to Spring Boot 3.1.9 to fix CVE's.
+
 ## [4.6.0] - 2024-02-20
 ### Added
 - Added concept to conform with IndustryCore Changes CX-0126 and CX-127
