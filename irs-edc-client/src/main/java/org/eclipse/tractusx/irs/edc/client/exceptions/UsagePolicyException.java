@@ -33,7 +33,7 @@ import org.eclipse.edc.policy.model.Policy;
 public class UsagePolicyException extends EdcClientException {
 
     private final transient Policy policy;
-    private final transient String businessPartnerNumber;
+    private final String businessPartnerNumber;
 
     public UsagePolicyException(final String itemId, final Policy policy, final String businessPartnerNumber) {
         super("Consumption of asset '" + itemId
