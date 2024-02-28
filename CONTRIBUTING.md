@@ -188,5 +188,5 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 ## Contact
 
-See [Getting in Touch](README.md#getting-in-touch)
+See [CONTACT.md](CONTACT.md)
 

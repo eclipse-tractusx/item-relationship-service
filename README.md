@@ -215,10 +215,6 @@ Below you can find the information regarding Docker Notice for this application.
 - [Item Relationship Service](./DOCKER_NOTICE.md)
 
 
-## Getting in Touch
+## Contact
 
-Contact the project developers via the project's "dev" list.
-
-* [Mailing List](https://accounts.eclipse.org/mailing-list/tractusx-dev)
-* [Eclipse Matrix Chat](https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org)
-
+See [CONTACT.md](CONTACT.md)
