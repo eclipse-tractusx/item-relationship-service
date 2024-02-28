@@ -80,10 +80,9 @@ For more information on the tool and how to acquire the token, check https://git
 ## General contribution to the project
 
 General contributions e.g. contributions to improve documentation are welcome.
-If you need ideas for contribution, you can check the 
-[open documentation stories](https://github.com/orgs/eclipse-tractusx/projects/8/views/4?filterQuery=label%3Adocumentation++status%3Ainbox%2Cbacklog)
-as well as the
-[discussion page concerning documentation improvements](https://github.com/eclipse-tractusx/item-relationship-service/discussions/407)
+If you need ideas for contributions, you can check the following links:
+- [open documentation stories](https://github.com/orgs/eclipse-tractusx/projects/8/views/4?filterQuery=label%3Adocumentation++status%3Ainbox%2Cbacklog)
+- [discussion page concerning documentation improvements](https://github.com/eclipse-tractusx/item-relationship-service/discussions/407)
 
 
 ## Contributing as a Consultant
