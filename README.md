@@ -75,13 +75,7 @@ The IRS project consists of several different parts:
 | local/development       | This folder contains resources relevant for setting up the local development environment such as the [commit message check hook](CONTRIBUTING.md#commit-messages).                                      |                                                                      |                          
 | local/testing           | [REST Request Collection](local/testing/IRS_Request_Collection.json) for [Insomnia](https://insomnia.rest/) and further resources concerning testing in the respective sub-directories described below. | [REST Request Collection README](local/testing/README.md)            |
 | local/testing/api-tests | [Tavern](https://tavern.readthedocs.io) API tests for the IRS.                                                                                                                                          | [Tavern API Tests README](local/testing/api-tests/README.md)         | 
-| local/testing/testdata  | Test data.                                                                                                                                                                                              | [Test data README](local/testing/testdata/README.md)                 | 
-
-
-<!-- TODO (mfischer): #393: explain irs-testdata-upload -->
-
- <!-- TODO (mfischer): #393: local/testing: In order to avoid confusion the request collection 
-and its README should be moved to a sub-directory too -->
+| local/testing/testdata  | Test data.                                                                                                                                                                                              | [Test data README](local/testing/testdata/README.md)                 |
 
 
 ## Installation
@@ -108,13 +102,9 @@ the IDE.
 
 #### Local IRS API
 
-<!-- TODO (mfischer): #393: this should be under the documentation section -->
-
 - Swagger UI: http://localhost:8080/api/swagger-ui
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
-
-
 
 
 ## Usage

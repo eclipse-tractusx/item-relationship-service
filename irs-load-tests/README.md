@@ -1,5 +1,3 @@
-<!-- TODO (mfischer): #393: clarify: where / how are the results analyzed?! -->
-
 [[Back to main README](../README.md)]
 
 

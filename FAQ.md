@@ -43,12 +43,8 @@ A: The following resources will help to understand the big picture:
 - [Architecture Documentation - Structure](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42/full.html#_structure)
 - [Architecture Documentation - Building block view](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42/full.html#_building_block_view)
 - [Architecture Documentation - Runtime view](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42/full.html#_runtime_view)
-    <!-- TODO (mfischer): #393: The documentation does not explain what these two flows are all about and when each is relevant -->
     -  [Iterative Flow](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42/full.html#_irs_iterative)
     -  [Recursive Flow](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42/full.html#_irs_recursive) 
-
-
-<!-- TODO (mfischer): #393: any external links from the consortia here? -->
 
 
 -----
@@ -69,20 +65,11 @@ If that does not answer your questions, ask the developers (see [Getting in Touc
 
 A: See [COMPATIBILITY-MATRIX](COMPATIBILITY_MATRIX.md).
 
-
------
-**Q: Where do I find test data?**
-
-A: tbd <!-- TODO (mfischer): #393 -->
-
-
 -----
 **Q: Where do I find test data?**
 
 A: See [local/testing/testdata](local/testing/testdata). 
 For more information see [the specific README](local/testing/testdata/README.md).
-
-<!-- TODO (mfischer): #393: describe better -->
 
 
 -----
