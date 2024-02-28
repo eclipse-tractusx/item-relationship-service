@@ -198,6 +198,11 @@ See [Bugs & Security Incidents](https://github.com/orgs/eclipse-tractusx/project
 See [FAQ](FAQ.md)
 
 
+## Licenses
+
+This IRS code is licensed under the [Apache 2.0 License](LICENSE).
+
+For used licenses, please see the [NOTICE](NOTICE.md).
 
 
 ## Notice for Docker Image
