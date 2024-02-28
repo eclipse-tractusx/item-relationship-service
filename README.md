@@ -136,6 +136,17 @@ Please distinguish bugs and vulnerabilities when reporting:
 - **Bugs:** Normal bugs may be reported [as public GitHub issues](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
 
 
+## Iteration Notes and Discussions
+
+For each iteration we create a page under the 
+[github discussions section](https://github.com/eclipse-tractusx/item-relationship-service/discussions) 
+where we document the iteration goal and the sprint roles. 
+Example: [PI 12 iteration 3](https://github.com/eclipse-tractusx/item-relationship-service/discussions/432).
+
+If you have any suggestions feel free to join any discussion or create a new one 
+in the [github discussions section](https://github.com/eclipse-tractusx/item-relationship-service/discussions).
+
+
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md)
