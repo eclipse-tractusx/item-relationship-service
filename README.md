@@ -171,4 +171,4 @@ Below you can find the information regarding Docker Notice for this application.
 
 ## Contact
 
-See [CONTACT.md](CONTACT.md)
+See [CONTACT](CONTACT.md)
