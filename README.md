@@ -86,16 +86,18 @@ and its README should be moved to a sub-directory too -->
 
 ## Installation
 
-<!-- 
-TODO according to https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-2 
-we should probably move all documentation concerning installation / deployment 
-to INSTALL.md? 
---> 
+This section describes both deployment on [kubernetes](https://kubernetes.io) via [Helm](https://helm.sh/) and local deployment for development.
+
+### Helm deployment
+
+See [INSTALL.md](INSTALL.md)
+
 
 ### Local deployment
 
 The following subsection provides instructions for running the infrastructure on docker-compose and the application in
 the IDE.
+
 
 #### Docker-compose + IDE
 
@@ -113,9 +115,6 @@ the IDE.
 - API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
 
-### Helm deployment
-
-see [INSTALL.md](INSTALL.md)
 
 
 ## Usage
