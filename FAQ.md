@@ -57,7 +57,7 @@ A: Yes, see [Item Relationship Service Documentation](https://eclipse-tractusx.g
 **Q: Where do I get help?**
 
 A: Please read the documentation and tests first.
-If that does not answer your questions, ask the developers (see [CONTACT](CONTACT.md).
+If that does not answer your questions, ask the developers (see [CONTACT](CONTACT.md)).
 
 
 -----
