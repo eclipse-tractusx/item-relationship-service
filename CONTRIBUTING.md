@@ -66,7 +66,7 @@ https://www.eclipse.org/projects/handbook/#resources-commit
 
 ## Code of Conduct
 
-See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+See [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md).
 
 ## Eclipse Dependency License Check
 
@@ -188,5 +188,5 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 ## Contact
 
-See [CONTACT.md](CONTACT.md)
+See [CONTACT](CONTACT.md)
 

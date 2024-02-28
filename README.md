@@ -84,7 +84,7 @@ This section describes both deployment on [kubernetes](https://kubernetes.io) vi
 
 ### Helm Deployment
 
-See [INSTALL.md](INSTALL.md)
+See [INSTALL](INSTALL.md)
 
 
 ### Local Deployment
@@ -186,7 +186,7 @@ See [Bugs & Security Incidents](https://github.com/orgs/eclipse-tractusx/project
 
 Please distinguish bugs and vulnerabilities when reporting: 
 
-- **Vulnerabilities:** For vulnerabilities see [SECURITY.md](SECURITY.md#reporting-a-vulnerability).
+- **Vulnerabilities:** For vulnerabilities see [SECURITY](SECURITY.md#reporting-a-vulnerability).
 
 - **Bugs:** Normal bugs may be reported [as public GitHub issues](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
 

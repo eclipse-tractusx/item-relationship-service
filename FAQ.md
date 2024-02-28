@@ -57,7 +57,7 @@ A: Yes, see [Item Relationship Service Documentation](https://eclipse-tractusx.g
 **Q: Where do I get help?**
 
 A: Please read the documentation and tests first.
-If that does not answer your questions, ask the developers (see [CONTACT.md](CONTACT.md).
+If that does not answer your questions, ask the developers (see [CONTACT](CONTACT.md).
 
 
 -----
@@ -75,13 +75,13 @@ For more information see [the specific README](local/testing/testdata/README.md)
 -----
 **Q: Where can I report a vulnerability?**
 
-A: See [SECURITY.md](SECURITY.md#reporting-a-vulnerability).
+A: See [SECURITY](SECURITY.md#reporting-a-vulnerability).
 
 
 -----
 **Q: Where can I report a bug?**
 
 A: Normal bugs may be reported as [public github issues](https://github.com/orgs/eclipse-tractusx/projects/8/views/10). 
-For reporting vulnerabilities see [SECURITY.md](SECURITY.md#reporting-a-vulnerability) please.
+For reporting vulnerabilities see [SECURITY](SECURITY.md#reporting-a-vulnerability) please.
 
 
