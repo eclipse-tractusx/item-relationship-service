@@ -32,6 +32,7 @@ import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -39,6 +40,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @RequiredArgsConstructor
+@Service("irsEdcClientEdcContractAgreementService")
 public class EdcContractAgreementService {
 
     public static final String EDC_REQUEST_SUFFIX = "/request";
