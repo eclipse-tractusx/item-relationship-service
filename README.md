@@ -193,6 +193,20 @@ curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept:
 See [Bugs & Security Incidents](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
 
 
+## Reporting Bugs and Vulnerabilities
+
+Please distinguish bugs and vulnerabilities when reporting: 
+
+- **Vulnerabilities:** For vulnerabilities see [SECURITY.md](SECURITY.md#reporting-a-vulnerability).
+
+- **Bugs:** Normal bugs may be reported [as public GitHub issues](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
+
+
+## Contributing
+
+See [CONTRIBUTING](CONTRIBUTING.md)
+
+
 ## FAQ
 
 See [FAQ](FAQ.md)
