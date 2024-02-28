@@ -61,5 +61,5 @@ curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept:
 
 ### IRS Request Collection
 
-Besides the examples above, you can find more examples in the [REST request collection for Insomnia](local/testing/IRS_Request_Collection.json).
-Please see the [corresponding README](local/testing/README.md) for more information.
+Besides the examples above, you can find more examples in the [REST request collection for Insomnia](local/testing/request-collection/IRS_Request_Collection.json).
+Please see the [corresponding README](local/testing/request-collection/README.md) for more information.
