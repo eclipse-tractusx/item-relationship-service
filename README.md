@@ -94,11 +94,6 @@ the IDE.
 
 - Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
 
-## Notice for Docker image
-
-Below you can find the information regarding Docker Notice for this application.
-
-- [Item Relationship Service](./DOCKER_NOTICE.md)
 
 #### Local IRS API
 
@@ -195,7 +190,11 @@ we should have a troubleshooting and FAQ section -->
 
 ## FAQ
 
-see [FAQ](FAQ.md)
+## Notice for Docker Image
+
+Below you can find the information regarding Docker Notice for this application.
+
+- [Item Relationship Service](./DOCKER_NOTICE.md)
 
 
 ## Getting in Touch
