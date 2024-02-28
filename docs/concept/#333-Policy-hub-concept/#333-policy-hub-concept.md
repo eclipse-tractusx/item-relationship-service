@@ -1,4 +1,4 @@
-# #333 Data Sovereignty Guardrails Presentation
+# #333 Validation of Policies with PolicyTemplates provided by PolicyHub  
 
 | Key           | Value                                                                            |
 |---------------|----------------------------------------------------------------------------------|
