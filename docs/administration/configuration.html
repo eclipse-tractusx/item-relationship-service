@@ -1041,6 +1041,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">contractnegotiation</span><span class="pi">:</span> <span class="s">/v2/contractnegotiations</span>  <span class="c1"># EDC consumer controlplane contract negotiation path</span>
       <span class="na">transferprocess</span><span class="pi">:</span> <span class="s">/v2/transferprocesses</span>  <span class="c1"># EDC consumer controlplane transfer process path</span>
       <span class="na">statesuffix</span><span class="pi">:</span> <span class="s">/state</span>  <span class="c1"># Path of the state suffix for contract negotiation and transfer process</span>
+      <span class="na">contractAgreements</span><span class="pi">:</span> <span class="s">/v2/contractagreements</span>  <span class="c1"># EDC consumer controlplane contract agreements path</span>
     <span class="na">request</span><span class="pi">:</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)</span>
     <span class="na">provider</span><span class="pi">:</span>
@@ -1160,10 +1161,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="s">- job_name: 'minio-actuator'</span>
       <span class="s">metrics_path: /minio/v2/metrics/cluster</span>
       <span class="s">static_configs:</span>
-        <span class="s">- targets: [ '{{ .Release.Name }}-minio:9000' ]</span>
-
-
-<span class="c1">#########################</span></code></pre>
+        <span class="s">- targets: [ '{{ .Release.Name }}-minio:9000' ]</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1472,7 +1470,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-02-22 15:42:15 UTC
+Last updated 2024-02-28 07:45:50 UTC
 </div>
 </div>
 </body>
