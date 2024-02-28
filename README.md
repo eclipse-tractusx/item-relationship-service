@@ -82,12 +82,12 @@ The IRS project consists of several different parts:
 
 This section describes both deployment on [kubernetes](https://kubernetes.io) via [Helm](https://helm.sh/) and local deployment for development.
 
-### Helm deployment
+### Helm Deployment
 
 See [INSTALL.md](INSTALL.md)
 
 
-### Local deployment
+### Local Deployment
 
 The following subsection provides instructions for running the infrastructure on docker-compose and the application in
 the IDE.
@@ -108,7 +108,7 @@ After the application is up and running the local IRS API is available at the fo
 
 ## Usage
 
-### Sample calls
+### Sample Calls
 
 #### IRS
 
