@@ -193,10 +193,12 @@ curl -X 'GET' 'http://localhost:8080/ess/bpn/investigations/<jobID>' -H 'accept:
 See [Bugs & Security Incidents](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
 
 
-<!-- TODO(mfischer): #393: According to https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-1/ 
-we should have a troubleshooting and FAQ section -->
-
 ## FAQ
+
+See [FAQ](FAQ.md)
+
+
+
 
 ## Notice for Docker Image
 
@@ -212,25 +214,3 @@ Contact the project developers via the project's "dev" list.
 * [Mailing List](https://accounts.eclipse.org/mailing-list/tractusx-dev)
 * [Eclipse Matrix Chat](https://chat.eclipse.org/#/room/#tractusx-irs:matrix.eclipse.org)
 
-
-## Reporting Bugs and Vulnerabilities
-
-Please distinguish bugs and vulnerabilities when reporting: 
-
-- **Vulnerabilities:** For vulnerabilities see [SECURITY.md](SECURITY.md#reporting-a-vulnerability).
-
-- **Bugs:** Normal bugs may be reported [as public GitHub issues](https://github.com/orgs/eclipse-tractusx/projects/8/views/10).
-
-
-
-## Contributing
-
-see [CONTRIBUTING](CONTRIBUTING.md)
-
-
-## Licensing
-
-This code is licensed under the [Apache 2.0 License](LICENSE).
-
-For used licenses, please see
-the [NOTICE](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/NOTICE.md).
