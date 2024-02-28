@@ -37,7 +37,7 @@ This can lead to policies being misused or created incorrectly. This can permane
 - [ ] Performance: A user who wants to register a policy with a maximum of 10 constraints in the Policy Store will receive feedback on whether the policy is valid in less than a second.
 - [ ] If a user registers one or more non-compliant policies, he receives a meaningful error message with instructions on how to correct the policy.
 - [ ] OpenAPI 3.0 endpoints contain a sufficient and meaningful description, including instructions how to correct policy.
-- [ ] the api endpoints implement a fail fast approach. If several policies are registered and at least one policy is not valid, all policies are not accepted.
+- [ ] Fail fast strategy for api endpoints is implemented. If several policies are registered and at least one policy is not valid, all policies are not accepted.
 
 ## Out of scope
 - Fixing bugs in PolicyHub 
