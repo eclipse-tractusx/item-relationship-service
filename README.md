@@ -92,19 +92,18 @@ See [INSTALL.md](INSTALL.md)
 The following subsection provides instructions for running the infrastructure on docker-compose and the application in
 the IDE.
 
+After the application is up and running the local IRS API is available at the following URLs:
+
+- Swagger UI: http://localhost:8080/api/swagger-ui
+- API docs: http://localhost:8080/api/api-docs
+- API docs in yaml: http://localhost:8080/api/api-docs.yaml
+
 
 #### Docker-compose + IDE
 
 - Start the necessary infrastructure by running `docker-compose up`
 
 - Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
-
-
-#### Local IRS API
-
-- Swagger UI: http://localhost:8080/api/swagger-ui
-- API docs: http://localhost:8080/api/api-docs
-- API docs in yaml:  http://localhost:8080/api/api-docs.yaml
 
 
 ## Usage
