@@ -1,10 +1,10 @@
 # #333 Data Sovereignty Guardrails Presentation
 
-| Key           | Value                                                                      |
-|---------------|----------------------------------------------------------------------------|
-| Creation date | 22.02.2024                                                                 |
-| Ticket Id     | [#332](https://github.com/eclipse-tractusx/item-relationship-service/issues/333) |    
-| State         | WIP                                                                       | 
+| Key           | Value                                                                            |
+|---------------|----------------------------------------------------------------------------------|
+| Creation date | 22.02.2024                                                                       |
+| Ticket Id     | [#333](https://github.com/eclipse-tractusx/item-relationship-service/issues/333) |    
+| State         | WIP                                                                              | 
 
 ## Table of Contents
 
