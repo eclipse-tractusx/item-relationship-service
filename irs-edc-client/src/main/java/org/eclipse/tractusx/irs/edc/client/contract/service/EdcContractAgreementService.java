@@ -31,7 +31,9 @@ import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -39,18 +41,19 @@ import org.springframework.web.client.RestTemplate;
  */
 @Slf4j
 @RequiredArgsConstructor
+@Service("irsEdcClientEdcContractAgreementService")
 public class EdcContractAgreementService {
 
     public static final String EDC_REQUEST_SUFFIX = "/request";
     public static final String EDC_ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
     private final EdcConfiguration config;
-    private final RestTemplate restTemplate;
+    private final @Qualifier("edcClientRestTemplate") RestTemplate edcRestTemplate;
 
     public List<ContractAgreement> getContractAgreements(final String... contractAgreementIds)
             throws ContractAgreementException {
 
         final QuerySpec querySpec = buildQuerySpec(contractAgreementIds);
-        final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = restTemplate.postForEntity(
+        final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = edcRestTemplate.postForEntity(
                 config.getControlplane().getEndpoint().getContractAgreements() + EDC_REQUEST_SUFFIX, querySpec,
                 EdcContractAgreementsResponse.class);
 
@@ -65,7 +68,7 @@ public class EdcContractAgreementService {
     }
 
     public ContractNegotiation getContractAgreementNegotiation(final String contractAgreementId) {
-        final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = restTemplate.getForEntity(
+        final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = edcRestTemplate.getForEntity(
                 config.getControlplane().getEndpoint().getContractAgreements() + "/" + contractAgreementId
                         + "/negotiation", ContractNegotiation.class);
         return contractNegotiationResponseEntity.getBody();
