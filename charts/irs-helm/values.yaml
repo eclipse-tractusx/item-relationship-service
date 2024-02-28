@@ -177,6 +177,7 @@ edc:
       contractnegotiation: /v2/contractnegotiations  # EDC consumer controlplane contract negotiation path
       transferprocess: /v2/transferprocesses  # EDC consumer controlplane transfer process path
       statesuffix: /state  # Path of the state suffix for contract negotiation and transfer process
+      contractAgreements: /v2/contractagreements  # EDC consumer controlplane contract agreements path
     request:
       ttl: PT10M  # Requests to controlplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     provider:
