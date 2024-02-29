@@ -161,9 +161,13 @@ in a concise and easy to read manner.
 
 ### Integration Tests
 
-Besides the Spring Boot features the IRS project uses the following technologies for integration testing:
+Besides the Spring Boot features testing features the following frameworks and tools are used for integation testing:
 - [Testcontainers](https://java.testcontainers.org/) for bootstrapping integration tests with real services wrapped in Docker containers
 - [Wiremock](https://wiremock.org/) for building mock APIs in order to simulate dependencies
+
+The Wiremock tests are intended to cover the IRS flow and communication 
+without the need of a running environment that includes all dependencies.
+Wiremock Tests and their corresponding utilities are marked by the suffix `WiremockTest` respectively `WiremockSupport`.  
 
 
 ### Smoke Tests
