@@ -9,15 +9,15 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Summary](#summary)
-3. [Problem Statement](#problem-statement)
-4. [Requirements](#requirements)
-5. [NFR](#nfr)
-6. [Out of scope](#out-of-scope)
-7. [Assumptions](#assumptions)
-8. [Concept](#concept)
-9. [Glossary](#glossary)
-10. [References](#references)
+   2. [Summary](#summary)
+   3. [Problem Statement](#problem-statement)
+   4. [Requirements](#requirements)
+   5. [NFR](#nfr)
+   6. [Out of scope](#out-of-scope)
+   7. [Assumptions](#assumptions)
+   8. [Concept](#concept)
+   9. [Glossary](#glossary)
+   10. [References](#references)
 
 ## Overview
 New data sovereignty guardrails have been developed for release 24.05 DS, which are to be implemented by the product in release 24.5.
@@ -32,24 +32,24 @@ Analyse and check new data sovereignty guardrails for release 24.05 against curr
 
 ## Requirements
 - [ ] These Constraints are the base for a potential “auto-negotiation” process
-- [ ] Part of the required logic for such a negotiation process is already available
-- [ ] Application Providers must ensure a proper negotiation process
-- [ ] Do NOT accept Policies / Offers you or your organization doesn't understand or accept.
+  - [ ] Part of the required logic for such a negotiation process is already available
+  - [ ] Application Providers must ensure a proper negotiation process
+  - [ ] Do NOT accept Policies / Offers you or your organization doesn't understand or accept.
 
 Core requirement for  data consumers. 
 - [ ] Establish a legally binding framework agreement. 
-- [ ] Check whether Data Contract Offer matches Data Provider Offer.
+  - [ ] Check whether Data Contract Offer matches Data Provider Offer.
 
-1. Data provider: Selection of a data offer from Catalog offer
-2. Data provider: 
+  1. Data provider: Selection of a data offer from Catalog offer
+  2. Data provider: 
 
 Policy Store 
 - [ ] As an admin, I have the option of storing usage policies in the Policy Store
-- [ ] As an admin, I have the option of modifying usage policies in the Policy Store
-- [ ] As an admin, I have the option of deleting usage policies in the Policy Store
-- [ ] Policies stored in the policy store must correspond to a specific format (Policy Definition).
-  - This format is defined by the C-X Association. 
-  - This format definition is contained in a set of rules in the Policy Repository (Policy Hub).
+  - [ ] As an admin, I have the option of modifying usage policies in the Policy Store
+  - [ ] As an admin, I have the option of deleting usage policies in the Policy Store
+  - [ ] Policies stored in the policy store must correspond to a specific format (Policy Definition).
+    - This format is defined by the C-X Association. 
+    - This format definition is contained in a set of rules in the Policy Repository (Policy Hub).
 
 ## Data Sovereignty Q-Gate Criteria for Release 24.05
 
@@ -60,9 +60,9 @@ Out of scope for IRS
 - [x] **(DS_1.0.0)** The provider of the component implementing the DSP MUST ensure the consumption of data via the DSP protocol adhering to the released version of CX-0018 standard. For example, using the Eclipse Data Space Connector on Tractus X.
    - [x] **(DS_1.1.0)** The application MUST ensure that the consumer of the data is uniquely identifiable through its associated BPN-L.
    - [x] **(DS_1.2.0)** This BPN-L must be used by this application to identify the data.
-- [ ] **(DS_2.0.0)** The application MUST use the BPN-L of consumer of the data when consuming data via the DSP component (e.g. EDC or managed EDC).
-- [ ] **(DS_3.0.0)** A user of an application MUST be enforced to act within the constraints of the framework agreement by appropriate means (legal, technical,...).
-- [ ] **(DS_4.0.0)** To agree to one or multiple contract offers for a queried data asset, the selection of the appropriate offer MUST be done through the consuming application ensuring to follow company-defined rules and regulations for a user of that application.
+  - [ ] **(DS_2.0.0)** The application MUST use the BPN-L of consumer of the data when consuming data via the DSP component (e.g. EDC or managed EDC).
+  - [ ] **(DS_3.0.0)** A user of an application MUST be enforced to act within the constraints of the framework agreement by appropriate means (legal, technical,...).
+  - [ ] **(DS_4.0.0)** To agree to one or multiple contract offers for a queried data asset, the selection of the appropriate offer MUST be done through the consuming application ensuring to follow company-defined rules and regulations for a user of that application.
 
 
 #### DS_1.0.0
@@ -135,4 +135,4 @@ Actually, usage policies are not validated according to the policy specification
 
 ## References
 * [Swagger Policy Hub](https://policy-hub.dev.demo.catena-x.net/api/policy-hub/swagger/index.html)
-* [API Endpoint usage](https://github.com/eclipse-tractusx/policy-hub/blob/feature/request-docu/docs/developer/Technical-Documentation/requests/example-requests.md)
+  * [API Endpoint usage](https://github.com/eclipse-tractusx/policy-hub/blob/feature/request-docu/docs/developer/Technical-Documentation/requests/example-requests.md)dpoint usage](https://github.com/eclipse-tractusx/policy-hub/tree/release/v0.1.0-rc.4/docs/developer/Technical-Documentation/requests/example-requests.md)
