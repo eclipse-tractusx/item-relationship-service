@@ -156,7 +156,7 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
    and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
 2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md) and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md) (e.g. https://github.com/eclipse-tractusx/item-relationship-service/pull/429).
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md) (see [catena-x-environments](https://github.com/catenax-ng/tx-item-relationship-service/tree/catena-x-environments/charts/irs-environments)).
-4. Create pull request from [release branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/main...catenax-ng:tx-item-relationship-service:chore/prepare-release-x.x.x) and merge to main.
+4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) and merge to main.
 5. Create Git tag for the desired release version `git tag x.x.x`
    (the irs-helm tag will be created by the github workflow based on the version in the irs-helm changelog).
 6. Push Git tag to repository `git push origin x.x.x`.
