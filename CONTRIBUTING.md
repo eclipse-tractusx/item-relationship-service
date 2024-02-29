@@ -88,7 +88,7 @@ If you need ideas for contributions, you can check the following links:
 ## Contributing as a Consultant
 
 ### Conceptual work and specification guidelines
-1. The prerequisite for a concept is always a github issue that defines the business value and the acceptance criteria that are to be implemented with the concept
+1. The prerequisite for a concept is always a GitHub issue that defines the business value and the acceptance criteria that are to be implemented with the concept
 2. Copy and rename directory /docs/#000-concept-name-template /docs/#<DDD>-<target-name>
 3. Copy the template [/docs/concept/TEMPLATE_Concept.md](docs/concept/TEMPLATE_Concept.md) into new directory `/docs/#<DDD>-<target-name>`.
 
@@ -168,10 +168,10 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md).
 4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) and merge to main.
 5. Create Git tag for the desired release version `git tag x.x.x`
-   (note: the irs-helm tag will be created automatically by the github workflow based on the version in the irs-helm changelog). 
-6. Push Git tag to repository `git push origin x.x.x` (this will trigger the github release workflow).
+   (note: the irs-helm tag will be created automatically by the GitHub workflow based on the version in the irs-helm changelog). 
+6. Push Git tag to repository `git push origin x.x.x` (this will trigger the GitHub release workflow).
 7. Wait for release workflow to complete.
-8. Merge the automatically opened PR by github-actions bot.
+8. Merge the automatically opened PR by GitHub actions bot.
 9. Notify about the release in IRS Matrix Chat using the following template: 
    
    >   **IRS Release x.x.x**

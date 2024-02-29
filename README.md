@@ -135,8 +135,8 @@ Please see the sections below for more information on each.
 
 ### Unit Tests
 
-Unit tests are executed automatically during the github workflow
-[IRS build](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/irs-build.yml).
+Unit tests are executed automatically during the GitHub workflow
+[IRS build](.github/workflows/irs-build.yml).
 
 **Test Reports:**
 Currently, no test reports are published. 
@@ -173,7 +173,7 @@ Wiremock Tests and their corresponding utilities are marked by the suffix `Wirem
 ### Smoke Tests
 
 See `irs-integration-tests/src/test/java/org/eclipse/tractusx/irs/smoketest/ItemGraphSmokeTest.java`.
-The smoke test is executed via the github workflow  [int-test-automation](.github/workflows/int-test-automation.yml). 
+The smoke test is executed via the GitHub workflow  [IRS integration tests](.github/workflows/int-test-automation.yml). 
 
 
 ### Regression Tests
@@ -199,7 +199,7 @@ Please note that there will be changes concerning test execution due to the
 ### Load Tests
 
 We use [Gatling](https://gatling.io/) for load testing.
-IRS load tests can be triggered manually via github workflow [IRS Load Test](.github/workflows/irs-load-test.yaml).
+IRS load tests can be triggered manually via GitHub workflow [IRS Load Test](.github/workflows/irs-load-test.yaml).
 Please see [IRS Load Tests README](irs-load-tests/README.md) for more information.
 
 
@@ -227,12 +227,12 @@ Please distinguish bugs and vulnerabilities when reporting:
 ## Iteration Notes and Discussions
 
 For each iteration we create a page under the 
-[github discussions section](https://github.com/eclipse-tractusx/item-relationship-service/discussions) 
+[GitHub discussions section](https://github.com/eclipse-tractusx/item-relationship-service/discussions) 
 where we document the iteration goal and the sprint roles. 
 Example: [PI 12 iteration 3](https://github.com/eclipse-tractusx/item-relationship-service/discussions/432).
 
 If you have any suggestions feel free to join any discussion or create a new one 
-in the [github discussions section](https://github.com/eclipse-tractusx/item-relationship-service/discussions).
+in the [GitHub discussions section](https://github.com/eclipse-tractusx/item-relationship-service/discussions).
 
 
 ## Contributing

@@ -3,5 +3,5 @@
 
 # IRS Load Tests
 
-IRS load tests can be triggered manually via github workflow [irs-load-test](../.github/workflows/irs-load-test.yaml).
+IRS load tests can be triggered manually via GitHub workflow [IRS Load Test](../.github/workflows/irs-load-test.yaml).
 
