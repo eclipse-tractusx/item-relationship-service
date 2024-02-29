@@ -9,15 +9,15 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-   2. [Summary](#summary)
-   3. [Problem Statement](#problem-statement)
-   4. [Requirements](#requirements)
-   5. [NFR](#nfr)
-   6. [Out of scope](#out-of-scope)
-   7. [Assumptions](#assumptions)
-   8. [Concept](#concept)
-   9. [Glossary](#glossary)
-   10. [References](#references)
+2. [Summary](#summary)
+3. [Problem Statement](#problem-statement)
+4. [Requirements](#requirements)
+5. [NFR](#nfr)
+6. [Out of scope](#out-of-scope)
+7. [Assumptions](#assumptions)
+8. [Concept](#concept)
+9. [Glossary](#glossary)
+10. [References](#references)
 
 ## Overview
 New data sovereignty guardrails have been developed for release 24.05 DS, which are to be implemented by the product in release 24.5.
