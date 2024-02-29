@@ -92,6 +92,10 @@ A: See [CONTRIBUTING](CONTRIBUTING.md#code-formatting).
 
 ## Testing
 
+-----
+**Q: Where can I find more information concerning the type of tests and used technologies and libraries?**
+
+A: See [README - Tests](README.md#tests).
 
 -----
 **Q: Where do I find test data?**
