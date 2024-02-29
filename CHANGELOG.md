@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Update to Spring Boot 3.1.9 to fix CVE's.
+- Fixed a case where Policy validation could result in a NullPointerException if either orConstraint or andConstraint of
+  accepted policies were null
 
 ## [4.6.0] - 2024-02-20
 ### Added
