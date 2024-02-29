@@ -135,4 +135,4 @@ Actually, usage policies are not validated according to the policy specification
 
 ## References
 * [Swagger Policy Hub](https://policy-hub.dev.demo.catena-x.net/api/policy-hub/swagger/index.html)
-  * [API Endpoint usage](https://github.com/eclipse-tractusx/policy-hub/blob/feature/request-docu/docs/developer/Technical-Documentation/requests/example-requests.md)dpoint usage](https://github.com/eclipse-tractusx/policy-hub/tree/release/v0.1.0-rc.4/docs/developer/Technical-Documentation/requests/example-requests.md)
+* [API Endpoint usage](https://github.com/eclipse-tractusx/policy-hub/tree/release/v0.1.0-rc.4/docs/developer/Technical-Documentation/requests/example-requests.md)
