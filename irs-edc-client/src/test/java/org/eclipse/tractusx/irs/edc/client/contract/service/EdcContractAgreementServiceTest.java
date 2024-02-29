@@ -41,6 +41,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -50,13 +51,16 @@ class EdcContractAgreementServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    @Spy
     private EdcConfiguration edcConfiguration;
 
     private EdcContractAgreementService edcContractAgreementService;
 
     @BeforeEach
     void setUp() {
+        edcConfiguration.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
+        edcConfiguration.getControlplane().getEndpoint().setData("https://irs-consumer-controlplane.dev.demo.net/data/management");
+        edcConfiguration.getControlplane().getEndpoint().setContractAgreements("/v2/contractagreements");
         this.edcContractAgreementService = new EdcContractAgreementService(edcConfiguration, restTemplate);
     }
 
@@ -64,8 +68,6 @@ class EdcContractAgreementServiceTest {
     void shouldReturnContractAgreements() throws ContractAgreementException {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
-        when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
-                "/v2/contractagreements");
 
         final ContractAgreement contractAgreement = ContractAgreement.Builder.newInstance()
                                                                              .id("id")
@@ -88,7 +90,7 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .postForEntity(eq("/v2/contractagreements/request"), any(),
+               .postForEntity(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"), any(),
                        eq(EdcContractAgreementsResponse.class));
         assertNotNull(contractAgreements);
     }
@@ -97,8 +99,6 @@ class EdcContractAgreementServiceTest {
     void shouldThrowContractAgreementExceptionWhenResponseBodyIsEmtpy() {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
-        when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
-                "/v2/contractagreements");
 
         when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
                 ResponseEntity.ok().build());
@@ -109,7 +109,7 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .postForEntity(eq("/v2/contractagreements/request"), any(),
+               .postForEntity(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"), any(),
                        eq(EdcContractAgreementsResponse.class));
         assertEquals("Empty message body on edc response: <200 OK OK,[]>", contractAgreementException.getMessage());
     }
@@ -118,8 +118,6 @@ class EdcContractAgreementServiceTest {
     void shouldReturnContractAgreementNegotiation() {
         //GIVEN
         String contractAgreementId = "contractAgreementId";
-        when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
-                "/v2/contractagreements");
 
         final ContractNegotiation contractAgreementNegotiationMock = ContractNegotiation.Builder.newInstance()
                                                                                                 .id("id")
@@ -136,7 +134,7 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .getForEntity("/v2/contractagreements/contractAgreementId/negotiation",
+               .getForEntity("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/contractAgreementId/negotiation",
                        ContractNegotiation.class);
         assertNotNull(contractAgreementNegotiation);
     }

@@ -29,6 +29,7 @@ import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiat
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration.ControlplaneConfig.EndpointConfig;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -53,8 +54,11 @@ public class EdcContractAgreementService {
             throws ContractAgreementException {
 
         final QuerySpec querySpec = buildQuerySpec(contractAgreementIds);
+
+        final EndpointConfig endpoint = config.getControlplane().getEndpoint();
+        final String contractAgreements = endpoint.getContractAgreements();
         final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = edcRestTemplate.postForEntity(
-                config.getControlplane().getEndpoint().getContractAgreements() + EDC_REQUEST_SUFFIX, querySpec,
+                endpoint.getData() + contractAgreements + EDC_REQUEST_SUFFIX, querySpec,
                 EdcContractAgreementsResponse.class);
 
         final EdcContractAgreementsResponse contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
@@ -68,9 +72,10 @@ public class EdcContractAgreementService {
     }
 
     public ContractNegotiation getContractAgreementNegotiation(final String contractAgreementId) {
+        final EndpointConfig endpoint = config.getControlplane().getEndpoint();
+        final String contractAgreements = endpoint.getContractAgreements();
         final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = edcRestTemplate.getForEntity(
-                config.getControlplane().getEndpoint().getContractAgreements() + "/" + contractAgreementId
-                        + "/negotiation", ContractNegotiation.class);
+                endpoint.getData() + contractAgreements + "/" + contractAgreementId + "/negotiation", ContractNegotiation.class);
         return contractNegotiationResponseEntity.getBody();
     }
 
