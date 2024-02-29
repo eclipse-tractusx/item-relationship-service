@@ -13,7 +13,7 @@ Thanks for your interest in this project.
 8. [Contributing as a Developer](#contributing-as-a-developer)
 9. [Contact](#contact)
 
-## Project description
+## Project Description
 
 The companies involved want to increase the automotive industry's
 competitiveness, improve efficiency through industry-specific cooperation and
@@ -29,7 +29,7 @@ Catena-X alliance focusing on parts traceability.
 * https://github.com/eclipse-tractusx/item-relationship-service
 * https://github.com/catenax-ng/tx-item-relationship-service
 
-## Developer resources
+## Developer Resources
 
 Information regarding source code management, builds, coding standards, and
 more.
@@ -77,7 +77,7 @@ mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.iplab.token=$ECLIP
 
 For more information on the tool and how to acquire the token, check https://github.com/eclipse/dash-licenses.
 
-## General contribution to the project
+## General Contribution to the Project
 
 General contributions e.g. contributions to improve documentation are welcome.
 If you need ideas for contributions, you can check the following links:
@@ -119,7 +119,7 @@ sequenceDiagram
 
 ## Contributing as a Developer
 
-### Commit messages
+### Commit Messages
 
 The commit messages have to match a pattern in the form of:  
 ``< type >(scope):[<Ticket_ID>] < description >``  
@@ -131,14 +131,14 @@ Example:
 
 Detailed pattern can be found here: [commit-msg](local/development/commit-msg)
 
-#### How to use
+#### How to Use
 ```shell
 cp local/development/commit-msg .git/hooks/commit-msg && chmod 500 .git/hooks/commit-msg
 ```
 
 For further information please see https://github.com/hazcod/semantic-commit-hook
 
-### Code formatting
+### Code Formatting
 
 #### Deprecated soon:
 Please use the following code formatter: [.idea/codeStyles](.idea/codeStyles)
