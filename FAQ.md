@@ -77,16 +77,6 @@ A: See [COMPATIBILITY-MATRIX](COMPATIBILITY_MATRIX.md).
 
 A: See [CONTRIBUTING](CONTRIBUTING.md).
 
-## Testing
-
-
------
-**Q: Where do I find test data?**
-
-A: See [local/testing/testdata](local/testing/testdata). 
-For more information see [the specific README](local/testing/testdata/README.md).
-
-
 
 -----
 **Q: How do I create a release?**
@@ -100,4 +90,12 @@ A: See [CONTRIBUTING](CONTRIBUTING.md#create-a-release).
 A: See [CONTRIBUTING](CONTRIBUTING.md#code-formatting).
 
 
+## Testing
+
+
+-----
+**Q: Where do I find test data?**
+
+A: Testdata is located under [local/testing/testdata](local/testing/testdata). 
+For more information see the [test data README](local/testing/testdata/README.md).
 
