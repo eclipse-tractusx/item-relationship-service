@@ -159,7 +159,7 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) and merge to main.
 5. Create Git tag for the desired release version `git tag x.x.x`
    (the irs-helm tag will be created by the github workflow based on the version in the irs-helm changelog).
-6. Push Git tag to repository `git push origin x.x.x`.
+6. Push Git tag to repository `git push origin x.x.x`. (Requires eclipse committer role)
 7. Wait for release workflow to complete.
 8. Merge the automatically opened PR by github-actions bot.
 9. Create [pull request to eclipse-tractusx](https://github.com/eclipse-tractusx/item-relationship-service/compare/main...catenax-ng:tx-item-relationship-service:main).
