@@ -34,6 +34,7 @@ Analyse and check new data sovereignty guardrails for release 24.05 against curr
 - [ ] These Constraints are the base for a potential “auto-negotiation” process
 - [ ] Part of the required logic for such a negotiation process is already available
 - [ ] Application Providers must ensure a proper negotiation process
+- [ ] Do NOT accept Policies / Offers you or your organization doesn't understand or accept.
 
 Core requirement for  data consumers. 
 - [ ] Establish a legally binding framework agreement. 
