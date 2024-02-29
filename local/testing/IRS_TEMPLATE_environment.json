@@ -3,6 +3,8 @@
 	"OAUTH2_TOKEN_URL": "",
 	"CLIENT_ID": "",
 	"CLIENT_SECRET": "",
+	"ADMIN_API_KEY": "",
+	"REGULAR_API_KEY": "",
 	"DIGITAL_TWIN_REGISTRY": "",
 	"GLOBAL_ASSET_ID": "",
 	"BPN": "",
