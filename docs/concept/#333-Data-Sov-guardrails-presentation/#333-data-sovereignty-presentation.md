@@ -100,7 +100,7 @@ The EDC checks the consumer's authorisation for a data asset.
 Enforcement of usage policy handling by irs.
 Component to be used is the IRS Policy Store to provides a usage policies management.
 IRS enforces to only consume assets where usage policy of BPNL matches.  
-The IRS ensures that there is data consumption only if the usage policy matches and returns da initiating business application. If this usage policy matches, the data asset is accumulated via the EDC after successful contract fulfilment and made available to the business application.
+The IRS ensures that data is only consumed if the usage policy matches. In case the usage policy matches, the data asset is accumulated via the EDC after successful contract fulfilment and made available to the business application.
 
 Note:
 There is no content or semantic check of the usage policy.
