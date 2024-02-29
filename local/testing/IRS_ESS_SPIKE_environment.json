@@ -3,6 +3,8 @@
 	"OAUTH2_TOKEN_URL": "https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central/protocol/openid-connect/token",
 	"CLIENT_ID": "",
 	"CLIENT_SECRET": "",
+	"ADMIN_API_KEY": "",
+	"REGULAR_API_KEY": "",
 	"DIGITAL_TWIN_REGISTRY": "https://irs-aas-registry-ess.int.demo.catena-x.net",
 	"GLOBAL_ASSET_ID": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e",
 	"SEMANTIC_HUB_URL": "https://semantics.int.demo.catena-x.net",
