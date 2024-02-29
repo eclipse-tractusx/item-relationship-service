@@ -33,6 +33,10 @@ import org.eclipse.tractusx.irs.edc.client.EdcConfiguration.ControlplaneConfig.E
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -57,9 +61,9 @@ public class EdcContractAgreementService {
 
         final EndpointConfig endpoint = config.getControlplane().getEndpoint();
         final String contractAgreements = endpoint.getContractAgreements();
-        final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = edcRestTemplate.postForEntity(
-                endpoint.getData() + contractAgreements + EDC_REQUEST_SUFFIX, querySpec,
-                EdcContractAgreementsResponse.class);
+        final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = edcRestTemplate.exchange(
+                endpoint.getData() + contractAgreements + EDC_REQUEST_SUFFIX, HttpMethod.POST,
+                new HttpEntity<>(querySpec, headers()), EdcContractAgreementsResponse.class);
 
         final EdcContractAgreementsResponse contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
         if (contractAgreementListWrapper != null) {
@@ -74,8 +78,9 @@ public class EdcContractAgreementService {
     public ContractNegotiation getContractAgreementNegotiation(final String contractAgreementId) {
         final EndpointConfig endpoint = config.getControlplane().getEndpoint();
         final String contractAgreements = endpoint.getContractAgreements();
-        final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = edcRestTemplate.getForEntity(
-                endpoint.getData() + contractAgreements + "/" + contractAgreementId + "/negotiation", ContractNegotiation.class);
+        final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = edcRestTemplate.exchange(
+                endpoint.getData() + contractAgreements + "/" + contractAgreementId + "/negotiation", HttpMethod.GET,
+                new HttpEntity<>(headers()), ContractNegotiation.class);
         return contractNegotiationResponseEntity.getBody();
     }
 
@@ -89,6 +94,17 @@ public class EdcContractAgreementService {
                                                                                 .build())
                                                     .toList();
         return QuerySpec.Builder.newInstance().filter(criterionList).build();
+    }
+
+    private HttpHeaders headers() {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        final String apiKeyHeader = config.getControlplane().getApiKey().getHeader();
+        if (apiKeyHeader != null) {
+            headers.add(apiKeyHeader, config.getControlplane().getApiKey().getSecret());
+        }
+        return headers;
     }
 
 }

@@ -43,6 +43,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -81,7 +82,7 @@ class EdcContractAgreementServiceTest {
                                                                                                          .contractAgreementList(
                                                                                                                        List.of(contractAgreement))
                                                                                                          .build();
-        when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
+        when(restTemplate.exchange(anyString(),eq(HttpMethod.POST), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
                 ResponseEntity.ok(edcContractAgreementsResponse));
 
         //WHEN
@@ -90,7 +91,7 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .postForEntity(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"), any(),
+               .exchange(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"), any(), any(),
                        eq(EdcContractAgreementsResponse.class));
         assertNotNull(contractAgreements);
     }
@@ -100,7 +101,7 @@ class EdcContractAgreementServiceTest {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
 
-        when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
+        when(restTemplate.exchange(anyString(),any(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
                 ResponseEntity.ok().build());
 
         //WHEN
@@ -109,7 +110,7 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .postForEntity(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"), any(),
+               .exchange(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"),any(), any(),
                        eq(EdcContractAgreementsResponse.class));
         assertEquals("Empty message body on edc response: <200 OK OK,[]>", contractAgreementException.getMessage());
     }
@@ -125,7 +126,7 @@ class EdcContractAgreementServiceTest {
                                                                                                 .counterPartyAddress("")
                                                                                                 .protocol("")
                                                                                                 .build();
-        when(restTemplate.getForEntity(anyString(), eq(ContractNegotiation.class))).thenReturn(
+        when(restTemplate.exchange(anyString(),any(),any(),  eq(ContractNegotiation.class))).thenReturn(
                 ResponseEntity.ok(contractAgreementNegotiationMock));
 
         //WHEN
@@ -134,8 +135,9 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .getForEntity("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/contractAgreementId/negotiation",
-                       ContractNegotiation.class);
+               .exchange(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/contractAgreementId/negotiation"),
+                       any(),any(),
+                       eq(ContractNegotiation.class));
         assertNotNull(contractAgreementNegotiation);
     }
 }
