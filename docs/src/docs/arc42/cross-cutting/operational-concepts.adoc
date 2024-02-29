@@ -6,18 +6,26 @@
 The IRS can be configured using two mechanisms:
 
 ==== application.yml
-If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS. This file contains all possible config entries for the application.
-Once the Docker image has been built, these values can only be overwritten using the Spring external config mechanism (see https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html), e.g. by mounting a config file in the right path or using environment variables.
+If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS.
+This file contains all possible config entries for the application.
+Once the Docker image has been built, these values can only be overwritten using the
+https://docs.spring.io/spring-boot/docs/3.1.9/reference/htmlsingle/#features.external-config[Spring external config mechanism],
+e.g. by mounting a config file in the right path or using environment variables.
 
 ==== Helm Chart
-The most relevant config properties are exposed as environment variables and must be set in the Helm chart so the application can run at all. Check the IRS Helm chart in Git for all available variables.
+The most relevant config properties are exposed as environment variables and must be set
+in the https://helm.sh/[Helm] chart so the application can run at all.
+Check the IRS Helm chart in Git for all available variables.
 
 == Disaster-Recovery
 
 === Ephemeral components
-All components in the IRS deployment not listed in the persistent components section below are considered ephemeral and are easily replaced in a disaster scenario.
-All deployment components are described using Helm charts, which can be used to restore the deployment with the Docker images.
-Should the Docker images go missing, they can be restored by executing the build pipelines for the corresponding version tag of the component.
+All components in the IRS deployment not listed in the persistent components section below are considered ephemeral
+and are easily replaced in a disaster scenario.
+All deployment components are described using Helm charts,
+which can be used to restore the deployment with the Docker images.
+Should the Docker images go missing, they can be restored by executing the build pipelines
+for the corresponding version tag of the component.
 
 === Persistent components
 These components utilize data persistence, which needs to be backed up separately by the operator.
@@ -27,7 +35,8 @@ These components utilize data persistence, which needs to be backed up separatel
 - *Vault secrets*: In case of data loss, the credentials stored in the Vault need to be recreated manually. See the deployment view for an overview.
 
 == Scaling
-If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod. Those resources can be used to utilize more parallel threads to handle Job execution.
+If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod.
+Those resources can be used to utilize more parallel threads to handle Job execution.
 
 == Clustering
 The IRS can run in clustered mode, as each running job is only present in one pod at a time.
@@ -37,7 +46,8 @@ Note: as soon as a resume feature is implemented, this needs to be addressed her
 Logs are being written directly to stdout and are picked up by the cluster management.
 
 == Monitoring
-The application can be monitored using Prometheus and Grafana. Both systems are defined in the Helm charts with a default setup.
+The application can be monitored using https://prometheus.io/[Prometheus] and https://grafana.com/[Grafana].
+Both systems are defined in the Helm charts with a default setup.
 A number of Grafana dashboards are deployed automatically, to display data about:
 
 - Pod / JVM resources
