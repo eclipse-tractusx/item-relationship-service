@@ -115,6 +115,11 @@ See [Usage](USAGE.md).
   (the sources for this documentation are located under `docs/src/docs`)
 
 
+## Monitoring
+
+See [Architecture Documentation - Monitoring](https://eclipse-tractusx.github.io/item-relationship-service/docs/arc42/full.html#monitoring).
+
+
 ## Changelog and Compatibility Matrix
 
 - [Changelog IRS](CHANGELOG.md)

@@ -99,3 +99,11 @@ A: See [CONTRIBUTING](CONTRIBUTING.md#code-formatting).
 A: Testdata is located under [local/testing/testdata](local/testing/testdata). 
 For more information see the [test data README](local/testing/testdata/README.md).
 
+
+## Monitoring
+
+-----
+**Q: Where do I find information concerning monitoring?**
+
+See [README - Monitoring](README.md#monitoring).
+
