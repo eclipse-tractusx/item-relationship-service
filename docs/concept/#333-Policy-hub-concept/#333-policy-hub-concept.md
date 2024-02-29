@@ -26,7 +26,7 @@ The policy store must offer a level of security and reliability to ensure trust 
 Policy Store MUST only support permitted and compliant policies and, in the event of registration of a non-compliant policy, should provide the caller with assistance and instructions on how this can be corrected
 
 ## Problem Statement
-In its current form, the Policy Store accepts any form of policy definition. There is no validation with regard to semantic or syntactic correctness.
+In its current form, the Policy Store accepts any form of policy definition. There is no validation in terms of semantic, technical correctness and compliance.
 This can lead to policies being misused or created incorrectly. This can permanently damage trust in the data chain.
 
 ## Requirements
