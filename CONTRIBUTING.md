@@ -162,8 +162,7 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 6. Push Git tag to repository `git push origin x.x.x`. (Requires eclipse committer role)
 7. Wait for release workflow to complete.
 8. Merge the automatically opened PR by github-actions bot.
-9. Create [pull request to eclipse-tractusx](https://github.com/eclipse-tractusx/item-relationship-service/compare/main...catenax-ng:tx-item-relationship-service:main).
-10. Notify about the release in IRS Matrix Chat using the following template: 
+9. Notify about the release in IRS Matrix Chat using the following template: 
    
    >   **IRS Release x.x.x**
    >
