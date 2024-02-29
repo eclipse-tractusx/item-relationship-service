@@ -59,7 +59,7 @@ class EdcContractAgreementServiceTest {
     @BeforeEach
     void setUp() {
         edcConfiguration.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
-        edcConfiguration.getControlplane().getEndpoint().setData("https://irs-consumer-controlplane.dev.demo.catena-x.net/data/management");
+        edcConfiguration.getControlplane().getEndpoint().setData("https://irs-consumer-controlplane.dev.demo.net/data/management");
         edcConfiguration.getControlplane().getEndpoint().setContractAgreements("/v2/contractagreements");
         this.edcContractAgreementService = new EdcContractAgreementService(edcConfiguration, restTemplate);
     }
@@ -90,7 +90,7 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .postForEntity(eq("https://irs-consumer-controlplane.dev.demo.catena-x.net/data/management/v2/contractagreements/request"), any(),
+               .postForEntity(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"), any(),
                        eq(EdcContractAgreementsResponse.class));
         assertNotNull(contractAgreements);
     }
@@ -109,7 +109,7 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .postForEntity(eq("https://irs-consumer-controlplane.dev.demo.catena-x.net/data/management/v2/contractagreements/request"), any(),
+               .postForEntity(eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"), any(),
                        eq(EdcContractAgreementsResponse.class));
         assertEquals("Empty message body on edc response: <200 OK OK,[]>", contractAgreementException.getMessage());
     }
@@ -134,7 +134,7 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .getForEntity("https://irs-consumer-controlplane.dev.demo.catena-x.net/data/management/v2/contractagreements/contractAgreementId/negotiation",
+               .getForEntity("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/contractAgreementId/negotiation",
                        ContractNegotiation.class);
         assertNotNull(contractAgreementNegotiation);
     }
