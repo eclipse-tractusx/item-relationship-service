@@ -92,9 +92,9 @@ sequenceDiagram
 1. Business app registers policy definition for BPNL
 2. Validation for registered policies 
 3. PolicyValidator extracts policy constraints from registered policy and creates PolicyContentDefinition   (Policy Content definition is the request body for POST /api/policy-hub/policy-content)
-     31. Detect PolicyType (Usage)
-     32. Detect Constraint Operand (And / Or)
-     33. Detect Constraints with Key/Operator/Value combination
+    1. Detect PolicyType (Usage)
+    2. Detect Constraint Operand (And / Or)
+    3. Detect Constraints with Key/Operator/Value combination
 4. POST /api/policy-hub/policy-content with PolicyContentDefinition to receive PolicyContentTemplate 
 5. Receive HTTP Status code 200 with PolicyTemplate or 400 in case of PolicyContentDefinition mismatch
 6Response from  
@@ -261,4 +261,4 @@ POST {{baseUrl}}/api/policy-hub/policy-content
 
 ## References
 * [Swagger Policy Hub](https://policy-hub.dev.demo.catena-x.net/api/policy-hub/swagger/index.html)
-* [APIdpoint usage](https://github.com/eclipse-tractusx/policy-hub/blob/feature/request-docu/docs/developer/Technical-Documentation/requests/example-requests.md)
+* [API endpoint usage](https://github.com/eclipse-tractusx/policy-hub/blob/feature/request-docu/docs/developer/Technical-Documentation/requests/example-requests.md)
