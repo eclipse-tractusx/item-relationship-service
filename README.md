@@ -83,7 +83,7 @@ This section describes both deployment on [kubernetes](https://kubernetes.io) vi
 
 ### Helm Deployment
 
-See [INSTALL](INSTALL.md)
+See [INSTALL](INSTALL.md).
 
 
 ### Local Deployment
@@ -100,19 +100,19 @@ After the application is up and running the local IRS API is available at the fo
 
 #### Docker-compose + IDE
 
-- Start the necessary infrastructure by running `docker-compose up`
-
-- Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the .run folder.
+1. Start the necessary infrastructure by running `docker-compose up`
+2.  Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the `.run` folder.
 
 
 ## Usage
 
-See [Usage](USAGE.md)
+See [Usage](USAGE.md).
 
 
 ## Documentation
 
 - [Item Relationship Service Documentation](https://eclipse-tractusx.github.io/item-relationship-service/docs/)
+  (the sources for this documentation are located under `docs/src/docs`)
 
 
 ## Changelog and Compatibility Matrix
@@ -149,12 +149,12 @@ in the [github discussions section](https://github.com/eclipse-tractusx/item-rel
 
 ## Contributing
 
-See [CONTRIBUTING](CONTRIBUTING.md)
+See [CONTRIBUTING](CONTRIBUTING.md).
 
 
 ## FAQ
 
-See [FAQ](FAQ.md)
+See [FAQ](FAQ.md).
 
 
 ## Licenses
@@ -171,4 +171,4 @@ Below you can find the information regarding Docker Notice for this application.
 
 ## Contact
 
-See [CONTACT](CONTACT.md)
+See [CONTACT](CONTACT.md).
