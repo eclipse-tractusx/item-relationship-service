@@ -45,14 +45,19 @@ import org.springframework.web.client.RestTemplate;
  * EdcContractAgreementService used for contract agreements and contract agreement negotiation details
  */
 @Slf4j
-@RequiredArgsConstructor
 @Service("irsEdcClientEdcContractAgreementService")
 public class EdcContractAgreementService {
 
     public static final String EDC_REQUEST_SUFFIX = "/request";
-    public static final String EDC_ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
+    public static final String EDC_CONTRACT_AGREEMENT_ID = "https://w3id.org/edc/v0.0.1/ns/id";
     private final EdcConfiguration config;
-    private final @Qualifier("edcClientRestTemplate") RestTemplate edcRestTemplate;
+    private final RestTemplate edcRestTemplate;
+
+    public EdcContractAgreementService(final EdcConfiguration config,
+            @Qualifier("edcClientRestTemplate") final RestTemplate edcRestTemplate) {
+        this.config = config;
+        this.edcRestTemplate = edcRestTemplate;
+    }
 
     public List<ContractAgreement> getContractAgreements(final String... contractAgreementIds)
             throws ContractAgreementException {
@@ -89,7 +94,7 @@ public class EdcContractAgreementService {
 
         final List<EdcContractAgreementFilterExpression> list = Arrays.stream(contractAgreementIds)
                                                                       .map(s -> new EdcContractAgreementFilterExpression(
-                                                                              EDC_ASSET_ID, "=", s))
+                                                                              EDC_CONTRACT_AGREEMENT_ID, "=", s))
                                                                       .toList();
 
         return new EdcContractAgreementRequest(list);
