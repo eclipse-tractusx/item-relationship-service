@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,24 +17,25 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.exceptions;
+package org.eclipse.tractusx.irs.edc.client.contract.model;
 
+import java.util.List;
+
+import lombok.Builder;
 import lombok.Getter;
-import org.eclipse.edc.policy.model.Policy;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 
 /**
- * Usage Policy Exception errors in the contract negotiation.
+ * EdcContractAgreementListWrapper used for wrapping the response of
+ * /management/v2/contractagreements/request where a List of {@link ContractAgreement} is returned.
  */
+@ToString
+@Builder
+@RequiredArgsConstructor
 @Getter
-public class UsagePolicyException extends EdcClientException {
+public class EdcContractAgreementsResponse {
+    private final List<ContractAgreement> contractAgreementList;
 
-    private final transient Policy policy;
-    private final String businessPartnerNumber;
-
-    public UsagePolicyException(final String itemId, final Policy policy, final String businessPartnerNumber) {
-        super("Consumption of asset '" + itemId
-                + "' is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
-        this.policy = policy;
-        this.businessPartnerNumber = businessPartnerNumber;
-    }
 }

@@ -7,10 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
+- POST /management/v2/contractagreements/request and GET /management/v2/contractagreements/{contractAgreementId}/negotiation to irs-edc-client lib
 
 ### Changed
 - EDC client handles multiple Digital Twin Registries and Digital Twins now
 - Change logo of irs
+- Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created.
+
+### Fixed
+- Update to Spring Boot 3.1.9 to fix CVE's.
 
 ## [4.6.0] - 2024-02-20
 ### Added
@@ -543,7 +548,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 [Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.6.0...HEAD
-[4.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.1...4.6.0
+[4.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.2...4.6.0
 [4.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.1...4.5.2
 [4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1
 [4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1
