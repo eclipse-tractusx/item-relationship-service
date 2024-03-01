@@ -26,12 +26,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
-import org.eclipse.edc.spi.query.Criterion;
-import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration.ControlplaneConfig.EndpointConfig;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
+import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractAgreementRequest;
+import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractAgreementRequest.EdcContractAgreementFilterExpression;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -57,13 +57,14 @@ public class EdcContractAgreementService {
     public List<ContractAgreement> getContractAgreements(final String... contractAgreementIds)
             throws ContractAgreementException {
 
-        final QuerySpec querySpec = buildQuerySpec(contractAgreementIds);
+        final EdcContractAgreementRequest edcContractAgreementRequest = buildContractAgreementRequest(
+                contractAgreementIds);
 
         final EndpointConfig endpoint = config.getControlplane().getEndpoint();
         final String contractAgreements = endpoint.getContractAgreements();
         final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = edcRestTemplate.exchange(
                 endpoint.getData() + contractAgreements + EDC_REQUEST_SUFFIX, HttpMethod.POST,
-                new HttpEntity<>(querySpec, headers()), EdcContractAgreementsResponse.class);
+                new HttpEntity<>(edcContractAgreementRequest, headers()), EdcContractAgreementsResponse.class);
 
         final EdcContractAgreementsResponse contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
         if (contractAgreementListWrapper != null) {
@@ -84,16 +85,14 @@ public class EdcContractAgreementService {
         return contractNegotiationResponseEntity.getBody();
     }
 
-    private QuerySpec buildQuerySpec(final String... contractAgreementIds) {
+    private EdcContractAgreementRequest buildContractAgreementRequest(final String... contractAgreementIds) {
 
-        final List<Criterion> criterionList = Arrays.stream(contractAgreementIds)
-                                                    .map(id -> Criterion.Builder.newInstance()
-                                                                                .operandLeft(EDC_ASSET_ID)
-                                                                                .operator("=")
-                                                                                .operandRight(id)
-                                                                                .build())
-                                                    .toList();
-        return QuerySpec.Builder.newInstance().filter(criterionList).build();
+        final List<EdcContractAgreementFilterExpression> list = Arrays.stream(contractAgreementIds)
+                                                                      .map(s -> new EdcContractAgreementFilterExpression(
+                                                                              EDC_ASSET_ID, "=", s))
+                                                                      .toList();
+
+        return new EdcContractAgreementRequest(list);
     }
 
     private HttpHeaders headers() {
