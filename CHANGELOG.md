@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - POST /management/v2/contractagreements/request and GET /management/v2/contractagreements/{contractAgreementId}/negotiation to irs-edc-client lib
 
 ### Changed
-- EDC client handles multiple Digital Twin Registries and Digital Twins now
+- EDC client handles multiple Digital Twin Registries and Digital Twins now #395
 - Change logo of irs
 - Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created.
 
