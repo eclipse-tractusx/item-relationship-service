@@ -33,10 +33,12 @@ import org.eclipse.edc.policy.model.Policy;
 public class UsagePolicyException extends EdcClientException {
 
     private final transient Policy policy;
+    private final String businessPartnerNumber;
 
-    public UsagePolicyException(final String itemId, final Policy policy) {
+    public UsagePolicyException(final String itemId, final Policy policy, final String businessPartnerNumber) {
         super("Consumption of asset '" + itemId
                 + "' is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
         this.policy = policy;
+        this.businessPartnerNumber = businessPartnerNumber;
     }
 }
