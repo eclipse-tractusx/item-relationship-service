@@ -23,7 +23,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.policy.model.AndConstraint;
@@ -63,12 +65,14 @@ public class ConstraintCheckerService {
         if (constraint instanceof AndConstraint andConstraint) {
             return andConstraint.getConstraints()
                                 .stream()
-                                .allMatch(constr -> isInList(constr, acceptedConstraints.getAnd()));
+                                .allMatch(constr -> isInList(constr, Optional.ofNullable(acceptedConstraints.getAnd())
+                                                                             .orElse(Collections.emptyList())));
         }
         if (constraint instanceof OrConstraint orConstraint) {
             return orConstraint.getConstraints()
                                .stream()
-                               .anyMatch(constr -> isInList(constr, acceptedConstraints.getOr()));
+                               .anyMatch(constr -> isInList(constr, Optional.ofNullable(acceptedConstraints.getOr())
+                                                                            .orElse(Collections.emptyList())));
         }
         return false;
     }
@@ -87,9 +91,9 @@ public class ConstraintCheckerService {
         return AtomicConstraintValidator.builder()
                                         .atomicConstraint(atomicConstraint)
                                         .leftExpressionValue(acceptedConstraint.getLeftOperand())
-                                        .rightExpressionValue(
-                                                acceptedConstraint.getRightOperand())
-                                        .expectedOperator(Operator.valueOf(acceptedConstraint.getOperator().getOperatorType().name()))
+                                        .rightExpressionValue(acceptedConstraint.getRightOperand())
+                                        .expectedOperator(Operator.valueOf(
+                                                acceptedConstraint.getOperator().getOperatorType().name()))
                                         .build()
                                         .isValid();
     }

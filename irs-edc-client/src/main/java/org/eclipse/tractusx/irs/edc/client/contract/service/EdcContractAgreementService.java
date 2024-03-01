@@ -26,12 +26,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
-import org.eclipse.edc.spi.query.Criterion;
-import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration.ControlplaneConfig.EndpointConfig;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
+import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractAgreementRequest;
+import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractAgreementRequest.EdcContractAgreementFilterExpression;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -52,10 +57,14 @@ public class EdcContractAgreementService {
     public List<ContractAgreement> getContractAgreements(final String... contractAgreementIds)
             throws ContractAgreementException {
 
-        final QuerySpec querySpec = buildQuerySpec(contractAgreementIds);
-        final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = edcRestTemplate.postForEntity(
-                config.getControlplane().getEndpoint().getContractAgreements() + EDC_REQUEST_SUFFIX, querySpec,
-                EdcContractAgreementsResponse.class);
+        final EdcContractAgreementRequest edcContractAgreementRequest = buildContractAgreementRequest(
+                contractAgreementIds);
+
+        final EndpointConfig endpoint = config.getControlplane().getEndpoint();
+        final String contractAgreements = endpoint.getContractAgreements();
+        final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = edcRestTemplate.exchange(
+                endpoint.getData() + contractAgreements + EDC_REQUEST_SUFFIX, HttpMethod.POST,
+                new HttpEntity<>(edcContractAgreementRequest, headers()), EdcContractAgreementsResponse.class);
 
         final EdcContractAgreementsResponse contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
         if (contractAgreementListWrapper != null) {
@@ -68,22 +77,33 @@ public class EdcContractAgreementService {
     }
 
     public ContractNegotiation getContractAgreementNegotiation(final String contractAgreementId) {
-        final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = edcRestTemplate.getForEntity(
-                config.getControlplane().getEndpoint().getContractAgreements() + "/" + contractAgreementId
-                        + "/negotiation", ContractNegotiation.class);
+        final EndpointConfig endpoint = config.getControlplane().getEndpoint();
+        final String contractAgreements = endpoint.getContractAgreements();
+        final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = edcRestTemplate.exchange(
+                endpoint.getData() + contractAgreements + "/" + contractAgreementId + "/negotiation", HttpMethod.GET,
+                new HttpEntity<>(headers()), ContractNegotiation.class);
         return contractNegotiationResponseEntity.getBody();
     }
 
-    private QuerySpec buildQuerySpec(final String... contractAgreementIds) {
+    private EdcContractAgreementRequest buildContractAgreementRequest(final String... contractAgreementIds) {
 
-        final List<Criterion> criterionList = Arrays.stream(contractAgreementIds)
-                                                    .map(id -> Criterion.Builder.newInstance()
-                                                                                .operandLeft(EDC_ASSET_ID)
-                                                                                .operator("=")
-                                                                                .operandRight(id)
-                                                                                .build())
-                                                    .toList();
-        return QuerySpec.Builder.newInstance().filter(criterionList).build();
+        final List<EdcContractAgreementFilterExpression> list = Arrays.stream(contractAgreementIds)
+                                                                      .map(s -> new EdcContractAgreementFilterExpression(
+                                                                              EDC_ASSET_ID, "=", s))
+                                                                      .toList();
+
+        return new EdcContractAgreementRequest(list);
+    }
+
+    private HttpHeaders headers() {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        final String apiKeyHeader = config.getControlplane().getApiKey().getHeader();
+        if (apiKeyHeader != null) {
+            headers.add(apiKeyHeader, config.getControlplane().getApiKey().getSecret());
+        }
+        return headers;
     }
 
 }
