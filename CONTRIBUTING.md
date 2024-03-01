@@ -164,7 +164,11 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
-2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md) and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md) (e.g. https://github.com/eclipse-tractusx/item-relationship-service/pull/429).
+2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md)
+   and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md)
+   (for an example [see here](https://github.com/eclipse-tractusx/item-relationship-service/pull/429))
+   - Check if the changelog entries for the release are complete.
+   - Add the corresponding GitHub issue numbers to each entry if missing.
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md).
 4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) and merge to main.
 5. Create Git tag for the desired release version `git tag x.x.x`
