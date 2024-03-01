@@ -19,7 +19,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.contract.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,9 +29,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
-import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
@@ -71,30 +69,26 @@ class EdcContractAgreementServiceTest {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
 
-        final ContractAgreement contractAgreement = ContractAgreement.Builder.newInstance()
-                                                                             .id("id")
-                                                                             .assetId("assetId")
-                                                                             .consumerId("consumerId")
-                                                                             .providerId("providerId")
-                                                                             .policy(Policy.Builder.newInstance()
-                                                                                                   .build())
-                                                                             .build();
-        final EdcContractAgreementsResponse edcContractAgreementsResponse = EdcContractAgreementsResponse.builder()
-                                                                                                         .contractAgreementList(
-                                                                                                                 List.of(contractAgreement))
-                                                                                                         .build();
+        final EdcContractAgreementsResponse[] edcContractAgreementsResponse = new EdcContractAgreementsResponse[1];
+        edcContractAgreementsResponse[0] = EdcContractAgreementsResponse.builder()
+                                                                        .id("id")
+                                                                        .assetId("assetId")
+                                                                        .consumerId("consumerId")
+                                                                        .providerId("providerId")
+                                                                        .build();
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(),
-                eq(EdcContractAgreementsResponse.class))).thenReturn(ResponseEntity.ok(edcContractAgreementsResponse));
+                eq(EdcContractAgreementsResponse[].class))).thenReturn(
+                ResponseEntity.ok(edcContractAgreementsResponse));
 
         //WHEN
-        final List<ContractAgreement> contractAgreements = edcContractAgreementService.getContractAgreements(
+        final List<EdcContractAgreementsResponse> contractAgreements = edcContractAgreementService.getContractAgreements(
                 contractAgreementIds);
 
         //THEN
         Mockito.verify(restTemplate)
                .exchange(
                        eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"),
-                       any(), any(), eq(EdcContractAgreementsResponse.class));
+                       any(), any(), eq(EdcContractAgreementsResponse[].class));
         assertNotNull(contractAgreements);
     }
 
@@ -103,8 +97,8 @@ class EdcContractAgreementServiceTest {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
 
-        when(restTemplate.exchange(anyString(), any(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
-                ResponseEntity.ok().build());
+        when(restTemplate.exchange(anyString(), any(), any(), eq(EdcContractAgreementsResponse[].class))).thenReturn(
+                ResponseEntity.ok(new EdcContractAgreementsResponse[0]));
 
         //WHEN
         final ContractAgreementException contractAgreementException = assertThrows(ContractAgreementException.class,
@@ -114,8 +108,8 @@ class EdcContractAgreementServiceTest {
         Mockito.verify(restTemplate)
                .exchange(
                        eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"),
-                       any(), any(), eq(EdcContractAgreementsResponse.class));
-        assertEquals("Empty message body on edc response: <200 OK OK,[]>", contractAgreementException.getMessage());
+                       any(), any(), eq(EdcContractAgreementsResponse[].class));
+        assertThat(contractAgreementException.getMessage()).startsWith("Empty message body on edc response:");
     }
 
     @Test
