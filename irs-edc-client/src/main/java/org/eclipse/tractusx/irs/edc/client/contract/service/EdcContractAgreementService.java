@@ -22,7 +22,6 @@ package org.eclipse.tractusx.irs.edc.client.contract.service;
 import java.util.Arrays;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
