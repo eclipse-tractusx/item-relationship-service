@@ -20,7 +20,6 @@
 package org.eclipse.tractusx.irs.edc.client.contract.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -89,7 +88,7 @@ class EdcContractAgreementServiceTest {
                .exchange(
                        eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"),
                        any(), any(), eq(EdcContractAgreementsResponse[].class));
-        assertNotNull(contractAgreements);
+        assertThat(contractAgreements).isNotNull();
     }
 
     @Test
@@ -135,6 +134,6 @@ class EdcContractAgreementServiceTest {
                .exchange(
                        eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/contractAgreementId/negotiation"),
                        any(), any(), eq(ContractNegotiation.class));
-        assertNotNull(contractAgreementNegotiation);
+        assertThat(contractAgreementNegotiation).isNotNull();
     }
 }
