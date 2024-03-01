@@ -77,8 +77,13 @@ public class EdcAssetService {
         return sendRequest(request);
     }
 
-    public String createDtrAsset(final String baseUrl, final String assetName) throws CreateEdcAssetException {
-        final Asset request = createDtrAssetRequest(assetName, baseUrl);
+    public String createDtrAsset(final String baseUrl, final String assetId) throws CreateEdcAssetException {
+        final Asset request = createDtrAssetRequest(assetId, baseUrl);
+        return sendRequest(request);
+    }
+
+    public String createSubmodelAsset(final String baseUrl, final String assetId) throws CreateEdcAssetException {
+        final Asset request = createSubmodelAssetRequest(assetId, baseUrl);
         return sendRequest(request);
     }
 
@@ -146,9 +151,8 @@ public class EdcAssetService {
                             .build();
     }
 
-    private Asset createDtrAssetRequest(final String assetName, final String baseUrl) {
-        final String assetId = UUID.randomUUID().toString();
-        final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, assetName, ASSET_CREATION_PROPERTY_TYPE,
+    private Asset createDtrAssetRequest(final String assetId, final String baseUrl) {
+        final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, "Digital Twin Registry Asset", ASSET_CREATION_PROPERTY_TYPE,
                 "data.core.digitalTwinRegistry");
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
@@ -163,7 +167,31 @@ public class EdcAssetService {
                                                                    Boolean.TRUE.toString())
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS,
                                                                    Boolean.TRUE.toString())
-                                                           .property(ASSET_CREATION_DATA_ADDRESS_METHOD, DEFAULT_METHOD)
+                                                           .build();
+
+        return Asset.Builder.newInstance()
+                            .id(assetId)
+                            .contentType("Asset")
+                            .properties(properties)
+                            .dataAddress(dataAddress)
+                            .build();
+    }
+
+    private Asset createSubmodelAssetRequest(final String assetId, final String baseUrl) {
+        final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, "Submodel Server Asset");
+
+        final DataAddress dataAddress = DataAddress.Builder.newInstance()
+                                                           .type("DataAddress")
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
+                                                                   Boolean.FALSE.toString())
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_BODY,
+                                                                   Boolean.FALSE.toString())
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_PATH,
+                                                                   Boolean.TRUE.toString())
+                                                           .property(ASSET_CREATION_DATA_ADDRESS_PROXY_QUERY_PARAMS,
+                                                                   Boolean.FALSE.toString())
                                                            .build();
 
         return Asset.Builder.newInstance()

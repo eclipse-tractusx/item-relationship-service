@@ -191,6 +191,24 @@ class EdcAssetServiceTest {
     }
 
     @Test
+    void givenCreateSubmodelAsset_whenOk_ThenReturnCreatedAssetId() throws CreateEdcAssetException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
+        String baseUrl = "http://test.test";
+        String assetName = "asset1";
+        when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
+                ResponseEntity.ok("test"));
+
+        // when
+        String assetId = service.createSubmodelAsset(baseUrl, assetName);
+
+        // then
+        assertThat(assetId).isNotBlank();
+    }
+
+    @Test
     void givenDeleteAsset_whenOk_ThenReturnCreatedAssetId() throws DeleteEdcAssetException {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);

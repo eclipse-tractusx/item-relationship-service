@@ -11,7 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Change logo of irs
-
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if when it exists in EDC
+- Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 ## [4.6.0] - 2024-02-20
 ### Added
 - Added concept to conform with IndustryCore Changes CX-0126 and CX-127
