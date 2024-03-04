@@ -63,3 +63,7 @@ IRS provides a local setup which can be deployed to kubernetes.
 This setup includes all third-party services which IRS uses and interacts with.
 
 Instructions can be found here [README](README.md).
+
+## Sample Calls
+
+Sample calls can be found here [USAGE](USAGE.md).
