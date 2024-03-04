@@ -69,8 +69,7 @@ class EdcContractAgreementServiceTest {
         String[] contractAgreementIds = { "contractAgreementId" };
 
         final EdcContractAgreementsResponse[] edcContractAgreementsResponse = new EdcContractAgreementsResponse[1];
-        edcContractAgreementsResponse[0] = EdcContractAgreementsResponse.builder()
-                                                                        .id("id")
+        edcContractAgreementsResponse[0] = EdcContractAgreementsResponse.builder().contractAgreementId("id")
                                                                         .assetId("assetId")
                                                                         .consumerId("consumerId")
                                                                         .providerId("providerId")
