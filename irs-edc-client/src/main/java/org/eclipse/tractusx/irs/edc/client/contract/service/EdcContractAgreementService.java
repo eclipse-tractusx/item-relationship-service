@@ -24,13 +24,13 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
-import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration.ControlplaneConfig.EndpointConfig;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementNegotiationResponse;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementRequest;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementRequest.EdcContractAgreementFilterExpression;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
-import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractAgreementRequest;
-import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractAgreementRequest.EdcContractAgreementFilterExpression;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -80,12 +80,12 @@ public class EdcContractAgreementService {
 
     }
 
-    public ContractNegotiation getContractAgreementNegotiation(final String contractAgreementId) {
+    public EdcContractAgreementNegotiationResponse getContractAgreementNegotiation(final String contractAgreementId) {
         final EndpointConfig endpoint = config.getControlplane().getEndpoint();
         final String contractAgreements = endpoint.getContractAgreements();
-        final ResponseEntity<ContractNegotiation> contractNegotiationResponseEntity = edcRestTemplate.exchange(
+        final ResponseEntity<EdcContractAgreementNegotiationResponse> contractNegotiationResponseEntity = edcRestTemplate.exchange(
                 endpoint.getData() + contractAgreements + "/" + contractAgreementId + "/negotiation", HttpMethod.GET,
-                new HttpEntity<>(headers()), ContractNegotiation.class);
+                new HttpEntity<>(headers()), EdcContractAgreementNegotiationResponse.class);
         return contractNegotiationResponseEntity.getBody();
     }
 
