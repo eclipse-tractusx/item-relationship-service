@@ -107,18 +107,21 @@ class EdcContractDefinitionServiceTest {
     }
 
     @Test
-    void givenCreateContractDefinition_whenConflict_thenThrowException() {
+    void givenCreateContractDefinition_whenConflict_thenThrowException() throws CreateEdcContractDefinitionException {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getContractDefinition()).thenReturn("/management/v2/contractdefinitions");
-        String assetId = "Asset1";
-        String policyId = "Policy1";
+        final String assetId = "Asset1";
+        final String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
 
-        assertThrows(CreateEdcContractDefinitionException.class,
-                () -> service.createContractDefinition(assetId, policyId));
+        // when
+        final String result = service.createContractDefinition(assetId, policyId);
+
+        // then
+        assertThat(result).isEqualTo(policyId);
     }
 
     @Test
