@@ -56,8 +56,9 @@ public class EndpointDataReferenceCacheService {
      * describing token status
      */
     public EndpointDataReferenceStatus getEndpointDataReference(final String assetId) {
-        final Optional<EndpointDataReference> endpointDataReferenceOptional = retrieveEndpointReferenceByAssetId(
-                assetId);
+
+        log.info("Retrieving dataReference from storage for assetId {}", assetId);
+        final Optional<EndpointDataReference> endpointDataReferenceOptional = endpointDataReferenceStorage.get(assetId);
 
         if (endpointDataReferenceOptional.isPresent()) {
             final String authCode = endpointDataReferenceOptional.get().getAuthCode();
@@ -81,9 +82,13 @@ public class EndpointDataReferenceCacheService {
         return new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW);
     }
 
-    private Optional<EndpointDataReference> retrieveEndpointReferenceByAssetId(final String assetId) {
-        log.info("Retrieving dataReference from storage for assetId {}", assetId);
-        return endpointDataReferenceStorage.get(assetId);
+    public Optional<EndpointDataReference> getEndpointDataReferenceFromStorage(final String storageId) {
+        return endpointDataReferenceStorage.get(storageId);
+    }
+
+    public void putEndpointDataReferenceIntoStorage(final String assetId,
+            final EndpointDataReference endpointDataReference) {
+        endpointDataReferenceStorage.put(assetId, endpointDataReference);
     }
 
     private static boolean isTokenExpired(final @NotNull String authCode) {
@@ -94,6 +99,7 @@ public class EndpointDataReferenceCacheService {
     private static Instant extractTokenExpiration(final String token) {
         return Instant.ofEpochSecond(EDRAuthCode.fromAuthCodeToken(token).getExp());
     }
+
 }
 
 

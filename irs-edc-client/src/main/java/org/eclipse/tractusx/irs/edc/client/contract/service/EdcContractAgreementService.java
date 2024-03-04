@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration.ControlplaneConfig.EndpointConfig;
@@ -58,7 +58,7 @@ public class EdcContractAgreementService {
         this.edcRestTemplate = edcRestTemplate;
     }
 
-    public List<ContractAgreement> getContractAgreements(final String... contractAgreementIds)
+    public List<EdcContractAgreementsResponse> getContractAgreements(final String... contractAgreementIds)
             throws ContractAgreementException {
 
         final EdcContractAgreementRequest edcContractAgreementRequest = buildContractAgreementRequest(
@@ -66,13 +66,13 @@ public class EdcContractAgreementService {
 
         final EndpointConfig endpoint = config.getControlplane().getEndpoint();
         final String contractAgreements = endpoint.getContractAgreements();
-        final ResponseEntity<EdcContractAgreementsResponse> edcContractAgreementListResponseEntity = edcRestTemplate.exchange(
+        final ResponseEntity<EdcContractAgreementsResponse[]> edcContractAgreementListResponseEntity = edcRestTemplate.exchange(
                 endpoint.getData() + contractAgreements + EDC_REQUEST_SUFFIX, HttpMethod.POST,
-                new HttpEntity<>(edcContractAgreementRequest, headers()), EdcContractAgreementsResponse.class);
+                new HttpEntity<>(edcContractAgreementRequest, headers()), EdcContractAgreementsResponse[].class);
 
-        final EdcContractAgreementsResponse contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
-        if (contractAgreementListWrapper != null) {
-            return contractAgreementListWrapper.getContractAgreementList();
+        final EdcContractAgreementsResponse[] contractAgreementListWrapper = edcContractAgreementListResponseEntity.getBody();
+        if (ArrayUtils.isNotEmpty(contractAgreementListWrapper)) {
+            return List.of(contractAgreementListWrapper);
         } else {
             throw new ContractAgreementException(
                     "Empty message body on edc response: " + edcContractAgreementListResponseEntity);
