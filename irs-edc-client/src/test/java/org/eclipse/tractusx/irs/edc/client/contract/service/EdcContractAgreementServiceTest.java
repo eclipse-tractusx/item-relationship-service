@@ -19,8 +19,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.contract.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,19 +28,18 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
-import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,13 +48,18 @@ class EdcContractAgreementServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    @Spy
     private EdcConfiguration edcConfiguration;
 
     private EdcContractAgreementService edcContractAgreementService;
 
     @BeforeEach
     void setUp() {
+        edcConfiguration.getControlplane().setEndpoint(new EdcConfiguration.ControlplaneConfig.EndpointConfig());
+        edcConfiguration.getControlplane()
+                        .getEndpoint()
+                        .setData("https://irs-consumer-controlplane.dev.demo.net/data/management");
+        edcConfiguration.getControlplane().getEndpoint().setContractAgreements("/v2/contractagreements");
         this.edcContractAgreementService = new EdcContractAgreementService(edcConfiguration, restTemplate);
     }
 
@@ -64,44 +67,36 @@ class EdcContractAgreementServiceTest {
     void shouldReturnContractAgreements() throws ContractAgreementException {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
-        when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
-                "/v2/contractagreements");
 
-        final ContractAgreement contractAgreement = ContractAgreement.Builder.newInstance()
-                                                                             .id("id")
-                                                                             .assetId("assetId")
-                                                                             .consumerId("consumerId")
-                                                                             .providerId("providerId")
-                                                                             .policy(Policy.Builder.newInstance()
-                                                                                                   .build())
-                                                                             .build();
-        final EdcContractAgreementsResponse edcContractAgreementsResponse = EdcContractAgreementsResponse.builder()
-                                                                                                         .contractAgreementList(
-                                                                                                                       List.of(contractAgreement))
-                                                                                                         .build();
-        when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
+        final EdcContractAgreementsResponse[] edcContractAgreementsResponse = new EdcContractAgreementsResponse[1];
+        edcContractAgreementsResponse[0] = EdcContractAgreementsResponse.builder().contractAgreementId("id")
+                                                                        .assetId("assetId")
+                                                                        .consumerId("consumerId")
+                                                                        .providerId("providerId")
+                                                                        .build();
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(),
+                eq(EdcContractAgreementsResponse[].class))).thenReturn(
                 ResponseEntity.ok(edcContractAgreementsResponse));
 
         //WHEN
-        final List<ContractAgreement> contractAgreements = edcContractAgreementService.getContractAgreements(
+        final List<EdcContractAgreementsResponse> contractAgreements = edcContractAgreementService.getContractAgreements(
                 contractAgreementIds);
 
         //THEN
         Mockito.verify(restTemplate)
-               .postForEntity(eq("/v2/contractagreements/request"), any(),
-                       eq(EdcContractAgreementsResponse.class));
-        assertNotNull(contractAgreements);
+               .exchange(
+                       eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"),
+                       any(), any(), eq(EdcContractAgreementsResponse[].class));
+        assertThat(contractAgreements).isNotNull();
     }
 
     @Test
     void shouldThrowContractAgreementExceptionWhenResponseBodyIsEmtpy() {
         //GIVEN
         String[] contractAgreementIds = { "contractAgreementId" };
-        when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
-                "/v2/contractagreements");
 
-        when(restTemplate.postForEntity(anyString(), any(), eq(EdcContractAgreementsResponse.class))).thenReturn(
-                ResponseEntity.ok().build());
+        when(restTemplate.exchange(anyString(), any(), any(), eq(EdcContractAgreementsResponse[].class))).thenReturn(
+                ResponseEntity.ok(new EdcContractAgreementsResponse[0]));
 
         //WHEN
         final ContractAgreementException contractAgreementException = assertThrows(ContractAgreementException.class,
@@ -109,17 +104,16 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .postForEntity(eq("/v2/contractagreements/request"), any(),
-                       eq(EdcContractAgreementsResponse.class));
-        assertEquals("Empty message body on edc response: <200 OK OK,[]>", contractAgreementException.getMessage());
+               .exchange(
+                       eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"),
+                       any(), any(), eq(EdcContractAgreementsResponse[].class));
+        assertThat(contractAgreementException.getMessage()).startsWith("Empty message body on edc response:");
     }
 
     @Test
     void shouldReturnContractAgreementNegotiation() {
         //GIVEN
         String contractAgreementId = "contractAgreementId";
-        when(edcConfiguration.getControlplane().getEndpoint().getContractAgreements()).thenReturn(
-                "/v2/contractagreements");
 
         final ContractNegotiation contractAgreementNegotiationMock = ContractNegotiation.Builder.newInstance()
                                                                                                 .id("id")
@@ -127,7 +121,7 @@ class EdcContractAgreementServiceTest {
                                                                                                 .counterPartyAddress("")
                                                                                                 .protocol("")
                                                                                                 .build();
-        when(restTemplate.getForEntity(anyString(), eq(ContractNegotiation.class))).thenReturn(
+        when(restTemplate.exchange(anyString(), any(), any(), eq(ContractNegotiation.class))).thenReturn(
                 ResponseEntity.ok(contractAgreementNegotiationMock));
 
         //WHEN
@@ -136,8 +130,9 @@ class EdcContractAgreementServiceTest {
 
         //THEN
         Mockito.verify(restTemplate)
-               .getForEntity("/v2/contractagreements/contractAgreementId/negotiation",
-                       ContractNegotiation.class);
-        assertNotNull(contractAgreementNegotiation);
+               .exchange(
+                       eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/contractAgreementId/negotiation"),
+                       any(), any(), eq(ContractNegotiation.class));
+        assertThat(contractAgreementNegotiation).isNotNull();
     }
 }

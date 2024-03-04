@@ -12,11 +12,14 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - POST /management/v2/contractagreements/request and GET /management/v2/contractagreements/{contractAgreementId}/negotiation to irs-edc-client lib
 
 ### Changed
+- EDC client handles multiple Digital Twin Registries and Digital Twins now #395
 - Change logo of irs
 - Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created.
 
 ### Fixed
 - Update to Spring Boot 3.1.9 to fix CVE's.
+- Fixed a case where Policy validation could result in a NullPointerException if either orConstraint or andConstraint of
+  accepted policies were null
 
 ## [4.6.0] - 2024-02-20
 ### Added

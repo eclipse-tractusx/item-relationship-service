@@ -290,7 +290,6 @@ class IrsWireMockIntegrationTest {
         final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, "SingleLevelBomAsBuilt",
                 "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt", sbomFileName);
 
-        successfulNegotiation(edcAssetId);
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);
 
         final String shellId = WiremockSupport.randomUUIDwithPrefix();
@@ -300,6 +299,7 @@ class IrsWireMockIntegrationTest {
                 containing(globalAssetId)));
         stubFor(getShellDescriptor200(PUBLIC_SHELL_DESCRIPTORS_PATH + WiremockSupport.encodedId(shellId), bpn,
                 submodelDescriptors, globalAssetId, shellId, idShort));
+        successfulNegotiation(edcAssetId);
     }
 
     private void successfulNegotiation(final String edcAssetId) {

@@ -17,24 +17,25 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.contract.model;
+package org.eclipse.tractusx.irs.edc.client.contract.model.exception;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 
 /**
- * EdcContractAgreementListWrapper used for wrapping the response of
- * /management/v2/contractagreements/request where a List of {@link ContractAgreement} is returned.
+ * EdcContractAgreementRequest represents the request to management/v2/contractagreements
  */
+public record EdcContractAgreementRequest(@JsonProperty(
+        "https://w3id.org/edc/v0.0.1/ns/filterExpression") List<EdcContractAgreementFilterExpression> edcContractAgreementFilterExpressions) {
+    /**
+     * EdcContractAgreementFilterExpression represents the filterExpression
+     * for EdcContractAgreementRequest
+     */
+    public record EdcContractAgreementFilterExpression(
+            @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operandLeft") String operandLeft,
+            @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operator") String operator,
+            @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operandRight") String operandRight) {
 
-@Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
-public record EdcContractAgreementsResponse(@JsonProperty("@id") String contractAgreementId,
-                                            @JsonProperty("edc:providerId") String providerId,
-                                            @JsonProperty("edc:consumerId") String consumerId,
-                                            @JsonProperty("edc:contractSigningDate") long contractSigningDate,
-                                            @JsonProperty("edc:assetId") String assetId,
-                                            @JsonProperty("@type") String type) {
+    }
 }

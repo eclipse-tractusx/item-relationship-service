@@ -166,6 +166,42 @@ class ConstraintCheckerServiceTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void shouldBeNullsafeOnNoAnd() {
+        final OrConstraint orConstraint = createOrConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+        final AndConstraint andConstraint = createAndConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+        final List<Operand> operands = List.of(new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE));
+        final List<Constraint> constraints = operands.stream()
+                                                     .map(operand -> new Constraint(operand.left(),
+                                                             new Operator(OperatorType.EQ), operand.right()))
+                                                     .toList();
+
+        final Policy acceptedOrPolicy = createPolicyWithConstraint(new Constraints(null, constraints));
+        final boolean resultOr = cut.hasAllConstraint(acceptedOrPolicy, List.of(orConstraint, andConstraint));
+        assertThat(resultOr).isFalse();
+    }
+
+    @Test
+    void shouldBeNullsafeOnNoOr() {
+        final OrConstraint orConstraint = createOrConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+        final AndConstraint andConstraint = createAndConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+        final List<Operand> operands = List.of(new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE));
+        final List<Constraint> constraints = operands.stream()
+                                                     .map(operand -> new Constraint(operand.left(),
+                                                             new Operator(OperatorType.EQ), operand.right()))
+                                                     .toList();
+
+        final Policy acceptedAndPolicy = createPolicyWithConstraint(new Constraints(constraints, null));
+        final boolean resultAnd = cut.hasAllConstraint(acceptedAndPolicy, List.of(orConstraint, andConstraint));
+        assertThat(resultAnd).isFalse();
+    }
+
     private Policy createPolicyWithAndConstraint(List<Operand> operands) {
         List<Constraint> and = operands.stream()
                                        .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),

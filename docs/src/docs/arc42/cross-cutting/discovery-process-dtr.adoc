@@ -1,17 +1,24 @@
 The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
 This applies to the following scenarios.
 
-__Please note that the expression "the first result" in the subsequent sections means the first successful answer.__
-
-==== Scenario 1: EDC with multiple DTRs
+==== Scenario 1: One EDC with multiple DTRs
 
 IRS queries all DTRs for the globalAssetId and will take the first result it gets.
 If none of the DTRs return a result, IRS will create a tombstone.
 
-[plantuml,target=discovery-DTR--EDC-with-multiple-DTRs,format=svg]
+[plantuml,target=discovery-DTR--one-EDC-with-multiple-DTRs,format=svg]
 ....
-include::discovery-DTR--EDC-with-multiple-DTRs.puml[]
+include::discovery-DTR--one-EDC-with-multiple-DTRs.puml[]
 ....
+
+
+Same diagram with a little more detail on IRS side:
+
+[plantuml,target=discovery-DTR--one-EDC-with-multiple-DTRs--detailed,format=svg]
+....
+include::discovery-DTR--one-EDC-with-multiple-DTRs--detailed.puml[]
+....
+
 
 ==== Scenario 2: Multiple EDCs with one DTR
 
@@ -23,6 +30,16 @@ The first registry which responds with a DT will be the one used by IRS.
 include::discovery-DTR--multiple-EDCs-with-one-DTR.puml[]
 ....
 
+
+Same diagram with a little more detail on IRS side:
+
+[plantuml,target=discovery-DTR--multiple-EDCs-with-one-DTR--detailed,format=svg]
+....
+include::discovery-DTR--multiple-EDCs-with-one-DTR--detailed.puml[]
+....
+
+
+
 ==== Scenario 3: One EDC with one DTR
 
 Only one EDC found for BPN and the catalog only contains one offer for the DTR.
@@ -33,6 +50,14 @@ IRS will use this registry and will create a tombstone if no DT could be found f
 include::discovery-DTR--one-EDC-with-one-DTR.puml[]
 ....
 
+Same diagram with a little more detail on IRS side:
+
+[plantuml,target=discovery-DTR--one-EDC-with-one-DTR--detailed,format=svg]
+....
+include::discovery-DTR--one-EDC-with-one-DTR--detailed.puml[]
+....
+
+
 ==== Scenario 4: Multiple EDCs with multiple DTRs
 
 IRS starts a contract negotiation for all the registry offers.
@@ -42,6 +67,15 @@ IRS starts a contract negotiation for all the registry offers.
 include::discovery-DTR--multiple-EDCs-with-multiple-DTRs.puml[]
 ....
 
+Same diagram with a little more detail on IRS side:
+
+[plantuml,target=discovery-DTR--multiple-EDCs-with-multiple-DTRs--detailed,format=svg]
+....
+include::discovery-DTR--multiple-EDCs-with-multiple-DTRs--detailed.puml[]
+....
+
+
+
 ==== Scenario 5: Multiple EDCs with no DTRs
 
 IRS starts a contract negotiation for all the registry offers and creates a tombstone since no DTR could be discovered.
@@ -49,6 +83,13 @@ IRS starts a contract negotiation for all the registry offers and creates a tomb
 [plantuml,target=discovery-DTR--multiple-EDCs-with-no-DTRs,format=svg]
 ....
 include::discovery-DTR--multiple-EDCs-with-no-DTRs.puml[]
+....
+
+Same diagram with a little more detail on IRS side:
+
+[plantuml,target=discovery-DTR--multiple-EDCs-with-no-DTRs--detailed,format=svg]
+....
+include::discovery-DTR--multiple-EDCs-with-no-DTRs--detailed.puml[]
 ....
 
 ==== Special Scenario: Same DT in multiple DTRs

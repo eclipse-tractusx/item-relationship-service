@@ -32,6 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
@@ -82,7 +83,8 @@ class DefaultConfigurationTest {
         final var mock = mock(EdcSubmodelFacade.class);
         final var endpointAddress = "endpointaddress";
         final var endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint(endpointAddress).build();
-        when(mock.getEndpointReferenceForAsset(eq(endpointAddress), any(), any())).thenReturn(endpointDataReference);
+        when(mock.getEndpointReferencesForAsset(eq(endpointAddress), any(), any())).thenReturn(
+                List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
         // ACT
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
@@ -91,19 +93,22 @@ class DefaultConfigurationTest {
                                         .forEach(future -> {
                                             try {
                                                 future.get();
-                                            } catch (InterruptedException | ExecutionException e) {
+                                            } catch (InterruptedException e) {
+                                                Thread.currentThread().interrupt();
+                                                throw new RuntimeException(e);
+                                            } catch (ExecutionException e) {
                                                 throw new RuntimeException(e);
                                             }
                                         });
 
         // ASSERT
-        verify(mock).getEndpointReferenceForAsset(eq(endpointAddress), any(), any());
+        verify(mock).getEndpointReferencesForAsset(eq(endpointAddress), any(), any());
     }
 
     @Test
     void endpointDataForConnectorsService_withException() throws EdcClientException {
         final var mock = mock(EdcSubmodelFacade.class);
-        when(mock.getEndpointReferenceForAsset(any(), any(), any())).thenThrow(new EdcClientException("test"));
+        when(mock.getEndpointReferencesForAsset(any(), any(), any())).thenThrow(new EdcClientException("test"));
 
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
         final var dummyEndpoints = List.of("test");
