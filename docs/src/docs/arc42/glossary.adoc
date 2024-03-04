@@ -5,7 +5,7 @@
 |Term |Abrv. | Description
 
 |Asset Administration Shell | AAS | see "Digital Twin"
-|Aspect servers (submodel endpoints) | | Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X.
+|Aspect Servers (Submodel Endpoints) | | Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X.
 |Bill of Materials | BoM | A Bill of Materials is a comprehensive list of materials, components, sub-assemblies, and the quantities of each needed to manufacture or build a product. It serves as a structured document that provides information about the raw materials, parts, and components required for the production process.
 |Business Partner Number | BPN | A BPN is the unique identifier of a partner within Catena-X
 |CatalogItem| | A "CatalogItem" from EDC is a synonym for "Contract Offer".
