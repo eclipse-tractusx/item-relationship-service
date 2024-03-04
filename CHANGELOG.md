@@ -5,20 +5,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.7.0] - 2024-03-04
 ### Added
 - DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
 - POST /management/v2/contractagreements/request and GET /management/v2/contractagreements/{contractAgreementId}/negotiation to irs-edc-client lib
 
 ### Changed
+- EDC client handles multiple Digital Twin Registries and Digital Twins now #395
 - Change logo of irs
-- Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created.
 - EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if when it exists in EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
-- 
+- Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created. #404
+
 ### Fixed
-- Update to Spring Boot 3.1.9 to fix CVE's.
+- Update to Spring Boot 3.1.9 to fix CVE's. #423
 - Fixed a case where Policy validation could result in a NullPointerException if either orConstraint or andConstraint of
-  accepted policies were null
+  accepted policies were null #436
 
 ## [4.6.0] - 2024-02-20
 ### Added
@@ -550,7 +553,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.6.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.7.0...HEAD
+[4.7.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.6.0...4.7.0
 [4.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.2...4.6.0
 [4.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.1...4.5.2
 [4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1

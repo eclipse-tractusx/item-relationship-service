@@ -68,17 +68,19 @@ public class DigitalTwinDelegate extends AbstractDelegate {
         }
 
         try {
-            final Shell shell = digitalTwinRegistryService.fetchShells(List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn())))
-                                                          .stream()
-                                                          .findFirst()
-                                                          .orElseThrow();
+            final var dtrKeys = List.of(new DigitalTwinRegistryKey(itemId.getGlobalAssetId(), itemId.getBpn()));
+            final Shell shell = digitalTwinRegistryService.fetchShells(dtrKeys).stream()
+                                                          // we use findFirst here,  because we query only for one
+                                                          // DigitalTwinRegistryKey here
+                                                          .findFirst().orElseThrow();
 
             if (!expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
                 // filter submodel descriptors if next delegate will not be executed
                 shell.payload().withFilteredSubmodelDescriptors(jobData.getAspects());
             }
 
-            itemContainerBuilder.shell(jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
+            itemContainerBuilder.shell(
+                    jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
         } catch (final RegistryServiceException | RuntimeException e) {
             // catching generic exception is intended here,
             // otherwise Jobs stay in state RUNNING forever
