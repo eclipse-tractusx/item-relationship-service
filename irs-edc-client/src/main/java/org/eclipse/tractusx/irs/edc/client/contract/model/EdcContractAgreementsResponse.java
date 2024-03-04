@@ -31,7 +31,7 @@ import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record EdcContractAgreementsResponse(@JsonProperty("@id") String id,
+public record EdcContractAgreementsResponse(@JsonProperty("@id") String contractAgreementId,
                                             @JsonProperty("edc:providerId") String providerId,
                                             @JsonProperty("edc:consumerId") String consumerId,
                                             @JsonProperty("edc:contractSigningDate") long contractSigningDate,

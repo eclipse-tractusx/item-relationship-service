@@ -80,7 +80,7 @@ class EdcContractAgreementsResponseTest {
                 EdcContractAgreementsResponse[].class);
         //THEN
         assertThat(contractAgreements).isNotNull();
-        assertThat(contractAgreements[0].id()).isEqualTo(
+        assertThat(contractAgreements[0].contractAgreementId()).isEqualTo(
                 "OWY1Y2U2OWUtZjI2Yy00MzQ5LTg1MTktNjY2Y2Q3MDgzNWEx:cmVnaXN0cnktYXNzZXQ=:MWYwNmMyYjktN2I2OS00YjhiLTk0NmUtM2FmNzFiYjA2NWU4");
 
     }
