@@ -21,7 +21,7 @@ https://github.com/eclipse-edc/Connector[EDC Connector] , https://github.com/ecl
 |Managed Identity Wallet | MIW
 |The Managed Identity Wallets (MIW) service implements the Self-Sovereign-Identity (SSI) readiness by providing a wallet hosting platform including a decentralized identifier (DID) resolver, service endpoints and the company wallets itself.
 For more information see:
-https://github.com/eclipse-tractusx/managed-identity-wallet[eclipse-tractusx/managed-identity-wallet] , https://github.com/catenax-ng/tx-managed-identity-wallets[catenax-ng/tx-managed-identity-wallets]
+https://github.com/eclipse-tractusx/managed-identity-wallet[eclipse-tractusx/managed-identity-wallet]
 |Multi Tier Parts Data Chain | MTPDC | Formerly known Service Name: Multi Tier Parts Data Chain
 |PolicyStore |
 |The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases.
