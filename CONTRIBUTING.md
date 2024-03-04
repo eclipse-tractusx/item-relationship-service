@@ -27,7 +27,6 @@ Catena-X alliance focusing on parts traceability.
 
 * https://projects.eclipse.org/projects/automotive.tractusx
 * https://github.com/eclipse-tractusx/item-relationship-service
-* https://github.com/catenax-ng/tx-item-relationship-service
 
 ## Developer Resources
 
