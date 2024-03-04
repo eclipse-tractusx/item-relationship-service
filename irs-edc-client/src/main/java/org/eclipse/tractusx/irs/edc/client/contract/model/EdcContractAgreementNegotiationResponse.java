@@ -22,7 +22,6 @@ package org.eclipse.tractusx.irs.edc.client.contract.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
 
 /**
  * EdcContractAgreementNegotiationResponse used for representing the response of
@@ -36,5 +35,6 @@ public record EdcContractAgreementNegotiationResponse(@JsonProperty("@id") Strin
                                                       @JsonProperty(
                                                               "edc:counterPartyAddress") String counterPartyAddress,
                                                       @JsonProperty("edc:protocol") String protocol,
-                                                      @JsonProperty("edc:type") ContractNegotiation.Type type) {
+                                                      @JsonProperty("edc:state") String state,
+                                                      @JsonProperty("edc:type") String type) {
 }
