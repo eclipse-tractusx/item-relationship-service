@@ -141,6 +141,8 @@ class DecentralDigitalTwinRegistryServiceTest {
                                     .satisfies(e -> assertThat(
                                             ((ShellNotFoundException) e).getCalledEndpoints()).containsExactlyInAnyOrder(
                                             "address1", "address2"));
+
+            assertThat(Thread.currentThread().isInterrupted()).isTrue();
         }
 
         @Test

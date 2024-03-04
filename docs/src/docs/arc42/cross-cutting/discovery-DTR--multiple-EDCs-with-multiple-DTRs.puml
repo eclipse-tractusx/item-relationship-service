@@ -6,33 +6,40 @@ participant "EDC Provider 2" as EDCProvider2
 participant "EDC Provider 3" as EDCProvider3
 participant "DTR" as DTR
 
-IRS ->> DiscoveryService: Get EDCs for BPN
-DiscoveryService ->> IRS: Return list of 3 EDCs
+IRS -> DiscoveryService: Get EDCs for BPN
+DiscoveryService -> IRS: Return list of 3 EDCs
 
 par
     group CatalogRequestEDC1
-        IRS ->> EDCProvider1: Query for DTR contract offer
-        EDCProvider1 ->> IRS: No offer
+        ' == EDC Control Plane ==
+        IRS -> EDCProvider1: Query for DTR contract offer
+        EDCProvider1 -> IRS: No offer
     end
 
     else
 
     group CatalogRequestEDC2
-        IRS ->> EDCProvider2: Query for DTR contract offer
-        EDCProvider2 ->> IRS: DTR contract offer
+       ' == EDC Control Plane ==
+        IRS -> EDCProvider2: Query for DTR contract offer
+        EDCProvider2 -> IRS: DTR contract offer
         IRS -> EDCProvider2: Negotiate contract
-        IRS ->> DTR: Query for DT
-        DTR ->> IRS: DT
+
+        '== EDC Data Plane ==
+        IRS -> DTR: Query for DT
+        DTR -> IRS: DT
     end
 
     else
 
     group CatalogRequestEDC3
-        IRS ->> EDCProvider3: Query for DTR contract offer
-        EDCProvider3 ->> IRS: DTR contract offer
+        '== EDC Control Plane ==
+        IRS -> EDCProvider3: Query for DTR contract offer
+        EDCProvider3 -> IRS: DTR contract offer
         IRS -> EDCProvider3: Negotiate contract
-        IRS ->> DTR: Query for DT
-        DTR ->> IRS: No DT
+
+        '== EDC Data Plane ==
+        IRS -> DTR: Query for DT
+        DTR -> IRS: No DT
     end
 end
 @enduml

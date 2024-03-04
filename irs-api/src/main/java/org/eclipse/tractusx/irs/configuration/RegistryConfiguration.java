@@ -75,7 +75,7 @@ public class RegistryConfiguration {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService,
                 new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
                     try {
-                        return facade.getEndpointReferenceForAsset(edcConnectorEndpoint, assetType, assetValue);
+                        return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue);
                     } catch (EdcClientException e) {
                         throw new EdcRetrieverException(e);
                     }

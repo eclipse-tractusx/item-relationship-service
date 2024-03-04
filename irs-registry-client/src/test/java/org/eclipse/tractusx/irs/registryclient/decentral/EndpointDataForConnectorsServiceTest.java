@@ -62,8 +62,9 @@ class EndpointDataForConnectorsServiceTest {
     void shouldReturnExpectedEndpointDataReference() throws EdcRetrieverException {
 
         // GIVEN
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE)).thenReturn(CONNECTION_ONE_DATA_REF);
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE)).thenReturn(
+                List.of(CompletableFuture.completedFuture(CONNECTION_ONE_DATA_REF)));
 
         // WHEN
         final List<CompletableFuture<EndpointDataReference>> endpointDataReferences = sut.createFindEndpointDataForConnectorsFutures(
@@ -83,13 +84,14 @@ class EndpointDataForConnectorsServiceTest {
         // GIVEN
 
         // a first endpoint failing (1)
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
                 DT_REGISTRY_ASSET_VALUE)).thenThrow(
                 new EdcRetrieverException(new EdcClientException("EdcClientException")));
 
         // and a second endpoint returning successfully (2)
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE)).thenReturn(CONNECTION_TWO_DATA_REF);
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE)).thenReturn(
+                List.of(CompletableFuture.completedFuture(CONNECTION_TWO_DATA_REF)));
 
         // WHEN
         final List<CompletableFuture<EndpointDataReference>> dataRefFutures = //
@@ -123,7 +125,7 @@ class EndpointDataForConnectorsServiceTest {
     void shouldThrowExceptionWhenConnectorEndpointsNotReachable() throws EdcRetrieverException {
 
         // GIVEN
-        when(edcSubmodelFacade.getEndpointReferenceForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE),
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE),
                 eq(DT_REGISTRY_ASSET_VALUE))).thenThrow(
                 new EdcRetrieverException(new EdcClientException("EdcClientException")));
 

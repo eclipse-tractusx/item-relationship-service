@@ -44,6 +44,12 @@ public class ConnectorEndpointsService {
     private final DiscoveryFinderClient discoveryFinderClient;
     private static final String CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME = "connector_endpoint_service_cache";
 
+    /**
+     * Get EDCs for BPN.
+     *
+     * @param bpn the BPN
+     * @return list of EDC URLs
+     */
     @Cacheable(CONNECTOR_ENDPOINT_SERVICE_CACHE_NAME)
     public List<String> fetchConnectorEndpoints(final String bpn) {
 
