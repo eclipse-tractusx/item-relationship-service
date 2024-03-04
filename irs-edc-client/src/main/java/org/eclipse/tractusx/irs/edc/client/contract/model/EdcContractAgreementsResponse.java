@@ -19,23 +19,22 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.contract.model;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 
 /**
  * EdcContractAgreementListWrapper used for wrapping the response of
  * /management/v2/contractagreements/request where a List of {@link ContractAgreement} is returned.
  */
-@ToString
-@Builder
-@RequiredArgsConstructor
-@Getter
-public class EdcContractAgreementsResponse {
-    private final List<ContractAgreement> contractAgreementList;
 
+@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record EdcContractAgreementsResponse(@JsonProperty("@id") String contractAgreementId,
+                                            @JsonProperty("edc:providerId") String providerId,
+                                            @JsonProperty("edc:consumerId") String consumerId,
+                                            @JsonProperty("edc:contractSigningDate") long contractSigningDate,
+                                            @JsonProperty("edc:assetId") String assetId,
+                                            @JsonProperty("@type") String type) {
 }
