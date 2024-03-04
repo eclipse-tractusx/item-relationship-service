@@ -1150,30 +1150,38 @@ Further information on Discovery Service can be found in the chapter "System sco
 The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
 This applies to the following scenarios.
 
-Please note that the expression "the first result" in the subsequent sections means the first successful answer.__
-
-##### Scenario 1: EDC with multiple DTRs
+##### Scenario 1: One EDC with multiple DTRs
 
 IRS queries all DTRs for the globalAssetId and will take the first result it gets.
 If none of the DTRs return a result, IRS will create a tombstone.
+
+Same diagram with a little more detail on IRS side:
 
 ##### Scenario 2: Multiple EDCs with one DTR
 
 IRS starts a contract negotiation for all registry contract offers in parallel and queries the DTRs for all successful negotiations.
 The first registry which responds with a DT will be the one used by IRS.
 
+Same diagram with a little more detail on IRS side:
+
 ##### Scenario 3: One EDC with one DTR
 
 Only one EDC found for BPN and the catalog only contains one offer for the DTR.
 IRS will use this registry and will create a tombstone if no DT could be found for the globalAssetId.
 
+Same diagram with a little more detail on IRS side:
+
 ##### Scenario 4: Multiple EDCs with multiple DTRs
 
 IRS starts a contract negotiation for all the registry offers.
 
+Same diagram with a little more detail on IRS side:
+
 ##### Scenario 5: Multiple EDCs with no DTRs
 
 IRS starts a contract negotiation for all the registry offers and creates a tombstone since no DTR could be discovered.
+
+Same diagram with a little more detail on IRS side:
 
 ##### Special Scenario: Same DT in multiple DTRs
 
@@ -1317,13 +1325,15 @@ The quality scenarios in this section depict the fundamental quality goals as we
 
 | Term | Description |
 | --- | --- |
-| AAS | Asset Administration Shell (Industry 4.0) |
+| Asset Administration Shell (AAS) | see "Digital Twin" |
 | Aspect servers (submodel endpoints) | Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X. |
 | Bill of Materials (BoM) | A Bill of Materials is a comprehensive list of materials, components, sub-assemblies, and the quantities of each needed to manufacture or build a product. It serves as a structured document that provides information about the raw materials, parts, and components required for the production process. |
 | BPN | Business Partner Number |
+| CatalogItem | A "CatalogItem" from EDC is a synonym for "Contract Offer". |
+| Contract Offer | A "Contract Offer" is a synonym for "CatalogItem" from EDC. |
 | Data Space | Data Spaces are the key concept for a large-scale, cross-border data economy. This is also the vision of the Gaia-X initiative for a data infrastructure in Europe. The International Data Space Association (IDSA) contributes significantly to this with the architectural model, interfaces, and standards. |
-| DT | Digital Twin |
-| DTR | Digital Twin Registry. The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints). |
+| Digital Twin (DT) | The Digital Twin is the key technology of Industry 4.0 and connects the physical world with the digital world and acts as an enabler of the Catena-X network. It is based on a standardized programming interface of the Industrial [Digital Twin Association (IDTA)](https://industrialdigitaltwin.org/) and its Asset Administration Shell. |
+| Digital Twin Registry (DTR) | The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints). |
 | Eclipse Dataspace Connector (EDC) | The Eclipse Data Space Connector (EDC) is a standard and policy-compliant connector that can be used within the scope of Catena-X, but also more generally as a connector for Data Spaces. It is split up into Control-Plane and Data-Plane, whereas the Control-Plane functions as administration layer and has responsibility of resource management, contract negotiation and administer data transfer. The Data-Plane does the heavy lifting of transferring and receiving data streams. For more information see: [EDC Connector](https://github.com/eclipse-edc/Connector) , [Tractus-X EDC (Eclipse Dataspace Connector)](https://github.com/eclipse-tractusx/tractusx-edc) |
 | Edge | see Traversal Aspect |
 | IRS | Item Relationship Service |
@@ -1333,6 +1343,7 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: [Policy specification for Catena-X verifiable credentials](https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction) |
 | PRS | Formerly known Service Name: Parts Relationship Service |
 | Self-Sovereign Identity (SSI) | For more information see: [ssi-docu](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2) |
+| Shell | see "Asset Administration Shell" |
 | Traversal Aspect | aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship. Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt |
 | Verifiable Credential (VC) | For more information see: [Verifiable Credentials](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2/3.%20Verifiable%20Credentials) |
 

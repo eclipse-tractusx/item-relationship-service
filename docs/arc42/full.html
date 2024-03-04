@@ -3201,18 +3201,23 @@ This URL is cached locally.</p>
 <p>The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
 This applies to the following scenarios.</p>
 </div>
-<div class="paragraph">
-<p><em>Please note that the expression "the first result" in the subsequent sections means the first successful answer.</em></p>
-</div>
 <div class="sect5">
-<h6 id="_scenario_1_edc_with_multiple_dtrs">Scenario 1: EDC with multiple DTRs</h6>
+<h6 id="_scenario_1_one_edc_with_multiple_dtrs">Scenario 1: One EDC with multiple DTRs</h6>
 <div class="paragraph">
 <p>IRS queries all DTRs for the globalAssetId and will take the first result it gets.
 If none of the DTRs return a result, IRS will create a tombstone.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/discovery-DTR--EDC-with-multiple-DTRs.svg" alt="discovery DTR  EDC with multiple DTRs" width="535" height="478">
+<img src="architecture-constraints/discovery-DTR--one-EDC-with-multiple-DTRs.svg" alt="discovery DTR  one EDC with multiple DTRs" width="535" height="478">
+</div>
+</div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/discovery-DTR--one-EDC-with-multiple-DTRs--detailed.svg" alt="discovery DTR  one EDC with multiple DTRs  detailed" width="904" height="778">
 </div>
 </div>
 </div>
@@ -3227,6 +3232,14 @@ The first registry which responds with a DT will be the one used by IRS.</p>
 <img src="architecture-constraints/discovery-DTR--multiple-EDCs-with-one-DTR.svg" alt="discovery DTR  multiple EDCs with one DTR" width="729" height="540">
 </div>
 </div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/discovery-DTR--multiple-EDCs-with-one-DTR--detailed.svg" alt="discovery DTR  multiple EDCs with one DTR  detailed" width="1091" height="942">
+</div>
+</div>
 </div>
 <div class="sect5">
 <h6 id="_scenario_3_one_edc_with_one_dtr">Scenario 3: One EDC with one DTR</h6>
@@ -3237,6 +3250,14 @@ IRS will use this registry and will create a tombstone if no DT could be found f
 <div class="imageblock">
 <div class="content">
 <img src="architecture-constraints/discovery-DTR--one-EDC-with-one-DTR.svg" alt="discovery DTR  one EDC with one DTR" width="422" height="295">
+</div>
+</div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/discovery-DTR--one-EDC-with-one-DTR--detailed.svg" alt="discovery DTR  one EDC with one DTR  detailed" width="787" height="494">
 </div>
 </div>
 </div>
@@ -3250,6 +3271,14 @@ IRS will use this registry and will create a tombstone if no DT could be found f
 <img src="architecture-constraints/discovery-DTR--multiple-EDCs-with-multiple-DTRs.svg" alt="discovery DTR  multiple EDCs with multiple DTRs" width="729" height="627">
 </div>
 </div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/discovery-DTR--multiple-EDCs-with-multiple-DTRs--detailed.svg" alt="discovery DTR  multiple EDCs with multiple DTRs  detailed" width="1163" height="1454">
+</div>
+</div>
 </div>
 <div class="sect5">
 <h6 id="_scenario_5_multiple_edcs_with_no_dtrs">Scenario 5: Multiple EDCs with no DTRs</h6>
@@ -3258,7 +3287,15 @@ IRS will use this registry and will create a tombstone if no DT could be found f
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/discovery-DTR--multiple-EDCs-with-no-DTRs.svg" alt="discovery DTR  multiple EDCs with no DTRs" width="489" height="585">
+<img src="architecture-constraints/discovery-DTR--multiple-EDCs-with-no-DTRs.svg" alt="discovery DTR  multiple EDCs with no DTRs" width="497" height="495">
+</div>
+</div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="architecture-constraints/discovery-DTR--multiple-EDCs-with-no-DTRs--detailed.svg" alt="discovery DTR  multiple EDCs with no DTRs  detailed" width="861" height="824">
 </div>
 </div>
 </div>
@@ -3277,7 +3314,7 @@ If more than one id is present for a globalAssetId, IRS will use the first of th
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.svg" alt="discovery DTR  multiple DTs with the same globalAssedId in one DTR" width="221" height="282">
+<img src="architecture-constraints/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.svg" alt="discovery DTR  multiple DTs with the same globalAssedId in one DTR" width="225" height="191">
 </div>
 </div>
 </div>
@@ -3530,8 +3567,8 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AAS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Asset Administration Shell (Industry 4.0)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Asset Administration Shell (AAS)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">see "Digital Twin"</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Aspect servers (submodel endpoints)</p></td>
@@ -3546,16 +3583,24 @@ A number of Grafana dashboards are deployed automatically, to display data about
 <td class="tableblock halign-left valign-top"><p class="tableblock">Business Partner Number</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CatalogItem</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A "CatalogItem" from EDC is a synonym for "Contract Offer".</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Contract Offer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A "Contract Offer" is a synonym for "CatalogItem" from EDC.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Data Space</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Data Spaces are the key concept for a large-scale, cross-border data economy. This is also the vision of the Gaia-X initiative for a data infrastructure in Europe. The International Data Space Association (IDSA) contributes significantly to this with the architectural model, interfaces, and standards.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DT</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin (DT)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Digital Twin is the key technology of Industry 4.0 and connects the physical world with the digital world and acts as an enabler of the Catena-X network. It is based on a standardized programming interface of the Industrial <a href="https://industrialdigitaltwin.org/">Digital Twin Association (IDTA)</a> and its Asset Administration Shell.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DTR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin Registry. The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin Registry (DTR)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse Dataspace Connector (EDC)</p></td>
@@ -3597,6 +3642,10 @@ For more information see:
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Self-Sovereign Identity (SSI)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">For more information see: <a href="https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2">ssi-docu</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Shell</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">see "Asset Administration Shell"</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Traversal Aspect</p></td>
@@ -3647,7 +3696,7 @@ For more information see:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-01 08:34:54 UTC
+Last updated 2024-03-04 07:46:10 UTC
 </div>
 </div>
 </body>

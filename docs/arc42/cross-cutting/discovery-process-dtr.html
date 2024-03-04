@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Scenario 1: EDC with multiple DTRs</title>
+<title>Scenario 1: One EDC with multiple DTRs</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -442,7 +442,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel3">
-<li><a href="#_scenario_1_edc_with_multiple_dtrs">Scenario 1: EDC with multiple DTRs</a></li>
+<li><a href="#_scenario_1_one_edc_with_multiple_dtrs">Scenario 1: One EDC with multiple DTRs</a></li>
 <li><a href="#_scenario_2_multiple_edcs_with_one_dtr">Scenario 2: Multiple EDCs with one DTR</a></li>
 <li><a href="#_scenario_3_one_edc_with_one_dtr">Scenario 3: One EDC with one DTR</a></li>
 <li><a href="#_scenario_4_multiple_edcs_with_multiple_dtrs">Scenario 4: Multiple EDCs with multiple DTRs</a></li>
@@ -457,18 +457,23 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>The Dataspace Discovery Service handles multiple EDC-Urls received for BPN.
 This applies to the following scenarios.</p>
 </div>
-<div class="paragraph">
-<p><em>Please note that the expression "the first result" in the subsequent sections means the first successful answer.</em></p>
-</div>
 <div class="sect3">
-<h4 id="_scenario_1_edc_with_multiple_dtrs">Scenario 1: EDC with multiple DTRs</h4>
+<h4 id="_scenario_1_one_edc_with_multiple_dtrs">Scenario 1: One EDC with multiple DTRs</h4>
 <div class="paragraph">
 <p>IRS queries all DTRs for the globalAssetId and will take the first result it gets.
 If none of the DTRs return a result, IRS will create a tombstone.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="discovery-DTR--EDC-with-multiple-DTRs.svg" alt="discovery DTR  EDC with multiple DTRs" width="535" height="478">
+<img src="discovery-DTR--one-EDC-with-multiple-DTRs.svg" alt="discovery DTR  one EDC with multiple DTRs" width="535" height="478">
+</div>
+</div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="discovery-DTR--one-EDC-with-multiple-DTRs--detailed.svg" alt="discovery DTR  one EDC with multiple DTRs  detailed" width="904" height="778">
 </div>
 </div>
 </div>
@@ -483,6 +488,14 @@ The first registry which responds with a DT will be the one used by IRS.</p>
 <img src="discovery-DTR--multiple-EDCs-with-one-DTR.svg" alt="discovery DTR  multiple EDCs with one DTR" width="729" height="540">
 </div>
 </div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="discovery-DTR--multiple-EDCs-with-one-DTR--detailed.svg" alt="discovery DTR  multiple EDCs with one DTR  detailed" width="1091" height="942">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_scenario_3_one_edc_with_one_dtr">Scenario 3: One EDC with one DTR</h4>
@@ -493,6 +506,14 @@ IRS will use this registry and will create a tombstone if no DT could be found f
 <div class="imageblock">
 <div class="content">
 <img src="discovery-DTR--one-EDC-with-one-DTR.svg" alt="discovery DTR  one EDC with one DTR" width="422" height="295">
+</div>
+</div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="discovery-DTR--one-EDC-with-one-DTR--detailed.svg" alt="discovery DTR  one EDC with one DTR  detailed" width="787" height="494">
 </div>
 </div>
 </div>
@@ -506,6 +527,14 @@ IRS will use this registry and will create a tombstone if no DT could be found f
 <img src="discovery-DTR--multiple-EDCs-with-multiple-DTRs.svg" alt="discovery DTR  multiple EDCs with multiple DTRs" width="729" height="627">
 </div>
 </div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="discovery-DTR--multiple-EDCs-with-multiple-DTRs--detailed.svg" alt="discovery DTR  multiple EDCs with multiple DTRs  detailed" width="1163" height="1454">
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_scenario_5_multiple_edcs_with_no_dtrs">Scenario 5: Multiple EDCs with no DTRs</h4>
@@ -514,7 +543,15 @@ IRS will use this registry and will create a tombstone if no DT could be found f
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="discovery-DTR--multiple-EDCs-with-no-DTRs.svg" alt="discovery DTR  multiple EDCs with no DTRs" width="489" height="585">
+<img src="discovery-DTR--multiple-EDCs-with-no-DTRs.svg" alt="discovery DTR  multiple EDCs with no DTRs" width="497" height="495">
+</div>
+</div>
+<div class="paragraph">
+<p>Same diagram with a little more detail on IRS side:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="discovery-DTR--multiple-EDCs-with-no-DTRs--detailed.svg" alt="discovery DTR  multiple EDCs with no DTRs  detailed" width="861" height="824">
 </div>
 </div>
 </div>
@@ -533,14 +570,14 @@ If more than one id is present for a globalAssetId, IRS will use the first of th
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.svg" alt="discovery DTR  multiple DTs with the same globalAssedId in one DTR" width="221" height="282">
+<img src="discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.svg" alt="discovery DTR  multiple DTs with the same globalAssedId in one DTR" width="225" height="191">
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-01 08:34:54 UTC
+Last updated 2024-03-04 07:46:10 UTC
 </div>
 </div>
 </body>
