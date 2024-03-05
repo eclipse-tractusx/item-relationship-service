@@ -29,6 +29,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -92,8 +93,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private final static String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
     private final static String SUBMODEL_SUFIX = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
 
-    private final EndpointDataReferenceStorage endpointDataReferenceStorage = new EndpointDataReferenceStorage(
-            Duration.ofMinutes(1));
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final TimeMachine clock = new TimeMachine();
     private final AsyncPollingService pollingService = new AsyncPollingService(clock, scheduler);
@@ -125,21 +124,23 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         config.setSubmodel(new EdcConfiguration.SubmodelConfig());
         config.getSubmodel().setUrnPrefix("/urn");
         config.getSubmodel().setRequestTtl(Duration.ofMinutes(10));
-        testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient,
-                endpointDataReferenceStorage, pollingService, retryRegistry, catalogFacade,
-                endpointDataReferenceCacheService);
+
+        testee = new EdcSubmodelClientImpl(config, contractNegotiationService, edcDataPlaneClient, pollingService,
+                retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
     @Test
     void shouldRetrieveValidRelationship() throws Exception {
         // arrange
+        final String agreementId = "agreementId";
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
-                NegotiationResponse.builder().contractAgreementId("agreementId").build());
-        final EndpointDataReference ref = TestMother.endpointDataReference("agreementId");
-        endpointDataReferenceStorage.put("agreementId", ref);
+                NegotiationResponse.builder().contractAgreementId(agreementId).build());
+        final EndpointDataReference ref = TestMother.endpointDataReference(agreementId);
+        when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
+                Optional.ofNullable(ref));
         final String singleLevelBomAsBuiltJson = readSingleLevelBomAsBuiltData();
         when(edcDataPlaneClient.getData(eq(ref), any())).thenReturn(singleLevelBomAsBuiltJson);
         when(endpointDataReferenceCacheService.getEndpointDataReference("assetId")).thenReturn(
@@ -156,13 +157,15 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldSendNotificationSuccessfully() throws Exception {
         // arrange
+        final String agreementId = "agreementId";
         final EdcNotification<NotificationContent> notification = EdcNotification.builder().build();
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any(), any(), any())).thenReturn(
-                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+                NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
-        endpointDataReferenceStorage.put("agreementId", ref);
+        when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
+                Optional.ofNullable(ref));
         when(edcDataPlaneClient.sendData(ref, notification)).thenReturn(() -> true);
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
@@ -196,7 +199,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).contains(existingCatenaXId);
     }
@@ -211,7 +215,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).contains("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97");
     }
@@ -226,7 +231,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).contains("urn:uuid:2afbac90-a662-4f16-9058-4f030e692631");
     }
@@ -241,7 +247,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).isNotEmpty();
     }
@@ -257,7 +264,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).isEqualTo("{}");
     }
@@ -272,8 +280,9 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("https://connector.endpoint.com",
-                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, "bpn")
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, "bpn")
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
@@ -290,8 +299,9 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         final String submodelResponse = testee.getSubmodelPayload("https://connector.endpoint.com",
-                "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, "bpn")
-                                              .get(5, TimeUnit.SECONDS).getPayload();
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, "bpn")
+                                              .get(5, TimeUnit.SECONDS)
+                                              .getPayload();
 
         assertThat(submodelResponse).startsWith(
                 "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
@@ -343,12 +353,13 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference expected = mock(EndpointDataReference.class);
-        endpointDataReferenceStorage.put(agreementId, expected);
+        when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
+                Optional.ofNullable(expected));
 
         // act
-        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS, filterKey, filterValue,
+        final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue,
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW), "bpn");
-        final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
+        final EndpointDataReference actual = result.get(0).get(5, TimeUnit.SECONDS);
 
         // assert
         assertThat(actual).isEqualTo(expected);
@@ -366,11 +377,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference expected = mock(EndpointDataReference.class);
-        endpointDataReferenceStorage.put(agreementId, expected);
+        when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
+                Optional.ofNullable(expected));
 
         // act
-        final var result = testee.getEndpointReferenceForAsset(ENDPOINT_ADDRESS, filterKey, filterValue, "bpn");
-        final EndpointDataReference actual = result.get(5, TimeUnit.SECONDS);
+        final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue, "bpn");
+        final EndpointDataReference actual = result.get(0).get(5, TimeUnit.SECONDS);
 
         // assert
         assertThat(actual).isEqualTo(expected);
@@ -381,8 +393,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
             throws EdcClientException, ExecutionException, InterruptedException {
         // given
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
-                new EndpointDataReferenceStatus(TestMother.endpointDataReference("assetId"),
-                        TokenStatus.VALID));
+                new EndpointDataReferenceStatus(TestMother.endpointDataReference("assetId"), TokenStatus.VALID));
         final String value = "result";
         when(edcDataPlaneClient.getData(any(), any())).thenReturn(value);
 
@@ -397,33 +408,37 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldCreateCacheRecordWhenTokenIsNotValid() throws EdcClientException {
-        // given
+        // arrange
+        final String agreementId = "agreementId";
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
-                NegotiationResponse.builder().contractAgreementId("agreementId").build());
+                NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
-        endpointDataReferenceStorage.put("agreementId", ref);
+        when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
+                Optional.ofNullable(ref));
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
-        // when
+        // act
         testee.getSubmodelPayload(ENDPOINT_ADDRESS, "suffix", "assetId", "bpn");
 
-        // then
-        final Optional<EndpointDataReference> referenceFromStorage = endpointDataReferenceStorage.get("assetId");
-        assertThat(referenceFromStorage).isPresent();
+        // assert
+        verify(endpointDataReferenceCacheService, times(1)).putEndpointDataReferenceIntoStorage("assetId", ref);
     }
 
     private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
             throws ContractNegotiationException, IOException, UsagePolicyException, TransferProcessException {
 
+        final String agreementId = "agreementId";
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
-                NegotiationResponse.builder().contractAgreementId("agreementId").build());
-        final EndpointDataReference ref = TestMother.endpointDataReference("agreementId");
-        endpointDataReferenceStorage.put("agreementId", ref);
+                NegotiationResponse.builder().contractAgreementId(agreementId).build());
+
+        final EndpointDataReference ref = TestMother.endpointDataReference(agreementId);
+        when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
+                Optional.ofNullable(ref));
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator(
                 localTestDataConfiguration.cxTestDataContainer());
         final String data = StringMapper.mapToString(

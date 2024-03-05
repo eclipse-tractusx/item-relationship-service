@@ -82,7 +82,6 @@ class SubmodelExponentialRetryTest {
                 Duration.ofMinutes(1));
 
         final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient,
-                endpointDataReferenceStorage,
                 pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
         testee = new EdcSubmodelFacade(client);
     }
@@ -94,14 +93,14 @@ class SubmodelExponentialRetryTest {
                 eq(String.class))).willThrow(
                 new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "EDC remote exception"));
 
-        when(endpointDataReferenceCacheService.getEndpointDataReference("9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
+        when(endpointDataReferenceCacheService.getEndpointDataReference(
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(
+                new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
-        assertThatThrownBy(() -> testee.getSubmodelPayload(
-                "https://connector.endpoint.com",
+        assertThatThrownBy(() -> testee.getSubmodelPayload("https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(
-                HttpServerErrorException.class);
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(HttpServerErrorException.class);
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),
@@ -113,11 +112,12 @@ class SubmodelExponentialRetryTest {
         // Arrange
         given(restTemplate.exchange(any(String.class), eq(HttpMethod.POST), any(HttpEntity.class),
                 eq(String.class))).willThrow(new RuntimeException("EDC remote exception"));
-        when(endpointDataReferenceCacheService.getEndpointDataReference("9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
+        when(endpointDataReferenceCacheService.getEndpointDataReference(
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).thenReturn(
+                new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW));
 
         // Act
-        assertThatThrownBy(() -> testee.getSubmodelPayload(
-                "https://connector.endpoint.com",
+        assertThatThrownBy(() -> testee.getSubmodelPayload("https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
                 "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(RuntimeException.class);
 

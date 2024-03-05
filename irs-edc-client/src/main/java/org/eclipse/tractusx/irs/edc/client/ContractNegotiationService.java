@@ -124,7 +124,7 @@ public class ContractNegotiationService {
 
         if (!policyCheckerService.isValid(catalogItem.getPolicy(), bpn)) {
             log.info("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy());
+            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy(), catalogItem.getConnectorId());
         }
 
         final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,

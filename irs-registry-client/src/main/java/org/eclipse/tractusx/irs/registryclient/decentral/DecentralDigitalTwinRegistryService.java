@@ -121,8 +121,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private Stream<Shell> fetchShellDescriptors(
-            final Map.Entry<String, List<DigitalTwinRegistryKey>> entry, final Set<String> calledEndpoints) {
+    private Stream<Shell> fetchShellDescriptors(final Map.Entry<String, List<DigitalTwinRegistryKey>> entry,
+            final Set<String> calledEndpoints) {
 
         try {
 
@@ -140,8 +140,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         }
     }
 
-    private CompletableFuture<List<Shell>> fetchShellDescriptors(
-            final Set<String> calledEndpoints, final String bpn, final List<DigitalTwinRegistryKey> keys) {
+    private CompletableFuture<List<Shell>> fetchShellDescriptors(final Set<String> calledEndpoints, final String bpn,
+            final List<DigitalTwinRegistryKey> keys) {
 
         final var watch = new StopWatch();
         final String msg = "Fetching %s shells for bpn '%s'".formatted(keys.size(), bpn);
@@ -149,12 +149,13 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         log.info(msg);
 
         try {
-            final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
 
-            log.info("Found {} connector endpoints for bpn '{}'", connectorEndpoints.size(), bpn);
-            calledEndpoints.addAll(connectorEndpoints);
+            final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
 
-            return fetchShellDescriptorsForConnectorEndpoints(keys, connectorEndpoints);
+            log.info("Found {} connector endpoints for bpn '{}'", edcUrls.size(), bpn);
+            calledEndpoints.addAll(edcUrls);
+
+            return fetchShellDescriptorsForConnectorEndpoints(keys, edcUrls);
 
         } finally {
             watch.stop();
@@ -163,31 +164,34 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private CompletableFuture<List<Shell>> fetchShellDescriptorsForConnectorEndpoints(
-            final List<DigitalTwinRegistryKey> keys, final List<String> connectorEndpoints) {
+            final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls) {
 
         final var service = endpointDataForConnectorsService;
-        final var futures = service.createFindEndpointDataForConnectorsFutures(connectorEndpoints)
-                                   .stream()
-                                   .map(edrFuture -> edrFuture.thenCompose(edr -> CompletableFuture.supplyAsync(
-                                           () -> fetchShellDescriptorsForKey(keys, edr))))
-                                   .toList();
+        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(edcUrls)
+                                        .stream()
+                                        .map(edrFuture -> edrFuture.thenCompose(edr -> CompletableFuture.supplyAsync(
+                                                () -> fetchShellDescriptorsForKey(keys, edr))))
+                                        .toList();
 
-        log.debug("Created {} futures", futures.size());
+        log.debug("Created {} futures", shellsFuture.size());
 
-        return resultFinder.getFastestResult(futures);
+        return resultFinder.getFastestResult(shellsFuture);
     }
 
-    private List<Shell> fetchShellDescriptorsForKey(
-            final List<DigitalTwinRegistryKey> keys, final EndpointDataReference endpointDataReference) {
+    private List<Shell> fetchShellDescriptorsForKey(final List<DigitalTwinRegistryKey> keys,
+            final EndpointDataReference endpointDataReference) {
 
         final var watch = new StopWatch();
         final String msg = "Fetching shell descriptors for keys %s from endpoint '%s'".formatted(keys,
                 endpointDataReference.getEndpoint());
         watch.start(msg);
         log.info(msg);
+
         try {
-            return keys.stream().map(key -> new Shell(contractNegotiationId(endpointDataReference.getAuthCode()),
-                    fetchShellDescriptor(endpointDataReference, key))).toList();
+            return keys.stream()
+                       .map(key -> new Shell(contractNegotiationId(endpointDataReference.getAuthCode()),
+                               fetchShellDescriptor(endpointDataReference, key)))
+                       .toList();
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
@@ -212,10 +216,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private String contractNegotiationId(final String token) {
-        return Optional.ofNullable(token)
-                       .map(EDRAuthCode::fromAuthCodeToken)
-                       .map(EDRAuthCode::getCid)
-                       .orElse("");
+        return Optional.ofNullable(token).map(EDRAuthCode::fromAuthCodeToken).map(EDRAuthCode::getCid).orElse("");
     }
 
     /**
@@ -224,14 +225,14 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
      * If the ID is a globalAssetId, the corresponding shellId will be returned.
      *
      * @param endpointDataReference the reference to access the digital twin registry
-     * @param key                   the ambiguous key (shellId or globalAssetId)
-     * @return the shellId
+     * @param providedId            the ambiguous ID (shellId or globalAssetId)
+     * @return the corresponding asset administration shell ID
      */
     @NotNull
-    private String mapToShellId(final EndpointDataReference endpointDataReference, final String key) {
+    private String mapToShellId(final EndpointDataReference endpointDataReference, final String providedId) {
 
         final var watch = new StopWatch();
-        final String msg = "Mapping '%s' to shell ID for endpoint '%s'".formatted(key,
+        final String msg = "Mapping '%s' to shell ID for endpoint '%s'".formatted(providedId,
                 endpointDataReference.getEndpoint());
         watch.start(msg);
         log.info(msg);
@@ -240,22 +241,27 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
             final var identifierKeyValuePair = IdentifierKeyValuePair.builder()
                                                                      .name("globalAssetId")
-                                                                     .value(key)
+                                                                     .value(providedId)
                                                                      .build();
-            final var aaShellIdentification = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                                                                                        endpointDataReference, List.of(identifierKeyValuePair))
-                                                                                .getResult()
-                                                                                .stream()
-                                                                                .findFirst()
-                                                                                .orElse(key);
 
-            if (key.equals(aaShellIdentification)) {
-                log.info("Found shell with shellId {} in registry", aaShellIdentification);
+            // Try to map the provided ID to the corresponding asset administration shell ID
+            final var mappingResultStream = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
+                    endpointDataReference, List.of(identifierKeyValuePair)).getResult().stream();
+
+            // Special scenario: Multiple DTs with the same globalAssetId in one DTR, see:
+            // docs/arc42/cross-cutting/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml
+            final var mappingResult = mappingResultStream.findFirst();
+
+            // Empty Optional means that the ID is already a shellId
+            final var shellId = mappingResult.orElse(providedId);
+
+            if (providedId.equals(shellId)) {
+                log.info("Found shell with shellId {} in registry", shellId);
             } else {
-                log.info("Retrieved shellId {} for globalAssetId {}", aaShellIdentification, key);
+                log.info("Retrieved shellId {} for globalAssetId {}", shellId, providedId);
             }
 
-            return aaShellIdentification;
+            return shellId;
 
         } finally {
             watch.stop();
@@ -270,12 +276,11 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         try {
 
-            final var connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-            log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, connectorEndpoints);
+            final var edcUrls = connectorEndpointsService.fetchConnectorEndpoints(bpn);
+            log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, edcUrls);
 
             final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    connectorEndpoints);
-            log.debug("Created endpointDataReferenceFutures");
+                    edcUrls);
 
             return lookupShellIds(bpn, endpointDataReferenceFutures);
 

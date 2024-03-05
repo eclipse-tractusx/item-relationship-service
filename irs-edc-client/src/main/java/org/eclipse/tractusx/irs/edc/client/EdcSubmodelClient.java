@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
@@ -45,10 +46,11 @@ public interface EdcSubmodelClient {
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
             EdcNotification<NotificationContent> notification, String bpn) throws EdcClientException;
 
-    CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress, String filterKey,
-            String filterValue, String bpn) throws EdcClientException;
+    List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String endpointAddress,
+            String filterKey, String filterValue, String bpn) throws EdcClientException;
 
-    CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(String endpointAddress, String filterKey,
-            String filterValue, EndpointDataReferenceStatus cachedEndpointDataReference, String bpn) throws EdcClientException;
+    List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String endpointAddress,
+            String filterKey, String filterValue, EndpointDataReferenceStatus cachedEndpointDataReference, String bpn)
+            throws EdcClientException;
 }
 

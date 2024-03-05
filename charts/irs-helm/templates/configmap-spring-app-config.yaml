@@ -108,6 +108,7 @@ data:
           contract-negotiation: {{ .Values.edc.controlplane.endpoint.contractnegotiation | default "/v2/contractnegotiations" | quote }}
           transfer-process: {{ .Values.edc.controlplane.endpoint.transferprocess | default "/v2/transferprocesses" | quote }}
           state-suffix: {{ .Values.edc.controlplane.endpoint.statesuffix | default "/state" | quote }}
+          contract-agreements: {{ .Values.edc.controlplane.endpoint.contractAgreements | default "/v2/contractagreements" | quote }}
         provider-suffix: {{ tpl .Values.edc.controlplane.provider.suffix . | quote }}
         catalog-limit: {{ .Values.edc.controlplane.catalog.limit }}
         catalog-page-size: {{ .Values.edc.controlplane.catalog.pagesize }}

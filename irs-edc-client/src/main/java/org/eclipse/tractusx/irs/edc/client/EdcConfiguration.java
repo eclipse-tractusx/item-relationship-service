@@ -72,6 +72,7 @@ public class EdcConfiguration {
             private String policyDefinition;
             private String transferProcess;
             private String stateSuffix;
+            private String contractAgreements;
 
         }
 
