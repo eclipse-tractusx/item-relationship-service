@@ -149,7 +149,7 @@ class SubmodelDelegateTest {
                                                                                                                            "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
-        when(submodelFacade.getSubmodelPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId", null));
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(new UsagePolicyException("itemId", null));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
                 jobParameterCollectAspects(), new AASTransferProcess(), createKey());
@@ -173,7 +173,7 @@ class SubmodelDelegateTest {
                                                                                                                   "")))));
 
         // when
-        when(submodelFacade.getSubmodelPayload(any(), any(), any())).thenThrow(
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
                 new ItemNotFoundInCatalogException("test", "itemId")).thenReturn(new SubmodelDescriptor("cid", """
                 {"test": "test"}
                 """));

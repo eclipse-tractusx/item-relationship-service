@@ -26,16 +26,19 @@ package org.eclipse.tractusx.irs.policystore.persistence;
 import static org.eclipse.tractusx.irs.policystore.config.PolicyConfiguration.POLICY_BLOB_PERSISTENCE;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
+import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceRuntimeException;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -66,13 +69,28 @@ public class PolicyPersistence {
         this.mapper = mapper;
     }
 
-    public void save(final String bpn, final Policy policy) {
-        final var policies = readAll(bpn);
+    public void save(final List<String> bpns, final Policy policy) {
+        if (bpns == null) {
+            final List<Policy> policies = readAll(BlobPersistence.DEFAULT_BLOB_NAME);
+            checkIfPolicyAlreadyExists(policy, policies);
+            policies.add(policy);
+            save(BlobPersistence.DEFAULT_BLOB_NAME, policies);
+        } else {
+            final Map<String, List<Policy>> storedBpnToPolicies = bpns.stream()
+                                                                      .collect(Collectors.toMap(bpn -> bpn,
+                                                                              this::readAll));
+            storedBpnToPolicies.forEach((bpn, policies) -> {
+                checkIfPolicyAlreadyExists(policy, policies);
+                policies.add(policy);
+                save(bpn, policies);
+            });
+        }
+    }
+
+    private static void checkIfPolicyAlreadyExists(final Policy policy, final List<Policy> policies) {
         if (policies.stream().map(Policy::getPolicyId).anyMatch(policy.getPolicyId()::equals)) {
             throw new PolicyStoreException("Policy with id '" + policy.getPolicyId() + "' already exists!");
         }
-        policies.add(policy);
-        save(bpn, policies);
     }
 
     public void delete(final String bpn, final String policyId) {
@@ -82,18 +100,6 @@ public class PolicyPersistence {
             throw new PolicyStoreException("Policy with id '" + policyId + "' doesn't exists!");
         }
         save(bpn, modifiedPolicies);
-    }
-
-    public void update(final String bpn, final String policyId, final OffsetDateTime validUntil) {
-        final var policies = readAll(bpn);
-        final Policy policy = policies.stream()
-                                      .filter(p -> p.getPolicyId().equals(policyId))
-                                      .findFirst()
-                                      .orElseThrow(() -> new PolicyStoreException(
-                                              "Policy with id '" + policyId + "' doesn't exists!"));
-
-        policy.update(validUntil);
-        save(bpn, policies);
     }
 
     private void save(final String bpn, final List<Policy> modifiedPolicies) {
@@ -121,6 +127,23 @@ public class PolicyPersistence {
             throw new PolicyStoreException("Unable to read policy data", e);
         }
 
+    }
+
+    public Map<String, List<Policy>> readAll() {
+        try {
+
+
+            return policyStorePersistence.getAllBlobs().entrySet().stream().map(entry -> {
+                try {
+                    return new AbstractMap.SimpleEntry<>(entry.getKey(),
+                            mapper.readerForListOf(Policy.class).<List<Policy>>readValue(entry.getValue()));
+                } catch (IOException e) {
+                    throw new PolicyStoreException("Could not read the policies from the store", e);
+                }
+            }).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+        } catch (BlobPersistenceException | BlobPersistenceRuntimeException e) {
+            throw new PolicyStoreException("Could not read the policies from the store", e);
+        }
     }
 
     private void writeLock(final Runnable work) {

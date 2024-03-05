@@ -37,7 +37,7 @@ class AcceptedPoliciesProviderTest {
 
     @Test
     void getAcceptedPolicies() {
-        final var acceptedPolicies = testee.getAcceptedPolicies();
+        final var acceptedPolicies = testee.getAcceptedPolicies(List.of("testBpn"));
 
         assertThat(acceptedPolicies).isEmpty();
     }
@@ -45,20 +45,20 @@ class AcceptedPoliciesProviderTest {
     @Test
     void shouldReturnStoredPolicies() {
         testee.addAcceptedPolicies(List.of(policy()));
-        final var acceptedPolicies = testee.getAcceptedPolicies();
+        final var acceptedPolicies = testee.getAcceptedPolicies(List.of("testBpn"));
 
         assertThat(acceptedPolicies).hasSize(1);
     }
     @Test
     void shouldRemoveStoredPolicies() {
         testee.addAcceptedPolicies(List.of(policy()));
-        final var acceptedPolicies = testee.getAcceptedPolicies();
+        final var acceptedPolicies = testee.getAcceptedPolicies(List.of("testBpn"));
 
         assertThat(acceptedPolicies).hasSize(1);
 
         testee.removeAcceptedPolicies(acceptedPolicies);
 
-        assertThat(testee.getAcceptedPolicies()).isEmpty();
+        assertThat(testee.getAcceptedPolicies(List.of("testBpn"))).isEmpty();
     }
     @NotNull
     private static AcceptedPolicy policy() {

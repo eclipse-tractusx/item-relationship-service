@@ -36,6 +36,7 @@ import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
@@ -46,7 +47,6 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
-import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,7 +74,7 @@ class PolicyStoreServiceTest {
     void setUp() {
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
         defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of());
-        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence, clock);
+        testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistence, clock);
     }
 
     @Test
@@ -84,10 +84,10 @@ class PolicyStoreServiceTest {
         final Policy policy = new Policy("testId", now, now.plusMinutes(1), emptyList());
 
         // act
-        testee.registerPolicy(policy);
+        testee.registerPolicy(policy, List.of(BPN));
 
         // assert
-        verify(persistence).save(eq(BPN), any());
+        verify(persistence).save(eq(List.of(BPN)), any());
     }
 
     @Test
@@ -97,10 +97,10 @@ class PolicyStoreServiceTest {
         final Policy policy = new Policy("testId", now, now.plusMinutes(1), createPermissions());
 
         // act
-        testee.registerPolicy(policy);
+        testee.registerPolicy(policy, List.of(BPN));
 
         // assert
-        verify(persistence).save(eq(BPN), policyCaptor.capture());
+        verify(persistence).save(eq(List.of(BPN)), policyCaptor.capture());
 
         assertThat(policyCaptor.getValue()).isNotNull();
         List<Permission> permissionList = policyCaptor.getValue().getPermissions();
@@ -115,10 +115,11 @@ class PolicyStoreServiceTest {
         final String policyId = "testId";
         final OffsetDateTime now = OffsetDateTime.now(clock);
         final Policy policy = new Policy(policyId, now, now.plusMinutes(1), createPermissions());
-        doThrow(new PolicyStoreException("")).when(persistence).save(eq(BPN), any());
+        doThrow(new PolicyStoreException("")).when(persistence).save(any(), any());
 
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy));
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy,
+                List.of(BPN)));
     }
 
     @Test
@@ -128,7 +129,7 @@ class PolicyStoreServiceTest {
         when(persistence.readAll(BPN)).thenReturn(policies);
 
         // act
-        final var storedPolicies = testee.getStoredPolicies();
+        final var storedPolicies = testee.getStoredPolicies(List.of(BPN));
 
         // assert
         assertThat(storedPolicies).hasSize(3);
@@ -143,10 +144,10 @@ class PolicyStoreServiceTest {
                 EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
         defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of(acceptedPolicy1, acceptedPolicy2));
-        testee = new PolicyStoreService(BPN, defaultAcceptedPoliciesConfig, persistence, clock);
+        testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistence, clock);
 
         // act
-        final var defaultPolicies = testee.getStoredPolicies();
+        final var defaultPolicies = testee.getStoredPolicies(List.of(BPN));
 
         // assert
         assertThat(defaultPolicies).hasSize(1);
@@ -175,6 +176,9 @@ class PolicyStoreServiceTest {
 
     @Test
     void deletePolicy() {
+        // arrange
+        when(persistence.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
+
         // act
         testee.deletePolicy("testId");
 
@@ -186,33 +190,11 @@ class PolicyStoreServiceTest {
     void deletePolicyShouldThrowResponseStatusException() {
         // act
         final String policyId = "testId";
+        when(persistence.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
         doThrow(new PolicyStoreException("")).when(persistence).delete(BPN, policyId);
 
         // assert
         assertThrows(ResponseStatusException.class, () -> testee.deletePolicy(policyId));
-    }
-
-    @Test
-    void updatePolicy() {
-        // act
-        final String policyId = "testId";
-        final OffsetDateTime validUntil = OffsetDateTime.now();
-        testee.updatePolicy(policyId, new UpdatePolicyRequest(validUntil));
-
-        // assert
-        verify(persistence).update(BPN, policyId, validUntil);
-    }
-
-    @Test
-    void updatePolicyShouldThrowResponseStatusException() {
-        // act
-        final String policyId = "testId";
-        final OffsetDateTime validUntil = OffsetDateTime.now();
-        doThrow(new PolicyStoreException("")).when(persistence).update(BPN, policyId, validUntil);
-        final UpdatePolicyRequest request = new UpdatePolicyRequest(validUntil);
-
-        // assert
-        assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, request));
     }
 
     @Test
@@ -222,7 +204,8 @@ class PolicyStoreServiceTest {
 
         // act
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy));
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy,
+                null));
     }
 
     @Test
@@ -237,6 +220,7 @@ class PolicyStoreServiceTest {
 
         // act
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy));
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy,
+                null));
     }
 }

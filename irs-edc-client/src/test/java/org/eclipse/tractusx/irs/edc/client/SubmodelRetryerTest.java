@@ -100,7 +100,7 @@ class SubmodelExponentialRetryTest {
         assertThatThrownBy(() -> testee.getSubmodelPayload(
                 "https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(
                 HttpServerErrorException.class);
 
         // Assert
@@ -119,7 +119,7 @@ class SubmodelExponentialRetryTest {
         assertThatThrownBy(() -> testee.getSubmodelPayload(
                 "https://connector.endpoint.com",
                 "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel",
-                "9300395e-c0a5-4e88-bc57-a3973fec4c26")).hasCauseInstanceOf(RuntimeException.class);
+                "9300395e-c0a5-4e88-bc57-a3973fec4c26", "bpn")).hasCauseInstanceOf(RuntimeException.class);
 
         // Assert
         verify(restTemplate, times(retryRegistry.getDefaultConfig().getMaxAttempts())).exchange(any(String.class),

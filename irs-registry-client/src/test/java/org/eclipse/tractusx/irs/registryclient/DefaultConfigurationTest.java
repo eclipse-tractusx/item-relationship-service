@@ -82,7 +82,7 @@ class DefaultConfigurationTest {
         final var mock = mock(EdcSubmodelFacade.class);
         final var endpointAddress = "endpointaddress";
         final var endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint(endpointAddress).build();
-        when(mock.getEndpointReferenceForAsset(eq(endpointAddress), any(), any())).thenReturn(endpointDataReference);
+        when(mock.getEndpointReferenceForAsset(eq(endpointAddress), any(), any(), any())).thenReturn(endpointDataReference);
 
         // ACT
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
@@ -97,13 +97,13 @@ class DefaultConfigurationTest {
                                         });
 
         // ASSERT
-        verify(mock).getEndpointReferenceForAsset(eq(endpointAddress), any(), any());
+        verify(mock).getEndpointReferenceForAsset(eq(endpointAddress), any(), any(), any());
     }
 
     @Test
     void endpointDataForConnectorsService_withException() throws EdcClientException {
         final var mock = mock(EdcSubmodelFacade.class);
-        when(mock.getEndpointReferenceForAsset(any(), any(), any())).thenThrow(new EdcClientException("test"));
+        when(mock.getEndpointReferenceForAsset(any(), any(), any(), any())).thenThrow(new EdcClientException("test"));
 
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
         final var dummyEndpoints = List.of("test");

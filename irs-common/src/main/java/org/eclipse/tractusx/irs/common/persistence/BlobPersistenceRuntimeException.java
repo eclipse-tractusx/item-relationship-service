@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,28 +17,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-
 package org.eclipse.tractusx.irs.common.persistence;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 /**
- * Interface for storing data blobs.
+ * Runtime Exception for everything related to BlobPersistence actions
  */
-public interface BlobPersistence {
+public class BlobPersistenceRuntimeException extends RuntimeException {
 
-    String DEFAULT_BLOB_NAME = "default";
-
-    void putBlob(String targetBlobName, byte[] blob) throws BlobPersistenceException;
-
-    Optional<byte[]> getBlob(String sourceBlobName) throws BlobPersistenceException;
-
-    Map<String, byte[]> getAllBlobs() throws BlobPersistenceException;
-
-    Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException;
-
-    boolean delete(String blobId, List<String> processIds) throws BlobPersistenceException;
+    public BlobPersistenceRuntimeException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

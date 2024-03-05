@@ -58,7 +58,7 @@ import org.springframework.util.StopWatch;
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.UseObjectForClearerAPI"})
 public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private final EdcConfiguration config;
@@ -138,13 +138,13 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<SubmodelDescriptor> getSubmodelPayload(final String connectorEndpoint,
-            final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
+            final String submodelDataplaneUrl, final String assetId, final String bpn) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             log.info("Requesting raw SubmodelPayload for endpoint '{}'.", connectorEndpoint);
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
 
-            final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId);
+            final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId, bpn);
 
             return pollingService.<SubmodelDescriptor>createJob()
                                  .action(() -> retrieveSubmodelData(submodelDataplaneUrl, stopWatch,
@@ -156,7 +156,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         });
     }
 
-    private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId)
+    private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId, final String bpn)
             throws EdcClientException {
         log.info("Retrieving endpoint data reference from cache for asset id: {}", assetId);
         final EndpointDataReferenceStatus cachedEndpointDataReference = endpointDataReferenceCacheService.getEndpointDataReference(
@@ -168,18 +168,18 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             endpointDataReference = cachedEndpointDataReference.endpointDataReference();
         } else {
             endpointDataReference = getEndpointDataReferenceAndAddToStorage(connectorEndpoint, assetId,
-                    cachedEndpointDataReference);
+                    cachedEndpointDataReference, bpn);
         }
 
         return endpointDataReference;
     }
 
     private EndpointDataReference getEndpointDataReferenceAndAddToStorage(final String connectorEndpoint,
-            final String assetId, final EndpointDataReferenceStatus cachedEndpointDataReference)
+            final String assetId, final EndpointDataReferenceStatus cachedEndpointDataReference, final String bpn)
             throws EdcClientException {
         try {
             final EndpointDataReference endpointDataReference = getEndpointReferenceForAsset(connectorEndpoint,
-                    NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference).get();
+                    NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference, bpn).get();
             endpointDataReferenceStorage.put(assetId, endpointDataReference);
 
             return endpointDataReference;
@@ -193,11 +193,11 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String connectorEndpoint,
-            final String assetId, final EdcNotification<NotificationContent> notification) throws EdcClientException {
+            final String assetId, final EdcNotification<NotificationContent> notification, final String bpn) throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + connectorEndpoint);
-            final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId);
+            final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId, bpn);
 
             return sendNotificationAsync(assetId, notification, stopWatch, endpointDataReference);
         });
@@ -205,15 +205,15 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
-            final String filterKey, final String filterValue) throws EdcClientException {
+            final String filterKey, final String filterValue, final String bpn) throws EdcClientException {
         return execute(endpointAddress, () -> getEndpointReferenceForAsset(endpointAddress, filterKey, filterValue,
-                new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)));
+                new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW), bpn));
     }
 
     @Override
     public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
             final String filterKey, final String filterValue,
-            final EndpointDataReferenceStatus endpointDataReferenceStatus) throws EdcClientException {
+            final EndpointDataReferenceStatus endpointDataReferenceStatus, final String bpn) throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
 
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
@@ -224,7 +224,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
                 filterValue);
 
         final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
-                items.stream().findFirst().orElseThrow(), endpointDataReferenceStatus);
+                items.stream().findFirst().orElseThrow(), endpointDataReferenceStatus, bpn);
 
         final String storageId = getStorageId(endpointDataReferenceStatus, response);
 

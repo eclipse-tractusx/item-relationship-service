@@ -221,10 +221,10 @@ class InvestigationJobProcessingEventListener {
         final EdcNotificationResponse response;
         if (isRecursiveMockAsset || isNotMockAsset) {
             log.debug("Sending recursive notification");
-            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset-recursive", notification);
+            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset-recursive", notification, bpn);
         } else {
             log.debug("Sending mock recursive notification");
-            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset", notification);
+            response = edcSubmodelFacade.sendNotification(url, "notify-request-asset", notification, bpn);
         }
         if (response.deliveredSuccessfully()) {
             log.info("Successfully sent notification with id '{}' to EDC endpoint '{}'.", notificationId, url);

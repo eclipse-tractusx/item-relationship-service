@@ -29,6 +29,7 @@ import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAtom
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createAtomicConstraintPolicy;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createOrConstraintPolicy;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createXOneConstraintPolicy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
@@ -56,7 +57,7 @@ class PolicyCheckerServiceTest {
                 new AcceptedPolicy(policy(TestConstants.ID_3_0_TRACE), OffsetDateTime.now().plusYears(1)),
                 new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY),
                         OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+//        when(policyStore.getAcceptedPolicies(List.of("bpn"))).thenReturn(policyList);
         policyCheckerService = new PolicyCheckerService(policyStore, new ConstraintCheckerService());
     }
 
@@ -66,7 +67,7 @@ class PolicyCheckerServiceTest {
         final String unknownRightExpression = "Wrong_Trace";
         Policy policy = createAtomicConstraintPolicy(TestConstants.PURPOSE, unknownRightExpression);
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isFalse();
@@ -76,9 +77,9 @@ class PolicyCheckerServiceTest {
     void shouldRejectWhenPolicyStoreIsEmpty() {
         // given
         Policy policy = createAtomicConstraintPolicy(TestConstants.PURPOSE, TestConstants.ID_3_0_TRACE);
-        when(policyStore.getAcceptedPolicies()).thenReturn(List.of());
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(List.of());
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isFalse();
@@ -91,13 +92,13 @@ class PolicyCheckerServiceTest {
                         OffsetDateTime.now().plusYears(1)),
                 new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER),
                         OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
         Policy policy = createAndConstraintPolicy(
                 List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
                                 TestConstants.STATUS_ACTIVE),
                         createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isFalse();
@@ -116,13 +117,13 @@ class PolicyCheckerServiceTest {
                 new AcceptedPolicy(policy("and-policy", List.of(constraint1, constraint2, constraint3), List.of()),
                         OffsetDateTime.now().plusYears(1)));
 
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
         Policy policy = createAndConstraintPolicy(
                 List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
                                 TestConstants.STATUS_ACTIVE),
                         createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isTrue();
@@ -141,13 +142,13 @@ class PolicyCheckerServiceTest {
                 new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
                         OffsetDateTime.now().plusYears(1)));
 
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
         Policy policy = createOrConstraintPolicy(
                 List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
                                 TestConstants.STATUS_ACTIVE),
                         createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isTrue();
@@ -166,14 +167,14 @@ class PolicyCheckerServiceTest {
         final var policyList = List.of(new AcceptedPolicy(
                 policy("default-policy", List.of(constraint1, constraint2, constraint3),
                         List.of(constraint1, constraint2, constraint3)), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
 
         Policy policy = createOrConstraintPolicy(
                 List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
                                 TestConstants.STATUS_ACTIVE),
                         createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isTrue();
@@ -186,13 +187,13 @@ class PolicyCheckerServiceTest {
                 new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TEST), OffsetDateTime.now().plusYears(1)),
                 new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER),
                         OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
         Policy policy = createAndConstraintPolicy(
                 List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
                                 TestConstants.STATUS_ACTIVE),
                         createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isFalse();
@@ -205,13 +206,13 @@ class PolicyCheckerServiceTest {
                 new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TEST), OffsetDateTime.now().plusYears(1)),
                 new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER),
                         OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
         Policy policy = createXOneConstraintPolicy(
                 List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
                                 TestConstants.STATUS_ACTIVE),
                         createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isFalse();
@@ -223,13 +224,13 @@ class PolicyCheckerServiceTest {
         final var policyList = List.of(new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY),
                         OffsetDateTime.now().plusYears(1)),
                 new AcceptedPolicy(policy(TestConstants.MEMBERSHIP), OffsetDateTime.now().plusYears(1)));
-        when(policyStore.getAcceptedPolicies()).thenReturn(policyList);
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
         Policy policy = createXOneConstraintPolicy(
                 List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
                                 TestConstants.STATUS_ACTIVE),
                         createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
         // when
-        boolean result = policyCheckerService.isValid(policy);
+        boolean result = policyCheckerService.isValid(policy, "bpn");
 
         // then
         assertThat(result).isFalse();

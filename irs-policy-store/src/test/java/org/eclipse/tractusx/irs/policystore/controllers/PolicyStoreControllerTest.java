@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -121,10 +122,10 @@ class PolicyStoreControllerTest {
 
         // act
         testee.registerAllowedPolicy(
-                new CreatePolicyRequest(now.plusMinutes(1), jsonObject.get("payload").asJsonObject()));
+                new CreatePolicyRequest(now.plusMinutes(1), null, List.of(jsonObject.get("payload").asJsonObject())));
 
         // assert
-        verify(service).registerPolicy(any());
+        verify(service).registerPolicy(any(), eq(null));
     }
 
     @Test
@@ -132,10 +133,10 @@ class PolicyStoreControllerTest {
         // arrange
         final List<Policy> policies = List.of(
                 new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
-        when(service.getStoredPolicies()).thenReturn(policies);
+        when(service.getStoredPolicies(List.of("bpn1"))).thenReturn(policies);
 
         // act
-        final List<PolicyResponse> returnedPolicies = testee.getPolicies();
+        final List<PolicyResponse> returnedPolicies = testee.getPolicies(new String[]{"bpn1"});
 
         // assert
         assertThat(returnedPolicies).isEqualTo(
@@ -154,11 +155,11 @@ class PolicyStoreControllerTest {
     @Test
     void updateAllowedPolicy() {
         // arrange
-        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now());
+        final String policyId = "policyId";
+        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now(), List.of("bpn"),List.of(policyId));
 
         // act
-        final String policyId = "policyId";
-        testee.updateAllowedPolicy(policyId, request);
+        testee.updateAllowedPolicy(request);
 
         // assert
         verify(service).updatePolicy(policyId, request);

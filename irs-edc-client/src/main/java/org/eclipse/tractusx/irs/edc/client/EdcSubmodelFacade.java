@@ -39,16 +39,16 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.UseObjectForClearerAPI"})
 public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
 
     @SuppressWarnings("PMD.PreserveStackTrace")
     public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
-            final String assetId) throws EdcClientException {
+            final String assetId, final String bpn) throws EdcClientException {
         try {
-            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get();
+            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId, bpn).get();
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred.", e);
             Thread.currentThread().interrupt();
@@ -65,10 +65,10 @@ public class EdcSubmodelFacade {
 
     @SuppressWarnings("PMD.PreserveStackTrace")
     public EdcNotificationResponse sendNotification(final String submodelEndpointAddress, final String assetId,
-            final EdcNotification<NotificationContent> notification) throws EdcClientException {
+            final EdcNotification<NotificationContent> notification, final String bpn) throws EdcClientException {
         try {
             log.debug("Sending EDC Notification '{}'", notification);
-            return client.sendNotification(submodelEndpointAddress, assetId, notification).get();
+            return client.sendNotification(submodelEndpointAddress, assetId, notification, bpn).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;
@@ -83,9 +83,9 @@ public class EdcSubmodelFacade {
 
     @SuppressWarnings("PMD.PreserveStackTrace")
     public EndpointDataReference getEndpointReferenceForAsset(final String endpointAddress, final String filterKey,
-            final String filterValue) throws EdcClientException {
+            final String filterValue, final String bpn) throws EdcClientException {
         try {
-            return client.getEndpointReferenceForAsset(endpointAddress, filterKey, filterValue).get();
+            return client.getEndpointReferenceForAsset(endpointAddress, filterKey, filterValue, bpn).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;

@@ -63,7 +63,7 @@ public class ContractNegotiationService {
     private final EdcConfiguration config;
 
     public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
-            final EndpointDataReferenceStatus endpointDataReferenceStatus)
+            final EndpointDataReferenceStatus endpointDataReferenceStatus, final String bpn)
             throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
 
         EndpointDataReferenceStatus resultEndpointDataReferenceStatus;
@@ -83,7 +83,7 @@ public class ContractNegotiationService {
         switch (resultEndpointDataReferenceStatus.tokenStatus()) {
             case REQUIRED_NEW -> {
                 final CompletableFuture<NegotiationResponse> responseFuture = startNewNegotiation(providerConnectorUrl,
-                        catalogItem);
+                        catalogItem, bpn);
                 negotiationResponse = Objects.requireNonNull(getNegotiationResponse(responseFuture));
                 contractAgreementId = negotiationResponse.getContractAgreementId();
             }
@@ -119,10 +119,10 @@ public class ContractNegotiationService {
     }
 
     private CompletableFuture<NegotiationResponse> startNewNegotiation(final String providerConnectorUrl,
-            final CatalogItem catalogItem) throws UsagePolicyException {
+            final CatalogItem catalogItem, final String bpn) throws UsagePolicyException {
         log.info("Staring new contract negotiation.");
 
-        if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
+        if (!policyCheckerService.isValid(catalogItem.getPolicy(), bpn)) {
             log.info("Policy was not allowed, canceling negotiation.");
             throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy());
         }

@@ -118,7 +118,7 @@ public class DefaultConfiguration {
     public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
         return new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
             try {
-                return facade.getEndpointReferenceForAsset(edcConnectorEndpoint, assetType, assetValue);
+                return facade.getEndpointReferenceForAsset(edcConnectorEndpoint, assetType, assetValue, null);
             } catch (EdcClientException e) {
                 throw new EdcRetrieverException(e);
             }
