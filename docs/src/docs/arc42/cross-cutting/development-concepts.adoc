@@ -44,7 +44,7 @@ The IRS utilizes the configuration mechanism provided by https://spring.io/proje
 Configuration properties can be defined in the file `+src/main/resources/application.yml+`
 
 For local testing purposes, there is an additional configuration file called `+application-local.yml+`.
-Values can be overriden there to support the local dev environment.
+Values can be overridden there to support the local dev environment.
 
 Other profiles should be avoided.
 Instead, the configuration can be overwritten using the Spring Boot externalized configuration mechanism.
