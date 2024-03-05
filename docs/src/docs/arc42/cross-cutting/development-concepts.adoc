@@ -47,7 +47,6 @@ For local testing purposes, there is an additional configuration file called `+a
 Values can be overriden there to support the local dev environment.
 
 Other profiles should be avoided.
-Instead, the configuration can be overwritten using
-https://docs.spring.io/spring-boot/docs/3.1.9/reference/htmlsingle/#features.external-config[Spring's external configuration mechanism].
+Instead, the configuration can be overwritten using the Spring Boot externalized configuration mechanism.
 The operator must have total control over the configuration of the IRS.
 

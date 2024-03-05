@@ -9,7 +9,7 @@ The IRS can be configured using two mechanisms:
 If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS.
 This file contains all possible config entries for the application.
 Once the Docker image has been built, these values can only be overwritten using the
-https://docs.spring.io/spring-boot/docs/3.1.9/reference/htmlsingle/#features.external-config[Spring external config mechanism],
+Spring Boot externalized configuration mechanism,
 e.g. by mounting a config file in the right path or using environment variables.
 
 ==== Helm Chart
