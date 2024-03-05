@@ -2,7 +2,7 @@
 
 # Download feature files
 
-In order to download latest feature files from jira execute following command
+In order to download latest feature files from Jira execute following command
 
 ``curl -s --show-error -w "%{http_code}" -u $JIRA_USERNAME:$JIRA_PASSWORD "https://jira.catena-x.net/rest/raven/1.0/export/test?filter=11349&fz=true" -o features.zip``
 
