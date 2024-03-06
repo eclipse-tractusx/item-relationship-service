@@ -126,16 +126,20 @@ class EdcPolicyDefinitionServiceTest {
     }
 
     @Test
-    void givenCreatePolicy_whenConflict_thenThrowException() {
+    void givenCreatePolicy_whenConflict_thenReturnExstingPolicyId() throws CreateEdcPolicyDefinitionException {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
-        String policyName = "policyName";
+        final String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
 
-        assertThrows(CreateEdcPolicyDefinitionException.class, () -> service.createAccessPolicy(policyName));
+        // when
+        final String result = service.createAccessPolicy(policyName);
+
+        // then
+        assertThat(result).isNotBlank();
     }
 
     @Test

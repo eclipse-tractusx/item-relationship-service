@@ -46,6 +46,10 @@ public class IdentifierKeyValuePair {
      */
     private Reference subjectId;
     /**
+     * externalSubjectId
+     */
+    private Reference externalSubjectId;
+    /**
      * value
      */
     @Schema(implementation = String.class, example = "12309481209312")
@@ -54,5 +58,4 @@ public class IdentifierKeyValuePair {
      * semanticId
      */
     private Reference semanticId;
-
 }
