@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: "2.1.0"
+  version: "4.5.2"
 servers:
   - url: http://localhost:8080
 security:
@@ -2700,6 +2700,8 @@ components:
       additionalProperties: false
       description: Tombstone with information about request failure
       properties:
+        businessPartnerNumber:
+          type: string
         catenaXId:
           type: string
           description: CATENA-X global asset id in the format urn:uuid:uuid4.

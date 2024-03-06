@@ -28,6 +28,10 @@ package org.eclipse.tractusx.irs.edc.client.exceptions;
  */
 public class EdcClientException extends Exception {
 
+    public EdcClientException(final String msg, final Throwable cause) {
+        super(msg, cause);
+    }
+
     public EdcClientException(final Throwable cause) {
         super(cause);
     }

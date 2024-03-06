@@ -81,20 +81,24 @@ import org.springframework.web.client.RestTemplate;
 
 @WireMockTest
 class SubmodelFacadeWiremockTest {
+
     private static final String PROXY_SERVER_HOST = "127.0.0.1";
     private final static String CONNECTOR_ENDPOINT_URL = "https://connector.endpoint.com";
     private final static String SUBMODEL_DATAPLANE_PATH = "/api/public/shells/12345/submodels/5678/submodel";
     private final static String SUBMODEL_DATAPLANE_URL = "http://dataplane.test" + SUBMODEL_DATAPLANE_PATH;
     private final static String ASSET_ID = "12345";
-    private final EdcConfiguration config = new EdcConfiguration();
-    private final EndpointDataReferenceStorage storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
+
+    private EndpointDataReferenceStorage storage;
+
     private EdcSubmodelClient edcSubmodelClient;
     private AcceptedPoliciesProvider acceptedPoliciesProvider;
 
     @BeforeEach
     void configureSystemUnderTest(WireMockRuntimeInfo wireMockRuntimeInfo) {
+
         final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
+        final EdcConfiguration config = new EdcConfiguration();
         config.getControlplane().getEndpoint().setData("http://controlplane.test");
         config.getControlplane().getEndpoint().setCatalog("/catalog/request");
         config.getControlplane().getEndpoint().setContractNegotiation("/contractnegotiations");
@@ -121,22 +125,24 @@ class SubmodelFacadeWiremockTest {
         final EdcDataPlaneClient dataPlaneClient = new EdcDataPlaneClient(restTemplate);
 
         final EDCCatalogFacade catalogFacade = new EDCCatalogFacade(controlPlaneClient, config);
+
+        storage = new EndpointDataReferenceStorage(Duration.ofMinutes(1));
         final EndpointDataReferenceCacheService endpointDataReferenceCacheService = new EndpointDataReferenceCacheService(
-                new EndpointDataReferenceStorage(Duration.ofMinutes(1)));
+                storage);
 
         acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
         when(acceptedPoliciesProvider.getAcceptedPolicies()).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
                 List.of(new Permission(PolicyType.USE, new Constraints(
                         List.of(new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
-                                new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active")),
-                        new ArrayList<>())))), OffsetDateTime.now().plusYears(1))));
+                                new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ),
+                                        "active")), new ArrayList<>())))), OffsetDateTime.now().plusYears(1))));
         final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider,
                 new ConstraintCheckerService());
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
                 policyCheckerService, config);
 
         final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
-        this.edcSubmodelClient = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient, storage,
+        this.edcSubmodelClient = new EdcSubmodelClientImpl(config, contractNegotiationService, dataPlaneClient,
                 pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
     }
 
@@ -193,8 +199,7 @@ class SubmodelFacadeWiremockTest {
         final List<Constraint> andConstraints = List.of(
                 new Constraint("Membership", new Operator(OperatorType.EQ), "active"));
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
-        final Permission permission = new Permission(PolicyType.USE,
-                new Constraints(andConstraints, orConstraints));
+        final Permission permission = new Permission(PolicyType.USE, new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
 

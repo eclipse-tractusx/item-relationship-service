@@ -139,6 +139,7 @@ class SubmodelDelegateTest {
     @Test
     void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
         // given
+        final String businessPartnerNumber = "BPNL000000011111";
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
                                                                                                    .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
@@ -149,7 +150,7 @@ class SubmodelDelegateTest {
                                                                                                                            "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
-        when(submodelFacade.getSubmodelPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId", null));
+        when(submodelFacade.getSubmodelPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId", null, businessPartnerNumber));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
                 jobParameterCollectAspects(), new AASTransferProcess(), createKey());
@@ -158,6 +159,7 @@ class SubmodelDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(2);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(businessPartnerNumber);
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.USAGE_POLICY_VALIDATION);
     }

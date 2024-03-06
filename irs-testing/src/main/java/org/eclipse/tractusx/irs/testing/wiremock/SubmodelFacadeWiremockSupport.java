@@ -56,14 +56,14 @@ public final class SubmodelFacadeWiremockSupport {
     public static String prepareNegotiation() {
         final String contractAgreementId = "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:a6144a2e-c1b1-4ec6-96e1-a221da134e4f";
         prepareNegotiation("1bbaec6e-c316-4e1e-8258-c07a648cc43c", "1b21e963-0bc5-422a-b30d-fd3511861d88",
-                contractAgreementId,
-                "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7");
+                contractAgreementId, "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7");
         return contractAgreementId;
     }
 
     @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
     public static void prepareNegotiation(final String negotiationId, final String transferProcessId,
             final String contractAgreementId, final String edcAssetId) {
+
         stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                                                                             .withBody(getCatalogResponse(edcAssetId,
                                                                                     "USE", EDC_PROVIDER_BPN))));
