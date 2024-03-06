@@ -1234,7 +1234,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>the REST API to view and control Jobs</p>
+<p>the REST API to view and control jobs</p>
 </li>
 <li>
 <p>the asynchronous job processing engine</p>
@@ -3346,16 +3346,25 @@ This improves request processing time.</p>
 <div class="sect3">
 <h4 id="_build_test_deploy">Build, test, deploy</h4>
 <div class="paragraph">
-<p>The IRS is built using Maven and utilizes all the standard concepts of it. Test execution is part of the build process and a minimum test coverage of 80% is enforced.</p>
+<p>The IRS is built using <a href="https://maven.apache.org/">Apache Maven</a> and utilizes all the standard concepts of it.
+Test execution is part of the build process and a minimum test coverage of 80% is enforced.</p>
 </div>
 <div class="paragraph">
-<p>The project setup contains a multi-module Maven build. Commonly used classes (like the IRS data model) should be extracted into a separate submodule and reused across the project. However, this is not a "one-size-fits-all" solution. New submodules should be created with care and require a review by the team.</p>
+<p>The project setup contains a multi-module Maven build.
+Commonly used classes (like the IRS data model) should be extracted
+into a separate submodule and reused across the project.
+However, this is not a "one-size-fits-all" solution.
+New submodules should be created with care and require a review by the team.</p>
 </div>
 <div class="paragraph">
-<p>The Maven build alone only leads up to the JAR artifact of the IRS. Do create Docker images, the Docker build feature is used. This copies all resources into a builder image, builds the software and creates a final Docker image at the end that can then be deployed.</p>
+<p>The Maven build alone only leads up to the JAR artifact of the IRS.
+To create Docker images, the Docker build feature is used.
+This copies all resources into a builder image,
+builds the software and creates a final Docker image at the end that can then be deployed.</p>
 </div>
 <div class="paragraph">
-<p>Although the Docker image can be deployed in various ways, the standard solution are the provided Helm charts, which describe the required components as well.</p>
+<p>Although the Docker image can be deployed in various ways, the standard solution are the provided Helm charts,
+which describe the required components as well.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3366,17 +3375,22 @@ This improves request processing time.</p>
 <div class="sect4">
 <h5 id="_lombok">Lombok</h5>
 <div class="paragraph">
-<p>The Lombok library is heavily used to generate boilerplate code (like Constructors, Getters, Setters, Builders&#8230;&#8203;).
-This way, code can be written faster and this boilerplate code is excluded from test coverage, which keeps the test base lean.</p>
+<p>The <a href="https://projectlombok.org/">Lombok</a> library is heavily used to generate boilerplate code
+(like Constructors, Getters, Setters, Builders&#8230;&#8203;).
+This way, code can be written faster and this boilerplate code is excluded from test coverage,
+which keeps the test base lean.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="_swagger_openapi">Swagger / OpenAPI</h5>
 <div class="paragraph">
-<p>The API uses OpenAPI annotations to describe the endpoints with all necessary information. The annotations are then used to automatically generate the OpenAPI specification file, which can be viewed in the Swagger UI that is deployed with the application.</p>
+<p>The API uses <a href="https://www.openapis.org/">OpenAPI</a> annotations to describe the endpoints with all necessary information.
+The annotations are then used to automatically generate the OpenAPI specification file,
+which can be viewed in the Swagger UI that is deployed with the application.</p>
 </div>
 <div class="paragraph">
-<p>The generated OpenAPI specification file is automatically compared to a fixed, stored version of it to avoid unwanted changes of the API.</p>
+<p>The generated OpenAPI specification file is automatically compared to a fixed,
+stored version of it to avoid unwanted changes of the API (see <code>IrsApplicationTests.generatedOpenApiMatchesContract</code>).</p>
 </div>
 </div>
 </div>
@@ -3390,13 +3404,17 @@ In case the model of the persisted data (Jobs) changes, data is dropped and Jobs
 <div class="sect3">
 <h4 id="_configurability">Configurability</h4>
 <div class="paragraph">
-<p>The IRS utilizes the configuration mechanism provided by Spring Boot. Configuration properties can be defined in the file <code>src/main/resources/application.yml</code></p>
+<p>The IRS utilizes the configuration mechanism provided by <a href="https://spring.io/projects/spring-boot">Spring Boot.</a>
+Configuration properties can be defined in the file <code>src/main/resources/application.yml</code></p>
 </div>
 <div class="paragraph">
-<p>For local testing purposes, there is an additional configuration file called <code>application-local.yml</code>. Values can be overriden there to support the local dev environment.</p>
+<p>For local testing purposes, there is an additional configuration file called <code>application-local.yml</code>.
+Values can be overridden there to support the local dev environment.</p>
 </div>
 <div class="paragraph">
-<p>Other profiles should be avoided. Instead, the configuration can be overwritten using Spring&#8217;s external configuration mechanism (see <a href="https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html" class="bare">https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html</a>). The operator must have total control over the configuration of the IRS.</p>
+<p>Other profiles should be avoided.
+Instead, the configuration can be overwritten using the Spring Boot externalized configuration mechanism.
+The operator must have total control over the configuration of the IRS.</p>
 </div>
 </div>
 </div>
@@ -3412,14 +3430,19 @@ In case the model of the persisted data (Jobs) changes, data is dropped and Jobs
 <div class="sect5">
 <h6 id="_application_yml">application.yml</h6>
 <div class="paragraph">
-<p>If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS. This file contains all possible config entries for the application.
-Once the Docker image has been built, these values can only be overwritten using the Spring external config mechanism (see <a href="https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html" class="bare">https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html</a>), e.g. by mounting a config file in the right path or using environment variables.</p>
+<p>If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS.
+This file contains all possible config entries for the application.
+Once the Docker image has been built, these values can only be overwritten using the
+Spring Boot externalized configuration mechanism,
+e.g. by mounting a config file in the right path or using environment variables.</p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="_helm_chart">Helm Chart</h6>
 <div class="paragraph">
-<p>The most relevant config properties are exposed as environment variables and must be set in the Helm chart so the application can run at all. Check the IRS Helm chart in Git for all available variables.</p>
+<p>The most relevant config properties are exposed as environment variables and must be set
+in the <a href="https://helm.sh/">Helm</a> chart so the application can run at all.
+Check the IRS Helm chart in Git for all available variables.</p>
 </div>
 </div>
 </div>
@@ -3429,9 +3452,12 @@ Once the Docker image has been built, these values can only be overwritten using
 <div class="sect4">
 <h5 id="_ephemeral_components">Ephemeral components</h5>
 <div class="paragraph">
-<p>All components in the IRS deployment not listed in the persistent components section below are considered ephemeral and are easily replaced in a disaster scenario.
-All deployment components are described using Helm charts, which can be used to restore the deployment with the Docker images.
-Should the Docker images go missing, they can be restored by executing the build pipelines for the corresponding version tag of the component.</p>
+<p>All components in the IRS deployment not listed in the persistent components section below are considered ephemeral
+and are easily replaced in a disaster scenario.
+All deployment components are described using Helm charts,
+which can be used to restore the deployment with the Docker images.
+Should the Docker images go missing, they can be restored by executing the build pipelines
+for the corresponding version tag of the component.</p>
 </div>
 </div>
 <div class="sect4">
@@ -3457,7 +3483,8 @@ Should the Docker images go missing, they can be restored by executing the build
 <div class="sect3">
 <h4 id="_scaling">Scaling</h4>
 <div class="paragraph">
-<p>If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod. Those resources can be used to utilize more parallel threads to handle Job execution.</p>
+<p>If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod.
+Those resources can be used to utilize more parallel threads to handle Job execution.</p>
 </div>
 </div>
 <div class="sect3">
@@ -3476,7 +3503,8 @@ Note: as soon as a resume feature is implemented, this needs to be addressed her
 <div class="sect3">
 <h4 id="_monitoring">Monitoring</h4>
 <div class="paragraph">
-<p>The application can be monitored using Prometheus and Grafana. Both systems are defined in the Helm charts with a default setup.
+<p>The application can be monitored using <a href="https://prometheus.io/">Prometheus</a> and <a href="https://grafana.com/">Grafana</a>.
+Both systems are defined in the Helm charts with a default setup.
 A number of Grafana dashboards are deployed automatically, to display data about:</p>
 </div>
 <div class="ulist">
@@ -3556,104 +3584,127 @@ A number of Grafana dashboards are deployed automatically, to display data about
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 30%;">
+<col style="width: 10%;">
+<col style="width: 60%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">Term</th>
+<th class="tableblock halign-left valign-top">Abrv.</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Asset Administration Shell (AAS)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Asset Administration Shell</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AAS</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">see "Digital Twin"</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Aspect servers (submodel endpoints)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aspect Servers (Submodel Endpoints)</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bill of Materials (BoM)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bill of Materials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BoM</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A Bill of Materials is a comprehensive list of materials, components, sub-assemblies, and the quantities of each needed to manufacture or build a product. It serves as a structured document that provides information about the raw materials, parts, and components required for the production process.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BPN</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Business Partner Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BPN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A BPN is the unique identifier of a partner within Catena-X</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CatalogItem</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A "CatalogItem" from EDC is a synonym for "Contract Offer".</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Contract Offer</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A "Contract Offer" is a synonym for "CatalogItem" from EDC.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Data Space</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Data Spaces are the key concept for a large-scale, cross-border data economy. This is also the vision of the Gaia-X initiative for a data infrastructure in Europe. The International Data Space Association (IDSA) contributes significantly to this with the architectural model, interfaces, and standards.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin (DT)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DT</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Digital Twin is the key technology of Industry 4.0 and connects the physical world with the digital world and acts as an enabler of the Catena-X network. It is based on a standardized programming interface of the Industrial <a href="https://industrialdigitaltwin.org/">Digital Twin Association (IDTA)</a> and its Asset Administration Shell.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin Registry (DTR)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Digital Twin Registry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DTR</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints).</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse Dataspace Connector (EDC)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Eclipse Dataspace Connector</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EDC</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Eclipse Data Space Connector (EDC) is a standard and policy-compliant connector that can be used within the scope of Catena-X, but also more generally as a connector for Data Spaces. It is split up into Control-Plane and Data-Plane, whereas the Control-Plane functions as administration layer and has responsibility of resource management, contract negotiation and administer data transfer. The Data-Plane does the heavy lifting of transferring and receiving data streams. For more information see:
 <a href="https://github.com/eclipse-edc/Connector">EDC Connector</a> , <a href="https://github.com/eclipse-tractusx/tractusx-edc">Tractus-X EDC (Eclipse Dataspace Connector)</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Edge</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">see Traversal Aspect</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Item Relationship Service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Item Graph</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The result returned via the IRS. This corresponds to a tree structure in which each node represents a part of a virtual asset.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Managed Identity Wallet (MIW)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Managed Identity Wallet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIW</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Managed Identity Wallets (MIW) service implements the Self-Sovereign-Identity (SSI) readiness by providing a wallet hosting platform including a decentralized identifier (DID) resolver, service endpoints and the company wallets itself.
 For more information see:
-<a href="https://github.com/eclipse-tractusx/managed-identity-wallet">eclipse-tractusx/managed-identity-wallet</a> , <a href="https://github.com/catenax-ng/tx-managed-identity-wallets">catenax-ng/tx-managed-identity-wallets</a></p></td>
+<a href="https://github.com/eclipse-tractusx/managed-identity-wallet">eclipse-tractusx/managed-identity-wallet</a></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multi Tier Parts Data Chain</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">MTPDC</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Formerly known Service Name: Multi Tier Parts Data Chain</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PolicyStore</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases.
 For more information see:
 <a href="https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction">Policy specification for Catena-X verifiable credentials</a></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parts Relationship Service</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PRS</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Formerly known Service Name: Parts Relationship Service</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Self-Sovereign Identity (SSI)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Self-Sovereign Identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSI</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">For more information see: <a href="https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2">ssi-docu</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Shell</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">see "Asset Administration Shell"</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Traversal Aspect</p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship.</p>
 <p class="tableblock">Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Verifiable Credential (VC)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verifiable Credential</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">VC</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">For more information see: <a href="https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2/3.%20Verifiable%20Credentials">Verifiable Credentials</a></p></td>
 </tr>
 </tbody>
@@ -3696,7 +3747,7 @@ For more information see:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-04 10:05:05 UTC
+Last updated 2024-03-06 09:41:33 UTC
 </div>
 </div>
 </body>

@@ -221,7 +221,7 @@ For persistence, blob storage was chosen as the payloads retrieved for each job 
 
 The IRS consists of 4 main components:
 
-1. the REST API to view and control Jobs
+1. the REST API to view and control jobs
 2. the asynchronous job processing engine
 3. the job and payload persistence
 4. the AAS connector
@@ -1212,13 +1212,22 @@ This improves request processing time.
 
 ### Build, test, deploy
 
-The IRS is built using Maven and utilizes all the standard concepts of it. Test execution is part of the build process and a minimum test coverage of 80% is enforced.
+The IRS is built using [Apache Maven](https://maven.apache.org/) and utilizes all the standard concepts of it.
+Test execution is part of the build process and a minimum test coverage of 80% is enforced.
 
-The project setup contains a multi-module Maven build. Commonly used classes (like the IRS data model) should be extracted into a separate submodule and reused across the project. However, this is not a "one-size-fits-all" solution. New submodules should be created with care and require a review by the team.
+The project setup contains a multi-module Maven build.
+Commonly used classes (like the IRS data model) should be extracted
+into a separate submodule and reused across the project.
+However, this is not a "one-size-fits-all" solution.
+New submodules should be created with care and require a review by the team.
 
-The Maven build alone only leads up to the JAR artifact of the IRS. Do create Docker images, the Docker build feature is used. This copies all resources into a builder image, builds the software and creates a final Docker image at the end that can then be deployed.
+The Maven build alone only leads up to the JAR artifact of the IRS.
+To create Docker images, the Docker build feature is used.
+This copies all resources into a builder image,
+builds the software and creates a final Docker image at the end that can then be deployed.
 
-Although the Docker image can be deployed in various ways, the standard solution are the provided Helm charts, which describe the required components as well.
+Although the Docker image can be deployed in various ways, the standard solution are the provided Helm charts,
+which describe the required components as well.
 
 ### Code generation
 
@@ -1226,14 +1235,19 @@ There are two methods of code generation in the IRS:
 
 #### Lombok
 
-The Lombok library is heavily used to generate boilerplate code (like Constructors, Getters, Setters, Builders...).
-This way, code can be written faster and this boilerplate code is excluded from test coverage, which keeps the test base lean.
+The [Lombok](https://projectlombok.org/) library is heavily used to generate boilerplate code
+(like Constructors, Getters, Setters, Builders...).
+This way, code can be written faster and this boilerplate code is excluded from test coverage,
+which keeps the test base lean.
 
 #### Swagger / OpenAPI
 
-The API uses OpenAPI annotations to describe the endpoints with all necessary information. The annotations are then used to automatically generate the OpenAPI specification file, which can be viewed in the Swagger UI that is deployed with the application.
+The API uses [OpenAPI](https://www.openapis.org/) annotations to describe the endpoints with all necessary information.
+The annotations are then used to automatically generate the OpenAPI specification file,
+which can be viewed in the Swagger UI that is deployed with the application.
 
-The generated OpenAPI specification file is automatically compared to a fixed, stored version of it to avoid unwanted changes of the API.
+The generated OpenAPI specification file is automatically compared to a fixed,
+stored version of it to avoid unwanted changes of the API (see `IrsApplicationTests.generatedOpenApiMatchesContract`).
 
 ### Migration
 
@@ -1242,11 +1256,15 @@ In case the model of the persisted data (Jobs) changes, data is dropped and Jobs
 
 ### Configurability
 
-The IRS utilizes the configuration mechanism provided by Spring Boot. Configuration properties can be defined in the file `src/main/resources/application.yml`
+The IRS utilizes the configuration mechanism provided by [Spring Boot.](https://spring.io/projects/spring-boot)
+Configuration properties can be defined in the file `src/main/resources/application.yml`
 
-For local testing purposes, there is an additional configuration file called `application-local.yml`. Values can be overriden there to support the local dev environment.
+For local testing purposes, there is an additional configuration file called `application-local.yml`.
+Values can be overridden there to support the local dev environment.
 
-Other profiles should be avoided. Instead, the configuration can be overwritten using Spring’s external configuration mechanism (see <https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html).> The operator must have total control over the configuration of the IRS.
+Other profiles should be avoided.
+Instead, the configuration can be overwritten using the Spring Boot externalized configuration mechanism.
+The operator must have total control over the configuration of the IRS.
 
 ## Operational concepts
 
@@ -1258,20 +1276,28 @@ The IRS can be configured using two mechanisms:
 
 ##### application.yml
 
-If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS. This file contains all possible config entries for the application.
-Once the Docker image has been built, these values can only be overwritten using the Spring external config mechanism (see <https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html),> e.g. by mounting a config file in the right path or using environment variables.
+If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS.
+This file contains all possible config entries for the application.
+Once the Docker image has been built, these values can only be overwritten using the
+Spring Boot externalized configuration mechanism,
+e.g. by mounting a config file in the right path or using environment variables.
 
 ##### Helm Chart
 
-The most relevant config properties are exposed as environment variables and must be set in the Helm chart so the application can run at all. Check the IRS Helm chart in Git for all available variables.
+The most relevant config properties are exposed as environment variables and must be set
+in the [Helm](https://helm.sh/) chart so the application can run at all.
+Check the IRS Helm chart in Git for all available variables.
 
 ### Disaster-Recovery
 
 #### Ephemeral components
 
-All components in the IRS deployment not listed in the persistent components section below are considered ephemeral and are easily replaced in a disaster scenario.
-All deployment components are described using Helm charts, which can be used to restore the deployment with the Docker images.
-Should the Docker images go missing, they can be restored by executing the build pipelines for the corresponding version tag of the component.
+All components in the IRS deployment not listed in the persistent components section below are considered ephemeral
+and are easily replaced in a disaster scenario.
+All deployment components are described using Helm charts,
+which can be used to restore the deployment with the Docker images.
+Should the Docker images go missing, they can be restored by executing the build pipelines
+for the corresponding version tag of the component.
 
 #### Persistent components
 
@@ -1283,7 +1309,8 @@ These components utilize data persistence, which needs to be backed up separatel
 
 ### Scaling
 
-If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod. Those resources can be used to utilize more parallel threads to handle Job execution.
+If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod.
+Those resources can be used to utilize more parallel threads to handle Job execution.
 
 ### Clustering
 
@@ -1296,7 +1323,8 @@ Logs are being written directly to stdout and are picked up by the cluster manag
 
 ### Monitoring
 
-The application can be monitored using Prometheus and Grafana. Both systems are defined in the Helm charts with a default setup.
+The application can be monitored using [Prometheus](https://prometheus.io/) and [Grafana](https://grafana.com/).
+Both systems are defined in the Helm charts with a default setup.
 A number of Grafana dashboards are deployed automatically, to display data about:
 
 * Pod / JVM resources
@@ -1323,29 +1351,29 @@ The quality scenarios in this section depict the fundamental quality goals as we
 
 ## Glossary
 
-| Term | Description |
-| --- | --- |
-| Asset Administration Shell (AAS) | see "Digital Twin" |
-| Aspect servers (submodel endpoints) | Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X. |
-| Bill of Materials (BoM) | A Bill of Materials is a comprehensive list of materials, components, sub-assemblies, and the quantities of each needed to manufacture or build a product. It serves as a structured document that provides information about the raw materials, parts, and components required for the production process. |
-| BPN | Business Partner Number |
-| CatalogItem | A "CatalogItem" from EDC is a synonym for "Contract Offer". |
-| Contract Offer | A "Contract Offer" is a synonym for "CatalogItem" from EDC. |
-| Data Space | Data Spaces are the key concept for a large-scale, cross-border data economy. This is also the vision of the Gaia-X initiative for a data infrastructure in Europe. The International Data Space Association (IDSA) contributes significantly to this with the architectural model, interfaces, and standards. |
-| Digital Twin (DT) | The Digital Twin is the key technology of Industry 4.0 and connects the physical world with the digital world and acts as an enabler of the Catena-X network. It is based on a standardized programming interface of the Industrial [Digital Twin Association (IDTA)](https://industrialdigitaltwin.org/) and its Asset Administration Shell. |
-| Digital Twin Registry (DTR) | The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints). |
-| Eclipse Dataspace Connector (EDC) | The Eclipse Data Space Connector (EDC) is a standard and policy-compliant connector that can be used within the scope of Catena-X, but also more generally as a connector for Data Spaces. It is split up into Control-Plane and Data-Plane, whereas the Control-Plane functions as administration layer and has responsibility of resource management, contract negotiation and administer data transfer. The Data-Plane does the heavy lifting of transferring and receiving data streams. For more information see: [EDC Connector](https://github.com/eclipse-edc/Connector) , [Tractus-X EDC (Eclipse Dataspace Connector)](https://github.com/eclipse-tractusx/tractusx-edc) |
-| Edge | see Traversal Aspect |
-| IRS | Item Relationship Service |
-| Item Graph | The result returned via the IRS. This corresponds to a tree structure in which each node represents a part of a virtual asset. |
-| Managed Identity Wallet (MIW) | The Managed Identity Wallets (MIW) service implements the Self-Sovereign-Identity (SSI) readiness by providing a wallet hosting platform including a decentralized identifier (DID) resolver, service endpoints and the company wallets itself. For more information see: [eclipse-tractusx/managed-identity-wallet](https://github.com/eclipse-tractusx/managed-identity-wallet) , [catenax-ng/tx-managed-identity-wallets](https://github.com/catenax-ng/tx-managed-identity-wallets) |
-| MTPDC | Formerly known Service Name: Multi Tier Parts Data Chain |
-| PolicyStore | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: [Policy specification for Catena-X verifiable credentials](https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction) |
-| PRS | Formerly known Service Name: Parts Relationship Service |
-| Self-Sovereign Identity (SSI) | For more information see: [ssi-docu](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2) |
-| Shell | see "Asset Administration Shell" |
-| Traversal Aspect | aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship. Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt |
-| Verifiable Credential (VC) | For more information see: [Verifiable Credentials](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2/3.%20Verifiable%20Credentials) |
+| Term | Abrv. | Description |
+| --- | --- | --- |
+| Asset Administration Shell | AAS | see "Digital Twin" |
+| Aspect Servers (Submodel Endpoints) |  | Companies participating in the interorganizational data exchange provides their data over aspect servers. The so called "submodel-descriptors" in the AAS shells are pointing to these AspectServers which provide the data-assets of the participating these companies in Catena-X. |
+| Bill of Materials | BoM | A Bill of Materials is a comprehensive list of materials, components, sub-assemblies, and the quantities of each needed to manufacture or build a product. It serves as a structured document that provides information about the raw materials, parts, and components required for the production process. |
+| Business Partner Number | BPN | A BPN is the unique identifier of a partner within Catena-X |
+| CatalogItem |  | A "CatalogItem" from EDC is a synonym for "Contract Offer". |
+| Contract Offer |  | A "Contract Offer" is a synonym for "CatalogItem" from EDC. |
+| Data Space |  | Data Spaces are the key concept for a large-scale, cross-border data economy. This is also the vision of the Gaia-X initiative for a data infrastructure in Europe. The International Data Space Association (IDSA) contributes significantly to this with the architectural model, interfaces, and standards. |
+| Digital Twin | DT | The Digital Twin is the key technology of Industry 4.0 and connects the physical world with the digital world and acts as an enabler of the Catena-X network. It is based on a standardized programming interface of the Industrial [Digital Twin Association (IDTA)](https://industrialdigitaltwin.org/) and its Asset Administration Shell. |
+| Digital Twin Registry | DTR | The Digital Twin Registry is a registry which lists all digital twins and references their aspects including information about the underlying asset, asset manufacturer, and access options (e.g. aspect endpoints). |
+| Eclipse Dataspace Connector | EDC | The Eclipse Data Space Connector (EDC) is a standard and policy-compliant connector that can be used within the scope of Catena-X, but also more generally as a connector for Data Spaces. It is split up into Control-Plane and Data-Plane, whereas the Control-Plane functions as administration layer and has responsibility of resource management, contract negotiation and administer data transfer. The Data-Plane does the heavy lifting of transferring and receiving data streams. For more information see: [EDC Connector](https://github.com/eclipse-edc/Connector) , [Tractus-X EDC (Eclipse Dataspace Connector)](https://github.com/eclipse-tractusx/tractusx-edc) |
+| Edge |  | see Traversal Aspect |
+| Item Relationship Service | IRS |  |
+| Item Graph |  | The result returned via the IRS. This corresponds to a tree structure in which each node represents a part of a virtual asset. |
+| Managed Identity Wallet | MIW | The Managed Identity Wallets (MIW) service implements the Self-Sovereign-Identity (SSI) readiness by providing a wallet hosting platform including a decentralized identifier (DID) resolver, service endpoints and the company wallets itself. For more information see: [eclipse-tractusx/managed-identity-wallet](https://github.com/eclipse-tractusx/managed-identity-wallet) |
+| Multi Tier Parts Data Chain | MTPDC | Formerly known Service Name: Multi Tier Parts Data Chain |
+| PolicyStore |  | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: [Policy specification for Catena-X verifiable credentials](https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction) |
+| Parts Relationship Service | PRS | Formerly known Service Name: Parts Relationship Service |
+| Self-Sovereign Identity | SSI | For more information see: [ssi-docu](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2) |
+| Shell |  | see "Asset Administration Shell" |
+| Traversal Aspect |  | aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship. Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt |
+| Verifiable Credential | VC | For more information see: [Verifiable Credentials](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2/3.%20Verifiable%20Credentials) |
 
 ### NOTICE
 

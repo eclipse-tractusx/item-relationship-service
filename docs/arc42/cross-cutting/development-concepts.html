@@ -460,16 +460,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_build_test_deploy">Build, test, deploy</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The IRS is built using Maven and utilizes all the standard concepts of it. Test execution is part of the build process and a minimum test coverage of 80% is enforced.</p>
+<p>The IRS is built using <a href="https://maven.apache.org/">Apache Maven</a> and utilizes all the standard concepts of it.
+Test execution is part of the build process and a minimum test coverage of 80% is enforced.</p>
 </div>
 <div class="paragraph">
-<p>The project setup contains a multi-module Maven build. Commonly used classes (like the IRS data model) should be extracted into a separate submodule and reused across the project. However, this is not a "one-size-fits-all" solution. New submodules should be created with care and require a review by the team.</p>
+<p>The project setup contains a multi-module Maven build.
+Commonly used classes (like the IRS data model) should be extracted
+into a separate submodule and reused across the project.
+However, this is not a "one-size-fits-all" solution.
+New submodules should be created with care and require a review by the team.</p>
 </div>
 <div class="paragraph">
-<p>The Maven build alone only leads up to the JAR artifact of the IRS. Do create Docker images, the Docker build feature is used. This copies all resources into a builder image, builds the software and creates a final Docker image at the end that can then be deployed.</p>
+<p>The Maven build alone only leads up to the JAR artifact of the IRS.
+To create Docker images, the Docker build feature is used.
+This copies all resources into a builder image,
+builds the software and creates a final Docker image at the end that can then be deployed.</p>
 </div>
 <div class="paragraph">
-<p>Although the Docker image can be deployed in various ways, the standard solution are the provided Helm charts, which describe the required components as well.</p>
+<p>Although the Docker image can be deployed in various ways, the standard solution are the provided Helm charts,
+which describe the required components as well.</p>
 </div>
 </div>
 </div>
@@ -482,17 +491,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="_lombok">Lombok</h3>
 <div class="paragraph">
-<p>The Lombok library is heavily used to generate boilerplate code (like Constructors, Getters, Setters, Builders&#8230;&#8203;).
-This way, code can be written faster and this boilerplate code is excluded from test coverage, which keeps the test base lean.</p>
+<p>The <a href="https://projectlombok.org/">Lombok</a> library is heavily used to generate boilerplate code
+(like Constructors, Getters, Setters, Builders&#8230;&#8203;).
+This way, code can be written faster and this boilerplate code is excluded from test coverage,
+which keeps the test base lean.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_swagger_openapi">Swagger / OpenAPI</h3>
 <div class="paragraph">
-<p>The API uses OpenAPI annotations to describe the endpoints with all necessary information. The annotations are then used to automatically generate the OpenAPI specification file, which can be viewed in the Swagger UI that is deployed with the application.</p>
+<p>The API uses <a href="https://www.openapis.org/">OpenAPI</a> annotations to describe the endpoints with all necessary information.
+The annotations are then used to automatically generate the OpenAPI specification file,
+which can be viewed in the Swagger UI that is deployed with the application.</p>
 </div>
 <div class="paragraph">
-<p>The generated OpenAPI specification file is automatically compared to a fixed, stored version of it to avoid unwanted changes of the API.</p>
+<p>The generated OpenAPI specification file is automatically compared to a fixed,
+stored version of it to avoid unwanted changes of the API (see <code>IrsApplicationTests.generatedOpenApiMatchesContract</code>).</p>
 </div>
 </div>
 </div>
@@ -510,20 +524,24 @@ In case the model of the persisted data (Jobs) changes, data is dropped and Jobs
 <h2 id="_configurability">Configurability</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The IRS utilizes the configuration mechanism provided by Spring Boot. Configuration properties can be defined in the file <code>src/main/resources/application.yml</code></p>
+<p>The IRS utilizes the configuration mechanism provided by <a href="https://spring.io/projects/spring-boot">Spring Boot.</a>
+Configuration properties can be defined in the file <code>src/main/resources/application.yml</code></p>
 </div>
 <div class="paragraph">
-<p>For local testing purposes, there is an additional configuration file called <code>application-local.yml</code>. Values can be overriden there to support the local dev environment.</p>
+<p>For local testing purposes, there is an additional configuration file called <code>application-local.yml</code>.
+Values can be overridden there to support the local dev environment.</p>
 </div>
 <div class="paragraph">
-<p>Other profiles should be avoided. Instead, the configuration can be overwritten using Spring&#8217;s external configuration mechanism (see <a href="https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html" class="bare">https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html</a>). The operator must have total control over the configuration of the IRS.</p>
+<p>Other profiles should be avoided.
+Instead, the configuration can be overwritten using the Spring Boot externalized configuration mechanism.
+The operator must have total control over the configuration of the IRS.</p>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-04 10:05:05 UTC
+Last updated 2024-03-06 09:41:33 UTC
 </div>
 </div>
 </body>

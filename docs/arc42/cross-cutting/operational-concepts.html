@@ -473,14 +473,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="_application_yml">application.yml</h4>
 <div class="paragraph">
-<p>If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS. This file contains all possible config entries for the application.
-Once the Docker image has been built, these values can only be overwritten using the Spring external config mechanism (see <a href="https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html" class="bare">https://docs.spring.io/spring-boot/docs/2.1.9.RELEASE/reference/html/boot-features-external-config.html</a>), e.g. by mounting a config file in the right path or using environment variables.</p>
+<p>If you build the IRS yourself, you can modify the application.yml config that is shipped with the IRS.
+This file contains all possible config entries for the application.
+Once the Docker image has been built, these values can only be overwritten using the
+Spring Boot externalized configuration mechanism,
+e.g. by mounting a config file in the right path or using environment variables.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_helm_chart">Helm Chart</h4>
 <div class="paragraph">
-<p>The most relevant config properties are exposed as environment variables and must be set in the Helm chart so the application can run at all. Check the IRS Helm chart in Git for all available variables.</p>
+<p>The most relevant config properties are exposed as environment variables and must be set
+in the <a href="https://helm.sh/">Helm</a> chart so the application can run at all.
+Check the IRS Helm chart in Git for all available variables.</p>
 </div>
 </div>
 </div>
@@ -492,9 +497,12 @@ Once the Docker image has been built, these values can only be overwritten using
 <div class="sect2">
 <h3 id="_ephemeral_components">Ephemeral components</h3>
 <div class="paragraph">
-<p>All components in the IRS deployment not listed in the persistent components section below are considered ephemeral and are easily replaced in a disaster scenario.
-All deployment components are described using Helm charts, which can be used to restore the deployment with the Docker images.
-Should the Docker images go missing, they can be restored by executing the build pipelines for the corresponding version tag of the component.</p>
+<p>All components in the IRS deployment not listed in the persistent components section below are considered ephemeral
+and are easily replaced in a disaster scenario.
+All deployment components are described using Helm charts,
+which can be used to restore the deployment with the Docker images.
+Should the Docker images go missing, they can be restored by executing the build pipelines
+for the corresponding version tag of the component.</p>
 </div>
 </div>
 <div class="sect2">
@@ -522,7 +530,8 @@ Should the Docker images go missing, they can be restored by executing the build
 <h2 id="_scaling">Scaling</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod. Those resources can be used to utilize more parallel threads to handle Job execution.</p>
+<p>If the number of consumers raises, the IRS can be scaled up by using more resources for the Deployment Pod.
+Those resources can be used to utilize more parallel threads to handle Job execution.</p>
 </div>
 </div>
 </div>
@@ -547,7 +556,8 @@ Note: as soon as a resume feature is implemented, this needs to be addressed her
 <h2 id="_monitoring">Monitoring</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The application can be monitored using Prometheus and Grafana. Both systems are defined in the Helm charts with a default setup.
+<p>The application can be monitored using <a href="https://prometheus.io/">Prometheus</a> and <a href="https://grafana.com/">Grafana</a>.
+Both systems are defined in the Helm charts with a default setup.
 A number of Grafana dashboards are deployed automatically, to display data about:</p>
 </div>
 <div class="ulist">
@@ -568,7 +578,7 @@ A number of Grafana dashboards are deployed automatically, to display data about
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-04 10:05:05 UTC
+Last updated 2024-03-06 09:41:33 UTC
 </div>
 </div>
 </body>
