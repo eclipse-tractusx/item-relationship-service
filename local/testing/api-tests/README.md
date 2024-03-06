@@ -1,4 +1,9 @@
-# Usage 
+# Tavern API Tests
+
+This folder contains [Tavern](https://tavern.readthedocs.io) API tests for the IRS.
+
+## Usage 
+
 * Install python
 * Install pytest: ```py -m pip install pytest```
 * Install tavern: ```py -m pip install tavern```
