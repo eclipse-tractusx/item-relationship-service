@@ -148,21 +148,23 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     @Override
     public CompletableFuture<SubmodelDescriptor> getSubmodelPayload(final String connectorEndpoint,
             final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
-        return execute(connectorEndpoint, () -> {
+
+        final CheckedSupplier<CompletableFuture<SubmodelDescriptor>> waitingForSubmodelRetrieval = () -> {
             log.info("Requesting raw SubmodelPayload for endpoint '{}'.", connectorEndpoint);
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
 
-            final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId);
+            final EndpointDataReference dataReference = getEndpointDataReference(connectorEndpoint, assetId);
 
             return pollingService.<SubmodelDescriptor>createJob()
-                                 .action(() -> retrieveSubmodelData(submodelDataplaneUrl, stopWatch,
-                                         endpointDataReference))
+                                 .action(() -> retrieveSubmodelData(submodelDataplaneUrl, stopWatch, dataReference))
                                  .timeToLive(config.getSubmodel().getRequestTtl())
                                  .description("waiting for submodel retrieval")
                                  .build()
                                  .schedule();
-        });
+        };
+
+        return execute(connectorEndpoint, waitingForSubmodelRetrieval);
     }
 
     private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId)
