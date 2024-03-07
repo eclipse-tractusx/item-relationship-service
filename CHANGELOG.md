@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
+### Changed
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if when it exists in EDC
+- Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
+
 
 ## [4.7.0] - 2024-03-04
 ### Added
@@ -16,8 +20,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 - EDC client handles multiple Digital Twin Registries and Digital Twins now #395
 - Change logo of irs
-- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if when it exists in EDC
-- Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 - Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created. #404
 
 ### Fixed
