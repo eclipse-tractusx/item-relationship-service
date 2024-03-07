@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.16.0] - 2024-03-04
+### Added
+- Added configuration property `edc.controlplane.endpoint.contractAgreements`
+
+### Changed
+- Update IRS to version 4.7.0
+
 ## [6.15.0] - 2024-02-20
 ### Changed
 - Update IRS version to 4.6.0

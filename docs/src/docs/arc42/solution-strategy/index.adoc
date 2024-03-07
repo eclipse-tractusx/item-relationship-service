@@ -44,7 +44,7 @@ For persistence, blob storage was chosen as the payloads retrieved for each job 
 
 The IRS consists of 4 main components:
 
-1. the REST API to view and control Jobs
+1. the REST API to view and control jobs
 2. the asynchronous job processing engine
 3. the job and payload persistence
 4. the AAS connector

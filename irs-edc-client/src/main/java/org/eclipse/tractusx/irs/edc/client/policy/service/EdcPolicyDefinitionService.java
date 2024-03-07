@@ -63,12 +63,23 @@ public class EdcPolicyDefinitionService {
 
     public String createAccessPolicy(final String policyName) throws CreateEdcPolicyDefinitionException {
         final String accessPolicyId = UUID.randomUUID().toString();
-        final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, accessPolicyId);
 
+        return createAccessPolicy(policyName, accessPolicyId);
+    }
+
+    public String createAccessPolicy(final String policyName, final String policyId)
+            throws CreateEdcPolicyDefinitionException {
+        final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, policyId);
+
+        return createAccessPolicy(request);
+    }
+
+    public String createAccessPolicy(final EdcCreatePolicyDefinitionRequest policyRequest)
+            throws CreateEdcPolicyDefinitionException {
         final ResponseEntity<String> createPolicyDefinitionResponse;
         try {
             createPolicyDefinitionResponse = restTemplate.postForEntity(
-                    config.getControlplane().getEndpoint().getPolicyDefinition(), request, String.class);
+                    config.getControlplane().getEndpoint().getPolicyDefinition(), policyRequest, String.class);
         } catch (RestClientException e) {
             log.error("Failed to create EDC notification asset policy. Reason: ", e);
 
@@ -80,11 +91,11 @@ public class EdcPolicyDefinitionService {
         if (responseCode.value() == HttpStatus.CONFLICT.value()) {
             log.info("Notification asset policy definition already exists in the EDC");
 
-            throw new CreateEdcPolicyDefinitionException("Asset policy definition already exists in the EDC");
+            return policyRequest.getPolicyDefinitionId();
         }
 
         if (responseCode.value() == HttpStatus.OK.value()) {
-            return request.getPolicyDefinitionId();
+            return policyRequest.getPolicyDefinitionId();
         }
 
         throw new CreateEdcPolicyDefinitionException("Failed to create EDC policy definition for asset");
@@ -131,8 +142,7 @@ public class EdcPolicyDefinitionService {
                                                .build();
     }
 
-    public void deleteAccessPolicy(final String accessPolicyId)
-            throws DeleteEdcPolicyDefinitionException {
+    public void deleteAccessPolicy(final String accessPolicyId) throws DeleteEdcPolicyDefinitionException {
         final String deleteUri = UriComponentsBuilder.fromPath(
                                                              config.getControlplane().getEndpoint().getPolicyDefinition())
                                                      .pathSegment("{accessPolicyId}")

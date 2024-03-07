@@ -17,25 +17,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.contract.model.exception;
+package org.eclipse.tractusx.irs.edc.client.contract.model;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 
 /**
- * EdcContractAgreementRequest represents the request to management/v2/contractagreements
+ * EdcContractAgreementNegotiationResponse used for representing the response of
+ * /management/v2/contractagreements/{contragtAgreementId}/negotiation
  */
-public record EdcContractAgreementRequest(@JsonProperty(
-        "https://w3id.org/edc/v0.0.1/ns/filterExpression") List<EdcContractAgreementFilterExpression> edcContractAgreementFilterExpressions) {
-    /**
-     * EdcContractAgreementFilterExpression represents the filterExpression
-     * for EdcContractAgreementRequest
-     */
-    public record EdcContractAgreementFilterExpression(
-            @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operandLeft") String operandLeft,
-            @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operator") String operator,
-            @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operandRight") String operandRight) {
 
-    }
+@Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record EdcContractAgreementNegotiationResponse(@JsonProperty("@id") String correlationId,
+                                                      @JsonProperty("edc:counterPartyId") String counterPartyId,
+                                                      @JsonProperty(
+                                                              "edc:counterPartyAddress") String counterPartyAddress,
+                                                      @JsonProperty("edc:protocol") String protocol,
+                                                      @JsonProperty("edc:state") String state,
+                                                      @JsonProperty("edc:type") String type) {
 }

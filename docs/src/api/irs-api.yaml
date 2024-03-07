@@ -1900,6 +1900,8 @@ components:
           $ref: '#/components/schemas/Reference'
         subjectId:
           $ref: '#/components/schemas/Reference'
+        externalSubjectId:
+          $ref: '#/components/schemas/Reference'
         value:
           type: string
           example: "12309481209312"
