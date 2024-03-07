@@ -90,7 +90,7 @@ public class RegisterBatchOrder {
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @ArraySchema(arraySchema = @Schema(description = "List of aspect names that will be collected if \\<collectAspects\\> flag is set to true.", example = "urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt",
+    @ArraySchema(schema = @Schema(description = "List of aspect names that will be collected if \\<collectAspects\\> flag is set to true.", example = "urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt",
                                        implementation = String.class, pattern = ASPECT_MODEL_REGEX), maxItems = Integer.MAX_VALUE)
     private List<@Pattern(regexp = ASPECT_MODEL_REGEX) String> aspects;
 
