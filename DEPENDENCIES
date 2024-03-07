@@ -62,6 +62,7 @@ maven/mavencentral/com.typesafe.akka/akka-slf4j_2.13/2.6.20, Apache-2.0, approve
 maven/mavencentral/com.typesafe.scala-logging/scala-logging_2.13/3.9.5, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.typesafe/config/1.4.2, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.vaadin.external.google/android-json/0.0.20131108.vaadin1, Apache-2.0, approved, CQ21310
+maven/mavencentral/com.vdurmont/semver4j/3.1.0, MIT, approved, clearlydefined
 maven/mavencentral/commons-beanutils/commons-beanutils/1.9.4, Apache-2.0, approved, CQ12654
 maven/mavencentral/commons-codec/commons-codec/1.15, Apache-2.0 AND BSD-3-Clause AND LicenseRef-Public-Domain, approved, CQ22641
 maven/mavencentral/commons-collections/commons-collections/3.2.2, Apache-2.0, approved, CQ10385
@@ -436,7 +437,6 @@ maven/mavencentral/org.springframework.boot/spring-boot-starter-json/3.1.9, Apac
 maven/mavencentral/org.springframework.boot/spring-boot-starter-log4j2/3.1.9, Apache-2.0, approved, #8800
 maven/mavencentral/org.springframework.boot/spring-boot-starter-logging/3.1.9, Apache-2.0, approved, #9343
 maven/mavencentral/org.springframework.boot/spring-boot-starter-oauth2-client/3.1.9, Apache-2.0, approved, #8806
-maven/mavencentral/org.springframework.boot/spring-boot-starter-oauth2-resource-server/3.1.9, Apache-2.0, approved, #8804
 maven/mavencentral/org.springframework.boot/spring-boot-starter-security/3.1.9, Apache-2.0, approved, #9337
 maven/mavencentral/org.springframework.boot/spring-boot-starter-test/3.1.9, Apache-2.0, approved, #9353
 maven/mavencentral/org.springframework.boot/spring-boot-starter-tomcat/3.1.9, Apache-2.0, approved, #9351
@@ -453,7 +453,6 @@ maven/mavencentral/org.springframework.security/spring-security-crypto/6.1.7, Ap
 maven/mavencentral/org.springframework.security/spring-security-oauth2-client/6.1.7, Apache-2.0, approved, #9740
 maven/mavencentral/org.springframework.security/spring-security-oauth2-core/6.1.7, Apache-2.0, approved, #9741
 maven/mavencentral/org.springframework.security/spring-security-oauth2-jose/6.1.7, Apache-2.0, approved, #9345
-maven/mavencentral/org.springframework.security/spring-security-oauth2-resource-server/6.1.7, Apache-2.0, approved, #8798
 maven/mavencentral/org.springframework.security/spring-security-test/6.1.7, Apache-2.0, approved, #10674
 maven/mavencentral/org.springframework.security/spring-security-web/6.1.7, Apache-2.0, approved, #9800
 maven/mavencentral/org.springframework/spring-aop/6.0.17, Apache-2.0, approved, #5940

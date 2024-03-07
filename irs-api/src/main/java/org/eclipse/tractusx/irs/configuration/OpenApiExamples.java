@@ -60,7 +60,6 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInfor
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -92,6 +91,8 @@ public class OpenApiExamples {
     private static final String SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE = "supply_chain_impacted";
     private static final String SUPPLY_CHAIN_IMPACTED_KEY = "supplyChainImpacted";
     private static final String SUPPLY_CHAIN_IMPACTER_RESULT = "YES";
+    private static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt";
+    private static final String SERIAL_PART_ASPECT = "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart";
     private static final int FETCHED_ITEMS_SIZE = 3;
     private static final int NO_RUNNING_OR_FAILED_ITEMS = 0;
     private static final int SENT_NOTIFICATIONS_SIZE = 6;
@@ -136,15 +137,15 @@ public class OpenApiExamples {
     private Example createAspectModelsResult() {
         final AspectModel assemblyPartRelationship = AspectModel.builder()
                                                                 .name("SingleLevelBomAsBuilt")
-                                                                .urn("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt")
-                                                                .version("1.0.0")
+                                                                .urn(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT)
+                                                                .version("2.0.0")
                                                                 .status("RELEASED")
                                                                 .type("BAMM")
                                                                 .build();
         final AspectModel serialPart = AspectModel.builder()
                                                   .name("SerialPart")
-                                                  .urn("urn:bamm:io.catenax.serial_part:1.0.0#SerialPart")
-                                                  .version("1.0.0")
+                                                  .urn(SERIAL_PART_ASPECT)
+                                                  .version("1.0.1")
                                                   .status("RELEASED")
                                                   .type("BAMM")
                                                   .build();
@@ -207,7 +208,7 @@ public class OpenApiExamples {
         return JobParameter.builder()
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .depth(1)
-                           .aspects(List.of(AspectType.SERIAL_PART.toString(), AspectType.ADDRESS_ASPECT.toString()))
+                           .aspects(List.of(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT, SERIAL_PART_ASPECT))
                            .direction(Direction.DOWNWARD)
                            .collectAspects(false)
                            .build();
@@ -345,20 +346,20 @@ public class OpenApiExamples {
     private Submodel createSubmodel() {
         return Submodel.builder()
                        .contractAgreementId(EXAMPLE_ID)
-                       .aspectType("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0")
+                       .aspectType(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT)
                        .identification(SUBMODEL_IDENTIFICATION)
-                       .payload(createAssemblyPartRelationshipPayloadMap())
+                       .payload(createSingleLevelBomAsBuiltPayloadMap())
                        .build();
     }
 
-    private Map<String, Object> createAssemblyPartRelationshipPayloadMap() {
-        final String assemblyPartRelationshipPayload =
+    private Map<String, Object> createSingleLevelBomAsBuiltPayloadMap() {
+        final String singleLevelBomAsBuiltPayload =
                 "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
                         + "\"childItems\": [ { \"createdOn\": \"2022-02-03T14:48:54.709Z\", \"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
                         + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
                         + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
 
-        return new JsonUtil().fromString(assemblyPartRelationshipPayload, Map.class);
+        return new JsonUtil().fromString(singleLevelBomAsBuiltPayload, Map.class);
     }
 
     private Tombstone createTombstone() {
