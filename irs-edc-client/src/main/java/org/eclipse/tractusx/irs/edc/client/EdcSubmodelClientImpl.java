@@ -190,7 +190,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final String assetId, final EndpointDataReferenceStatus cachedEndpointDataReference)
             throws EdcClientException {
         try {
-            final EndpointDataReference endpointDataReference = getEndpointReferenceForAsset(connectorEndpoint,
+            final EndpointDataReference endpointDataReference = awaitEndpointReferenceForAsset(connectorEndpoint,
                     NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference).get();
             endpointDataReferenceCacheService.putEndpointDataReferenceIntoStorage(assetId, endpointDataReference);
 
@@ -285,7 +285,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return response;
     }
 
-    private CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+    private CompletableFuture<EndpointDataReference> awaitEndpointReferenceForAsset(final String endpointAddress,
             final String filterKey, final String filterValue,
             final EndpointDataReferenceStatus endpointDataReferenceStatus) throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
