@@ -91,7 +91,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private static final String PROVIDER_SUFFIX = "/test";
 
     private final static String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
-    private final static String SUBMODEL_SUFIX = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final TimeMachine clock = new TimeMachine();
