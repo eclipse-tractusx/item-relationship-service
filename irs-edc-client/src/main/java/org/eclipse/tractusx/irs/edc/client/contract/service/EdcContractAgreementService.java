@@ -19,7 +19,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.contract.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +47,7 @@ import org.springframework.web.client.RestTemplate;
 public class EdcContractAgreementService {
 
     public static final String EDC_REQUEST_SUFFIX = "/request";
-    public static final String EDC_CONTRACT_AGREEMENT_ID = "https://w3id.org/edc/v0.0.1/ns/id";
+    public static final String EDC_CONTRACT_AGREEMENT_ID = "id";
     private final EdcConfiguration config;
     private final RestTemplate edcRestTemplate;
 
@@ -58,7 +57,7 @@ public class EdcContractAgreementService {
         this.edcRestTemplate = edcRestTemplate;
     }
 
-    public List<EdcContractAgreementsResponse> getContractAgreements(final String... contractAgreementIds)
+    public List<EdcContractAgreementsResponse> getContractAgreements(final List<String> contractAgreementIds)
             throws ContractAgreementException {
 
         final EdcContractAgreementRequest edcContractAgreementRequest = buildContractAgreementRequest(
@@ -89,14 +88,12 @@ public class EdcContractAgreementService {
         return contractNegotiationResponseEntity.getBody();
     }
 
-    private EdcContractAgreementRequest buildContractAgreementRequest(final String... contractAgreementIds) {
+    private EdcContractAgreementRequest buildContractAgreementRequest(final List<String> contractAgreementIds) {
 
-        final List<EdcContractAgreementFilterExpression> list = Arrays.stream(contractAgreementIds)
-                                                                      .map(s -> new EdcContractAgreementFilterExpression(
-                                                                              EDC_CONTRACT_AGREEMENT_ID, "=", s))
-                                                                      .toList();
+        final EdcContractAgreementFilterExpression edcContractAgreementFilterExpression = new EdcContractAgreementFilterExpression(
+                EDC_CONTRACT_AGREEMENT_ID, "in", contractAgreementIds);
 
-        return new EdcContractAgreementRequest(list);
+        return new EdcContractAgreementRequest(edcContractAgreementFilterExpression);
     }
 
     private HttpHeaders headers() {

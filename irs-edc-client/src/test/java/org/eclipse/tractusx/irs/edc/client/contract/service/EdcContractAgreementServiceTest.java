@@ -66,7 +66,7 @@ class EdcContractAgreementServiceTest {
     @Test
     void shouldReturnContractAgreements() throws ContractAgreementException {
         //GIVEN
-        String[] contractAgreementIds = { "contractAgreementId" };
+        List<String> contractAgreementIds = List.of("contractAgreementId");
 
         final EdcContractAgreementsResponse[] edcContractAgreementsResponse = new EdcContractAgreementsResponse[1];
         edcContractAgreementsResponse[0] = EdcContractAgreementsResponse.builder().contractAgreementId("id")
@@ -93,7 +93,7 @@ class EdcContractAgreementServiceTest {
     @Test
     void shouldThrowContractAgreementExceptionWhenResponseBodyIsEmtpy() {
         //GIVEN
-        String[] contractAgreementIds = { "contractAgreementId" };
+        List<String> contractAgreementIds = List.of("contractAgreementId");
 
         when(restTemplate.exchange(anyString(), any(), any(), eq(EdcContractAgreementsResponse[].class))).thenReturn(
                 ResponseEntity.ok(new EdcContractAgreementsResponse[0]));
