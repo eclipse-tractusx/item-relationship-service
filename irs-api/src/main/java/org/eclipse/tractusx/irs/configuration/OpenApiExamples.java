@@ -468,7 +468,7 @@ public class OpenApiExamples {
                                  .semanticId(Reference.builder()
                                                       .keys(List.of(SemanticId.builder()
                                                                               .type("Submodel")
-                                                                              .value("urn:bamm:com.catenax.vehicle:0.1.1#PartDetails")
+                                                                              .value("urn:bamm:io.catenax.vehicle:0.1.1#PartDetails")
                                                                               .build()))
                                                       .type("ModelReference")
                                                       .build())

@@ -57,7 +57,7 @@ public class RegisterBpnInvestigationJob {
     private PartChainIdentificationKey key;
 
     @NotEmpty
-    @ArraySchema(schema = @Schema(description = "Array of BPNS numbers.", example = "BPNS000000000DDD",
+    @ArraySchema(arraySchema = @Schema(description = "Array of BPNS numbers.", example = "BPNS000000000DDD",
                                   implementation = String.class, pattern = BPN_REGEX), maxItems = Integer.MAX_VALUE)
     private List<@Pattern(regexp = BPN_REGEX) String> incidentBPNSs;
 

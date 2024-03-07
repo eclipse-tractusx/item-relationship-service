@@ -31,6 +31,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -53,7 +54,7 @@ public class RegisterJob {
     private static final String MAX_TREE_DEPTH_DESC = "100";
     private static final int MIN_TREE_DEPTH = 1;
     private static final int MAX_TREE_DEPTH = 100;
-    private static final String ASPECT_MODEL_REGEX = "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
+    private static final String ASPECT_MODEL_REGEX = "^(urn:(b|s)amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
 
     @NotNull
     @Valid
@@ -63,8 +64,9 @@ public class RegisterJob {
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @ArraySchema(arraySchema = @Schema(implementation = String.class, description = "List of aspect names that will be collected if \\<collectAspects\\> flag is set to true."), maxItems = Integer.MAX_VALUE)
-    private List<String> aspects;
+    @ArraySchema(arraySchema = @Schema(description = "List of aspect names that will be collected if \\<collectAspects\\> flag is set to true.", example = "urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt",
+                                       implementation = String.class, pattern = ASPECT_MODEL_REGEX), maxItems = Integer.MAX_VALUE)
+    private List<@Pattern(regexp = ASPECT_MODEL_REGEX) String> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,
             description = "Max depth of the item graph returned. If no depth is set item graph with max depth is returned.")

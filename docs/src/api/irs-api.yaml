@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: "4.7.0"
+  version: 4.7.0
 servers:
   - url: http://localhost:8080
 security:
@@ -1127,7 +1127,7 @@ components:
                 semanticId:
                   keys:
                     - type: Submodel
-                      value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+                      value: urn:bamm:io.catenax.vehicle:0.1.1#PartDetails
                   type: ModelReference
         submodels:
           - aspectType: supply_chain_impacted
@@ -1250,7 +1250,7 @@ components:
                 semanticId:
                   keys:
                     - type: Submodel
-                      value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+                      value: urn:bamm:io.catenax.vehicle:0.1.1#PartDetails
                   type: ModelReference
         submodels:
           - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
@@ -1441,7 +1441,7 @@ components:
                   type: ModelReference
                   keys:
                     - type: Submodel
-                      value: urn:bamm:com.catenax.vehicle:0.1.1#PartDetails
+                      value: urn:bamm:io.catenax.vehicle:0.1.1#PartDetails
         submodels:
           - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:1.0.0
             contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
@@ -2367,9 +2367,14 @@ components:
       properties:
         aspects:
           type: array
+          description: List of aspect names that will be collected if \<collectAspects\>
+            flag is set to true.
+          example: urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
           items:
             type: string
+            pattern: ^(urn:(b|s)amm:.*\d\.\d\.\d)?(#)?(\w+)?$
           maxItems: 2147483647
+          pattern: ^(urn:(b|s)amm:.*\d\.\d\.\d)?(#)?(\w+)?$
         batchSize:
           type: integer
           format: int32
@@ -2511,7 +2516,6 @@ components:
       description: The requested job definition.
       properties:
         bomLifecycle:
-          example: asPlanned
           type: string
           description: The lifecycle context in which the child part was assembled
             into the parent part.
@@ -2519,6 +2523,7 @@ components:
             - asBuilt
             - asPlanned
             - asSpecified
+          example: asPlanned
         callbackUrl:
           type: string
           description: "Callback url to notify requestor when job processing is finished.\
@@ -2529,10 +2534,13 @@ components:
           $ref: '#/components/schemas/PartChainIdentificationKey'
         incidentBPNSs:
           type: array
+          description: Array of BPNS numbers.
+          example: BPNS000000000DDD
           items:
             type: string
             pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
           maxItems: 2147483647
+          pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
       required:
         - incidentBPNSs
         - key
@@ -2545,9 +2553,12 @@ components:
           type: array
           description: List of aspect names that will be collected if \<collectAspects\>
             flag is set to true.
+          example: urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
           items:
             type: string
+            pattern: ^(urn:(b|s)amm:.*\d\.\d\.\d)?(#)?(\w+)?$
           maxItems: 2147483647
+          pattern: ^(urn:(b|s)amm:.*\d\.\d\.\d)?(#)?(\w+)?$
         auditContractNegotiation:
           type: boolean
           description: Flag enables and disables auditing, including provisioning 
