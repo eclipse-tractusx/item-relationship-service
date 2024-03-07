@@ -150,6 +150,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
 
         final CheckedSupplier<CompletableFuture<SubmodelDescriptor>> waitingForSubmodelRetrieval = () -> {
+
             log.info("Requesting raw SubmodelPayload for endpoint '{}'.", connectorEndpoint);
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
@@ -205,6 +206,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String connectorEndpoint,
             final String assetId, final EdcNotification<NotificationContent> notification) throws EdcClientException {
+
         return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + connectorEndpoint);
@@ -283,7 +285,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return response;
     }
 
-    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+    private CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
             final String filterKey, final String filterValue,
             final EndpointDataReferenceStatus endpointDataReferenceStatus) throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
