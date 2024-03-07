@@ -167,20 +167,20 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId)
             throws EdcClientException {
-        log.info("Retrieving endpoint data reference from cache for asset id: {}", assetId);
-        final EndpointDataReferenceStatus cachedEndpointDataReference = endpointDataReferenceCacheService.getEndpointDataReference(
-                assetId);
-        EndpointDataReference endpointDataReference;
 
-        if (cachedEndpointDataReference.tokenStatus() == TokenStatus.VALID) {
+        final EndpointDataReference result;
+
+        log.info("Retrieving endpoint data reference from cache for asset id: {}", assetId);
+        final var cachedReference = endpointDataReferenceCacheService.getEndpointDataReference(assetId);
+
+        if (cachedReference.tokenStatus() == TokenStatus.VALID) {
             log.info("Endpoint data reference found in cache with token status valid, reusing cache record.");
-            endpointDataReference = cachedEndpointDataReference.endpointDataReference();
+            result = cachedReference.endpointDataReference();
         } else {
-            endpointDataReference = getEndpointDataReferenceAndAddToStorage(connectorEndpoint, assetId,
-                    cachedEndpointDataReference);
+            result = getEndpointDataReferenceAndAddToStorage(connectorEndpoint, assetId, cachedReference);
         }
 
-        return endpointDataReference;
+        return result;
     }
 
     private EndpointDataReference getEndpointDataReferenceAndAddToStorage(final String connectorEndpoint,
