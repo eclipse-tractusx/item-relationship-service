@@ -90,12 +90,10 @@ public class EdcContractAgreementService {
 
     private EdcContractAgreementRequest buildContractAgreementRequest(final List<String> contractAgreementIds) {
 
-        final List<EdcContractAgreementFilterExpression> list = contractAgreementIds.stream()
-                                                                      .map(s -> new EdcContractAgreementFilterExpression(
-                                                                              EDC_CONTRACT_AGREEMENT_ID, "=", s))
-                                                                      .toList();
+        final EdcContractAgreementFilterExpression edcContractAgreementFilterExpression = new EdcContractAgreementFilterExpression(
+                EDC_CONTRACT_AGREEMENT_ID, "in", contractAgreementIds);
 
-        return new EdcContractAgreementRequest(list);
+        return new EdcContractAgreementRequest(edcContractAgreementFilterExpression);
     }
 
     private HttpHeaders headers() {
