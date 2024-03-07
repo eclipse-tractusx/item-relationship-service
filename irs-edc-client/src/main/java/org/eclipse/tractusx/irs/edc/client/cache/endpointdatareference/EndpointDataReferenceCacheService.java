@@ -30,6 +30,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -67,19 +68,17 @@ public class EndpointDataReferenceCacheService {
                 if (isTokenExpired(authCode)) {
                     log.info("Endpoint data reference with expired token and id: {} for assetId: {} found in storage.",
                             endpointDataReference.getId(), assetId);
-                    return new EndpointDataReferenceStatus(endpointDataReference,
-                            EndpointDataReferenceStatus.TokenStatus.EXPIRED);
+                    return new EndpointDataReferenceStatus(endpointDataReference, TokenStatus.EXPIRED);
                 } else {
                     log.info("Endpoint data reference with id: {} for assetId: {} found in storage.",
                             endpointDataReference.getId(), assetId);
-                    return new EndpointDataReferenceStatus(endpointDataReference,
-                            EndpointDataReferenceStatus.TokenStatus.VALID);
+                    return new EndpointDataReferenceStatus(endpointDataReference, TokenStatus.VALID);
                 }
             }
         }
 
         log.info("Endpoint data reference for asset id: {} not found in storage.", assetId);
-        return new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW);
+        return new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW);
     }
 
     public Optional<EndpointDataReference> getEndpointDataReferenceFromStorage(final String storageId) {
