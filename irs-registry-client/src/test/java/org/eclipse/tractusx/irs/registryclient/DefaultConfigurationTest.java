@@ -36,6 +36,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -46,6 +47,8 @@ import org.springframework.web.client.RestTemplate;
 class DefaultConfigurationTest {
 
     private final DefaultConfiguration testee = new DefaultConfiguration();
+
+    private final EdcConfiguration edcConfiguration = new EdcConfiguration();
     private final String descriptorTemplate = "descriptor/{aasIdentifier}";
     private final String shellLookupTemplate = "shell?{assetIds}";
 
@@ -71,7 +74,7 @@ class DefaultConfigurationTest {
     @Test
     void edcSubmodelFacade() {
         final EdcSubmodelClient facadeMock = mock(EdcSubmodelClient.class);
-        final EdcSubmodelFacade edcSubmodelFacade = testee.edcSubmodelFacade(facadeMock);
+        final EdcSubmodelFacade edcSubmodelFacade = testee.edcSubmodelFacade(facadeMock, edcConfiguration);
 
         assertThat(edcSubmodelFacade).isNotNull();
     }

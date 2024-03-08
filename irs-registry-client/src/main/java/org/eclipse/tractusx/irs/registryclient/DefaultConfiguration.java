@@ -129,8 +129,8 @@ public class DefaultConfiguration {
     }
 
     @Bean
-    public EdcSubmodelFacade edcSubmodelFacade(final EdcSubmodelClient client) {
-        return new EdcSubmodelFacade(client);
+    public EdcSubmodelFacade edcSubmodelFacade(final EdcSubmodelClient client, final EdcConfiguration config) {
+        return new EdcSubmodelFacade(client, config);
     }
 
     @Bean
