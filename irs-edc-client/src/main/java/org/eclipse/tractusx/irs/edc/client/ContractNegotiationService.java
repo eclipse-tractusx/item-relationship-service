@@ -100,8 +100,7 @@ public class ContractNegotiationService {
             }
             case VALID -> throw new IllegalStateException(
                     "Token is present and valid. Contract negotiation should not be started.");
-            default -> throw new IllegalStateException(
-                    "Unknown token status.");
+            default -> throw new IllegalStateException("Unknown token status.");
         }
 
         final TransferProcessRequest transferProcessRequest = createTransferProcessRequest(providerConnectorUrl,
@@ -124,7 +123,8 @@ public class ContractNegotiationService {
 
         if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
             log.info("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy(), catalogItem.getConnectorId());
+            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy(),
+                    catalogItem.getConnectorId());
         }
 
         final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
