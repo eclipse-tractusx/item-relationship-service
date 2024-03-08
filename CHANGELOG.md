@@ -13,6 +13,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 
+## Fixed
+- Fixed missing timeouts including configuration. #448
 
 ## [4.7.0] - 2024-03-04
 ### Added
