@@ -94,9 +94,10 @@ public class DefaultConfiguration {
     public DecentralDigitalTwinRegistryService decentralDigitalTwinRegistryService(
             final ConnectorEndpointsService connectorEndpointsService,
             final EndpointDataForConnectorsService endpointDataForConnectorsService,
-            final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient) {
+            final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient,
+            final EdcConfiguration edcConfiguration) {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService, endpointDataForConnectorsService,
-                decentralDigitalTwinRegistryClient);
+                decentralDigitalTwinRegistryClient, edcConfiguration);
     }
 
     @Bean

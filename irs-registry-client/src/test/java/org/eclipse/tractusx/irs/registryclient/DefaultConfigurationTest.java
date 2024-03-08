@@ -66,7 +66,8 @@ class DefaultConfigurationTest {
         final var service = testee.decentralDigitalTwinRegistryService(
                 testee.connectorEndpointsService(testee.discoveryFinderClient(new RestTemplate(), "finder")),
                 testee.endpointDataForConnectorsService(facadeMock),
-                testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
+                testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate),
+                edcConfiguration);
 
         assertThat(service).isNotNull();
     }
