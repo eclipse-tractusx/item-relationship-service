@@ -8,6 +8,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 ### Changed
+- Improved maintainability in EdcSubmodelClientImpl by reduced method visibility and better naming (in context of #448).
 - EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if when it exists in EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 
