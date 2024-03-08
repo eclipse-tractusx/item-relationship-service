@@ -130,6 +130,7 @@ resilience4j:
 
 irs-edc-client:
   callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
+  asyncTimeout: ${EDC_ASYNC_TIMEOUT:PT10M} # Timout for future.get requests as ISO 8601 Duration
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:

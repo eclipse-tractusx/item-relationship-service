@@ -41,6 +41,11 @@ public class EdcConfiguration {
     private ControlplaneConfig controlplane = new ControlplaneConfig();
     private SubmodelConfig submodel = new SubmodelConfig();
     private String callbackUrl;
+    private Duration asyncTimeout = Duration.ofSeconds(10);
+
+    public Long getAsyncTimeoutMillis() {
+        return asyncTimeout.toMillis();
+    }
 
     /**
      * Container for controlplane config
@@ -97,6 +102,5 @@ public class EdcConfiguration {
 
         private String urnPrefix;
     }
-
 
 }
