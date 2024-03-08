@@ -11,8 +11,8 @@ This includes:
 
 ## Prerequisites
 
-- [Kubernetes](https://kubernetes.io) 1.19+
-- [Helm](https://helm.sh) 3.2.0+
+- [Kubernetes](https://kubernetes.io) 1.25.11+
+- [Helm](https://helm.sh) 3.9.3+
 - PV provisioner support in the underlying infrastructure
 
 ## Install

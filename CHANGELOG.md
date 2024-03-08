@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
+### Changed
+
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if it exists in
+  EDC
+- Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
+
 
 ## [4.7.0] - 2024-03-04
 ### Added
@@ -16,18 +22,17 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 - EDC client handles multiple Digital Twin Registries and Digital Twins now #395
 - Change logo of irs
-- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if when it exists in EDC
-- Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 - Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created. #404
 
 ### Fixed
 - Update to Spring Boot 3.1.9 to fix CVE's. #423
-- Fixed a case where Policy validation could result in a NullPointerException if either orConstraint or andConstraint of
-  accepted policies were null #436
+- Fixed a case where policy validation could result in a NullPointerException
+  if either orConstraint or andConstraint of accepted policies were null. #436
 
 ## [4.6.0] - 2024-02-20
 ### Added
-- Added concept to conform with IndustryCore Changes CX-0126 and CX-127
+
+- Added concept to conform with IndustryCore Changes CX-0126 and CX-127. #367
 - Added release instructions to CONTRIBUTING.md
 - EdcAssetService capable to create assets inside EDC
 - EdcPolicyDefinitionService capable to create polices inside EDC
@@ -38,7 +43,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Reduced log level in MeterRegistryService in order to avoid excessive logging
 
 ### Fixed
-- Fixed Log4J configuration
+
+- Fixed Log4J configuration. #396
 - Fix tavern and cucumber tests
 
 ## [4.5.2] - 2024-02-22
@@ -47,23 +53,26 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [4.5.1] - 2024-02-20
 ### Changed
-- Moved Docker notice to separate file #425
+
+- Moved Docker notice to separate file. #425
 
 ## [4.5.0] - 2024-02-07
 ### Added
 - Added helper script for building documentation locally.
 - Added new job parameter flag "auditContractNegotiation" which toggles setting contractAgreementId in Shells and Submodels
 - Added "contractAgreementId" field to Submodel model
-- Added Integration Tests for the entire IRS flow using stubbed responses of Discovery Service, Semantic Hub, EDC, Digital Twin Registry and BPDM Pool
+- Added Integration Tests for the entire IRS flow using stubbed responses of Discovery Service, Semantic Hub, EDC,
+  Digital Twin Registry and BPDM Pool. #344
 
 ### Changed
-- Dataspace Discovery Service handles multiple EDC-Urls received for BPN now
-- Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation"
+
+- Dataspace Discovery Service handles multiple EDC-Urls received for BPN now. #214
+- Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation" #349
 - Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
 - Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
 - Updated configuration of `DISCOVERY_REST_TEMPLATE` from `ess.discovery.*` to `digitalTwinRegistry.discovery.*` and discovery finder URL from `digitalTwinRegistry.discoveryFinderUrl` to `digitalTwinRegistry.discovery.discoveryFinderUrl`
-- Redesigned Shell object - wrapped payload and added "contractAgreementId" field
-- Changed structure of Policy creation to match EDC format
+- Redesigned shell object - wrapped payload and added "contractAgreementId" field. #370
+- Changed structure of policy creation to match EDC format. #249
 - Update irs-registry-client to 1.6.0-SNAPSHOT
 
 ### Fixed
@@ -74,22 +83,29 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [4.4.0] - 2024-01-15
 ### Added
-- Added EDR token cache to reuse token after contract negotiation
-- Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints
-- Add concept docs/#322-Provisioning-of-contractAgreementId-for-assets.md
+
+- Added EDR token cache to reuse token after contract negotiation. #256
+- Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints. #225
+- Add concept docs/#322-Provisioning-of-contractAgreementId-for-assets.md. #322
 
 ### Changed
-- Authentication was redesigned to use API keys, instead of OAuth2 protocol. The api key has to be sent as a X-API-KEY request header. IRS is supporting two types of API keys - one for admin and one for regular/view usage. Use new ``apiKeyAdmin`` and ``apiKeyRegular`` config entries to set up API keys.
+
+- Authentication was redesigned to use API keys, instead of OAuth2 protocol. The api key has to be sent as an X-API-KEY
+  request header. IRS is supporting two types of API keys - one for admin and one for regular/view usage. Use
+  new ``apiKeyAdmin`` and ``apiKeyRegular`` config entries to set up API keys. #259
 
 ### Removed
-- Removed ``oauth.resourceClaim``, ``oauth.irsNamespace``,``oauth.roles``,``oauth2.jwkSetUri`` config entries
+
+- Removed ``oauth.resourceClaim``, ``oauth.irsNamespace``,``oauth.roles``,``oauth2.jwkSetUri`` config entries. #259
 
 ## [4.3.0] - 2023-12-08
 ### Added
-- Added support for `hasAlternatives` property in SingleLevelBomAsBuilt aspect
+
+- Added support for `hasAlternatives` property in SingleLevelBomAsBuilt aspect. #296
 
 ### Changed
-- Updated edc dependencies to 0.2.1
+
+- Updated EDC dependencies to 0.2.1
 - Update deprecated field `providerUrl` to `counterPartyAddress` in EDC catalog request
 - Update ESS EDC notification creation asset endpoint to v3
 
@@ -101,14 +117,15 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
 - Exported health endpoints to prometheus (see HealthMetricsExportConfiguration,
   DependenciesHealthMetricsExportConfiguration) and
-  added [system health dashboard](charts/irs-helm/dashboards/system-health-dashboard.json) in order to visualize health
-  metrics of IRS and its dependencies
+  added [system health dashboard](charts/irs-helm/dashboards/system-health-dashboard.json)
+  in order to visualize health metrics of IRS and its dependencies. #283
 
 ### Fixed
 - Fixed incorrect passing of incidentBPNS for ESS Orders
 
 ### Known knowns
-- [#253] Cancelation of order jobs is not working stable
+
+- [#253] Cancellation of order jobs is not working stable
 
 ## [4.1.0] - 2023-11-15
 ### Added
