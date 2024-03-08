@@ -43,6 +43,7 @@ import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.decentral.EdcEndpointReferenceRetriever;
 import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -115,13 +116,16 @@ public class DefaultConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
-        return new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
+
+        final EdcEndpointReferenceRetriever edcEndpointReferenceRetriever = (edcConnectorEndpoint, assetType, assetValue) -> {
             try {
                 return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue);
             } catch (EdcClientException e) {
                 throw new EdcRetrieverException(e);
             }
-        });
+        };
+
+        return new EndpointDataForConnectorsService(edcEndpointReferenceRetriever);
     }
 
     @Bean
