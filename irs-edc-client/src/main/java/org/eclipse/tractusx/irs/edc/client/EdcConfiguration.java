@@ -38,10 +38,13 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class EdcConfiguration {
 
+    private static final int ASYNC_TIMEOUT_MINUTES_DEFAULT = 10;
+
     private ControlplaneConfig controlplane = new ControlplaneConfig();
     private SubmodelConfig submodel = new SubmodelConfig();
     private String callbackUrl;
-    private Duration asyncTimeout = Duration.ofSeconds(10);
+
+    private Duration asyncTimeout = Duration.ofMinutes(ASYNC_TIMEOUT_MINUTES_DEFAULT);
 
     public Long getAsyncTimeoutMillis() {
         return asyncTimeout.toMillis();
@@ -52,6 +55,7 @@ public class EdcConfiguration {
      */
     @Data
     public static class ControlplaneConfig {
+
         private EndpointConfig endpoint = new EndpointConfig();
 
         private String providerSuffix;
