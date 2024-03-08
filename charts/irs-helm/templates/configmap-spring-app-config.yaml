@@ -100,7 +100,7 @@ data:
 
     irs-edc-client:
       callback-url: {{ tpl (.Values.edc.callbackurl | default (printf "http://%s%s" .Release.Name "-irs-helm:8181/internal/endpoint-data-reference")) . | quote }}
-      asyncTimeout: {{ tpl (.Values.edc.asyncTimeout | default "PT10M") | quote }}
+      asyncTimeout: {{ .Values.edc.asyncTimeout | default "PT10M" | quote }}
       controlplane:
         request-ttl: {{ .Values.edc.controlplane.request.ttl | default "PT10M" | quote }}
         endpoint:
