@@ -33,6 +33,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
+import org.springframework.util.StringUtils;
 
 /**
  * SubmodelDescriptor
@@ -80,6 +81,7 @@ public class SubmodelDescriptor {
 
     /* package */ boolean isAspect(final String filterSemanticId) {
         return Optional.ofNullable(getAspectType())
+                .filter(aspect -> StringUtils.hasLength(filterSemanticId))
                 .map(semanticId -> semanticId.contains(lowerCaseNameWithUnderscores(filterSemanticId))
                         || semanticModelNamesMatchAndVersionIsInRange(semanticId, filterSemanticId))
                 .orElse(false);
