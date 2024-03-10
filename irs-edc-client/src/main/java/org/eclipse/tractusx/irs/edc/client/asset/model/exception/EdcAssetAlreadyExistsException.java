@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.edc.client.asset.model.exception;
  */
 
 public class EdcAssetAlreadyExistsException extends RuntimeException {
-    public EdcAssetAlreadyExistsException(final String message) {
-        super(message);
+    public EdcAssetAlreadyExistsException(final String message, final Throwable exception) {
+        super(message, exception);
     }
 }

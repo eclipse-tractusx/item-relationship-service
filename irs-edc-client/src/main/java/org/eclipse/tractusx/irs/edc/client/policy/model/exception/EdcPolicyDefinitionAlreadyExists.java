@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.edc.client.policy.model.exception;
  */
 
 public class EdcPolicyDefinitionAlreadyExists extends RuntimeException {
-    public EdcPolicyDefinitionAlreadyExists(final String message) {
-        super(message);
+    public EdcPolicyDefinitionAlreadyExists(final String message, final Throwable exception) {
+        super(message, exception);
     }
 }

@@ -74,7 +74,7 @@ public class EdcContractDefinitionService {
                     "Failed to create EDC contract definition for %s asset id".formatted(assetId));
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() == HttpStatus.CONFLICT.value()) {
-                throw new EdcContractDefinitionAlreadyExists("Contract definition already exists in the EDC");
+                throw new EdcContractDefinitionAlreadyExists("Contract definition already exists in the EDC", e);
             }
             log.error(
                     "Failed to create edc contract definition for {} notification asset and {} policy definition id. Reason: ",

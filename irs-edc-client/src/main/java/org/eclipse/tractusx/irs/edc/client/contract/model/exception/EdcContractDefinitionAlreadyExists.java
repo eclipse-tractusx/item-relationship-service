@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.edc.client.contract.model.exception;
  */
 
 public class EdcContractDefinitionAlreadyExists extends RuntimeException {
-    public EdcContractDefinitionAlreadyExists(final String message) {
-        super(message);
+    public EdcContractDefinitionAlreadyExists(final String message, final Throwable exception) {
+        super(message, exception);
     }
 }

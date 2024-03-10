@@ -102,7 +102,7 @@ public class EdcAssetService {
             }
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() == HttpStatus.CONFLICT.value()) {
-                throw new EdcAssetAlreadyExistsException("asset already exists in the EDC");
+                throw new EdcAssetAlreadyExistsException("asset already exists in the EDC", e);
             }
             throw new CreateEdcAssetException(e);
         }

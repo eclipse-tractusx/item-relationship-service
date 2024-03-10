@@ -85,7 +85,7 @@ public class EdcPolicyDefinitionService {
         } catch (HttpClientErrorException e) {
             log.error("Failed to create EDC policy definition. Reason: ", e);
             if (e.getStatusCode().value() == HttpStatus.CONFLICT.value()) {
-                throw new EdcPolicyDefinitionAlreadyExists("Policy definition already exists in the EDC");
+                throw new EdcPolicyDefinitionAlreadyExists("Policy definition already exists in the EDC", e);
             }
             throw new CreateEdcPolicyDefinitionException(e);
         }
