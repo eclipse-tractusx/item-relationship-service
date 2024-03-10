@@ -21,6 +21,8 @@ package org.eclipse.tractusx.irs.edc.client.contract.service;
 
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
@@ -28,10 +30,11 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.EdcContext;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractDefinitionCriteria;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcCreateContractDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcContractDefinitionException;
+import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractDefinitionAlreadyExists;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -52,8 +55,9 @@ public class EdcContractDefinitionService {
 
     public String createContractDefinition(final String assetId, final String policyId)
             throws CreateEdcContractDefinitionException {
+        final String contractId = UUID.randomUUID().toString();
         final EdcCreateContractDefinitionRequest createContractDefinitionRequest = createContractDefinitionRequest(
-                assetId, policyId);
+                assetId, policyId, contractId);
         final ResponseEntity<String> createContractDefinitionResponse;
         try {
             createContractDefinitionResponse = restTemplate.postForEntity(
@@ -62,19 +66,16 @@ public class EdcContractDefinitionService {
 
             final HttpStatusCode responseCode = createContractDefinitionResponse.getStatusCode();
 
-            if (responseCode.value() == HttpStatus.CONFLICT.value()) {
-                log.info("{} contract definition already exists in the EDC", policyId);
-
-                return policyId;
-            }
-
             if (responseCode.value() == HttpStatus.OK.value()) {
                 return policyId;
             }
 
             throw new CreateEdcContractDefinitionException(
-                    "Failed to create EDC contract definition for %s notification asset id".formatted(assetId));
-        } catch (RestClientException e) {
+                    "Failed to create EDC contract definition for %s asset id".formatted(assetId));
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().value() == HttpStatus.CONFLICT.value()) {
+                throw new EdcContractDefinitionAlreadyExists("Contract definition already exists in the EDC");
+            }
             log.error(
                     "Failed to create edc contract definition for {} notification asset and {} policy definition id. Reason: ",
                     assetId, policyId, e);
@@ -85,7 +86,7 @@ public class EdcContractDefinitionService {
     }
 
     public EdcCreateContractDefinitionRequest createContractDefinitionRequest(final String assetId,
-            final String accessPolicyId) {
+            final String accessPolicyId, final String contractId) {
         final EdcContractDefinitionCriteria edcContractDefinitionCriteria = EdcContractDefinitionCriteria.builder()
                                                                                                          .type(ASSET_SELECTOR_TYPE)
                                                                                                          .operandLeft(
@@ -102,7 +103,7 @@ public class EdcContractDefinitionService {
                                                  .edcContext(edcContext)
                                                  .type(CONTRACT_DEFINITION_TYPE)
                                                  .accessPolicyId(accessPolicyId)
-                                                 .contractDefinitionId(accessPolicyId)
+                                                 .contractDefinitionId(contractId)
                                                  .assetsSelector(edcContractDefinitionCriteria)
                                                  .build();
     }

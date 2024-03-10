@@ -36,9 +36,11 @@ import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermissionConst
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermissionConstraintExpression;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolicyDefinitionException;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.EdcPolicyDefinitionAlreadyExists;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -80,19 +82,15 @@ public class EdcPolicyDefinitionService {
         try {
             createPolicyDefinitionResponse = restTemplate.postForEntity(
                     config.getControlplane().getEndpoint().getPolicyDefinition(), policyRequest, String.class);
-        } catch (RestClientException e) {
-            log.error("Failed to create EDC notification asset policy. Reason: ", e);
-
+        } catch (HttpClientErrorException e) {
+            log.error("Failed to create EDC policy definition. Reason: ", e);
+            if (e.getStatusCode().value() == HttpStatus.CONFLICT.value()) {
+                throw new EdcPolicyDefinitionAlreadyExists("Policy definition already exists in the EDC");
+            }
             throw new CreateEdcPolicyDefinitionException(e);
         }
 
         final HttpStatusCode responseCode = createPolicyDefinitionResponse.getStatusCode();
-
-        if (responseCode.value() == HttpStatus.CONFLICT.value()) {
-            log.info("Notification asset policy definition already exists in the EDC");
-
-            return policyRequest.getPolicyDefinitionId();
-        }
 
         if (responseCode.value() == HttpStatus.OK.value()) {
             return policyRequest.getPolicyDefinitionId();
