@@ -9,8 +9,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [Unreleased]
 ### Changed
 
-- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if it exists in
-  EDC
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return throw AlreadyExist exceptions when Conflict is returned from EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 
 
