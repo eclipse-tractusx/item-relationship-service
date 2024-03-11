@@ -24,17 +24,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 /**
- * EdcContractAgreementsResponse used for representing the response of
- * /management/v2/contractagreements/request where an array of
- * EdcContractAgreementsResponse is returned.
+ * EdcContractAgreementNegotiationResponse used for representing the response of
+ * /management/v2/contractagreements/{contragtAgreementId}/negotiation
  */
 
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record EdcContractAgreementsResponse(@JsonProperty("@id") String contractAgreementId,
-                                            @JsonProperty("edc:providerId") String providerId,
-                                            @JsonProperty("edc:consumerId") String consumerId,
-                                            @JsonProperty("edc:contractSigningDate") long contractSigningDate,
-                                            @JsonProperty("edc:assetId") String assetId,
-                                            @JsonProperty("@type") String type) {
+public record EdcContractAgreementNegotiationResponse(@JsonProperty("@id") String correlationId,
+                                                      @JsonProperty("edc:counterPartyId") String counterPartyId,
+                                                      @JsonProperty(
+                                                              "edc:counterPartyAddress") String counterPartyAddress,
+                                                      @JsonProperty("edc:protocol") String protocol,
+                                                      @JsonProperty("edc:state") String state,
+                                                      @JsonProperty("edc:type") String type) {
 }

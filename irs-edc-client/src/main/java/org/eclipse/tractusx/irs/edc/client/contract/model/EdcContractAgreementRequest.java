@@ -17,17 +17,17 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.contract.model.exception;
+package org.eclipse.tractusx.irs.edc.client.contract.model;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * EdcContractAgreementRequest represents the request to management/v2/contractagreements
+ * EdcContractAgreementRequest represents the request to management/v2/contractagreements/request
  */
 public record EdcContractAgreementRequest(@JsonProperty(
-        "https://w3id.org/edc/v0.0.1/ns/filterExpression") List<EdcContractAgreementFilterExpression> edcContractAgreementFilterExpressions) {
+        "https://w3id.org/edc/v0.0.1/ns/filterExpression") EdcContractAgreementFilterExpression edcContractAgreementFilterExpressions) {
     /**
      * EdcContractAgreementFilterExpression represents the filterExpression
      * for EdcContractAgreementRequest
@@ -35,7 +35,7 @@ public record EdcContractAgreementRequest(@JsonProperty(
     public record EdcContractAgreementFilterExpression(
             @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operandLeft") String operandLeft,
             @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operator") String operator,
-            @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operandRight") String operandRight) {
+            @JsonProperty("https://w3id.org/edc/v0.0.1/ns/operandRight") List<String> operandRight) {
 
     }
 }
