@@ -100,8 +100,9 @@ After the application is up and running the local IRS API is available at the fo
 
 #### Docker-compose + IDE
 
-1. Start the necessary infrastructure by running `docker-compose up`
-2. Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the `.run` folder.
+1. `cd local/deployment`
+2. Start the necessary infrastructure by running `docker-compose up`
+3. Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the `.run` folder.
 
 
 ## Usage
