@@ -37,5 +37,5 @@ public record EdcContractAgreementsResponse(@JsonProperty("@id") String contract
                                             @JsonProperty("edc:contractSigningDate") long contractSigningDate,
                                             @JsonProperty("edc:assetId") String assetId,
                                             @JsonProperty("@type") String type,
-                                            @JsonProperty("edc:policy") String policy) {
+                                            @JsonProperty("edc:policy") Object policy) {
 }

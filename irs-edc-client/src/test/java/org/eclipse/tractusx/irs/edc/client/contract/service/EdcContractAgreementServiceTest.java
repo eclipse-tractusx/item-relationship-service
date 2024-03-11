@@ -90,7 +90,7 @@ class EdcContractAgreementServiceTest {
                        eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"),
                        any(), any(), eq(EdcContractAgreementsResponse[].class));
         assertThat(contractAgreements).isNotNull();
-        assertThat(contractAgreements.get(0).policy()).isNotEmpty();
+        assertThat(contractAgreements.get(0).policy()).isNotNull();
 
     }
 
