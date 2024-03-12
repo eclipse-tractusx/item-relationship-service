@@ -30,9 +30,6 @@ jobs:
         run: |
           npm i -g swaggerhub-cli
 
-      - name: Build and run Docker Compose
-        run: docker-compose up -d
-
       - name: Extract versions
         run: |
           export DOWNSTREAM_VERSION="${{ inputs.version }}"
