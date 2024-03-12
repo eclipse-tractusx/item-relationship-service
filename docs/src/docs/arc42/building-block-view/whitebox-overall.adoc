@@ -4,7 +4,7 @@ The interfaces show how the components interact with each other and which interf
 
 == Component diagram
 
-[plantuml, target=whitebox-overview, format=svg]
+[plantuml, target=whitebox_overall_decentral, format=svg]
 ....
 include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.puml[]
 ....
