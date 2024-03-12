@@ -9,9 +9,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [Unreleased]
 ### Changed
 
-- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if it exists in
-  EDC
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return existing resource if it exists in EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
+- Registering a job - aspects array is now accepting full urn of aspect model instead of name only, eg. 'urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt' instead 'SingleLevelBomAsBuilt'. #439
 - Policies can now be registered for certain bpnls. #199
 
 

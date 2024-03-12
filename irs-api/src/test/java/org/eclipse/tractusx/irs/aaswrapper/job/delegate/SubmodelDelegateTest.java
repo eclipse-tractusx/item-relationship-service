@@ -26,8 +26,10 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterFilter;
+import static org.eclipse.tractusx.irs.util.TestMother.serialPartAspectName;
 import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
+import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,10 +73,10 @@ class SubmodelDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
                                                                                                    .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
+                                                                                                                           serialPartAspectName,
                                                                                                                            "testSerialPartTypizationEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
+                                                                                                                           singleLevelBomAsBuiltAspectName,
                                                                                                                            "testAssemblyPartRelationshipEndpoint")))));
 
         // when
@@ -92,10 +94,10 @@ class SubmodelDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
                                                                                                    .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           serialPartAspectName,
                                                                                                                            "testSerialPartEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           singleLevelBomAsBuiltAspectName,
                                                                                                                            "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
@@ -117,10 +119,10 @@ class SubmodelDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
                                                                                                    .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           serialPartAspectName,
                                                                                                                            "testSerialPartEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           singleLevelBomAsBuiltAspectName,
                                                                                                                            "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
@@ -143,10 +145,10 @@ class SubmodelDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
                                                                                                    .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           serialPartAspectName,
                                                                                                                            "testSerialPartEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           singleLevelBomAsBuiltAspectName,
                                                                                                                            "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
@@ -170,7 +172,7 @@ class SubmodelDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerShellWithOneSubmodel = ItemContainer.builder()
                                                                                                   .shell(shell("", shellDescriptor(
                                                                                                           List.of(submodelDescriptor(
-                                                                                                                  "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                  serialPartAspectName,
                                                                                                                   "testSerialPartEndpoint",
                                                                                                                   "")))));
 
@@ -188,8 +190,7 @@ class SubmodelDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getSubmodels()).hasSize(1);
-        assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo(
-                "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart");
+        assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo(serialPartAspectName);
         assertThat(result.getSubmodels().get(0).getContractAgreementId()).isNull();
         assertThat(result.getTombstones()).isEmpty();
     }
@@ -200,10 +201,10 @@ class SubmodelDelegateTest {
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
                                                                                                    .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           serialPartAspectName,
                                                                                                                            "testSerialPartEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
+                                                                                                                           singleLevelBomAsBuiltAspectName,
                                                                                                                            "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when

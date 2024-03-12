@@ -25,10 +25,11 @@ package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
-import static org.eclipse.tractusx.irs.util.TestMother.jobParameterCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterUpward;
 import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
+import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
+import static org.eclipse.tractusx.irs.util.TestMother.singleLevelUsageAsBuiltAspectName;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -61,9 +62,6 @@ class RelationshipDelegateTest {
     final JsonUtil jsonUtil = new JsonUtil();
     final RelationshipDelegate relationshipDelegate = new RelationshipDelegate(null, submodelFacade,
             connectorEndpointsService, jsonUtil);
-
-    final String singleLevelBomAsBuiltAspectName = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt";
-    final String singleLevelUsageAsBuiltAspectName = "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
 
     @Test
     void shouldFillItemContainerWithRelationshipAndAddChildIdsToProcess()

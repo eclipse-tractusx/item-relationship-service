@@ -31,6 +31,8 @@ import static org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport.s
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.DATAPLANE_PUBLIC_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.submodelDescriptor;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
+import static org.eclipse.tractusx.irs.util.TestMother.batchAspectName;
+import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -79,7 +81,7 @@ public class WiremockSupport {
         return RegisterJob.builder()
                           .key(PartChainIdentificationKey.builder().bpn(bpn).globalAssetId(globalAssetId).build())
                           .depth(depth)
-                          .aspects(List.of("Batch", "SingleLevelBomAsBuilt"))
+                          .aspects(List.of(batchAspectName, singleLevelBomAsBuiltAspectName))
                           .collectAspects(true)
                           .lookupBPNs(true)
                           .direction(Direction.DOWNWARD)
