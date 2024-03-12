@@ -47,6 +47,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -222,5 +223,20 @@ class PolicyStoreServiceTest {
         // assert
         assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy,
                 null));
+    }
+
+    @Test
+    void whenUpdate() {
+        // arrange
+        final OffsetDateTime now = OffsetDateTime.now(clock);
+        when(persistence.readAll()).thenReturn(Map.of("bpn2", List.of(new Policy("testId", now, now.plusMinutes(1), emptyList()))));
+        when(persistence.readAll(any())).thenReturn(List.of(new Policy("testId", now, now.plusMinutes(1), emptyList())));
+
+        // act
+        testee.updatePolicy("testId", new UpdatePolicyRequest(OffsetDateTime.now(), List.of("bpn1"), List.of("policyId")));
+
+        // assert
+        verify(persistence).delete("bpn2", "testId");
+        verify(persistence).save(eq(List.of("bpn1")), any());
     }
 }

@@ -36,6 +36,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -74,6 +75,18 @@ class PolicyPersistenceTest {
 
         // act
         testee.save(List.of("testBpn"), policy);
+
+        // assert
+        verify(mockPersistence).putBlob(anyString(), any());
+    }
+
+    @Test
+    void saveWithoutBpn() throws BlobPersistenceException {
+        // arrange
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+
+        // act
+        testee.save(null, policy);
 
         // assert
         verify(mockPersistence).putBlob(anyString(), any());
@@ -146,6 +159,20 @@ class PolicyPersistenceTest {
 
         // act
         final var readPolicies = testee.readAll("testBpn");
+
+        // assert
+        assertThat(readPolicies).hasSize(1);
+    }
+
+    @Test
+    void whenReadAllShouldReturnCorrect() throws BlobPersistenceException, JsonProcessingException {
+        // arrange
+        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+        final var policies = List.of(policy);
+        when(mockPersistence.getAllBlobs()).thenReturn(Map.of("bpn1", mapper.writeValueAsBytes(policies)));
+
+        // act
+        final var readPolicies = testee.readAll();
 
         // assert
         assertThat(readPolicies).hasSize(1);

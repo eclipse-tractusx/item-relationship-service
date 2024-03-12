@@ -131,8 +131,6 @@ public class PolicyPersistence {
 
     public Map<String, List<Policy>> readAll() {
         try {
-
-
             return policyStorePersistence.getAllBlobs().entrySet().stream().map(entry -> {
                 try {
                     return new AbstractMap.SimpleEntry<>(entry.getKey(),

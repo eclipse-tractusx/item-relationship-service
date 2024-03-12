@@ -33,6 +33,7 @@ import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import jakarta.json.Json;
@@ -140,6 +141,21 @@ class PolicyStoreControllerTest {
 
         // assert
         assertThat(returnedPolicies).isEqualTo(
+                policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
+    }
+
+    @Test
+    void getAllPolicies() {
+        // arrange
+        final List<Policy> policies = List.of(
+                new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
+        when(service.getAllStoredPolicies()).thenReturn(Map.of("bpn", policies));
+
+        // act
+        final Map<String, List<PolicyResponse>> returnedPolicies = testee.getAllPolicies();
+
+        // assert
+        assertThat(returnedPolicies.get("bpn")).isEqualTo(
                 policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
     }
 
