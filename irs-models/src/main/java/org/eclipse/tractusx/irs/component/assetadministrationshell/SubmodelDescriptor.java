@@ -82,8 +82,8 @@ public class SubmodelDescriptor {
     /* package */ boolean isAspect(final String filterSemanticId) {
         return Optional.ofNullable(getAspectType())
                 .filter(aspect -> StringUtils.hasLength(filterSemanticId))
-                .map(semanticId -> semanticId.contains(lowerCaseNameWithUnderscores(filterSemanticId))
-                        || semanticModelNamesMatchAndVersionIsInRange(semanticId, filterSemanticId))
+                .map(aspect -> aspect.contains(lowerCaseNameWithUnderscores(filterSemanticId))
+                        || semanticModelNamesMatchAndVersionIsInRange(aspect, filterSemanticId))
                 .orElse(false);
     }
 

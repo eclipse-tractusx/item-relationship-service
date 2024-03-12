@@ -54,7 +54,7 @@ public class RegisterJob {
     private static final String MAX_TREE_DEPTH_DESC = "100";
     private static final int MIN_TREE_DEPTH = 1;
     private static final int MAX_TREE_DEPTH = 100;
-    private static final String ASPECT_MODEL_REGEX = "^(urn:(b|s)amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
+    private static final String ASPECT_MODEL_REGEX = "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
 
     @NotNull
     @Valid

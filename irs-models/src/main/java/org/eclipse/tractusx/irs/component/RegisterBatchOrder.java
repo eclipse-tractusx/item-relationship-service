@@ -80,7 +80,7 @@ import org.hibernate.validator.constraints.URL;
 })
 public class RegisterBatchOrder {
 
-    private static final String ASPECT_MODEL_REGEX = "^(urn:(b|s)amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
+    private static final String ASPECT_MODEL_REGEX = "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
 
     @NotEmpty
     @Valid

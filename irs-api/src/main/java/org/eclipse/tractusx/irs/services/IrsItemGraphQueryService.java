@@ -203,7 +203,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             final List<String> invalidAspectTypes = aspectTypeValues.stream()
                                                                     .filter(s -> !availableUrns.contains(s)
                                                                             || !s.matches(
-                                                                            "^(urn:(b|s)amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
+                                                                            "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
                                                                     .toList();
             if (!invalidAspectTypes.isEmpty()) {
                 throw new IllegalArgumentException(
