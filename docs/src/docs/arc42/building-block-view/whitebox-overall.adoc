@@ -20,6 +20,9 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |IRS
 |The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS
 
+|PolicyStore
+|The PolicyStore Component stores usage policies used to validate the consumption of data asset.
+
 |EDC Consumer
 |The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane.
 
@@ -50,7 +53,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |Number |Description
 
 | 01
-| IrsApiConsumer calls the *IRS* public *API*
+| IrsApiConsumer calls the *IRS* public /irs *API*
 
 | 02
 | IrsApiConsumer must authorize using *technical C-X User*
@@ -99,7 +102,12 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 
 | 17
 | In case of the use-case Environmental and Social Standards, *IRS* sends notifications to the *IRS-ESS* instance running at the data provider using the *EDC*.
-|===
 
+| 18
+| *IRS* uses the PolicyStore to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets.
+
+| 19
+| IrsApiConsumer calls the IRS public /policy *API*
+|===
 
 
