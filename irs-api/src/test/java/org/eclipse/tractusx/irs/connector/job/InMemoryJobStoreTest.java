@@ -37,6 +37,7 @@ import net.datafaker.Faker;
 import org.assertj.core.api.SoftAssertions;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
+import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.util.TestMother;
 import org.junit.jupiter.api.Test;
@@ -465,6 +466,11 @@ class InMemoryJobStoreTest {
 
         // Assert
         assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
+    }
+
+    @Test
+    void checkNotNullExample() {
+        assertThat(Jobs.EXAMPLE).isNotNull();
     }
 
 }
