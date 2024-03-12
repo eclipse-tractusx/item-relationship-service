@@ -89,8 +89,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private static final String ENDPOINT_ADDRESS = "http://localhost/d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4/submodel";
     private static final String ASSET_ID = "d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4";
     private static final String PROVIDER_SUFFIX = "/test";
-
-    private final static String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
+    private static final String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final TimeMachine clock = new TimeMachine();
@@ -98,14 +97,19 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Spy
     private final EdcConfiguration config = new EdcConfiguration();
     private final RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
+
     @Mock
     private ContractNegotiationService contractNegotiationService;
+
     @Mock
     private EdcDataPlaneClient edcDataPlaneClient;
+
     @Mock
     private EDCCatalogFacade catalogFacade;
+
     @Mock
     private EndpointDataReferenceCacheService endpointDataReferenceCacheService;
+
     private EdcSubmodelClient testee;
 
     EdcSubmodelClientTest() throws IOException {
