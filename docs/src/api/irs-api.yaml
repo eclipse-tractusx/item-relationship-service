@@ -2373,9 +2373,9 @@ components:
           - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
           items:
             type: string
-            pattern: ^(urn:(b|s)amm:.*\d\.\d\.\d)?(#)?(\w+)?$
+            pattern: ^(urn:[bs]amm:.*\d\.\d\.\d)?(#)?(\w+)?$
           maxItems: 2147483647
-          pattern: ^(urn:(b|s)amm:.*\d\.\d\.\d)?(#)?(\w+)?$
+          pattern: ^(urn:[bs]amm:.*\d\.\d\.\d)?(#)?(\w+)?$
         batchSize:
           type: integer
           format: int32
@@ -2559,9 +2559,9 @@ components:
           - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
           items:
             type: string
-            pattern: ^(urn:(b|s)amm:.*\d\.\d\.\d)?(#)?(\w+)?$
+            pattern: ^(urn:[bs]amm:.*\d\.\d\.\d)?(#)?(\w+)?$
           maxItems: 2147483647
-          pattern: ^(urn:(b|s)amm:.*\d\.\d\.\d)?(#)?(\w+)?$
+          pattern: ^(urn:[bs]amm:.*\d\.\d\.\d)?(#)?(\w+)?$
         auditContractNegotiation:
           type: boolean
           description: Flag enables and disables auditing, including provisioning 
