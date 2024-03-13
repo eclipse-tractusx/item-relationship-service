@@ -38,7 +38,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
-import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceRuntimeException;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -139,7 +138,7 @@ public class PolicyPersistence {
                     throw new PolicyStoreException("Could not read the policies from the store", e);
                 }
             }).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
-        } catch (BlobPersistenceException | BlobPersistenceRuntimeException e) {
+        } catch (BlobPersistenceException e) {
             throw new PolicyStoreException("Could not read the policies from the store", e);
         }
     }
