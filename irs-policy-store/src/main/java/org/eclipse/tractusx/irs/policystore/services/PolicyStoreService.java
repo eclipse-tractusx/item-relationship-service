@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
@@ -124,15 +125,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     public void deletePolicy(final String policyId) {
         try {
             log.info("Getting all policies to find correct bpn number");
-            final List<String> bpnsContainingPolicyId = getAllStoredPolicies().entrySet()
-                                                                              .stream()
-                                                                              .filter(entry -> entry.getValue()
-                                                                                                    .stream()
-                                                                                                    .anyMatch(
-                                                                                                            policy -> policy.getPolicyId()
-                                                                                                                            .equals(policyId)))
-                                                                              .map(Map.Entry::getKey)
-                                                                              .toList();
+            final List<String> bpnsContainingPolicyId = findBpnsByPolicyId(policyId);
 
             log.info("Deleting policy with id {}", policyId);
             bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
@@ -151,15 +144,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     private void updatePolicy(final String policyId, final OffsetDateTime validUntil, final List<String> bpns) {
         try {
             log.info("Updating policy with id {}", policyId);
-            final List<String> bpnsContainingPolicyId = getAllStoredPolicies().entrySet()
-                                                                              .stream()
-                                                                              .filter(entry -> entry.getValue()
-                                                                                                    .stream()
-                                                                                                    .anyMatch(
-                                                                                                            policy -> policy.getPolicyId()
-                                                                                                                            .equals(policyId)))
-                                                                              .map(Map.Entry::getKey)
-                                                                              .toList();
+            final List<String> bpnsContainingPolicyId = findBpnsByPolicyId(policyId);
 
             final Policy policyToUpdate = getStoredPolicies(bpnsContainingPolicyId).stream()
                                                                                    .filter(policy -> policy.getPolicyId()
@@ -177,6 +162,18 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
+    }
+
+    private List<String> findBpnsByPolicyId(final String policyId) {
+        return findBpnsByPolicyId(getAllStoredPolicies(), policyId);
+    }
+
+    private static List<String> findBpnsByPolicyId(final Map<String, List<Policy>> policyMap, final String policyId) {
+        return policyMap.entrySet().stream().filter(byPolicyId(policyId)).map(Map.Entry::getKey).toList();
+    }
+
+    private static Predicate<Map.Entry<String, List<Policy>>> byPolicyId(final String policyId) {
+        return entry -> entry.getValue().stream().anyMatch(policy -> policy.getPolicyId().equals(policyId));
     }
 
     @Override
