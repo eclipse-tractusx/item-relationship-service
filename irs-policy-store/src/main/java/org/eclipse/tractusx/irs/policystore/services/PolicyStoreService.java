@@ -142,7 +142,13 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     }
 
-    public void updatePolicy(final String policyId, final UpdatePolicyRequest request) {
+    public void updatePolicies(final UpdatePolicyRequest request) {
+        for (final String policyId : request.policiesIds()) {
+            updatePolicy(policyId, request.validUntil(), request.businessPartnerNumbers());
+        }
+    }
+
+    private void updatePolicy(final String policyId, final OffsetDateTime validUntil, final List<String> bpns) {
         try {
             log.info("Updating policy with id {}", policyId);
             final List<String> bpnsContainingPolicyId = getAllStoredPolicies().entrySet()
@@ -156,18 +162,18 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
                                                                               .toList();
 
             final Policy policyToUpdate = getStoredPolicies(bpnsContainingPolicyId).stream()
-                                                                                 .filter(policy -> policy.getPolicyId()
-                                                                                                         .equals(policyId))
-                                                                                 .findAny()
-                                                                                 .orElseThrow(
-                                                                                         () -> new PolicyStoreException(
-                                                                                                 "Policy with id '"
-                                                                                                         + policyId
-                                                                                                         + "' doesn't exists!"));
+                                                                                   .filter(policy -> policy.getPolicyId()
+                                                                                                           .equals(policyId))
+                                                                                   .findAny()
+                                                                                   .orElseThrow(
+                                                                                           () -> new PolicyStoreException(
+                                                                                                   "Policy with id '"
+                                                                                                           + policyId
+                                                                                                           + "' doesn't exists!"));
 
-            policyToUpdate.update(request.validUntil());
+            policyToUpdate.update(validUntil);
             bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
-            persistence.save(request.businessPartnerNumbers(), policyToUpdate);
+            persistence.save(bpns, policyToUpdate);
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -176,7 +182,11 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     @Override
     public List<AcceptedPolicy> getAcceptedPolicies(final List<String> bpns) {
         if (bpns == null) {
-            return getAllStoredPolicies().values().stream().flatMap(Collection::stream).map(this::toAcceptedPolicy).toList();
+            return getAllStoredPolicies().values()
+                                         .stream()
+                                         .flatMap(Collection::stream)
+                                         .map(this::toAcceptedPolicy)
+                                         .toList();
         }
 
         final ArrayList<Policy> policies = new ArrayList<>();

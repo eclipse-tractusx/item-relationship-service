@@ -205,38 +205,52 @@ class PolicyStoreServiceTest {
 
         // act
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy,
-                null));
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy, null));
     }
 
     @Test
     void whenRegisterPolicyWithMissingConstraintShouldThrowException() {
         // arrange
         final Policy policy = Policy.builder()
-                                    .permissions(List.of(
-                                            Permission.builder().constraint(new Constraints(emptyList(), emptyList())).build(),
-                                            Permission.builder().build()
-                                            ))
+                                    .permissions(List.of(Permission.builder()
+                                                                   .constraint(
+                                                                           new Constraints(emptyList(), emptyList()))
+                                                                   .build(), Permission.builder().build()))
                                     .build();
 
         // act
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy,
-                null));
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy, null));
     }
 
     @Test
     void whenUpdate() {
         // arrange
-        final OffsetDateTime now = OffsetDateTime.now(clock);
-        when(persistence.readAll()).thenReturn(Map.of("bpn2", List.of(new Policy("testId", now, now.plusMinutes(1), emptyList()))));
-        when(persistence.readAll(any())).thenReturn(List.of(new Policy("testId", now, now.plusMinutes(1), emptyList())));
+        final String policyId = "testId";
+
+        final String originalBpn = "bpn2";
+        final String expectedBpn = "bpn1";
+
+        final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
+        final OffsetDateTime originalValidUntil = createdOn.plusMinutes(1);
+        final OffsetDateTime expectedValidUntil = createdOn.plusDays(3);
+
+        final List<Permission> permissions = emptyList();
+
+        final Policy testPolicy = new Policy(policyId, createdOn, originalValidUntil, permissions);
+        when(persistence.readAll()).thenReturn(Map.of(originalBpn, List.of(testPolicy)));
+        when(persistence.readAll(originalBpn)).thenReturn(
+                List.of(new Policy(policyId, createdOn, originalValidUntil, permissions)));
 
         // act
-        testee.updatePolicy("testId", new UpdatePolicyRequest(OffsetDateTime.now(), List.of("bpn1"), List.of("policyId")));
+        testee.updatePolicies(new UpdatePolicyRequest(expectedValidUntil, List.of(expectedBpn), List.of(policyId)));
 
         // assert
-        verify(persistence).delete("bpn2", "testId");
-        verify(persistence).save(eq(List.of("bpn1")), any());
+        verify(persistence).delete(originalBpn, policyId);
+
+        final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
+        verify(persistence).save(eq(List.of(expectedBpn)), policyCaptor.capture());
+        assertThat(policyCaptor.getValue().getCreatedOn()).isEqualTo(createdOn);
+        assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(expectedValidUntil);
     }
 }

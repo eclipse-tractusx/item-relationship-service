@@ -178,7 +178,7 @@ class PolicyStoreControllerTest {
         testee.updateAllowedPolicy(request);
 
         // assert
-        verify(service).updatePolicy(policyId, request);
+        verify(service).updatePolicies(request);
     }
 
     private List<Permission> createPermissions() {

@@ -104,6 +104,7 @@ public class PolicyStoreController {
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
     })
+
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
@@ -237,6 +238,7 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void updateAllowedPolicy(final @Valid @RequestBody UpdatePolicyRequest request) {
-        request.policiesIds().forEach(policyId -> service.updatePolicy(policyId, request));
+        service.updatePolicies(request);
     }
+
 }
