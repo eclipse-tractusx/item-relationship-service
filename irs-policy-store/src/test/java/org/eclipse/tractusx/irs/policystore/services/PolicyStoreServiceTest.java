@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -253,4 +254,87 @@ class PolicyStoreServiceTest {
         assertThat(policyCaptor.getValue().getCreatedOn()).isEqualTo(createdOn);
         assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(expectedValidUntil);
     }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void updatePolicies_shouldAddPolicyToEachBpn() {
+
+        // ARRANGE
+        final String policyId = "testId";
+
+        final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
+        final OffsetDateTime validUntil = createdOn.plusDays(14);
+
+        final List<Permission> permissions = emptyList();
+
+        // BPN1 without any policies
+
+        // BPN2 with testPolicy
+        final Policy testPolicy = new Policy(policyId, createdOn, validUntil, permissions);
+        when(persistence.readAll()).thenReturn(Map.of("bpn2", List.of(testPolicy)));
+        when(persistence.readAll("bpn2")).thenReturn(List.of(testPolicy));
+
+        // ACT
+        testee.updatePolicies(new UpdatePolicyRequest(validUntil, List.of("bpn1", "bpn2"), List.of(policyId)));
+
+        // ASSERT
+        verify(persistence).delete("bpn2", policyId);
+
+        final var bpnsCaptor = ArgumentCaptor.forClass(List.class);
+        final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
+        verify(persistence).save(bpnsCaptor.capture(), policyCaptor.capture());
+
+        // policy added to each BPN
+        assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo(policyId);
+        assertThat(bpnsCaptor.getValue()).containsAll(List.of("bpn1", "bpn2"));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    void updatePolicies_shouldAddBpnsToEachPolicy() {
+
+        // ARRANGE
+        final String policyId1 = "testId1";
+        final String policyId2 = "testId2";
+
+        final String bpn1 = "bpn1";
+        final String bpn2 = "bpn2";
+
+        final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
+        final OffsetDateTime originalValidUntil = createdOn.plusMinutes(1);
+
+        final List<Permission> permissions = emptyList();
+
+        final Policy testPolicy1 = new Policy(policyId1, createdOn, originalValidUntil, permissions);
+        final Policy testPolicy2 = new Policy(policyId2, createdOn, originalValidUntil, permissions);
+
+        // BPN1 without any policies
+
+        // BPN2 with testPolicy1 and testPolicy2
+        when(persistence.readAll()).thenReturn(Map.of(bpn2, List.of(testPolicy1, testPolicy2)));
+        when(persistence.readAll(bpn2)).thenReturn(
+                List.of(new Policy(policyId1, createdOn, originalValidUntil, permissions),
+                        new Policy(policyId2, createdOn, originalValidUntil, permissions)));
+
+        // ACT
+        testee.updatePolicies(
+                new UpdatePolicyRequest(originalValidUntil, List.of(bpn1, bpn2), List.of(policyId1, policyId2)));
+
+        // ASSERT
+        verify(persistence).delete(bpn2, policyId1);
+        verify(persistence).delete(bpn2, policyId2);
+
+        final var bpnsCaptor = ArgumentCaptor.forClass(List.class);
+        final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
+        verify(persistence, times(2)).save(bpnsCaptor.capture(), policyCaptor.capture());
+
+        // each BPNs added to policy 1
+        assertThat(policyCaptor.getAllValues().get(0).getPolicyId()).isEqualTo(policyId1);
+        assertThat(bpnsCaptor.getAllValues().get(0)).containsAll(List.of("bpn1", "bpn2"));
+
+        // each BPNs added to policy 2
+        assertThat(bpnsCaptor.getAllValues().get(1)).containsAll(List.of("bpn1", "bpn2"));
+        assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId2);
+    }
+
 }
