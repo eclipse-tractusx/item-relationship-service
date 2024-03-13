@@ -188,11 +188,6 @@ class PolicyStoreServiceTest {
     }
 
     @Test
-    void shouldThrowException() {
-
-    }
-
-    @Test
     void deletePolicyShouldThrowResponseStatusException() {
         // act
         final String policyId = "testId";

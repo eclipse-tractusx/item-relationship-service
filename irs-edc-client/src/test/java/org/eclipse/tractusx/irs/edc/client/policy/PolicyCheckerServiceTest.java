@@ -53,11 +53,6 @@ class PolicyCheckerServiceTest {
 
     @BeforeEach
     void setUp() {
-        final var policyList = List.of(
-                new AcceptedPolicy(policy(TestConstants.ID_3_0_TRACE), OffsetDateTime.now().plusYears(1)),
-                new AcceptedPolicy(policy(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY),
-                        OffsetDateTime.now().plusYears(1)));
-//        when(policyStore.getAcceptedPolicies(List.of("bpn"))).thenReturn(policyList);
         policyCheckerService = new PolicyCheckerService(policyStore, new ConstraintCheckerService());
     }
 

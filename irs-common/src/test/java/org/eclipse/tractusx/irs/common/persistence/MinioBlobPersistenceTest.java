@@ -234,7 +234,7 @@ class MinioBlobPersistenceTest {
     }
 
     @Test
-    void test() throws BlobPersistenceException, ServerException, InsufficientDataException, ErrorResponseException,
+    void shouldReturnAllBlobs() throws BlobPersistenceException, ServerException, InsufficientDataException, ErrorResponseException,
             IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
             InternalException {
         final String name = "test-name";
