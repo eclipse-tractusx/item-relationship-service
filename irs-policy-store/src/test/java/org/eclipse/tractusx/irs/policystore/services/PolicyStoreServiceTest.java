@@ -119,8 +119,8 @@ class PolicyStoreServiceTest {
         doThrow(new PolicyStoreException("")).when(persistence).save(any(), any());
 
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy,
-                List.of(BPN)));
+        final List<String> bpns = List.of(BPN);
+        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy, bpns));
     }
 
     @Test

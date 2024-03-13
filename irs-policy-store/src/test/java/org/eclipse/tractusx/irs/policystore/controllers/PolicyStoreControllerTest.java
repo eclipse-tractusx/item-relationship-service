@@ -155,7 +155,7 @@ class PolicyStoreControllerTest {
         final Map<String, List<PolicyResponse>> returnedPolicies = testee.getAllPolicies();
 
         // assert
-        assertThat(returnedPolicies.get("bpn")).isEqualTo(
+        assertThat(returnedPolicies).containsEntry("bpn",
                 policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
     }
 
