@@ -4,6 +4,7 @@
 skinparam monochrome true
 skinparam shadowing false
 
+
 package "IRS" {
 
   interface "WebService (Servlet)"  as WebService
@@ -15,7 +16,7 @@ package "IRS" {
   ConsumerApiController --> ConsumerService : retrieveItemGraph(request)
   BlobstoreAPI - [BlobstoreAPIImpl]
 
-  ConsumerService ---( BlobstoreAPI : createContainer(storageAccountName, containerName)
+  ConsumerService ----( BlobstoreAPI : createContainer(storageAccountName, containerName)
   [JobOrchestrator]
   ConsumerService -> JobOrchestrator : uses
   BlobstoreAPIImpl ..> API : use
