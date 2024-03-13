@@ -1,16 +1,18 @@
+[[Back to main README](../../README.md)]
+
 # Item Relationship Service Helm Chart
 
 This chart installs the Item Relationship Service and its direct dependencies.
 This includes:
 
- - Minio Object Storage (enabled by default)
- - Prometheus (disabled by default) 
- - Grafana (disabled by default) 
+ - [Minio Object Storage](https://min.io) (enabled by default)
+ - [Prometheus](https://prometheus.io) (disabled by default) 
+ - [Grafana](https://grafana.com/grafana) (disabled by default) 
 
 ## Prerequisites
 
-- Kubernetes 1.19+
-- Helm 3.2.0+
+- [Kubernetes](https://kubernetes.io) 1.25.11+
+- [Helm](https://helm.sh) 3.9.3+
 - PV provisioner support in the underlying infrastructure
 
 ## Install

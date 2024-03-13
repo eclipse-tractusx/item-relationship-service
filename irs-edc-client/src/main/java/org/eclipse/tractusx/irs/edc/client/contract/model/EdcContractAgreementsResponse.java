@@ -22,11 +22,11 @@ package org.eclipse.tractusx.irs.edc.client.contract.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
-import org.eclipse.edc.connector.contract.spi.types.agreement.ContractAgreement;
 
 /**
- * EdcContractAgreementListWrapper used for wrapping the response of
- * /management/v2/contractagreements/request where a List of {@link ContractAgreement} is returned.
+ * EdcContractAgreementsResponse used for representing the response of
+ * /management/v2/contractagreements/request where an array of
+ * EdcContractAgreementsResponse is returned.
  */
 
 @Builder

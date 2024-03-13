@@ -63,9 +63,9 @@ public class EdcContractDefinitionService {
             final HttpStatusCode responseCode = createContractDefinitionResponse.getStatusCode();
 
             if (responseCode.value() == HttpStatus.CONFLICT.value()) {
-                log.info("{} asset contract definition already exists in the EDC", assetId);
+                log.info("{} contract definition already exists in the EDC", policyId);
 
-                throw new CreateEdcContractDefinitionException("Asset contract definition already exists in the EDC");
+                return policyId;
             }
 
             if (responseCode.value() == HttpStatus.OK.value()) {

@@ -28,8 +28,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.edc.connector.contract.spi.types.negotiation.ContractNegotiation;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementNegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcContractAgreementsResponse;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.ContractAgreementException;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +66,7 @@ class EdcContractAgreementServiceTest {
     @Test
     void shouldReturnContractAgreements() throws ContractAgreementException {
         //GIVEN
-        String[] contractAgreementIds = { "contractAgreementId" };
+        List<String> contractAgreementIds = List.of("contractAgreementId");
 
         final EdcContractAgreementsResponse[] edcContractAgreementsResponse = new EdcContractAgreementsResponse[1];
         edcContractAgreementsResponse[0] = EdcContractAgreementsResponse.builder().contractAgreementId("id")
@@ -93,7 +93,7 @@ class EdcContractAgreementServiceTest {
     @Test
     void shouldThrowContractAgreementExceptionWhenResponseBodyIsEmtpy() {
         //GIVEN
-        String[] contractAgreementIds = { "contractAgreementId" };
+        List<String> contractAgreementIds = List.of("contractAgreementId");
 
         when(restTemplate.exchange(anyString(), any(), any(), eq(EdcContractAgreementsResponse[].class))).thenReturn(
                 ResponseEntity.ok(new EdcContractAgreementsResponse[0]));
@@ -115,24 +115,29 @@ class EdcContractAgreementServiceTest {
         //GIVEN
         String contractAgreementId = "contractAgreementId";
 
-        final ContractNegotiation contractAgreementNegotiationMock = ContractNegotiation.Builder.newInstance()
-                                                                                                .id("id")
-                                                                                                .counterPartyId("")
-                                                                                                .counterPartyAddress("")
-                                                                                                .protocol("")
-                                                                                                .build();
-        when(restTemplate.exchange(anyString(), any(), any(), eq(ContractNegotiation.class))).thenReturn(
+        final EdcContractAgreementNegotiationResponse contractAgreementNegotiationMock = EdcContractAgreementNegotiationResponse.builder()
+                                                                                                                                .correlationId(
+                                                                                                                                        "id")
+                                                                                                                                .counterPartyId(
+                                                                                                                                        "")
+                                                                                                                                .counterPartyAddress(
+                                                                                                                                        "")
+                                                                                                                                .protocol(
+                                                                                                                                        "")
+                                                                                                                                .build();
+        when(restTemplate.exchange(anyString(), any(), any(),
+                eq(EdcContractAgreementNegotiationResponse.class))).thenReturn(
                 ResponseEntity.ok(contractAgreementNegotiationMock));
 
         //WHEN
-        final ContractNegotiation contractAgreementNegotiation = edcContractAgreementService.getContractAgreementNegotiation(
+        final EdcContractAgreementNegotiationResponse edcContractAgreementNegotiationResponse = edcContractAgreementService.getContractAgreementNegotiation(
                 contractAgreementId);
 
         //THEN
         Mockito.verify(restTemplate)
                .exchange(
                        eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/contractAgreementId/negotiation"),
-                       any(), any(), eq(ContractNegotiation.class));
-        assertThat(contractAgreementNegotiation).isNotNull();
+                       any(), any(), eq(EdcContractAgreementNegotiationResponse.class));
+        assertThat(edcContractAgreementNegotiationResponse).isNotNull();
     }
 }
