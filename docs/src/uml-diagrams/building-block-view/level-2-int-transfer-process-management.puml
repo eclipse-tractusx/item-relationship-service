@@ -9,13 +9,23 @@ skinparam defaultFontName "Architects daughter"
 
 component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement {
     component [**AASTransferProcessManager**] <<Component>> as TransferProcessManager
-    component [**DigitalTwinRegistryFacade**] <<Component>> as DTRFacade {
-        component [**DigitalTwinRegistryClient**] <<Component>> as DTRClient
+    component [**DecentralDigitalTwinRegistryService**] <<Component>> as DTRService {
+        component [**DecentralDigitalTwinRegistryClient**] <<Component>> as DTRClient {
+            component [**EndpointDataForConnectorsService**] <<Component>> as EndpointDataForConnectorsService
+        }
     }
-    component [**SubmodelFacade**] <<Component>> as SubmodelFacade {
-        component [**SubmodelClient**] <<Component>> as SubmodelClient
+    component [**EdcSubmodelFacade**] <<Component>> as SubmodelFacade {
+        component [**EdcSubmodelClient**] <<Component>> as SubmodelClient {
+            component [**ContractNegotiationService**]  <<Component>> as ContractNegotiationService {
+                [**PolicyCheckerService**] <<Component>> as PolicyCheckerService
+            }
+        }
     }
     component [**ExecutorService**] <<Component>> as ExecutorService
+}
+
+node PolicyStore {
+    [**PolicyStoreService**] <<Component>> as PolicyStoreService
 }
 
 node "Digital Twin Registry" {
@@ -26,8 +36,7 @@ node "SubmodelServer" {
     [**SubmodelServer**] <<Component>> as SMS
 }
 
-
-DTRFacade --0)- TransferProcessManager
+DTRService --0)- TransferProcessManager
 SubmodelFacade --0)- TransferProcessManager
 ExecutorService <...> TransferProcessManager
 
@@ -39,6 +48,10 @@ DTRClient ----( RegAPI
 interface "SubmodelAPI" as SMSAPI
 SMSAPI -- SMS
 SubmodelClient ----( SMSAPI
+interface "PolicyStoreAPI" as PolicyStoreAPI
+PolicyCheckerService --(  PolicyStoreAPI
+PolicyStoreAPI -- PolicyStoreService
+EndpointDataForConnectorsService -> SubmodelFacade
 
 database BlobStore
 TransferProcessManager -left-( BlobStoreInterface
