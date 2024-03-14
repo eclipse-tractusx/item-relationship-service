@@ -61,7 +61,7 @@ A job is processed in this order:
 |*EssController*
 |The *EssController* provides a REST Interface to perform BPN investigations of supply chain.
 
-|*PolicyStore*
+|*PolicyStoreController*
 |The *PolicyStore* provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers.
 
 |===
