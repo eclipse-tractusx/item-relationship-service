@@ -104,7 +104,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | In case of the use-case Environmental and Social Standards, *IRS* sends notifications to the *IRS-ESS* instance running at the data provider using the *EDC*.
 
 | 18
-| *IRS* uses the PolicyStore to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets.
+| *IRS* uses the Policy Store to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets.
 
 | 19
 | IrsApiConsumer calls the IRS public /policy *API*
