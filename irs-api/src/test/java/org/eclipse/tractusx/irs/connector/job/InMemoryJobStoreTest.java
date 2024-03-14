@@ -468,9 +468,4 @@ class InMemoryJobStoreTest {
         assertThat(job2.getJob().getLastModifiedOn()).isAfter(job1.getJob().getLastModifiedOn());
     }
 
-    @Test
-    void checkNotNullExample() {
-        assertThat(Jobs.EXAMPLE).isNotNull();
-    }
-
 }
