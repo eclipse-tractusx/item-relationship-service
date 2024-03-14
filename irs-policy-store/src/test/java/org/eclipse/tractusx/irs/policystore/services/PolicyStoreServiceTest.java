@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.policystore.services;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -335,6 +336,18 @@ class PolicyStoreServiceTest {
         // each BPNs added to policy 2
         assertThat(bpnsCaptor.getAllValues().get(1)).containsAll(List.of("bpn1", "bpn2"));
         assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId2);
+    }
+
+    @Test
+    void shouldReturnDefaultPolicyWhenBpnIsEmpty() {
+        // arrange
+        when(persistence.readAll()).thenReturn(emptyMap());
+
+        // act
+        final var acceptedPolicies = testee.getAcceptedPolicies(null);
+
+        // assert
+        assertThat(acceptedPolicies.get(0).policy().getPolicyId()).isEqualTo("default-policy");
     }
 
 }
