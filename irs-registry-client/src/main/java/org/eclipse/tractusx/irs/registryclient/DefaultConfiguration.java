@@ -72,6 +72,7 @@ public class DefaultConfiguration {
     private static final String CONFIG_VALUE_DECENTRAL = "decentral";
     private static final String CONFIG_VALUE_CENTRAL = "central";
     private static final int POOL_SIZE = 20;
+    private static final String DEFAULT = "default";
 
     @Bean
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_CENTRAL)
@@ -117,7 +118,7 @@ public class DefaultConfiguration {
     public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
         return new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
             try {
-                return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, null);
+                return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, DEFAULT);
             } catch (EdcClientException e) {
                 throw new EdcRetrieverException(e);
             }

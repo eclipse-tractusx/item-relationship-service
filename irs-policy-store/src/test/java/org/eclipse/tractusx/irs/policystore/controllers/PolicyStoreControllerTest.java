@@ -126,7 +126,7 @@ class PolicyStoreControllerTest {
                 new CreatePolicyRequest(now.plusMinutes(1), null, List.of(jsonObject.get("payload").asJsonObject())));
 
         // assert
-        verify(service).registerPolicy(any(), eq(null));
+        verify(service).registerPolicy(any(), eq(List.of("default")));
     }
 
     @Test

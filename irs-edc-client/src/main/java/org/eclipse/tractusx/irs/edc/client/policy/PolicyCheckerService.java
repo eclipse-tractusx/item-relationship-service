@@ -42,6 +42,7 @@ public class PolicyCheckerService {
 
     private final AcceptedPoliciesProvider policyStore;
     private final ConstraintCheckerService constraintCheckerService;
+    private static final String DEFAULT = "default";
 
     public boolean isValid(final Policy policy, final String bpn) {
         return policy.getPermissions().stream().allMatch(permission -> isValid(permission, getValidStoredPolicies(bpn)));
@@ -54,7 +55,7 @@ public class PolicyCheckerService {
     }
 
     private List<AcceptedPolicy> getValidStoredPolicies(final String bpn) {
-        return policyStore.getAcceptedPolicies(bpn == null ? null : List.of(bpn))
+        return policyStore.getAcceptedPolicies(bpn == null ? List.of(DEFAULT) : List.of(bpn))
                           .stream()
                           .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
                           .toList();

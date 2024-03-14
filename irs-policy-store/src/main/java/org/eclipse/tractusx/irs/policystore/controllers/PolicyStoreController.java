@@ -80,6 +80,7 @@ public class PolicyStoreController {
 
     private final PolicyStoreService service;
     private final EdcTransformer edcTransformer;
+    private static final String DEFAULT = "default";
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
@@ -110,11 +111,15 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void registerAllowedPolicy(final @RequestBody CreatePolicyRequest request) {
-        request.payload().stream().map(payload -> {
-            final Policy policy = edcTransformer.transformToPolicy(payload);
-            policy.setValidUntil(request.validUntil());
-            return policy;
-        }).forEach(policy -> service.registerPolicy(policy, request.businessPartnerNumbers()));
+        request.payload()
+               .stream()
+               .map(payload -> {
+                   final Policy policy = edcTransformer.transformToPolicy(payload);
+                   policy.setValidUntil(request.validUntil());
+                   return policy;
+               })
+               .forEach(policy -> service.registerPolicy(policy,
+                       request.businessPartnerNumbers() == null ? List.of(DEFAULT) : request.businessPartnerNumbers()));
     }
 
     @Operation(operationId = "getAllowedPoliciesByBpn",
@@ -142,10 +147,7 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public List<PolicyResponse> getPolicies(@RequestParam @NotNull final List<String> bpns) {
-        return service.getStoredPolicies(bpns)
-                      .stream()
-                      .map(PolicyResponse::fromPolicy)
-                      .toList();
+        return service.getStoredPolicies(bpns).stream().map(PolicyResponse::fromPolicy).toList();
     }
 
     @Operation(operationId = "getAllowedPolicies",

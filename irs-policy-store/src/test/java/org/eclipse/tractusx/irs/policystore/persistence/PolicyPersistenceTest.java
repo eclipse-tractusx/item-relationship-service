@@ -86,7 +86,7 @@ class PolicyPersistenceTest {
         final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
 
         // act
-        testee.save(null, policy);
+        testee.save(List.of("default"), policy);
 
         // assert
         verify(mockPersistence).putBlob(anyString(), any());

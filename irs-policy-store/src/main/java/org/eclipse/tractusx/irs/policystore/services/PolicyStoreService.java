@@ -65,6 +65,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     private final PolicyPersistence persistence;
     private final Clock clock;
     private static final String MISSING_REQUEST_FIELD_MESSAGE = "Request does not contain all required fields. Missing: %s";
+    private static final String DEFAULT = "default";
 
     public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
             final PolicyPersistence persistence, final Clock clock) {
@@ -139,7 +140,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public void updatePolicies(final UpdatePolicyRequest request) {
         for (final String policyId : request.policiesIds()) {
-            updatePolicy(policyId, request.validUntil(), request.businessPartnerNumbers());
+            updatePolicy(policyId, request.validUntil(), request.businessPartnerNumbers() == null ? List.of(DEFAULT) : request.businessPartnerNumbers());
         }
     }
 

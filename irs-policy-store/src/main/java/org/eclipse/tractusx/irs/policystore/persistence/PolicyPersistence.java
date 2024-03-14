@@ -69,21 +69,14 @@ public class PolicyPersistence {
     }
 
     public void save(final List<String> bpns, final Policy policy) {
-        if (bpns == null) {
-            final List<Policy> policies = readAll(BlobPersistence.DEFAULT_BLOB_NAME);
+        final Map<String, List<Policy>> storedBpnToPolicies = bpns.stream()
+                                                                  .collect(Collectors.toMap(bpn -> bpn,
+                                                                          this::readAll));
+        storedBpnToPolicies.forEach((bpn, policies) -> {
             checkIfPolicyAlreadyExists(policy, policies);
             policies.add(policy);
-            save(BlobPersistence.DEFAULT_BLOB_NAME, policies);
-        } else {
-            final Map<String, List<Policy>> storedBpnToPolicies = bpns.stream()
-                                                                      .collect(Collectors.toMap(bpn -> bpn,
-                                                                              this::readAll));
-            storedBpnToPolicies.forEach((bpn, policies) -> {
-                checkIfPolicyAlreadyExists(policy, policies);
-                policies.add(policy);
-                save(bpn, policies);
-            });
-        }
+            save(bpn, policies);
+        });
     }
 
     private static void checkIfPolicyAlreadyExists(final Policy policy, final List<Policy> policies) {

@@ -49,6 +49,8 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RegistryConfiguration {
 
+    private static final String DEFAULT = "default";
+
     @Bean
     @ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "central")
     public CentralDigitalTwinRegistryService centralDigitalTwinRegistryService(final DigitalTwinRegistryClient client) {
@@ -75,7 +77,7 @@ public class RegistryConfiguration {
         return new DecentralDigitalTwinRegistryService(connectorEndpointsService,
                 new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
                     try {
-                        return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, null);
+                        return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, DEFAULT);
                     } catch (EdcClientException e) {
                         throw new EdcRetrieverException(e);
                     }
