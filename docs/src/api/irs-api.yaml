@@ -797,7 +797,15 @@ paths:
   /irs/policies:
     get:
       description: Lists the registered policies that should be accepted in EDC negotiation.
-      operationId: getAllowedPolicies
+      operationId: getAllowedPoliciesByBpn
+      parameters:
+        - name: bpns
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
           content:
@@ -826,7 +834,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - api_key: []
+        - api_key: [ ]
       summary: Lists the registered policies that should be accepted in EDC negotiation.
       tags:
         - Item Relationship Service
@@ -963,18 +971,10 @@ paths:
       summary: Removes a policy that should no longer be accepted in EDC negotiation.
       tags:
         - Item Relationship Service
-  /irs/policies/{bpns}:
+  /irs/policies/all:
     get:
       description: Lists the registered policies that should be accepted in EDC negotiation.
-      operationId: getAllowedPoliciesByBpn
-      parameters:
-        - name: bpns
-          in: path
-          required: true
-          schema:
-            type: array
-            items:
-              type: string
+      operationId: getAllowedPolicies
       responses:
         "200":
           content:
@@ -1007,6 +1007,49 @@ paths:
       summary: Lists the registered policies that should be accepted in EDC negotiation.
       tags:
         - Item Relationship Service
+#    get:
+#      description: Lists the registered policies that should be accepted in EDC negotiation.
+#      operationId: getAllowedPoliciesByBpn
+#      parameters:
+#        - name: bpns
+#          in: path
+#          required: true
+#          schema:
+#            type: array
+#            items:
+#              type: string
+#      responses:
+#        "200":
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/Policy'
+#          description: Returns the policies.
+#        "401":
+#          content:
+#            application/json:
+#              examples:
+#                error:
+#                  $ref: '#/components/examples/error-response-401'
+#              schema:
+#                $ref: '#/components/schemas/ErrorResponse'
+#          description: No valid authentication credentials.
+#        "403":
+#          content:
+#            application/json:
+#              examples:
+#                error:
+#                  $ref: '#/components/examples/error-response-403'
+#              schema:
+#                $ref: '#/components/schemas/ErrorResponse'
+#          description: Authorization refused by server.
+#      security:
+#        - api_key: [ ]
+#      summary: Lists the registered policies that should be accepted in EDC negotiation.
+#      tags:
+#        - Item Relationship Service
 components:
   examples:
     canceled-job-response:

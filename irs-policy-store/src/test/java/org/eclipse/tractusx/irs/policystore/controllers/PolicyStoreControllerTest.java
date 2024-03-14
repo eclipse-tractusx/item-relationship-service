@@ -137,7 +137,7 @@ class PolicyStoreControllerTest {
         when(service.getStoredPolicies(List.of("bpn1"))).thenReturn(policies);
 
         // act
-        final List<PolicyResponse> returnedPolicies = testee.getPolicies(new String[]{"bpn1"});
+        final List<PolicyResponse> returnedPolicies = testee.getPolicies(List.of("bpn1"));
 
         // assert
         assertThat(returnedPolicies).isEqualTo(

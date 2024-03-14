@@ -28,7 +28,6 @@ import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.AbstractMap;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,6 +41,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
@@ -61,6 +61,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -137,11 +138,11 @@ public class PolicyStoreController {
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
     })
-    @GetMapping("/policies/{bpns}")
+    @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public List<PolicyResponse> getPolicies(@PathVariable final String[] bpns) {
-        return service.getStoredPolicies(Arrays.stream(bpns).toList())
+    public List<PolicyResponse> getPolicies(@RequestParam @NotNull final List<String> bpns) {
+        return service.getStoredPolicies(bpns)
                       .stream()
                       .map(PolicyResponse::fromPolicy)
                       .toList();
@@ -168,7 +169,7 @@ public class PolicyStoreController {
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
     })
-    @GetMapping("/policies")
+    @GetMapping("/policies/all")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public Map<String, List<PolicyResponse>> getAllPolicies() {
