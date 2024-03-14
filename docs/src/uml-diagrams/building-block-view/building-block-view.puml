@@ -28,7 +28,7 @@ component [**IRS-Application**] <<System>> as IRS {
     IrsController <..> JobOrchestrator
     JobOrchestrator <..> TransferProcessManagement
     JobOrchestrator <..> RecursiveJobHandler
-    TransferProcessManagement -( StoreInterface
+    TransferProcessManagement --( StoreInterface
     PolicyStoreController -( StoreInterface
     EssController <..> JobOrchestrator
 }
