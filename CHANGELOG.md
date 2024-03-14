@@ -257,7 +257,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Introduced new IRS role `admin_irs` which has unrestricted access to every API endpoint
 
 ### Changed
-- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. PolicyStore API access is restricted to role `admin_irs`.
+
+- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. Policy Store API
+  access is restricted to role `admin_irs`.
 
 ### Fixed
 - Fixed bug where BPN's were delivered without 'manufacturerName' property filled

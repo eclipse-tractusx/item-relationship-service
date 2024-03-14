@@ -20,7 +20,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |IRS
 |The IRS consumes relationship information across the CX-network and builds the graph view. Within this documentation, the focus lies on the IRS
 
-|PolicyStore
+|Policy Store
 |The PolicyStore Component stores usage policies used to validate the consumption of data asset.
 
 |EDC Consumer
