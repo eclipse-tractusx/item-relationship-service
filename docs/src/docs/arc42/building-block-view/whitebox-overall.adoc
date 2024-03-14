@@ -24,7 +24,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |The PolicyStore Component stores usage policies used to validate the consumption of data asset.
 
 |EDC Consumer
-|The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane.
+|The EDC Consumer component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists of a control plane and a data plane.
 
 |EDC Provider
 |The EDC Provider Component connects with EDC Consumer component and forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications.
