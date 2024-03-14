@@ -31,8 +31,8 @@ include::../../../uml-diagrams/building-block-view/level-2-int.puml[]
 |BlobstorePersistence
 |Interface for storing data blobs.
 
-|PolicyStore
-|The *PolicyStore* provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers.
+|Policy Store
+|The *Policy Store* provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers.
 
 |===
 

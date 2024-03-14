@@ -21,7 +21,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |The IRS consumes relationship information across the CX-network and builds the graph view. Within this documentation, the focus lies on the IRS
 
 |Policy Store
-|The PolicyStore Component stores usage policies used to validate the consumption of data asset.
+|The Policy Store component stores usage policies used to validate the consumption of data asset.
 
 |EDC Consumer
 |The EDC Consumer component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists of a control plane and a data plane.
