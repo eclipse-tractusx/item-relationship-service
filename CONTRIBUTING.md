@@ -83,6 +83,13 @@ If you need ideas for contributions, you can check the following links:
 - [open documentation stories](https://github.com/orgs/eclipse-tractusx/projects/8/views/4?filterQuery=label%3Adocumentation++status%3Ainbox%2Cbacklog)
 - [discussion page concerning documentation improvements](https://github.com/eclipse-tractusx/item-relationship-service/discussions/407)
 
+### Maintaining [CHANGELOG.md](CHANGELOG.md) 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
+to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). 
+
+_**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## Contributing as a Consultant
 

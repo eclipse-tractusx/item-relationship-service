@@ -533,6 +533,13 @@
       "status": "DEPRECATED"
     },
     {
+      "urn": "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt",
+      "version": "2.0.0",
+      "name": "SingleLevelBomAsBuilt",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
       "urn": "urn:samm:io.catenax.batch:2.0.0#Batch",
       "version": "2.0.0",
       "name": "Batch",

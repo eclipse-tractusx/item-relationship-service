@@ -5,7 +5,14 @@ skinparam linetype ortho
 skinparam defaultFontName "Architects daughter"
 
 
- component [**IRS-Application**] <<System>> as IRS {
+actor IrsApiConsumer
+actor EssApiConsumer
+actor PolicyStoreApiConsumer
+
+component [**Digital Twin Registry**] <<System>> as DTR
+component [**EDC**] <<System>> as EDC
+
+component [**IRS-Application**] <<System>> as IRS {
     component [**RecursiveJobHandler**] <<Component>> as RecursiveJobHandler
     component [**IrsController**] <<Component>> as IrsController
     component [**PolicyStoreController**] <<Component>> as PolicyStoreController
@@ -13,41 +20,36 @@ skinparam defaultFontName "Architects daughter"
     component [**JobOrchestrator**] <<Component>> as JobOrchestrator
     component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement
 
-
     port "API" as API_PORT
     port "Digital Twin Client" as AAS_PORT
     port "EDC Client" as EDC_PORT
-
-    () "BlobStore\nInterface" as StoreInterface
-
+    () "BlobStore Interface" as StoreInterface
 
     IrsController <..> JobOrchestrator
     JobOrchestrator <..> TransferProcessManagement
     JobOrchestrator <..> RecursiveJobHandler
     TransferProcessManagement --( StoreInterface
-    PolicyStoreController -( StoreInterface
+    PolicyStoreController --( StoreInterface
     EssController <..> JobOrchestrator
-
 }
-component [**Digital Twin Registry**] <<System>> as DTR
-component [**EDC**] <<System>> as EDC
-actor IrsApiConsumer
-actor EssApiConsumer
-actor PolicyStoreApiConsumer
+
+
+
+
+
 IrsController -up- API_PORT
 PolicyStoreController -down- API_PORT
 EssController -down- API_PORT
-IrsApiConsumer -(0- API_PORT
-EssApiConsumer -(0- API_PORT
-PolicyStoreApiConsumer -(0- API_PORT
+IrsApiConsumer --down(0- API_PORT
+EssApiConsumer --down(0- API_PORT
+PolicyStoreApiConsumer --(0- API_PORT
 
+TransferProcessManagement --right-- AAS_PORT
+TransferProcessManagement --right-- EDC_PORT
 
-TransferProcessManagement --- AAS_PORT
-TransferProcessManagement --- EDC_PORT
-AAS_PORT --right-(0 DTR
-EDC_PORT --right-(0 EDC
+AAS_PORT -up-(0 DTR
+EDC_PORT -up-(0 EDC
 
 database "BlobStore" as BlobStore
 StoreInterface -down- BlobStore
-
 @enduml
