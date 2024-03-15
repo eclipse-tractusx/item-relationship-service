@@ -240,9 +240,7 @@ public class IrsController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Paginated list of jobs with state and execution times for requested job states.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                              schema = @Schema(implementation = PageResult.class),
-                                                              examples = @ExampleObject(name = "complete",
-                                                                                        ref = "#/components/examples/complete-job-list-processing-state"))
+                                                              schema = @Schema(implementation = PageResult.class))
                                          }),
                             @ApiResponse(responseCode = "400",
                                          description = "Return jobs for requested job states failed.",

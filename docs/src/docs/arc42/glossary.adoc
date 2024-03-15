@@ -23,7 +23,7 @@ https://github.com/eclipse-edc/Connector[EDC Connector] , https://github.com/ecl
 For more information see:
 https://github.com/eclipse-tractusx/managed-identity-wallet[eclipse-tractusx/managed-identity-wallet]
 |Multi Tier Parts Data Chain | MTPDC | Formerly known Service Name: Multi Tier Parts Data Chain
-|PolicyStore |
+|Policy Store |
 |The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases.
 For more information see:
 https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction[Policy specification for Catena-X verifiable credentials]

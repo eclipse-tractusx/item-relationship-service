@@ -12,13 +12,18 @@ skinparam defaultFontName "Architects daughter"
     interface JobStore
     interface BlobPersistence
     IrsController .>  IrsItemGraphQueryService
+    component [**AASTransferProcessManager**] <<Component>> as AASTransferProcessManager
+    interface PolicyStore
+ }
 
+  actor IrsApiConsumer
 
-    }
-    actor IrsApiConsumer
-        IrsController <..> JobOrchestrator
-        IrsController -up- API_PORT
-        IrsApiConsumer -(0- API_PORT
-        IrsItemGraphQueryService -( JobStore
-        IrsItemGraphQueryService --( BlobPersistence
+  IrsController <..> JobOrchestrator
+  IrsController -up- API_PORT
+  IrsApiConsumer -(0- API_PORT
+  IrsItemGraphQueryService -( JobStore
+  IrsItemGraphQueryService --( BlobPersistence
+  JobOrchestrator <..> AASTransferProcessManager
+  AASTransferProcessManager -( PolicyStore
+
 @enduml
