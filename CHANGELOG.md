@@ -11,7 +11,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return throw AlreadyExist exceptions when Conflict is returned from EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
-
+- Registering a job - aspects array is now accepting full urn of aspect model instead of name only, eg. 'urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt' instead 'SingleLevelBomAsBuilt'. #439
+- Changed the version of irs-registry-client from 1.6.0-SNAPSHOT to 1.6.0
 
 ## [4.7.0] - 2024-03-04
 ### Added
@@ -257,7 +258,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Introduced new IRS role `admin_irs` which has unrestricted access to every API endpoint
 
 ### Changed
-- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. PolicyStore API access is restricted to role `admin_irs`.
+
+- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. Policy Store API
+  access is restricted to role `admin_irs`.
 
 ### Fixed
 - Fixed bug where BPN's were delivered without 'manufacturerName' property filled

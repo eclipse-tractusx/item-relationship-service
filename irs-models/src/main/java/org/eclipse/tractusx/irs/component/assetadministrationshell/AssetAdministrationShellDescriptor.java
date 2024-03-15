@@ -25,7 +25,6 @@ package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -91,10 +90,10 @@ public class AssetAdministrationShellDescriptor {
      * @return ManufacturerId value from Specific Asset Ids
      */
     public Optional<String> findManufacturerId() {
-        return this.specificAssetIds.stream()
-                                    .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getName()))
-                                    .map(IdentifierKeyValuePair::getValue)
-                                    .findFirst();
+        return specificAssetIds.stream()
+                               .filter(assetId -> "ManufacturerId".equalsIgnoreCase(assetId.getName()))
+                               .map(IdentifierKeyValuePair::getValue)
+                               .findFirst();
     }
 
     /**
@@ -102,7 +101,7 @@ public class AssetAdministrationShellDescriptor {
      * @return AssetAdministrationShellDescriptor with filtered submodel descriptors
      */
     public AssetAdministrationShellDescriptor withFilteredSubmodelDescriptors(final List<String> aspectTypes) {
-        this.setSubmodelDescriptors(this.filterDescriptorsByAspectTypes(aspectTypes));
+        setSubmodelDescriptors(filterDescriptorsByAspectTypes(aspectTypes));
         return this;
     }
 
@@ -125,29 +124,9 @@ public class AssetAdministrationShellDescriptor {
      */
     public List<SubmodelDescriptor> filterDescriptorsByAspectTypes(final List<String> aspectTypes) {
         log.info("Filtering for Aspect Types '{}'", aspectTypes);
-        return this.submodelDescriptors.stream()
-                                       .filter(submodelDescriptor -> aspectTypes.stream()
-                                                                                .anyMatch(type -> isMatching(
-                                                                                        submodelDescriptor, type)))
-
-                                       .toList();
-    }
-
-    private boolean isMatching(final SubmodelDescriptor submodelDescriptor, final String aspectTypeFilter) {
-        final Optional<String> submodelAspectType = Optional.ofNullable(submodelDescriptor.getSemanticId().getKeys())
-                                                            .flatMap(key -> key.stream().findFirst())
-                                                            .map(SemanticId::getValue);
-        return submodelAspectType.map(
-                semanticId -> semanticId.endsWith("#" + aspectTypeFilter) || contains(semanticId, aspectTypeFilter)
-                        || semanticId.equals(aspectTypeFilter)).orElse(false);
-    }
-
-    private boolean contains(final String semanticId, final String aspectTypeFilter) {
-        // https://stackoverflow.com/a/3752693
-        final String[] split = aspectTypeFilter.split("(?=\\p{Lu})");
-        final String join = String.join("_", split).toLowerCase(Locale.ROOT);
-        log.debug("lower case aspect: '{}'", join);
-        return semanticId.contains(join);
+        return submodelDescriptors.stream()
+                                  .filter(submodelDescriptor -> aspectTypes.stream().anyMatch(submodelDescriptor::isAspect))
+                                  .toList();
     }
 
 }

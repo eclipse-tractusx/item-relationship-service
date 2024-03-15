@@ -198,14 +198,12 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                     semanticsHubFacade.getAllAspectModels().models());
             log.debug("Number of available AspectModels: '{}'", availableModels.size());
             log.debug("Provided AspectModels: '{}'", aspectTypeValues);
-            final Set<String> availableNames = new HashSet<>(availableModels.stream().map(AspectModel::name).toList());
             final Set<String> availableUrns = new HashSet<>(availableModels.stream().map(AspectModel::urn).toList());
 
             final List<String> invalidAspectTypes = aspectTypeValues.stream()
                                                                     .filter(s -> !availableUrns.contains(s)
-                                                                            && !availableNames.contains(s)
                                                                             || !s.matches(
-                                                                            "^(urn:bamm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
+                                                                            "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"))
                                                                     .toList();
             if (!invalidAspectTypes.isEmpty()) {
                 throw new IllegalArgumentException(
@@ -287,7 +285,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
     public void updateJobsInJobStoreMetrics() {
         final List<MultiTransferJob> jobs = jobStore.findAll();
         final long numberOfJobs = jobs.size();
-        log.debug("Number(s) of job in JobStore: {}", numberOfJobs);
+        log.trace("Number(s) of job in JobStore: {}", numberOfJobs);
         meterRegistryService.setNumberOfJobsInJobStore(numberOfJobs);
 
         final Map<JobState, Long> stateCount = jobs.stream()

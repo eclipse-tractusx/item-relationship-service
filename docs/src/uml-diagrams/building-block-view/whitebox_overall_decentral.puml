@@ -7,12 +7,14 @@ skinparam nodesep 150
 skinparam ranksep 150
 skinparam defaultFontName "Architects daughter"
 
+actor IrsApiConsumer
 
 package [**OEM**] <<CatenaX Company>> as consumer {
 
     package [**IRS-Application**] <<IRS System>> as irs_component {
 	    component [**IRS**] <<System>> as IRS
 	    component [**EDC (Consumer)**] <<System>> as EDC
+	    component [**Policy Store**] as policy_store
     }
 
     package [**OEM-Tier**] <<OEM Data Provider>> as oem_provider {
@@ -41,9 +43,7 @@ package [**N-Tier**] <<CatenaX Data Provider Company>> as provider {
     component [**IRS-ESS**] <<System>> as EssProvider
 }
 
-actor IrsApiConsumer
-
-IrsApiConsumer -l(0- IRS : **[01]**
+IrsApiConsumer -r(0- IRS : **[01]**
 IrsApiConsumer <.r.> IAM_IRS  : **[02]**
 IAM_IRS  <..> Portal_IdP  : **[03]**
 
@@ -56,6 +56,7 @@ IRS <.d.> EDC  : **[06]**
 IRS <..> IAM_IRS : **[07]**
 IRS <..> edc_discovery  : **[08]**
 
+
 IRS <..> discovery_finder  : **[09]**
 IRS <..> semantic_hub  : **[10]**
 IRS <..> bpdm  : **[11]**
@@ -67,6 +68,9 @@ miw <..> EDCProvider  : **[14]**
 EDCProvider <--> SubmodelServer : **[15]**
 EDCProvider <--> DT_REG : **[16]**
 EDCProvider <-> EssProvider : **[17]**
+
+IRS <...> policy_store : **[18]**
+IrsApiConsumer -r(0- policy_store : **[19]**
 
 miw -[hidden]d- IAM_IRS
 miw -[hidden]r- discovery_finder

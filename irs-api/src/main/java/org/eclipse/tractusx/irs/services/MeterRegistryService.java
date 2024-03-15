@@ -169,7 +169,7 @@ public class MeterRegistryService {
 
     public void setNumberOfJobsInJobStore(final Long size) {
         this.numbersOfJobsInJobStore.set(size);
-        log.debug("Current size of Job in JobStore is {}", size);
+        log.trace("Current size of Job in JobStore is {}", size);
     }
 
     public void setMeasuredMethodExecutionTime(final String tag, final long duration) {

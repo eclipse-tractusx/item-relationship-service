@@ -44,6 +44,7 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_STATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_TRANSFER;
+import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
 
 import java.time.Duration;
 import java.util.List;
@@ -150,7 +151,7 @@ class IrsWireMockIntegrationTest {
         final AspectModels allAspectModels = semanticHubService.getAllAspectModels();
 
         // Assert
-        assertThat(allAspectModels.models()).hasSize(78);
+        assertThat(allAspectModels.models()).hasSize(79);
     }
 
     @Test
@@ -288,7 +289,7 @@ class IrsWireMockIntegrationTest {
                 "urn:samm:io.catenax.batch:2.0.0#Batch", batchFileName);
 
         final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, "SingleLevelBomAsBuilt",
-                "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt", sbomFileName);
+                singleLevelBomAsBuiltAspectName, sbomFileName);
 
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);
 
