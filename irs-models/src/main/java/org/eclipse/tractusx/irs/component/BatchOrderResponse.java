@@ -37,12 +37,14 @@ import org.eclipse.tractusx.irs.component.enums.ProcessingState;
 /**
  * BatchOrderAck Payload Response
  */
-@Schema(description = "BatchOrderAck Payload Response.")
+@Schema(description = "BatchOrderAck Payload Response.", example = BatchOrderResponse.EXAMPLE)
 @Value
 @Builder
 @AllArgsConstructor
 @Jacksonized
 public class BatchOrderResponse {
+
+    public static final String EXAMPLE = "{\"batchChecksum\"=1, \"batches\"=[{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"batchNumber\"=1, \"batchProcessingState\"=\"PARTIAL\", \"batchUrl\"=\"https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462\", \"jobsInBatchChecksum\"=1}], \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"state\"=\"COMPLETED\"}";
 
     private static final int UUID_LENGTH = 36;
 

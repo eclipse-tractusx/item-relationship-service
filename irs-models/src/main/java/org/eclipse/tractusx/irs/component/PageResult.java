@@ -25,20 +25,26 @@ package org.eclipse.tractusx.irs.component;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.support.PagedListHolder;
 
 /**
  * Paginated results for {@link JobStatusResult} content
  */
+@Schema(example = PageResult.EXAMPLE)
 public record PageResult(
+
         List<JobStatusResult> content,
         Integer pageNumber,
         Integer pageCount,
         Integer pageSize,
         Integer totalElements) {
 
+    public static final String EXAMPLE = "{\"content\"=[{\"completedOn\"=\"test\", \"id\"=\"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"startedOn\"=\"2000-01-23T04:56:07.000+00:00\", \"state\"=\"UNSAVED\"}], \"pageCount\"=0, \"pageNumber\"=6, \"pageSize\"=1, \"totalElements\"=5}";
+
     public PageResult(final PagedListHolder<JobStatusResult> pagedListHolder) {
         this(pagedListHolder.getPageList(), pagedListHolder.getPage(), pagedListHolder.getPageCount(), pagedListHolder.getPageSize(), pagedListHolder.getNrOfElements());
     }
+
 }
 
