@@ -31,11 +31,6 @@ jobs:
         run: |
           npm i -g swaggerhub-cli
 
-      - name: Extract versions
-        run: |
-          export DOWNSTREAM_VERSION="${{ inputs.version }}"
-          echo "DOWNSTREAM_VERSION=${DOWNSTREAM_VERSION}" >> "$GITHUB_ENV"
-
       # create API, will fail if exists
       - name: Create API
         continue-on-error: true
