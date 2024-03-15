@@ -176,13 +176,14 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
    - Check if the changelog entries for the release are complete.
    - Add the corresponding GitHub issue numbers to each entry if missing.
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md).
-4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) and merge to main.
-5. Create Git tag for the desired release version `git tag x.x.x`
+4. Update IRS API version in IrsApplication class and irs-api.yaml
+5. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) and merge to main.
+6. Create Git tag for the desired release version `git tag x.x.x`
    (note: the irs-helm tag will be created automatically by the GitHub workflow based on the version in the irs-helm changelog). 
-6. Push Git tag to repository `git push origin x.x.x` (this will trigger the GitHub release workflow).
-7. Wait for release workflow to complete.
-8. Merge the automatically opened PR by GitHub actions bot.
-9. Notify about the release in IRS Matrix Chat using the following template: 
+7. Push Git tag to repository `git push origin x.x.x` (this will trigger the GitHub release workflow).
+8. Wait for release workflow to complete.
+9. Merge the automatically opened PR by GitHub actions bot.
+10. Notify about the release in IRS Matrix Chat using the following template: 
    
    >   **IRS Release x.x.x**
    >
