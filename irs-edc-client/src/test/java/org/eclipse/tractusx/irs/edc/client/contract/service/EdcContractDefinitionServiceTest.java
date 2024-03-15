@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcCreateContractDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.contract.model.exception.CreateEdcContractDefinitionException;
+import org.eclipse.tractusx.irs.edc.client.contract.model.exception.EdcContractDefinitionAlreadyExists;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
@@ -66,9 +68,11 @@ class EdcContractDefinitionServiceTest {
         // given
         String assetId = "Asset1";
         String policyId = "Policy1";
+        String contractId = "ContractId1";
 
         // when
-        EdcCreateContractDefinitionRequest request = service.createContractDefinitionRequest(assetId, policyId);
+        EdcCreateContractDefinitionRequest request = service.createContractDefinitionRequest(assetId, policyId,
+                contractId);
 
         // then
         JSONAssert.assertEquals("""
@@ -77,7 +81,7 @@ class EdcContractDefinitionServiceTest {
                         		"edc": "https://w3id.org/edc/v0.0.1/ns/"
                         	},
                         	"@type": "ContractDefinition",
-                        	"@id": "Policy1",
+                        	"@id": "ContractId1",
                         	"accessPolicyId": "Policy1",
                         	"contractPolicyId": "Policy1",
                         	"assetsSelector": {
@@ -115,13 +119,12 @@ class EdcContractDefinitionServiceTest {
         final String assetId = "Asset1";
         final String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
-                any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
+                any())).thenThrow(
+                HttpClientErrorException.create("Surprise", HttpStatus.CONFLICT, "", null, null, null));
 
-        // when
-        final String result = service.createContractDefinition(assetId, policyId);
-
-        // then
-        assertThat(result).isEqualTo(policyId);
+        // when/then
+        assertThrows(EdcContractDefinitionAlreadyExists.class,
+                () -> service.createContractDefinition(assetId, policyId));
     }
 
     @Test
@@ -147,7 +150,7 @@ class EdcContractDefinitionServiceTest {
         String assetId = "Asset1";
         String policyId = "Policy1";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreateContractDefinitionRequest.class),
-                any())).thenThrow(new RestClientException("Surprise"));
+                any())).thenThrow( HttpClientErrorException.create("Surprise", HttpStatus.INTERNAL_SERVER_ERROR, "", null, null, null));
 
         assertThrows(CreateEdcContractDefinitionException.class,
                 () -> service.createContractDefinition(assetId, policyId));

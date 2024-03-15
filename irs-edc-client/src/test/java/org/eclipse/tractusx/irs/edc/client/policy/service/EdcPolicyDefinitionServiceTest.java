@@ -33,6 +33,7 @@ import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolicyDefinitionException;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.EdcPolicyDefinitionAlreadyExists;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -133,13 +135,19 @@ class EdcPolicyDefinitionServiceTest {
         when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         final String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
-                any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
+                any())).thenThrow(
+                HttpClientErrorException.create(
+                        "Surprise",
+                        HttpStatus.CONFLICT,
+                        "",
+                        null,
+                        null,
+                        null
+                )
+        );
 
-        // when
-        final String result = service.createAccessPolicy(policyName);
-
-        // then
-        assertThat(result).isNotBlank();
+        // when/then
+        assertThrows(EdcPolicyDefinitionAlreadyExists.class, () -> service.createAccessPolicy(policyName));
     }
 
     @Test
@@ -163,7 +171,14 @@ class EdcPolicyDefinitionServiceTest {
         when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
-                any())).thenThrow(new RestClientException("Surprise"));
+                any())).thenThrow(HttpClientErrorException.create(
+                        "Surprise",
+                HttpStatus.EARLY_HINTS,
+                "",
+                null,
+                null,
+                null
+        ));
 
         assertThrows(CreateEdcPolicyDefinitionException.class, () -> service.createAccessPolicy(policyName));
     }
