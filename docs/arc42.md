@@ -245,8 +245,9 @@ The interfaces show how the components interact with each other and which interf
 | Components | Description |
 | --- | --- |
 | IRSApiConsumer | Proxy for any consumer of the IRS api. |
-| IRS | The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS |
-| EDC Consumer | The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane. |
+| IRS | The IRS consumes relationship information across the CX-network and builds the graph view. Within this documentation, the focus lies on the IRS |
+| Policy Store | The Policy Store component stores usage policies used to validate the consumption of data asset. |
+| EDC Consumer | The EDC Consumer component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists of a control plane and a data plane. |
 | EDC Provider | The EDC Provider Component connects with EDC Consumer component and forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications. |
 | Submodel Server | The Submodel Server offers endpoints for requesting the Submodel aspects. |
 | MIW | Managed Identity Wallet as Self-Sovereign-Identity Provider for EDC |
@@ -257,7 +258,7 @@ The interfaces show how the components interact with each other and which interf
 
 | Number | Description |
 | --- | --- |
-| 01 | IrsApiConsumer calls the **IRS** public **API** |
+| 01 | IrsApiConsumer calls the **IRS** public /irs **API** |
 | 02 | IrsApiConsumer must authorize using **technical C-X User** |
 | 03 | Delegate authorization request to **IdP** |
 | 04 | IRS requesting for **SubmodelAspects** using **EDC** |
@@ -274,6 +275,8 @@ The interfaces show how the components interact with each other and which interf
 | 15 | **IRS** accessing to **SubmodelServer** on Tier Level using the **EDC** |
 | 16 | **IRS** accessing the **decentral DigitalTwinRegistry** on Tier Level using the **EDC** |
 | 17 | In case of the use-case Environmental and Social Standards, **IRS** sends notifications to the **IRS-ESS** instance running at the data provider using the **EDC**. |
+| 18 | **IRS** uses the Policy Store to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets. |
+| 19 | IrsApiConsumer calls the IRS public /policy **API** |
 
 ## Level 1
 
@@ -298,7 +301,7 @@ The interfaces show how the components interact with each other and which interf
 | **Decentralized Digital Twin Client** | In a decentralized network, the Digital Twin Client connects to the EDC which then proxies the requests to the digital twin registry on provider side. |
 | **EDC Client** | The EDC Client is used to communicate with the EDC network, negotiate contracts and retrieve submodel data. |
 | **EssController** | The **EssController** provides a REST Interface to perform BPN investigations of supply chain. |
-| **PolicyStoreController** | The **PolicyStoreController** provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. |
+| **PolicyStoreController** | The **PolicyStoreController** provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers. |
 
 ## Level 2
 
@@ -319,6 +322,7 @@ The IRS REST controller is used to provide a RESTful web service.
 | JobOrchestrator | Orchestrator service for recursive MultiTransferJobs that potentially comprise multiple transfers. |
 | JobStore | Spring configuration for job-related beans. |
 | BlobstorePersistence | Interface for storing data blobs. |
+| Policy Store | The **Policy Store** provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers. |
 
 ### RecursiveJobHandler
 
@@ -899,7 +903,7 @@ A job can be in one of the following states:
                   "identification": "dae4d249-6d66-4818-b576-bf52f3b9ae90",
                   "semanticId": {
                     "value": [
-                        "urn:bamm:com.catenax.vehicle:0.1.1#PartDetails"
+                        "urn:bamm:io.catenax.vehicle:0.1.1#PartDetails"
                     ]
                   },
                   "endpoints": [
@@ -1368,7 +1372,7 @@ The quality scenarios in this section depict the fundamental quality goals as we
 | Item Graph |  | The result returned via the IRS. This corresponds to a tree structure in which each node represents a part of a virtual asset. |
 | Managed Identity Wallet | MIW | The Managed Identity Wallets (MIW) service implements the Self-Sovereign-Identity (SSI) readiness by providing a wallet hosting platform including a decentralized identifier (DID) resolver, service endpoints and the company wallets itself. For more information see: [eclipse-tractusx/managed-identity-wallet](https://github.com/eclipse-tractusx/managed-identity-wallet) |
 | Multi Tier Parts Data Chain | MTPDC | Formerly known Service Name: Multi Tier Parts Data Chain |
-| PolicyStore |  | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: [Policy specification for Catena-X verifiable credentials](https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction) |
+| Policy Store |  | The Policy Store is an IRS component which provides an interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers. EDC contract offers must include permissions that are equal to permission defined by an admin user in order to be allowed to use in IRS use cases. For more information see: [Policy specification for Catena-X verifiable credentials](https://github.com/eclipse-tractusx/ssi-docu/blob/main/docs/architecture/cx-3-2/edc/policy.definitions.md#0-introduction) |
 | Parts Relationship Service | PRS | Formerly known Service Name: Parts Relationship Service |
 | Self-Sovereign Identity | SSI | For more information see: [ssi-docu](https://github.com/eclipse-tractusx/ssi-docu/tree/main/docs/architecture/cx-3-2) |
 | Shell |  | see "Asset Administration Shell" |

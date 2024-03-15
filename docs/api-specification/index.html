@@ -15901,7 +15901,7 @@ font-style: italic;
     <h3><a name="RegisterBatchOrder"><code>RegisterBatchOrder</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>Request body for registering a new Batch Order.</div>
     <div class="field-items">
-      <div class="param">aspects (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+      <div class="param">aspects (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> List of aspect names that will be collected if &lt;collectAspects&gt; flag is set to true. </div>
 <div class="param">batchSize (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> Size of the batch. format: int32</div>
 <div class="param">batchStrategy (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The strategy how the batch is processed internally in IRS. </div>
         <div class="param-enum-header">Enum:</div>
@@ -15948,7 +15948,7 @@ font-style: italic;
         <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div><div class="param-enum">asSpecified</div>
 <div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState. </div>
 <div class="param">key </div><div class="param-desc"><span class="param-type"><a href="#PartChainIdentificationKey">PartChainIdentificationKey</a></span>  </div>
-<div class="param">incidentBPNSs </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">incidentBPNSs </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> Array of BPNS numbers. </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">

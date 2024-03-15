@@ -484,7 +484,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_component_diagram">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
-<img src="whitebox-overview.svg" alt="whitebox overview" width="2262" height="871">
+<img src="whitebox_overall_decentral.svg" alt="whitebox overall decentral" width="2764" height="871">
 </div>
 </div>
 </div>
@@ -508,11 +508,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">IRS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The IRS consumes relationship information across the CX-network and builds the graph view. Within this documentation, the focus lies on the IRS</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policy Store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Policy Store component stores usage policies used to validate the consumption of data asset.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EDC Consumer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The EDC Consumer component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists of a control plane and a data plane.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">EDC Provider</p></td>
@@ -558,7 +562,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">01</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IrsApiConsumer calls the <strong>IRS</strong> public <strong>API</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IrsApiConsumer calls the <strong>IRS</strong> public /irs <strong>API</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">02</p></td>
@@ -624,6 +628,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">In case of the use-case Environmental and Social Standards, <strong>IRS</strong> sends notifications to the <strong>IRS-ESS</strong> instance running at the data provider using the <strong>EDC</strong>.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IRS</strong> uses the Policy Store to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">IrsApiConsumer calls the IRS public /policy <strong>API</strong></p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -636,7 +648,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_component_diagram_2">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
-<img src="level-1.svg" alt="level 1" width="1019" height="1001">
+<img src="level-1.svg" alt="level 1" width="840" height="1031">
 </div>
 </div>
 </div>
@@ -734,7 +746,7 @@ A job is processed in this order:</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PolicyStoreController</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>PolicyStoreController</strong> provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate EDC contract offers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>PolicyStoreController</strong> provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers.</p></td>
 </tr>
 </tbody>
 </table>
@@ -753,7 +765,7 @@ A job is processed in this order:</p>
 <h4 id="_component_diagram_3">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="level-2-controller.svg" alt="level 2 controller" width="659" height="445">
+<img src="level-2-controller.svg" alt="level 2 controller" width="659" height="568">
 </div>
 </div>
 </div>
@@ -790,6 +802,10 @@ A job is processed in this order:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">BlobstorePersistence</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Interface for storing data blobs.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Policy Store</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <strong>Policy Store</strong> provides a REST Interface for getting, adding and deleting accepted IRS EDC policies. These policies will be used to validate usage policies of EDC contract offers.</p></td>
 </tr>
 </tbody>
 </table>
@@ -851,7 +867,7 @@ A job is processed in this order:</p>
 <h4 id="_component_diagram_5">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="level-2-transfer-process-management.svg" alt="level 2 transfer process management" width="893" height="814">
+<img src="level-2-transfer-process-management.svg" alt="level 2 transfer process management" width="1506" height="1017">
 </div>
 </div>
 </div>
@@ -979,7 +995,7 @@ A job is processed in this order:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-08 11:39:52 UTC
+Last updated 2024-03-15 10:46:37 UTC
 </div>
 </div>
 </body>
