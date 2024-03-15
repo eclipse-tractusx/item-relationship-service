@@ -14,6 +14,7 @@ jobs:
     env:
       SWAGGERHUB_API_KEY: ${{ secrets.SWAGGERHUB_API_KEY }}
       SWAGGERHUB_USER: ${{ secrets.SWAGGERHUB_USER }}
+      DOWNSTREAM_VERSION: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@v4
 
