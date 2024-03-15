@@ -3,7 +3,6 @@
 # Digital Twin Registry Client Library
 
 This library assists in communicating with the Digital Twin Registry in a central or decentral approach.
-<!-- TODO (mfischer): #410: remove mention of the central approach after-->
 
 In the decentral approach, it also handles the communication via the Discovery Finder and EDC.
 
@@ -29,7 +28,7 @@ Add the following configuration to your `application.yaml`:
 
 ```yaml
 digitalTwinRegistryClient:
-  type: "central" # or "decentral"
+  type: "decentral"  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
 
   discoveryFinderUrl: "" # required if type is "decentral"
 
