@@ -144,7 +144,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
     }
 
-    private void updatePolicy(final String policyId, final OffsetDateTime validUntil, final List<String> bpns) {
+    public void updatePolicy(final String policyId, final OffsetDateTime validUntil, final List<String> bpns) {
         try {
             log.info("Updating policy with id {}", policyId);
             final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(),
@@ -169,8 +169,8 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     @Override
-    public List<AcceptedPolicy> getAcceptedPolicies(final List<String> bpns) {
-        if (bpns == null) {
+    public List<AcceptedPolicy> getAcceptedPolicies(final String bpn) {
+        if (bpn == null) {
             return getAllStoredPolicies().values()
                                          .stream()
                                          .flatMap(Collection::stream)
@@ -179,7 +179,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
 
         final ArrayList<Policy> policies = new ArrayList<>();
-        policies.addAll(getStoredPolicies(bpns));
+        policies.addAll(getStoredPolicies(List.of(bpn)));
         policies.addAll(getStoredPolicies(List.of(DEFAULT_BLOB_NAME)));
 
         final TreeSet<Policy> result = new TreeSet<>(Comparator.comparing(Policy::getPolicyId));

@@ -173,6 +173,9 @@ public class MinioBlobPersistence implements BlobPersistence {
         }
     }
 
+    /**
+     * @return Map of bpn to matching blobs
+     */
     @Override
     public Map<String, byte[]> getAllBlobs() throws BlobPersistenceException {
         final Iterable<Result<Item>> items = getItems();

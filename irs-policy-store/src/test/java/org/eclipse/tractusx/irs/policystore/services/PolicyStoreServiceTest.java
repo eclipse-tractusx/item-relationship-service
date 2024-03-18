@@ -350,4 +350,15 @@ class PolicyStoreServiceTest {
         assertThat(acceptedPolicies.get(0).policy().getPolicyId()).isEqualTo("default-policy");
     }
 
+    @Test
+    void updatePolicyShouldThrowResponseStatusException() {
+        // act
+        final String policyId = "testId";
+        final OffsetDateTime validUntil = OffsetDateTime.now();
+        doThrow(new PolicyStoreException("")).when(persistence).readAll();
+
+        // assert
+        assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, validUntil, List.of("bpn")));
+    }
+
 }

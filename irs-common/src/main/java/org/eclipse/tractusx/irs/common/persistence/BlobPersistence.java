@@ -40,9 +40,6 @@ public interface BlobPersistence {
 
     Optional<byte[]> getBlob(String sourceBlobName) throws BlobPersistenceException;
 
-    /**
-     * @return Map of bpn to matching blobs
-     */
     Map<String, byte[]> getAllBlobs() throws BlobPersistenceException;
 
     Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException;

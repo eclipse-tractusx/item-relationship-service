@@ -121,11 +121,17 @@ public class PolicyPersistence {
 
     }
 
+    /**
+     * Returns all policies.
+     *
+     * @return policies as map of BPN to list of policies
+     */
     public Map<String, List<Policy>> readAll() {
         try {
             return policyStorePersistence.getAllBlobs().entrySet().stream().map(entry -> {
                 try {
-                    return new AbstractMap.SimpleEntry<>(entry.getKey(),
+                    final String bpn = entry.getKey();
+                    return new AbstractMap.SimpleEntry<>(bpn,
                             mapper.readerForListOf(Policy.class).<List<Policy>>readValue(entry.getValue()));
                 } catch (IOException e) {
                     throw new PolicyStoreException("Could not read the policies from the store", e);

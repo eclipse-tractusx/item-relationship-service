@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
  * Provides policies to be accepted during EDC negotiation
  */
 public interface AcceptedPoliciesProvider {
-    List<AcceptedPolicy> getAcceptedPolicies(List<String> bpns);
+    List<AcceptedPolicy> getAcceptedPolicies(String bpn);
 
     /**
      * Default provider if no other beans are loaded.
@@ -46,7 +46,7 @@ public interface AcceptedPoliciesProvider {
         private final List<AcceptedPolicy> acceptedPolicies = new ArrayList<>();
 
         @Override
-        public List<AcceptedPolicy> getAcceptedPolicies(final List<String> bpns) {
+        public List<AcceptedPolicy> getAcceptedPolicies(final String bpn) {
             return List.copyOf(acceptedPolicies);
         }
 

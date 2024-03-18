@@ -132,7 +132,7 @@ class SubmodelFacadeWiremockTest {
                 storage);
 
         acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
-        when(acceptedPoliciesProvider.getAcceptedPolicies(List.of("BPN"))).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
+        when(acceptedPoliciesProvider.getAcceptedPolicies("BPN")).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
                 List.of(new Permission(PolicyType.USE, new Constraints(
                         List.of(new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
                                 new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ),
@@ -162,7 +162,7 @@ class SubmodelFacadeWiremockTest {
                 new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
-        when(acceptedPoliciesProvider.getAcceptedPolicies(eq(List.of("bpn")))).thenReturn(List.of(acceptedPolicy));
+        when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
 
         // Act
         final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
@@ -187,7 +187,7 @@ class SubmodelFacadeWiremockTest {
                 new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
-        when(acceptedPoliciesProvider.getAcceptedPolicies(eq(List.of("bpn")))).thenReturn(List.of(acceptedPolicy));
+        when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
 
         // Act
         final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
@@ -211,7 +211,7 @@ class SubmodelFacadeWiremockTest {
                 new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
-        when(acceptedPoliciesProvider.getAcceptedPolicies(eq(List.of("bpn")))).thenReturn(List.of(acceptedPolicy));
+        when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
 
         // Act
         final String submodel = edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL,
@@ -231,7 +231,7 @@ class SubmodelFacadeWiremockTest {
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
 
-        when(acceptedPoliciesProvider.getAcceptedPolicies(List.of("bpn"))).thenReturn(List.of(acceptedPolicy));
+        when(acceptedPoliciesProvider.getAcceptedPolicies("bpn")).thenReturn(List.of(acceptedPolicy));
 
         prepareNegotiation();
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
@@ -257,7 +257,7 @@ class SubmodelFacadeWiremockTest {
                 new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
-        when(acceptedPoliciesProvider.getAcceptedPolicies(eq(List.of("bpn")))).thenReturn(List.of(acceptedPolicy));
+        when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelPayload(
@@ -282,7 +282,7 @@ class SubmodelFacadeWiremockTest {
                 new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
-        when(acceptedPoliciesProvider.getAcceptedPolicies(eq(List.of("bpn")))).thenReturn(List.of(acceptedPolicy));
+        when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
 
         // Act
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> edcSubmodelClient.getSubmodelPayload(
