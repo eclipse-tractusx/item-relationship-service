@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.17.0] - 2024-03-18
+### Added
+- Added property `edc.controlplane.asyncTimeout` which allows to set a global time-to-live for all async requests over EDC
+
+### Changed
+- Update IRS version to 4.8.0
+
 ## [6.16.0] - 2024-03-04
 ### Added
 - Added configuration property `edc.controlplane.endpoint.contractAgreements`
