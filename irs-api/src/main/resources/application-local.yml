@@ -27,6 +27,8 @@ irs:
         admin: 01234567890123456789
         regular: 09876543210987654321
 
+
+
 spring:
   security:
     oauth2:
@@ -39,3 +41,6 @@ spring:
 ess:
   irs:
     url: http://localhost:8080
+
+irs-edc-client:
+  async-timeout: PT10M

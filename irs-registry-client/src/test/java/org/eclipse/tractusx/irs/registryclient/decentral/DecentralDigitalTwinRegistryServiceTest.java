@@ -29,12 +29,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
@@ -43,6 +46,7 @@ import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
@@ -64,7 +68,8 @@ class DecentralDigitalTwinRegistryServiceTest {
             DecentralDigitalTwinRegistryClient.class);
 
     private final DecentralDigitalTwinRegistryService sut = new DecentralDigitalTwinRegistryService(
-            connectorEndpointsService, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
+            connectorEndpointsService, endpointDataForConnectorsService, decentralDigitalTwinRegistryClient,
+            new EdcConfiguration());
 
     public static AssetAdministrationShellDescriptor shellDescriptor(
             final List<SubmodelDescriptor> submodelDescriptors) {
@@ -110,7 +115,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException {
+        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException, TimeoutException {
 
             // given
             simulateResultFinderInterrupted();
@@ -190,10 +195,11 @@ class DecentralDigitalTwinRegistryServiceTest {
         sut.setResultFinder(resultFinderMock);
     }
 
-    private void simulateResultFinderInterrupted() throws InterruptedException, ExecutionException {
+    private void simulateResultFinderInterrupted() throws InterruptedException, ExecutionException, TimeoutException {
         final ResultFinder resultFinderMock = mock(ResultFinder.class);
         final CompletableFuture completableFutureMock = mock(CompletableFuture.class);
-        when(completableFutureMock.get()).thenThrow(new InterruptedException("interrupted"));
+        when(completableFutureMock.get(anyLong(), any(TimeUnit.class))).thenThrow(
+                new InterruptedException("interrupted"));
         when(resultFinderMock.getFastestResult(any())).thenReturn(completableFutureMock);
         sut.setResultFinder(resultFinderMock);
     }
@@ -240,7 +246,7 @@ class DecentralDigitalTwinRegistryServiceTest {
         }
 
         @Test
-        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException {
+        void whenInterruptedExceptionOccurs() throws ExecutionException, InterruptedException, TimeoutException {
             // given
             simulateResultFinderInterrupted();
 

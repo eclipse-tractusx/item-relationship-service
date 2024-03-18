@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -100,8 +102,7 @@ public class ContractNegotiationService {
             }
             case VALID -> throw new IllegalStateException(
                     "Token is present and valid. Contract negotiation should not be started.");
-            default -> throw new IllegalStateException(
-                    "Unknown token status.");
+            default -> throw new IllegalStateException("Unknown token status.");
         }
 
         final TransferProcessRequest transferProcessRequest = createTransferProcessRequest(providerConnectorUrl,
@@ -124,7 +125,8 @@ public class ContractNegotiationService {
 
         if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
             log.info("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy(), catalogItem.getConnectorId());
+            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy(),
+                    catalogItem.getConnectorId());
         }
 
         final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
@@ -176,10 +178,10 @@ public class ContractNegotiationService {
     private NegotiationResponse getNegotiationResponse(final CompletableFuture<NegotiationResponse> negotiationResponse)
             throws ContractNegotiationException {
         try {
-            return negotiationResponse.get();
+            return negotiationResponse.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
+        } catch (TimeoutException | ExecutionException e) {
             throw new ContractNegotiationException(e);
         }
         return null;
@@ -188,10 +190,10 @@ public class ContractNegotiationService {
     private TransferProcessResponse getTransferProcessResponse(
             final CompletableFuture<TransferProcessResponse> transferProcessResponse) throws TransferProcessException {
         try {
-            return transferProcessResponse.get();
+            return transferProcessResponse.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
+        } catch (TimeoutException | ExecutionException e) {
             throw new TransferProcessException(e);
         }
         return null;
