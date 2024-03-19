@@ -189,6 +189,7 @@ edc:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
   callbackurl:
+  asyncTimeout: PT10M  # Timout for future.get requests as ISO 8601 Duration
   submodel:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)

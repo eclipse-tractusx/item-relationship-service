@@ -7,12 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
-### Changed
 
-- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return throw AlreadyExist exceptions when Conflict is returned from EDC
+## [4.8.0] - 2024-03-18
+### Changed
+- Improved maintainability in EdcSubmodelClientImpl by reduced method visibility and better naming (in context of #448).
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return throw AlreadyExist exceptions when Conflict is returned from
+  EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 - Registering a job - aspects array is now accepting full urn of aspect model instead of name only, eg. 'urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt' instead 'SingleLevelBomAsBuilt'. #439
 - Changed the version of irs-registry-client from 1.6.0-SNAPSHOT to 1.6.0
+
+## Fixed
+- Fixed missing timeouts including configuration. #448
 
 ## [4.7.0] - 2024-03-04
 ### Added
@@ -574,7 +580,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.7.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.8.0...HEAD
+[4.8.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.7.0...4.8.0
 [4.7.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.6.0...4.7.0
 [4.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.2...4.6.0
 [4.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.1...4.5.2

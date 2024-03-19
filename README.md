@@ -91,17 +91,22 @@ See [INSTALL](INSTALL.md).
 The following subsection provides instructions for running the infrastructure on docker-compose and the application in
 the IDE.
 
-After the application is up and running the local IRS API is available at the following URLs:
+Start the application with the commands in the subsection further below. 
+After everything is up and running the local IRS API is available at the following URLs:
 
 - Swagger UI: http://localhost:8080/api/swagger-ui
 - API docs: http://localhost:8080/api/api-docs
 - API docs in yaml: http://localhost:8080/api/api-docs.yaml
 
-
 #### Docker-compose + IDE
 
-1. Start the necessary infrastructure by running `docker-compose up`
-2.  Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the `.run` folder.
+1. `cd local/deployment`
+2. Start the necessary infrastructure by running `docker-compose up`
+3. Start the application from your favorite IDE. For IntelliJ, a run configuration is available in the `.run` folder.
+
+In case of problems connecting to MinIO check whether the MinIO console is accessible in your webbrowser 
+(see URL in the output of step 2). You might need to wait some time before MinIO is up and accepts connections.
+If that does not help, execute `docker-compose down` and repeat from step 2.
 
 
 ## Usage

@@ -148,46 +148,49 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     @Override
     public CompletableFuture<SubmodelDescriptor> getSubmodelPayload(final String connectorEndpoint,
             final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
-        return execute(connectorEndpoint, () -> {
+
+        final CheckedSupplier<CompletableFuture<SubmodelDescriptor>> waitingForSubmodelRetrieval = () -> {
+
             log.info("Requesting raw SubmodelPayload for endpoint '{}'.", connectorEndpoint);
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Get EDC Submodel task for raw payload, endpoint " + connectorEndpoint);
 
-            final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId);
+            final EndpointDataReference dataReference = getEndpointDataReference(connectorEndpoint, assetId);
 
             return pollingService.<SubmodelDescriptor>createJob()
-                                 .action(() -> retrieveSubmodelData(submodelDataplaneUrl, stopWatch,
-                                         endpointDataReference))
+                                 .action(() -> retrieveSubmodelData(submodelDataplaneUrl, stopWatch, dataReference))
                                  .timeToLive(config.getSubmodel().getRequestTtl())
                                  .description("waiting for submodel retrieval")
                                  .build()
                                  .schedule();
-        });
+        };
+
+        return execute(connectorEndpoint, waitingForSubmodelRetrieval);
     }
 
     private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId)
             throws EdcClientException {
-        log.info("Retrieving endpoint data reference from cache for asset id: {}", assetId);
-        final EndpointDataReferenceStatus cachedEndpointDataReference = endpointDataReferenceCacheService.getEndpointDataReference(
-                assetId);
-        EndpointDataReference endpointDataReference;
 
-        if (cachedEndpointDataReference.tokenStatus() == TokenStatus.VALID) {
+        final EndpointDataReference result;
+
+        log.info("Retrieving endpoint data reference from cache for asset id: {}", assetId);
+        final var cachedReference = endpointDataReferenceCacheService.getEndpointDataReference(assetId);
+
+        if (cachedReference.tokenStatus() == TokenStatus.VALID) {
             log.info("Endpoint data reference found in cache with token status valid, reusing cache record.");
-            endpointDataReference = cachedEndpointDataReference.endpointDataReference();
+            result = cachedReference.endpointDataReference();
         } else {
-            endpointDataReference = getEndpointDataReferenceAndAddToStorage(connectorEndpoint, assetId,
-                    cachedEndpointDataReference);
+            result = getEndpointDataReferenceAndAddToStorage(connectorEndpoint, assetId, cachedReference);
         }
 
-        return endpointDataReference;
+        return result;
     }
 
     private EndpointDataReference getEndpointDataReferenceAndAddToStorage(final String connectorEndpoint,
             final String assetId, final EndpointDataReferenceStatus cachedEndpointDataReference)
             throws EdcClientException {
         try {
-            final EndpointDataReference endpointDataReference = getEndpointReferenceForAsset(connectorEndpoint,
+            final EndpointDataReference endpointDataReference = awaitEndpointReferenceForAsset(connectorEndpoint,
                     NAMESPACE_EDC_ID, assetId, cachedEndpointDataReference).get();
             endpointDataReferenceCacheService.putEndpointDataReferenceIntoStorage(assetId, endpointDataReference);
 
@@ -203,6 +206,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String connectorEndpoint,
             final String assetId, final EdcNotification<NotificationContent> notification) throws EdcClientException {
+
         return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + connectorEndpoint);
@@ -281,7 +285,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return response;
     }
 
-    public CompletableFuture<EndpointDataReference> getEndpointReferenceForAsset(final String endpointAddress,
+    private CompletableFuture<EndpointDataReference> awaitEndpointReferenceForAsset(final String endpointAddress,
             final String filterKey, final String filterValue,
             final EndpointDataReferenceStatus endpointDataReferenceStatus) throws EdcClientException {
         final StopWatch stopWatch = new StopWatch();
