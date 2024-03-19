@@ -48,7 +48,7 @@ jobs:
           mvn gatling:test -pl irs-load-tests
 
       - name: Archive Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gatling-report
           path: irs-load-tests/target/gatling/

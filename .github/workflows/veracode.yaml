@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: mvn package --batch-mode -DskipTests
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           path: 'irs-api/target/*exec.jar'
 
