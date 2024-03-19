@@ -66,6 +66,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
@@ -102,7 +103,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         final var decentralDigitalTwinRegistryClient = new DecentralDigitalTwinRegistryClient(restTemplate,
                 SHELL_DESCRIPTORS_TEMPLATE, LOOKUP_SHELLS_TEMPLATE);
         decentralDigitalTwinRegistryService = new DecentralDigitalTwinRegistryService(connectorEndpointsService,
-                endpointDataForConnectorsService, decentralDigitalTwinRegistryClient);
+                endpointDataForConnectorsService, decentralDigitalTwinRegistryClient, new EdcConfiguration());
     }
 
     @Nested

@@ -26,6 +26,8 @@ package org.eclipse.tractusx.irs.edc.client;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,11 +48,14 @@ public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
 
+    private final EdcConfiguration config;
+
     @SuppressWarnings("PMD.PreserveStackTrace")
     public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId, final String bpn) throws EdcClientException {
         try {
-            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId, bpn).get();
+            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId, bpn)
+                         .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred.", e);
             Thread.currentThread().interrupt();
@@ -62,6 +67,8 @@ public class EdcSubmodelFacade {
                 throw exceptionCause;
             }
             throw new EdcClientException(cause);
+        } catch (TimeoutException e) {
+            throw new EdcClientException("Timeout while getting submodel payload", e);
         }
     }
 
@@ -70,7 +77,8 @@ public class EdcSubmodelFacade {
             final EdcNotification<NotificationContent> notification, final String bpn) throws EdcClientException {
         try {
             log.debug("Sending EDC Notification '{}'", notification);
-            return client.sendNotification(submodelEndpointAddress, assetId, notification, bpn).get();
+            return client.sendNotification(submodelEndpointAddress, assetId, notification, bpn)
+                         .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;
@@ -80,6 +88,8 @@ public class EdcSubmodelFacade {
                 throw exceptionCause;
             }
             throw new EdcClientException(cause);
+        } catch (TimeoutException e) {
+            throw new EdcClientException("Timeout while sending notification", e);
         }
     }
 

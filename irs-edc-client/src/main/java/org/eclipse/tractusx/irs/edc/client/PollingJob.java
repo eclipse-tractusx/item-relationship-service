@@ -58,9 +58,11 @@ public class PollingJob<T> {
 
         final Runnable actionToUse = () -> action.get().ifPresent(completableFuture::complete);
 
-        final ScheduledFuture<?> scheduledFuture = scheduler.scheduleWithFixedDelay(
-                wrapWithErrorHandler(wrapWithTimeout(actionToUse), completableFuture), 0, pollInterval.toMillis(),
-                TimeUnit.MILLISECONDS);
+        final Runnable actionWithTimeoutAndErrorHandling = wrapWithErrorHandler(wrapWithTimeout(actionToUse),
+                completableFuture);
+
+        final ScheduledFuture<?> scheduledFuture = scheduler.scheduleWithFixedDelay(actionWithTimeoutAndErrorHandling,
+                0, pollInterval.toMillis(), TimeUnit.MILLISECONDS);
 
         completableFuture.whenComplete((result, thrown) -> scheduledFuture.cancel(true));
 

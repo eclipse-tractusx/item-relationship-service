@@ -31,6 +31,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,6 +43,7 @@ import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
@@ -63,6 +66,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private final ConnectorEndpointsService connectorEndpointsService;
     private final EndpointDataForConnectorsService endpointDataForConnectorsService;
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
+    private final EdcConfiguration config;
 
     private ResultFinder resultFinder = new ResultFinder();
 
@@ -98,7 +102,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
                 try {
                     return fetchShellDescriptors(entry, calledEndpoints);
-                } catch (RuntimeException e) {
+                } catch (TimeoutException | RuntimeException e) {
                     // catching generic exception is intended here,
                     // otherwise Jobs stay in state RUNNING forever
                     log.warn(e.getMessage(), e);
@@ -122,12 +126,12 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private Stream<Shell> fetchShellDescriptors(final Map.Entry<String, List<DigitalTwinRegistryKey>> entry,
-            final Set<String> calledEndpoints) {
+            final Set<String> calledEndpoints) throws TimeoutException {
 
         try {
 
             final var futures = fetchShellDescriptors(calledEndpoints, entry.getKey(), entry.getValue());
-            final var shellDescriptors = futures.get();
+            final var shellDescriptors = futures.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
             return shellDescriptors.stream();
 
         } catch (InterruptedException e) {
@@ -305,7 +309,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                     edr -> CompletableFuture.supplyAsync(
                                                                             () -> lookupShellIds(bpn, edr))))
                                                             .toList();
-            final var shellIds = resultFinder.getFastestResult(futures).get();
+            final var shellIds = resultFinder.getFastestResult(futures)
+                                             .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
 
             log.info("Found {} shell id(s) in total", shellIds.size());
             return shellIds;
@@ -319,6 +324,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             throw new RegistryServiceException(
                     "%s occurred while looking up shell ids for bpn '%s'".formatted(e.getClass().getSimpleName(), bpn),
                     e);
+        } catch (TimeoutException e) {
+            throw new RegistryServiceException("Timeout during shell ID lookup", e);
         }
     }
 

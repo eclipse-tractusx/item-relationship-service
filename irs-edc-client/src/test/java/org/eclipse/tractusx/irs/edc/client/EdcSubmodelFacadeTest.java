@@ -32,17 +32,19 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -53,11 +55,17 @@ class EdcSubmodelFacadeTest {
     private final static String SUBMODEL_SUFIX = "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel";
     private final static String ASSET_ID = "9300395e-c0a5-4e88-bc57-a3973fec4c26";
 
-    @InjectMocks
     private EdcSubmodelFacade testee;
 
     @Mock
     private EdcSubmodelClient client;
+
+    private EdcConfiguration config = new EdcConfiguration();
+
+    @BeforeEach
+    public void beforeEach() {
+        this.testee = new EdcSubmodelFacade(client, config);
+    }
 
     @Nested
     @DisplayName("getSubmodelRawPayload")
@@ -94,11 +102,11 @@ class EdcSubmodelFacadeTest {
 
         @Test
         void shouldRestoreInterruptOnInterruptExceptionForSubmodel()
-                throws EdcClientException, ExecutionException, InterruptedException {
+                throws EdcClientException, ExecutionException, InterruptedException, TimeoutException {
             // arrange
             final CompletableFuture<SubmodelDescriptor> future = mock(CompletableFuture.class);
             final InterruptedException e = new InterruptedException();
-            when(future.get()).thenThrow(e);
+            when(future.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS)).thenThrow(e);
             when(client.getSubmodelPayload(any(), any(), any(), any())).thenReturn(future);
 
             // act
@@ -116,11 +124,11 @@ class EdcSubmodelFacadeTest {
 
         @Test
         void shouldRestoreInterruptOnInterruptExceptionForNotification()
-                throws EdcClientException, ExecutionException, InterruptedException {
+                throws EdcClientException, ExecutionException, InterruptedException, TimeoutException {
             // arrange
             final CompletableFuture<EdcNotificationResponse> future = mock(CompletableFuture.class);
             final InterruptedException e = new InterruptedException();
-            when(future.get()).thenThrow(e);
+            when(future.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS)).thenThrow(e);
             when(client.sendNotification(any(), any(), any(), any())).thenReturn(future);
 
             // act

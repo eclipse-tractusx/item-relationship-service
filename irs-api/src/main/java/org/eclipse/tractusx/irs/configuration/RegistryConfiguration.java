@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
@@ -30,6 +31,7 @@ import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.decentral.EdcEndpointReferenceRetriever;
 import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -73,16 +75,25 @@ public class RegistryConfiguration {
             @Qualifier(RestTemplateConfig.EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate,
             final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade facade,
             @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
-            @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate) {
-        return new DecentralDigitalTwinRegistryService(connectorEndpointsService,
-                new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
-                    try {
-                        return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, DEFAULT);
-                    } catch (EdcClientException e) {
-                        throw new EdcRetrieverException(e);
-                    }
-                }),
-                new DecentralDigitalTwinRegistryClient(edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate));
+            @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate,
+            final EdcConfiguration edcConfiguration) {
+
+        final EdcEndpointReferenceRetriever endpointReferenceRetriever = (edcConnectorEndpoint, assetType, assetValue) -> {
+            try {
+                return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, DEFAULT);
+            } catch (EdcClientException e) {
+                throw new EdcRetrieverException(e);
+            }
+        };
+
+        final DecentralDigitalTwinRegistryClient digitalTwinRegistryClient = new DecentralDigitalTwinRegistryClient(
+                edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate);
+
+        final EndpointDataForConnectorsService endpointDataForConnectorsService = new EndpointDataForConnectorsService(
+                endpointReferenceRetriever);
+
+        return new DecentralDigitalTwinRegistryService(connectorEndpointsService, endpointDataForConnectorsService,
+                digitalTwinRegistryClient, edcConfiguration);
     }
 
     @Bean
