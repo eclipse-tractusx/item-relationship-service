@@ -134,13 +134,14 @@ class PolicyStoreControllerTest {
         // arrange
         final List<Policy> policies = List.of(
                 new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
-        when(service.getStoredPolicies(List.of("bpn1"))).thenReturn(policies);
+        final String bpn = "bpn1";
+        when(service.getPolicies(List.of(bpn))).thenReturn(Map.of(bpn, policies));
 
         // act
-        final List<PolicyResponse> returnedPolicies = testee.getPolicies(List.of("bpn1"));
+        final Map<String, List<PolicyResponse>> returnedPolicies = testee.getPolicies(List.of(bpn));
 
         // assert
-        assertThat(returnedPolicies).isEqualTo(
+        assertThat(returnedPolicies.get(bpn)).isEqualTo(
                 policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
     }
 
@@ -149,13 +150,14 @@ class PolicyStoreControllerTest {
         // arrange
         final List<Policy> policies = List.of(
                 new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
-        when(service.getAllStoredPolicies()).thenReturn(Map.of("bpn", policies));
+        final String bpn = "bpn1";
+        when(service.getPolicies(null)).thenReturn(Map.of(bpn, policies));
 
         // act
-        final Map<String, List<PolicyResponse>> returnedPolicies = testee.getAllPolicies();
+        final Map<String, List<PolicyResponse>> returnedPolicies = testee.getPolicies(null);
 
         // assert
-        assertThat(returnedPolicies).containsEntry("bpn",
+        assertThat(returnedPolicies).containsEntry(bpn,
                 policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
     }
 

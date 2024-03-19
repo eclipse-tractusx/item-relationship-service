@@ -41,7 +41,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
@@ -146,36 +145,8 @@ public class PolicyStoreController {
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public List<PolicyResponse> getPolicies(@RequestParam @NotNull final List<String> bpns) {
-        return service.getStoredPolicies(bpns).stream().map(PolicyResponse::fromPolicy).toList();
-    }
-
-    @Operation(operationId = "getAllowedPolicies",
-               summary = "Lists the registered policies that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
-               description = "Lists the registered policies that should be accepted in EDC negotiation.")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies.",
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
-                                                 schema = @Schema(implementation = Policy.class)))
-                                         }),
-                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                              schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "error",
-                                                                                        ref = "#/components/examples/error-response-401"))
-                                         }),
-                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                              schema = @Schema(implementation = ErrorResponse.class),
-                                                              examples = @ExampleObject(name = "error",
-                                                                                        ref = "#/components/examples/error-response-403"))
-                                         }),
-    })
-    @GetMapping("/policies/all")
-    @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public Map<String, List<PolicyResponse>> getAllPolicies() {
-        return service.getAllStoredPolicies()
+    public Map<String, List<PolicyResponse>> getPolicies(@RequestParam(required = false) final List<String> bpnls) {
+        return service.getPolicies(bpnls)
                       .entrySet()
                       .stream()
                       .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),

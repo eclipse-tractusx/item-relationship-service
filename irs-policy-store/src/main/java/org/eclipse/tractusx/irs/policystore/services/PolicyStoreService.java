@@ -27,6 +27,7 @@ import static org.eclipse.tractusx.irs.common.persistence.BlobPersistence.DEFAUL
 
 import java.time.Clock;
 import java.time.OffsetDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -34,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
@@ -100,6 +102,14 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         if (policy.getPermissions().stream().anyMatch(p -> p.getConstraint() == null)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:constraint"));
+        }
+    }
+
+    public Map<String, List<Policy>> getPolicies(final List<String> bpns) {
+        if (bpns == null) {
+            return getAllStoredPolicies();
+        } else {
+            return bpns.stream().map(bpn -> new AbstractMap.SimpleEntry<>(bpn, getStoredPolicies(List.of(bpn)))).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
         }
     }
 
