@@ -196,6 +196,7 @@ resilience4j:
 
 irs-edc-client:
   callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
+  asyncTimeout: PT10M # Timout for future.get requests as ISO 8601 Duration
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
@@ -401,6 +402,7 @@ edc:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
   callbackurl:
+  asyncTimeout: PT10M  # Timout for future.get requests as ISO 8601 Duration
   submodel:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
@@ -510,7 +512,6 @@ prometheus:
       metrics_path: /minio/v2/metrics/cluster
       static_configs:
         - targets: [ '{{ .Release.Name }}-minio:9000' ]
-
 
 ```
 

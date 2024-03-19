@@ -844,6 +844,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
 <span class="na">irs-edc-client</span><span class="pi">:</span>
   <span class="na">callback-url</span><span class="pi">:</span> <span class="s">${EDC_TRANSFER_CALLBACK_URL:}</span> <span class="c1"># The URL where the EDR token callback will be sent to.</span>
+  <span class="na">asyncTimeout</span><span class="pi">:</span> <span class="s">PT10M</span> <span class="c1"># Timout for future.get requests as ISO 8601 Duration</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration</span>
     <span class="na">endpoint</span><span class="pi">:</span>
@@ -1053,6 +1054,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
       <span class="na">header</span><span class="pi">:</span> <span class="s2">"</span><span class="s">X-Api-Key"</span>  <span class="c1"># Name of the EDC api key header field</span>
       <span class="na">secret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">"</span>  <span class="c1"># &lt;edc-api-key&gt;</span>
   <span class="na">callbackurl</span><span class="pi">:</span>
+  <span class="na">asyncTimeout</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Timout for future.get requests as ISO 8601 Duration</span>
   <span class="na">submodel</span><span class="pi">:</span>
     <span class="na">request</span><span class="pi">:</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)</span>
@@ -1470,7 +1472,7 @@ Keep the values for these settings safe and do not publish them!
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-15 10:46:36 UTC
+Last updated 2024-03-19 08:01:02 UTC
 </div>
 </div>
 </body>

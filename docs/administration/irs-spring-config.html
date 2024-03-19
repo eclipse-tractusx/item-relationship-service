@@ -794,6 +794,7 @@ pre.rouge {
 
 <span class="na">irs-edc-client</span><span class="pi">:</span>
   <span class="na">callback-url</span><span class="pi">:</span> <span class="s">${EDC_TRANSFER_CALLBACK_URL:}</span> <span class="c1"># The URL where the EDR token callback will be sent to.</span>
+  <span class="na">asyncTimeout</span><span class="pi">:</span> <span class="s">PT10M</span> <span class="c1"># Timout for future.get requests as ISO 8601 Duration</span>
   <span class="na">controlplane</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_CONTROLPLANE_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration</span>
     <span class="na">endpoint</span><span class="pi">:</span>
@@ -911,7 +912,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-15 10:46:36 UTC
+Last updated 2024-03-19 08:01:02 UTC
 </div>
 </div>
 </body>
