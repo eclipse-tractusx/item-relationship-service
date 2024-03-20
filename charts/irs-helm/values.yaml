@@ -188,6 +188,7 @@ edc:
     apikey:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
+  callbackMapping:
   callbackurl:
   asyncTimeout: PT10M  # Timout for future.get requests as ISO 8601 Duration
   submodel:
