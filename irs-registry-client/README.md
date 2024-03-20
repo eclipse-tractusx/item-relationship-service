@@ -38,7 +38,7 @@ digitalTwinRegistryClient:
   lookupShellsTemplate: /lookup/shells?assetIds={assetIds} # The path to lookup shells from the DTR. Required if type is "decentral", must contain the placeholder {assetIds}
 
 irs-edc-client:
-  callback-url: "" # The URL where the EDR token callback will be sent to. This defaults to {BASE_URL}/internal/endpoint-data-reference. If you want to use a different mapping, you can override it with irs-edc-client.callback.mapping.
+  callback-url: "" # The URL where the EDR token callback will be sent to. This defaults to {BASE_URL}/internal/endpoint-data-reference.
   asyncTimeout: PT10M # Timout for future.get requests as ISO 8601 Duration  
   controlplane:
     request-ttl: PT10M # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
