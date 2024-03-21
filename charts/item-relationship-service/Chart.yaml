@@ -20,8 +20,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 apiVersion: v2
-name: irs-helm
-description: IRS Helm chart for Kubernetes
+name: item-relationship-service
+description: Tractus-X Item Relationship Service Helm Chart
 home: https://eclipse-tractusx.github.io/
 sources:
   - https://github.com/eclipse-tractusx/item-relationship-service

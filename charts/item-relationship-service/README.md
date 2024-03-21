@@ -19,9 +19,9 @@ This includes:
 
 ```
 helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service
-helm install irs-app irs/irs-helm
+helm install irs-app irs/item-relationship-service
 ```
 
 ## Default configuration values
 
-See [the configuration docs](https://eclipse-tractusx.github.io/item-relationship-service/docs/administration/administration-guide.html#_helm_configuration_irs_values_yaml) or run `helm show values irs/irs-helm` for the default values.
+See [the configuration docs](https://eclipse-tractusx.github.io/item-relationship-service/docs/administration/administration-guide.html#_helm_configuration_irs_values_yaml) or run `helm show values irs/item-relationship-service` for the default values.
