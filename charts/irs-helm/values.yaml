@@ -188,7 +188,8 @@ edc:
     apikey:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
-  callbackurl:
+  callbackMapping:  # The callback endpoint path mapping - used to expose callback endpoint
+  callbackurl:  # The URL where the EDR token callback will be sent to.
   asyncTimeout: PT10M  # Timout for future.get requests as ISO 8601 Duration
   submodel:
     request:
