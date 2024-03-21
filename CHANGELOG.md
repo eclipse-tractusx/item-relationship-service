@@ -8,8 +8,14 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed item relationship service Helm chart from "irs-helm" to "item-relationship-service". #489
+
+
 ## [4.8.0] - 2024-03-18
 ### Changed
+
 - Improved maintainability in EdcSubmodelClientImpl by reduced method visibility and better naming (in context of #448).
 - EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return throw AlreadyExist exceptions when Conflict is returned from
   EDC

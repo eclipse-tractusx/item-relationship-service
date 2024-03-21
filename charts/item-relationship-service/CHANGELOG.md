@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed item relationship service Helm chart from "irs-helm" to "item-relationship-service". #489
+
 ## [6.17.0] - 2024-03-18
 ### Added
 - Added property `edc.controlplane.asyncTimeout` which allows to set a global time-to-live for all async requests over EDC
