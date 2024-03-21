@@ -130,7 +130,7 @@ resilience4j:
 
 irs-edc-client:
   callback:
-    mapping: ${EDC_TRANSFER_CALLBACK_MAPPING:/internal/endpoint-data-reference} # The callback endpoint mapping
+    mapping: /internal/endpoint-data-reference  # The callback endpoint mapping
   callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
   asyncTimeout: PT10M # Timout for future.get requests as ISO 8601 Duration
   controlplane:
