@@ -123,7 +123,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
 - Exported health endpoints to prometheus (see HealthMetricsExportConfiguration,
   DependenciesHealthMetricsExportConfiguration) and
-  added [system health dashboard](charts/irs-helm/dashboards/system-health-dashboard.json)
+  added [system health dashboard](charts/item-relationship-service/dashboards/system-health-dashboard.json)
   in order to visualize health metrics of IRS and its dependencies. #283
 
 ### Fixed

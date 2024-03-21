@@ -3,7 +3,7 @@
 The IRS Helm repository can be found here:
 https://eclipse-tractusx.github.io/item-relationship-service/index.yaml
 
-Use the latest release of the "irs-helm" chart.
+Use the latest release of the "item-relationship-service" chart.
 It contains all required dependencies.
 
 If you also want to set up your own EDC consumer, use the https://github.com/eclipse-tractusx/tractusx-edc/tree/main/charts/tractusx-connector[tractusx-connector] chart.
@@ -20,7 +20,7 @@ $ helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service
 Then install the Helm chart into your cluster:
 
 [listing]
-$ helm install -f your-values.yaml irs-app irs/irs-helm
+$ helm install -f your-values.yaml irs-app irs/item-relationship-service
 
 == Deployment using ArgoCD
 
@@ -29,7 +29,7 @@ Create a new Helm chart and use the IRS as a dependency.
 [source,yaml]
 ----
 dependencies:
-  - name: irs-helm
+  - name: item-relationship-service
     repository: https://eclipse-tractusx.github.io/item-relationship-service
     version: 6.x.x
   - name: tractusx-connector # optional

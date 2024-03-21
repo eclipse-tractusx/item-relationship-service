@@ -171,7 +171,7 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
 2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md)
-   and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md)
+   and [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md)
    (for an example [see here](https://github.com/eclipse-tractusx/item-relationship-service/pull/429))
    - Check if the changelog entries for the release are complete.
    - Add the corresponding GitHub issue numbers to each entry if missing.
@@ -179,7 +179,7 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 4. Update IRS API version in IrsApplication class and irs-api.yaml
 5. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) and merge to main.
 6. Create Git tag for the desired release version `git tag x.x.x`
-   (note: the irs-helm tag will be created automatically by the GitHub workflow based on the version in the irs-helm changelog). 
+   (note: the _irs-helm_ tag will be created automatically by the GitHub workflow based on the version in the _irs-helm_ changelog). 
 7. Push Git tag to repository `git push origin x.x.x` (this will trigger the GitHub release workflow).
 8. Wait for release workflow to complete.
 9. Merge the automatically opened PR by GitHub actions bot.

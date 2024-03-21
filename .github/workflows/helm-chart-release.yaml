@@ -31,7 +31,7 @@ jobs:
       - name: Get helm charts current version
         id: step2
         run: |
-          chartVersion=irs-helm-$(cat ./charts/irs-helm/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
+          chartVersion=irs-helm-$(cat ./charts/item-relationship-service/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
           echo "::set-output name=current_version::$chartVersion"
           echo "Exported $chartVersion helm charts version"
 
@@ -60,7 +60,7 @@ jobs:
           version: v3.9.3
 
       - name: Update helm dependencies for irs
-        working-directory: charts/irs-helm/
+        working-directory: charts/item-relationship-service/
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
@@ -69,7 +69,7 @@ jobs:
           helm dependency update
 
       - name: Create temporary CHANGELOG file for helm release
-        working-directory: charts/irs-helm/
+        working-directory: charts/item-relationship-service/
         run: |
           touch CHANGELOG-temp.md
           

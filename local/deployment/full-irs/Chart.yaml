@@ -98,7 +98,7 @@ dependencies:
     condition: install.irs.providerBackend
 
   # IRS
-  - name: irs-helm
+  - name: item-relationship-service
     alias: irs
     repository: https://catenax-ng.github.io/tx-item-relationship-service
     version: 5.0.9

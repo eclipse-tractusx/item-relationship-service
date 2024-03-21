@@ -2,7 +2,7 @@
 
 The deployment contains the components required to connect the IRS to an existing Catena-X network. This includes:
 
-* IRS with Minio - part of the "irs-helm" Helm chart
+* IRS with Minio - part of the "item-relationship-service" Helm chart
 * EDC Consumer (controlplane & dataplane) - part of the "irs-edc-consumer" Helm chart
 
 Everything else needs to be provided externally.
