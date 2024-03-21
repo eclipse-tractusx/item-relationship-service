@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController("irsEdcClientEdcCallbackController")
-@RequestMapping("${irs-edc-client.callback.mapping:internal/endpoint-data-reference}")
+@RequestMapping("${irs-edc-client.callback.mapping}")
 @Hidden
 @RequiredArgsConstructor
 public class EdcCallbackController {
