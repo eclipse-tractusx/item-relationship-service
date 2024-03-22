@@ -22,6 +22,8 @@ package org.eclipse.tractusx.irs.edc.client.policy.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,6 +36,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitio
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolicyDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.EdcPolicyDefinitionAlreadyExists;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.GetEdcPolicyDefinitionException;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -128,6 +131,42 @@ class EdcPolicyDefinitionServiceTest {
     }
 
     @Test
+    void givenPolicyName_WhenGetPolicy_ThenExists() throws GetEdcPolicyDefinitionException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        String policyName = "policyName";
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions" + "/" + policyName);
+
+        ResponseEntity<String> responseEntity = ResponseEntity.ok("Mocked response");
+        when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
+
+        // when
+        boolean result = service.policyDefinitionExists(policyName);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void givenPolicyName_WhenGetPolicy_ThenNotExists() throws GetEdcPolicyDefinitionException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        String policyName = "policyName";
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions" + "/" + policyName);
+
+        ResponseEntity<String> responseEntity = ResponseEntity.notFound().build();
+        when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
+
+        // when
+        boolean result = service.policyDefinitionExists(policyName);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
     void givenCreatePolicy_whenConflict_thenReturnExstingPolicyId() throws CreateEdcPolicyDefinitionException {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
@@ -136,15 +175,7 @@ class EdcPolicyDefinitionServiceTest {
         final String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
                 any())).thenThrow(
-                HttpClientErrorException.create(
-                        "Surprise",
-                        HttpStatus.CONFLICT,
-                        "",
-                        null,
-                        null,
-                        null
-                )
-        );
+                HttpClientErrorException.create("Surprise", HttpStatus.CONFLICT, "", null, null, null));
 
         // when/then
         assertThrows(EdcPolicyDefinitionAlreadyExists.class, () -> service.createAccessPolicy(policyName));
@@ -171,14 +202,8 @@ class EdcPolicyDefinitionServiceTest {
         when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
-                any())).thenThrow(HttpClientErrorException.create(
-                        "Surprise",
-                HttpStatus.EARLY_HINTS,
-                "",
-                null,
-                null,
-                null
-        ));
+                any())).thenThrow(
+                HttpClientErrorException.create("Surprise", HttpStatus.EARLY_HINTS, "", null, null, null));
 
         assertThrows(CreateEdcPolicyDefinitionException.class, () -> service.createAccessPolicy(policyName));
     }
@@ -193,8 +218,7 @@ class EdcPolicyDefinitionServiceTest {
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 
         // when/then
-        assertThrows(DeleteEdcPolicyDefinitionException.class,
-                () -> service.deleteAccessPolicy(policyName));
+        assertThrows(DeleteEdcPolicyDefinitionException.class, () -> service.deleteAccessPolicy(policyName));
     }
 
     @Test
