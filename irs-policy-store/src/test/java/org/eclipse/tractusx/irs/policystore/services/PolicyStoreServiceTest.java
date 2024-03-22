@@ -358,7 +358,8 @@ class PolicyStoreServiceTest {
         doThrow(new PolicyStoreException("")).when(persistence).readAll();
 
         // assert
-        assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, validUntil, List.of("bpn")));
+        final List<String> bpn = List.of("bpn");
+        assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, validUntil, bpn));
     }
 
 }
