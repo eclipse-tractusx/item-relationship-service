@@ -25,13 +25,13 @@ jobs:
       - name: Get helm charts latest tag version
         id: step1
         run: |
-          latestVersion=$(git tag | grep "irs-helm-[1-9]" | sort -V | tail -1)
+          latestVersion=$(git tag | grep "item-relationship-service-[1-9]" | sort -V | tail -1)
           echo "::set-output name=latest_version::$latestVersion"
           echo "Exported $latestVersion latest helm charts version"
       - name: Get helm charts current version
         id: step2
         run: |
-          chartVersion=irs-helm-$(cat ./charts/item-relationship-service/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
+          chartVersion=item-relationship-service-$(cat ./charts/item-relationship-service/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
           echo "::set-output name=current_version::$chartVersion"
           echo "Exported $chartVersion helm charts version"
 
@@ -73,7 +73,7 @@ jobs:
         run: |
           touch CHANGELOG-temp.md
           
-          currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^irs-helm-//" )
+          currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^item-relationship-service-//" )
           echo currentVersionNumber=$currentVersionNumber
           
           sed -n -e '/## \['"${currentVersionNumber}"'\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> CHANGELOG-temp.md
