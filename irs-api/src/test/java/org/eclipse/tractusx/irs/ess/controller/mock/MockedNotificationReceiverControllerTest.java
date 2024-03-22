@@ -68,7 +68,7 @@ class MockedNotificationReceiverControllerTest {
     void shouldReceiveNotificationAndSendMockedNotificationResult() throws Exception {
         final String bpn = "BPN1";
         when(edcDiscoveryMockConfig.getMockEdcResult()).thenReturn(Map.of(bpn, SupplyChainImpacted.YES));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), anyString())).thenReturn(
                 () -> true);
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(new MockHttpServletRequest()));
@@ -82,7 +82,7 @@ class MockedNotificationReceiverControllerTest {
                                                   .content(notificationContent)
                                                   .build());
 
-        verify(edcSubmodelFacade).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(edcSubmodelFacade).sendNotification(anyString(), anyString(), any(EdcNotification.class), anyString());
     }
 
     @Test

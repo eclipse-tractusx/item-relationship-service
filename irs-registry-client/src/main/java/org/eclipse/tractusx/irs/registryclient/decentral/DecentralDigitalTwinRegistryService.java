@@ -159,7 +159,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.info("Found {} connector endpoints for bpn '{}'", edcUrls.size(), bpn);
             calledEndpoints.addAll(edcUrls);
 
-            return fetchShellDescriptorsForConnectorEndpoints(keys, edcUrls);
+            return fetchShellDescriptorsForConnectorEndpoints(keys, edcUrls, bpn);
 
         } finally {
             watch.stop();
@@ -168,10 +168,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private CompletableFuture<List<Shell>> fetchShellDescriptorsForConnectorEndpoints(
-            final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls) {
+            final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls, final String bpn) {
 
         final var service = endpointDataForConnectorsService;
-        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(edcUrls)
+        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(edcUrls, bpn)
                                         .stream()
                                         .map(edrFuture -> edrFuture.thenCompose(edr -> CompletableFuture.supplyAsync(
                                                 () -> fetchShellDescriptorsForKey(keys, edr))))
@@ -284,7 +284,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, edcUrls);
 
             final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    edcUrls);
+                    edcUrls, bpn);
 
             return lookupShellIds(bpn, endpointDataReferenceFutures);
 

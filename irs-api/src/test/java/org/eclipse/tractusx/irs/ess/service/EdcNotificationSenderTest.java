@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.ess.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -64,7 +65,7 @@ class EdcNotificationSenderTest {
         // given
         final EdcNotification<InvestigationNotificationContent> edcNotification = prepareNotification(
                 "notification-id");
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), notificationCaptor.capture())).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), notificationCaptor.capture(), any())).thenReturn(
                 () -> true);
         when(connectorEndpointsService.fetchConnectorEndpoints("senderBpn")).thenReturn(List.of("senderEdc"));
 

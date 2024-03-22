@@ -99,7 +99,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
 
             final var endpointDataRefFutures = List.of(completedFuture(endpointDataReference));
-            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList())).thenReturn(
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(), any())).thenReturn(
                     endpointDataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
@@ -129,7 +129,7 @@ class DecentralDigitalTwinRegistryServiceTest {
                     completedFuture(endpointDataReference("url.to.host1")), //
                     completedFuture(endpointDataReference("url.to.host2")));
             when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    connectorEndpoints)).thenReturn(dataRefFutures);
+                    connectorEndpoints, "bpn")).thenReturn(dataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     anyList())).thenReturn(lookupShellsResponse);
@@ -163,7 +163,7 @@ class DecentralDigitalTwinRegistryServiceTest {
 
             final var dataRefFutures = List.of(completedFuture(endpointDataReference("url.to.host")));
             when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    connectorEndpoints)).thenReturn(dataRefFutures);
+                    connectorEndpoints, "bpn")).thenReturn(dataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     anyList())).thenReturn(lookupShellsResponse);
@@ -227,7 +227,7 @@ class DecentralDigitalTwinRegistryServiceTest {
                                                                  .result(List.of(digitalTwinRegistryKey.shellId()))
                                                                  .build();
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
-            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList())).thenReturn(
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(), any())).thenReturn(
                     dataRefFutures);
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     anyList())).thenReturn(lookupShellsResponse);

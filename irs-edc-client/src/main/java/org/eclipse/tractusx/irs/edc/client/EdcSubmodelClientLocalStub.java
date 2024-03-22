@@ -41,6 +41,7 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
 /**
  * Submodel facade stub used in local environment
  */
+@SuppressWarnings("PMD.UseObjectForClearerAPI")
 public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
     private final SubmodelTestdataCreator testdataCreator;
@@ -52,7 +53,7 @@ public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<SubmodelDescriptor> getSubmodelPayload(final String connectorEndpoint,
-            final String submodelDataplaneUrl, final String assetId) throws EdcClientException {
+            final String submodelDataplaneUrl, final String assetId, final String bpn) throws EdcClientException {
         if ("urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446".equals(assetId)) {
             throw new EdcClientException("Dummy Exception");
         }
@@ -63,7 +64,7 @@ public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String submodelEndpointAddress,
-            final String assetId, final EdcNotification<NotificationContent> notification) {
+            final String assetId, final EdcNotification<NotificationContent> notification, final String bpn) {
         // not actually sending anything, just return success response
         return CompletableFuture.completedFuture(() -> true);
     }
@@ -71,13 +72,13 @@ public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     @Override
     public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue,
-            final EndpointDataReferenceStatus cachedEndpointDataReference) throws EdcClientException {
+            final EndpointDataReferenceStatus cachedEndpointDataReference, final String bpn) throws EdcClientException {
         throw new EdcClientException("Not implemented");
     }
 
     @Override
     public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
-            final String filterKey, final String filterValue) throws EdcClientException {
+            final String filterKey, final String filterValue, final String bpn) throws EdcClientException {
         throw new EdcClientException("Not implemented");
     }
 }

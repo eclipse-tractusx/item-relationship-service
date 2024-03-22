@@ -27,6 +27,11 @@ import static org.eclipse.tractusx.irs.common.ApiConstants.FORBIDDEN_DESC;
 import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import java.util.AbstractMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,7 +41,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
@@ -56,6 +60,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -67,17 +72,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("irs")
 @RequiredArgsConstructor
 @SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
-                    "PMD.ExcessiveImports"
+                    "PMD.ExcessiveImports",
+                    "PMD.UseVarargs"
 })
 public class PolicyStoreController {
 
     private final PolicyStoreService service;
     private final EdcTransformer edcTransformer;
+    private static final String DEFAULT = "default";
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"),
-               tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
                description = "Register a policy that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201"),
                             @ApiResponse(responseCode = "400", description = "Policy registration failed.",
@@ -99,19 +105,25 @@ public class PolicyStoreController {
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
     })
+
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void registerAllowedPolicy(final @RequestBody CreatePolicyRequest request) {
-        final Policy policy = edcTransformer.transformToPolicy(request.payload());
-        policy.setValidUntil(request.validUntil());
-        service.registerPolicy(policy);
+        request.payload()
+               .stream()
+               .map(payload -> {
+                   final Policy policy = edcTransformer.transformToPolicy(payload);
+                   policy.setValidUntil(request.validUntil());
+                   return policy;
+               })
+               .forEach(policy -> service.registerPolicy(policy,
+                       request.businessPartnerNumbers() == null ? List.of(DEFAULT) : request.businessPartnerNumbers()));
     }
 
-    @Operation(operationId = "getAllowedPolicies",
+    @Operation(operationId = "getAllowedPoliciesByBpn",
                summary = "Lists the registered policies that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"),
-               tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
@@ -133,16 +145,18 @@ public class PolicyStoreController {
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public List<PolicyResponse> getPolicies() {
-        return service.getStoredPolicies().stream()
-                      .map(PolicyResponse::fromPolicy)
-                      .toList();
+    public Map<String, List<PolicyResponse>> getPolicies(@RequestParam(required = false) final List<String> bpnls) {
+        return service.getPolicies(bpnls)
+                      .entrySet()
+                      .stream()
+                      .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
+                              entry.getValue().stream().map(PolicyResponse::fromPolicy).toList()))
+                      .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
     @Operation(operationId = "deleteAllowedPolicy",
                summary = "Removes a policy that should no longer be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"),
-               tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
                description = "Removes a policy that should no longer be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
                             @ApiResponse(responseCode = "400", description = "Policy deletion failed.",
@@ -171,10 +185,9 @@ public class PolicyStoreController {
         service.deletePolicy(policyId);
     }
 
-    @Operation(operationId = "updateAllowedPolicy", summary = "Updates an existing policy with new validUntil value.",
-               security = @SecurityRequirement(name = "api_key"),
-               tags = { "Item Relationship Service" },
-               description = "Updates an existing policy with new validUntil value.")
+    @Operation(operationId = "updateAllowedPolicy", summary = "Updates an existing policy.",
+               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               description = "Updates an existing policy.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
                             @ApiResponse(responseCode = "400", description = "Policy update failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -195,11 +208,11 @@ public class PolicyStoreController {
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
     })
-    @PutMapping("/policies/{policyId}")
+    @PutMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void updateAllowedPolicy(@PathVariable("policyId") final String policyId,
-            final @Valid @RequestBody UpdatePolicyRequest request) {
-        service.updatePolicy(policyId, request);
+    public void updateAllowedPolicy(final @Valid @RequestBody UpdatePolicyRequest request) {
+        service.updatePolicies(request);
     }
+
 }

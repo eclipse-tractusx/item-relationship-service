@@ -22,6 +22,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 - Registering a job - aspects array is now accepting full urn of aspect model instead of name only, eg. 'urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt' instead 'SingleLevelBomAsBuilt'. #439
 - Changed the version of irs-registry-client from 1.6.0-SNAPSHOT to 1.6.0
+- Policies can now be registered for certain bpnls. #199
+
 
 ## Fixed
 - Fixed missing timeouts including configuration. #448

@@ -161,8 +161,6 @@ data:
     {{- end }}
     {{- end }}
 
-    apiAllowedBpn: {{ tpl (.Values.bpn | default "") . | quote }}
-
     {{- if .Values.config.content }}
     {{- tpl (toYaml .Values.config.content) . | nindent 4 }}
     {{- end }}
