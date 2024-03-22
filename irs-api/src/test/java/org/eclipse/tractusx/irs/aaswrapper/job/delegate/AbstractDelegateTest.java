@@ -62,7 +62,7 @@ class AbstractDelegateTest {
     @Test
     void shouldUseDspEndpointIfPresent() throws EdcClientException {
         // Arrange
-        when(submodelFacade.getSubmodelPayload(any(), any(), any())).thenReturn(new SubmodelDescriptor("cid", "test"));
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenReturn(new SubmodelDescriptor("cid", "test"));
         final Endpoint endpoint = Endpoint.builder()
                                           .protocolInformation(ProtocolInformation.builder()
                                                                                   .href("http://dataplane.test/123")
@@ -77,7 +77,7 @@ class AbstractDelegateTest {
 
         // Assert
         assertThat(submodel).isEqualTo("test");
-        verify(submodelFacade, times(1)).getSubmodelPayload("http://edc.test", "http://dataplane.test/123", "123");
+        verify(submodelFacade, times(1)).getSubmodelPayload("http://edc.test", "http://dataplane.test/123", "123", "BPN123");
     }
 
     @Test
@@ -85,9 +85,9 @@ class AbstractDelegateTest {
         // Arrange
         final String connector1 = "http://edc.test1";
         final String connector2 = "http://edc.test2";
-        when(submodelFacade.getSubmodelPayload(eq(connector1), any(), any())).thenThrow(
+        when(submodelFacade.getSubmodelPayload(eq(connector1), any(), any(), any())).thenThrow(
                 new EdcClientException("test"));
-        when(submodelFacade.getSubmodelPayload(eq(connector2), any(), any())).thenReturn(new SubmodelDescriptor("cid", "test"));
+        when(submodelFacade.getSubmodelPayload(eq(connector2), any(), any(), any())).thenReturn(new SubmodelDescriptor("cid", "test"));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of(connector1, connector2));
         final String dataplaneUrl = "http://dataplane.test/123";
         final Endpoint endpoint = Endpoint.builder()
@@ -104,8 +104,8 @@ class AbstractDelegateTest {
 
         // Assert
         assertThat(submodel).isEqualTo("test");
-        verify(submodelFacade, times(1)).getSubmodelPayload(connector1, dataplaneUrl, "123");
-        verify(submodelFacade, times(1)).getSubmodelPayload(connector2, dataplaneUrl, "123");
+        verify(submodelFacade, times(1)).getSubmodelPayload(connector1, dataplaneUrl, "123", "BPN123");
+        verify(submodelFacade, times(1)).getSubmodelPayload(connector2, dataplaneUrl, "123", "BPN123");
         verify(connectorEndpointsService, times(1)).fetchConnectorEndpoints(bpn);
     }
 
@@ -114,7 +114,7 @@ class AbstractDelegateTest {
         // Arrange
         final String connector1 = "http://edc.test1";
         final String connector2 = "http://edc.test2";
-        when(submodelFacade.getSubmodelPayload(any(), any(), any())).thenThrow(new EdcClientException("test"));
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(new EdcClientException("test"));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of(connector1, connector2));
         final String dataplaneUrl = "http://dataplane.test/123";
         final Endpoint endpoint = Endpoint.builder()
@@ -131,8 +131,8 @@ class AbstractDelegateTest {
                         bpn));
 
         // Assert
-        verify(submodelFacade, times(1)).getSubmodelPayload(connector1, dataplaneUrl, "123");
-        verify(submodelFacade, times(1)).getSubmodelPayload(connector2, dataplaneUrl, "123");
+        verify(submodelFacade, times(1)).getSubmodelPayload(connector1, dataplaneUrl, "123", "BPN123");
+        verify(submodelFacade, times(1)).getSubmodelPayload(connector2, dataplaneUrl, "123", "BPN123");
         verify(connectorEndpointsService, times(1)).fetchConnectorEndpoints(bpn);
     }
 }

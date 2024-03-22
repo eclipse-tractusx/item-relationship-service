@@ -69,7 +69,7 @@ class RelationshipDelegateTest {
         // given
         final String payload = Files.readString(
                 Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelBomAsBuilt.json")).toURI()));
-        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString())).thenReturn(new SubmodelDescriptor("cid", payload));
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString(), any())).thenReturn(new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
@@ -96,7 +96,7 @@ class RelationshipDelegateTest {
         // given
         final String payload = Files.readString(
                 Paths.get(Objects.requireNonNull(getClass().getResource("/singleLevelUsageAsBuilt.json")).toURI()));
-        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString())).thenReturn(new SubmodelDescriptor("cid", payload));
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString(), any())).thenReturn(new SubmodelDescriptor("cid", payload));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
@@ -140,7 +140,7 @@ class RelationshipDelegateTest {
     @Test
     void shouldCatchRestClientExceptionAndPutTombstone() throws EdcClientException {
         // given
-        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString())).thenThrow(
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString(), any())).thenThrow(
                 new EdcClientException("Unable to call endpoint"));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
 
@@ -165,7 +165,7 @@ class RelationshipDelegateTest {
     @Test
     void shouldCatchJsonParseExceptionAndPutTombstone() throws EdcClientException {
         // given
-        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString())).thenThrow(
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString(), any())).thenThrow(
                 new EdcClientException(new Exception("Payload did not match expected submodel")));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
@@ -197,7 +197,7 @@ class RelationshipDelegateTest {
                                                                                                        "address")))));
 
         // when
-        when(submodelFacade.getSubmodelPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId", null, businessPartnerNumber));
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(new UsagePolicyException("itemId", null, businessPartnerNumber));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 new AASTransferProcess(), createKey());

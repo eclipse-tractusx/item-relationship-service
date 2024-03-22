@@ -43,8 +43,8 @@ public class PolicyCheckerService {
     private final AcceptedPoliciesProvider policyStore;
     private final ConstraintCheckerService constraintCheckerService;
 
-    public boolean isValid(final Policy policy) {
-        return policy.getPermissions().stream().allMatch(permission -> isValid(permission, getValidStoredPolicies()));
+    public boolean isValid(final Policy policy, final String bpn) {
+        return policy.getPermissions().stream().allMatch(permission -> isValid(permission, getValidStoredPolicies(bpn)));
     }
 
     private boolean isValid(final Permission permission, final List<AcceptedPolicy> validStoredPolicies) {
@@ -53,8 +53,8 @@ public class PolicyCheckerService {
                                           acceptedPolicy.policy(), permission.getConstraints()));
     }
 
-    private List<AcceptedPolicy> getValidStoredPolicies() {
-        return policyStore.getAcceptedPolicies()
+    private List<AcceptedPolicy> getValidStoredPolicies(final String bpn) {
+        return policyStore.getAcceptedPolicies(bpn)
                           .stream()
                           .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
                           .toList();

@@ -39,9 +39,11 @@ public interface EdcEndpointReferenceRetriever {
      * @param edcConnectorEndpoint the endpoint URL
      * @param assetType            the asset type id
      * @param assetValue           the asset type value
+     * @param bpn                  bpn value
      * @return the endpoint data references as list of futures
      * @throws EdcRetrieverException on any EDC errors
      */
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
     List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String edcConnectorEndpoint,
-            String assetType, String assetValue) throws EdcRetrieverException;
+            String assetType, String assetValue, String bpn) throws EdcRetrieverException;
 }

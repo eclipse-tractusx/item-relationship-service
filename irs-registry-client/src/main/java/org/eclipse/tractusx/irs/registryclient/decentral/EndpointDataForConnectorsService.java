@@ -47,7 +47,7 @@ public class EndpointDataForConnectorsService {
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
     public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
-            final List<String> edcUrls) {
+            final List<String> edcUrls, final String bpn) {
 
         final var watch = new StopWatch();
         final String msg = "Creating futures to get EndpointDataReferences for endpoints: %s".formatted(edcUrls);
@@ -58,7 +58,7 @@ public class EndpointDataForConnectorsService {
         try {
             log.info("Creating futures to get EndpointDataReferences for endpoints: {}", edcUrls);
             futures = edcUrls.stream()
-                             .flatMap(edcUrl -> createGetEndpointReferencesForAssetFutures(edcUrl).stream())
+                             .flatMap(edcUrl -> createGetEndpointReferencesForAssetFutures(edcUrl, bpn).stream())
                              .toList();
             return futures;
         } finally {
@@ -69,7 +69,7 @@ public class EndpointDataForConnectorsService {
     }
 
     private List<CompletableFuture<EndpointDataReference>> createGetEndpointReferencesForAssetFutures(
-            final String edcUrl) {
+            final String edcUrl, final String bpn) {
 
         final var watch = new StopWatch();
         final String msg = "Trying to retrieve EndpointDataReference for connector '%s'".formatted(edcUrl);
@@ -78,7 +78,7 @@ public class EndpointDataForConnectorsService {
 
         try {
             return edcSubmodelFacade.getEndpointReferencesForAsset(edcUrl, DT_REGISTRY_ASSET_TYPE,
-                    DT_REGISTRY_ASSET_VALUE);
+                    DT_REGISTRY_ASSET_VALUE, bpn);
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
             return List.of(CompletableFuture.failedFuture(e));

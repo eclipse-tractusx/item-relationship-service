@@ -76,9 +76,9 @@ public class RegistryConfiguration {
             @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate,
             final EdcConfiguration edcConfiguration) {
 
-        final EdcEndpointReferenceRetriever endpointReferenceRetriever = (edcConnectorEndpoint, assetType, assetValue) -> {
+        final EdcEndpointReferenceRetriever endpointReferenceRetriever = (edcConnectorEndpoint, assetType, assetValue, bpn) -> {
             try {
-                return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue);
+                return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, bpn);
             } catch (EdcClientException e) {
                 throw new EdcRetrieverException(e);
             }

@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +33,7 @@ import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import jakarta.json.Json;
@@ -121,10 +123,10 @@ class PolicyStoreControllerTest {
 
         // act
         testee.registerAllowedPolicy(
-                new CreatePolicyRequest(now.plusMinutes(1), jsonObject.get("payload").asJsonObject()));
+                new CreatePolicyRequest(now.plusMinutes(1), null, List.of(jsonObject.get("payload").asJsonObject())));
 
         // assert
-        verify(service).registerPolicy(any());
+        verify(service).registerPolicy(any(), eq(List.of("default")));
     }
 
     @Test
@@ -132,13 +134,30 @@ class PolicyStoreControllerTest {
         // arrange
         final List<Policy> policies = List.of(
                 new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
-        when(service.getStoredPolicies()).thenReturn(policies);
+        final String bpn = "bpn1";
+        when(service.getPolicies(List.of(bpn))).thenReturn(Map.of(bpn, policies));
 
         // act
-        final List<PolicyResponse> returnedPolicies = testee.getPolicies();
+        final Map<String, List<PolicyResponse>> returnedPolicies = testee.getPolicies(List.of(bpn));
 
         // assert
-        assertThat(returnedPolicies).isEqualTo(
+        assertThat(returnedPolicies.get(bpn)).isEqualTo(
+                policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
+    }
+
+    @Test
+    void getAllPolicies() {
+        // arrange
+        final List<Policy> policies = List.of(
+                new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
+        final String bpn = "bpn1";
+        when(service.getPolicies(null)).thenReturn(Map.of(bpn, policies));
+
+        // act
+        final Map<String, List<PolicyResponse>> returnedPolicies = testee.getPolicies(null);
+
+        // assert
+        assertThat(returnedPolicies).containsEntry(bpn,
                 policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
     }
 
@@ -154,14 +173,14 @@ class PolicyStoreControllerTest {
     @Test
     void updateAllowedPolicy() {
         // arrange
-        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now());
+        final String policyId = "policyId";
+        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now(), List.of("bpn"),List.of(policyId));
 
         // act
-        final String policyId = "policyId";
-        testee.updateAllowedPolicy(policyId, request);
+        testee.updateAllowedPolicy(request);
 
         // assert
-        verify(service).updatePolicy(policyId, request);
+        verify(service).updatePolicies(request);
     }
 
     private List<Permission> createPermissions() {
