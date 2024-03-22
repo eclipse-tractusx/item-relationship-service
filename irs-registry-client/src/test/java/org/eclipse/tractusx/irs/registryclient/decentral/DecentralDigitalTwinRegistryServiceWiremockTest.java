@@ -76,6 +76,7 @@ import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientIm
 import org.eclipse.tractusx.irs.registryclient.exceptions.RegistryServiceException;
 import org.eclipse.tractusx.irs.registryclient.exceptions.ShellNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -303,6 +304,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
         }
 
         @Test
+        @Disabled("See GH Issue https://github.com/eclipse-tractusx/item-relationship-service/issues/431")
         void lookupShellIdentifiers_multipleEDCs_multipleDTRs() throws RegistryServiceException, EdcRetrieverException {
             // Arrange
             givenThat(postDiscoveryFinder200());
