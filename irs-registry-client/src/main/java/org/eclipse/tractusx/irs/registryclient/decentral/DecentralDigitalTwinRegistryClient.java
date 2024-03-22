@@ -56,10 +56,10 @@ public class DecentralDigitalTwinRegistryClient {
 
     private static final ObjectWriter WRITER;
     static {
-        final ObjectMapper MAPPER = new ObjectMapper();
-        MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
-        MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        WRITER = MAPPER.writer();
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        WRITER = mapper.writer();
     }
 
     private final RestTemplate edcRestTemplate;
