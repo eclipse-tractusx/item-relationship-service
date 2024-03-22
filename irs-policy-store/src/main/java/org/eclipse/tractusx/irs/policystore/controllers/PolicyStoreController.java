@@ -150,7 +150,7 @@ public class PolicyStoreController {
                       .entrySet()
                       .stream()
                       .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
-                              entry.getValue().stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList())))
+                              entry.getValue().stream().map(PolicyResponse::fromPolicy).toList()))
                       .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 

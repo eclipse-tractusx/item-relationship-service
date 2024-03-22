@@ -100,7 +100,8 @@ class PolicyPersistenceTest {
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
         // act & assert
-        assertThatThrownBy(() -> testee.save(List.of("testBpn"), policy)).isInstanceOf(PolicyStoreException.class);
+        final List<String> bpn = List.of("testBpn");
+        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
     }
 
     @Test
@@ -111,7 +112,8 @@ class PolicyPersistenceTest {
                 new BlobPersistenceException("test", new IllegalStateException()));
 
         // act & assert
-        assertThatThrownBy(() -> testee.save(List.of("testBpn"), policy)).isInstanceOf(PolicyStoreException.class);
+        final List<String> bpn = List.of("testBpn");
+        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
     }
 
     @Test
@@ -122,7 +124,8 @@ class PolicyPersistenceTest {
                                                                                   .putBlob(any(), any());
 
         // act & assert
-        assertThatThrownBy(() -> testee.save(List.of("testBpn"), policy)).isInstanceOf(PolicyStoreException.class);
+        final List<String> bpn = List.of("testBpn");
+        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
     }
 
     @Test

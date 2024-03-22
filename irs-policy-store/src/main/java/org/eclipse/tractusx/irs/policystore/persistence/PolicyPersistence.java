@@ -62,6 +62,8 @@ public class PolicyPersistence {
      */
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
+    private static final String COULD_NOT_READ_POLICY_ERROR_MESSAGE = "Could not read the policies from the store";
+
     public PolicyPersistence(@Qualifier(POLICY_BLOB_PERSISTENCE) final BlobPersistence policyStorePersistence,
             final ObjectMapper mapper) {
         this.policyStorePersistence = policyStorePersistence;
@@ -111,7 +113,7 @@ public class PolicyPersistence {
                 try {
                     return mapper.readerForListOf(Policy.class).<List<Policy>>readValue(blob);
                 } catch (IOException | RuntimeException e) {
-                    throw new PolicyStoreException("Could not read the policies from the store", e);
+                    throw new PolicyStoreException(COULD_NOT_READ_POLICY_ERROR_MESSAGE, e);
                 }
             }).map(ArrayList::new).orElseGet(ArrayList::new);
 
@@ -134,11 +136,11 @@ public class PolicyPersistence {
                     return new AbstractMap.SimpleEntry<>(bpn,
                             mapper.readerForListOf(Policy.class).<List<Policy>>readValue(entry.getValue()));
                 } catch (IOException e) {
-                    throw new PolicyStoreException("Could not read the policies from the store", e);
+                    throw new PolicyStoreException(COULD_NOT_READ_POLICY_ERROR_MESSAGE, e);
                 }
             }).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
         } catch (BlobPersistenceException e) {
-            throw new PolicyStoreException("Could not read the policies from the store", e);
+            throw new PolicyStoreException(COULD_NOT_READ_POLICY_ERROR_MESSAGE, e);
         }
     }
 
