@@ -119,7 +119,7 @@ public class DefaultConfiguration {
     @ConditionalOnProperty(prefix = CONFIG_PREFIX, name = CONFIG_FIELD_TYPE, havingValue = CONFIG_VALUE_DECENTRAL)
     public EndpointDataForConnectorsService endpointDataForConnectorsService(final EdcSubmodelFacade facade) {
 
-        final EdcEndpointReferenceRetriever edcEndpointReferenceRetriever = (edcConnectorEndpoint, assetType, assetValue) -> {
+        final EdcEndpointReferenceRetriever edcEndpointReferenceRetriever = (edcConnectorEndpoint, assetType, assetValue, bpn) -> {
             try {
                 return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, DEFAULT);
             } catch (EdcClientException e) {

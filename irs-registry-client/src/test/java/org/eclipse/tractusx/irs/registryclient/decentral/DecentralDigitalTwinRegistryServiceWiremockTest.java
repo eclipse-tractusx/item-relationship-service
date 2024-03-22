@@ -117,7 +117,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(getShellDescriptor200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
                     List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act
@@ -166,7 +166,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
                     List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells404());
@@ -187,7 +187,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
                     List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells200());
@@ -210,7 +210,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
                     List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells200Empty());
@@ -240,7 +240,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
 
             // simulate endpoint data reference
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
                     List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act
@@ -271,9 +271,9 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
 
             // simulate endpoint data reference
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any(), any())).thenReturn(
                     List.of(CompletableFuture.completedFuture(endpointDataReference)));
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any(), any())).thenReturn(
                     endpointDataReferenceForAssetFutures);
 
             // Act
@@ -315,9 +315,9 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             // simulate endpoint data reference
             final var endpointDataReference1 = endpointDataReference("dtr1-assetId");
             final var endpointDataReference2 = endpointDataReference("dtr2-assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any(), any())).thenReturn(
                     List.of(CompletableFuture.completedFuture(endpointDataReference1)));
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any())).thenReturn(
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any(), any())).thenReturn(
                     List.of(CompletableFuture.completedFuture(endpointDataReference2)));
 
             // Act & Assert

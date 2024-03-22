@@ -51,8 +51,6 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RegistryConfiguration {
 
-    private static final String DEFAULT = "default";
-
     @Bean
     @ConditionalOnProperty(prefix = "digitalTwinRegistry", name = "type", havingValue = "central")
     public CentralDigitalTwinRegistryService centralDigitalTwinRegistryService(final DigitalTwinRegistryClient client) {
@@ -78,9 +76,9 @@ public class RegistryConfiguration {
             @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate,
             final EdcConfiguration edcConfiguration) {
 
-        final EdcEndpointReferenceRetriever endpointReferenceRetriever = (edcConnectorEndpoint, assetType, assetValue) -> {
+        final EdcEndpointReferenceRetriever endpointReferenceRetriever = (edcConnectorEndpoint, assetType, assetValue, bpn) -> {
             try {
-                return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, DEFAULT);
+                return facade.getEndpointReferencesForAsset(edcConnectorEndpoint, assetType, assetValue, bpn);
             } catch (EdcClientException e) {
                 throw new EdcRetrieverException(e);
             }

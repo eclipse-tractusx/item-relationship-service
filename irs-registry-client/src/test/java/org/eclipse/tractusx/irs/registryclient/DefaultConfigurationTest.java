@@ -93,7 +93,7 @@ class DefaultConfigurationTest {
         // ACT
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
 
-        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(List.of(endpointAddress)) //
+        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(List.of(endpointAddress), "bpn") //
                                         .forEach(future -> {
                                             try {
                                                 future.get();
@@ -116,7 +116,7 @@ class DefaultConfigurationTest {
 
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
         final var dummyEndpoints = List.of("test");
-        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(dummyEndpoints).forEach(future -> {
+        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(dummyEndpoints, "bpn").forEach(future -> {
             assertThatThrownBy(future::get).isInstanceOf(ExecutionException.class)
                                            .extracting(Throwable::getCause)
                                            .isInstanceOf(EdcRetrieverException.class);
