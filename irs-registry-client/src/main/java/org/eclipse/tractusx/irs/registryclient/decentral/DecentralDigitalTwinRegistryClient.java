@@ -104,10 +104,10 @@ public class DecentralDigitalTwinRegistryClient {
     }
 
     private static byte[] serialize(final IdentifierKeyValuePair assetIds) {
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
-            WRITER.writeValue(os, assetIds);
-            return os.toByteArray();
+            WRITER.writeValue(stream, assetIds);
+            return stream.toByteArray();
         } catch (final IOException e) {
             return new byte[0];
         }
