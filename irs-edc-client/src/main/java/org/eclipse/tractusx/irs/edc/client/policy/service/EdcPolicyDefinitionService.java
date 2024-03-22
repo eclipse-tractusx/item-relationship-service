@@ -114,6 +114,7 @@ public class EdcPolicyDefinitionService {
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
                 log.info(String.format("Policy with id %s not found within the edc", policyName));
+                return false;
             } else {
                 throw new GetEdcPolicyDefinitionException(e);
             }

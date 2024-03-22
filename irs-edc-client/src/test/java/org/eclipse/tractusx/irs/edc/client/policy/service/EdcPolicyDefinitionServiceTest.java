@@ -156,7 +156,7 @@ class EdcPolicyDefinitionServiceTest {
         String policyName = "policyName";
         when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions" + "/" + policyName);
 
-        ResponseEntity<String> responseEntity = ResponseEntity.badRequest().build();
+        ResponseEntity<String> responseEntity = ResponseEntity.notFound().build();
         when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
 
         // when
