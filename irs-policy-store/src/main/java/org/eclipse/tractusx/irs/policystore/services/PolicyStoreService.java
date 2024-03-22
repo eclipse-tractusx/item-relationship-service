@@ -23,10 +23,19 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.services;
 
+import static org.eclipse.tractusx.irs.common.persistence.BlobPersistence.DEFAULT_BLOB_NAME;
+
 import java.time.Clock;
 import java.time.OffsetDateTime;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
@@ -42,7 +51,6 @@ import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -55,26 +63,25 @@ import org.springframework.web.server.ResponseStatusException;
 public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public static final int DEFAULT_POLICY_LIFETIME_YEARS = 5;
-    private final String apiAllowedBpn;
     private final List<Policy> allowedPoliciesFromConfig;
     private final PolicyPersistence persistence;
     private final Clock clock;
     private static final String MISSING_REQUEST_FIELD_MESSAGE = "Request does not contain all required fields. Missing: %s";
+    private static final String DEFAULT = "default";
 
-    public PolicyStoreService(@Value("${apiAllowedBpn:}") final String apiAllowedBpn,
-            final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig, final PolicyPersistence persistence, final Clock clock) {
-        this.apiAllowedBpn = apiAllowedBpn;
+    public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
+            final PolicyPersistence persistence, final Clock clock) {
         this.allowedPoliciesFromConfig = createDefaultPolicyFromConfig(defaultAcceptedPoliciesConfig);
         this.persistence = persistence;
         this.clock = clock;
     }
 
-    public void registerPolicy(final Policy policy) {
+    public void registerPolicy(final Policy policy, final List<String> businessPartnersNumbers) {
         validatePolicy(policy);
         policy.setCreatedOn(OffsetDateTime.now(clock));
         log.info("Registering new policy with id {}, valid until {}", policy.getPolicyId(), policy.getValidUntil());
         try {
-            persistence.save(apiAllowedBpn, policy);
+            persistence.save(businessPartnersNumbers, policy);
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
@@ -82,20 +89,35 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     /**
      * Checks whether policy from register policy request has all required fields
+     *
      * @param policy policy to register
      */
     private void validatePolicy(final Policy policy) {
+
         if (policy.getPermissions() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:permission"));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:permission"));
         }
+
         if (policy.getPermissions().stream().anyMatch(p -> p.getConstraint() == null)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:constraint"));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:constraint"));
         }
     }
 
-    public List<Policy> getStoredPolicies() {
-        log.info("Reading all stored polices for BPN {}", apiAllowedBpn);
-        final var storedPolicies = persistence.readAll(apiAllowedBpn);
+    public Map<String, List<Policy>> getPolicies(final List<String> bpns) {
+        if (bpns == null) {
+            return getAllStoredPolicies();
+        } else {
+            return bpns.stream().map(bpn -> new AbstractMap.SimpleEntry<>(bpn, getStoredPolicies(List.of(bpn)))).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+        }
+    }
+
+    public List<Policy> getStoredPolicies(final List<String> bpns) {
+        log.info("Reading all stored polices for BPN {}", bpns);
+        final List<Policy> storedPolicies = new LinkedList<>();
+        bpns.forEach(bpn -> storedPolicies.addAll(persistence.readAll(bpn)));
+
         if (storedPolicies.isEmpty()) {
             log.info("Policy store is empty, returning default values from config");
             return allowedPoliciesFromConfig;
@@ -104,28 +126,76 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
     }
 
+    public Map<String, List<Policy>> getAllStoredPolicies() {
+        final Map<String, List<Policy>> bpnToPolicies = persistence.readAll();
+        if (bpnToPolicies.isEmpty()) {
+            return Map.of("", allowedPoliciesFromConfig);
+        }
+        return bpnToPolicies;
+    }
+
     public void deletePolicy(final String policyId) {
         try {
+            log.info("Getting all policies to find correct bpn number");
+            final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(),
+                    policyId);
+
             log.info("Deleting policy with id {}", policyId);
-            persistence.delete(apiAllowedBpn, policyId);
+            bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
 
     }
 
-    public void updatePolicy(final String policyId, final UpdatePolicyRequest request) {
+    public void updatePolicies(final UpdatePolicyRequest request) {
+        for (final String policyId : request.policiesIds()) {
+            updatePolicy(policyId, request.validUntil(), request.businessPartnerNumbers() == null ? List.of(DEFAULT) : request.businessPartnerNumbers());
+        }
+    }
+
+    public void updatePolicy(final String policyId, final OffsetDateTime validUntil, final List<String> bpns) {
         try {
             log.info("Updating policy with id {}", policyId);
-            persistence.update(apiAllowedBpn, policyId, request.validUntil());
+            final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(),
+                    policyId);
+
+            final Policy policyToUpdate = getStoredPolicies(bpnsContainingPolicyId).stream()
+                                                                                   .filter(PolicyHelper.havingPolicyId(
+                                                                                           policyId))
+                                                                                   .findAny()
+                                                                                   .orElseThrow(
+                                                                                           () -> new PolicyStoreException(
+                                                                                                   "Policy with id '"
+                                                                                                           + policyId
+                                                                                                           + "' doesn't exists!"));
+
+            policyToUpdate.update(validUntil);
+            bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
+            persistence.save(bpns, policyToUpdate);
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 
     @Override
-    public List<AcceptedPolicy> getAcceptedPolicies() {
-        return getStoredPolicies().stream().map(this::toAcceptedPolicy).toList();
+    public List<AcceptedPolicy> getAcceptedPolicies(final String bpn) {
+        if (bpn == null) {
+            return getAllStoredPolicies().values()
+                                         .stream()
+                                         .flatMap(Collection::stream)
+                                         .map(this::toAcceptedPolicy)
+                                         .toList();
+        }
+
+        final ArrayList<Policy> policies = new ArrayList<>();
+        policies.addAll(getStoredPolicies(List.of(bpn)));
+        policies.addAll(getStoredPolicies(List.of(DEFAULT_BLOB_NAME)));
+
+        final TreeSet<Policy> result = new TreeSet<>(Comparator.comparing(Policy::getPolicyId));
+        result.addAll(policies);
+
+        return result.stream().map(this::toAcceptedPolicy).toList();
     }
 
     private AcceptedPolicy toAcceptedPolicy(final Policy policy) {

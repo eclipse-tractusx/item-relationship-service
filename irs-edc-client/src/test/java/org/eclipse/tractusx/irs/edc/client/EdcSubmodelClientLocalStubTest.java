@@ -47,6 +47,6 @@ class EdcSubmodelClientLocalStubTest {
         String assetId = "urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446";
 
         // when
-        assertThrows(EdcClientException.class, () -> edcSubmodelClientLocalStub.getSubmodelPayload("", "", assetId));
+        assertThrows(EdcClientException.class, () -> edcSubmodelClientLocalStub.getSubmodelPayload("", "", assetId, ""));
     }
 }

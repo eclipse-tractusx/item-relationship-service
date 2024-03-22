@@ -45,14 +45,15 @@ class EndpointDataForConnectorsServiceTest {
     private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
 
-    private static final String connectionOneAddress = "connectionOneAddress";
-    private static final String connectionTwoAddress = "connectionTwoAddress";
+    private static final String CONNECTION_ONE_ADDRESS = "connectionOneAddress";
+    private static final String CONNECTION_TWO_ADDRESS = "connectionTwoAddress";
+    private static final String BPN = "bpn";
 
     private static final EndpointDataReference CONNECTION_ONE_DATA_REF = //
-            EndpointDataReference.Builder.newInstance().endpoint(connectionOneAddress).build();
+            EndpointDataReference.Builder.newInstance().endpoint(CONNECTION_ONE_ADDRESS).build();
 
     private static final EndpointDataReference CONNECTION_TWO_DATA_REF =  //
-            EndpointDataReference.Builder.newInstance().endpoint(connectionTwoAddress).build();
+            EndpointDataReference.Builder.newInstance().endpoint(CONNECTION_TWO_ADDRESS).build();
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade = mock(EdcEndpointReferenceRetriever.class);
 
@@ -62,20 +63,20 @@ class EndpointDataForConnectorsServiceTest {
     void shouldReturnExpectedEndpointDataReference() throws EdcRetrieverException {
 
         // GIVEN
-        when(edcSubmodelFacade.getEndpointReferencesForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE)).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_ONE_ADDRESS, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE, BPN)).thenReturn(
                 List.of(CompletableFuture.completedFuture(CONNECTION_ONE_DATA_REF)));
 
         // WHEN
         final List<CompletableFuture<EndpointDataReference>> endpointDataReferences = sut.createFindEndpointDataForConnectorsFutures(
-                Collections.singletonList(connectionOneAddress));
+                Collections.singletonList(CONNECTION_ONE_ADDRESS), BPN);
 
         // THEN
         assertThat(endpointDataReferences).isNotEmpty()
                                           .extracting(CompletableFuture::get)
                                           .isNotEmpty()
                                           .extracting(EndpointDataReference::getEndpoint)
-                                          .contains(connectionOneAddress);
+                                          .contains(CONNECTION_ONE_ADDRESS);
     }
 
     @Test
@@ -84,20 +85,20 @@ class EndpointDataForConnectorsServiceTest {
         // GIVEN
 
         // a first endpoint failing (1)
-        when(edcSubmodelFacade.getEndpointReferencesForAsset(connectionOneAddress, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE)).thenThrow(
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_ONE_ADDRESS, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE, BPN)).thenThrow(
                 new EdcRetrieverException(new EdcClientException("EdcClientException")));
 
         // and a second endpoint returning successfully (2)
-        when(edcSubmodelFacade.getEndpointReferencesForAsset(connectionTwoAddress, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE)).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_TWO_ADDRESS, DT_REGISTRY_ASSET_TYPE,
+                DT_REGISTRY_ASSET_VALUE, BPN)).thenReturn(
                 List.of(CompletableFuture.completedFuture(CONNECTION_TWO_DATA_REF)));
 
         // WHEN
         final List<CompletableFuture<EndpointDataReference>> dataRefFutures = //
-                sut.createFindEndpointDataForConnectorsFutures(List.of(connectionOneAddress, // (1)
-                        connectionTwoAddress // (2)
-                ));
+                sut.createFindEndpointDataForConnectorsFutures(List.of(CONNECTION_ONE_ADDRESS, // (1)
+                        CONNECTION_TWO_ADDRESS // (2)
+                ), BPN);
 
         // THEN
         final List<EndpointDataReference> dataReferences = //
@@ -108,7 +109,7 @@ class EndpointDataForConnectorsServiceTest {
 
         assertThat(dataReferences).isNotEmpty() //
                                   .extracting(EndpointDataReference::getEndpoint) //
-                                  .contains(connectionTwoAddress);
+                                  .contains(CONNECTION_TWO_ADDRESS);
     }
 
     private static EndpointDataReference executeFutureMappingErrorsToNull(
@@ -126,15 +127,15 @@ class EndpointDataForConnectorsServiceTest {
 
         // GIVEN
         when(edcSubmodelFacade.getEndpointReferencesForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE),
-                eq(DT_REGISTRY_ASSET_VALUE))).thenThrow(
+                eq(DT_REGISTRY_ASSET_VALUE), eq(BPN))).thenThrow(
                 new EdcRetrieverException(new EdcClientException("EdcClientException")));
 
         // WHEN
         final var exceptions = new ArrayList<>();
 
         // THEN
-        final List<String> connectorEndpoints = List.of(connectionOneAddress, connectionTwoAddress);
-        sut.createFindEndpointDataForConnectorsFutures(connectorEndpoints) //
+        final List<String> connectorEndpoints = List.of(CONNECTION_ONE_ADDRESS, CONNECTION_TWO_ADDRESS);
+        sut.createFindEndpointDataForConnectorsFutures(connectorEndpoints, BPN) //
            .forEach(future -> {
                try {
                    future.get();

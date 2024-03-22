@@ -43,7 +43,7 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.UseObjectForClearerAPI"})
 public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
@@ -52,9 +52,9 @@ public class EdcSubmodelFacade {
 
     @SuppressWarnings("PMD.PreserveStackTrace")
     public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
-            final String assetId) throws EdcClientException {
+            final String assetId, final String bpn) throws EdcClientException {
         try {
-            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId)
+            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId, bpn)
                          .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred.", e);
@@ -74,10 +74,10 @@ public class EdcSubmodelFacade {
 
     @SuppressWarnings("PMD.PreserveStackTrace")
     public EdcNotificationResponse sendNotification(final String submodelEndpointAddress, final String assetId,
-            final EdcNotification<NotificationContent> notification) throws EdcClientException {
+            final EdcNotification<NotificationContent> notification, final String bpn) throws EdcClientException {
         try {
             log.debug("Sending EDC Notification '{}'", notification);
-            return client.sendNotification(submodelEndpointAddress, assetId, notification)
+            return client.sendNotification(submodelEndpointAddress, assetId, notification, bpn)
                          .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -94,8 +94,8 @@ public class EdcSubmodelFacade {
     }
 
     public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
-            final String filterKey, final String filterValue) throws EdcClientException {
-        return client.getEndpointReferencesForAsset(endpointAddress, filterKey, filterValue);
+            final String filterKey, final String filterValue, final String bpn) throws EdcClientException {
+        return client.getEndpointReferencesForAsset(endpointAddress, filterKey, filterValue, bpn);
     }
 
 }

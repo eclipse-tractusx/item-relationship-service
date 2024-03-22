@@ -136,7 +136,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any(),
-                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)))).thenReturn(
+                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference ref = TestMother.endpointDataReference(agreementId);
         when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
@@ -147,7 +147,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
-        final var result = testee.getSubmodelPayload(ENDPOINT_ADDRESS, "suffix", "assetId");
+        final var result = testee.getSubmodelPayload(ENDPOINT_ADDRESS, "suffix", "assetId", "bpn");
         final String resultingRelationships = result.get(5, TimeUnit.SECONDS).getPayload();
 
         // assert
@@ -163,7 +163,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final EdcNotification<NotificationContent> notification = EdcNotification.builder().build();
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
-        when(contractNegotiationService.negotiate(any(), any(), any())).thenReturn(
+        when(contractNegotiationService.negotiate(any(), any(), any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
@@ -173,7 +173,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
-        final var result = testee.sendNotification(CONNECTOR_ENDPOINT, "notify-request-asset", notification);
+        final var result = testee.sendNotification(CONNECTOR_ENDPOINT, "notify-request-asset", notification, "bpn");
         final EdcNotificationResponse response = result.get(5, TimeUnit.SECONDS);
 
         // assert
@@ -204,7 +204,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
-        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
+        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -225,7 +225,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
-        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
+        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -246,7 +246,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
-        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
+        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -267,7 +267,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
-        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
+        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -289,7 +289,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
-        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID)
+        final String submodelResponse = testee.getSubmodelPayload("http://localhost/", "/submodel", ASSET_ID, "bpn")
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -311,7 +311,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // act
         final String submodelResponse = testee.getSubmodelPayload("https://connector.endpoint.com",
-                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID)
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, "bpn")
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -335,7 +335,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // act
         final String submodelResponse = testee.getSubmodelPayload("https://connector.endpoint.com",
-                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID)
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, "bpn")
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -359,7 +359,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // act
         final String relationshipsJson = testee.getSubmodelPayload("http://localhost/", "_singleLevelBomAsBuilt",
-                ASSET_ID).get(5, TimeUnit.SECONDS).getPayload();
+                ASSET_ID, "bpn").get(5, TimeUnit.SECONDS).getPayload();
 
         final var relationships = StringMapper.mapFromString(relationshipsJson,
                 RelationshipAspect.from(asBuilt, Direction.DOWNWARD).getSubmodelClazz()).asRelationships();
@@ -372,7 +372,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         prepareTestdata(childCatenaXId.getGlobalAssetId(), "_singleLevelUsageAsBuilt");
         final String singleLevelUsageRelationshipsJson = testee.getSubmodelPayload("http://localhost/",
-                "_singleLevelUsageAsBuilt", ASSET_ID).get(5, TimeUnit.SECONDS).getPayload();
+                "_singleLevelUsageAsBuilt", ASSET_ID, "bpn").get(5, TimeUnit.SECONDS).getPayload();
         final var singleLevelUsageRelationships = StringMapper.mapFromString(singleLevelUsageRelationshipsJson,
                 RelationshipAspect.from(asBuilt, Direction.UPWARD).getSubmodelClazz()).asRelationships();
 
@@ -395,7 +395,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("asset-id").build()));
         when(contractNegotiationService.negotiate(any(), any(),
-                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)))).thenReturn(
+                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference expected = mock(EndpointDataReference.class);
         when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
@@ -403,7 +403,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // act
         final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue,
-                new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
+                new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW), "bpn");
         final EndpointDataReference actual = result.get(0).get(5, TimeUnit.SECONDS);
 
         // assert
@@ -421,14 +421,14 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("asset-id").build()));
         when(contractNegotiationService.negotiate(any(), any(),
-                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)))).thenReturn(
+                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference expected = mock(EndpointDataReference.class);
         when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
                 Optional.ofNullable(expected));
 
         // act
-        final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue);
+        final var result = testee.getEndpointReferencesForAsset(ENDPOINT_ADDRESS, filterKey, filterValue, "bpn");
         final EndpointDataReference actual = result.get(0).get(5, TimeUnit.SECONDS);
 
         // assert
@@ -445,11 +445,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(edcDataPlaneClient.getData(any(), any())).thenReturn(value);
 
         // act
-        final var resultFuture = testee.getSubmodelPayload(ENDPOINT_ADDRESS, "suffix", "assetId");
+        final var resultFuture = testee.getSubmodelPayload(ENDPOINT_ADDRESS, "suffix", "assetId", "bpn");
 
         // assert
         final String result = resultFuture.get().getPayload();
-        verify(contractNegotiationService, never()).negotiate(any(), any(), any());
+        verify(contractNegotiationService, never()).negotiate(any(), any(), any(), any());
         assertThat(result).isEqualTo(value);
     }
 
@@ -462,7 +462,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any(),
-                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)))).thenReturn(
+                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
         final EndpointDataReference ref = mock(EndpointDataReference.class);
         when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
@@ -471,7 +471,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
-        testee.getSubmodelPayload(ENDPOINT_ADDRESS, "suffix", "assetId");
+        testee.getSubmodelPayload(ENDPOINT_ADDRESS, "suffix", "assetId", "bpn");
 
         // assert
         verify(endpointDataReferenceCacheService, times(1)).putEndpointDataReferenceIntoStorage("assetId", ref);
@@ -482,13 +482,12 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         final String agreementId = "agreementId";
         when(contractNegotiationService.negotiate(any(), any(),
-                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)))).thenReturn(
+                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
 
         final EndpointDataReference ref = TestMother.endpointDataReference(agreementId);
         when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
                 Optional.ofNullable(ref));
-
         final SubmodelTestdataCreator submodelTestdataCreator = new SubmodelTestdataCreator(
                 localTestDataConfiguration.cxTestDataContainer());
         final String data = StringMapper.mapToString(
