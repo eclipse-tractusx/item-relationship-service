@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
+### Added
+- Extended EdcPolicyDefinitionService to check if a policy in the edc exists
 
 ## [4.8.0] - 2024-03-18
 ### Changed
