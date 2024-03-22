@@ -84,8 +84,8 @@ irs-helm:
                   token-uri: "<path:traceability-irs/data/dil/oauth2#tokenUri>"
 
       digitalTwinRegistry:
-        descriptorEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/shell-descriptors/{aasIdentifier}"
-        shellLookupEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0/lookup/shells?assetIds={assetIds}"
+        descriptorEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3/shell-descriptors/{aasIdentifier}"
+        shellLookupEndpoint: "https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3/lookup/shells?assetIds={assetIds}"
         shellDescriptorTemplate: "/shell-descriptors/{aasIdentifier}"
         lookupShellsTemplate: "/lookup/shells?assetIds={assetIds}"
         type: "decentral"
