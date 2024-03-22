@@ -103,7 +103,7 @@ class DecentralDigitalTwinRegistryServiceTest {
                     endpointDataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                    anyList())).thenReturn(lookupShellsResponse);
+                    any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
                     expectedShell);
 
@@ -132,7 +132,7 @@ class DecentralDigitalTwinRegistryServiceTest {
                     connectorEndpoints)).thenReturn(dataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                    anyList())).thenReturn(lookupShellsResponse);
+                    any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
                     shellDescriptor(emptyList()));
 
@@ -166,7 +166,7 @@ class DecentralDigitalTwinRegistryServiceTest {
                     connectorEndpoints)).thenReturn(dataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                    anyList())).thenReturn(lookupShellsResponse);
+                    any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
                     shellDescriptor(emptyList()));
 
@@ -230,7 +230,7 @@ class DecentralDigitalTwinRegistryServiceTest {
             when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList())).thenReturn(
                     dataRefFutures);
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
-                    anyList())).thenReturn(lookupShellsResponse);
+                    any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
                     expectedShell);
 
