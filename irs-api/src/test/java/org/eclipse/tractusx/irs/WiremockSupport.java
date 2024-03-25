@@ -34,15 +34,21 @@ import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseW
 import static org.eclipse.tractusx.irs.util.TestMother.batchAspectName;
 import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterJob;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
@@ -95,6 +101,27 @@ public class WiremockSupport {
 
     static String encodedId(final String shellId) {
         return encodeBase64String(shellId.getBytes(StandardCharsets.UTF_8));
+    }
+
+    static String encodedAssetIds(final String assetIds) {
+        final IdentifierKeyValuePair globalAssetId = IdentifierKeyValuePair.builder()
+                                                                           .name("globalAssetId")
+                                                                           .value(assetIds)
+                                                                           .build();
+        return Base64.getEncoder().encodeToString(serialize(globalAssetId));
+    }
+
+    private static byte[] serialize(final IdentifierKeyValuePair assetIds) {
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+            final ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            mapper.writeValue(stream, assetIds);
+            return stream.toByteArray();
+        } catch (final IOException e) {
+            return new byte[0];
+        }
     }
 
     static void verifyDiscoveryCalls(final int times) {
