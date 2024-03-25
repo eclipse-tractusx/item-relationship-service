@@ -66,7 +66,7 @@ class PolicyStoreControllerTest {
     public static final String EXAMPLE_PAYLOAD = """
             {
              	"validUntil": "2025-12-12T23:59:59.999Z",
-             	"payload": {
+             	"policies": {
              		"@context": {
              			"odrl": "http://www.w3.org/ns/odrl/2/"
              		},
@@ -123,10 +123,10 @@ class PolicyStoreControllerTest {
 
         // act
         testee.registerAllowedPolicy(
-                new CreatePolicyRequest(now.plusMinutes(1), null, List.of(jsonObject.get("payload").asJsonObject())));
+                new CreatePolicyRequest(now.plusMinutes(1), null, List.of(jsonObject.get("policies").asJsonObject())));
 
         // assert
-        verify(service).registerPolicy(any(), eq(List.of("default")));
+        verify(service).registerPolicy(any(), eq("default"));
     }
 
     @Test
@@ -174,7 +174,8 @@ class PolicyStoreControllerTest {
     void updateAllowedPolicy() {
         // arrange
         final String policyId = "policyId";
-        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now(), List.of("bpn"),List.of(policyId));
+        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now(), List.of("bpn"),
+                List.of(policyId));
 
         // act
         testee.updateAllowedPolicy(request);

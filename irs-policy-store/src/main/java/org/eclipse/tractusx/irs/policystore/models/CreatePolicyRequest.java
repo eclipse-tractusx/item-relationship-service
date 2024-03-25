@@ -26,58 +26,60 @@ package org.eclipse.tractusx.irs.policystore.models;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.json.JsonObject;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Object for API to create policty
+ * Object for API to create policy
  */
 @SuppressWarnings("FileTabCharacter")
 @Schema(description = "Request to add a policy")
 public record CreatePolicyRequest(
-        @NotNull @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations")  OffsetDateTime validUntil,
-        @ArraySchema() List<String> businessPartnerNumbers,
-        @NotNull @Schema(example = CreatePolicyRequest.EXAMPLE_PAYLOAD) List<JsonObject> payload) {
+        @NotNull @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations",
+                         example = "2025-12-12T23:59:59.999Z") OffsetDateTime validUntil,
+        @Schema() String businessPartnerNumber,
+        @NotNull @Schema(example = CreatePolicyRequest.EXAMPLE_PAYLOAD) List<JsonObject> policies) {
 
     @SuppressWarnings("java:S2479")
-    // this value is used by open-api to show example payload
+    // this value is used by open-api to show example policies
     // \u0009 character is required for this value to be correctly shown in open-api
     public static final String EXAMPLE_PAYLOAD = """
-                {
-                 	"validUntil": "2025-12-12T23:59:59.999Z",
-                 	"payload": {
-                 		"@context": {
-                 			"odrl": "http://www.w3.org/ns/odrl/2/"
-                 		},
-                 		"@id": "policy-id",
-                 		"policy": {
-                 			"odrl:permission": [
-                 				{
-                 					"odrl:action": "USE",
-                 					"odrl:constraint": {
-                 						"odrl:and": [
-                 							{
-                 								"odrl:leftOperand": "Membership",
-                 								"odrl:operator": {
-                 									"@id": "odrl:eq"
-                 								},
-                 								"odrl:rightOperand": "active"
-                 							},
-                 							{
-                 								"odrl:leftOperand": "PURPOSE",
-                 								"odrl:operator": {
-                 									"@id": "odrl:eq"
-                 								},
-                 								"odrl:rightOperand": "ID 3.1 Trace"
-                 							}
-                 						]
-                 					}
-                 				}
-                 			]
-                 		}
-                 	}
-                 }
-                """;
+            [
+             	{
+             		{
+                    "@context": {
+                        "odrl": "http://www.w3.org/ns/odrl/2/"
+                    },
+                    "@id": "policy-id",
+                    "@type": "PolicyDefinitionRequestDto",
+                    "policy": {
+                        "@type": "Policy",
+                        "odrl:permission": [
+                            {
+                                "odrl:action": "USE",
+                                "odrl:constraint": {
+                                    "odrl:and": [
+                                        {
+                                            "odrl:leftOperand": "Membership",
+                                            "odrl:operator": {
+                                                "@id": "odrl:eq"
+                                            },
+                                            "odrl:rightOperand": "active"
+                                        },
+                                        {
+                                            "odrl:leftOperand": "PURPOSE",
+                                            "odrl:operator": {
+                                                "@id": "odrl:eq"
+                                            },
+                                            "odrl:rightOperand": "ID 3.1 Trace"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+             	}
+             ]
+            """;
 }

@@ -110,7 +110,7 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void registerAllowedPolicy(final @RequestBody CreatePolicyRequest request) {
-        request.payload()
+        request.policies()
                .stream()
                .map(payload -> {
                    final Policy policy = edcTransformer.transformToPolicy(payload);
@@ -118,7 +118,7 @@ public class PolicyStoreController {
                    return policy;
                })
                .forEach(policy -> service.registerPolicy(policy,
-                       request.businessPartnerNumbers() == null ? List.of(DEFAULT) : request.businessPartnerNumbers()));
+                       request.businessPartnerNumber() == null ? DEFAULT : request.businessPartnerNumber()));
     }
 
     @Operation(operationId = "getAllowedPoliciesByBpn",

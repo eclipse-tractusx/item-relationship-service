@@ -86,8 +86,9 @@ public class SubmodelDelegate extends AbstractDelegate {
             final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.payload().getSubmodelDescriptors();
             log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
-            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.payload().filterDescriptorsByAspectTypes(
-                    jobData.getAspects());
+            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.payload()
+                                                                                          .filterDescriptorsByAspectTypes(
+                                                                                                  jobData.getAspects());
 
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
@@ -133,13 +134,13 @@ public class SubmodelDelegate extends AbstractDelegate {
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
-                            new IllegalArgumentException("Submodel payload validation failed. " + errors), 0,
+                            new IllegalArgumentException("Submodel policies validation failed. " + errors), 0,
                             ProcessStep.SCHEMA_VALIDATION));
                 }
             } catch (final JsonParseException e) {
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e,
                         RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(), ProcessStep.SCHEMA_VALIDATION));
-                log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+                log.info("Submodel policies did not match the expected AspectType. Creating Tombstone.");
             } catch (final SchemaNotFoundException | InvalidSchemaException | RestClientException e) {
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
                         ProcessStep.SCHEMA_REQUEST));
@@ -147,7 +148,8 @@ public class SubmodelDelegate extends AbstractDelegate {
             } catch (final UsagePolicyException e) {
                 log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                        ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(), jsonUtil.asMap(e.getPolicy())));
+                        ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
+                        jsonUtil.asMap(e.getPolicy())));
             } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,

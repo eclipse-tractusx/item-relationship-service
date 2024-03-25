@@ -70,15 +70,11 @@ public class PolicyPersistence {
         this.mapper = mapper;
     }
 
-    public void save(final List<String> bpns, final Policy policy) {
-        final Map<String, List<Policy>> storedBpnToPolicies = bpns.stream()
-                                                                  .collect(Collectors.toMap(bpn -> bpn,
-                                                                          this::readAll));
-        storedBpnToPolicies.forEach((bpn, policies) -> {
-            checkIfPolicyAlreadyExists(policy, policies);
-            policies.add(policy);
-            save(bpn, policies);
-        });
+    public void save(final String bpn, final Policy policy) {
+        final List<Policy> policiesForBpn = readAll(bpn);
+        checkIfPolicyAlreadyExists(policy, policiesForBpn);
+        policiesForBpn.add(policy);
+        save(bpn, policiesForBpn);
     }
 
     private static void checkIfPolicyAlreadyExists(final Policy policy, final List<Policy> policies) {

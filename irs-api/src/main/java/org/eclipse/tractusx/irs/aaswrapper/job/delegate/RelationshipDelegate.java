@@ -118,7 +118,8 @@ public class RelationshipDelegate extends AbstractDelegate {
             log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
-                            ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(), jsonUtil.asMap(e.getPolicy())));
+                            ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
+                            jsonUtil.asMap(e.getPolicy())));
         } catch (final EdcClientException e) {
             log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                     endpoint.getProtocolInformation().getHref());
@@ -126,7 +127,7 @@ public class RelationshipDelegate extends AbstractDelegate {
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
                             ProcessStep.SUBMODEL_REQUEST));
         } catch (final JsonParseException e) {
-            log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
+            log.info("Submodel policies did not match the expected AspectType. Creating Tombstone.");
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
                             ProcessStep.SUBMODEL_REQUEST));

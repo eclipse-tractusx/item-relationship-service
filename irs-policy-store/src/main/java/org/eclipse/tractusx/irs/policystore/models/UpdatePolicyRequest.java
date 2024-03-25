@@ -32,9 +32,8 @@ import jakarta.validation.constraints.NotNull;
 /**
  * Request object for policy update
  */
-@Schema(description = "Request to add a policy")
+@Schema(description = "Request to update a policy")
 public record UpdatePolicyRequest(
         @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil,
-        List<String> businessPartnerNumbers,
-        List<String> policiesIds) {
+        List<String> businessPartnerNumbers, List<String> policiesIds) {
 }

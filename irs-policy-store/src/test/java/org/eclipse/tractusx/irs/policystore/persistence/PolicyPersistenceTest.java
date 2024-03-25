@@ -74,7 +74,7 @@ class PolicyPersistenceTest {
         final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
 
         // act
-        testee.save(List.of("testBpn"), policy);
+        testee.save("testBpn", policy);
 
         // assert
         verify(mockPersistence).putBlob(anyString(), any());
@@ -86,7 +86,7 @@ class PolicyPersistenceTest {
         final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
 
         // act
-        testee.save(List.of("default"), policy);
+        testee.save("default", policy);
 
         // assert
         verify(mockPersistence).putBlob(anyString(), any());
@@ -100,8 +100,7 @@ class PolicyPersistenceTest {
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
         // act & assert
-        final List<String> bpn = List.of("testBpn");
-        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
+        assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
     }
 
     @Test
@@ -112,8 +111,7 @@ class PolicyPersistenceTest {
                 new BlobPersistenceException("test", new IllegalStateException()));
 
         // act & assert
-        final List<String> bpn = List.of("testBpn");
-        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
+        assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
     }
 
     @Test
@@ -124,8 +122,7 @@ class PolicyPersistenceTest {
                                                                                   .putBlob(any(), any());
 
         // act & assert
-        final List<String> bpn = List.of("testBpn");
-        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
+        assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
     }
 
     @Test
@@ -144,7 +141,8 @@ class PolicyPersistenceTest {
     }
 
     @Test
-    void deleteShouldThrowExceptionIfPolicyWithIdDoesntExists() throws BlobPersistenceException, JsonProcessingException {
+    void deleteShouldThrowExceptionIfPolicyWithIdDoesntExists()
+            throws BlobPersistenceException, JsonProcessingException {
         // arrange
         final var policy = new Policy("policyId", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
         when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(List.of(policy))));

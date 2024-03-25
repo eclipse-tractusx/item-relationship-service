@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.policystore.services;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -87,10 +88,10 @@ class PolicyStoreServiceTest {
         final Policy policy = new Policy("testId", now, now.plusMinutes(1), emptyList());
 
         // act
-        testee.registerPolicy(policy, List.of(BPN));
+        testee.registerPolicy(policy, BPN);
 
         // assert
-        verify(persistence).save(eq(List.of(BPN)), any());
+        verify(persistence).save(eq(BPN), any());
     }
 
     @Test
@@ -100,10 +101,10 @@ class PolicyStoreServiceTest {
         final Policy policy = new Policy("testId", now, now.plusMinutes(1), createPermissions());
 
         // act
-        testee.registerPolicy(policy, List.of(BPN));
+        testee.registerPolicy(policy, BPN);
 
         // assert
-        verify(persistence).save(eq(List.of(BPN)), policyCaptor.capture());
+        verify(persistence).save(eq(BPN), policyCaptor.capture());
 
         assertThat(policyCaptor.getValue()).isNotNull();
         List<Permission> permissionList = policyCaptor.getValue().getPermissions();
@@ -121,8 +122,7 @@ class PolicyStoreServiceTest {
         doThrow(new PolicyStoreException("")).when(persistence).save(any(), any());
 
         // assert
-        final List<String> bpns = List.of(BPN);
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy, bpns));
+        assertThatThrownBy(() -> testee.registerPolicy(policy, BPN)).isInstanceOf(ResponseStatusException.class);
     }
 
     @Test
@@ -226,7 +226,7 @@ class PolicyStoreServiceTest {
     }
 
     @Test
-    void whenUpdate() {
+    void updatePolicyWithBpnAndValidUntilChanged() {
         // arrange
         final String policyId = "testId";
 
@@ -241,8 +241,8 @@ class PolicyStoreServiceTest {
 
         final Policy testPolicy = new Policy(policyId, createdOn, originalValidUntil, permissions);
         when(persistence.readAll()).thenReturn(Map.of(originalBpn, List.of(testPolicy)));
-        when(persistence.readAll(originalBpn)).thenReturn(
-                List.of(new Policy(policyId, createdOn, originalValidUntil, permissions)));
+        // get policies for bpn
+        when(persistence.readAll(originalBpn)).thenReturn(List.of(testPolicy));
 
         // act
         testee.updatePolicies(new UpdatePolicyRequest(expectedValidUntil, List.of(expectedBpn), List.of(policyId)));
@@ -251,9 +251,10 @@ class PolicyStoreServiceTest {
         verify(persistence).delete(originalBpn, policyId);
 
         final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
-        verify(persistence).save(eq(List.of(expectedBpn)), policyCaptor.capture());
+        verify(persistence).save(eq(expectedBpn), policyCaptor.capture());
         assertThat(policyCaptor.getValue().getCreatedOn()).isEqualTo(createdOn);
         assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(expectedValidUntil);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -281,18 +282,21 @@ class PolicyStoreServiceTest {
         // ASSERT
         verify(persistence).delete("bpn2", policyId);
 
-        final var bpnsCaptor = ArgumentCaptor.forClass(List.class);
+        final var bpnCaptor = ArgumentCaptor.forClass(String.class);
         final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
-        verify(persistence).save(bpnsCaptor.capture(), policyCaptor.capture());
+        verify(persistence, times(2)).save(bpnCaptor.capture(), policyCaptor.capture());
 
         // policy added to each BPN
-        assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo(policyId);
-        assertThat(bpnsCaptor.getValue()).containsAll(List.of("bpn1", "bpn2"));
+        assertThat(policyCaptor.getAllValues().get(0).getPolicyId()).isEqualTo(policyId);
+        assertThat(bpnCaptor.getAllValues().get(0)).isEqualTo("bpn1");
+        assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId);
+        assertThat(bpnCaptor.getAllValues().get(1)).isEqualTo("bpn2");
+
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    void updatePolicies_shouldAddBpnsToEachPolicy() {
+    void updatePolicies_shouldAssociateEachPolicyGivenPolicyWithEachGivenBpn() {
 
         // ARRANGE
         final String policyId1 = "testId1";
@@ -325,17 +329,22 @@ class PolicyStoreServiceTest {
         verify(persistence).delete(bpn2, policyId1);
         verify(persistence).delete(bpn2, policyId2);
 
-        final var bpnsCaptor = ArgumentCaptor.forClass(List.class);
+        final var bpnsCaptor = ArgumentCaptor.forClass(String.class);
         final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
-        verify(persistence, times(2)).save(bpnsCaptor.capture(), policyCaptor.capture());
+        verify(persistence, times(4)).save(bpnsCaptor.capture(), policyCaptor.capture());
 
         // each BPNs added to policy 1
         assertThat(policyCaptor.getAllValues().get(0).getPolicyId()).isEqualTo(policyId1);
-        assertThat(bpnsCaptor.getAllValues().get(0)).containsAll(List.of("bpn1", "bpn2"));
+        assertThat(bpnsCaptor.getAllValues().get(0)).isEqualTo("bpn1");
+        assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId1);
+        assertThat(bpnsCaptor.getAllValues().get(1)).isEqualTo("bpn2");
 
         // each BPNs added to policy 2
-        assertThat(bpnsCaptor.getAllValues().get(1)).containsAll(List.of("bpn1", "bpn2"));
-        assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId2);
+        assertThat(policyCaptor.getAllValues().get(2).getPolicyId()).isEqualTo(policyId2);
+        assertThat(bpnsCaptor.getAllValues().get(2)).isEqualTo("bpn1");
+        assertThat(policyCaptor.getAllValues().get(3).getPolicyId()).isEqualTo(policyId2);
+        assertThat(bpnsCaptor.getAllValues().get(3)).isEqualTo("bpn2");
+
     }
 
     @Test
