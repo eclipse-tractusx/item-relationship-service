@@ -29,7 +29,7 @@ ref over IRS, DTRegistry, DAPS, "SubmodelServer AssemblyPartRelationship)"
 end ref
 
 loop 100 times
-    ESRSubServer --> IRS: GET /irs/jobs?jobStates=COMPLETED
+    ESRSubServer --> IRS: GET /irs/jobs?states=COMPLETED
     ESRSubServer <-- IRS: jobList
     alt jobId is in jobList
         ESRSubServer --> IRS: GET /irs/jobs{jobId}

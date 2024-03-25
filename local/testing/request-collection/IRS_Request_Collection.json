@@ -1384,7 +1384,7 @@
 			"body": {},
 			"parameters": [
 				{
-					"name": "jobStates",
+					"name": "states",
 					"value": "COMPLETED",
 					"disabled": false
 				}
@@ -1425,7 +1425,7 @@
 			"body": {},
 			"parameters": [
 				{
-					"name": "jobStates",
+					"name": "states",
 					"value": "ERROR",
 					"disabled": false
 				}
@@ -1466,7 +1466,7 @@
 			"body": {},
 			"parameters": [
 				{
-					"name": "jobStates",
+					"name": "states",
 					"value": "INITIAL",
 					"disabled": false
 				}
@@ -1542,7 +1542,7 @@
 			"body": {},
 			"parameters": [
 				{
-					"name": "jobStates",
+					"name": "states",
 					"value": "RUNNING",
 					"disabled": false
 				}
@@ -2019,20 +2019,20 @@
 			"body": {},
 			"parameters": [
 				{
-					"name": "jobStates",
+					"name": "states",
 					"value": "ERROR",
 					"disabled": true,
 					"id": "pair_c694b66f41e649db837f801b5699859e"
 				},
 				{
-					"name": "jobStates",
+					"name": "states",
 					"value": "CANCELED,COMPLETED",
 					"disabled": false,
 					"id": "pair_ab346623e5394504b7232cc40ae75bed"
 				},
 				{
 					"id": "pair_ddbccd5219944e8cac3d99249ba881e5",
-					"name": "jobStates",
+					"name": "states",
 					"value": "RUNNING",
 					"description": "",
 					"disabled": true
