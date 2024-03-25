@@ -101,7 +101,7 @@ class InvestigationJobProcessingEventListenerTest {
         // given
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
                 JobState.COMPLETED.name(), "", Optional.empty());
@@ -111,7 +111,7 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
-                any(EdcNotification.class));
+                any(EdcNotification.class), any());
     }
 
     @Test
@@ -121,7 +121,7 @@ class InvestigationJobProcessingEventListenerTest {
                 List.of(createRelationship("asPlanned", null, "testParent", "testChild")));
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
                 JobState.COMPLETED.name(), "", Optional.empty());
@@ -142,7 +142,7 @@ class InvestigationJobProcessingEventListenerTest {
                         createRelationship("asPlanned", null, "parentId2", "childId2")));
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
                 JobState.COMPLETED.name(), "", Optional.empty());
@@ -152,7 +152,7 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), anyString(),
-                any(EdcNotification.class));
+                any(EdcNotification.class), any());
     }
 
     @Test
@@ -161,7 +161,7 @@ class InvestigationJobProcessingEventListenerTest {
         createMockForJobIdAndShell(jobId, "bpn",
                 List.of(createRelationship("asPlanned", "BPN1", "parentId1", "childId1")));
         final String edcBaseUrl = "http://edc-server-url.com";
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
@@ -172,7 +172,7 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq("notify-request-asset-recursive"),
-                edcNotificationCaptor.capture());
+                edcNotificationCaptor.capture(), any());
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
         final InvestigationNotificationContent content = (InvestigationNotificationContent) edcNotificationCaptor.getValue()
@@ -192,7 +192,7 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
     }
 
     @Test
@@ -207,7 +207,7 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
         verify(this.recursiveNotificationHandler, times(1)).handleNotification(any(), eq(SupplyChainImpacted.NO), eq("bpn"),
                 eq(0));
     }
@@ -226,7 +226,7 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(jobProcessingFinishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
     }
 
     @Test
@@ -238,7 +238,7 @@ class InvestigationJobProcessingEventListenerTest {
                         "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e")));
         final String edcBaseUrl = "http://edc-server-url.com";
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(
                 recursiveJobId.toString(), JobState.COMPLETED.name(), "", Optional.empty());
@@ -248,7 +248,7 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq(ASSET_ID_REQUEST_RECURSIVE),
-                edcNotificationCaptor.capture());
+                edcNotificationCaptor.capture(), any());
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
     }
@@ -259,7 +259,7 @@ class InvestigationJobProcessingEventListenerTest {
         createMockForJobIdAndShell(jobId, "bpn",
                 List.of(createRelationship("asPlanned", "BPN1", "parentId1", "childId1")), List.of("BPN1", "BPN2"));
         final String edcBaseUrl = "http://edc-server-url.com";
-        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class))).thenReturn(
+        when(edcSubmodelFacade.sendNotification(anyString(), anyString(), any(EdcNotification.class), any())).thenReturn(
                 () -> true);
         when(connectorEndpointsService.fetchConnectorEndpoints(anyString())).thenReturn(List.of(edcBaseUrl));
         final JobProcessingFinishedEvent jobProcessingFinishedEvent = new JobProcessingFinishedEvent(jobId.toString(),
@@ -270,14 +270,14 @@ class InvestigationJobProcessingEventListenerTest {
 
         // then
         verify(this.edcSubmodelFacade, times(1)).sendNotification(eq(edcBaseUrl), eq("notify-request-asset-recursive"),
-                edcNotificationCaptor.capture());
+                edcNotificationCaptor.capture(), any());
         final InvestigationNotificationContent content = (InvestigationNotificationContent) edcNotificationCaptor.getValue()
                                                                                                                  .getContent();
         assertThat(edcNotificationCaptor.getValue().getHeader().getNotificationType()).isEqualTo(
                 "ess-supplier-request");
         assertThat(content.getIncidentBPNSs()).containsAll(List.of("BPN1", "BPN2"));
         assertThat(content.getConcernedCatenaXIds()).containsAll(List.of("childId1"));
-        verify(this.edcSubmodelFacade, times(1)).sendNotification(any(), any(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(1)).sendNotification(any(), any(), any(EdcNotification.class), any());
     }
 
     @Test
@@ -292,7 +292,7 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(finishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
         final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(jobId);
         assertThat(job).isPresent();
         assertThat(job.get().getJobSnapshot().getTombstones()).hasSize(2);
@@ -310,7 +310,7 @@ class InvestigationJobProcessingEventListenerTest {
         jobProcessingEventListener.handleJobProcessingFinishedEvent(finishedEvent);
 
         // then
-        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class));
+        verify(this.edcSubmodelFacade, times(0)).sendNotification(anyString(), anyString(), any(EdcNotification.class), any());
         final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(jobId);
         assertThat(job).isPresent();
         assertThat(job.get().getJobSnapshot().getTombstones()).hasSize(1);

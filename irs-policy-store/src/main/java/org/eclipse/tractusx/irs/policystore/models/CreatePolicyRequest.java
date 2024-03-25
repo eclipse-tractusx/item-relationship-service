@@ -24,7 +24,9 @@
 package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.json.JsonObject;
 import jakarta.validation.constraints.NotNull;
@@ -36,7 +38,8 @@ import jakarta.validation.constraints.NotNull;
 @Schema(description = "Request to add a policy")
 public record CreatePolicyRequest(
         @NotNull @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations")  OffsetDateTime validUntil,
-        @NotNull @Schema(example = CreatePolicyRequest.EXAMPLE_PAYLOAD) JsonObject payload) {
+        @ArraySchema() List<String> businessPartnerNumbers,
+        @NotNull @Schema(example = CreatePolicyRequest.EXAMPLE_PAYLOAD) List<JsonObject> payload) {
 
     @SuppressWarnings("java:S2479")
     // this value is used by open-api to show example payload

@@ -49,6 +49,11 @@ public class InMemoryBlobStore implements BlobPersistence {
     }
 
     @Override
+    public Map<String, byte[]> getAllBlobs() {
+        return store;
+    }
+
+    @Override
     public Collection<byte[]> findBlobByPrefix(final String prefix) {
         return store.entrySet()
                     .stream()

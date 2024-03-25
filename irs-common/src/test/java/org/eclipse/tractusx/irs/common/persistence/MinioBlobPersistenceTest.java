@@ -32,10 +32,18 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -43,8 +51,16 @@ import io.minio.GetObjectResponse;
 import io.minio.MinioClient;
 import io.minio.Result;
 import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
+import io.minio.messages.Contents;
 import io.minio.messages.ErrorResponse;
 import io.minio.messages.Item;
+import lombok.AllArgsConstructor;
+import okhttp3.Headers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -217,4 +233,36 @@ class MinioBlobPersistenceTest {
         assertThat(blobsByPrefix).isEmpty();
     }
 
+    @Test
+    void shouldReturnAllBlobs() throws BlobPersistenceException, ServerException, InsufficientDataException, ErrorResponseException,
+            IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
+            InternalException {
+        final String name = "test-name";
+        when(client.listObjects(any())).thenReturn(List.of(new Result<>(new TestItem(name))));
+
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeUTF("");
+        InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        ObjectInputStream outputStream = new ObjectInputStream(inputStream);
+
+        when(client.getObject(any())).thenReturn(new GetObjectResponse(null, null, null, null, outputStream));
+
+        // act
+        final Map<String, byte[]> allBlobs = testee.getAllBlobs();
+
+        // assert
+        assertThat(allBlobs.get(name)).isNotNull();
+    }
+
+    @AllArgsConstructor
+    static class TestItem extends Item {
+
+        private final String name;
+
+        @Override
+        public String objectName() {
+            return name;
+        }
+    }
 }
