@@ -34,7 +34,7 @@ irs-helm:
           controlPlane2: http://irs-provider2-tractusx-connector-controlplane:8080/api/check/liveness
           controlPlane3: http://irs-provider3-tractusx-connector-controlplane:8080/api/check/liveness
   digitalTwinRegistry:
-    url: https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3.0
+    url: https://irs-aas-registry.dev.demo.catena-x.net/semantics/registry/api/v3
     shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
     lookupShellsTemplate: /lookup/shells?assetIds={assetIds}
   discovery:
