@@ -9,6 +9,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [Unreleased]
 ### Changed
 - IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
+- 
+### Added
+- Extended EdcPolicyDefinitionService to check if a policy in the edc exists
 
 ## [4.8.0] - 2024-03-18
 ### Changed
