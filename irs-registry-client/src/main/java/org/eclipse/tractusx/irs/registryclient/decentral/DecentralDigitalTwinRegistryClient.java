@@ -23,21 +23,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
+import org.eclipse.tractusx.irs.registryclient.util.SerializationHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -54,17 +49,11 @@ public class DecentralDigitalTwinRegistryClient {
     private static final String PLACEHOLDER_AAS_IDENTIFIER = "aasIdentifier";
     private static final String PLACEHOLDER_ASSET_IDS = "assetIds";
 
-    private static final ObjectWriter WRITER;
-    static {
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        WRITER = mapper.writer();
-    }
-
     private final RestTemplate edcRestTemplate;
     private final String shellDescriptorTemplate;
     private final String lookupShellsTemplate;
+
+    private final SerializationHelper serializationHelper = new SerializationHelper();
 
     public DecentralDigitalTwinRegistryClient(final RestTemplate edcRestTemplate,
             @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
@@ -95,22 +84,12 @@ public class DecentralDigitalTwinRegistryClient {
                 new HttpEntity<>(null, headers(endpointDataReference)), LookupShellsResponse.class).getBody();
     }
 
-    private static String encodeWithBase64(final String aasIdentifier) {
+    private String encodeWithBase64(final String aasIdentifier) {
         return Base64.getEncoder().encodeToString(aasIdentifier.getBytes(StandardCharsets.UTF_8));
     }
 
-    private static String encodeWithBase64(final IdentifierKeyValuePair assetIds) {
-        return Base64.getEncoder().encodeToString(serialize(assetIds));
-    }
-
-    private static byte[] serialize(final IdentifierKeyValuePair assetIds) {
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        try {
-            WRITER.writeValue(stream, assetIds);
-            return stream.toByteArray();
-        } catch (final IOException e) {
-            return new byte[0];
-        }
+    private String encodeWithBase64(final IdentifierKeyValuePair assetIds) {
+        return Base64.getEncoder().encodeToString(serializationHelper.serialize(assetIds));
     }
 
     private HttpHeaders headers(final EndpointDataReference dataReference) {
