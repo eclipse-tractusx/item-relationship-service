@@ -99,6 +99,13 @@ public class OpenApiExamples {
 
     public void createExamples(final Components components) {
         components.addExamples("job-handle", toExample(createJobHandle(JOB_HANDLE_ID_1)));
+        components.addExamples("error-response-500", toExample(ErrorResponse.builder()
+                                                                            .withMessages(
+                                                                                    List.of("InternalServerError"))
+                                                                            .withError("Internal Server Error")
+                                                                            .withStatusCode(
+                                                                                    HttpStatus.INTERNAL_SERVER_ERROR)
+                                                                            .build()));
         components.addExamples("error-response-400", toExample(ErrorResponse.builder()
                                                                             .withMessages(
                                                                                     List.of("BadRequestException"))
