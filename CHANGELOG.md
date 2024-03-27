@@ -16,7 +16,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [4.8.0] - 2024-03-18
 ### Changed
 - Improved maintainability in EdcSubmodelClientImpl by reduced method visibility and better naming (in context of #448).
-- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return throw AlreadyExist exceptions when Conflict is returned from EDC
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService throw AlreadyExist exceptions when
+  conflict is returned from EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 - Registering a job - aspects array is now accepting full urn of aspect model instead of name only, eg. 'urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt' instead 'SingleLevelBomAsBuilt'. #439
 - Changed the version of irs-registry-client from 1.6.0-SNAPSHOT to 1.6.0
