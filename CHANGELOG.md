@@ -192,7 +192,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added role "admin_irs" again
 
 ### Changed
-- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint
+- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint. TRI-996
 - Moved OAuth2 JWT token claim to configuration. The fields can be configured with `oauth.resourceClaim`, `oauth.irsNamespace`, `oauth.roles`.
 - ESS
   - Added Tombstone to ESS investigation in case required aspect models "PartAsPlanned" or "PartSiteInformationAsPlanned" are missing
