@@ -8,7 +8,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 ### Changed
-- IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded)
+- IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
 
 ## [4.8.0] - 2024-03-18
 ### Changed
