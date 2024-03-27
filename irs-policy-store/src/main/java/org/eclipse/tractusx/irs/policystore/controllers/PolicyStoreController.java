@@ -77,6 +77,8 @@ import org.springframework.web.bind.annotation.RestController;
 })
 public class PolicyStoreController {
 
+    public static final String BPN_REGEX = "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}";
+
     private final PolicyStoreService service;
     private final EdcTransformer edcTransformer;
     private static final String DEFAULT = "default";

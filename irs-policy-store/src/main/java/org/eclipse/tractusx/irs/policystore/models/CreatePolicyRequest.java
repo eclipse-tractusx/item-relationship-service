@@ -23,11 +23,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.models;
 
+import static org.eclipse.tractusx.irs.policystore.controllers.PolicyStoreController.BPN_REGEX;
+
 import java.time.OffsetDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.json.JsonObject;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * Object for API to create policy
@@ -45,8 +48,8 @@ public record CreatePolicyRequest(
                 The business partner number (BPN) for which the policy should be registered.
                 This parameter is optional.
                 If not set the policy is registered for each existing BPN.
-                """, example = "BPNL00000123ABCD") //
-        String businessPartnerNumber,
+                """, example = "BPNL1234567890AB") //
+        @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") String businessPartnerNumber,
 
         @NotNull //
         @Schema(description = "The policy payload.", example = CreatePolicyRequest.EXAMPLE_PAYLOAD) //
