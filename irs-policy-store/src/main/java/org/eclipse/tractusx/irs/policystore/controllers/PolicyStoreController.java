@@ -88,7 +88,15 @@ public class PolicyStoreController {
                security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
                description = "Register a policy that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201"),
-                            @ApiResponse(responseCode = "400", description = "Policy registration failed.",
+                            @ApiResponse(responseCode = "500",
+                                         description = "Policy registration failed due to an internal error.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-500"))
+                                         }),
+                            @ApiResponse(responseCode = "400",
+                                         description = "Policy registration failed due to an invalid request.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
                                                               examples = @ExampleObject(name = "error",
