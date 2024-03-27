@@ -20,12 +20,14 @@
 package org.eclipse.tractusx.irs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.WiremockSupport.createEndpointDataReference;
+import static org.eclipse.tractusx.irs.WiremockSupport.encodedAssetIds;
 import static org.eclipse.tractusx.irs.WiremockSupport.randomUUID;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_URL;
@@ -158,7 +160,7 @@ class IrsWireMockIntegrationTest {
     void shouldStopJobAfterDepthIsReached() {
         // Arrange
         final String globalAssetIdLevel1 = "globalAssetId";
-        final String globalAssetIdLevel2 = "urn:uuid:6d505432-8b31-4966-9514-4b753372683f";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
 
         WiremockSupport.successfulSemanticModelRequest();
         WiremockSupport.successfulSemanticHubRequests();
@@ -297,7 +299,7 @@ class IrsWireMockIntegrationTest {
         final String registryEdcAssetId = "registry-asset";
         successfulNegotiation(registryEdcAssetId);
         stubFor(getLookupShells200(PUBLIC_LOOKUP_SHELLS_PATH, List.of(shellId)).withQueryParam("assetIds",
-                containing(globalAssetId)));
+                equalTo(encodedAssetIds(globalAssetId))));
         stubFor(getShellDescriptor200(PUBLIC_SHELL_DESCRIPTORS_PATH + WiremockSupport.encodedId(shellId), bpn,
                 submodelDescriptors, globalAssetId, shellId, idShort));
         successfulNegotiation(edcAssetId);

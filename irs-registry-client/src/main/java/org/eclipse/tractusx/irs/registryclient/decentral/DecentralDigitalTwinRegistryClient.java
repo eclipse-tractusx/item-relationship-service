@@ -32,7 +32,7 @@ import io.github.resilience4j.retry.annotation.Retry;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.registryclient.util.SerializationHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -53,16 +53,14 @@ public class DecentralDigitalTwinRegistryClient {
     private final String shellDescriptorTemplate;
     private final String lookupShellsTemplate;
 
+    private final SerializationHelper serializationHelper = new SerializationHelper();
+
     public DecentralDigitalTwinRegistryClient(final RestTemplate edcRestTemplate,
             @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
             @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate) {
         this.edcRestTemplate = edcRestTemplate;
         this.shellDescriptorTemplate = shellDescriptorTemplate;
         this.lookupShellsTemplate = lookupShellsTemplate;
-    }
-
-    private static String encodeWithBase64(final String aasIdentifier) {
-        return Base64.getEncoder().encodeToString(aasIdentifier.getBytes(StandardCharsets.UTF_8));
     }
 
     @Retry(name = "registry")
@@ -78,12 +76,20 @@ public class DecentralDigitalTwinRegistryClient {
 
     @Retry(name = "registry")
     public LookupShellsResponse getAllAssetAdministrationShellIdsByAssetLink(
-            final EndpointDataReference endpointDataReference, final List<IdentifierKeyValuePair> assetIds) {
+            final EndpointDataReference endpointDataReference, final IdentifierKeyValuePair assetIds) {
         final String shellLookupEndpoint = endpointDataReference.getEndpoint() + lookupShellsTemplate;
         final UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(shellLookupEndpoint);
-        uriBuilder.uriVariables(Map.of(PLACEHOLDER_ASSET_IDS, StringMapper.mapToString(assetIds)));
+        uriBuilder.uriVariables(Map.of(PLACEHOLDER_ASSET_IDS, encodeWithBase64(assetIds)));
         return edcRestTemplate.exchange(uriBuilder.build().toUri(), HttpMethod.GET,
                 new HttpEntity<>(null, headers(endpointDataReference)), LookupShellsResponse.class).getBody();
+    }
+
+    private String encodeWithBase64(final String aasIdentifier) {
+        return Base64.getEncoder().encodeToString(aasIdentifier.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private String encodeWithBase64(final IdentifierKeyValuePair assetIds) {
+        return Base64.getEncoder().encodeToString(serializationHelper.serialize(assetIds));
     }
 
     private HttpHeaders headers(final EndpointDataReference dataReference) {

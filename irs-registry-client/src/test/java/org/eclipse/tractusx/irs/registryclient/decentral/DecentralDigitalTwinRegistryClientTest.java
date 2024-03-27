@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -59,7 +60,7 @@ class DecentralDigitalTwinRegistryClientTest {
                 ResponseEntity.of(Optional.of(LookupShellsResponse.builder().result(Collections.emptyList()).build())));
 
         // when
-        client.getAllAssetAdministrationShellIdsByAssetLink(endpointDataReference, new ArrayList<>());
+        client.getAllAssetAdministrationShellIdsByAssetLink(endpointDataReference, IdentifierKeyValuePair.builder().build());
 
         // then
         verify(restTemplate).exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class));
