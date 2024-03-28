@@ -104,12 +104,12 @@
 			"modified": 1711099840007,
 			"created": 1693576003390,
 			"url": "{{IRS_HOST}}/irs/policies",
-			"name": "Update policy",
+			"name": "Update policies",
 			"description": "",
 			"method": "PUT",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumbers\": [\n\t\t\"BPNL00000001CRHK\"\n\t],\n\t\"policiesIds\": [\n\t\t\"policyId\"\n\t]\n}"
+				"text": "{\n  \"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumbers\": [\n\t\t\"BPNL00000001CRHK\"\n\t],\n\t\"policyIds\": [\n\t\t\"policyId\"\n\t]\n}"
 			},
 			"parameters": [],
 			"headers": [
