@@ -196,10 +196,17 @@ public class PolicyStoreController {
         service.deletePolicy(policyId);
     }
 
-    @Operation(operationId = "updateAllowedPolicy", summary = "Updates an existing policy.",
+    @Operation(operationId = "updateAllowedPolicy", summary = "Updates existing policies.",
                security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
-               description = "Updates an existing policy.")
+               description = "Updates existing policies.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
+                            @ApiResponse(responseCode = "500",
+                                         description = "Updating policies failed due to an internal error.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-500"))
+                                         }),
                             @ApiResponse(responseCode = "400", description = "Policy update failed.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               schema = @Schema(implementation = ErrorResponse.class),
@@ -222,7 +229,7 @@ public class PolicyStoreController {
     @PutMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void updateAllowedPolicy(final @Valid @RequestBody UpdatePolicyRequest request) {
+    public void updateAllowedPolicy(@Valid @RequestBody final UpdatePolicyRequest request) {
         service.updatePolicies(request);
     }
 
