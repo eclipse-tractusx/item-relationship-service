@@ -46,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
-import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
+import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
@@ -64,6 +64,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Policy Store REST controller.
@@ -116,20 +117,18 @@ public class PolicyStoreController {
                                                                                         ref = "#/components/examples/error-response-403"))
                                          }),
     })
-
     @PostMapping("/policies")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void registerAllowedPolicy(final @RequestBody CreatePolicyRequest request) {
-        request.policies()
-               .stream()
-               .map(payload -> {
-                   final Policy policy = edcTransformer.transformToPolicy(payload);
-                   policy.setValidUntil(request.validUntil());
-                   return policy;
-               })
-               .forEach(policy -> service.registerPolicy(policy,
-                       request.businessPartnerNumber() == null ? DEFAULT : request.businessPartnerNumber()));
+    public CreatePoliciesResponse registerAllowedPolicy(@Valid @RequestBody final CreatePolicyRequest request) {
+
+        final Policy registeredPolicy = service.registerPolicy(request);
+
+        if (registeredPolicy == null) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Policy was not registered");
+        }
+
+        return CreatePoliciesResponse.fromPolicy(registeredPolicy);
     }
 
     @Operation(operationId = "getAllowedPoliciesByBpn",

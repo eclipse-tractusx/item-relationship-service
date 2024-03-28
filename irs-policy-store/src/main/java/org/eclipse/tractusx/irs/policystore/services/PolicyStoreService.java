@@ -34,9 +34,11 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import jakarta.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPoliciesProvider;
 import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
@@ -47,8 +49,10 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.springframework.http.HttpStatus;
@@ -60,28 +64,60 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @Service
 @Slf4j
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public static final int DEFAULT_POLICY_LIFETIME_YEARS = 5;
+
     private final List<Policy> allowedPoliciesFromConfig;
+
     private final PolicyPersistence persistence;
+
+    private final EdcTransformer edcTransformer;
+
     private final Clock clock;
-    private static final String MISSING_REQUEST_FIELD_MESSAGE = "Request does not contain all required fields. Missing: %s";
+
+    private static final String MISSING_REQUEST_FIELD_MESSAGE =
+            "Request does not contain all required fields. " + "Missing: %s";
+
     private static final String DEFAULT = "default";
 
     public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
-            final PolicyPersistence persistence, final Clock clock) {
+            final PolicyPersistence persistence, final EdcTransformer edcTransformer, final Clock clock) {
         this.allowedPoliciesFromConfig = createDefaultPolicyFromConfig(defaultAcceptedPoliciesConfig);
         this.persistence = persistence;
+        this.edcTransformer = edcTransformer;
         this.clock = clock;
     }
 
-    public void registerPolicy(final Policy policy, final String businessPartnersNumber) {
+    /**
+     * Registers a policy.
+     *
+     * @param request the {@link CreatePolicyRequest}
+     * @return the registered policy
+     */
+    public Policy registerPolicy(final CreatePolicyRequest request) {
+
+        final Policy registeredPolicy;
+        final JsonObject policyJson = request.payload();
+
+        final Policy policy = edcTransformer.transformToPolicy(policyJson);
+        policy.setValidUntil(request.validUntil());
+
+        registeredPolicy = doRegisterPolicy(policy,
+                request.businessPartnerNumber() == null ? DEFAULT : request.businessPartnerNumber());
+
+        return registeredPolicy;
+    }
+
+    public Policy doRegisterPolicy(final Policy policy, final String businessPartnersNumber) {
         validatePolicy(policy);
         policy.setCreatedOn(OffsetDateTime.now(clock));
         log.info("Registering new policy with id {}, valid until {}", policy.getPolicyId(), policy.getValidUntil());
         try {
-            persistence.save(businessPartnersNumber, policy);
+            return persistence.save(businessPartnersNumber, policy);
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
@@ -115,17 +151,19 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         if (bpnList == null) {
             return getAllStoredPolicies();
         } else {
-            return bpnList.stream()
-                          .map(bpn -> new AbstractMap.SimpleEntry<>(bpn, getStoredPolicies(List.of(bpn))))
-                          .collect(
-                                  Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+            return bpnList.stream().map(bpn -> {
+                final List<Policy> storedPolicies = getStoredPolicies(List.of(bpn));
+                return new AbstractMap.SimpleEntry<>(bpn, storedPolicies);
+            }).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
         }
     }
 
     public List<Policy> getStoredPolicies(final List<String> bpnls) {
         log.info("Reading all stored polices for BPN {}", bpnls);
         final List<Policy> storedPolicies = new LinkedList<>();
-        bpnls.forEach(bpn -> storedPolicies.addAll(persistence.readAll(bpn)));
+        for (final String bpn : bpnls) {
+            storedPolicies.addAll(persistence.readAll(bpn));
+        }
 
         if (storedPolicies.isEmpty()) {
             log.info("Policy store is empty, returning default values from config");
@@ -144,62 +182,60 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     public void deletePolicy(final String policyId) {
-        try {
-            log.info("Getting all policies to find correct bpn number");
-            final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(),
-                    policyId);
+        log.info("Getting all policies to find correct bpn number");
+        final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(), policyId);
 
+        if (bpnsContainingPolicyId.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Policy with id '%s' not found".formatted(policyId));
+        }
+
+        try {
             log.info("Deleting policy with id {}", policyId);
             bpnsContainingPolicyId.forEach(bpn -> persistence.delete(bpn, policyId));
         } catch (final PolicyStoreException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }
 
-    private void deletePolicyForEachBpn(final String policyId, List<String> bpnList) {
-        for (final String bpn : bpnList) {
-            persistence.delete(bpn, policyId);
+    private void deletePolicyForEachBpn(final String policyId, final List<String> bpnList) {
+        try {
+            for (final String bpn : bpnList) {
+                persistence.delete(bpn, policyId);
+            }
+        } catch (final PolicyStoreException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
     }
 
     public void updatePolicies(final UpdatePolicyRequest request) {
-        for (final String policyId : request.policiesIds()) {
+        for (final String policyId : request.policyIds()) {
             updatePolicy(policyId, request.validUntil(),
                     request.businessPartnerNumbers() == null ? List.of(DEFAULT) : request.businessPartnerNumbers());
         }
     }
 
-    public void updatePolicy(final String policyId, final OffsetDateTime newValidUntil, final List<String> newBpns) {
+    public void updatePolicy(final String policyId, final OffsetDateTime newValidUntil,
+            final List<String> newBusinessPartnerNumbers) {
 
         log.info("Updating policy with id {}", policyId);
 
-        final List<String> bpnsContainingPolicyId;
-        try {
-            final Map<String, List<Policy>> allStoredPolicies = getAllStoredPolicies();
-            bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(allStoredPolicies, policyId);
-        } catch (PolicyStoreException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        }
+        final List<String> businessPartnerNumbersContainingPolicyId = findBusinessPartnerNumbersByPolicyId(policyId);
 
-        final Policy policyToUpdate;
-        try {
-            policyToUpdate = requirePolicy(policyId, bpnsContainingPolicyId);
-        } catch (final PolicyStoreException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
+        final Policy policyToUpdate = findPolicy(policyId, businessPartnerNumbersContainingPolicyId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Policy with id '" + policyId + "' doesn't exists!"));
 
-        try {
-            deletePolicyForEachBpn(policyId, bpnsContainingPolicyId);
-        } catch (final PolicyStoreException e) {
-            // this is an internal server error, because normally this should not happen
-            // because the check if policy exists was already carried out above
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-        }
+        deletePolicyForEachBpn(policyId, businessPartnerNumbersContainingPolicyId);
+        updatePolicy(policyToUpdate, newValidUntil, newBusinessPartnerNumbers);
+    }
 
+    private void updatePolicy(final Policy policyToUpdate, final OffsetDateTime newValidUntil,
+            final List<String> newBusinessPartnerNumbers) {
         try {
             policyToUpdate.update(newValidUntil);
 
-            for (final String bpn : newBpns) {
+            for (final String bpn : newBusinessPartnerNumbers) {
                 persistence.save(bpn, policyToUpdate);
             }
 
@@ -208,12 +244,21 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
     }
 
-    private Policy requirePolicy(final String policyId, final List<String> bpnsContainingPolicyId) {
+    private List<String> findBusinessPartnerNumbersByPolicyId(final String policyId) {
+        final List<String> businessPartnerNumbersContainingPolicyId;
+        try {
+            final Map<String, List<Policy>> allStoredPolicies = getAllStoredPolicies();
+            businessPartnerNumbersContainingPolicyId = PolicyHelper.findBpnsByPolicyId(allStoredPolicies, policyId);
+        } catch (PolicyStoreException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        }
+        return businessPartnerNumbersContainingPolicyId;
+    }
+
+    private Optional<Policy> findPolicy(final String policyId, final List<String> bpnsContainingPolicyId) {
         return getStoredPolicies(bpnsContainingPolicyId).stream()
                                                         .filter(PolicyHelper.havingPolicyId(policyId))
-                                                        .findAny()
-                                                        .orElseThrow(() -> new PolicyStoreException(
-                                                                "Policy with id '" + policyId + "' doesn't exists!"));
+                                                        .findAny();
     }
 
     @Override

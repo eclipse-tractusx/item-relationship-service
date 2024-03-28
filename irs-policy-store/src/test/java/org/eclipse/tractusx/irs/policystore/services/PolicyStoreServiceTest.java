@@ -27,7 +27,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -35,12 +34,21 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.StringReader;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import org.assertj.core.api.AbstractThrowableAssert;
+import org.assertj.core.api.ThrowableAssert;
+import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
+import org.eclipse.edc.jsonld.TitaniumJsonLd;
+import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
 import org.eclipse.tractusx.irs.edc.client.policy.Operator;
@@ -48,17 +56,22 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
+import org.eclipse.tractusx.irs.policystore.controllers.PolicyStoreControllerTest;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
+import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,98 +80,224 @@ class PolicyStoreServiceTest {
     private static final String BPN = "testBpn";
     private static final String EXAMPLE_ALLOWED_NAME = "ID 3.0 Trace";
     private static final String EXAMPLE_ACCEPTED_LEFT_OPERAND = "PURPOSE";
+    private static final String REGISTER_POLICY_EXAMPLE_PAYLOAD = PolicyStoreControllerTest.REGISTER_POLICY_EXAMPLE_PAYLOAD;
+
     private final Clock clock = Clock.systemUTC();
+
+    private final TitaniumJsonLd titaniumJsonLd = new TitaniumJsonLd(new ConsoleMonitor());
+    private final EdcTransformer edcTransformer = new EdcTransformer(new com.fasterxml.jackson.databind.ObjectMapper(),
+            titaniumJsonLd, new TypeTransformerRegistryImpl());
+
     @Captor
-    ArgumentCaptor<Policy> policyCaptor;
+    private ArgumentCaptor<Policy> policyCaptor;
+    @Captor
+    private ArgumentCaptor<String> bpnCaptor;
+
     private PolicyStoreService testee;
+
     @Mock
-    private PolicyPersistence persistence;
+    private PolicyPersistence persistenceMock;
 
     @BeforeEach
     void setUp() {
         final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
         defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of());
-        testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistence, clock);
+        testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistenceMock, edcTransformer, clock);
     }
 
-    @Test
-    void registerPolicy() {
-        // arrange
-        final OffsetDateTime now = OffsetDateTime.now(clock);
-        final Policy policy = new Policy("testId", now, now.plusMinutes(1), emptyList());
+    @Nested
+    class RegisterPolicyTests {
 
-        // act
-        testee.registerPolicy(policy, BPN);
+        @Test
+        void registerPolicy_withBpnNull_shouldStoreAsDefault() {
 
-        // assert
-        verify(persistence).save(eq(BPN), any());
+            // ARRANGE
+            final OffsetDateTime now = OffsetDateTime.now();
+            final JsonObject jsonObject;
+            try (JsonReader jsonReader = Json.createReader(new StringReader(REGISTER_POLICY_EXAMPLE_PAYLOAD))) {
+                jsonObject = jsonReader.readObject();
+            }
+
+            // ACT
+            testee.registerPolicy(new CreatePolicyRequest(now, null, jsonObject));
+
+            // ASSERT
+            verify(persistenceMock).save(eq("default"), policyCaptor.capture());
+            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("policy-id");
+            assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(now);
+            assertThat(policyCaptor.getValue().getPermissions()).hasSize(1);
+        }
+
+        @Test
+        void registerPolicy() {
+
+            // ARRANGE
+            final OffsetDateTime now = OffsetDateTime.now();
+            final JsonObject jsonObject;
+            try (JsonReader jsonReader = Json.createReader(new StringReader(REGISTER_POLICY_EXAMPLE_PAYLOAD))) {
+                jsonObject = jsonReader.readObject();
+            }
+
+            // ACT
+            final OffsetDateTime validUntil = now.plusMonths(1);
+            final CreatePolicyRequest request = new CreatePolicyRequest(validUntil, "BPNL00000123ABCD", jsonObject);
+            testee.registerPolicy(request);
+            // it does not make sense to check the return value from the method,
+            // because it comes from persistence, which is mocked in this test
+
+            // ASSERT
+            verify(persistenceMock).save(eq("BPNL00000123ABCD"), policyCaptor.capture());
+            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("policy-id");
+            assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(validUntil);
+            assertThat(policyCaptor.getValue().getPermissions()).isNotEmpty();
+
+        }
     }
 
-    @Test
-    void registerPolicyWithPermission() {
-        // arrange
-        final OffsetDateTime now = OffsetDateTime.now(clock);
-        final Policy policy = new Policy("testId", now, now.plusMinutes(1), createPermissions());
+    @Nested
+    class DoRegisterPolicyTests {
 
-        // act
-        testee.registerPolicy(policy, BPN);
+        @Test
+        void doRegisterPolicy_permissionEmpty() {
 
-        // assert
-        verify(persistence).save(eq(BPN), policyCaptor.capture());
+            // ARRANGE
+            final OffsetDateTime now = OffsetDateTime.now(clock);
+            final Policy policy = new Policy("testId", now, now.plusMinutes(1), emptyList());
 
-        assertThat(policyCaptor.getValue()).isNotNull();
-        List<Permission> permissionList = policyCaptor.getValue().getPermissions();
-        assertThat(permissionList).hasSize(2);
-        assertThat(permissionList.get(0)).usingRecursiveComparison().isEqualTo(createPermissions().get(0));
-        assertThat(permissionList.get(1)).usingRecursiveComparison().isEqualTo(createPermissions().get(1));
+            // ACT
+            testee.doRegisterPolicy(policy, BPN);
+
+            // ASSERT
+            verify(persistenceMock).save(eq(BPN), any());
+        }
+
+        @Test
+        void doRegisterPolicy_permissionsNull() {
+
+            // ARRANGE
+            final OffsetDateTime now = OffsetDateTime.now(clock);
+            final Policy policy = new Policy("testId", now, now.plusMinutes(1), null);
+
+            // ACT
+            final ThrowableAssert.ThrowingCallable call = () -> testee.doRegisterPolicy(policy, "A");
+
+            // ASSERT
+            final AbstractThrowableAssert<?, ? extends Throwable> throwableAssert = assertThatThrownBy(call);
+            throwableAssert.isInstanceOf(ResponseStatusException.class)
+                           .hasMessageContaining("Missing: odrl:permission")
+                           .extracting(e -> (ResponseStatusException) e)
+                           .satisfies(e -> assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST));
+        }
+
+        @Test
+        void doRegisterPolicy_withFilledPermissionList() {
+
+            // ARRANGE
+            final OffsetDateTime now = OffsetDateTime.now(clock);
+            final Policy policy = new Policy("testId", now, now.plusMinutes(1), createPermissions());
+
+            // ACT
+            testee.doRegisterPolicy(policy, BPN);
+
+            // ASSERT
+            verify(persistenceMock).save(eq(BPN), policyCaptor.capture());
+
+            assertThat(policyCaptor.getValue()).isNotNull();
+            List<Permission> permissionList = policyCaptor.getValue().getPermissions();
+            assertThat(permissionList).hasSize(2);
+            assertThat(permissionList.get(0)).usingRecursiveComparison().isEqualTo(createPermissions().get(0));
+            assertThat(permissionList.get(1)).usingRecursiveComparison().isEqualTo(createPermissions().get(1));
+        }
+
+        @Test
+        void doRegisterPolicy_whenPolicyStoreExceptionOccurs() {
+
+            // ACT
+            final String policyId = "testId";
+            final OffsetDateTime now = OffsetDateTime.now(clock);
+            final Policy policy = new Policy(policyId, now, now.plusMinutes(1), createPermissions());
+            doThrow(new PolicyStoreException("")).when(persistenceMock).save(any(), any());
+
+            // ASSERT
+            assertThatThrownBy(() -> testee.doRegisterPolicy(policy, BPN)).isInstanceOf(ResponseStatusException.class);
+        }
+
+        @Test
+        void doRegisterPolicy_withMissingConstraintShouldThrowException() {
+
+            // ARRANGE
+            final Policy policy = Policy.builder()
+                                        .permissions(List.of(Permission.builder()
+                                                                       .constraint(new Constraints(emptyList(),
+                                                                               emptyList()))
+                                                                       .build(), Permission.builder().build()))
+                                        .build();
+
+            // ACT & ASSERT
+            assertThatThrownBy(() -> testee.doRegisterPolicy(policy, null)).isInstanceOf(ResponseStatusException.class)
+                                                                           .hasMessageContaining("400 BAD_REQUEST")
+                                                                           .hasMessageContaining(
+                                                                                   "Missing: odrl:constraint");
+        }
+
     }
 
-    @Test
-    void registerPolicyShouldThrowResponseStatusException() {
-        // act
-        final String policyId = "testId";
-        final OffsetDateTime now = OffsetDateTime.now(clock);
-        final Policy policy = new Policy(policyId, now, now.plusMinutes(1), createPermissions());
-        doThrow(new PolicyStoreException("")).when(persistence).save(any(), any());
+    @Nested
+    class GetPoliciesTests {
 
-        // assert
-        assertThatThrownBy(() -> testee.registerPolicy(policy, BPN)).isInstanceOf(ResponseStatusException.class);
-    }
+        @Test
+        void getStoredPolicies() {
 
-    @Test
-    void getStoredPolicies() {
-        // arrange
-        final List<Policy> policies = List.of(createPolicy("test1"), createPolicy("test2"), createPolicy("test3"));
-        when(persistence.readAll(BPN)).thenReturn(policies);
+            // ARRANGE
+            final List<Policy> policies = List.of(createPolicy("test1"), createPolicy("test2"), createPolicy("test3"));
+            when(persistenceMock.readAll(BPN)).thenReturn(policies);
 
-        // act
-        final var storedPolicies = testee.getStoredPolicies(List.of(BPN));
+            // ACT
+            final var storedPolicies = testee.getStoredPolicies(List.of(BPN));
 
-        // assert
-        assertThat(storedPolicies).hasSize(3);
-    }
+            // ASSERT
+            assertThat(storedPolicies).hasSize(3);
+        }
 
-    @Test
-    void getDefaultStoredPoliciesWhenEmpty() {
-        // arrange
-        final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy1 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
-                EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
-        final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy2 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
-                EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
-        final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
-        defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of(acceptedPolicy1, acceptedPolicy2));
-        testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistence, clock);
+        @Test
+        void getDefaultStoredPoliciesWhenEmpty() {
 
-        // act
-        final var defaultPolicies = testee.getStoredPolicies(List.of(BPN));
+            // ARRANGE
+            final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy1 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
+                    EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
+            final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy2 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
+                    EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
+            final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig = new DefaultAcceptedPoliciesConfig();
+            defaultAcceptedPoliciesConfig.setAcceptedPolicies(List.of(acceptedPolicy1, acceptedPolicy2));
+            testee = new PolicyStoreService(defaultAcceptedPoliciesConfig, persistenceMock, edcTransformer, clock);
 
-        // assert
-        assertThat(defaultPolicies).hasSize(1);
-        final List<Permission> permissionList = defaultPolicies.get(0).getPermissions();
-        assertThat(permissionList).hasSize(1);
-        final Constraints constraints = permissionList.get(0).getConstraint();
-        assertThat(constraints.getOr()).hasSize(2);
-        assertThat(constraints.getAnd()).hasSize(2);
+            // ACT
+            final var defaultPolicies = testee.getStoredPolicies(List.of(BPN));
+
+            // ASSERT
+            assertThat(defaultPolicies).hasSize(1);
+
+            final List<Permission> permissionList = defaultPolicies.get(0).getPermissions();
+            assertThat(permissionList).hasSize(1);
+
+            final Constraints constraints = permissionList.get(0).getConstraint();
+            assertThat(constraints.getOr()).hasSize(2);
+            assertThat(constraints.getAnd()).hasSize(2);
+        }
+
+        @Test
+        void shouldReturnDefaultPolicyWhenBpnIsEmpty() {
+
+            // ARRANGE
+            when(persistenceMock.readAll()).thenReturn(emptyMap());
+
+            // ACT
+            final var acceptedPolicies = testee.getAcceptedPolicies(null);
+
+            // ASSERT
+            assertThat(acceptedPolicies.get(0).policy().getPolicyId()).isEqualTo("default-policy");
+        }
+
     }
 
     private Policy createPolicy(final String policyId) {
@@ -177,198 +316,185 @@ class PolicyStoreServiceTest {
                         new Constraint(EXAMPLE_ACCEPTED_LEFT_OPERAND, new Operator(OperatorType.EQ), "ID 3.1 Trace")));
     }
 
-    @Test
-    void deletePolicy() {
-        // arrange
-        when(persistence.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
+    @Nested
+    class DeletePolicyTests {
 
-        // act
-        testee.deletePolicy("testId");
+        @Test
+        void deletePolicy_success() {
+            // ARRANGE
+            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
 
-        // assert
-        verify(persistence).delete(BPN, "testId");
-    }
+            // ACT
+            testee.deletePolicy("testId");
 
-    @Test
-    void deletePolicyShouldThrowResponseStatusException() {
-        // act
-        final String policyId = "testId";
-        when(persistence.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
-        doThrow(new PolicyStoreException("")).when(persistence).delete(BPN, policyId);
+            // ASSERT
+            verify(persistenceMock).delete(BPN, "testId");
+        }
 
-        // assert
-        assertThrows(ResponseStatusException.class, () -> testee.deletePolicy(policyId));
-    }
+        @Test
+        void deletePolicy_internalServerError() {
 
-    @Test
-    void whenRegisterPolicyWithMissingPermissionsShouldThrowException() {
-        // arrange
-        final Policy policy = new Policy();
+            // ACT
+            final String policyId = "testId";
+            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(new Policy(policyId, null, null, null))));
+            doThrow(new PolicyStoreException("")).when(persistenceMock).delete(BPN, policyId);
 
-        // act
-        // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy, null));
-    }
+            // ASSERT
+            assertThatThrownBy(() -> testee.deletePolicy(policyId)).isInstanceOf(ResponseStatusException.class)
+                                                                   .hasMessageContaining("500 INTERNAL_SERVER_ERROR");
+        }
 
-    @Test
-    void whenRegisterPolicyWithMissingConstraintShouldThrowException() {
-        // arrange
-        final Policy policy = Policy.builder()
-                                    .permissions(List.of(Permission.builder()
-                                                                   .constraint(
-                                                                           new Constraints(emptyList(), emptyList()))
-                                                                   .build(), Permission.builder().build()))
-                                    .build();
+        @Test
+        void deletePolicy_policyNotFound() {
 
-        // act
-        // assert
-        assertThrows(ResponseStatusException.class, () -> testee.registerPolicy(policy, null));
-    }
+            // ACT
+            final String policyId = "notExistingPolicyId";
+            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
 
-    @Test
-    void updatePolicyWithBpnAndValidUntilChanged() {
-        // arrange
-        final String policyId = "testId";
-
-        final String originalBpn = "bpn2";
-        final String expectedBpn = "bpn1";
-
-        final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
-        final OffsetDateTime originalValidUntil = createdOn.plusMinutes(1);
-        final OffsetDateTime expectedValidUntil = createdOn.plusDays(3);
-
-        final List<Permission> permissions = emptyList();
-
-        final Policy testPolicy = new Policy(policyId, createdOn, originalValidUntil, permissions);
-        when(persistence.readAll()).thenReturn(Map.of(originalBpn, List.of(testPolicy)));
-        // get policies for bpn
-        when(persistence.readAll(originalBpn)).thenReturn(List.of(testPolicy));
-
-        // act
-        testee.updatePolicies(new UpdatePolicyRequest(expectedValidUntil, List.of(expectedBpn), List.of(policyId)));
-
-        // assert
-        verify(persistence).delete(originalBpn, policyId);
-
-        final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
-        verify(persistence).save(eq(expectedBpn), policyCaptor.capture());
-        assertThat(policyCaptor.getValue().getCreatedOn()).isEqualTo(createdOn);
-        assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(expectedValidUntil);
+            // ASSERT
+            assertThatThrownBy(() -> testee.deletePolicy(policyId)).isInstanceOf(ResponseStatusException.class)
+                                                                   .hasMessageContaining("404 NOT_FOUND")
+                                                                   .hasMessageContaining(policyId);
+        }
 
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    void updatePolicies_shouldAddPolicyToEachBpn() {
+    @Nested
+    class UpdatePolicyTests {
 
-        // ARRANGE
-        final String policyId = "testId";
+        @Test
+        void updatePolicy_withBpnAndValidUntilChanged() {
+            // ARRANGE
+            final String policyId = "testId";
 
-        final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
-        final OffsetDateTime validUntil = createdOn.plusDays(14);
+            final String originalBpn = "bpn2";
+            final String expectedBpn = "bpn1";
 
-        final List<Permission> permissions = emptyList();
+            final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
+            final OffsetDateTime originalValidUntil = createdOn.plusMinutes(1);
+            final OffsetDateTime expectedValidUntil = createdOn.plusDays(3);
 
-        // BPN1 without any policies
+            final List<Permission> permissions = emptyList();
 
-        // BPN2 with testPolicy
-        final Policy testPolicy = new Policy(policyId, createdOn, validUntil, permissions);
-        when(persistence.readAll()).thenReturn(Map.of("bpn2", List.of(testPolicy)));
-        when(persistence.readAll("bpn2")).thenReturn(List.of(testPolicy));
+            final Policy testPolicy = new Policy(policyId, createdOn, originalValidUntil, permissions);
+            when(persistenceMock.readAll()).thenReturn(Map.of(originalBpn, List.of(testPolicy)));
+            // get policies for bpn
+            when(persistenceMock.readAll(originalBpn)).thenReturn(List.of(testPolicy));
 
-        // ACT
-        testee.updatePolicies(new UpdatePolicyRequest(validUntil, List.of("bpn1", "bpn2"), List.of(policyId)));
+            // ACT
+            testee.updatePolicies(new UpdatePolicyRequest(expectedValidUntil, List.of(expectedBpn), List.of(policyId)));
 
-        // ASSERT
-        verify(persistence).delete("bpn2", policyId);
+            // ASSERT
+            verify(persistenceMock).delete(originalBpn, policyId);
 
-        final var bpnCaptor = ArgumentCaptor.forClass(String.class);
-        final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
-        verify(persistence, times(2)).save(bpnCaptor.capture(), policyCaptor.capture());
+            verify(persistenceMock).save(eq(expectedBpn), policyCaptor.capture());
+            assertThat(policyCaptor.getValue().getCreatedOn()).isEqualTo(createdOn);
+            assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(expectedValidUntil);
+        }
 
-        // policy added to each BPN
-        assertThat(policyCaptor.getAllValues().get(0).getPolicyId()).isEqualTo(policyId);
-        assertThat(bpnCaptor.getAllValues().get(0)).isEqualTo("bpn1");
-        assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId);
-        assertThat(bpnCaptor.getAllValues().get(1)).isEqualTo("bpn2");
+        @SuppressWarnings("unchecked")
+        @Test
+        void updatePolicies_shouldAddPolicyToEachBpn() {
 
-    }
+            // ARRANGE
+            final String policyId = "testId";
 
-    @SuppressWarnings("unchecked")
-    @Test
-    void updatePolicies_shouldAssociateEachPolicyGivenPolicyWithEachGivenBpn() {
+            final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
+            final OffsetDateTime validUntil = createdOn.plusDays(14);
 
-        // ARRANGE
-        final String policyId1 = "testId1";
-        final String policyId2 = "testId2";
+            final List<Permission> permissions = emptyList();
 
-        final String bpn1 = "bpn1";
-        final String bpn2 = "bpn2";
+            // BPN1 without any policies
 
-        final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
-        final OffsetDateTime originalValidUntil = createdOn.plusMinutes(1);
+            // BPN2 with testPolicy
+            final Policy testPolicy = new Policy(policyId, createdOn, validUntil, permissions);
+            when(persistenceMock.readAll()).thenReturn(Map.of("bpn2", List.of(testPolicy)));
+            when(persistenceMock.readAll("bpn2")).thenReturn(List.of(testPolicy));
 
-        final List<Permission> permissions = emptyList();
+            // ACT
+            testee.updatePolicies(new UpdatePolicyRequest(validUntil, List.of("bpn1", "bpn2"), List.of(policyId)));
 
-        final Policy testPolicy1 = new Policy(policyId1, createdOn, originalValidUntil, permissions);
-        final Policy testPolicy2 = new Policy(policyId2, createdOn, originalValidUntil, permissions);
+            // ASSERT
+            verify(persistenceMock).delete("bpn2", policyId);
 
-        // BPN1 without any policies
+            verify(persistenceMock, times(2)).save(bpnCaptor.capture(), policyCaptor.capture());
 
-        // BPN2 with testPolicy1 and testPolicy2
-        when(persistence.readAll()).thenReturn(Map.of(bpn2, List.of(testPolicy1, testPolicy2)));
-        when(persistence.readAll(bpn2)).thenReturn(
-                List.of(new Policy(policyId1, createdOn, originalValidUntil, permissions),
-                        new Policy(policyId2, createdOn, originalValidUntil, permissions)));
+            // policy added to each BPN
+            assertThat(policyCaptor.getAllValues().get(0).getPolicyId()).isEqualTo(policyId);
+            assertThat(bpnCaptor.getAllValues().get(0)).isEqualTo("bpn1");
+            assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId);
+            assertThat(bpnCaptor.getAllValues().get(1)).isEqualTo("bpn2");
+        }
 
-        // ACT
-        testee.updatePolicies(
-                new UpdatePolicyRequest(originalValidUntil, List.of(bpn1, bpn2), List.of(policyId1, policyId2)));
+        @SuppressWarnings("unchecked")
+        @Test
+        void updatePolicies_shouldAssociateEachGivenPolicyWithEachGivenBpn() {
 
-        // ASSERT
-        verify(persistence).delete(bpn2, policyId1);
-        verify(persistence).delete(bpn2, policyId2);
+            // ARRANGE
+            final String policyId1 = "testId1";
+            final String policyId2 = "testId2";
 
-        final var bpnsCaptor = ArgumentCaptor.forClass(String.class);
-        final var policyCaptor = ArgumentCaptor.forClass(Policy.class);
-        verify(persistence, times(4)).save(bpnsCaptor.capture(), policyCaptor.capture());
+            final String bpn1 = "bpn1";
+            final String bpn2 = "bpn2";
 
-        // each BPNs added to policy 1
-        assertThat(policyCaptor.getAllValues().get(0).getPolicyId()).isEqualTo(policyId1);
-        assertThat(bpnsCaptor.getAllValues().get(0)).isEqualTo("bpn1");
-        assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId1);
-        assertThat(bpnsCaptor.getAllValues().get(1)).isEqualTo("bpn2");
+            final OffsetDateTime createdOn = OffsetDateTime.now(clock).minusDays(10);
+            final OffsetDateTime originalValidUntil = createdOn.plusMinutes(1);
 
-        // each BPNs added to policy 2
-        assertThat(policyCaptor.getAllValues().get(2).getPolicyId()).isEqualTo(policyId2);
-        assertThat(bpnsCaptor.getAllValues().get(2)).isEqualTo("bpn1");
-        assertThat(policyCaptor.getAllValues().get(3).getPolicyId()).isEqualTo(policyId2);
-        assertThat(bpnsCaptor.getAllValues().get(3)).isEqualTo("bpn2");
+            final List<Permission> permissions = emptyList();
 
-    }
+            final Policy testPolicy1 = new Policy(policyId1, createdOn, originalValidUntil, permissions);
+            final Policy testPolicy2 = new Policy(policyId2, createdOn, originalValidUntil, permissions);
 
-    @Test
-    void shouldReturnDefaultPolicyWhenBpnIsEmpty() {
-        // arrange
-        when(persistence.readAll()).thenReturn(emptyMap());
+            // BPN1 without any policies
 
-        // act
-        final var acceptedPolicies = testee.getAcceptedPolicies(null);
+            // BPN2 with testPolicy1 and testPolicy2
+            when(persistenceMock.readAll()).thenReturn(Map.of(bpn2, List.of(testPolicy1, testPolicy2)));
+            when(persistenceMock.readAll(bpn2)).thenReturn(
+                    List.of(new Policy(policyId1, createdOn, originalValidUntil, permissions),
+                            new Policy(policyId2, createdOn, originalValidUntil, permissions)));
 
-        // assert
-        assertThat(acceptedPolicies.get(0).policy().getPolicyId()).isEqualTo("default-policy");
-    }
+            // ACT
+            testee.updatePolicies(
+                    new UpdatePolicyRequest(originalValidUntil, List.of(bpn1, bpn2), List.of(policyId1, policyId2)));
 
-    @Test
-    void updatePolicyShouldThrowResponseStatusException() {
-        // act
-        final String policyId = "testId";
-        final OffsetDateTime validUntil = OffsetDateTime.now();
-        doThrow(new PolicyStoreException("")).when(persistence).readAll();
+            // ASSERT
+            verify(persistenceMock).delete(bpn2, policyId1);
+            verify(persistenceMock).delete(bpn2, policyId2);
 
-        // assert
-        final List<String> bpn = List.of("bpn");
-        assertThrows(ResponseStatusException.class, () -> testee.updatePolicy(policyId, validUntil, bpn));
+            verify(persistenceMock, times(4)).save(bpnCaptor.capture(), policyCaptor.capture());
+
+            // each BPNs added to policy 1
+            assertThat(policyCaptor.getAllValues().get(0).getPolicyId()).isEqualTo(policyId1);
+            assertThat(bpnCaptor.getAllValues().get(0)).isEqualTo("bpn1");
+            assertThat(policyCaptor.getAllValues().get(1).getPolicyId()).isEqualTo(policyId1);
+            assertThat(bpnCaptor.getAllValues().get(1)).isEqualTo("bpn2");
+
+            // each BPNs added to policy 2
+            assertThat(policyCaptor.getAllValues().get(2).getPolicyId()).isEqualTo(policyId2);
+            assertThat(bpnCaptor.getAllValues().get(2)).isEqualTo("bpn1");
+            assertThat(policyCaptor.getAllValues().get(3).getPolicyId()).isEqualTo(policyId2);
+            assertThat(bpnCaptor.getAllValues().get(3)).isEqualTo("bpn2");
+        }
+
+        @Test
+        void updatePolicy_shouldThrowResponseStatusException() {
+
+            // ARRANGE
+            final String policyId = "testId";
+            final OffsetDateTime validUntil = OffsetDateTime.now();
+            doThrow(new PolicyStoreException("")).when(persistenceMock).readAll();
+
+            // ACT
+            final List<String> bpn = List.of("bpn");
+            final ThrowableAssert.ThrowingCallable call = () -> testee.updatePolicy(policyId, validUntil, bpn);
+
+            // ASSERT
+            assertThatThrownBy(call).isInstanceOf(ResponseStatusException.class) //
+                                    .extracting(e -> (ResponseStatusException) e)
+                                    .satisfies(e -> assertThat(e.getStatusCode()).isEqualTo(
+                                            HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+
     }
 
 }
