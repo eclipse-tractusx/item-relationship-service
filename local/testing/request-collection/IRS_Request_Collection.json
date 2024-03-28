@@ -7,9 +7,9 @@
 		{
 			"_id": "req_2d5a4fb5ec0845059533cb9904910156",
 			"parentId": "fld_c751e5e73d5248a3ae22a44bafae7906",
-			"modified": 1711099785377,
+			"modified": 1705006817408,
 			"created": 1705005887617,
-			"url": "{{IRS_HOST}}/irs/policies?bpnls=BPNL00000001CRHK",
+			"url": "{{IRS_HOST}}/irs/policies",
 			"name": "Get all policies",
 			"description": "",
 			"method": "GET",
@@ -25,7 +25,6 @@
 			},
 			"metaSortKey": -1705005887617,
 			"isPrivate": false,
-			"pathParameters": [],
 			"settingStoreCookies": true,
 			"settingSendCookies": true,
 			"settingDisableRenderRequestBody": false,
@@ -34,6 +33,51 @@
 			"settingFollowRedirects": "global",
 			"_type": "request"
 		},
+        {
+          "_id": "req_3982c8bdad534c0ea601f61bdb785816",
+          "parentId": "fld_c751e5e73d5248a3ae22a44bafae7906",
+          "modified": 1711596830125,
+          "created": 1711449523700,
+          "url": "{{IRS_HOST}}/irs/policies",
+          "name": "Get policies for BPN",
+          "description": "",
+          "method": "GET",
+          "body": {},
+          "parameters": [
+            {
+              "id": "pair_8482da576c10480b9f7edf7a4aa752c6",
+              "name": "businessPartnerNumbers",
+              "value": "BPNL1234567890AB",
+              "description": "",
+              "disabled": false
+            },
+            {
+              "id": "pair_ec0ce8fad21144aaa531cbbcb941f522",
+              "name": "businessPartnerNumbers",
+              "value": "BPNL123456789012",
+              "description": "",
+              "disabled": false
+            }
+          ],
+          "headers": [],
+          "authentication": {
+            "type": "apikey",
+            "disabled": false,
+            "key": "X-API-KEY",
+            "value": "{{ _.ADMIN_API_KEY }}",
+            "addTo": "header"
+          },
+          "metaSortKey": -1703116992024,
+          "isPrivate": false,
+          "settingStoreCookies": true,
+          "settingSendCookies": true,
+          "settingDisableRenderRequestBody": false,
+          "settingEncodeUrl": true,
+          "settingRebuildPath": true,
+          "settingFollowRedirects": "global",
+          "_type": "request"
+        }
+		,
 		{
 			"_id": "fld_c751e5e73d5248a3ae22a44bafae7906",
 			"parentId": "fld_7b1b2f5f85934d3d8c82d7c7ce458380",
@@ -3298,7 +3342,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumber\": \"BPNL00000000BJTL\",\n\t\"policies\": [\n\t\t{\n\t\t\t\"@context\": {\n\t\t\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\"\n\t\t\t},\n\t\t\t\"@id\": \"policy-id12\",\n\t\t\t\"policy\": {\n\t\t\t\t\"odrl:permission\": [\n\t\t\t\t\t{\n\t\t\t\t\t\t\"odrl:action\": \"USE\",\n\t\t\t\t\t\t\"odrl:constraint\": {\n\t\t\t\t\t\t\t\"odrl:and\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"Membership\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"active\"\n\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"PURPOSE\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"ID 3.1 Trace\"\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t}\n\t\t}\n\t]\n}"
+				"text": "{\n\t\"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumber\": \"BPNL00000000BJTL\",\n\t\"payload\": {\n\t\t\t\"@context\": {\n\t\t\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\"\n\t\t\t},\n\t\t\t\"@id\": \"policy-id12\",\n\t\t\t\"policy\": {\n\t\t\t\t\"odrl:permission\": [\n\t\t\t\t\t{\n\t\t\t\t\t\t\"odrl:action\": \"USE\",\n\t\t\t\t\t\t\"odrl:constraint\": {\n\t\t\t\t\t\t\t\"odrl:and\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"Membership\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"active\"\n\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"PURPOSE\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"ID 3.1 Trace\"\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t}\n\t\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
