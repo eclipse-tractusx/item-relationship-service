@@ -2970,7 +2970,7 @@ components:
           type: array
           items:
             type: string
-        policiesIds:
+        policyIds:
           type: array
           items:
             type: string
