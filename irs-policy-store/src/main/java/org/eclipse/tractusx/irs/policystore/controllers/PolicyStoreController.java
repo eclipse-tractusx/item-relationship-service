@@ -144,6 +144,7 @@ public class PolicyStoreController {
     @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
                                                  schema = @Schema(implementation = Policy.class)))
+                                                     // TODO #199 OpenApi does not describe returned map correctly
                                          }),
                             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
