@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -163,7 +164,7 @@ public class PolicyStoreController {
     public Map<String, List<PolicyResponse>> getPolicies(//
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers //
-            final List<String> businessPartnerNumbers) {
+            @Parameter(description = "List of business partner numbers.") final List<String> businessPartnerNumbers) {
 
         final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
         if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
