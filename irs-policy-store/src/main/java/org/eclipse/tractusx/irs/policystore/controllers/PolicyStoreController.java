@@ -160,7 +160,7 @@ public class PolicyStoreController {
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public Map<String, List<PolicyResponse>> getPolicies( //
+    public Map<String, List<PolicyResponse>> getPolicies(//
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers //
             final List<String> businessPartnerNumbers) {
@@ -172,7 +172,7 @@ public class PolicyStoreController {
         }
 
         final Map<String, List<Policy>> policies = service.getPolicies(businessPartnerNumbers);
-        
+
         return policies.entrySet()
                        .stream()
                        .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
