@@ -82,8 +82,6 @@ public class PolicyStoreController {
     public static final String BPN_REGEX = BusinessPartnerNumberListValidator.BPN_REGEX;
 
     private final PolicyStoreService service;
-    private final EdcTransformer edcTransformer;
-    private static final String DEFAULT = "default";
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
