@@ -98,22 +98,22 @@ public abstract class AbstractDelegate {
             log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload", subprotocolBody);
             return submodelFacade.getSubmodelPayload(dspEndpoint.get(),
                     digitalTwinRegistryEndpoint.getProtocolInformation().getHref(),
-                    extractAssetId(subprotocolBody));
+                    extractAssetId(subprotocolBody), bpn);
         } else {
             log.info("SubprotocolBody does not contain '{}'. Using Discovery Service as fallback.", DSP_ENDPOINT);
             final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
 
-            return getSubmodel(submodelFacade, digitalTwinRegistryEndpoint, connectorEndpoints);
+            return getSubmodel(submodelFacade, digitalTwinRegistryEndpoint, connectorEndpoints, bpn);
         }
     }
 
     private SubmodelDescriptor getSubmodel(final EdcSubmodelFacade submodelFacade, final Endpoint digitalTwinRegistryEndpoint,
-            final List<String> connectorEndpoints) throws EdcClientException {
+            final List<String> connectorEndpoints, final String bpn) throws EdcClientException {
         for (final String connectorEndpoint : connectorEndpoints) {
             try {
                 return submodelFacade.getSubmodelPayload(connectorEndpoint,
                         digitalTwinRegistryEndpoint.getProtocolInformation().getHref(),
-                        extractAssetId(digitalTwinRegistryEndpoint.getProtocolInformation().getSubprotocolBody()));
+                        extractAssetId(digitalTwinRegistryEndpoint.getProtocolInformation().getSubprotocolBody()), bpn);
             } catch (EdcClientException e) {
                 log.info("EdcClientException while accessing digitalTwinRegistryEndpoint '{}'", connectorEndpoint, e);
             }

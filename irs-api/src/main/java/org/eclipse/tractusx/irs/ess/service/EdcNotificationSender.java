@@ -76,7 +76,7 @@ public class EdcNotificationSender {
                         originalNotificationId, essLocalEdcEndpoint, localBpn, recipientBpn, notificationContent);
 
                 final var response = edcSubmodelFacade.sendNotification(connectorEndpoint, "ess-response-asset",
-                        responseNotification);
+                        responseNotification, bpn);
                 if (!response.deliveredSuccessfully()) {
                     throw new EdcClientException(
                             "EDC Provider did not accept message with notificationId " + notificationId);

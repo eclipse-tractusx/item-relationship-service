@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,28 +17,32 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+package org.eclipse.tractusx.irs.policystore.services;
 
-package org.eclipse.tractusx.irs.common.persistence;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.function.Predicate;
+
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 
 /**
- * Interface for storing data blobs.
+ * Helper methods for policies.
  */
-public interface BlobPersistence {
+public final class PolicyHelper {
 
-    String DEFAULT_BLOB_NAME = "default";
+    private PolicyHelper() {
+    }
 
-    void putBlob(String targetBlobName, byte[] blob) throws BlobPersistenceException;
+    public static List<String> findBpnsByPolicyId(final Map<String, List<Policy>> policyMap, final String policyId) {
+        return policyMap.entrySet().stream().filter(mapEntriesByPolicyId(policyId)).map(Map.Entry::getKey).toList();
+    }
 
-    Optional<byte[]> getBlob(String sourceBlobName) throws BlobPersistenceException;
+    private static Predicate<Map.Entry<String, List<Policy>>> mapEntriesByPolicyId(final String policyId) {
+        return entry -> entry.getValue().stream().anyMatch(havingPolicyId(policyId));
+    }
 
-    Map<String, byte[]> getAllBlobs() throws BlobPersistenceException;
+    public static Predicate<Policy> havingPolicyId(final String policyId) {
+        return policy -> policy.getPolicyId().equals(policyId);
+    }
 
-    Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException;
-
-    boolean delete(String blobId, List<String> processIds) throws BlobPersistenceException;
 }

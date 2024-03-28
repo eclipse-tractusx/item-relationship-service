@@ -159,7 +159,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.info("Found {} connector endpoints for bpn '{}'", edcUrls.size(), bpn);
             calledEndpoints.addAll(edcUrls);
 
-            return fetchShellDescriptorsForConnectorEndpoints(keys, edcUrls);
+            return fetchShellDescriptorsForConnectorEndpoints(keys, edcUrls, bpn);
 
         } finally {
             watch.stop();
@@ -168,10 +168,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private CompletableFuture<List<Shell>> fetchShellDescriptorsForConnectorEndpoints(
-            final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls) {
+            final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls, final String bpn) {
 
         final var service = endpointDataForConnectorsService;
-        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(edcUrls)
+        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(edcUrls, bpn)
                                         .stream()
                                         .map(edrFuture -> edrFuture.thenCompose(edr -> CompletableFuture.supplyAsync(
                                                 () -> fetchShellDescriptorsForKey(keys, edr))))
@@ -250,7 +250,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
             // Try to map the provided ID to the corresponding asset administration shell ID
             final var mappingResultStream = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                    endpointDataReference, List.of(identifierKeyValuePair)).getResult().stream();
+                    endpointDataReference, identifierKeyValuePair).getResult().stream();
 
             // Special scenario: Multiple DTs with the same globalAssetId in one DTR, see:
             // docs/arc42/cross-cutting/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml
@@ -284,7 +284,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, edcUrls);
 
             final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    edcUrls);
+                    edcUrls, bpn);
 
             return lookupShellIds(bpn, endpointDataReferenceFutures);
 
@@ -340,7 +340,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         try {
             return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                     endpointDataReference,
-                    List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())).getResult();
+                    IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build()).getResult();
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
