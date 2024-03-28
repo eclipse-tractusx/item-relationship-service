@@ -880,7 +880,7 @@ paths:
       tags:
         - Item Relationship Service
     put:
-      description: Updates an existing policy.
+      description: Updates existing policies.
       operationId: updateAllowedPolicy
       requestBody:
         content:
@@ -920,7 +920,7 @@ paths:
           description: Authorization refused by server.
       security:
         - api_key: [ ]
-      summary: Updates an existing policy.
+      summary: Updates existing policies.
       tags:
         - Item Relationship Service
   /irs/policies/{policyId}:
