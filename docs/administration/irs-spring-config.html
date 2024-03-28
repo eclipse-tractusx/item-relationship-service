@@ -793,6 +793,8 @@ pre.rouge {
         <span class="na">baseConfig</span><span class="pi">:</span> <span class="s">default</span>
 
 <span class="na">irs-edc-client</span><span class="pi">:</span>
+  <span class="na">callback</span><span class="pi">:</span>
+    <span class="na">mapping</span><span class="pi">:</span> <span class="s">/internal/endpoint-data-reference</span>  <span class="c1"># The callback endpoint mapping</span>
   <span class="na">callback-url</span><span class="pi">:</span> <span class="s">${EDC_TRANSFER_CALLBACK_URL:}</span> <span class="c1"># The URL where the EDR token callback will be sent to.</span>
   <span class="na">asyncTimeout</span><span class="pi">:</span> <span class="s">PT10M</span> <span class="c1"># Timout for future.get requests as ISO 8601 Duration</span>
   <span class="na">controlplane</span><span class="pi">:</span>
@@ -904,15 +906,13 @@ pre.rouge {
     <span class="na">url</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${IRS_URL:}"</span> <span class="c1"># IRS Url to connect with</span>
   <span class="na">discovery</span><span class="pi">:</span>
     <span class="na">mockEdcResult</span><span class="pi">:</span> <span class="pi">{</span> <span class="pi">}</span> <span class="c1"># Mocked BPN Investigation results</span>
-    <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span>
-
-<span class="na">apiAllowedBpn</span><span class="pi">:</span> <span class="s">${API_ALLOWED_BPN:BPNL00000001CRHK}</span> <span class="c1"># BPN value that is allowed to access IRS API</span></code></pre>
+    <span class="na">mockRecursiveEdcAsset</span><span class="pi">:</span> <span class="c1"># Mocked BPN Recursive Investigation results</span></code></pre>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-03-19 08:01:02 UTC
+Last updated 2024-03-28 07:29:57 UTC
 </div>
 </div>
 </body>

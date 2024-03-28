@@ -213,7 +213,7 @@ font-style: italic;
   <li><a href="#cancelBatchOrder"><code><span class="http-method">put</span> /irs/orders/{orderId}</code></a></li>
   <li><a href="#cancelJobByJobId"><code><span class="http-method">put</span> /irs/jobs/{id}</code></a></li>
   <li><a href="#deleteAllowedPolicy"><code><span class="http-method">delete</span> /irs/policies/{policyId}</code></a></li>
-  <li><a href="#getAllowedPolicies"><code><span class="http-method">get</span> /irs/policies</code></a></li>
+  <li><a href="#getAllowedPoliciesByBpn"><code><span class="http-method">get</span> /irs/policies</code></a></li>
   <li><a href="#getBatch"><code><span class="http-method">get</span> /irs/orders/{orderId}/batches/{batchId}</code></a></li>
   <li><a href="#getBatchOrder"><code><span class="http-method">get</span> /irs/orders/{orderId}</code></a></li>
   <li><a href="#getJobForJobId"><code><span class="http-method">get</span> /irs/jobs/{id}</code></a></li>
@@ -221,7 +221,7 @@ font-style: italic;
   <li><a href="#registerAllowedPolicy"><code><span class="http-method">post</span> /irs/policies</code></a></li>
   <li><a href="#registerJobForGlobalAssetId"><code><span class="http-method">post</span> /irs/jobs</code></a></li>
   <li><a href="#registerOrder"><code><span class="http-method">post</span> /irs/orders</code></a></li>
-  <li><a href="#updateAllowedPolicy"><code><span class="http-method">put</span> /irs/policies/{policyId}</code></a></li>
+  <li><a href="#updateAllowedPolicy"><code><span class="http-method">put</span> /irs/policies</code></a></li>
   </ul>
 
   <h1><a name="AspectModels">AspectModels</a></h1>
@@ -854,17 +854,23 @@ font-style: italic;
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
-  <div class="method"><a name="getAllowedPolicies"/>
+  <div class="method"><a name="getAllowedPoliciesByBpn"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="get"><code class="huge"><span class="http-method">get</span> /irs/policies</code></pre></div>
-    <div class="method-summary">Lists the registered policies that should be accepted in EDC negotiation. (<span class="nickname">getAllowedPolicies</span>)</div>
+    <div class="method-summary">Lists the registered policies that should be accepted in EDC negotiation. (<span class="nickname">getAllowedPoliciesByBpn</span>)</div>
     <div class="method-notes">Lists the registered policies that should be accepted in EDC negotiation.</div>
 
 
 
 
 
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">bpnls (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  default: null </div>
+    </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
@@ -1537,16 +1543,10 @@ font-style: italic;
   <div class="method"><a name="updateAllowedPolicy"/>
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
-    <pre class="put"><code class="huge"><span class="http-method">put</span> /irs/policies/{policyId}</code></pre></div>
-    <div class="method-summary">Updates an existing policy with new validUntil value. (<span class="nickname">updateAllowedPolicy</span>)</div>
-    <div class="method-notes">Updates an existing policy with new validUntil value.</div>
+    <pre class="put"><code class="huge"><span class="http-method">put</span> /irs/policies</code></pre></div>
+    <div class="method-summary">Updates an existing policy. (<span class="nickname">updateAllowedPolicy</span>)</div>
+    <div class="method-notes">Updates an existing policy.</div>
 
-    <h3 class="field-label">Path parameters</h3>
-    <div class="field-items">
-      <div class="param">policyId (required)</div>
-
-      <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  default: null </div>
-    </div>  <!-- field-items -->
 
     <h3 class="field-label">Consumes</h3>
     This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
@@ -1609,7 +1609,6 @@ font-style: italic;
     <li><a href="#Constraint"><code>Constraint</code> - </a></li>
     <li><a href="#Constraints"><code>Constraints</code> - </a></li>
     <li><a href="#CreatePolicyRequest"><code>CreatePolicyRequest</code> - </a></li>
-    <li><a href="#CreatePolicyRequest_payload"><code>CreatePolicyRequest_payload</code> - </a></li>
     <li><a href="#EdcNotificationHeader"><code>EdcNotificationHeader</code> - </a></li>
     <li><a href="#EdcNotificationResponseNotificationContent"><code>EdcNotificationResponseNotificationContent</code> - </a></li>
     <li><a href="#Endpoint"><code>Endpoint</code> - </a></li>
@@ -1621,6 +1620,7 @@ font-style: italic;
     <li><a href="#JobParameter"><code>JobParameter</code> - </a></li>
     <li><a href="#JobStatusResult"><code>JobStatusResult</code> - </a></li>
     <li><a href="#Jobs"><code>Jobs</code> - </a></li>
+    <li><a href="#JsonObject"><code>JsonObject</code> - </a></li>
     <li><a href="#JsonValue"><code>JsonValue</code> - </a></li>
     <li><a href="#LangString"><code>LangString</code> - </a></li>
     <li><a href="#LinkedItem"><code>LinkedItem</code> - </a></li>
@@ -1765,18 +1765,9 @@ font-style: italic;
     <h3><a name="CreatePolicyRequest"><code>CreatePolicyRequest</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>Request to add a policy</div>
     <div class="field-items">
-      <div class="param">payload </div><div class="param-desc"><span class="param-type"><a href="#CreatePolicyRequest_payload">CreatePolicyRequest_payload</a></span>  </div>
+      <div class="param">payload </div><div class="param-desc"><span class="param-type"><a href="#JsonObject">array[JsonObject]</a></span>  </div>
 <div class="param">validUntil </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Timestamp after which the policy will no longer be accepted in negotiations format: date-time</div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="CreatePolicyRequest_payload"><code>CreatePolicyRequest_payload</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
-<div class="param">valueType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-        <div class="param-enum-header">Enum:</div>
-        <div class="param-enum">ARRAY</div><div class="param-enum">OBJECT</div><div class="param-enum">STRING</div><div class="param-enum">NUMBER</div><div class="param-enum">TRUE</div><div class="param-enum">FALSE</div><div class="param-enum">NULL</div>
+<div class="param">businessPartnerNumbers (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -1906,6 +1897,16 @@ font-style: italic;
 <div class="param">shells (optional)</div><div class="param-desc"><span class="param-type"><a href="#Shell">array[Shell]</a></span> AAS shells. </div>
 <div class="param">submodels (optional)</div><div class="param-desc"><span class="param-type"><a href="#Submodel">array[Submodel]</a></span> Collection of requested Submodels </div>
 <div class="param">tombstones (optional)</div><div class="param-desc"><span class="param-type"><a href="#Tombstone">array[Tombstone]</a></span> Collection of not resolvable endpoints as tombstones. Including cause of error and endpoint URL. </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="JsonObject"><code>JsonObject</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">valueType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ARRAY</div><div class="param-enum">OBJECT</div><div class="param-enum">STRING</div><div class="param-enum">NUMBER</div><div class="param-enum">TRUE</div><div class="param-enum">FALSE</div><div class="param-enum">NULL</div>
+<div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -2198,7 +2199,9 @@ font-style: italic;
     <h3><a name="UpdatePolicyRequest"><code>UpdatePolicyRequest</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>Request to add a policy</div>
     <div class="field-items">
-      <div class="param">validUntil </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Timestamp after which the policy will no longer be accepted in negotiations format: date-time</div>
+      <div class="param">businessPartnerNumbers (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">policiesIds (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">validUntil </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Timestamp after which the policy will no longer be accepted in negotiations format: date-time</div>
     </div>  <!-- field-items -->
   </div>
   </body>

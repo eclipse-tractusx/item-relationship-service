@@ -195,6 +195,8 @@ resilience4j:
         baseConfig: default
 
 irs-edc-client:
+  callback:
+    mapping: /internal/endpoint-data-reference  # The callback endpoint mapping
   callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
   asyncTimeout: PT10M # Timout for future.get requests as ISO 8601 Duration
   controlplane:
@@ -307,8 +309,6 @@ ess:
   discovery:
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
-
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API
 ```
 
 ### Helm configuration IRS (values.yaml)
@@ -401,7 +401,8 @@ edc:
     apikey:
       header: "X-Api-Key"  # Name of the EDC api key header field
       secret: ""  # <edc-api-key>
-  callbackurl:
+  callbackMapping:  # The callback endpoint path mapping - used to expose callback endpoint
+  callbackurl:  # The URL where the EDR token callback will be sent to.
   asyncTimeout: PT10M  # Timout for future.get requests as ISO 8601 Duration
   submodel:
     request:
@@ -512,7 +513,6 @@ prometheus:
       metrics_path: /minio/v2/metrics/cluster
       static_configs:
         - targets: [ '{{ .Release.Name }}-minio:9000' ]
-
 ```
 
 1. Use this to enable or disable the monitoring components
