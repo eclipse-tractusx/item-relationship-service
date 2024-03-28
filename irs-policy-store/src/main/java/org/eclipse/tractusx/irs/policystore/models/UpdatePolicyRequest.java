@@ -27,13 +27,27 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
 
 /**
  * Request object for policy update
  */
 @Schema(description = "Request to update a policy")
 public record UpdatePolicyRequest(
-        @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil,
-        List<String> businessPartnerNumbers, List<String> policiesIds) {
+
+        @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations.") //
+        @NotNull //
+        OffsetDateTime validUntil, //
+
+        @Schema(description = "Business Partner Number (BPN).") //
+        @ValidListOfBusinessPartnerNumbers //
+        List<String> businessPartnerNumbers, //
+
+        @Schema(description = "The IDs of the policies to be updated.") //
+        @NotNull //
+        @NotEmpty //
+        List<String> policyIds //
+) {
 }
