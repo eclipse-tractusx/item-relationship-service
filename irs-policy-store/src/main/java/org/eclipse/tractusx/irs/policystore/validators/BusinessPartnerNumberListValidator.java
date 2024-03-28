@@ -25,25 +25,32 @@ import java.util.regex.Pattern;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
+/**
+ * Validator for list of business partner numbers (BPN).
+ */
 public class BusinessPartnerNumberListValidator
         implements ConstraintValidator<ValidListOfBusinessPartnerNumbers, List<String>> {
 
+    /**
+     * Regex for BPN.
+     */
     public static final String BPN_REGEX = "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}";
 
     private static final Pattern PATTERN = Pattern.compile(BPN_REGEX);
 
     @Override
     public boolean isValid(List<String> value, ConstraintValidatorContext context) {
+
+        // allow null and empty here (in order to allow flexible combination with @NotNull and @NotEmpty)
         if (value == null || value.isEmpty()) {
             return true;
         }
 
-        for (int i = 0; i < value.size(); i++) {
-            if (!PATTERN.matcher(value.get(i)).matches()) {
+        for (int index = 0; index < value.size(); index++) {
+            if (!PATTERN.matcher(value.get(index)).matches()) {
                 context.disableDefaultConstraintViolation();
-                context.buildConstraintViolationWithTemplate(
-                        "The business partner number at index %d is invalid (should conform to pattern '%s')".formatted(
-                                i, BPN_REGEX)).addConstraintViolation();
+                final String msg = "The business partner number at index %d is invalid (should conform to pattern '%s')";
+                context.buildConstraintViolationWithTemplate(msg.formatted(index, BPN_REGEX)).addConstraintViolation();
                 return false;
             }
         }

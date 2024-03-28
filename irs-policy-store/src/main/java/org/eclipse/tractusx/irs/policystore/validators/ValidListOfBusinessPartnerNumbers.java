@@ -28,6 +28,9 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
+/**
+ * Annotation for validating list of business partner numbers.
+ */
 @Documented
 @Constraint(validatedBy = BusinessPartnerNumberListValidator.class)
 @Target({ ElementType.FIELD,
@@ -35,6 +38,7 @@ import jakarta.validation.Payload;
 })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidListOfBusinessPartnerNumbers {
+
     String message() default "Invalid list of business partner numbers";
 
     Class<?>[] groups() default { };
