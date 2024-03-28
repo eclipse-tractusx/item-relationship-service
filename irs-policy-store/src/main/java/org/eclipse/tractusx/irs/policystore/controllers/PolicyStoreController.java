@@ -155,8 +155,9 @@ public class PolicyStoreController {
     @GetMapping("/policies")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public Map<String, List<PolicyResponse>> getPolicies(@RequestParam(required = false) final List<String> bpnls) {
-        return service.getPolicies(bpnls)
+    public Map<String, List<PolicyResponse>> getPolicies(
+            @RequestParam(required = false) final List<String> businessPartnerNumbers) {
+        return service.getPolicies(businessPartnerNumbers)
                       .entrySet()
                       .stream()
                       .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),

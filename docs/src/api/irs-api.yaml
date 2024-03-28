@@ -796,7 +796,7 @@ paths:
       description: Lists the registered policies that should be accepted in EDC negotiation.
       operationId: getAllowedPoliciesByBpn
       parameters:
-        - name: bpnls
+        - name: businessPartnerNumbers
           in: query
           required: false
           schema:
