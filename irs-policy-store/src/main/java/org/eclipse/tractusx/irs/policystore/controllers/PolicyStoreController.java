@@ -40,9 +40,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
@@ -82,6 +84,8 @@ public class PolicyStoreController {
     public static final String BPN_REGEX = BusinessPartnerNumberListValidator.BPN_REGEX;
 
     private final PolicyStoreService service;
+
+    private final HttpServletRequest httpServletRequest;
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
@@ -155,6 +159,13 @@ public class PolicyStoreController {
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public Map<String, List<PolicyResponse>> getPolicies(
             @RequestParam(required = false) final List<String> businessPartnerNumbers) {
+
+        final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
+        if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Please use parameter 'businessPartnerNumbers' instead");
+        }
+
         return service.getPolicies(businessPartnerNumbers)
                       .entrySet()
                       .stream()
