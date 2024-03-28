@@ -114,22 +114,22 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createSingleLevelBomAsBuiltSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
                 "singleLevelBomAsBuilt");
     }
 
     private SubmodelDescriptor createSingleLevelUsageAsBuiltSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt",
                 "singleLevelUsageAsBuilt");
     }
 
     private SubmodelDescriptor createSingleLevelBomAsSpecifiedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_specified:1.0.0#SingleLevelBomAsSpecified",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified",
                 "singleLevelBomAsSpecified");
     }
 
     private SubmodelDescriptor createSerialPartSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart", "serialPart");
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.serial_part:3.0.0#SerialPart", "serialPart");
     }
 
     private SubmodelDescriptor createSingleLevelBomAsPlannedSubmodelDescriptor(final String catenaXId) {
@@ -142,21 +142,21 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createBatchSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.batch:2.0.0#Batch", "batch");
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.batch:3.0.0#Batch", "batch");
     }
 
     private SubmodelDescriptor createMaterialForRecyclingSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
                 "materialForRecycling");
     }
 
     private SubmodelDescriptor createProductDescriptionSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.product_description:1.0.0#ProductDescription",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription",
                 "productDescription");
     }
 
     private SubmodelDescriptor createPhysicalDimensionSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension", "physicalDimension");
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.physical_dimension:1.0.0#PhysicalDimension", "physicalDimension");
     }
 
     private SubmodelDescriptor createPartAsSpecifiedSubmodelDescriptor(final String catenaXId) {
