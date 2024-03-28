@@ -171,12 +171,13 @@ public class PolicyStoreController {
                     "Please use parameter 'businessPartnerNumbers' instead");
         }
 
-        return service.getPolicies(businessPartnerNumbers)
-                      .entrySet()
-                      .stream()
-                      .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
-                              entry.getValue().stream().map(PolicyResponse::fromPolicy).toList()))
-                      .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+        final Map<String, List<Policy>> policies = service.getPolicies(businessPartnerNumbers);
+        
+        return policies.entrySet()
+                       .stream()
+                       .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
+                               entry.getValue().stream().map(PolicyResponse::fromPolicy).toList()))
+                       .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
     @Operation(operationId = "deleteAllowedPolicy",
