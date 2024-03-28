@@ -70,11 +70,12 @@ public class PolicyPersistence {
         this.mapper = mapper;
     }
 
-    public void save(final String bpn, final Policy policy) {
+    public Policy save(final String bpn, final Policy policy) {
         final List<Policy> policiesForBpn = readAll(bpn);
         checkIfPolicyAlreadyExists(policy, policiesForBpn);
         policiesForBpn.add(policy);
         save(bpn, policiesForBpn);
+        return policy;
     }
 
     private static void checkIfPolicyAlreadyExists(final Policy policy, final List<Policy> policies) {
