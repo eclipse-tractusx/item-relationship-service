@@ -2964,7 +2964,7 @@ components:
     UpdatePolicyRequest:
       type: object
       additionalProperties: false
-      description: Request to add a policy
+      description: Request to update a policy
       properties:
         businessPartnerNumbers:
           type: array
