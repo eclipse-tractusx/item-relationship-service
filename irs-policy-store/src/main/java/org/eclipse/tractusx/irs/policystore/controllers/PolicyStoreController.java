@@ -51,6 +51,7 @@ import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
+import org.eclipse.tractusx.irs.policystore.validators.BusinessPartnerNumberListValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -77,7 +78,7 @@ import org.springframework.web.bind.annotation.RestController;
 })
 public class PolicyStoreController {
 
-    public static final String BPN_REGEX = "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}";
+    public static final String BPN_REGEX = BusinessPartnerNumberListValidator.BPN_REGEX;
 
     private final PolicyStoreService service;
     private final EdcTransformer edcTransformer;
