@@ -7,11 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
-### Changed
-- IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
-- 
 ### Added
 - Extended EdcPolicyDefinitionService to check if a policy in the edc exists
+
+### Changed
+- IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
+- IRS now supports building relationships based on SingleLevelBomAsBuilt v3.0.0 #488
 
 ## [4.8.0] - 2024-03-18
 ### Changed
