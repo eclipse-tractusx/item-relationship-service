@@ -146,7 +146,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         // then
         given().ignoreException(ResponseStatusException.class)
                .await()
-               .atMost(10, TimeUnit.MINUTES)
+               .atMost(10, TimeUnit.SECONDS)
                .until(() -> getSubmodelsSize(registeredJob.getId()), greaterThan(0));
     }
 

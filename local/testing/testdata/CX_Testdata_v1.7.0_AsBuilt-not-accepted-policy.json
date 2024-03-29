@@ -1,4 +1,4 @@
-{ 
+{
   "policies": {
     "ID 3.0 NotAccepted": {
       "@context": {
@@ -29,8 +29,8 @@
       }
     }
   },
-  "https://catenax.io/schema/TestDataContainer/1.0.0" : [ {
-
+  "https://catenax.io/schema/TestDataContainer/1.0.0" : [ 
+  {
     "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt" : [ {
       "catenaXId" : "urn:uuid:b0cc2dc9-b011-4b21-9c58-f48bd06d439f",
       "childItems" : [ {
@@ -478,7 +478,5 @@
         "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
       } ]
     } ]
-  }
-  ]
-  
+  } ]
 }
