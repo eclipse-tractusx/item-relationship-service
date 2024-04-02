@@ -12,7 +12,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 - IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
-- IRS now supports building relationships based on SingleLevelBomAsBuilt v3.0.0 #488
+- Support of building relationships based on SingleLevelBomAsBuilt v3.0.0 #488
 
 ## [4.8.0] - 2024-03-18
 ### Changed
