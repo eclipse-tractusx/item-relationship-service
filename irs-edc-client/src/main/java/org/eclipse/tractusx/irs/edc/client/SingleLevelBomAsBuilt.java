@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -122,7 +123,9 @@ class SingleLevelBomAsBuilt implements RelationshipSubmodel {
         @Jacksonized
         /* package */ static class Quantity {
 
+            @JsonAlias({ "quantityNumber", "value" })
             private Double quantityNumber;
+            @JsonAlias({ "measurementUnit", "unit" })
             private Object measurementUnit;
 
             /**
