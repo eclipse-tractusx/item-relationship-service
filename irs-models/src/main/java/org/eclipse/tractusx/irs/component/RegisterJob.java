@@ -65,7 +65,7 @@ public class RegisterJob {
     private BomLifecycle bomLifecycle;
 
     @ArraySchema(arraySchema = @Schema(description = "List of aspect names that will be collected if \\<collectAspects\\> flag is set to true.",
-                                       example = "[\"urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt\"]",
+                                       example = "[\"urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt\"]",
                                        implementation = String.class, pattern = ASPECT_MODEL_REGEX), maxItems = Integer.MAX_VALUE)
     private List<@Pattern(regexp = ASPECT_MODEL_REGEX) String> aspects;
 

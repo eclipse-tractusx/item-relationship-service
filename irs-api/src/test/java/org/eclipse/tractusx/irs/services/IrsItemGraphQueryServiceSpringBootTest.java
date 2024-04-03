@@ -134,7 +134,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("https://connector.endpoint.nl"));
-        final RegisterJob registerJob = registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", 100,
+        final RegisterJob registerJob = registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", 100,
                 List.of(serialPartAspectName, productDescriptionAspectName, singleLevelBomAsBuiltAspectName),
                 true, false, Direction.DOWNWARD);
         when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
@@ -192,7 +192,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithUpwardDirectionShouldBuildRelationships() {
         // given
-        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:819816fe-7346-49a5-b528-cec5b5367a71",
+        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41",
                 Direction.UPWARD);
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("http://localhost/discovery"));

@@ -33,8 +33,8 @@ import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseW
  * WireMock configurations and requests used for testing Semantic Hub fLow.
  */
 public final class SemanticHubWireMockSupport {
-    public static final String BATCH_URN = "urn:samm:io.catenax.batch:2.0.0%23Batch";
-    private static final String SINGLE_LEVEL_BOM_AS_BUILT_URN = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0%23SingleLevelBomAsBuilt";
+    public static final String BATCH_URN = "urn:samm:io.catenax.batch:3.0.0%23Batch";
+    private static final String SINGLE_LEVEL_BOM_AS_BUILT_URN = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0%23SingleLevelBomAsBuilt";
     public static final String SCHEMA_PATH_PLACEHOLDER = "/models/%s/json-schema";
     public static final String SEMANTIC_HUB_SCHEMA_URL =
             "http://semantic.hub" + SCHEMA_PATH_PLACEHOLDER.formatted("{urn}");
@@ -44,12 +44,12 @@ public final class SemanticHubWireMockSupport {
     }
 
     public static void semanticHubWillReturnBatchSchema() {
-        schemaResponse200(SCHEMA_PATH_PLACEHOLDER.formatted(BATCH_URN), "semantichub/batch-2.0.0-schema.json");
+        schemaResponse200(SCHEMA_PATH_PLACEHOLDER.formatted(BATCH_URN), "semantichub/batch-3.0.0-schema.json");
     }
 
     public static void semanticHubWillReturnSingleLevelBomAsBuiltSchema() {
         schemaResponse200(SCHEMA_PATH_PLACEHOLDER.formatted(SINGLE_LEVEL_BOM_AS_BUILT_URN),
-                "semantichub/singleLevelBomAsBuilt-2.0.0-schema.json");
+                "semantichub/singleLevelBomAsBuilt-3.0.0-schema.json");
     }
 
     private static void schemaResponse200(final String urlRegex, final String fileName) {
