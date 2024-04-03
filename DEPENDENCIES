@@ -372,9 +372,9 @@ maven/mavencentral/org.jboss.logging/jboss-logging/3.5.3.Final, Apache-2.0, appr
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-common/1.8.22, Apache-2.0, approved, #8910
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-common/1.9.0, Apache-2.0, approved, #14186
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.8.22, Apache-2.0, approved, #8807
-maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.9.0, None, restricted, #14188
+maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.9.0, Apache-2.0, approved, #14193
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.8.22, Apache-2.0, approved, #8875
-maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.9.0, None, restricted, #14185
+maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.9.0, Apache-2.0, approved, #14191
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib/1.6.20, Apache-2.0, approved, clearlydefined
 maven/mavencentral/org.jetbrains.kotlin/kotlin-stdlib/1.8.22, Apache-2.0, approved, #8865
 maven/mavencentral/org.jetbrains/annotations/13.0, Apache-2.0, approved, clearlydefined
