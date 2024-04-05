@@ -571,6 +571,8 @@ if __name__ == "__main__":
                         "key": "manufacturerPartId"
                     })
             print(name_at_manufacturer)
+            name_at_manufacturer = name_at_manufacturer + "-" + uuid.uuid4().hex
+            print(name_at_manufacturer)
 
             manufacturerId = {
                 "key": "manufacturerId",
