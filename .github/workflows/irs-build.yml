@@ -9,6 +9,7 @@ on:
       - 'charts/**'
       - '.config/**'
       - 'docs/**'
+      - '!docs/src/api/**'
       - 'local/**'
       - 'CHANGELOG.md'
   push:
