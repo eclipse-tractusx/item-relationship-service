@@ -36,8 +36,8 @@
       "childItems" : [ {
         "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c3",
         "quantity" : {
-          "quantityNumber" : 2.5,
-          "measurementUnit" : "unit:litre"
+          "value" : 2.5,
+          "unit" : "unit:litre"
         },
         "hasAlternatives" : false,
         "businessPartner" : "BPNL00000003B0Q0",
