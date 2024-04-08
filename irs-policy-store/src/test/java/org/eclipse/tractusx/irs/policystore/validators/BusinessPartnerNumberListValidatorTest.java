@@ -71,8 +71,6 @@ public class BusinessPartnerNumberListValidatorTest {
     void withListContainingInvalidBPN() {
         List<String> invalidList = Arrays.asList(VALID_BPN_1, "INVALID_BPN", VALID_BPN_2);
         assertThat(validator.isValid(invalidList, contextMock)).isFalse();
-        //        verify(contextMock).buildConstraintViolationWithTemplate(
-        ////                startsWith("Element at index 1 does not match the pattern"));
         verify(contextMock).buildConstraintViolationWithTemplate(messageCaptor.capture());
         assertThat(messageCaptor.getValue()).contains("BPN").contains(" index 1 ").contains("invalid");
     }
