@@ -42,7 +42,7 @@ class JsonValidatorServiceTest {
     private final JsonValidatorService testee = new JsonValidatorService(new JsonUtil());
 
     @Test
-    @Disabled
+    @Disabled("Should not pass validation, but currently payload is valid with schema v.3.0.0")
     void shouldFailWhenSchemaIsInThirdVerAndPayloadInSecondVer() throws Exception {
         final String schema = readFile("/json-schema/slab-v3.0.0.json");
         final String payload = readFile("/__files/integrationtesting/singleLevelBomAsBuilt-2.json");
