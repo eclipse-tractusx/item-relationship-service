@@ -796,13 +796,14 @@ paths:
       description: Lists the registered policies that should be accepted in EDC negotiation.
       operationId: getAllowedPoliciesByBpn
       parameters:
-        - name: businessPartnerNumbers
-          in: query
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+      - name: businessPartnerNumbers
+        description: List of business partner numbers.
+        in: query
+        required: false
+        schema:
+         type: array
+         items:
+           type: string
       responses:
         "200":
           content:
@@ -846,6 +847,10 @@ paths:
         required: true
       responses:
         "201":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CreatePoliciesResponse'
           description: Created
         "400":
           content:
@@ -855,7 +860,7 @@ paths:
                   $ref: '#/components/examples/error-response-400'
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-          description: Policy registration failed.
+          description: Policy registration failed due to an invalid request.
         "401":
           content:
             application/json:
@@ -874,6 +879,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
+        "500":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-500'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Policy registration failed due to an internal error.
       security:
         - api_key: []
       summary: Register a policy that should be accepted in EDC negotiation.
@@ -918,6 +932,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
+        "500":
+          content:
+            application/json:
+              examples:
+                error:
+                  $ref: '#/components/examples/error-response-500'
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Updating policies failed due to an internal error.
       security:
         - api_key: [ ]
       summary: Updates existing policies.
@@ -1310,6 +1333,12 @@ components:
         messages:
           - NotFoundException
         statusCode: 404 NOT_FOUND
+    error-response-500:
+      value:
+        error: Internal Server Error
+        messages:
+        - InternalServerError
+        statusCode: 500 INTERNAL_SERVER_ERROR
     failed-job-result:
       value:
         bpns: []
@@ -1732,11 +1761,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Constraint'
+    CreatePoliciesResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        policyId:
+          type: string
+          description: ID of the registered policy
     CreatePolicyRequest:
       type: object
       additionalProperties: false
       description: Request to add a policy
       properties:
+        businessPartnerNumber:
+          type: string
+          description: |
+            The business partner number (BPN) for which the policy should be registered.
+            This parameter is optional.
+            If not set the policy is registered for each existing BPN.
+          example: BPNL1234567890AB
+          pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
         payload:
           type: array
           items:
@@ -2968,18 +3012,23 @@ components:
       properties:
         businessPartnerNumbers:
           type: array
+          description: Business Partner Number (BPN).
           items:
             type: string
+            description: Business Partner Number (BPN).
         policyIds:
           type: array
+          description: The IDs of the policies to be updated.
           items:
             type: string
+            description: The IDs of the policies to be updated.
         validUntil:
           type: string
           format: date-time
           description: Timestamp after which the policy will no longer be accepted
-            in negotiations
+            in negotiations.
       required:
+        - policyIds
         - validUntil
   securitySchemes:
     api_key:
