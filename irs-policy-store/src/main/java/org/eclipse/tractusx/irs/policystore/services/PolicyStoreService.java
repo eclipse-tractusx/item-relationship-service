@@ -195,7 +195,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     public void deletePolicy(final String policyId) {
-        log.info("Getting all policies to find correct bpn number");
+        log.info("Getting all policies to find correct BPN");
         final List<String> bpnsContainingPolicyId = PolicyHelper.findBpnsByPolicyId(getAllStoredPolicies(), policyId);
 
         if (bpnsContainingPolicyId.isEmpty()) {
@@ -306,8 +306,6 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
                                              new Constraint(acceptedPolicy.getLeftOperand(),
                                                      new Operator(OperatorType.fromValue(acceptedPolicy.getOperator())),
                                                      acceptedPolicy.getRightOperand())));
-        final Policy policy = new Policy("default-policy", OffsetDateTime.now(),
-                OffsetDateTime.now().plusYears(DEFAULT_POLICY_LIFETIME_YEARS),
         final Policy policy = new Policy(ConfiguredDefaultPolicy.DEFAULT_POLICY_ID, OffsetDateTime.now(),
                 OffsetDateTime.now().plusYears(ConfiguredDefaultPolicy.DEFAULT_POLICY_LIFETIME_YEARS),
                 List.of(new Permission(PolicyType.USE, new Constraints(constraints, constraints))));
