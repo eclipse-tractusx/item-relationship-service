@@ -69,7 +69,20 @@ import org.springframework.web.server.ResponseStatusException;
 })
 public class PolicyStoreService implements AcceptedPoliciesProvider {
 
-    public static final int DEFAULT_POLICY_LIFETIME_YEARS = 5;
+    /**
+     * Constants for the configured default policy.
+     */
+    private interface ConfiguredDefaultPolicy {
+        /**
+         * ID for default policy (see TRI-1594)
+         */
+        String DEFAULT_POLICY_ID = "default-policy";
+
+        /**
+         * Lifetime for default policy in years (see TRI-1594)
+         */
+        int DEFAULT_POLICY_LIFETIME_YEARS = 5;
+    }
 
     private final List<Policy> allowedPoliciesFromConfig;
 
@@ -295,6 +308,8 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
                                                      acceptedPolicy.getRightOperand())));
         final Policy policy = new Policy("default-policy", OffsetDateTime.now(),
                 OffsetDateTime.now().plusYears(DEFAULT_POLICY_LIFETIME_YEARS),
+        final Policy policy = new Policy(ConfiguredDefaultPolicy.DEFAULT_POLICY_ID, OffsetDateTime.now(),
+                OffsetDateTime.now().plusYears(ConfiguredDefaultPolicy.DEFAULT_POLICY_LIFETIME_YEARS),
                 List.of(new Permission(PolicyType.USE, new Constraints(constraints, constraints))));
 
         return List.of(policy);
