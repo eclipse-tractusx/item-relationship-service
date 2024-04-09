@@ -163,14 +163,18 @@ class SemanticsHubClientImplTest {
         final var testee = new SemanticsHubClientImpl(restTemplate, config("", new File(path).getPath()));
         final AspectModel serialPartTypization = new AspectModel(
                 "urn:bamm:io.catenax.serial_part_typization:1.0.0#SerialPartTypization", "1.0.0",
-                "SerialPartTypization", SemanticsHubClientImpl.LOCAL_MODEL_TYPE,
+                "SerialPartTypization", SemanticsHubClientImpl.LOCAL_MODEL_TYPE_BAMM,
+                SemanticsHubClientImpl.LOCAL_MODEL_STATUS);
+        final AspectModel singleLevelBomAsBuilt = new AspectModel(
+                "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned", "3.0.0",
+                "SingleLevelBomAsPlanned", SemanticsHubClientImpl.LOCAL_MODEL_TYPE_SAMM,
                 SemanticsHubClientImpl.LOCAL_MODEL_STATUS);
 
         // Act
         final List<AspectModel> allAspectModels = testee.getAllAspectModels();
 
         // Assert
-        assertThat(allAspectModels).hasSize(1).contains(serialPartTypization);
+        assertThat(allAspectModels).hasSize(2).contains(serialPartTypization).contains(singleLevelBomAsBuilt);
     }
 
     @Test
