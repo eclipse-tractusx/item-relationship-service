@@ -809,10 +809,9 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Policy'
-          description: Returns the policies.
+                description: Map of BPN to list of policies
+                type: string
+          description: Returns the policies as map of BPN to list of policies.
         "401":
           content:
             application/json:
@@ -1807,11 +1806,8 @@ components:
         validUntil:
           type: string
           format: date-time
-          description: Timestamp after which the policy will no longer be accepted in negotiations
-        businessPartnerNumbers:
-          type: array
-          items:
-            type: string
+          description: Timestamp after which the policy will no longer be accepted in negotiations.
+          example: '2025-12-12T23:59:59.999Z'
       required:
         - payload
         - validUntil
