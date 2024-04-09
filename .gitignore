@@ -71,5 +71,5 @@ docs/src/diagram-replacer/package.json
 docs/src/diagram-replacer/plantuml.jar
 
 # Helm Chart Dependencies
-/charts/item-relationship-service/charts/
 /charts/item-relationship-service/Chart.lock
+/charts/item-relationship-service/charts/

@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: 4.8.0
+  version: 4.9.0
 servers:
   - url: http://localhost:8080
 security:
@@ -1016,7 +1016,7 @@ components:
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           parameter:
             aspects:
-            - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+            - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
@@ -1067,7 +1067,7 @@ components:
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           parameter:
             aspects:
-            - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+            - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
@@ -1193,7 +1193,7 @@ components:
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           parameter:
             aspects:
-            - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+            - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
@@ -1275,7 +1275,7 @@ components:
                       value: urn:bamm:io.catenax.vehicle:0.1.1#PartDetails
                   type: ModelReference
         submodels:
-          - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+          - aspectType: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
             payload:
@@ -1353,7 +1353,7 @@ components:
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           parameter:
             aspects:
-            - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+            - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
@@ -1391,7 +1391,7 @@ components:
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           parameter:
             aspects:
-            - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+            - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
@@ -1471,7 +1471,7 @@ components:
                     - type: Submodel
                       value: urn:bamm:io.catenax.vehicle:0.1.1#PartDetails
         submodels:
-          - aspectType: urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+          - aspectType: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             contractAgreementId: f253718e-a270-4367-901b-9d50d9bd8462
             identification: urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff
             payload:
@@ -1509,7 +1509,7 @@ components:
           lastModifiedOn: 2022-02-03T14:48:54.709Z
           parameter:
             aspects:
-            - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+            - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
@@ -1531,7 +1531,7 @@ components:
       value:
         lastUpdated: 2023-02-13T08:18:11.990659500Z
         models:
-          - urn: urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+          - urn: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
             name: SingleLevelBomAsBuilt
             status: RELEASED
             type: BAMM
@@ -2605,7 +2605,7 @@ components:
           description: List of aspect names that will be collected if \<collectAspects\>
             flag is set to true.
           example:
-          - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+          - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
           items:
             type: string
             pattern: ^(urn:[bs]amm:.*\d\.\d\.\d)?(#)?(\w+)?$
@@ -2791,7 +2791,7 @@ components:
           description: List of aspect names that will be collected if \<collectAspects\>
             flag is set to true.
           example:
-          - urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt
+          - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
           items:
             type: string
             pattern: ^(urn:[bs]amm:.*\d\.\d\.\d)?(#)?(\w+)?$

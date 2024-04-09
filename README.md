@@ -7,11 +7,8 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=eclipse-tractusx_item-relationship-service&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=eclipse-tractusx_item-relationship-service)
 [![CodeQL](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/codeql.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/codeql.yml)  
 [![Kics](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/kics.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/kics.yml)
-[![Trivy](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy.yml)
 [![Trivy Docker Hub Scan](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy-docker-hub-scan.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/trivy-docker-hub-scan.yml)
-[![VeraCode](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/veracode.yaml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/veracode.yaml)
 [![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
-[![Spotbugs](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/spotbugs.yml)
 [![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
 [![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)
 
@@ -54,7 +51,7 @@ The IRS project consists of several different parts:
 | .idea                            | Configuration for development via [IntelliJ](https://www.jetbrains.com/idea/).                                                                                                 |                                                                              |
 | .run                             | Run configurations for running the IRS in [IntelliJ](https://www.jetbrains.com/idea/).                                                                                         |                                                                              |
 | charts                           | [HELM](https://helm.sh/) charts.                                                                                                                                               |                                                                              |
-| charts/irs-helm                  | IRS [HELM](https://helm.sh/) chart for running the IRS with and its direct dependencies in [kubernetes](https://kubernetes.io/).                                               | [IRS HELM charts documentation](charts/irs-helm/README.md)                   |
+| charts/item-relationship-service | IRS [HELM](https://helm.sh/) chart for running the IRS with and its direct dependencies in [kubernetes](https://kubernetes.io/).                                               | [IRS HELM charts documentation](charts/item-relationship-service/README.md)  |
 | docs                             | Concepts and documentation.                                                                                                                                                    | [Docs README](docs/README.md)                                                |
 | irs-api                          | The IRS API.                                                                                                                                                                   |                                                                              |
 | irs-common                       | Common classes of the IRS.                                                                                                                                                     |                                                                              |
@@ -134,7 +131,7 @@ See [TESTS](TESTS.md).
 ## Changelog and Compatibility Matrix
 
 - [Changelog IRS](CHANGELOG.md)
-- [Changelog IRS Helm](charts/irs-helm/CHANGELOG.md)
+- [Changelog IRS Helm](charts/item-relationship-service/CHANGELOG.md)
 - [Compatibility Matrix](COMPATIBILITY_MATRIX.md)
 
 
