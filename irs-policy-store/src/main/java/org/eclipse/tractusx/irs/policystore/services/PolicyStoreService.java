@@ -73,7 +73,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     /**
      * Constants for the configured default policy.
      */
-    private final class ConfiguredDefaultPolicy {
+    private static final class ConfiguredDefaultPolicy {
         /**
          * ID for default policy (see TRI-1594)
          */
