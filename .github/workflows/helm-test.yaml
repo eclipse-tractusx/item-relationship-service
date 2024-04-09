@@ -72,5 +72,5 @@ jobs:
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo add grafana https://grafana.github.io/helm-charts
-          ct install --charts charts/irs-helm --helm-extra-set-args "--set=image.tag=testing --set=image.repository=kind-registry:5000/irs-api"
+          ct install --charts charts/item-relationship-service --helm-extra-set-args "--set=image.tag=testing --set=image.repository=kind-registry:5000/irs-api"
         if: steps.list-changed.outputs.changed == 'true'

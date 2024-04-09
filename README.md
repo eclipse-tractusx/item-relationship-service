@@ -51,7 +51,7 @@ The IRS project consists of several different parts:
 | .idea                            | Configuration for development via [IntelliJ](https://www.jetbrains.com/idea/).                                                                                                 |                                                                              |
 | .run                             | Run configurations for running the IRS in [IntelliJ](https://www.jetbrains.com/idea/).                                                                                         |                                                                              |
 | charts                           | [HELM](https://helm.sh/) charts.                                                                                                                                               |                                                                              |
-| charts/irs-helm                  | IRS [HELM](https://helm.sh/) chart for running the IRS with and its direct dependencies in [kubernetes](https://kubernetes.io/).                                               | [IRS HELM charts documentation](charts/irs-helm/README.md)                   |
+| charts/item-relationship-service | IRS [HELM](https://helm.sh/) chart for running the IRS with and its direct dependencies in [kubernetes](https://kubernetes.io/).                                               | [IRS HELM charts documentation](charts/item-relationship-service/README.md)  |
 | docs                             | Concepts and documentation.                                                                                                                                                    | [Docs README](docs/README.md)                                                |
 | irs-api                          | The IRS API.                                                                                                                                                                   |                                                                              |
 | irs-common                       | Common classes of the IRS.                                                                                                                                                     |                                                                              |
@@ -131,7 +131,7 @@ See [TESTS](TESTS.md).
 ## Changelog and Compatibility Matrix
 
 - [Changelog IRS](CHANGELOG.md)
-- [Changelog IRS Helm](charts/irs-helm/CHANGELOG.md)
+- [Changelog IRS Helm](charts/item-relationship-service/CHANGELOG.md)
 - [Compatibility Matrix](COMPATIBILITY_MATRIX.md)
 
 

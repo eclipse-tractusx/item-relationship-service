@@ -14,7 +14,7 @@ include::irs-spring-config.adoc[leveloffset=+1]
 
 [source,yaml]
 ----
-include::../../../../charts/irs-helm/values.yaml[lines=104..302]
+include::../../../../charts/item-relationship-service/values.yaml[lines=104..302]
 ----
 
 <1> Use this to enable or disable the monitoring components

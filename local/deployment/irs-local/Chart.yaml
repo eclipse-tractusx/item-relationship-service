@@ -16,7 +16,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 apiVersion: v2
-name: irs-helm-local
+name: item-relationship-service-local
 description: IRS Helm chart for local Kubernetes
 home: https://eclipse-tractusx.github.io/
 sources:
@@ -26,6 +26,6 @@ version: 6.14.0
 appVersion: "4.5.0"
 
 dependencies:
-  - name: irs-helm
+  - name: item-relationship-service
     repository: https://eclipse-tractusx.github.io/item-relationship-service
     version: 6.14.0

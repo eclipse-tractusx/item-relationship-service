@@ -3,7 +3,7 @@ name: Upgrade Charts
 on:
   pull_request:
     paths:
-      - 'charts/irs-helm/**'
+      - 'charts/item-relationship-service/**'
   workflow_dispatch:
 
 jobs:
@@ -32,12 +32,12 @@ jobs:
           helm repo add irs https://eclipse-tractusx.github.io/item-relationship-service
 
       - name: Run helm install
-        # Install latest released irs-helm version
+        # Install latest released item-relationship-service version
         run: |
-          helm install irs irs/irs-helm
+          helm install irs irs/item-relationship-service 
 
       - name: Run helm upgrade
-        # Upgrade the installed irs-helm version with the locally available charts
+        # Upgrade the installed item-relationship-service version with the locally available charts
         run: |
-          helm dependency update charts/irs-helm
-          helm upgrade irs charts/irs-helm
+          helm dependency update charts/item-relationship-service
+          helm upgrade irs charts/item-relationship-service 

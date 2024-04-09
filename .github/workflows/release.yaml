@@ -13,17 +13,17 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Calculate Helm release version from CHANGELOG
-        run: echo HELM_VERSION=$(cat charts/irs-helm/CHANGELOG.md | sed -n 's/.*\[\([0-9]\+\.[0-9]\+\.[0-9]\+\)\].*/\1/p' | head -n 1) >> $GITHUB_ENV
+        run: echo HELM_VERSION=$(cat charts/item-relationship-service/CHANGELOG.md | sed -n 's/.*\[\([0-9]\+\.[0-9]\+\.[0-9]\+\)\].*/\1/p' | head -n 1) >> $GITHUB_ENV
 
       - name: Update Chart.yaml appVersion
         uses: mikefarah/yq@v4.40.5
         with:
-          cmd: yq -i eval '.appVersion = "${{ github.ref_name }}"' charts/irs-helm/Chart.yaml
+          cmd: yq -i eval '.appVersion = "${{ github.ref_name }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Update Chart.yaml version
         uses: mikefarah/yq@v4.40.5
         with:
-          cmd: yq -i eval '.version = "${{ env.HELM_VERSION }}"' charts/irs-helm/Chart.yaml
+          cmd: yq -i eval '.version = "${{ env.HELM_VERSION }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Prepare Helm release
         uses: peter-evans/create-pull-request@v5
