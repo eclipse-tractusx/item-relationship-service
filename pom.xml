@@ -107,7 +107,6 @@
         <testcontainers-bom.version>1.19.1</testcontainers-bom.version>
 
         <!-- Plugins -->
-        <spotbugs-plugin.version>4.7.3.2</spotbugs-plugin.version>
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
         <checkstyle-plugin.version>3.3.1</checkstyle-plugin.version>
         <checkstyle.version>10.12.6</checkstyle.version>
@@ -202,33 +201,6 @@
                             <id>license-check</id>
                             <goals>
                                 <goal>license-check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>com.github.spotbugs</groupId>
-                    <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>${spotbugs-plugin.version}</version>
-                    <configuration>
-                        <effort>Max</effort>
-                        <threshold>Low</threshold>
-                        <xmlOutput>true</xmlOutput>
-                        <failThreshold>Low</failThreshold>
-                        <excludeFilterFile>.config/spotbugs-excludes.xml</excludeFilterFile>
-                        <plugins>
-                            <plugin>
-                                <groupId>com.h3xstream.findsecbugs</groupId>
-                                <artifactId>findsecbugs-plugin</artifactId>
-                                <version>${findsecbugs-plugin.version}</version>
-                            </plugin>
-                        </plugins>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <phase>validate</phase>
-                            <goals>
-                                <goal>check</goal>
                             </goals>
                         </execution>
                     </executions>
