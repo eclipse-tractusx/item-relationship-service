@@ -259,7 +259,7 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     private String normalize(final String urn) {
-        return Base64.getEncoder().encodeToString(FilenameUtils.getName(urn).getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().withoutPadding().encodeToString(FilenameUtils.getName(urn).getBytes(StandardCharsets.UTF_8));
     }
 
     private String decode(final String urnBase64) {

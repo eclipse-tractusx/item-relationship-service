@@ -97,6 +97,18 @@ class SemanticsHubClientImplTest {
     }
 
     @Test
+    void shouldReadJsonSchemaFromFilesystemWithUrlSafeFileName() throws SchemaNotFoundException {
+        final String path = Objects.requireNonNull(
+                getClass().getResource("/json-schema/dXJuOnNhbW06aW8uY2F0ZW5heC5zaW5nbGVfbGV2ZWxfYm9tX2FzX3BsYW5uZWQ6My4wLjAjU2luZ2xlTGV2ZWxCb21Bc1BsYW5uZWQ")).getPath();
+
+        final var testee = new SemanticsHubClientImpl(restTemplate, config("", new File(path).getParent()));
+
+        final String resultJsonSchema = testee.getModelJsonSchema("urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned");
+
+        assertThat(resultJsonSchema).isNotBlank().contains("http://json-schema.org/draft-04/schema");
+    }
+
+    @Test
     void shouldReadJsonSchemaFromSemanticHubThenFilesystem() throws SchemaNotFoundException {
         final String path = Objects.requireNonNull(
                 getClass().getResource("/json-schema/assemblyPartRelationship-v1.1.0.json")).getPath();
