@@ -71,12 +71,12 @@ import org.eclipse.tractusx.irs.services.MeterRegistryService;
  */
 public class TestMother {
 
-    public static final String singleLevelBomAsBuiltAspectName = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt";
-    public static final String singleLevelUsageAsBuiltAspectName = "urn:bamm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
-    public static final String serialPartAspectName = "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart";
-    public static final String batchAspectName = "urn:samm:io.catenax.batch:2.0.0#Batch";
-    public static final String materialForRecyclingAspectName = "urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
-    public static final String productDescriptionAspectName = "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription";
+    public static final String singleLevelBomAsBuiltAspectName = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
+    public static final String singleLevelUsageAsBuiltAspectName = "urn:samm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
+    public static final String serialPartAspectName = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
+    public static final String batchAspectName = "urn:samm:io.catenax.batch:3.0.0#Batch";
+    public static final String materialForRecyclingAspectName = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
+    public static final String productDescriptionAspectName = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";
 
     Faker faker = new Faker();
 
@@ -89,7 +89,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
-        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", depth, aspectTypes, false, false,
+        return registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", depth, aspectTypes, false, false,
                 Direction.DOWNWARD);
     }
 
@@ -98,7 +98,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithUrl(final String callbackUrl) {
-        final RegisterJob registerJob = registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", 100, List.of(),
+        final RegisterJob registerJob = registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", 100, List.of(),
                 false, false, Direction.DOWNWARD);
         registerJob.setCallbackUrl(callbackUrl);
         return registerJob;
@@ -106,12 +106,12 @@ public class TestMother {
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
-        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", depth, aspectTypes, true, false,
+        return registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", depth, aspectTypes, true, false,
                 Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJobWithLookupBPNs() {
-        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", null,
+        return registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", null,
                 List.of(singleLevelBomAsBuiltAspectName), false, true, Direction.DOWNWARD);
     }
 

@@ -6,7 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
-## [Unreleased]
+## [UNRELEASED]
+
+### Added
+
+### Changed
+
+## [4.9.0] - 2024-04-03
+### Added
+- Extended EdcPolicyDefinitionService to check if a policy in the edc exists
+
+### Changed
+- IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
+- Support of building relationships based on SingleLevelBomAsBuilt v3.0.0 #488
 
 ### Changed
 
@@ -17,8 +29,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 
 - Improved maintainability in EdcSubmodelClientImpl by reduced method visibility and better naming (in context of #448).
-- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService return throw AlreadyExist exceptions when Conflict is returned from
-  EDC
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService throw AlreadyExist exceptions when
+  conflict is returned from EDC
 - Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
 - Registering a job - aspects array is now accepting full urn of aspect model instead of name only, eg. 'urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt' instead 'SingleLevelBomAsBuilt'. #439
 - Changed the version of irs-registry-client from 1.6.0-SNAPSHOT to 1.6.0
@@ -197,7 +209,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added role "admin_irs" again
 
 ### Changed
-- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint
+- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint. TRI-996
 - Moved OAuth2 JWT token claim to configuration. The fields can be configured with `oauth.resourceClaim`, `oauth.irsNamespace`, `oauth.roles`.
 - ESS
   - Added Tombstone to ESS investigation in case required aspect models "PartAsPlanned" or "PartSiteInformationAsPlanned" are missing

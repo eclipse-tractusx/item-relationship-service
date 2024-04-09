@@ -84,12 +84,12 @@ class SemanticHubWiremockTest {
         semanticHubWillReturnBatchSchema();
 
         // Act
-        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema("urn:samm:io.catenax.batch:2.0.0#Batch");
+        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema("urn:samm:io.catenax.batch:3.0.0#Batch");
 
         // Assert
-        assertThat(modelJsonSchema).contains("urn_samm_io.catenax.batch_2.0.0_CatenaXIdTrait")
-                                   .contains("A batch is a quantity of (semi-) finished products or (raw) material");
-        SemanticHubWireMockSupport.verifySemanticHubWasCalledForModel("urn:samm:io.catenax.batch:2.0.0%23Batch", 1);
+        assertThat(modelJsonSchema).contains("urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait")
+                                   .contains("A batch is a quantity of(semi-)finished products or(raw)material");
+        SemanticHubWireMockSupport.verifySemanticHubWasCalledForModel("urn:samm:io.catenax.batch:3.0.0%23Batch", 1);
     }
 
     @Test

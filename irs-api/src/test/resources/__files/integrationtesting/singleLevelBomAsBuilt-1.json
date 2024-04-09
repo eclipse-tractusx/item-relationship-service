@@ -4,8 +4,8 @@
     {
       "catenaXId": "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5",
       "quantity": {
-        "quantityNumber": 0.2014,
-        "measurementUnit": "unit:kilogram"
+        "value": 0.2014,
+        "unit": "unit:kilogram"
       },
       "hasAlternatives": true,
       "businessPartner": "BPNL00000000TEST",

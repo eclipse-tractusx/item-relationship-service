@@ -90,6 +90,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private static final String ASSET_ID = "d46b51ae-08b6-42d7-a30d-0f8d118c8e0d-ce85f148-e3cf-42fe-9381-d1f276333fc4";
     private static final String PROVIDER_SUFFIX = "/test";
     private static final String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
+    private static final String existingCatenaXId = "urn:uuid:92ad328c-66d4-4bdc-b2b8-f2aa355f982f";
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final TimeMachine clock = new TimeMachine();
@@ -196,7 +197,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
-        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(existingCatenaXId).build()));
         prepareTestdata(existingCatenaXId, "_singleLevelBomAsBuilt");
@@ -238,10 +238,9 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
-        final String catenaXId = "urn:uuid:644c0988-6949-4586-b304-7f46f412a5cc";
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
-                List.of(CatalogItem.builder().itemId(catenaXId).build()));
-        prepareTestdata(catenaXId, "_singleLevelBomAsSpecified");
+                List.of(CatalogItem.builder().itemId(existingCatenaXId).build()));
+        prepareTestdata(existingCatenaXId, "_singleLevelBomAsSpecified");
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
@@ -251,7 +250,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
                                               .getPayload();
 
         // assert
-        assertThat(submodelResponse).contains("urn:uuid:2afbac90-a662-4f16-9058-4f030e692631");
+        assertThat(submodelResponse).contains("urn:uuid:6ad55f6a-8654-43f2-98c1-8b2642b4c860");
     }
 
     @Test
@@ -281,10 +280,10 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
-        final String catenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
+        final String notExistingCatenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
-                List.of(CatalogItem.builder().itemId(catenaXId).build()));
-        prepareTestdata(catenaXId, "_singleLevelBomAsBuilt");
+                List.of(CatalogItem.builder().itemId(notExistingCatenaXId).build()));
+        prepareTestdata(notExistingCatenaXId, "_singleLevelBomAsBuilt");
         when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
@@ -302,7 +301,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
-        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
         when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
                 "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID)).thenReturn(createCatalog(ASSET_ID, 3));
         prepareTestdata(existingCatenaXId, "_serialPart");
@@ -317,7 +315,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // assert
         assertThat(submodelResponse).startsWith(
-                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
     }
 
     @Test
@@ -325,7 +323,6 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
-        final String existingCatenaXId = "urn:uuid:b00df8b5-7826-4b87-b0f6-7c1e4cc7b444";
         prepareTestdata(existingCatenaXId, "_serialPart");
         final String target = URLEncoder.encode(ASSET_ID, StandardCharsets.UTF_8);
         when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
@@ -341,7 +338,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // assert
         assertThat(submodelResponse).startsWith(
-                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AVTH\",\"key\":\"manufacturerId\"}");
+                "{\"localIdentifiers\":[{\"value\":\"BPNL00000003AYRE\",\"key\":\"manufacturerId\"}");
     }
 
     @Test
@@ -349,7 +346,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
-        final String parentCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
+        final String parentCatenaXId = "urn:uuid:31c93161-4de0-40e8-8a55-0ce4c0d9e5e9";
         final BomLifecycle asBuilt = BomLifecycle.AS_BUILT;
         when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(parentCatenaXId).build()));

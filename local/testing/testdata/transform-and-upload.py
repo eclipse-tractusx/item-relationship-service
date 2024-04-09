@@ -563,6 +563,7 @@ if __name__ == "__main__":
                         " ",
                         "")
                 if "PartAsPlanned" in tmp_key:
+                    specific_asset_ids_temp = copy(tmp_data[tmp_key][0]["localIdentifiers"])
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")
@@ -570,6 +571,8 @@ if __name__ == "__main__":
                         "value": tmp_data[tmp_key][0]["partTypeInformation"]["manufacturerPartId"],
                         "key": "manufacturerPartId"
                     })
+            print(name_at_manufacturer)
+            name_at_manufacturer = name_at_manufacturer + "-" + uuid.uuid4().hex
             print(name_at_manufacturer)
 
             manufacturerId = {
