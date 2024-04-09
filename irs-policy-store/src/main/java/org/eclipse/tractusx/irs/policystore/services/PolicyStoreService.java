@@ -73,16 +73,16 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     /**
      * Constants for the configured default policy.
      */
-    private interface ConfiguredDefaultPolicy {
+    private final class ConfiguredDefaultPolicy {
         /**
          * ID for default policy (see TRI-1594)
          */
-        String DEFAULT_POLICY_ID = "default-policy";
+        public static final String DEFAULT_POLICY_ID = "default-policy";
 
         /**
          * Lifetime for default policy in years (see TRI-1594)
          */
-        int DEFAULT_POLICY_LIFETIME_YEARS = 5;
+        public static final int DEFAULT_POLICY_LIFETIME_YEARS = 5;
     }
 
     private final List<Policy> allowedPoliciesFromConfig;
