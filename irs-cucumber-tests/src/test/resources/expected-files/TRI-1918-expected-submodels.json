@@ -1,0 +1,25 @@
+{
+  "submodels": [
+    {
+      "identification": "urn:uuid:91f0050f-7aea-4f84-828e-899b17cc56be",
+      "aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+      "contractAgreementId": "MmVjYjQ1YzEtN2QxNy00NTMxLWFlMmItNDhiYjQwYzA5MTcw:dXJuOnV1aWQ6MjIwZGI2NmQtM2VmMi00Yzg1LWFiYzgtZDlhNDhkMDZiMDNh:YzQzYzUyY2MtNjA4ZC00M2E0LTliNWYtMjcxZDE0NDMwOTUw",
+      "payload": {
+        "catenaXId": "urn:uuid:1ad0892a-59c1-4118-8b52-601540973f31",
+        "childItems": [
+          {
+            "catenaXId": "urn:uuid:c6d2d642-a055-4ddf-87e3-1a3b02c689e3",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 20
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000000BJTL",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ]
+      }
+    }
+  ]
+}

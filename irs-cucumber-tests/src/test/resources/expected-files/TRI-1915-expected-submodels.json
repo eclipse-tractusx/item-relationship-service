@@ -1,39 +1,63 @@
 {
   "submodels": [
     {
-      "catenaXId": "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c",
-      "childItems": [
-        {
-          "validityPeriod": {
-            "validFrom": "2023-03-21T08:17:29.187+01:00",
-            "validTo": "2024-07-01T16:10:00.000+01:00"
+      "identification": "urn:uuid:716429d0-3108-46fd-869f-b6c86d32cc08",
+      "aspectType": "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned",
+      "contractAgreementId": "NGYzNjdkMGMtZmMyOC00Y2U5LWJkYTQtYjAwZGFjMGFkYWZh:dXJuOnV1aWQ6Njc0NzU2NjItNjFmMy00NTY4LWJlMGItYWVlNDJjNGFlZjM5:MjdmMWI0YWQtZDhjNS00NzQxLWFkOWUtYjA1OTViYjQwYzcw",
+      "payload": {
+        "catenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
+        "childItems": [
+          {
+            "validityPeriod": {
+              "validFrom": "2023-03-21T08:17:29.187+01:00",
+              "validTo": "2024-07-01T16:10:00.000+01:00"
+            },
+            "catenaXId": "urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 10
+            },
+            "businessPartner": "BPNL00000003AYRE",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
           },
-          "catenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
-          "quantity": {
-            "unit": "unit:piece",
-            "value": 6
-          },
-          "businessPartner": "BPNL00000003AYRE",
-          "createdOn": "2022-02-03T14:48:54.709Z",
-          "lastModifiedOn": "2022-02-03T14:48:54.709Z"
-        }
-      ]
+          {
+            "validityPeriod": {
+              "validFrom": "2023-03-21T08:17:29.187+01:00",
+              "validTo": "2024-07-01T16:10:00.000+01:00"
+            },
+            "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 0.11
+            },
+            "businessPartner": "BPNL00000003AXS3",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ]
+      }
     },
     {
-      "catenaXId": "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c",
-      "partTypeInformation": {
-        "manufacturerPartId": "38049661-08",
-        "classification": "product",
-        "nameAtManufacturer": "OEM A High Voltage Battery"
-      },
-      "partSitesInformationAsPlanned": [
-        {
-          "functionValidUntil": "2023-12-11T06:14:55.183Z",
-          "catenaXsiteId": "BPNS1234567890ZZ",
-          "function": "production",
-          "functionValidFrom": "2023-12-11T06:14:55.181Z"
-        }
-      ]
+      "identification": "urn:uuid:2e8ea560-693d-4755-83b6-03e111975f71",
+      "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+      "contractAgreementId": "ZmM1MmY1ODItOTQyYy00NzQwLTljOWUtNjZlM2Q0ZTc5Y2Qx:dXJuOnV1aWQ6Nzg0ZWZkMDYtZWY1Zi00ZDUyLWJmZTgtODVkNDQ4OWRlNzBm:MzVmNWEwYWItOGVlNy00MzlhLWIxM2UtMjQyYWI2NzUzMmU1",
+      "payload": {
+        "catenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
+        "partTypeInformation": {
+          "manufacturerPartId": "8840838-04",
+          "classification": "product",
+          "nameAtManufacturer": "HV Modul"
+        },
+        "partSitesInformationAsPlanned": [
+          {
+            "functionValidUntil": "2023-12-11T06:14:55.183Z",
+            "catenaXsiteId": "BPNS1234567890ZZ",
+            "function": "production",
+            "functionValidFrom": "2023-12-11T06:14:55.181Z"
+          }
+        ]
+      }
     }
   ]
 }

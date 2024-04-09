@@ -1,9 +1,46 @@
 {
   "submodels": [
     {
-      "identification": "urn:uuid:59e2d8a9-ea19-4c74-841c-3ac97819e01b",
+      "identification": "urn:uuid:39eb0751-bc99-48ee-8fd8-dbf233badb5f",
+      "aspectType": "urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
+      "contractAgreementId": "MmVjYjQ1YzEtN2QxNy00NTMxLWFlMmItNDhiYjQwYzA5MTcw:dXJuOnV1aWQ6MjIwZGI2NmQtM2VmMi00Yzg1LWFiYzgtZDlhNDhkMDZiMDNh:YzQzYzUyY2MtNjA4ZC00M2E0LTliNWYtMjcxZDE0NDMwOTUw",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "82227044FBE",
+            "key": "jisNumber"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000000BJTL",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:c6d2d642-a055-4ddf-87e3-1a3b02c689e3",
+        "partTypeInformation": {
+          "manufacturerPartId": "123-0.740-3434-A",
+          "customerPartId": "PRT-12345",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left",
+          "nameAtCustomer": "side element A"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:ec9ba5fc-339e-4142-89be-872650c6ab2f",
       "aspectType": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
-      "contractAgreementId": "ZTQzZmFlNTktNWQxOS00OGFhLTlhMTMtYzY0NDRiZjA0Njk3:dXJuOnV1aWQ6MmU3NjgyNGItMDRiYi00NDdhLTgxMDItNzczN2Y0ZGFmM2Uz:NDZiMzU2OWItOGE2Yy00MTJkLWI3MTMtNThlMGFmNzY5N2Q2",
+      "contractAgreementId": "MDBmZDcyMDktYTE2MS00OWM5LWFiMzAtMmUwMDllNWE3MDAw:dXJuOnV1aWQ6Njc1NWMyZTAtNzc5Ni00NTYzLWE1NjktYTk3NmZjZTNiYjQ3:MjhhN2VlY2EtMDQwNi00ZjQ4LWI2NDktMjhiYzU0NzcyNTcx",
       "payload": {
         "localIdentifiers": [
           {
@@ -15,7 +52,7 @@
             "key": "manufacturerPartId"
           },
           {
-            "value": "NO-747120479071756798529531",
+            "value": "NO-073366714159387479576634",
             "key": "partInstanceId"
           }
         ],
@@ -29,7 +66,7 @@
             }
           ]
         },
-        "catenaXId": "urn:uuid:b03e4631-d40c-489d-bfeb-54b0a0b89c4c",
+        "catenaXId": "urn:uuid:c6d2d642-a055-4ddf-87e3-1a3b02c689e3",
         "partTypeInformation": {
           "manufacturerPartId": "95657762-59",
           "customerPartId": "95657762-59",
@@ -44,43 +81,6 @@
           "nameAtCustomer": "Door Key"
         },
         "itemVersion": "05"
-      }
-    },
-    {
-      "identification": "urn:uuid:614b0ff2-14dc-4dd4-9db8-301e41b8ea9d",
-      "aspectType": "urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
-      "contractAgreementId": "MjBkZjVmMWYtOTMwYi00NzM4LWJlNDUtZjMwMjczODY1NDEy:dXJuOnV1aWQ6NjUwZWQ4ZTMtOGViMi00NWM3LWE5MzMtZDI4M2YxNDY4ZDk5:YjgyOTJmODUtYWNlYy00ZTBiLThiYzgtMmI3NzRiYmQzNjNh",
-      "payload": {
-        "localIdentifiers": [
-          {
-            "value": "86681316RUO",
-            "key": "jisNumber"
-          }
-        ],
-        "manufacturingInformation": {
-          "date": "2022-02-04T14:48:54",
-          "country": "HUR",
-          "sites": [
-            {
-              "catenaXsiteId": "BPNS00000000BJTL",
-              "function": "production"
-            }
-          ]
-        },
-        "catenaXId": "urn:uuid:b03e4631-d40c-489d-bfeb-54b0a0b89c4c",
-        "partTypeInformation": {
-          "manufacturerPartId": "123-0.740-3434-A",
-          "customerPartId": "PRT-12345",
-          "partClassification": [
-            {
-              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
-              "classificationStandard": "IEC",
-              "classificationID": "61360- 2:2012 "
-            }
-          ],
-          "nameAtManufacturer": "Mirror left",
-          "nameAtCustomer": "side element A"
-        }
       }
     }
   ]

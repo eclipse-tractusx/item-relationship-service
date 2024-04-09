@@ -1,18 +1,9 @@
 {
   "submodels": [
     {
-      "identification": "urn:uuid:8c315c6e-4a41-4a44-a566-9c8cb8d909d7",
-      "aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
-      "contractAgreementId": "MjBkZjVmMWYtOTMwYi00NzM4LWJlNDUtZjMwMjczODY1NDEy:dXJuOnV1aWQ6NjUwZWQ4ZTMtOGViMi00NWM3LWE5MzMtZDI4M2YxNDY4ZDk5:YjgyOTJmODUtYWNlYy00ZTBiLThiYzgtMmI3NzRiYmQzNjNh",
-      "payload": {
-        "catenaXId": "urn:uuid:c6651227-bad6-4b39-b3b0-9fef41230c3a",
-        "childItems": []
-      }
-    },
-    {
-      "identification": "urn:uuid:9a1c9894-e639-438d-8414-2ac25e5c5f12",
+      "identification": "urn:uuid:17354138-5bf3-45ba-899a-d5245d4d9c83",
       "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
-      "contractAgreementId": "MmM1ZWM3NDAtN2ZhMy00NDE0LTkxY2ItZTk2MzA0Nzc0YzMx:dXJuOnV1aWQ6OWExOWU3ZmUtM2U5Ni00ZTJkLWI0ZDktYmQ1NGVmMjYwZDhk:ZTFjNWQxZmEtM2FmNi00ZDk3LWEyMDYtM2JiYzY4MjUzZGUw",
+      "contractAgreementId": "MDBmZDcyMDktYTE2MS00OWM5LWFiMzAtMmUwMDllNWE3MDAw:dXJuOnV1aWQ6Njc1NWMyZTAtNzc5Ni00NTYzLWE1NjktYTk3NmZjZTNiYjQ3:MjhhN2VlY2EtMDQwNi00ZjQ4LWI2NDktMjhiYzU0NzcyNTcx",
       "payload": {
         "localIdentifiers": [
           {
@@ -30,9 +21,9 @@
             }
           ]
         },
-        "catenaXId": "urn:uuid:c6651227-bad6-4b39-b3b0-9fef41230c3a",
+        "catenaXId": "urn:uuid:ee9b9c9e-1416-45a3-b683-d98d5d88e548",
         "partTypeInformation": {
-          "manufacturerPartId": "LV-64",
+          "manufacturerPartId": "SC-00",
           "partClassification": [
             {
               "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
