@@ -49,6 +49,7 @@ import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
+import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
 import org.eclipse.tractusx.irs.edc.client.policy.Operator;
@@ -90,6 +91,7 @@ class PolicyStoreServiceTest {
 
     @Captor
     private ArgumentCaptor<Policy> policyCaptor;
+
     @Captor
     private ArgumentCaptor<String> bpnCaptor;
 
@@ -129,7 +131,7 @@ class PolicyStoreServiceTest {
         }
 
         @Test
-        void registerPolicy() {
+        void registerPolicy_success() {
 
             // ARRANGE
             final OffsetDateTime now = OffsetDateTime.now();
@@ -243,10 +245,10 @@ class PolicyStoreServiceTest {
     }
 
     @Nested
-    class GetPoliciesTests {
+    class GetStoredPoliciesTests {
 
         @Test
-        void getStoredPolicies() {
+        void getStoredPolicies_shouldReturnAllPoliciesStoredForTheBpn() {
 
             // ARRANGE
             final List<Policy> policies = List.of(createPolicy("test1"), createPolicy("test2"), createPolicy("test3"));
@@ -260,9 +262,11 @@ class PolicyStoreServiceTest {
         }
 
         @Test
-        void getDefaultStoredPoliciesWhenEmpty() {
+        void getStoredPolicies_whenNoPoliciesForBpn_shouldReturnTheConfiguredDefaultPolicies() {
 
             // ARRANGE
+
+            // default policy configuration
             final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy1 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
                     EXAMPLE_ACCEPTED_LEFT_OPERAND, "eq", EXAMPLE_ALLOWED_NAME);
             final DefaultAcceptedPoliciesConfig.AcceptedPolicy acceptedPolicy2 = new DefaultAcceptedPoliciesConfig.AcceptedPolicy(
@@ -284,9 +288,13 @@ class PolicyStoreServiceTest {
             assertThat(constraints.getOr()).hasSize(2);
             assertThat(constraints.getAnd()).hasSize(2);
         }
+    }
+
+    @Nested
+    class GetAcceptedPoliciesTests {
 
         @Test
-        void shouldReturnDefaultPolicyWhenBpnIsEmpty() {
+        void getAcceptedPolicies_whenParameterBpnIsNull_shouldReturnTheConfiguredDefaultPolicy() {
 
             // ARRANGE
             when(persistenceMock.readAll()).thenReturn(emptyMap());
@@ -295,7 +303,35 @@ class PolicyStoreServiceTest {
             final var acceptedPolicies = testee.getAcceptedPolicies(null);
 
             // ASSERT
-            assertThat(acceptedPolicies.get(0).policy().getPolicyId()).isEqualTo("default-policy");
+            final String policyIdOfConfiguredDefaultPolicy = "default-policy";
+            assertThat(acceptedPolicies.get(0).policy().getPolicyId()).isEqualTo(policyIdOfConfiguredDefaultPolicy);
+        }
+
+        @Test
+        void getAcceptedPolicies_whenNoPoliciesAssociatedWithTheGivenBpn_shouldReturnTheRegisteredDefaultPolicies() {
+
+            // ARRANGE
+            when(persistenceMock.readAll(BPN)).thenReturn(emptyList());
+
+            // policy registered without BPN should be used as default policy (see #199)
+            // this overrides the configured default policy (see the previous test above)
+            final String defaultPolicyId1 = "registered-default-policy-1";
+            final String defaultPolicyId2 = "registered-default-policy-2";
+            when(persistenceMock.readAll(PolicyStoreService.DEFAULT)).thenReturn(List.of(
+                    // default policy 1
+                    createPolicy(defaultPolicyId1),
+                    // default policy 2
+                    createPolicy(defaultPolicyId2)));
+
+            // ACT
+            final var acceptedPolicies = testee.getAcceptedPolicies(BPN);
+
+            // ASSERT
+            final List<String> policyIds = acceptedPolicies.stream()
+                                                           .map(AcceptedPolicy::policy)
+                                                           .map(Policy::getPolicyId)
+                                                           .toList();
+            assertThat(policyIds).containsExactlyInAnyOrder(defaultPolicyId1, defaultPolicyId2);
         }
 
     }
@@ -320,7 +356,7 @@ class PolicyStoreServiceTest {
     class DeletePolicyTests {
 
         @Test
-        void deletePolicy_success() {
+        void deletePolicy_deleteSuccessful() {
             // ARRANGE
             when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
 
@@ -332,7 +368,7 @@ class PolicyStoreServiceTest {
         }
 
         @Test
-        void deletePolicy_internalServerError() {
+        void deletePolicy_exceptionFromPolicyPersistence_shouldReturnHttpStatus500() {
 
             // ACT
             final String policyId = "testId";
@@ -345,7 +381,7 @@ class PolicyStoreServiceTest {
         }
 
         @Test
-        void deletePolicy_policyNotFound() {
+        void deletePolicy_whenPolicyNotFound_shouldReturnHttpStatus404() {
 
             // ACT
             final String policyId = "notExistingPolicyId";
@@ -360,10 +396,10 @@ class PolicyStoreServiceTest {
     }
 
     @Nested
-    class UpdatePolicyTests {
+    class UpdatePoliciesTests {
 
         @Test
-        void updatePolicy_withBpnAndValidUntilChanged() {
+        void updatePolicies_shouldUpdateBpnAndValidUntil() {
             // ARRANGE
             final String policyId = "testId";
 
@@ -392,7 +428,6 @@ class PolicyStoreServiceTest {
             assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(expectedValidUntil);
         }
 
-        @SuppressWarnings("unchecked")
         @Test
         void updatePolicies_shouldAddPolicyToEachBpn() {
 
@@ -426,7 +461,6 @@ class PolicyStoreServiceTest {
             assertThat(bpnCaptor.getAllValues().get(1)).isEqualTo("bpn2");
         }
 
-        @SuppressWarnings("unchecked")
         @Test
         void updatePolicies_shouldAssociateEachGivenPolicyWithEachGivenBpn() {
 
@@ -477,7 +511,7 @@ class PolicyStoreServiceTest {
         }
 
         @Test
-        void updatePolicy_shouldThrowResponseStatusException() {
+        void updatePolicies_exceptionFromPolicyPersistence_shouldReturnHttpStatus500() {
 
             // ARRANGE
             final String policyId = "testId";

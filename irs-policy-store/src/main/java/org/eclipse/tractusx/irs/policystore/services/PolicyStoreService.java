@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.json.JsonObject;
 import lombok.extern.slf4j.Slf4j;
@@ -95,7 +96,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     private static final String MISSING_REQUEST_FIELD_MESSAGE =
             "Request does not contain all required fields. " + "Missing: %s";
 
-    private static final String DEFAULT = "default";
+    static final String DEFAULT = "default";
 
     public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
             final PolicyPersistence persistence, final EdcTransformer edcTransformer, final Clock clock) {
@@ -176,6 +177,12 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         final List<Policy> storedPolicies = new LinkedList<>();
         for (final String bpn : bpnls) {
             storedPolicies.addAll(persistence.readAll(bpn));
+        }
+
+        // Policies not associated with a BPN (default policies) should only be returned
+        // if there are no policies that are registered for this BPN explicitly (see #199).
+        if (storedPolicies.isEmpty()) {
+            storedPolicies.addAll(persistence.readAll(DEFAULT_BLOB_NAME));
         }
 
         if (storedPolicies.isEmpty()) {
@@ -276,22 +283,29 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     @Override
     public List<AcceptedPolicy> getAcceptedPolicies(final String bpn) {
+
         if (bpn == null) {
-            return getAllStoredPolicies().values()
-                                         .stream()
-                                         .flatMap(Collection::stream)
-                                         .map(this::toAcceptedPolicy)
-                                         .toList();
+            return getAllPolicies();
         }
 
-        final ArrayList<Policy> policies = new ArrayList<>();
-        policies.addAll(getStoredPolicies(List.of(bpn)));
-        policies.addAll(getStoredPolicies(List.of(DEFAULT_BLOB_NAME)));
+        final List<Policy> storedPolicies = getStoredPolicies(List.of(bpn));
+        final Stream<Policy> result = sortByPolicyId(storedPolicies);
+        return result.map(this::toAcceptedPolicy).toList();
 
+    }
+
+    private static Stream<Policy> sortByPolicyId(final List<Policy> policies) {
         final TreeSet<Policy> result = new TreeSet<>(Comparator.comparing(Policy::getPolicyId));
         result.addAll(policies);
+        return result.stream();
+    }
 
-        return result.stream().map(this::toAcceptedPolicy).toList();
+    private List<AcceptedPolicy> getAllPolicies() {
+        return getAllStoredPolicies().values()
+                                     .stream()
+                                     .flatMap(Collection::stream)
+                                     .map(this::toAcceptedPolicy)
+                                     .toList();
     }
 
     private AcceptedPolicy toAcceptedPolicy(final Policy policy) {
@@ -300,6 +314,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     private List<Policy> createDefaultPolicyFromConfig(
             final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig) {
+
         final List<Constraint> constraints = new ArrayList<>();
         defaultAcceptedPoliciesConfig.getAcceptedPolicies()
                                      .forEach(acceptedPolicy -> constraints.add(
