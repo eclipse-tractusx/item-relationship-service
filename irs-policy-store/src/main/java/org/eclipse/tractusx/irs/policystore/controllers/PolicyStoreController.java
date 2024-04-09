@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -141,10 +140,13 @@ public class PolicyStoreController {
                summary = "Lists the registered policies that should be accepted in EDC negotiation.",
                security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
-    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Returns the policies.",
-                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(
-                                                 schema = @Schema(implementation = Policy.class)))
-                                                     // TODO #199 OpenApi does not describe returned map correctly
+    @ApiResponses(value = { @ApiResponse(responseCode = "200",
+                                         description = "Returns the policies as map of BPN to list of policies.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              examples = @ExampleObject(
+                                                                      value = PolicyResponse.BPN_TO_POLICY_MAP_EXAMPLE),
+                                                              schema = @Schema(
+                                                                      description = "Map of BPN to list of policies"))
                                          }),
                             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
@@ -165,7 +167,9 @@ public class PolicyStoreController {
     public Map<String, List<PolicyResponse>> getPolicies(//
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers //
-            @Parameter(description = "List of business partner numbers.") final List<String> businessPartnerNumbers) {
+            @Parameter(description = "List of business partner numbers.") //
+            final List<String> businessPartnerNumbers //
+    ) {
 
         final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
         if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
