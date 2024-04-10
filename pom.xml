@@ -80,31 +80,31 @@
         <springdoc.version>2.2.0</springdoc.version>
         <micrometer.version>1.11.4</micrometer.version>
         <datafaker.version>1.9.0</datafaker.version>
-        <json-unit-assertj.version>2.36.1</json-unit-assertj.version>
+        <json-unit-assertj.version>3.2.7</json-unit-assertj.version>
         <gatling.version>3.9.5</gatling.version>
         <resilience4j.version>2.1.0</resilience4j.version>
-        <minio.version>8.5.6</minio.version>
+        <minio.version>8.5.9</minio.version>
         <rest-assured.version>5.4.0</rest-assured.version>
         <awaitility.version>4.2.0</awaitility.version>
         <jsonassert.version>1.5.1</jsonassert.version>
         <junit-bom.version>5.9.2</junit-bom.version>
         <cucumber-bom.version>7.11.1</cucumber-bom.version>
         <snakeyaml.version>2.0</snakeyaml.version>
-        <commons-validator.version>1.7</commons-validator.version>
-        <swagger-annotations.version>2.2.16</swagger-annotations.version>
+        <commons-validator.version>1.8.0</commons-validator.version>
+        <swagger-annotations.version>2.2.18</swagger-annotations.version>
         <edc.version>0.2.1</edc.version>
         <okio-jvm.version>3.5.0</okio-jvm.version>
         <bc-jdk18on.version>1.76</bc-jdk18on.version>
-        <wiremock-standalone.version>3.3.1</wiremock-standalone.version>
-        <jsoup.version>1.16.1</jsoup.version>
+        <wiremock-standalone.version>3.5.2</wiremock-standalone.version>
+        <jsoup.version>1.17.2</jsoup.version>
         <jsonschemafriend.version>0.12.4</jsonschemafriend.version>
-        <commons-io.version>2.14.0</commons-io.version>
+        <commons-io.version>2.16.1</commons-io.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
-        <okhttp.version>4.10.0</okhttp.version>
+        <okhttp.version>4.12.0</okhttp.version>
         <jackson-databind.version>2.15.1</jackson-databind.version>
         <junit-jupiter-engine.version>5.9.2</junit-jupiter-engine.version>
-        <json-smart.version>2.4.10</json-smart.version>
-        <testcontainers-bom.version>1.19.1</testcontainers-bom.version>
+        <json-smart.version>2.5.1</json-smart.version>
+        <testcontainers-bom.version>1.19.7</testcontainers-bom.version>
 
         <!-- Plugins -->
         <findsecbugs-plugin.version>1.12.0</findsecbugs-plugin.version>
@@ -123,6 +123,7 @@
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <license-tool-plugin.version>1.1.0</license-tool-plugin.version>
         <snappy-java.version>1.1.10.5</snappy-java.version>
+        <commons-compress.version>1.26.1</commons-compress.version>
     </properties>
 
     <dependencyManagement>
@@ -136,22 +137,6 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcprov-jdk15on</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>snappy-java</artifactId>
-                        <groupId>org.xerial.snappy</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <!-- Update snappy-java manually to avoid vulnerability CVE-2023-43642; can be removed after Minio updates their dependency -->
-            <dependency>
-                <groupId>org.xerial.snappy</groupId>
-                <artifactId>snappy-java</artifactId>
-                <version>${snappy-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
