@@ -144,7 +144,7 @@ public class PolicyStoreController {
                                          description = "Returns the policies as map of BPN to list of policies.",
                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
                                                               examples = @ExampleObject(
-                                                                      value = PolicyResponse.BPN_TO_POLICY_MAP_EXAMPLE),
+                                                                      PolicyResponse.BPN_TO_POLICY_MAP_EXAMPLE),
                                                               schema = @Schema(
                                                                       description = "Map of BPN to list of policies"))
                                          }),

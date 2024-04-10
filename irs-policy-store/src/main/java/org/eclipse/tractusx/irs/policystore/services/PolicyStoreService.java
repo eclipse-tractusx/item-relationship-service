@@ -70,6 +70,19 @@ import org.springframework.web.server.ResponseStatusException;
 })
 public class PolicyStoreService implements AcceptedPoliciesProvider {
 
+    private final List<Policy> allowedPoliciesFromConfig;
+
+    private final PolicyPersistence persistence;
+
+    private final EdcTransformer edcTransformer;
+
+    private final Clock clock;
+
+    private static final String MISSING_REQUEST_FIELD_MESSAGE =
+            "Request does not contain all required fields. " + "Missing: %s";
+
+    private static final String DEFAULT = "default";
+
     /**
      * Constants for the configured default policy.
      */
@@ -84,19 +97,6 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
          */
         public static final int DEFAULT_POLICY_LIFETIME_YEARS = 5;
     }
-
-    private final List<Policy> allowedPoliciesFromConfig;
-
-    private final PolicyPersistence persistence;
-
-    private final EdcTransformer edcTransformer;
-
-    private final Clock clock;
-
-    private static final String MISSING_REQUEST_FIELD_MESSAGE =
-            "Request does not contain all required fields. " + "Missing: %s";
-
-    static final String DEFAULT = "default";
 
     public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
             final PolicyPersistence persistence, final EdcTransformer edcTransformer, final Clock clock) {

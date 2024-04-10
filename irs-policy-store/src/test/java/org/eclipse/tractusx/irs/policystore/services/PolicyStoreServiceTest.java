@@ -317,7 +317,7 @@ class PolicyStoreServiceTest {
             // this overrides the configured default policy (see the previous test above)
             final String defaultPolicyId1 = "registered-default-policy-1";
             final String defaultPolicyId2 = "registered-default-policy-2";
-            when(persistenceMock.readAll(PolicyStoreService.DEFAULT)).thenReturn(List.of(
+            when(persistenceMock.readAll("default")).thenReturn(List.of(
                     // default policy 1
                     createPolicy(defaultPolicyId1),
                     // default policy 2

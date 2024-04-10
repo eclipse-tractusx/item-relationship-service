@@ -39,7 +39,7 @@ public class BusinessPartnerNumberListValidator
     private static final Pattern PATTERN = Pattern.compile(BPN_REGEX);
 
     @Override
-    public boolean isValid(List<String> value, ConstraintValidatorContext context) {
+    public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
 
         // allow null and empty here (in order to allow flexible combination with @NotNull and @NotEmpty)
         if (value == null || value.isEmpty()) {
