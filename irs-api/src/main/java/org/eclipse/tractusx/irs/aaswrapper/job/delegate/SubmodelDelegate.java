@@ -134,7 +134,7 @@ public class SubmodelDelegate extends AbstractDelegate {
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
-                            new IllegalArgumentException("Submodel policies validation failed. " + errors), 0,
+                            new IllegalArgumentException("Submodel payload validation failed. " + errors), 0,
                             ProcessStep.SCHEMA_VALIDATION));
                 }
             } catch (final JsonParseException e) {
