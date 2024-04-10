@@ -127,7 +127,7 @@ public class RelationshipDelegate extends AbstractDelegate {
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
                             ProcessStep.SUBMODEL_REQUEST));
         } catch (final JsonParseException e) {
-            log.info("Submodel policies did not match the expected AspectType. Creating Tombstone.");
+            log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
                             ProcessStep.SUBMODEL_REQUEST));

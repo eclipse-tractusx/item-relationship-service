@@ -94,7 +94,7 @@ public abstract class AbstractDelegate {
         final Optional<String> dspEndpoint = extractDspEndpoint(subprotocolBody);
 
         if (dspEndpoint.isPresent()) {
-            log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel policies", subprotocolBody);
+            log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload", subprotocolBody);
             return submodelFacade.getSubmodelPayload(dspEndpoint.get(),
                     digitalTwinRegistryEndpoint.getProtocolInformation().getHref(), extractAssetId(subprotocolBody),
                     bpn);

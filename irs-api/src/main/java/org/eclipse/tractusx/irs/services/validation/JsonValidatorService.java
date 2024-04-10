@@ -54,10 +54,10 @@ public class JsonValidatorService {
     }
 
     /**
-     * Validate the policies against the schema.
+     * Validate the payload against the schema.
      *
      * @param jsonSchema  the JSON schema
-     * @param jsonPayload the JSON policies to validate
+     * @param jsonPayload the JSON payload to validate
      * @return the validation result, containing the validation errors if applicable
      */
     public ValidationResult validate(final String jsonSchema, final String jsonPayload) throws InvalidSchemaException {
@@ -74,10 +74,10 @@ public class JsonValidatorService {
             return createValidationResult(errors);
 
         } catch (final IllegalStateException | JsonParseException e) {
-            log.warn("Unable to validate JSON policies ({})", jsonPayload, e);
+            log.warn("Unable to validate JSON payload ({})", jsonPayload, e);
             return ValidationResult.builder()
                                    .valid(false)
-                                   .validationError("Illegal JSON policies, cannot be validated")
+                                   .validationError("Illegal JSON payload, cannot be validated")
                                    .build();
         }
     }
