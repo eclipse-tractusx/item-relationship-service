@@ -83,7 +83,7 @@
         <json-unit-assertj.version>2.36.1</json-unit-assertj.version>
         <gatling.version>3.9.5</gatling.version>
         <resilience4j.version>2.1.0</resilience4j.version>
-        <minio.version>8.5.6</minio.version>
+        <minio.version>8.5.9</minio.version>
         <rest-assured.version>5.4.0</rest-assured.version>
         <awaitility.version>4.2.0</awaitility.version>
         <jsonassert.version>1.5.1</jsonassert.version>
@@ -136,22 +136,6 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.bouncycastle</groupId>
-                        <artifactId>bcprov-jdk15on</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>snappy-java</artifactId>
-                        <groupId>org.xerial.snappy</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <!-- Update snappy-java manually to avoid vulnerability CVE-2023-43642; can be removed after Minio updates their dependency -->
-            <dependency>
-                <groupId>org.xerial.snappy</groupId>
-                <artifactId>snappy-java</artifactId>
-                <version>${snappy-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
