@@ -51,14 +51,11 @@ RUN --mount=type=cache,target=/root/.m2 mvn -B clean package -pl :$BUILD_TARGET 
 # Copy the jar and build image
 FROM eclipse-temurin:17-jre-alpine AS irs-api
 
-ARG UID=10000
-ARG GID=3000
-
 WORKDIR /app
 
 COPY --chmod=755 --from=maven /build/irs-api/target/irs-api-*-exec.jar app.jar
 
-USER ${UID}:${GID}
+USER 10000:3000
 
 ENTRYPOINT ["java", "-Djava.util.logging.config.file=./logging.properties", "-jar", "app.jar"]
 
