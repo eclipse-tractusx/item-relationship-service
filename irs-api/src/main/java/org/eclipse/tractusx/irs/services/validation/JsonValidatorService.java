@@ -74,7 +74,7 @@ public class JsonValidatorService {
             return createValidationResult(errors);
 
         } catch (final IllegalStateException | JsonParseException e) {
-            log.warn("Unable to validate JSON policies ({})", jsonPayload, e);
+            log.warn("Unable to validate JSON payload ({})", jsonPayload, e);
             return ValidationResult.builder()
                                    .valid(false)
                                    .validationError("Illegal JSON policies, cannot be validated")
