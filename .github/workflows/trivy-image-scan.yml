@@ -60,6 +60,7 @@ jobs:
           output: "trivy-results2.sarif"
           exit-code: "1"
           severity: "CRITICAL,HIGH"
+          hide-progress: false
           trivyignores: .config/.trivyignore
 
       - name: Upload Trivy scan results to GitHub Security tab
