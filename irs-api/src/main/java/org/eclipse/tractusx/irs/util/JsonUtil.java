@@ -79,7 +79,7 @@ public class JsonUtil {
         try {
             return MAPPER.writeValueAsString(input);
         } catch (JsonProcessingException e) {
-            log.error("Error serializing policies", e);
+            log.error("Error serializing payload", e);
             throw new JsonParseException(e);
         }
     }
