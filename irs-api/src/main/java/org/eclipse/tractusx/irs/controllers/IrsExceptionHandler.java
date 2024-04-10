@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.controllers;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
@@ -67,6 +68,25 @@ public class IrsExceptionHandler {
     }
 
     /**
+     * Handler for {@link ConstraintViolationException}
+     *
+     * @param exception see {@link ConstraintViolationException}
+     * @return see {@link ErrorResponse}
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(final ConstraintViolationException exception) {
+        log.info(exception.getClass().getName(), exception);
+
+        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(httpStatus)
+                                                .withError(httpStatus.getReasonPhrase())
+                                                .withMessages(List.of(exception.getMessage()))
+                                                .build());
+    }
+
+    /**
      * Handler for spring BindException
      *
      * @param exception see {@link BindException}
@@ -91,7 +111,8 @@ public class IrsExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException exception) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
+            final MethodArgumentTypeMismatchException exception) {
         log.info(exception.getClass().getName(), exception);
 
         if (exception.getRootCause() instanceof IllegalArgumentException illegalArgumentException) {
@@ -117,7 +138,8 @@ public class IrsExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
+            final HttpMessageNotReadableException exception) {
         log.info(exception.getClass().getName(), exception);
 
         String message = "Malformed JSON request";

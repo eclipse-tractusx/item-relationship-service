@@ -35,6 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +48,7 @@ import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -68,131 +70,150 @@ class PolicyPersistenceTest {
         testee = new PolicyPersistence(mockPersistence, mapper);
     }
 
-    @Test
-    void save() throws BlobPersistenceException {
-        // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+    @Nested
+    class SavePolicyTests {
+        @Test
+        void save() throws BlobPersistenceException {
+            // ARRANGE
+            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
 
-        // act
-        testee.save(List.of("testBpn"), policy);
+            // ACT
+            testee.save("testBpn", policy);
 
-        // assert
-        verify(mockPersistence).putBlob(anyString(), any());
+            // ASSERT
+            verify(mockPersistence).putBlob(anyString(), any());
+        }
+
+        @Test
+        void saveWithoutBpn() throws BlobPersistenceException {
+            // ARRANGE
+            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+
+            // ACT
+            testee.save("default", policy);
+
+            // ASSERT
+            verify(mockPersistence).putBlob(anyString(), any());
+        }
+
+        @Test
+        void saveDuplicate() throws BlobPersistenceException, JsonProcessingException {
+            // ARRANGE
+            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            final var policies = List.of(policy);
+            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+
+            // ACT & ASSERT
+            assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
+        }
+
+        @Test
+        void saveWithError() throws BlobPersistenceException {
+            // ARRANGE
+            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            when(mockPersistence.getBlob(any())).thenThrow(
+                    new BlobPersistenceException("test", new IllegalStateException()));
+
+            // ACT & ASSERT
+            assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
+        }
+
+        @Test
+        void saveWithWriteError() throws BlobPersistenceException {
+            // ARRANGE
+            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            doThrow(new BlobPersistenceException("test", new IllegalStateException())).when(mockPersistence)
+                                                                                      .putBlob(any(), any());
+
+            // ACT & ASSERT
+            assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
+        }
     }
 
-    @Test
-    void saveWithoutBpn() throws BlobPersistenceException {
-        // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+    @Nested
+    class DeletePolicyTests {
+        @Test
+        void delete_success() throws BlobPersistenceException, JsonProcessingException {
+            // ARRANGE
+            final String policyId = "test";
+            final var policy = new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            final var policies = List.of(policy);
+            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
-        // act
-        testee.save(List.of("default"), policy);
+            // ACT
+            testee.delete("testBpn", policyId);
 
-        // assert
-        verify(mockPersistence).putBlob(anyString(), any());
+            // ASSERT
+            verify(mockPersistence).putBlob(anyString(), any());
+        }
+
+        @Test
+        void delete_shouldThrowExceptionIfPolicyWithIdDoesntExists()
+                throws BlobPersistenceException, JsonProcessingException {
+            // ARRANGE
+            final var policy = new Policy("policyId", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            when(mockPersistence.getBlob(anyString())).thenReturn(
+                    Optional.of(mapper.writeValueAsBytes(List.of(policy))));
+
+            // ACT
+            assertThrows(PolicyStoreException.class, () -> testee.delete("testBpn", "notExistingPolicyId"));
+        }
     }
 
-    @Test
-    void saveDuplicate() throws BlobPersistenceException, JsonProcessingException {
-        // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-        final var policies = List.of(policy);
-        when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+    @Nested
+    class ReadPoliciesTests {
 
-        // act & assert
-        final List<String> bpn = List.of("testBpn");
-        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
-    }
+        @Test
+        void readAll_withBpn() throws BlobPersistenceException, JsonProcessingException {
+            // ARRANGE
+            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            final var policies = List.of(policy);
+            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
-    @Test
-    void saveWithError() throws BlobPersistenceException {
-        // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-        when(mockPersistence.getBlob(any())).thenThrow(
-                new BlobPersistenceException("test", new IllegalStateException()));
+            // ACT
+            final var readPolicies = testee.readAll("testBpn");
 
-        // act & assert
-        final List<String> bpn = List.of("testBpn");
-        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
-    }
+            // ASSERT
+            assertThat(readPolicies).hasSize(1);
+        }
 
-    @Test
-    void saveWithWriteError() throws BlobPersistenceException {
-        // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-        doThrow(new BlobPersistenceException("test", new IllegalStateException())).when(mockPersistence)
-                                                                                  .putBlob(any(), any());
+        @Test
+        void readAll_shouldReturnCorrect() throws BlobPersistenceException, JsonProcessingException {
+            // ARRANGE
+            final var policy = Policy.builder()
+                                     .policyId("test")
+                                     .createdOn(OffsetDateTime.now())
+                                     .validUntil(OffsetDateTime.now())
+                                     .permissions(emptyList())
+                                     .build();
+            final Map<String, byte[]> blobMap = new HashMap<>();
+            blobMap.put("bpn1", mapper.writeValueAsBytes(List.of(policy)));
+            blobMap.put("bpn2", mapper.writeValueAsBytes(emptyList()));
+            when(mockPersistence.getAllBlobs()).thenReturn(blobMap);
 
-        // act & assert
-        final List<String> bpn = List.of("testBpn");
-        assertThatThrownBy(() -> testee.save(bpn, policy)).isInstanceOf(PolicyStoreException.class);
-    }
+            // ACT
+            final var readPolicies = testee.readAll();
 
-    @Test
-    void delete() throws BlobPersistenceException, JsonProcessingException {
-        // arrange
-        final String policyId = "test";
-        final var policy = new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-        final var policies = List.of(policy);
-        when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+            // ASSERT
+            assertThat(readPolicies).hasSize(2);
+            assertThat(readPolicies.keySet()).containsExactlyInAnyOrder("bpn1", "bpn2");
+            assertThat(readPolicies.get("bpn1")).isNotEmpty();
+            assertThat(readPolicies.get("bpn2")).isEmpty();
+        }
 
-        // act
-        testee.delete("testBpn", policyId);
+        @Test
+        void readAll_withBpn_withError() throws BlobPersistenceException, JsonProcessingException {
+            // ARRANGE
+            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            final var policies = List.of(policy);
+            final var mapperMock = mock(ObjectMapper.class);
+            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+            when(mapperMock.readerForListOf(Policy.class)).thenThrow(new IllegalStateException());
 
-        // assert
-        verify(mockPersistence).putBlob(anyString(), any());
-    }
+            final var localTestee = new PolicyPersistence(mockPersistence, mapperMock);
 
-    @Test
-    void deleteShouldThrowExceptionIfPolicyWithIdDoesntExists() throws BlobPersistenceException, JsonProcessingException {
-        // arrange
-        final var policy = new Policy("policyId", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-        when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(List.of(policy))));
-
-        // act
-        assertThrows(PolicyStoreException.class, () -> testee.delete("testBpn", "notExistingPolicyId"));
-    }
-
-    @Test
-    void readAll() throws BlobPersistenceException, JsonProcessingException {
-        // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-        final var policies = List.of(policy);
-        when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
-
-        // act
-        final var readPolicies = testee.readAll("testBpn");
-
-        // assert
-        assertThat(readPolicies).hasSize(1);
-    }
-
-    @Test
-    void whenReadAllShouldReturnCorrect() throws BlobPersistenceException, JsonProcessingException {
-        // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-        final var policies = List.of(policy);
-        when(mockPersistence.getAllBlobs()).thenReturn(Map.of("bpn1", mapper.writeValueAsBytes(policies)));
-
-        // act
-        final var readPolicies = testee.readAll();
-
-        // assert
-        assertThat(readPolicies).hasSize(1);
-    }
-
-    @Test
-    void readAllWithError() throws BlobPersistenceException, JsonProcessingException {
-        // arrange
-        final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-        final var policies = List.of(policy);
-        final var mapperMock = mock(ObjectMapper.class);
-        when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
-        when(mapperMock.readerForListOf(Policy.class)).thenThrow(new IllegalStateException());
-
-        final var localTestee = new PolicyPersistence(mockPersistence, mapperMock);
-
-        // act & assert
-        assertThatThrownBy(() -> localTestee.readAll("testBpn")).isInstanceOf(PolicyStoreException.class);
+            // ACT & ASSERT
+            assertThatThrownBy(() -> localTestee.readAll("testBpn")).isInstanceOf(PolicyStoreException.class);
+        }
     }
 }

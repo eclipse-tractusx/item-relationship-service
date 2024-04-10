@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 class PolicyHelperTest {
 
     @Test
-    void shouldFilterMapByPolicyId() {
+    void findBpnsByPolicyId_shouldFilterMapByPolicyId() {
 
         // ARRANGE
         final HashMap<String, List<Policy>> policyMap = new HashMap<>();
@@ -48,6 +48,25 @@ class PolicyHelperTest {
 
         // ASSERT
         assertThat(result).containsExactlyInAnyOrder("BPN1", "BPN2", "BPN4");
+    }
+
+    @Test
+    void havingPolicyId_whenAppliedAsFilterToAListOfPolicies_shouldFilterByPolicyId() {
+
+        // ARRANGE
+        final String policyIdToFind = "policyToFind";
+        List<Policy> policies = List.of( //
+                Policy.builder().policyId("policy1").build(), //
+                Policy.builder().policyId(policyIdToFind).build(), //
+                Policy.builder().policyId("policy3").build(), //
+                Policy.builder().policyId("policy4").build(), //
+                Policy.builder().policyId(policyIdToFind).build());
+
+        // ACT
+        final List<Policy> result = policies.stream().filter(PolicyHelper.havingPolicyId(policyIdToFind)).toList();
+
+        // ASSERT
+        assertThat(result.stream().map(Policy::getPolicyId).toList()).hasSize(2).containsOnly(policyIdToFind);
     }
 
 }
