@@ -54,7 +54,7 @@ public class JsonValidatorService {
     }
 
     /**
-     * Validate the policies against the schema.
+     * Validate the payload against the schema.
      *
      * @param jsonSchema  the JSON schema
      * @param jsonPayload the JSON policies to validate
