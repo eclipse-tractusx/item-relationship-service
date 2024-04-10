@@ -1,8 +1,8 @@
 # Only relevant if UNWRAP_SINGLE_VALUE_ARRAYS is activated, which is not the case here.
-CVE-2022-42003
+#CVE-2022-42003
 
 # HttpInvokerServiceExporter is not loaded as a bean in the IRS.
-CVE-2016-1000027
+#CVE-2016-1000027
 
 # Vulnerability method not in IRS codebase (Files.createTempDir from guava). https://github.com/google/guava/issues/2575
-CVE-2023-2976
+#CVE-2023-2976
