@@ -59,7 +59,7 @@ public record CreatePolicyRequest(
         JsonObject payload) {
 
     @SuppressWarnings("java:S2479")
-    // this value is used by open-api to show example policies
+    // this value is used by open-api to show example payload
     // \u0009 character is required for this value to be correctly shown in open-api
     public static final String EXAMPLE_PAYLOAD = """
             {
