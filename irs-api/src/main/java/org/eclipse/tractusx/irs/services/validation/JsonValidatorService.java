@@ -57,7 +57,7 @@ public class JsonValidatorService {
      * Validate the payload against the schema.
      *
      * @param jsonSchema  the JSON schema
-     * @param jsonPayload the JSON policies to validate
+     * @param jsonPayload the JSON payload to validate
      * @return the validation result, containing the validation errors if applicable
      */
     public ValidationResult validate(final String jsonSchema, final String jsonPayload) throws InvalidSchemaException {
