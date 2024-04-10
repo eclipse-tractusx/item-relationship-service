@@ -140,7 +140,7 @@ public class SubmodelDelegate extends AbstractDelegate {
             } catch (final JsonParseException e) {
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e,
                         RetryRegistry.ofDefaults().getDefaultConfig().getMaxAttempts(), ProcessStep.SCHEMA_VALIDATION));
-                log.info("Submodel policies did not match the expected AspectType. Creating Tombstone.");
+                log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             } catch (final SchemaNotFoundException | InvalidSchemaException | RestClientException e) {
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
                         ProcessStep.SCHEMA_REQUEST));
