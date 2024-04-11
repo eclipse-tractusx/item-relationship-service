@@ -246,6 +246,16 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
                 final String storageId = getStorageId(endpointDataReferenceStatus, negotiationResponse);
 
+                // TODO (#405) Remove this comment and code later. 
+                //    This is just for quickly simulating and experimenting with negotiation
+                //    failed during development.
+                //    It should later be replaced with a real automated test in
+                //    IrsWireMockIntegrationTest that simulates this
+                //    (this test could probably be based on shouldStartRecursiveProcesses
+                //    but needs different setup throwing an exception during negotiation).
+                //       if (true) {
+                //           throw new EdcClientException("negotiation failed");
+                //       }
                 return pollingService.<EndpointDataReference>createJob()
                                      .action(() -> retrieveEndpointReference(storageId, stopWatch))
                                      .timeToLive(config.getSubmodel().getRequestTtl())

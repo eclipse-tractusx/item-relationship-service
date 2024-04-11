@@ -60,6 +60,7 @@ import java.util.stream.Stream;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import io.github.resilience4j.core.functions.Either;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
@@ -116,12 +117,12 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
                     any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act
-            final Collection<Shell> shells = decentralDigitalTwinRegistryService.fetchShells(
+            final Collection<Either<Exception, Shell>> shells = decentralDigitalTwinRegistryService.fetchShells(
                     List.of(new DigitalTwinRegistryKey("testId", TEST_BPN)));
 
             // Assert
             assertThat(shells).hasSize(1);
-            assertThat(shells.stream().findFirst().get().payload().getSubmodelDescriptors()).hasSize(3);
+            assertThat(shells.stream().findFirst().get().getOrNull().payload().getSubmodelDescriptors()).hasSize(3);
             verify(exactly(1), postRequestedFor(urlPathEqualTo(DISCOVERY_FINDER_PATH)));
             verify(exactly(1), postRequestedFor(urlPathEqualTo(EDC_DISCOVERY_PATH)));
             verify(exactly(1), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));

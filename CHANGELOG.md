@@ -22,6 +22,11 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added endpoint for dedicated removal of policy from BPNL. #559 
 - Integration Test Policy Store API Unhappy Path. #519
 
+## Fixed
+
+- Propagates exceptions to have more detail in tombstone. #538
+
+
 ## [5.1.2] - 2024-05-13
 
 ### Fixed
@@ -63,9 +68,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [5.0.0] - 2024-04-16
 
 ### Added
-
 - SAMM models can now be added locally #488
 - Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
+
 
 
 ### Fixed
@@ -82,6 +87,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   exception as failed future now). #405
 - RestClientExceptions are handled correctly in BpdmFacade now. #405
 - Fixed Base64 encoding and decoding for locally provided Semantic Models #488
+
 
 ## [4.9.0] - 2024-04-03
 ### Added
