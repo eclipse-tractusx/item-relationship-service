@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -119,7 +120,9 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
             @Data
             @Jacksonized
             /* package */ static class PartQuantity {
+                @JsonAlias({ "quantityNumber", "value" })
                 private Double quantityNumber;
+                @JsonAlias({ "measurementUnit", "unit" })
                 private String measurementUnit;
             }
         }
