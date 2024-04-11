@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -47,6 +48,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -405,6 +407,33 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // assert
         assertThat(actual).isEqualTo(expected);
+    }
+
+    /**
+     * This test asserts that when an exception occurs during negotiation it will not result in a {@link ClassCastException}.
+     *
+     * @throws Exception exception
+     */
+    @Test
+    void shouldNotThrowClassCastException() throws Exception {
+        // arrange
+        when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+                List.of(CatalogItem.builder().itemId("asset-id").build()));
+        when(contractNegotiationService.negotiate(any(), any(),
+                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenThrow(
+                new ContractNegotiationException(new RuntimeException("contract negotiation failed")));
+
+        // act & assert
+        try {
+            final List<CompletableFuture<EndpointDataReference>> result = testee.getEndpointReferencesForAsset(
+                    ENDPOINT_ADDRESS, "filter-key", "filter-value",
+                    new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW), "bpn");
+            assertThat(result).hasSize(1);
+            assertThat(result.get(0)).isCompletedExceptionally();
+        } catch (ClassCastException e) {
+            fail("Should not thrown a ClassCastException", e);
+        }
     }
 
     @Test
