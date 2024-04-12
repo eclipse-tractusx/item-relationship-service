@@ -32,7 +32,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Stream;
 
 import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
@@ -168,8 +167,8 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         return execute(connectorEndpoint, waitingForSubmodelRetrieval);
     }
 
-    private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId, final String bpn)
-            throws EdcClientException {
+    private EndpointDataReference getEndpointDataReference(final String connectorEndpoint, final String assetId,
+            final String bpn) throws EdcClientException {
 
         final EndpointDataReference result;
 
@@ -205,11 +204,13 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
     @Override
     public CompletableFuture<EdcNotificationResponse> sendNotification(final String connectorEndpoint,
-            final String assetId, final EdcNotification<NotificationContent> notification, final String bpn) throws EdcClientException {
+            final String assetId, final EdcNotification<NotificationContent> notification, final String bpn)
+            throws EdcClientException {
         return execute(connectorEndpoint, () -> {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start("Send EDC notification task, endpoint " + connectorEndpoint);
-            final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId, bpn);
+            final EndpointDataReference endpointDataReference = getEndpointDataReference(connectorEndpoint, assetId,
+                    bpn);
 
             return sendNotificationAsync(assetId, notification, stopWatch, endpointDataReference);
         });
@@ -248,7 +249,8 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
             final NegotiationResponse negotiationResponse;
             try {
-                negotiationResponse = negotiateContract(endpointDataReferenceStatus, contractOffer, providerWithSuffix, bpn);
+                negotiationResponse = negotiateContract(endpointDataReferenceStatus, contractOffer, providerWithSuffix,
+                        bpn);
 
                 final String storageId = getStorageId(endpointDataReferenceStatus, negotiationResponse);
 
@@ -262,14 +264,15 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
                 log.warn(("Negotiate contract failed for "
                         + "endpointDataReferenceStatus = '%s', catalogItem = '%s', providerWithSuffix = '%s' ").formatted(
                         endpointDataReferenceStatus, contractOffer, providerWithSuffix));
-                return (CompletableFuture<EndpointDataReference>) Stream.empty();
+                return CompletableFuture.<EndpointDataReference>failedFuture(e);
             }
 
         }).toList();
     }
 
     private NegotiationResponse negotiateContract(final EndpointDataReferenceStatus endpointDataReferenceStatus,
-            final CatalogItem catalogItem, final String providerWithSuffix, final String bpn) throws EdcClientException {
+            final CatalogItem catalogItem, final String providerWithSuffix, final String bpn)
+            throws EdcClientException {
         final NegotiationResponse response;
         try {
             response = contractNegotiationService.negotiate(providerWithSuffix, catalogItem,
