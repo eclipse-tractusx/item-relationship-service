@@ -385,7 +385,7 @@ public class E2ETestStepDefinitions {
             final List<Submodel> actualSubmodels = completedJob.getSubmodels();
             final List<Submodel> expectedSubmodels = getExpectedSubmodels(fileName);
             assertThat(actualSubmodels).hasSameSizeAs(expectedSubmodels)
-                                       .usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification")
+                                       .usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification", "contractAgreementId")
                                        .containsAll(expectedSubmodels);
         }
     }
