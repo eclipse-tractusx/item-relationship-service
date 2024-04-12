@@ -9,10 +9,17 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [UNRELEASED]
 
 ### Added
+
 - SAMM models can now be added locally #488
 - Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
 
 ### Changed
+
+### Fixed
+
+- ClassCastException in exception handling of EdcSubmodelClientImp#getEndpointReferencesForAsset corrected (returns the exception as failed future now). #405
+- RestClientExceptions are handled correctly in BpdmFacade now. #405
+
 
 ## [4.9.0] - 2024-04-03
 ### Added
