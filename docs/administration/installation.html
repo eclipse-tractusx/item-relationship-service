@@ -671,7 +671,7 @@ pre.rouge {
 <a href="https://eclipse-tractusx.github.io/item-relationship-service/index.yaml" class="bare">https://eclipse-tractusx.github.io/item-relationship-service/index.yaml</a></p>
 </div>
 <div class="paragraph">
-<p>Use the latest release of the "irs-helm" chart.
+<p>Use the latest release of the "item-relationship-service" chart.
 It contains all required dependencies.</p>
 </div>
 <div class="paragraph">
@@ -698,7 +698,7 @@ It contains all required dependencies.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ helm install -f your-values.yaml irs-app irs/irs-helm</pre>
+<pre>$ helm install -f your-values.yaml irs-app irs/item-relationship-service</pre>
 </div>
 </div>
 </div>
@@ -712,7 +712,7 @@ It contains all required dependencies.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="yaml"><span class="na">dependencies</span><span class="pi">:</span>
-  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">irs-helm</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">item-relationship-service</span>
     <span class="na">repository</span><span class="pi">:</span> <span class="s">https://eclipse-tractusx.github.io/item-relationship-service</span>
     <span class="na">version</span><span class="pi">:</span> <span class="s">6.x.x</span>
   <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">tractusx-connector</span> <span class="c1"># optional</span>
@@ -731,7 +731,7 @@ It contains all required dependencies.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-04-03 12:37:36 UTC
+Last updated 2024-04-15 14:40:09 UTC
 </div>
 </div>
 </body>

@@ -85,14 +85,13 @@ The following table entries define overall IRS quality goals. The order of the t
 | Tool | Scope | Rule | Configuration (via files / annotations) |
 | --- | --- | --- | --- |
 | Tidy | Enforce Maven POM code convention | Fail build on untidy pom.xml | N/A |
-| SpotBugs | Static analysis to find bugs in Java code. Successor to the popular FindBugs tool | Fail build on violations | .config/spotbugs-excludes.xml @SuppressFBWarnings(...) |
 | FindSecBugs | SpotBugs plugin to add security bug coverage | Fail build on violations | N/A |
 | Checkstyle | Enforce coding standards | Fail build on violations | .config/checkstyle-suppressions.xml @SuppressWarnings("checkstyle:XXX") |
 | PMD | Source code analyzer to find common programming flaws | Fail build on violations | .config/pmd-rules.xml @SuppressWarnings("PMD.XXX") |
 | JaCoCo | Test coverage | Fail build on coverage &lt; 80% | pom.xml @ExcludeFromCodeCoverageGeneratedReport |
-| Veracode | - Scan source code for vulnerabilities (SAST) - Scan dependencies for known vulnerabilities (SCA) - Check used licenses (FOSS licenses) |  | <https://web.analysiscenter.veracode.com/> |
 | Dependabot | Automated dependency updates built into GitHub. Provides pull requests for dependency updates. | Every dependency update automatically generates a pull request. | .github/dependabot.yml |
 | CodeQl | Discover vulnerabilities across a code base. |  | .github/workflows/codeql.yml |
+| KICS | Infrastructure as Code scannings. |  | .github/workflows/kics.yml |
 
 ## System scope and context
 

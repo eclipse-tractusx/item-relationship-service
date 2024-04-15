@@ -4,7 +4,7 @@
 
 The deployment contains the components required to connect the IRS to an existing Catena-X network. This includes:
 
-* IRS with Minio - part of the "irs-helm" Helm chart
+* IRS with Minio - part of the "item-relationship-service" Helm chart
 * EDC Consumer (controlplane & dataplane) - part of the "irs-edc-consumer" Helm chart
 
 Everything else needs to be provided externally.
@@ -16,7 +16,7 @@ Everything else needs to be provided externally.
 The IRS Helm repository can be found here:
 <https://eclipse-tractusx.github.io/item-relationship-service/index.yaml>
 
-Use the latest release of the "irs-helm" chart.
+Use the latest release of the "item-relationship-service" chart.
 It contains all required dependencies.
 
 If you also want to set up your own EDC consumer, use the [tractusx-connector](https://github.com/eclipse-tractusx/tractusx-edc/tree/main/charts/tractusx-connector) chart.
@@ -31,7 +31,7 @@ $ helm repo add irs <https://eclipse-tractusx.github.io/item-relationship-servic
 
 Then install the Helm chart into your cluster:
 
-$ helm install -f your-values.yaml irs-app irs/irs-helm
+$ helm install -f your-values.yaml irs-app irs/item-relationship-service
 
 ### Deployment using ArgoCD
 
@@ -39,7 +39,7 @@ Create a new Helm chart and use the IRS as a dependency.
 
 ```yaml
 dependencies:
-  - name: irs-helm
+  - name: item-relationship-service
     repository: https://eclipse-tractusx.github.io/item-relationship-service
     version: 6.x.x
   - name: tractusx-connector # optional

@@ -248,22 +248,7 @@ font-style: italic;
 
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "lastUpdated" : "2023-02-13T08:18:11.990659500Z",
-  "models" : [ {
-    "urn" : "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-    "name" : "SingleLevelBomAsBuilt",
-    "type" : "BAMM",
-    "version" : "1.0.0",
-    "status" : "RELEASED"
-  }, {
-    "urn" : "urn:bamm:io.catenax.serial_part:1.0.0#SerialPart",
-    "name" : "SerialPart",
-    "type" : "BAMM",
-    "version" : "1.0.0",
-    "status" : "RELEASED"
-  } ]
-}</code></pre>
+    <pre class="example"><code>"{\"lastUpdated\"=\"2023-02-13T08:18:11.990659500Z\", \"models\"=[{\"name\"=\"SingleLevelBomAsBuilt\", \"status\"=\"RELEASED\", \"type\"=\"BAMM\", \"urn\"=\"urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt\", \"version\"=\"1.0.0\"},\n    {\"name\"=\"SerialPart\", \"status\"=\"RELEASED\", \"type\"=\"BAMM\", \"urn\"=\"urn:bamm:io.catenax.serial_part:1.0.0#SerialPart\", \"version\"=\"1.0.0\"}]}"</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
@@ -314,148 +299,7 @@ font-style: italic;
 
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "bpns" : [ {
-    "manufacturerId" : "BPNL00000003AAXX",
-    "manufacturerName" : "AB CD"
-  } ],
-  "job" : {
-    "completedOn" : "2022-02-03T14:48:54.709Z",
-    "createdOn" : "2022-02-03T14:48:54.709Z",
-    "exception" : {
-      "errorDetail" : "Timeout while requesting Digital Registry",
-      "exception" : "IrsTimeoutException",
-      "exceptionDate" : "2022-02-03T14:48:54.709Z"
-    },
-    "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-    "id" : "e5347c88-a921-11ec-b909-0242ac120002",
-    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-    "parameter" : {
-      "aspects" : [ "SerialPart", "AddressAspect" ],
-      "auditContractNegotiation" : false,
-      "bomLifecycle" : "asBuilt",
-      "collectAspects" : false,
-      "depth" : 1,
-      "direction" : "downward",
-      "lookupBPNs" : false
-    },
-    "startedOn" : "2022-02-03T14:48:54.709Z",
-    "state" : "COMPLETED",
-    "summary" : {
-      "asyncFetchedItems" : {
-        "completed" : 3,
-        "failed" : 0,
-        "running" : 0
-      },
-      "bpnLookups" : {
-        "completed" : 3,
-        "failed" : 0
-      }
-    }
-  },
-  "relationships" : [ {
-    "catenaXId" : "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
-    "linkedItem" : {
-      "assembledOn" : "2022-02-03T14:48:54.709Z",
-      "childCatenaXId" : "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9",
-      "hasAlternatives" : false,
-      "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-      "lifecycleContext" : "asBuilt",
-      "quantity" : {
-        "measurementUnit" : {
-          "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-          "lexicalValue" : "piece"
-        },
-        "quantityNumber" : 1
-      }
-    }
-  } ],
-  "shells" : [ {
-    "contractAgreementId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-    "payload" : {
-      "description" : [ {
-        "language" : "en",
-        "text" : "The shell for a vehicle"
-      } ],
-      "globalAssetId" : "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9",
-      "id" : "urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8",
-      "idShort" : "future concept x",
-      "specificAssetIds" : [ {
-        "name" : "engineserialid",
-        "value" : "12309481209312"
-      } ],
-      "submodelDescriptors" : [ {
-        "description" : [ {
-          "language" : "en",
-          "text" : "Provides base vehicle information"
-        } ],
-        "endpoints" : [ {
-          "interface" : "HTTP",
-          "protocolInformation" : {
-            "endpointProtocol" : "HTTPS",
-            "endpointProtocolVersion" : [ "1.0" ],
-            "href" : "https://catena-x.net/vehicle/basedetails/",
-            "subprotocol" : "DSP",
-            "subprotocolBody" : "id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net",
-            "subprotocolBodyEncoding" : "plain"
-          }
-        } ],
-        "id" : "urn:uuid:5d25a897-6571-4800-b98c-a3352fbf996d",
-        "idShort" : "SingleLevelBomAsPlanned",
-        "semanticId" : {
-          "keys" : [ {
-            "type" : "ExternalReference",
-            "value" : "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned"
-          } ],
-          "type" : "ModelReference"
-        }
-      }, {
-        "description" : [ {
-          "language" : "en",
-          "text" : "Provides base vehicle information"
-        } ],
-        "endpoints" : [ {
-          "interface" : "HTTP",
-          "protocolInformation" : {
-            "endpointProtocol" : "HTTPS",
-            "endpointProtocolVersion" : [ "1.0" ],
-            "href" : "https://catena-x.net/vehicle/partdetails/",
-            "subprotocol" : "DSP",
-            "subprotocolBody" : "id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net",
-            "subprotocolBodyEncoding" : "plain"
-          }
-        } ],
-        "id" : "urn:uuid:dae4d249-6d66-4818-b576-bf52f3b9ae90",
-        "idShort" : "vehicle part details",
-        "semanticId" : {
-          "keys" : [ {
-            "type" : "Submodel",
-            "value" : "urn:bamm:com.catenax.vehicle:0.1.1#PartDetails"
-          } ],
-          "type" : "ModelReference"
-        }
-      } ]
-    }
-  } ],
-  "submodels" : [ {
-    "aspectType" : "supply_chain_impacted",
-    "contractAgreementId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-    "identification" : "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff",
-    "payload" : {
-      "supplyChainImpacted" : "YES"
-    }
-  } ],
-  "tombstones" : [ {
-    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-    "endpointURL" : "https://catena-x.net/vehicle/partdetails/",
-    "processingError" : {
-      "errorDetail" : "Details to reason of failure",
-      "lastAttempt" : "2022-02-03T14:48:54.709Z",
-      "processStep" : "SchemaValidation",
-      "retryCounter" : 0
-    }
-  } ]
-}</code></pre>
+    <pre class="example"><code>"{\"bpns\"=[{\"manufacturerId\"=\"BPNL00000003AAXX\", \"manufacturerName\"=\"AB CD\"}], \"job\"={\"completedOn\"=\"2022-02-03T14:48:54.709Z\", \"createdOn\"=\"2022-02-03T14:48:54.709Z\", \"exception\"={\"errorDetail\"=\"Timeout while requesting Digital Registry\", \"exception\"=\"IrsTimeoutException\", \"exceptionDate\"=\"2022-02-03T14:48:54.709Z\"}, \"globalAssetId\"=\"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0\", \"id\"=\"e5347c88-a921-11ec-b909-0242ac120002\", \"lastModifiedOn\"=\"2022-02-03T14:48:54.709Z\", \"parameter\"={\"aspects\"=[\"SerialPart\", \"AddressAspect\"], \"auditContractNegotiation\"=false, \"bomLifecycle\"=\"asBuilt\", \"collectAspects\"=false, \"depth\"=1, \"direction\"=\"downward\", \"lookupBPNs\"=false}, \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"state\"=\"COMPLETED\", \"summary\"={\"asyncFetchedItems\"={\"completed\"=3, \"failed\"=0, \"running\"=0}, \"bpnLookups\"={\"completed\"=3, \"failed\"=0}}}, \"relationships\"=[{\"catenaXId\"=\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", \"linkedItem\"={\"assembledOn\"=\"2022-02-03T14:48:54.709Z\", \"childCatenaXId\"=\"urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9\", \"hasAlternatives\"=false, \"lastModifiedOn\"=\"2022-02-03T14:48:54.709Z\", \"lifecycleContext\"=\"asBuilt\", \"quantity\"={\"measurementUnit\"={\"datatypeURI\"=\"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\", \"lexicalValue\"=\"piece\"}, \"quantityNumber\"=1}}}], \"shells\"=[{\"contractAgreementId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"payload\"={\"description\"=[{\"language\"=\"en\", \"text\"=\"The shell for a vehicle\"}], \"globalAssetId\"=\"urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9\", \"id\"=\"urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8\", \"idShort\"=\"future concept x\", \"specificAssetIds\"=[{\"name\"=\"engineserialid\", \"value\"=\"12309481209312\"}], \"submodelDescriptors\"=[{\"description\"=[{\"language\"=\"en\", \"text\"=\"Provides base vehicle information\"}], \"endpoints\"=[{\"interface\"=\"HTTP\", \"protocolInformation\"={\"endpointProtocol\"=\"HTTPS\", \"endpointProtocolVersion\"=[\"1.0\"], \"href\"=\"https://catena-x.net/vehicle/basedetails/\", \"subprotocol\"=\"DSP\", \"subprotocolBody\"=\"id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net\", \"subprotocolBodyEncoding\"=\"plain\"}}], \"id\"=\"urn:uuid:5d25a897-6571-4800-b98c-a3352fbf996d\", \"idShort\"=\"SingleLevelBomAsPlanned\", \"semanticId\"={\"keys\"=[{\"type\"=\"ExternalReference\", \"value\"=\"urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned\"}], \"type\"=\"ModelReference\"}},\n    {\"description\"=[{\"language\"=\"en\", \"text\"=\"Provides base vehicle information\"}], \"endpoints\"=[{\"interface\"=\"HTTP\", \"protocolInformation\"={\"endpointProtocol\"=\"HTTPS\", \"endpointProtocolVersion\"=[\"1.0\"], \"href\"=\"https://catena-x.net/vehicle/partdetails/\", \"subprotocol\"=\"DSP\", \"subprotocolBody\"=\"id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net\", \"subprotocolBodyEncoding\"=\"plain\"}}], \"id\"=\"urn:uuid:dae4d249-6d66-4818-b576-bf52f3b9ae90\", \"idShort\"=\"vehicle part details\", \"semanticId\"={\"keys\"=[{\"type\"=\"Submodel\", \"value\"=\"urn:bamm:com.catenax.vehicle:0.1.1#PartDetails\"}], \"type\"=\"ModelReference\"}}]}}], \"submodels\"=[{\"aspectType\"=\"supply_chain_impacted\", \"contractAgreementId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"identification\"=\"urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff\", \"payload\"={\"supplyChainImpacted\"=\"YES\"}}], \"tombstones\"=[{\"catenaXId\"=\"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0\", \"endpointURL\"=\"https://catena-x.net/vehicle/partdetails/\", \"processingError\"={\"errorDetail\"=\"Details to reason of failure\", \"lastAttempt\"=\"2022-02-03T14:48:54.709Z\", \"processStep\"=\"SchemaValidation\", \"retryCounter\"=0}}]}"</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
@@ -679,18 +523,7 @@ font-style: italic;
 
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "batchChecksum" : 1,
-  "batches" : [ {
-    "batchId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-    "batchNumber" : 1,
-    "batchProcessingState" : "PARTIAL",
-    "batchUrl" : "https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462",
-    "jobsInBatchChecksum" : 1
-  } ],
-  "orderId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-  "state" : "COMPLETED"
-}</code></pre>
+    <pre class="example"><code>"{\"batchChecksum\"=1, \"batches\"=[{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"batchNumber\"=1, \"batchProcessingState\"=\"PARTIAL\", \"batchUrl\"=\"https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462\", \"jobsInBatchChecksum\"=1}], \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"state\"=\"COMPLETED\"}"</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
@@ -867,69 +700,20 @@ font-style: italic;
 
     <h3 class="field-label">Query parameters</h3>
     <div class="field-items">
-      <div class="param">bpnls (optional)</div>
+      <div class="param">businessPartnerNumbers (optional)</div>
 
-      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  default: null </div>
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; List of business partner numbers. default: null </div>
     </div>  <!-- field-items -->
 
 
     <h3 class="field-label">Return type</h3>
     <div class="return-type">
-      array[<a href="#Policy">Policy</a>]
       
+      String
     </div>
 
     <!--Todo: process Response Object and its headers, schema, examples -->
 
-    <h3 class="field-label">Example data</h3>
-    <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>[ {
-  "createdOn" : "2024-03-08T15:19:41.006Z",
-  "permissions" : [ {
-    "action" : "USE",
-    "constraint" : {
-      "and" : [ {
-        "leftOperand" : "string",
-        "odrl:rightOperand" : "string",
-        "operator" : {
-          "@id" : "odrl:eq"
-        }
-      } ],
-      "or" : [ {
-        "leftOperand" : "string",
-        "odrl:rightOperand" : "string",
-        "operator" : {
-          "@id" : "odrl:eq"
-        }
-      } ]
-    }
-  } ],
-  "policyId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-  "validUntil" : "2024-03-08T15:19:41.006Z"
-}, {
-  "createdOn" : "2024-03-08T15:19:41.006Z",
-  "permissions" : [ {
-    "action" : "USE",
-    "constraint" : {
-      "and" : [ {
-        "leftOperand" : "string",
-        "odrl:rightOperand" : "string",
-        "operator" : {
-          "@id" : "odrl:eq"
-        }
-      } ],
-      "or" : [ {
-        "leftOperand" : "string",
-        "odrl:rightOperand" : "string",
-        "operator" : {
-          "@id" : "odrl:eq"
-        }
-      } ]
-    }
-  } ],
-  "policyId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-  "validUntil" : "2024-03-08T15:19:41.006Z"
-} ]</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
@@ -940,8 +724,8 @@ font-style: italic;
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">200</h4>
-    Returns the policies.
-        
+    Returns the policies as map of BPN to list of policies.
+        <a href="#String">String</a>
     <h4 class="field-label">401</h4>
     No valid authentication credentials.
         <a href="#ErrorResponse">ErrorResponse</a>
@@ -981,23 +765,7 @@ font-style: italic;
 
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "batchId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-  "batchNumber" : 1,
-  "batchProcessingState" : "COMPLETED",
-  "batchTotal" : 1,
-  "completedOn" : "2022-02-03T14:48:54.709Z",
-  "jobs" : [ {
-    "completedOn" : "2022-02-03T14:48:54.709Z",
-    "id" : "6c311d29-5753-46d4-b32c-19b918ea93b0",
-    "startedOn" : "2022-02-03T14:48:54.709Z",
-    "state" : "COMPLETED"
-  } ],
-  "jobsInBatchChecksum" : 1,
-  "orderId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-  "startedOn" : "2022-02-03T14:48:54.709Z",
-  "totalJobs" : 1
-}</code></pre>
+    <pre class="example"><code>"{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"batchNumber\"=1, \"batchProcessingState\"=\"COMPLETED\", \"batchTotal\"=1, \"completedOn\"=\"2022-02-03T14:48:54.709Z\", \"jobs\"=[{\"completedOn\"=\"2022-02-03T14:48:54.709Z\", \"id\"=\"6c311d29-5753-46d4-b32c-19b918ea93b0\", \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"state\"=\"COMPLETED\"}], \"jobsInBatchChecksum\"=1, \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"totalJobs\"=1}"</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
@@ -1053,18 +821,7 @@ font-style: italic;
 
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "batchChecksum" : 1,
-  "batches" : [ {
-    "batchId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-    "batchNumber" : 1,
-    "batchProcessingState" : "PARTIAL",
-    "batchUrl" : "https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462",
-    "jobsInBatchChecksum" : 1
-  } ],
-  "orderId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-  "state" : "COMPLETED"
-}</code></pre>
+    <pre class="example"><code>"{\"batchChecksum\"=1, \"batches\"=[{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"batchNumber\"=1, \"batchProcessingState\"=\"PARTIAL\", \"batchUrl\"=\"https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462\", \"jobsInBatchChecksum\"=1}], \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"state\"=\"COMPLETED\"}"</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
@@ -1126,148 +883,7 @@ font-style: italic;
 
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "bpns" : [ {
-    "manufacturerId" : "BPNL00000003AAXX",
-    "manufacturerName" : "AB CD"
-  } ],
-  "job" : {
-    "completedOn" : "2022-02-03T14:48:54.709Z",
-    "createdOn" : "2022-02-03T14:48:54.709Z",
-    "exception" : {
-      "errorDetail" : "Timeout while requesting Digital Registry",
-      "exception" : "IrsTimeoutException",
-      "exceptionDate" : "2022-02-03T14:48:54.709Z"
-    },
-    "globalAssetId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-    "id" : "e5347c88-a921-11ec-b909-0242ac120002",
-    "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-    "parameter" : {
-      "aspects" : [ "SerialPart", "AddressAspect" ],
-      "auditContractNegotiation" : false,
-      "bomLifecycle" : "asBuilt",
-      "collectAspects" : false,
-      "depth" : 1,
-      "direction" : "downward",
-      "lookupBPNs" : false
-    },
-    "startedOn" : "2022-02-03T14:48:54.709Z",
-    "state" : "COMPLETED",
-    "summary" : {
-      "asyncFetchedItems" : {
-        "completed" : 3,
-        "failed" : 0,
-        "running" : 0
-      },
-      "bpnLookups" : {
-        "completed" : 3,
-        "failed" : 0
-      }
-    }
-  },
-  "relationships" : [ {
-    "catenaXId" : "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
-    "linkedItem" : {
-      "assembledOn" : "2022-02-03T14:48:54.709Z",
-      "childCatenaXId" : "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9",
-      "hasAlternatives" : false,
-      "lastModifiedOn" : "2022-02-03T14:48:54.709Z",
-      "lifecycleContext" : "asBuilt",
-      "quantity" : {
-        "measurementUnit" : {
-          "datatypeURI" : "urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece",
-          "lexicalValue" : "piece"
-        },
-        "quantityNumber" : 1
-      }
-    }
-  } ],
-  "shells" : [ {
-    "contractAgreementId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-    "payload" : {
-      "description" : [ {
-        "language" : "en",
-        "text" : "The shell for a vehicle"
-      } ],
-      "globalAssetId" : "urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9",
-      "id" : "urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8",
-      "idShort" : "future concept x",
-      "specificAssetIds" : [ {
-        "name" : "engineserialid",
-        "value" : "12309481209312"
-      } ],
-      "submodelDescriptors" : [ {
-        "description" : [ {
-          "language" : "en",
-          "text" : "Provides base vehicle information"
-        } ],
-        "endpoints" : [ {
-          "interface" : "HTTP",
-          "protocolInformation" : {
-            "endpointProtocol" : "HTTPS",
-            "endpointProtocolVersion" : [ "1.0" ],
-            "href" : "https://catena-x.net/vehicle/basedetails/",
-            "subprotocol" : "DSP",
-            "subprotocolBody" : "id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net",
-            "subprotocolBodyEncoding" : "plain"
-          }
-        } ],
-        "id" : "urn:uuid:5d25a897-6571-4800-b98c-a3352fbf996d",
-        "idShort" : "SingleLevelBomAsPlanned",
-        "semanticId" : {
-          "keys" : [ {
-            "type" : "ExternalReference",
-            "value" : "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned"
-          } ],
-          "type" : "ModelReference"
-        }
-      }, {
-        "description" : [ {
-          "language" : "en",
-          "text" : "Provides base vehicle information"
-        } ],
-        "endpoints" : [ {
-          "interface" : "HTTP",
-          "protocolInformation" : {
-            "endpointProtocol" : "HTTPS",
-            "endpointProtocolVersion" : [ "1.0" ],
-            "href" : "https://catena-x.net/vehicle/partdetails/",
-            "subprotocol" : "DSP",
-            "subprotocolBody" : "id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net",
-            "subprotocolBodyEncoding" : "plain"
-          }
-        } ],
-        "id" : "urn:uuid:dae4d249-6d66-4818-b576-bf52f3b9ae90",
-        "idShort" : "vehicle part details",
-        "semanticId" : {
-          "keys" : [ {
-            "type" : "Submodel",
-            "value" : "urn:bamm:com.catenax.vehicle:0.1.1#PartDetails"
-          } ],
-          "type" : "ModelReference"
-        }
-      } ]
-    }
-  } ],
-  "submodels" : [ {
-    "aspectType" : "supply_chain_impacted",
-    "contractAgreementId" : "f253718e-a270-4367-901b-9d50d9bd8462",
-    "identification" : "urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff",
-    "payload" : {
-      "supplyChainImpacted" : "YES"
-    }
-  } ],
-  "tombstones" : [ {
-    "catenaXId" : "urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0",
-    "endpointURL" : "https://catena-x.net/vehicle/partdetails/",
-    "processingError" : {
-      "errorDetail" : "Details to reason of failure",
-      "lastAttempt" : "2022-02-03T14:48:54.709Z",
-      "processStep" : "SchemaValidation",
-      "retryCounter" : 0
-    }
-  } ]
-}</code></pre>
+    <pre class="example"><code>"{\"bpns\"=[{\"manufacturerId\"=\"BPNL00000003AAXX\", \"manufacturerName\"=\"AB CD\"}], \"job\"={\"completedOn\"=\"2022-02-03T14:48:54.709Z\", \"createdOn\"=\"2022-02-03T14:48:54.709Z\", \"exception\"={\"errorDetail\"=\"Timeout while requesting Digital Registry\", \"exception\"=\"IrsTimeoutException\", \"exceptionDate\"=\"2022-02-03T14:48:54.709Z\"}, \"globalAssetId\"=\"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0\", \"id\"=\"e5347c88-a921-11ec-b909-0242ac120002\", \"lastModifiedOn\"=\"2022-02-03T14:48:54.709Z\", \"parameter\"={\"aspects\"=[\"SerialPart\", \"AddressAspect\"], \"auditContractNegotiation\"=false, \"bomLifecycle\"=\"asBuilt\", \"collectAspects\"=false, \"depth\"=1, \"direction\"=\"downward\", \"lookupBPNs\"=false}, \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"state\"=\"COMPLETED\", \"summary\"={\"asyncFetchedItems\"={\"completed\"=3, \"failed\"=0, \"running\"=0}, \"bpnLookups\"={\"completed\"=3, \"failed\"=0}}}, \"relationships\"=[{\"catenaXId\"=\"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", \"linkedItem\"={\"assembledOn\"=\"2022-02-03T14:48:54.709Z\", \"childCatenaXId\"=\"urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9\", \"hasAlternatives\"=false, \"lastModifiedOn\"=\"2022-02-03T14:48:54.709Z\", \"lifecycleContext\"=\"asBuilt\", \"quantity\"={\"measurementUnit\"={\"datatypeURI\"=\"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\", \"lexicalValue\"=\"piece\"}, \"quantityNumber\"=1}}}], \"shells\"=[{\"contractAgreementId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"payload\"={\"description\"=[{\"language\"=\"en\", \"text\"=\"The shell for a vehicle\"}], \"globalAssetId\"=\"urn:uuid:a45a2246-f6e1-42da-b47d-5c3b58ed62e9\", \"id\"=\"urn:uuid:882fc530-b69b-4707-95f6-5dbc5e9baaa8\", \"idShort\"=\"future concept x\", \"specificAssetIds\"=[{\"name\"=\"engineserialid\", \"value\"=\"12309481209312\"}], \"submodelDescriptors\"=[{\"description\"=[{\"language\"=\"en\", \"text\"=\"Provides base vehicle information\"}], \"endpoints\"=[{\"interface\"=\"HTTP\", \"protocolInformation\"={\"endpointProtocol\"=\"HTTPS\", \"endpointProtocolVersion\"=[\"1.0\"], \"href\"=\"https://catena-x.net/vehicle/basedetails/\", \"subprotocol\"=\"DSP\", \"subprotocolBody\"=\"id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net\", \"subprotocolBodyEncoding\"=\"plain\"}}], \"id\"=\"urn:uuid:5d25a897-6571-4800-b98c-a3352fbf996d\", \"idShort\"=\"SingleLevelBomAsPlanned\", \"semanticId\"={\"keys\"=[{\"type\"=\"ExternalReference\", \"value\"=\"urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned\"}], \"type\"=\"ModelReference\"}},\n    {\"description\"=[{\"language\"=\"en\", \"text\"=\"Provides base vehicle information\"}], \"endpoints\"=[{\"interface\"=\"HTTP\", \"protocolInformation\"={\"endpointProtocol\"=\"HTTPS\", \"endpointProtocolVersion\"=[\"1.0\"], \"href\"=\"https://catena-x.net/vehicle/partdetails/\", \"subprotocol\"=\"DSP\", \"subprotocolBody\"=\"id=urn:uuid:c8159379-4613-48b8-ad52-6baed7afe923;dspEndpoint=https://irs-provider-controlplane3.dev.demo.catena-x.net\", \"subprotocolBodyEncoding\"=\"plain\"}}], \"id\"=\"urn:uuid:dae4d249-6d66-4818-b576-bf52f3b9ae90\", \"idShort\"=\"vehicle part details\", \"semanticId\"={\"keys\"=[{\"type\"=\"Submodel\", \"value\"=\"urn:bamm:com.catenax.vehicle:0.1.1#PartDetails\"}], \"type\"=\"ModelReference\"}}]}}], \"submodels\"=[{\"aspectType\"=\"supply_chain_impacted\", \"contractAgreementId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"identification\"=\"urn:uuid:fc784d2a-5506-4e61-8e34-21600f8cdeff\", \"payload\"={\"supplyChainImpacted\"=\"YES\"}}], \"tombstones\"=[{\"catenaXId\"=\"urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0\", \"endpointURL\"=\"https://catena-x.net/vehicle/partdetails/\", \"processingError\"={\"errorDetail\"=\"Details to reason of failure\", \"lastAttempt\"=\"2022-02-03T14:48:54.709Z\", \"processStep\"=\"SchemaValidation\", \"retryCounter\"=0}}]}"</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
@@ -1332,18 +948,7 @@ font-style: italic;
 
     <h3 class="field-label">Example data</h3>
     <div class="example-data-content-type">Content-Type: application/json</div>
-    <pre class="example"><code>{
-  "pageCount" : 0,
-  "pageNumber" : 6,
-  "pageSize" : 1,
-  "content" : [ {
-    "completedOn" : "test",
-    "id" : "046b6c7f-0b8a-43b9-b35d-6489e6daee91",
-    "startedOn" : "2000-01-23T04:56:07.000+00:00",
-    "state" : "UNSAVED"
-  } ],
-  "totalElements" : 5
-}</code></pre>
+    <pre class="example"><code>"{\"content\"=[{\"completedOn\"=\"test\", \"id\"=\"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"startedOn\"=\"2000-01-23T04:56:07.000+00:00\", \"state\"=\"UNSAVED\"}], \"pageCount\"=0, \"pageNumber\"=6, \"pageSize\"=1, \"totalElements\"=5}"</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
@@ -1392,29 +997,48 @@ font-style: italic;
 
 
 
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#CreatePoliciesResponse">CreatePoliciesResponse</a>
+      
+    </div>
 
     <!--Todo: process Response Object and its headers, schema, examples -->
 
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: */*</div>
+    <pre class="example"><code>{
+  "policyId" : "policyId"
+}</code></pre>
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "policyId" : "policyId"
+}</code></pre>
 
     <h3 class="field-label">Produces</h3>
     This API call produces the following media types according to the <span class="header">Accept</span> request header;
     the media type will be conveyed by the <span class="header">Content-Type</span> response header.
     <ul>
+      <li><code>*/*</code></li>
       <li><code>application/json</code></li>
     </ul>
 
     <h3 class="field-label">Responses</h3>
     <h4 class="field-label">201</h4>
     Created
-        <a href="#"></a>
+        <a href="#CreatePoliciesResponse">CreatePoliciesResponse</a>
     <h4 class="field-label">400</h4>
-    Policy registration failed.
+    Policy registration failed due to an invalid request.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">401</h4>
     No valid authentication credentials.
         <a href="#ErrorResponse">ErrorResponse</a>
     <h4 class="field-label">403</h4>
     Authorization refused by server.
+        <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">500</h4>
+    Policy registration failed due to an internal error.
         <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
@@ -1544,8 +1168,8 @@ font-style: italic;
     <div class="method-path">
     <a class="up" href="#__Methods">Up</a>
     <pre class="put"><code class="huge"><span class="http-method">put</span> /irs/policies</code></pre></div>
-    <div class="method-summary">Updates an existing policy. (<span class="nickname">updateAllowedPolicy</span>)</div>
-    <div class="method-notes">Updates an existing policy.</div>
+    <div class="method-summary">Updates existing policies. (<span class="nickname">updateAllowedPolicy</span>)</div>
+    <div class="method-notes">Updates existing policies.</div>
 
 
     <h3 class="field-label">Consumes</h3>
@@ -1589,6 +1213,9 @@ font-style: italic;
     <h4 class="field-label">403</h4>
     Authorization refused by server.
         <a href="#ErrorResponse">ErrorResponse</a>
+    <h4 class="field-label">500</h4>
+    Updating policies failed due to an internal error.
+        <a href="#ErrorResponse">ErrorResponse</a>
   </div> <!-- method -->
   <hr/>
 
@@ -1606,9 +1233,9 @@ font-style: italic;
     <li><a href="#BatchOrderResponse"><code>BatchOrderResponse</code> - </a></li>
     <li><a href="#BatchResponse"><code>BatchResponse</code> - </a></li>
     <li><a href="#Bpn"><code>Bpn</code> - </a></li>
-    <li><a href="#Constraint"><code>Constraint</code> - </a></li>
-    <li><a href="#Constraints"><code>Constraints</code> - </a></li>
+    <li><a href="#CreatePoliciesResponse"><code>CreatePoliciesResponse</code> - </a></li>
     <li><a href="#CreatePolicyRequest"><code>CreatePolicyRequest</code> - </a></li>
+    <li><a href="#CreatePolicyRequest_payload"><code>CreatePolicyRequest_payload</code> - </a></li>
     <li><a href="#EdcNotificationHeader"><code>EdcNotificationHeader</code> - </a></li>
     <li><a href="#EdcNotificationResponseNotificationContent"><code>EdcNotificationResponseNotificationContent</code> - </a></li>
     <li><a href="#Endpoint"><code>Endpoint</code> - </a></li>
@@ -1620,16 +1247,12 @@ font-style: italic;
     <li><a href="#JobParameter"><code>JobParameter</code> - </a></li>
     <li><a href="#JobStatusResult"><code>JobStatusResult</code> - </a></li>
     <li><a href="#Jobs"><code>Jobs</code> - </a></li>
-    <li><a href="#JsonObject"><code>JsonObject</code> - </a></li>
     <li><a href="#JsonValue"><code>JsonValue</code> - </a></li>
     <li><a href="#LangString"><code>LangString</code> - </a></li>
     <li><a href="#LinkedItem"><code>LinkedItem</code> - </a></li>
     <li><a href="#MeasurementUnit"><code>MeasurementUnit</code> - </a></li>
-    <li><a href="#Operator"><code>Operator</code> - </a></li>
     <li><a href="#PageResult"><code>PageResult</code> - </a></li>
     <li><a href="#PartChainIdentificationKey"><code>PartChainIdentificationKey</code> - </a></li>
-    <li><a href="#Permission"><code>Permission</code> - </a></li>
-    <li><a href="#Policy"><code>Policy</code> - </a></li>
     <li><a href="#ProcessingError"><code>ProcessingError</code> - </a></li>
     <li><a href="#ProtocolInformation"><code>ProtocolInformation</code> - </a></li>
     <li><a href="#Quantity"><code>Quantity</code> - </a></li>
@@ -1745,29 +1368,31 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="Constraint"><code>Constraint</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <h3><a name="CreatePoliciesResponse"><code>CreatePoliciesResponse</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">leftOperand (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">odrlColonrightOperand (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">operator (optional)</div><div class="param-desc"><span class="param-type"><a href="#Operator">Operator</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="Constraints"><code>Constraints</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">and (optional)</div><div class="param-desc"><span class="param-type"><a href="#Constraint">array[Constraint]</a></span>  </div>
-<div class="param">or (optional)</div><div class="param-desc"><span class="param-type"><a href="#Constraint">array[Constraint]</a></span>  </div>
+      <div class="param">policyId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> ID of the registered policy </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
     <h3><a name="CreatePolicyRequest"><code>CreatePolicyRequest</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'>Request to add a policy</div>
     <div class="field-items">
-      <div class="param">payload </div><div class="param-desc"><span class="param-type"><a href="#JsonObject">array[JsonObject]</a></span>  </div>
-<div class="param">validUntil </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Timestamp after which the policy will no longer be accepted in negotiations format: date-time</div>
-<div class="param">businessPartnerNumbers (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+      <div class="param">businessPartnerNumber (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> The business partner number (BPN) for which the policy should be registered.
+This parameter is optional.
+If not set the policy is registered for each existing BPN. </div>
+<div class="param">payload </div><div class="param-desc"><span class="param-type"><a href="#CreatePolicyRequest_payload">CreatePolicyRequest_payload</a></span>  </div>
+<div class="param">validUntil </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Timestamp after which the policy will no longer be accepted in negotiations. format: date-time</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="CreatePolicyRequest_payload"><code>CreatePolicyRequest_payload</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>The policy payload.</div>
+    <div class="field-items">
+      <div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
+<div class="param">valueType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">ARRAY</div><div class="param-enum">OBJECT</div><div class="param-enum">STRING</div><div class="param-enum">NUMBER</div><div class="param-enum">TRUE</div><div class="param-enum">FALSE</div><div class="param-enum">NULL</div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -1815,10 +1440,10 @@ font-style: italic;
     <h3><a name="IdentifierKeyValuePair"><code>IdentifierKeyValuePair</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">externalSubjectId (optional)</div><div class="param-desc"><span class="param-type"><a href="#Reference">Reference</a></span>  </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">semanticId (optional)</div><div class="param-desc"><span class="param-type"><a href="#Reference">Reference</a></span>  </div>
 <div class="param">subjectId (optional)</div><div class="param-desc"><span class="param-type"><a href="#Reference">Reference</a></span>  </div>
-<div class="param">externalSubjectId (optional)</div><div class="param-desc"><span class="param-type"><a href="#Reference">Reference</a></span>  </div>
 <div class="param">value (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -1900,18 +1525,8 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="JsonObject"><code>JsonObject</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">valueType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-        <div class="param-enum-header">Enum:</div>
-        <div class="param-enum">ARRAY</div><div class="param-enum">OBJECT</div><div class="param-enum">STRING</div><div class="param-enum">NUMBER</div><div class="param-enum">TRUE</div><div class="param-enum">FALSE</div><div class="param-enum">NULL</div>
-<div class="param">empty (optional)</div><div class="param-desc"><span class="param-type"><a href="#boolean">Boolean</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
     <h3><a name="JsonValue"><code>JsonValue</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
+    <div class='model-description'>The policy payload.</div>
     <div class="field-items">
       <div class="param">valueType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
         <div class="param-enum-header">Enum:</div>
@@ -1949,15 +1564,6 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="Operator"><code>Operator</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">Atid (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-        <div class="param-enum-header">Enum:</div>
-        <div class="param-enum">eq</div><div class="param-enum">neq</div><div class="param-enum">lt</div><div class="param-enum">gt</div><div class="param-enum">in</div><div class="param-enum">lteq</div><div class="param-enum">gteq</div><div class="param-enum">isA</div><div class="param-enum">hasPart</div><div class="param-enum">isPartOf</div><div class="param-enum">isOneOf</div><div class="param-enum">isAllOf</div><div class="param-enum">isNoneOf</div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
     <h3><a name="PageResult"><code>PageResult</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -1977,26 +1583,6 @@ font-style: italic;
     </div>  <!-- field-items -->
   </div>
   <div class="model">
-    <h3><a name="Permission"><code>Permission</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">action (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-        <div class="param-enum-header">Enum:</div>
-        <div class="param-enum">ACCESS</div><div class="param-enum">USE</div>
-<div class="param">constraint (optional)</div><div class="param-desc"><span class="param-type"><a href="#Constraints">Constraints</a></span>  </div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
-    <h3><a name="Policy"><code>Policy</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'></div>
-    <div class="field-items">
-      <div class="param">createdOn (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
-<div class="param">permissions (optional)</div><div class="param-desc"><span class="param-type"><a href="#Permission">array[Permission]</a></span>  </div>
-<div class="param">policyId (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">validUntil (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
-    </div>  <!-- field-items -->
-  </div>
-  <div class="model">
     <h3><a name="ProcessingError"><code>ProcessingError</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
@@ -2012,13 +1598,13 @@ font-style: italic;
     <h3><a name="ProtocolInformation"><code>ProtocolInformation</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">href (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">endpointProtocol (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">endpointProtocol (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">endpointProtocolVersion (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
+<div class="param">href (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">securityAttributes (optional)</div><div class="param-desc"><span class="param-type"><a href="#SecurityAttribute">array[SecurityAttribute]</a></span>  </div>
 <div class="param">subprotocol (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">subprotocolBody (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">subprotocolBodyEncoding (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">securityAttributes (optional)</div><div class="param-desc"><span class="param-type"><a href="#SecurityAttribute">array[SecurityAttribute]</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -2033,8 +1619,8 @@ font-style: italic;
     <h3><a name="Reference"><code>Reference</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">keys (optional)</div><div class="param-desc"><span class="param-type"><a href="#SemanticId">array[SemanticId]</a></span>  </div>
+      <div class="param">keys (optional)</div><div class="param-desc"><span class="param-type"><a href="#SemanticId">array[SemanticId]</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -2087,8 +1673,8 @@ font-style: italic;
         <div class="param-enum-header">Enum:</div>
         <div class="param-enum">asBuilt</div><div class="param-enum">asPlanned</div><div class="param-enum">asSpecified</div>
 <div class="param">callbackUrl (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState. </div>
-<div class="param">key </div><div class="param-desc"><span class="param-type"><a href="#PartChainIdentificationKey">PartChainIdentificationKey</a></span>  </div>
 <div class="param">incidentBPNSs </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> Array of BPNS numbers. </div>
+<div class="param">key </div><div class="param-desc"><span class="param-type"><a href="#PartChainIdentificationKey">PartChainIdentificationKey</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
   <div class="model">
@@ -2124,8 +1710,8 @@ font-style: italic;
     <h3><a name="ResponseNotificationContent"><code>ResponseNotificationContent</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">hops (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
-<div class="param">bpn (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">bpn (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">hops (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
 <div class="param">result (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -2133,8 +1719,8 @@ font-style: italic;
     <h3><a name="SecurityAttribute"><code>SecurityAttribute</code> - </a> <a class="up" href="#__Models">Up</a></h3>
     <div class='model-description'></div>
     <div class="field-items">
-      <div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
-<div class="param">key (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+      <div class="param">key (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">type (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
 <div class="param">value (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
     </div>  <!-- field-items -->
   </div>
@@ -2197,11 +1783,11 @@ font-style: italic;
   </div>
   <div class="model">
     <h3><a name="UpdatePolicyRequest"><code>UpdatePolicyRequest</code> - </a> <a class="up" href="#__Models">Up</a></h3>
-    <div class='model-description'>Request to add a policy</div>
+    <div class='model-description'>Request to update a policy</div>
     <div class="field-items">
-      <div class="param">businessPartnerNumbers (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
-<div class="param">policiesIds (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span>  </div>
-<div class="param">validUntil </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Timestamp after which the policy will no longer be accepted in negotiations format: date-time</div>
+      <div class="param">businessPartnerNumbers (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> Business Partner Number (BPN). </div>
+<div class="param">policyIds </div><div class="param-desc"><span class="param-type"><a href="#string">array[String]</a></span> The IDs of the policies to be updated. </div>
+<div class="param">validUntil </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> Timestamp after which the policy will no longer be accepted in negotiations. format: date-time</div>
     </div>  <!-- field-items -->
   </div>
   </body>

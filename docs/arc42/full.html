@@ -814,13 +814,6 @@ The following table entries define overall IRS quality goals. The order of the t
 <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SpotBugs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Static analysis to find bugs in Java code. Successor to the popular FindBugs tool</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fail build on violations</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">.config/spotbugs-excludes.xml
-@SuppressFBWarnings(&#8230;&#8203;)</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">FindSecBugs</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SpotBugs plugin to add security bug coverage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fail build on violations</p></td>
@@ -848,24 +841,6 @@ The following table entries define overall IRS quality goals. The order of the t
 @ExcludeFromCodeCoverageGeneratedReport</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Veracode</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p>Scan source code for vulnerabilities (SAST)</p>
-</li>
-<li>
-<p>Scan dependencies for known vulnerabilities (SCA)</p>
-</li>
-<li>
-<p>Check used licenses (FOSS licenses)</p>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://web.analysiscenter.veracode.com/" class="bare">https://web.analysiscenter.veracode.com/</a></p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Dependabot</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Automated dependency updates built into GitHub. Provides pull requests for dependency updates.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Every dependency update automatically generates a pull request.</p></td>
@@ -876,6 +851,12 @@ The following table entries define overall IRS quality goals. The order of the t
 <td class="tableblock halign-left valign-top"><p class="tableblock">Discover vulnerabilities across a code base.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">.github/workflows/codeql.yml</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">KICS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Infrastructure as Code scannings.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.github/workflows/kics.yml</p></td>
 </tr>
 </tbody>
 </table>
@@ -3778,7 +3759,7 @@ For more information see:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-04-03 12:37:36 UTC
+Last updated 2024-04-15 14:40:09 UTC
 </div>
 </div>
 </body>
