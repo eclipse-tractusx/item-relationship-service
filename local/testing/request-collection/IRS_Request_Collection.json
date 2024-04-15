@@ -1,12 +1,12 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2024-04-10T08:18:24.322Z",
-  "__export_source": "insomnia.desktop.app:v8.6.1",
+  "__export_date": "2024-04-15T07:56:11.237Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
   "resources": [
     {
-      "_id": "req_ddeaf33f8aba4e7caa89d257bb8adbdf",
-      "parentId": "fld_f8e0a855a2e24de09b6fb5a9f6df545d",
+      "_id": "req_1f30ad95b4814ec39132f47bc270cedf",
+      "parentId": "fld_af826750e6ad41dbad291333a64f2dca",
       "modified": 1705006817408,
       "created": 1705005887617,
       "url": "{{IRS_HOST}}/irs/policies",
@@ -25,7 +25,6 @@
       },
       "metaSortKey": -1705005887617,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -35,8 +34,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_f8e0a855a2e24de09b6fb5a9f6df545d",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_af826750e6ad41dbad291333a64f2dca",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1687243055015,
       "created": 1687243055015,
       "name": "Policy Store",
@@ -47,8 +46,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
-      "parentId": "wrk_53254e8de24e4d6e8325f803463490e8",
+      "_id": "fld_5de60849f6444f6f9d543051dfc1b83a",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
       "modified": 1691572726194,
       "created": 1680682418636,
       "name": "IRS DEMO Collection",
@@ -59,18 +58,18 @@
       "_type": "request_group"
     },
     {
-      "_id": "wrk_53254e8de24e4d6e8325f803463490e8",
+      "_id": "wrk_565df8abe30f4da29d8bffcde97927d7",
       "parentId": null,
-      "modified": 1701227455138,
-      "created": 1701227455138,
+      "modified": 1680682438221,
+      "created": 1680682419747,
       "name": "IRS",
       "description": "",
       "scope": "collection",
       "_type": "workspace"
     },
     {
-      "_id": "req_209e12e564484bacbcdee19f862c4ffe",
-      "parentId": "fld_f8e0a855a2e24de09b6fb5a9f6df545d",
+      "_id": "req_82357f1f7e9e44d985f045e8c2342237",
+      "parentId": "fld_af826750e6ad41dbad291333a64f2dca",
       "modified": 1712736856772,
       "created": 1711449523700,
       "url": "{{IRS_HOST}}/irs/policies",
@@ -104,7 +103,6 @@
       },
       "metaSortKey": -1703116992024,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -114,8 +112,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_b9950550995c4f888e5ded6c6c275035",
-      "parentId": "fld_f8e0a855a2e24de09b6fb5a9f6df545d",
+      "_id": "req_f5cf53dba53e4fd7b91452e99d924db8",
+      "parentId": "fld_af826750e6ad41dbad291333a64f2dca",
       "modified": 1702990529632,
       "created": 1687243204155,
       "url": "{{IRS_HOST}}/irs/policies/{% prompt 'policyId', '', 'traceability-test', '', false, true %}",
@@ -134,7 +132,6 @@
       },
       "metaSortKey": -1685602897140.75,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -144,8 +141,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_2c425451945e4aec953f2a319fed6353",
-      "parentId": "fld_f8e0a855a2e24de09b6fb5a9f6df545d",
+      "_id": "req_320eee8efd384f25a36f9911fc105ce0",
+      "parentId": "fld_af826750e6ad41dbad291333a64f2dca",
       "modified": 1712736811711,
       "created": 1693576003390,
       "url": "{{IRS_HOST}}/irs/policies",
@@ -172,7 +169,6 @@
       },
       "metaSortKey": -1684874704117.875,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -182,8 +178,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_0145ca9fad0a4322b1fe4f9999fb568c",
-      "parentId": "fld_f8e0a855a2e24de09b6fb5a9f6df545d",
+      "_id": "req_43e0684544204340a9227c96c234b986",
+      "parentId": "fld_af826750e6ad41dbad291333a64f2dca",
       "modified": 1712736780844,
       "created": 1687243182397,
       "url": "{{IRS_HOST}}/irs/policies",
@@ -210,7 +206,6 @@
       },
       "metaSortKey": -1683962737633.5,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -220,8 +215,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_07bf6fac04c7463484434f109bd87a23",
-      "parentId": "fld_c6e3c0e5fc504a15975467f151974fa5",
+      "_id": "req_3663f0d6d0a84f778728d6212e2e4452",
+      "parentId": "fld_bc26470cb00d4d64bc19be6755f25f00",
       "modified": 1706003275081,
       "created": 1680682418619,
       "url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors/{% prompt 'aasIdentifier', '', _.GLOBAL_ASSET_ID, '', false, true %}",
@@ -242,7 +237,6 @@
       "authentication": {},
       "metaSortKey": -1680682418619,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -252,8 +246,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_c6e3c0e5fc504a15975467f151974fa5",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_bc26470cb00d4d64bc19be6755f25f00",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1691504187689,
       "created": 1680682418630,
       "name": "Digital Twin Registry",
@@ -264,8 +258,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_d671d2da0dd348509317de89de928e8a",
-      "parentId": "fld_c6e3c0e5fc504a15975467f151974fa5",
+      "_id": "req_025d858a7e7744289e1e947105333bd7",
+      "parentId": "fld_bc26470cb00d4d64bc19be6755f25f00",
       "modified": 1706002920212,
       "created": 1690529035794,
       "url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors",
@@ -286,7 +280,6 @@
       "authentication": {},
       "metaSortKey": -1680682418614,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -296,8 +289,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_bf3345a1de634cf282ce419e0de0b1fc",
-      "parentId": "fld_c6e3c0e5fc504a15975467f151974fa5",
+      "_id": "req_711662a8951d47c49556a24b558dd62b",
+      "parentId": "fld_bc26470cb00d4d64bc19be6755f25f00",
       "modified": 1706003278149,
       "created": 1680682418609,
       "url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
@@ -366,7 +359,6 @@
       "authentication": {},
       "metaSortKey": -1680682418609,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -376,8 +368,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_9d96d6cf4d06400c9cf9f9c0cabcaeed",
-      "parentId": "fld_c6e3c0e5fc504a15975467f151974fa5",
+      "_id": "req_49a66feb305448aeba7d30d7dd608166",
+      "parentId": "fld_bc26470cb00d4d64bc19be6755f25f00",
       "modified": 1706003280850,
       "created": 1680682418595,
       "url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
@@ -404,7 +396,6 @@
       "authentication": {},
       "metaSortKey": -1680682418595,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -414,8 +405,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_64ab7bb5a4224fb7a467c9614a5bd34e",
-      "parentId": "fld_c6e3c0e5fc504a15975467f151974fa5",
+      "_id": "req_3ce036e7a0484363abcdf29571974aed",
+      "parentId": "fld_bc26470cb00d4d64bc19be6755f25f00",
       "modified": 1706003354109,
       "created": 1680682418581,
       "url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells",
@@ -442,7 +433,6 @@
       "authentication": {},
       "metaSortKey": -1680682418581,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -452,8 +442,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_b297ba4421144beba4c295260f78b66d",
-      "parentId": "fld_c6e3c0e5fc504a15975467f151974fa5",
+      "_id": "req_61d92a9abade4718b3347eb48ed6e995",
+      "parentId": "fld_bc26470cb00d4d64bc19be6755f25f00",
       "modified": 1706003284715,
       "created": 1680682418570,
       "url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells/query",
@@ -481,7 +471,6 @@
       "authentication": {},
       "metaSortKey": -1680682418570,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -491,8 +480,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_24bd3fe717c14549a17a41ec75bdd6c3",
-      "parentId": "fld_c6e3c0e5fc504a15975467f151974fa5",
+      "_id": "req_1c406ce78cc4495681e3f9bbafa43493",
+      "parentId": "fld_bc26470cb00d4d64bc19be6755f25f00",
       "modified": 1706003286642,
       "created": 1691408320970,
       "url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/lookup/shells/query",
@@ -520,7 +509,6 @@
       "authentication": {},
       "metaSortKey": -1680682418560.5,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -530,8 +518,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_fb7c0fc211f44397a850a2bc562b96c0",
-      "parentId": "fld_c6e3c0e5fc504a15975467f151974fa5",
+      "_id": "req_b9e1dd78b327487487cc53559ba3707d",
+      "parentId": "fld_bc26470cb00d4d64bc19be6755f25f00",
       "modified": 1706003289343,
       "created": 1689167429413,
       "url": "{{DIGITAL_TWIN_REGISTRY}}/api/v3.0/shell-descriptors/{% prompt 'id', '', '', '', false, true %}",
@@ -560,7 +548,6 @@
       "authentication": {},
       "metaSortKey": -1680682418470,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -570,8 +557,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_6a734310d9794711895a7412e4a489bb",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_0b71020848164f0b81c3ecdb8fdd58e2",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991054859,
       "created": 1680682418551,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -598,7 +585,6 @@
       },
       "metaSortKey": -1680682418551,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -608,8 +594,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_57f291f4f2184a68a104dc0706e73962",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_50286f7d5d454684b8aba9765d6e3855",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1680682418562,
       "created": 1680682418562,
       "name": "IRS Test Collection",
@@ -620,8 +606,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_b598213913a841fc93bebd37ccc2fe1c",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_aa365dbdfe984b0ebd551ba074ea10c3",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991058493,
       "created": 1680682418539,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -648,7 +634,6 @@
       },
       "metaSortKey": -1680682418539,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -658,8 +643,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_1faa38ab41ec44058e569885a1b83a53",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_65f8af5a42494c3ca02568b7dfae1d62",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991063641,
       "created": 1680682418524,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -686,7 +671,6 @@
       },
       "metaSortKey": -1680682418524,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -696,8 +680,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_c463e6aa998c4305b8e24013bfe3df79",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_b1c6a3ac35004cfeaefac5a2bb0dda5a",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991067797,
       "created": 1680682418514,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -724,7 +708,6 @@
       },
       "metaSortKey": -1680682418514,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -734,8 +717,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_9d7b7729c3c747e685d0ae781d7a9e9a",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_ab6d6199c2d24e90a848eee6ea78109f",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991071709,
       "created": 1680682418504,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -762,7 +745,6 @@
       },
       "metaSortKey": -1680682418504,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -772,8 +754,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_e0fcb6d8e38146718d518ada1afad4b2",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_f3399d84f94740d68afb0e9a7e8fa0f1",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991076696,
       "created": 1695042901876,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -800,7 +782,6 @@
       },
       "metaSortKey": -1680682418496,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -810,8 +791,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_97693e7c910944ddb12bd6715ece0634",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_ff728ed6ad5d4e52acc8a6d735f76929",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076144872,
       "created": 1680682418488,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -838,7 +819,6 @@
       },
       "metaSortKey": -1680682418488,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -848,8 +828,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_a6532b996ee24749a7deedfc497871b2",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_57dbf280a39f488f802a2f4e7474c161",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076455844,
       "created": 1680682418479,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -876,7 +856,6 @@
       },
       "metaSortKey": -1680682418479,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -886,8 +865,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_93c58e5d9eac441b946e3c91eafc5e55",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_0286ed482b0a467880d9cdcb73942498",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1712222178406,
       "created": 1680682418469,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -914,7 +893,6 @@
       },
       "metaSortKey": -1680682418469,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -924,8 +902,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_bd90c4ae330143b681d3e40e28b08678",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_3240716443ef458187b8601a1664e39c",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076741632,
       "created": 1680682418442,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -952,7 +930,6 @@
       },
       "metaSortKey": -1680682418442,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -962,8 +939,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_6bfba7dfa13340ef82af70bfe3ceb888",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_23625e9b7a6a414ca52074bd2d2bb44f",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076751758,
       "created": 1680682418432,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -990,7 +967,6 @@
       },
       "metaSortKey": -1680682418432,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1000,8 +976,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_38df9b91319444298e0cb7e4c12db6c2",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_ac5b82e7eb07402381b4250fc209cd65",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1712222124387,
       "created": 1695192937155,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1028,7 +1004,6 @@
       },
       "metaSortKey": -1680682418428,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1038,8 +1013,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_6e8167a35b75481b8e06fd6ce11ecb0e",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_5bd9f681a9d64799928f9a6391db4088",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1712222106070,
       "created": 1695192971825,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1066,7 +1041,6 @@
       },
       "metaSortKey": -1680682418426,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1076,8 +1050,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_3a497f19d7984482a4ec2a0b5fa046e5",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_a607e76dd9c844b7b9dbd74069ac6ced",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076214310,
       "created": 1680682418424,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1104,7 +1078,6 @@
       },
       "metaSortKey": -1680682418424,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1114,8 +1087,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_bdb5f2b5b99647a99cab15ab4c1cec82",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_398cafd7dc0946e1bb9d173c0fb1f019",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991130711,
       "created": 1680682418414,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1142,7 +1115,6 @@
       },
       "metaSortKey": -1680682418414,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1152,9 +1124,9 @@
       "_type": "request"
     },
     {
-      "_id": "req_43b5831ce81b4221a223667cbe141160",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
-      "modified": 1710076937249,
+      "_id": "req_a5528db1444448bfb3897f6805615e41",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
+      "modified": 1713167745641,
       "created": 1680682418401,
       "url": "{{IRS_HOST}}/irs/jobs",
       "name": "1.5.0 [Register Job with all aspect type]",
@@ -1162,7 +1134,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"aspects\": [\n\t\t\"urn:samm:io.catenax.serial_part:3.0.0#SerialPart\",\n\t\t\"urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt\",\n\t\t\"urn:samm:io.catenax.batch:3.0.0#Batch\",\n\t\t\"urn:bamm:io.catenax.battery.product_description:1.0.1#ProductDescription\",\n\t\t\"urn:bamm:io.catenax.market_place_offer:1.4.0#MarketPlaceOffer\",\n\t\t\"urn:bamm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling\",\n\t\t\"urn:bamm:io.catenax.physical_dimension:1.0.0#PhysicalDimension\",\n\t\t\"urn:bamm:io.catenax.return_request:1.0.1#ReturnRequest\",\n\t\t\"urn:bamm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode\",\n\t\t\"urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
+        "text": "{\n\t\"aspects\": [\n\t\t\"urn:samm:io.catenax.serial_part:3.0.0#SerialPart\",\n\t\t\"urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt\",\n\t\t\"urn:samm:io.catenax.batch:3.0.0#Batch\",\n\t\t\"urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription\",\n\t\t\"urn:samm:io.catenax.market_place_offer:1.4.0#MarketPlaceOffer\",\n\t\t\"urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling\",\n\t\t\"urn:samm:io.catenax.physical_dimension:1.0.0#PhysicalDimension\",\n\t\t\"urn:samm:io.catenax.return_request:1.0.1#ReturnRequest\",\n\t\t\"urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode\",\n\t\t\"urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned\"\n\t],\n\t\"key\": {\n\t\t\"globalAssetId\": \"{% prompt 'Global Asset ID', 'Please provide \\'Global-Asset-ID\\' or use default', _.GLOBAL_ASSET_ID, '', false, true %}\",\n\t\t\"bpn\": \"{% prompt 'bpn', '', _.BPN, '', false, true %}\"\n\t},\n\t\"collectAspects\": true\n}"
       },
       "parameters": [],
       "headers": [
@@ -1180,7 +1152,6 @@
       },
       "metaSortKey": -1680682418401,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1190,8 +1161,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_155a7e4b96624743b599ed75c83aedf8",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_d47afad7fc814583b0b51b34c32f7956",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076677384,
       "created": 1680682418392,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1218,7 +1189,6 @@
       },
       "metaSortKey": -1680682418392,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1228,8 +1198,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_d915c524b71c43018f58e7151b40687c",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_c10f4f5ba1ef4030a3238f793b6456fa",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076237949,
       "created": 1683184048412,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1256,7 +1226,6 @@
       },
       "metaSortKey": -1680682418386.5,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1266,8 +1235,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_8cf09f0176df4010ad033de0a19f9a07",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_6c09857d7c404d3b96ceb84241674869",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076397373,
       "created": 1693493383337,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1294,7 +1263,6 @@
       },
       "metaSortKey": -1680682418382.375,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1304,8 +1272,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_5a31fda0c5d14ad7ab4d8de1a7355836",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_336ddd957bee488e8e1ee44d8feee23c",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076245754,
       "created": 1693493584873,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1332,7 +1300,6 @@
       },
       "metaSortKey": -1680682418381.6875,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1342,8 +1309,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_87e0551ccbbb474a99e8b91869af39d5",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_2081e1206173466eac0b516e138b83ae",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076391502,
       "created": 1693493594373,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1370,7 +1337,6 @@
       },
       "metaSortKey": -1680682418381.3438,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1380,8 +1346,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_3a13072096c84c98a5d4ba66df3088ce",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_7408834739394ad8914108c2c55af11f",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1710076385497,
       "created": 1693493604521,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1408,7 +1374,6 @@
       },
       "metaSortKey": -1680682418381.1719,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1418,8 +1383,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_d6aea3d1645a49438def9a9f8fbfacfd",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_934b2c3546964dbba0154c0b5d6affd6",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991173689,
       "created": 1680682418381,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1449,7 +1414,6 @@
       },
       "metaSortKey": -1680682418381,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1459,8 +1423,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_53d5f4fe6b464127a302b1a7dc6c76b9",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_1ca399d41b914d38839e434ed9b324e9",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991177973,
       "created": 1680682418372,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1490,7 +1454,6 @@
       },
       "metaSortKey": -1680682418372,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1500,8 +1463,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_58a136c047034eb7a688048cbdf108fb",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_a6624384545844c192396bb6a8ba4ed1",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991182139,
       "created": 1680682418358,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1531,7 +1494,6 @@
       },
       "metaSortKey": -1680682418358,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1541,8 +1503,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_f570a88240804513aa54f57660cd13a9",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_d9939ead26f9426b8fa0335022261db7",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991186114,
       "created": 1680682418348,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1566,7 +1528,6 @@
       },
       "metaSortKey": -1680682418348,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1576,8 +1537,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_98c5e996682446a1a23faae569a5a13e",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_981c712ae0aa404c9f2a76a37a32beb4",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991190326,
       "created": 1680682418339,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1607,7 +1568,6 @@
       },
       "metaSortKey": -1680682418339,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1617,8 +1577,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_90e45ff9e06c4e179677db5e8f41aae6",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_682d405fe865408b9466cbe854360861",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991196283,
       "created": 1680682418325,
       "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
@@ -1648,7 +1608,6 @@
       },
       "metaSortKey": -1680682418325,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1658,8 +1617,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_072ae3b46a564fd78f37ab686cbc7270",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_89ab9dac1e164e4c8685fe13a891d83a",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991200399,
       "created": 1680682418316,
       "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
@@ -1683,7 +1642,6 @@
       },
       "metaSortKey": -1680682418316,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1693,8 +1651,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_e15a23d43cae40c783dd6d2ebb90cea0",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_a9c9ca4c15af4ff892cd4b4d0d5b4ac9",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991205447,
       "created": 1680682418307,
       "url": "{{IRS_HOST}}/irs/jobs/test",
@@ -1718,7 +1676,6 @@
       },
       "metaSortKey": -1680682418307,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1728,8 +1685,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_c97b48a91163423aaaeeb77abd78a4a4",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_00bd7b14057f4764ac46e5512b9db6ac",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991214202,
       "created": 1680682418297,
       "url": "{{IRS_HOST}}/irs/jobs/00000000-0000-0000-0000-000000000000",
@@ -1753,7 +1710,6 @@
       },
       "metaSortKey": -1680682418297,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1763,8 +1719,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_909b3f2338a04498b737ec6fc16189bd",
-      "parentId": "fld_57f291f4f2184a68a104dc0706e73962",
+      "_id": "req_6fe9f28aacbc46cb952332925a6b66b6",
+      "parentId": "fld_50286f7d5d454684b8aba9765d6e3855",
       "modified": 1702991218362,
       "created": 1680682418280,
       "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
@@ -1788,7 +1744,6 @@
       },
       "metaSortKey": -1680682418280,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1798,8 +1753,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_b587b3cc5fe64d4086856c228a1a0d52",
-      "parentId": "fld_18778b59b43a433caf173c19db608803",
+      "_id": "req_b77302d3e4c54ea9bccd588aa40d6e06",
+      "parentId": "fld_272800c031334bd984de7da6b9a84881",
       "modified": 1705942015684,
       "created": 1682672699249,
       "url": "{{ _.BPN_DISCOVERY }}/api/administration/connectors/bpnDiscovery/search",
@@ -1827,7 +1782,6 @@
       },
       "metaSortKey": -1683630902023,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1837,8 +1791,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_18778b59b43a433caf173c19db608803",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_272800c031334bd984de7da6b9a84881",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1683630931664,
       "created": 1683630887514,
       "name": "Discovery",
@@ -1849,8 +1803,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_813c337498d44a0698850adb60b259cf",
-      "parentId": "fld_18778b59b43a433caf173c19db608803",
+      "_id": "req_4e371616910b4939834e590574434f8d",
+      "parentId": "fld_272800c031334bd984de7da6b9a84881",
       "modified": 1705942027574,
       "created": 1683031718699,
       "url": "{{ _.DISCOVERY_FINDER }}/api/administration/connectors/discovery/search",
@@ -1878,7 +1832,6 @@
       },
       "metaSortKey": -1683630901923,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1888,8 +1841,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_5d03557be4d54ec4871d2f5bffdb0993",
-      "parentId": "fld_18778b59b43a433caf173c19db608803",
+      "_id": "req_96b48f84945e4a139c43b347081dea1d",
+      "parentId": "fld_272800c031334bd984de7da6b9a84881",
       "modified": 1705942036978,
       "created": 1683560906453,
       "url": "{{ _.EDC_DISCOVERY }}/api/administration/connectors/discovery",
@@ -1917,7 +1870,6 @@
       },
       "metaSortKey": -1683630901873,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1927,8 +1879,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_cb31a166ccd64ab5bf20099ebc205d93",
-      "parentId": "fld_02b6868263c048c8ac135574159fbb4d",
+      "_id": "req_19b0215781524f3ba61025cdf8ff24c9",
+      "parentId": "fld_f46e575b1932435b9eaca816c878139d",
       "modified": 1710076352238,
       "created": 1680682418265,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -1955,7 +1907,6 @@
       },
       "metaSortKey": -1680682418265,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -1965,8 +1916,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_02b6868263c048c8ac135574159fbb4d",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_f46e575b1932435b9eaca816c878139d",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1680682418273,
       "created": 1680682418273,
       "name": "IRS Basic API Calls",
@@ -1977,8 +1928,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_dcb90264a2d54f9ab00bfb3f6282f287",
-      "parentId": "fld_02b6868263c048c8ac135574159fbb4d",
+      "_id": "req_eed24d5541f042f7b35258a85715376c",
+      "parentId": "fld_f46e575b1932435b9eaca816c878139d",
       "modified": 1705942154792,
       "created": 1680682418238,
       "url": "{{IRS_HOST}}/irs/jobs/{% response 'body', 'req_b02ac0bfc4704c83a5c5f8b24175d61a', 'b64::JC5pZA==::46b', 'never', 60 %} ",
@@ -2008,7 +1959,6 @@
       },
       "metaSortKey": -1680682418261,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2018,8 +1968,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_4584dacb86d84733a7a5db8a5c59c92d",
-      "parentId": "fld_02b6868263c048c8ac135574159fbb4d",
+      "_id": "req_252a950f231d4af6978078f3333816ea",
+      "parentId": "fld_f46e575b1932435b9eaca816c878139d",
       "modified": 1702991288793,
       "created": 1680682418257,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -2043,7 +1993,6 @@
       },
       "metaSortKey": -1680682418257,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2053,8 +2002,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_9d8c59f193db4066ab035ec6817343cc",
-      "parentId": "fld_02b6868263c048c8ac135574159fbb4d",
+      "_id": "req_2dff37767bae4b3e92e3735c20a203b5",
+      "parentId": "fld_f46e575b1932435b9eaca816c878139d",
       "modified": 1702991284435,
       "created": 1680682418247,
       "url": "{{IRS_HOST}}/irs/jobs",
@@ -2098,7 +2047,6 @@
       },
       "metaSortKey": -1680682418247,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2108,8 +2056,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_42436010753b49d7b2bd3b6fba68aeb0",
-      "parentId": "fld_02b6868263c048c8ac135574159fbb4d",
+      "_id": "req_1d8a5d751d914257a1c52b9ee6449f06",
+      "parentId": "fld_f46e575b1932435b9eaca816c878139d",
       "modified": 1703236659047,
       "created": 1690384427379,
       "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
@@ -2139,7 +2087,6 @@
       },
       "metaSortKey": -1680682418238,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2149,8 +2096,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_51bcc80f9f8441f891a7aecd43099ffd",
-      "parentId": "fld_02b6868263c048c8ac135574159fbb4d",
+      "_id": "req_1e867216fa0b4e40a4d002b5f09e48ea",
+      "parentId": "fld_f46e575b1932435b9eaca816c878139d",
       "modified": 1702991276045,
       "created": 1680682418229,
       "url": "{{IRS_HOST}}/irs/jobs/{% prompt 'Job ID', '', '', '', false, true %}",
@@ -2174,7 +2121,6 @@
       },
       "metaSortKey": -1680682418229,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2184,8 +2130,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_58577c766064460daa0b53230ded33df",
-      "parentId": "fld_02b6868263c048c8ac135574159fbb4d",
+      "_id": "req_21a6d5cb7990445db301e5811b36e09e",
+      "parentId": "fld_f46e575b1932435b9eaca816c878139d",
       "modified": 1702991272198,
       "created": 1682498338739,
       "url": "{{IRS_HOST}}/irs/aspectmodels",
@@ -2209,7 +2155,6 @@
       },
       "metaSortKey": -1680682418179,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2219,8 +2164,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_0443d99781bd42589da0f47adc43b647",
-      "parentId": "fld_1c510cd576c047e183e89c7247376950",
+      "_id": "req_ef073a9c3df443d28211b4a47c86efcc",
+      "parentId": "fld_0240862432fa4a45943e9292fdc4bef2",
       "modified": 1705942066941,
       "created": 1680682418213,
       "url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models",
@@ -2252,7 +2197,6 @@
       },
       "metaSortKey": -1680682418213,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2262,8 +2206,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_1c510cd576c047e183e89c7247376950",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_0240862432fa4a45943e9292fdc4bef2",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1680682418222,
       "created": 1680682418222,
       "name": "Semantics Hub",
@@ -2274,8 +2218,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_982fbe03f688402eaa3a59864d57c0b9",
-      "parentId": "fld_1c510cd576c047e183e89c7247376950",
+      "_id": "req_4b8bf2eb52e5421c9813cf51b7af7b28",
+      "parentId": "fld_0240862432fa4a45943e9292fdc4bef2",
       "modified": 1705942077015,
       "created": 1680682418204,
       "url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization",
@@ -2294,7 +2238,6 @@
       },
       "metaSortKey": -1680682418204,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2304,8 +2247,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_9e90c9c88cc64b129fd7bbd8dfada97f",
-      "parentId": "fld_1c510cd576c047e183e89c7247376950",
+      "_id": "req_f6eafa824d5b43efb88a4ccdeefa1583",
+      "parentId": "fld_0240862432fa4a45943e9292fdc4bef2",
       "modified": 1705942085733,
       "created": 1680682418192,
       "url": "{{ _.SEMANTIC_HUB_URL }}/hub/api/v1/models/urn%3Abamm%3Aio.catenax.serial_part_typization%3A1.0.0%23SerialPartTypization/json-schema",
@@ -2324,7 +2267,6 @@
       },
       "metaSortKey": -1680682418192,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2334,8 +2276,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_9b5eef1cbd554d529be04f572b8e0cd2",
-      "parentId": "fld_ff7ba332fb1a4cdfb1c06e621623fa18",
+      "_id": "req_1284cf1d5074402f932b68b96d9bc927",
+      "parentId": "fld_ecf376d268ed403d85415925a9876340",
       "modified": 1705942100313,
       "created": 1680682418174,
       "url": "{{ _.BPDM_URL }}/v1/api/catena/business-partner/{% prompt 'BPN', '', '', '', false, true %}",
@@ -2360,7 +2302,6 @@
       },
       "metaSortKey": -1680682418174,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2370,8 +2311,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_ff7ba332fb1a4cdfb1c06e621623fa18",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_ecf376d268ed403d85415925a9876340",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1680682418184,
       "created": 1680682418184,
       "name": "Business partner data management",
@@ -2382,8 +2323,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_7f85de9d20cf4ec29a00e45da4ef7476",
-      "parentId": "fld_fb01fe78b13140f0a6ced1d4e35a8a74",
+      "_id": "req_958372128cd94531b9153539a95ff025",
+      "parentId": "fld_f08715e4a303459d9c66b22f0ea2fee7",
       "modified": 1702991347797,
       "created": 1680682418157,
       "url": "{{IRS_HOST}}/esr/esr-statistics/{% prompt 'globalAssetId', 'Provide global asset ID or use default', _.GLOBAL_ASSET_ID, '', false, true %}/{% prompt 'BOM Lifecycle', '', '', '', false, true %}/{% prompt 'Certificate', '', '', '', false, true %}/submodel",
@@ -2407,7 +2348,6 @@
       },
       "metaSortKey": -1680682418158,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2417,8 +2357,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_fb01fe78b13140f0a6ced1d4e35a8a74",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_f08715e4a303459d9c66b22f0ea2fee7",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1680682418167,
       "created": 1680682418167,
       "name": "ESR Spike",
@@ -2429,8 +2369,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_edabe6732540481fa4388624c858d3c1",
-      "parentId": "fld_cdd3393410894a898d9e6a94ba0f562e",
+      "_id": "req_f9774214bb754107818e8ade02b2c664",
+      "parentId": "fld_46d3f6585fc9478a9c2867fee821ac64",
       "modified": 1702991361578,
       "created": 1680682418143,
       "url": "{{IRS_HOST}}/ess/bpn/investigations",
@@ -2457,7 +2397,6 @@
       },
       "metaSortKey": -1680682418143,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2467,8 +2406,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_cdd3393410894a898d9e6a94ba0f562e",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_46d3f6585fc9478a9c2867fee821ac64",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1680682418151,
       "created": 1680682418151,
       "name": "ESS Spike",
@@ -2479,8 +2418,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_7f672ad9256948198de016c9c9d68147",
-      "parentId": "fld_cdd3393410894a898d9e6a94ba0f562e",
+      "_id": "req_3d24c6fdc4fb4f6f9749236e1a7b800a",
+      "parentId": "fld_46d3f6585fc9478a9c2867fee821ac64",
       "modified": 1705942138125,
       "created": 1680682418134,
       "url": "{{IRS_HOST}}/ess/bpn/investigations/{% response 'body', 'req_ec674952c1114bce8fb71ea1ed6d9ef7', 'b64::JC5pZA==::46b', 'never', 60 %}",
@@ -2504,7 +2443,6 @@
       },
       "metaSortKey": -1680682418138.5,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2514,8 +2452,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_269a3f979e7e45718f632d302b621cd8",
-      "parentId": "fld_cdd3393410894a898d9e6a94ba0f562e",
+      "_id": "req_aff549831f8c45c28f17b16d16a9971f",
+      "parentId": "fld_46d3f6585fc9478a9c2867fee821ac64",
       "modified": 1702991370481,
       "created": 1680682418134,
       "url": "{{IRS_HOST}}/ess/bpn/investigations/{% prompt 'Job ID', '', '', '', false, true %}",
@@ -2539,7 +2477,6 @@
       },
       "metaSortKey": -1680682418134,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2549,8 +2486,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_f449a89c593f4c2f8718c066a48424e6",
-      "parentId": "fld_53c3f5206dad45fabe3a27e01245d9a2",
+      "_id": "req_7917cf051540431aa6eb72fe167f1cd1",
+      "parentId": "fld_3d64394ad3d14232b6ddff8e4a6d1000",
       "modified": 1710076303275,
       "created": 1680682418118,
       "url": "{{IRS_HOST}}/irs/orders",
@@ -2577,7 +2514,6 @@
       },
       "metaSortKey": -1680682418118,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2587,8 +2523,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_53c3f5206dad45fabe3a27e01245d9a2",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_3d64394ad3d14232b6ddff8e4a6d1000",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1680682418128,
       "created": 1680682418128,
       "name": "Batch Processing",
@@ -2599,8 +2535,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_8c2b07404f0443deac9794df5f6b8351",
-      "parentId": "fld_53c3f5206dad45fabe3a27e01245d9a2",
+      "_id": "req_5ca464846cf14393b5dccc09eab1ff94",
+      "parentId": "fld_3d64394ad3d14232b6ddff8e4a6d1000",
       "modified": 1702991390349,
       "created": 1696342619602,
       "url": "{{IRS_HOST}}/irs/ess/orders",
@@ -2627,7 +2563,6 @@
       },
       "metaSortKey": -1680682418113.5,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2637,8 +2572,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_8a9bb9cec5094d85beec4418eb22caeb",
-      "parentId": "fld_53c3f5206dad45fabe3a27e01245d9a2",
+      "_id": "req_d2936baa5fc846e99b6a1fd90e76f360",
+      "parentId": "fld_3d64394ad3d14232b6ddff8e4a6d1000",
       "modified": 1705006936944,
       "created": 1705006139836,
       "url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}",
@@ -2666,7 +2601,6 @@
       },
       "metaSortKey": -1680682418111.25,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2676,8 +2610,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_5716aae510fb40a3a2f83223cd358619",
-      "parentId": "fld_53c3f5206dad45fabe3a27e01245d9a2",
+      "_id": "req_ebf5ce9b4ff44918bd8c320ffb9d37aa",
+      "parentId": "fld_3d64394ad3d14232b6ddff8e4a6d1000",
       "modified": 1702991398473,
       "created": 1680682418109,
       "url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}",
@@ -2701,7 +2635,6 @@
       },
       "metaSortKey": -1680682418109,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2711,8 +2644,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_2a685edc7b7e4d5f9f6375ee30379a9f",
-      "parentId": "fld_53c3f5206dad45fabe3a27e01245d9a2",
+      "_id": "req_15442d1e3d134b3a9d5166fdffd58e21",
+      "parentId": "fld_3d64394ad3d14232b6ddff8e4a6d1000",
       "modified": 1702991409664,
       "created": 1680682418099,
       "url": "{{IRS_HOST}}/irs/orders/{% prompt 'Order ID', '', '', '', false, true %}/batches/{% prompt 'Batch ID', '', '', '', false, true %}",
@@ -2736,7 +2669,6 @@
       },
       "metaSortKey": -1680682418099,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2746,8 +2678,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_5e843735001340b8bf5baa8caf297438",
-      "parentId": "fld_3c583f5a50a9410d8f6f96ca51eea3c0",
+      "_id": "req_374c63a9e933495aa538c64cf0ce5e9c",
+      "parentId": "fld_502cfa569e234dfbaf8d32e9a00a6a48",
       "modified": 1690472186478,
       "created": 1678358655308,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/catalog/request",
@@ -2774,7 +2706,6 @@
       },
       "metaSortKey": -1686195722939.1875,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2784,8 +2715,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_3c583f5a50a9410d8f6f96ca51eea3c0",
-      "parentId": "fld_480bc634dc164f10969a0e0610b09446",
+      "_id": "fld_502cfa569e234dfbaf8d32e9a00a6a48",
+      "parentId": "fld_e12f52232f2e4ccbb8a92a5422e24094",
       "modified": 1690362660167,
       "created": 1690362660167,
       "name": "Catalog",
@@ -2796,8 +2727,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "fld_480bc634dc164f10969a0e0610b09446",
-      "parentId": "fld_9e206e8fd3ae41ae92bea5e9436d626b",
+      "_id": "fld_e12f52232f2e4ccbb8a92a5422e24094",
+      "parentId": "fld_5de60849f6444f6f9d543051dfc1b83a",
       "modified": 1690363778601,
       "created": 1675675609576,
       "name": "EDC-Requests",
@@ -2808,8 +2739,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_a10b377a98bb4c23b58eef57897e69c8",
-      "parentId": "fld_3c583f5a50a9410d8f6f96ca51eea3c0",
+      "_id": "req_d1fca9b114cb4765a6cc14ed42328981",
+      "parentId": "fld_502cfa569e234dfbaf8d32e9a00a6a48",
       "modified": 1691500654267,
       "created": 1685521485278,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/catalog/request",
@@ -2836,7 +2767,6 @@
       },
       "metaSortKey": -1686195722889.1875,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2846,8 +2776,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_06d2a55e47414327b9cff7bf9c366d10",
-      "parentId": "fld_3c583f5a50a9410d8f6f96ca51eea3c0",
+      "_id": "req_d8228ae795f741f0a3ee41c44c731532",
+      "parentId": "fld_502cfa569e234dfbaf8d32e9a00a6a48",
       "modified": 1705940987109,
       "created": 1691654388376,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/catalog/request",
@@ -2874,7 +2804,6 @@
       },
       "metaSortKey": -1686195722789.1875,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2884,8 +2813,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_94c1a50d71fb44c9b4e6b5364bfd9291",
-      "parentId": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
+      "_id": "req_9f6323d57e5645078c67c2634a91dedc",
+      "parentId": "fld_356464095be447bd8e7a7733cc997f28",
       "modified": 1691578280640,
       "created": 1675675609557,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations",
@@ -2912,7 +2841,6 @@
       },
       "metaSortKey": -1684146511095,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2922,8 +2850,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
-      "parentId": "fld_480bc634dc164f10969a0e0610b09446",
+      "_id": "fld_356464095be447bd8e7a7733cc997f28",
+      "parentId": "fld_e12f52232f2e4ccbb8a92a5422e24094",
       "modified": 1684146626847,
       "created": 1684146519491,
       "name": "Negotiation",
@@ -2934,8 +2862,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_cca5eeb9c9e04258a5052704f68fb53b",
-      "parentId": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
+      "_id": "req_b3e48d06eb7e4a85813c8425a740ad25",
+      "parentId": "fld_356464095be447bd8e7a7733cc997f28",
       "modified": 1690362123962,
       "created": 1675675609549,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/{% prompt 'id', '', '', '', false, true %}",
@@ -2959,7 +2887,6 @@
       },
       "metaSortKey": -1684146511045,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2969,8 +2896,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_6ebf18b651e54a80b06077dd8f477a4c",
-      "parentId": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
+      "_id": "req_0092fa60fd8f4596ab3d1eab70400592",
+      "parentId": "fld_356464095be447bd8e7a7733cc997f28",
       "modified": 1690362117725,
       "created": 1685444139708,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/{% prompt 'id', '', '', '', false, true %}/cancel",
@@ -2989,7 +2916,6 @@
       },
       "metaSortKey": -1684146511020,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -2999,8 +2925,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_97c60db796524e13a60d7396045f48b1",
-      "parentId": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
+      "_id": "req_33efa480448244a7b9bfcdb9e91d0aa6",
+      "parentId": "fld_356464095be447bd8e7a7733cc997f28",
       "modified": 1690361721223,
       "created": 1681911985730,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/contractnegotiations/request",
@@ -3027,7 +2953,6 @@
       },
       "metaSortKey": -1684146510995,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3037,8 +2962,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_ceafbae9dd434a9e87ad3a1b94c6895a",
-      "parentId": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
+      "_id": "req_4e9a65bd315a406aab742ae5abb5d15a",
+      "parentId": "fld_356464095be447bd8e7a7733cc997f28",
       "modified": 1691578311420,
       "created": 1675675609541,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses",
@@ -3065,7 +2990,6 @@
       },
       "metaSortKey": -1684146510945,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3075,8 +2999,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_725be1435d9a4a81acff7851fa7c292e",
-      "parentId": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
+      "_id": "req_b38860166a534a858832ae622becb8a9",
+      "parentId": "fld_356464095be447bd8e7a7733cc997f28",
       "modified": 1691503370103,
       "created": 1679993996270,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses/{% prompt 'id', '', '', '', false, true %}",
@@ -3100,7 +3024,6 @@
       },
       "metaSortKey": -1684146510895,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3110,8 +3033,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_9bf082344f1f4c9da9e9ae7d970fae6d",
-      "parentId": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
+      "_id": "req_d574e6886e1d4436a2aeb9dec6c2c0bc",
+      "parentId": "fld_356464095be447bd8e7a7733cc997f28",
       "modified": 1690361795179,
       "created": 1675675609525,
       "url": "{{ _.CONSUMER_CONTROLPLANE }}/management/v2/transferprocesses/request",
@@ -3138,7 +3061,6 @@
       },
       "metaSortKey": -1684146510845,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3148,8 +3070,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_f22279e6764548bbb72961d3f036d069",
-      "parentId": "fld_33e5f085b9464adfaa9dfc54f917c0a3",
+      "_id": "req_92bacd622f69483f9798e6e8cbbe1169",
+      "parentId": "fld_356464095be447bd8e7a7733cc997f28",
       "modified": 1690361763512,
       "created": 1681910653593,
       "url": "{{CONSUMER_CONTROLPLANE}}/management/v2/contractagreements/request",
@@ -3176,7 +3098,6 @@
       },
       "metaSortKey": -1684146510795,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3186,8 +3107,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_29134bc0c5924329812e12a1bd1851e7",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_35011172f7ab4e3697591dac19fbeda3",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362947546,
       "created": 1681907482278,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets",
@@ -3214,7 +3135,6 @@
       },
       "metaSortKey": -1679911033461.75,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3224,8 +3144,8 @@
       "_type": "request"
     },
     {
-      "_id": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
-      "parentId": "fld_480bc634dc164f10969a0e0610b09446",
+      "_id": "fld_180cf8ac3da346639736153e59ab9852",
+      "parentId": "fld_e12f52232f2e4ccbb8a92a5422e24094",
       "modified": 1705940929752,
       "created": 1684146457388,
       "name": "Provider",
@@ -3236,8 +3156,8 @@
       "_type": "request_group"
     },
     {
-      "_id": "req_8ced6c1761be4c60b36a9f6b3e5394b8",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_50deb85fb48b4db49c6bec6b4919ae99",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362407763,
       "created": 1685444139630,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/{% prompt 'id', '', '', '', false, true %}",
@@ -3256,7 +3176,6 @@
       },
       "metaSortKey": -1679911033452.375,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3266,8 +3185,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_6effcc7552d74be2a2ed322443176d57",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_dd70aba7bf7141dbbda60a448dd13cb8",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362438115,
       "created": 1685444139625,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/request",
@@ -3294,7 +3213,6 @@
       },
       "metaSortKey": -1679911033447.6875,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3304,8 +3222,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_fcee54d2cded47d4859ed8f3e1bed573",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_83381a3e5e874d6fa62ddc82a4a7922e",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362400081,
       "created": 1685444139636,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/assets/{% prompt 'id', '', '', '', false, true %}",
@@ -3324,7 +3242,6 @@
       },
       "metaSortKey": -1679911033433.625,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3334,8 +3251,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_916d09dca1c94d64b79261d7cb19a76b",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_2bdec1164b8d4ba9b8049a1e015ce78e",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362581978,
       "created": 1685444139641,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions",
@@ -3362,7 +3279,6 @@
       },
       "metaSortKey": -1679911033403.9375,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3372,8 +3288,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_476634e2ecb6474ea50d6244963e4504",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_e5a34fa4eabb495b9dbc69803edcb8c5",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362549290,
       "created": 1685444139647,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/{% prompt 'id', '', '', '', false, true %}",
@@ -3390,9 +3306,8 @@
         "value": "{{ _.EDC_API_KEY }}",
         "addTo": "header"
       },
-      "metaSortKey": -1679911033364.0938,
+      "metaSortKey": -1679911033364.0937,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3402,8 +3317,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_55df3c43719445d4862e8854da509e3d",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_3726a3d5cc8c4176949f9c1affd63967",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362591799,
       "created": 1685444139653,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/request",
@@ -3430,7 +3345,6 @@
       },
       "metaSortKey": -1679911033344.1719,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3440,8 +3354,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_d7d1ac6276fd4b74a8b6b965051e2a44",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_1fb5786a714140be9cf6e8c69a8ab3a2",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362559324,
       "created": 1685444139659,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/policydefinitions/{% prompt 'id', '', '', '', false, true %}",
@@ -3460,7 +3374,6 @@
       },
       "metaSortKey": -1679911033299.25,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3470,8 +3383,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_0d05f6bdbd2d4050ae6c7b09b837fd80",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_d3310b777935406197ee45619c6955c6",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690363080444,
       "created": 1685444139665,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions",
@@ -3498,7 +3411,6 @@
       },
       "metaSortKey": -1679911033261.75,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3508,8 +3420,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_19c9156fc063408bba57c8f6ed5fd217",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_034858006e4544b1aee573fbd1deae9e",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690362691392,
       "created": 1685444139672,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/{% prompt 'id', '', '', '', false, true %}",
@@ -3528,7 +3440,6 @@
       },
       "metaSortKey": -1679911033199.25,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3538,8 +3449,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_4f56442d3d614af3ba7c668ab9da99c4",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_e3d06a47af8c46dc9851be7d2f1f9a42",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690363126919,
       "created": 1685444139678,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/request",
@@ -3566,7 +3477,6 @@
       },
       "metaSortKey": -1679911033174.25,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3576,8 +3486,8 @@
       "_type": "request"
     },
     {
-      "_id": "req_14caa7ed15cc427dbf1b01d2aa96860a",
-      "parentId": "fld_8aa6ae77b4b34814b4d56fb58d99452c",
+      "_id": "req_bf171046032b4e0ea390f326c9a2f555",
+      "parentId": "fld_180cf8ac3da346639736153e59ab9852",
       "modified": 1690363136216,
       "created": 1685444139684,
       "url": "{{ _.PROVIDER_CONTROLPLANE_1 }}/management/v2/contractdefinitions/{% prompt 'id', '', '', '', false, true %}",
@@ -3604,7 +3514,6 @@
       },
       "metaSortKey": -1679911033149.25,
       "isPrivate": false,
-      "pathParameters": [],
       "settingStoreCookies": true,
       "settingSendCookies": true,
       "settingDisableRenderRequestBody": false,
@@ -3614,23 +3523,23 @@
       "_type": "request"
     },
     {
-      "_id": "env_cd08041ce8f97848d5dcccbfd57dd79d914d5272",
-      "parentId": "wrk_53254e8de24e4d6e8325f803463490e8",
-      "modified": 1701227605781,
-      "created": 1701227455152,
+      "_id": "env_d2b7eb1621841465ea24b73343568b286aa8ac9a",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1680782486844,
+      "created": 1680782486844,
       "name": "Base Environment",
       "data": {},
-      "dataPropertyOrder": {},
+      "dataPropertyOrder": null,
       "color": null,
       "isPrivate": false,
-      "metaSortKey": 1701227455152,
+      "metaSortKey": 1680782486844,
       "_type": "environment"
     },
     {
-      "_id": "jar_cd08041ce8f97848d5dcccbfd57dd79d914d5272",
-      "parentId": "wrk_53254e8de24e4d6e8325f803463490e8",
-      "modified": 1701424442877,
-      "created": 1701227455156,
+      "_id": "jar_d2b7eb1621841465ea24b73343568b286aa8ac9a",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1712668849719,
+      "created": 1680782486851,
       "name": "Default Jar",
       "cookies": [
         {
@@ -3644,18 +3553,43 @@
             "Version=1"
           ],
           "hostOnly": true,
-          "creation": "2023-11-30T14:21:58.431Z",
-          "lastAccessed": "2023-12-01T09:54:02.877Z",
-          "id": "4550124559802897"
+          "creation": "2023-04-06T13:30:18.499Z",
+          "lastAccessed": "2024-04-09T13:20:49.719Z",
+          "id": "5690562525597758"
+        },
+        {
+          "key": "KC_RESTART",
+          "expires": "1970-01-01T00:00:10.000Z",
+          "maxAge": 0,
+          "domain": "centralidp-pen.dev.demo.catena-x.net",
+          "path": "/auth/realms/CX-Central/",
+          "httpOnly": true,
+          "extensions": [
+            "Version=1"
+          ],
+          "hostOnly": true,
+          "creation": "2024-02-13T11:37:30.975Z",
+          "lastAccessed": "2024-02-13T11:54:54.713Z",
+          "id": "69183304528381"
         }
       ],
       "_type": "cookie_jar"
     },
     {
-      "_id": "spc_a610e869f2384602ac1a9523d58b1ae0",
-      "parentId": "wrk_53254e8de24e4d6e8325f803463490e8",
-      "modified": 1701227455141,
-      "created": 1701227455141,
+      "_id": "spc_22dfe33611af4731965cc2b08febcfdb",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1680782484284,
+      "created": 1680782484284,
+      "fileName": "IRS",
+      "contents": "",
+      "contentType": "yaml",
+      "_type": "api_spec"
+    },
+    {
+      "_id": "spc_3a573993100a40b3bc2b0a5bd8e5cc48",
+      "parentId": "wrk_565df8abe30f4da29d8bffcde97927d7",
+      "modified": 1681726479575,
+      "created": 1681726479575,
       "fileName": "IRS",
       "contents": "",
       "contentType": "yaml",
