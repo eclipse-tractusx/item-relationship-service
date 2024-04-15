@@ -20,7 +20,6 @@
 package org.eclipse.tractusx.irs.bpdm;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport.BPDM_URL_TEMPLATE;
 import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport.bpdmWillNotFindCompanyName;
 import static org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport.bpdmWillReturnCompanyName;
@@ -33,7 +32,6 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @WireMockTest
@@ -69,10 +67,9 @@ class BpdmWiremockTest {
         bpdmWillNotFindCompanyName(bpn);
 
         // Act & Assert
-        // TODO (#405) fix implementation to not throw HttpClientErrorException$NotFound
-        assertThatExceptionOfType(HttpClientErrorException.class).isThrownBy(
-                () -> bpdmFacade.findManufacturerName(bpn));
+        final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(bpn);
         verifyBpdmWasCalledWithBPN(bpn, 1);
+        assertThat(manufacturerName).isEmpty();
     }
 
 }

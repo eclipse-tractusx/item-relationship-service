@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 /**
  * Public API Facade for bpdm domain
@@ -47,9 +48,16 @@ public class BpdmFacade {
 
     @Cacheable(value = BPDM_CACHE_NAME, key = "#manufacturerId")
     public Optional<String> findManufacturerName(final String manufacturerId) {
-        final BusinessPartnerResponse businessPartner = bpdmClient.getBusinessPartner(manufacturerId, BPN_TYPE);
 
-        final List<NameResponse> names = businessPartner.getNames();
+        final List<NameResponse> names;
+        try {
+            final BusinessPartnerResponse businessPartner = bpdmClient.getBusinessPartner(manufacturerId, BPN_TYPE);
+            names = businessPartner.getNames();
+        } catch (final RestClientException e) {
+            log.warn(e.getMessage(), e);
+            return Optional.empty();
+        }
+
         if (names.isEmpty()) {
             log.warn("Names not found for {} BPN", manufacturerId);
             return Optional.empty();
