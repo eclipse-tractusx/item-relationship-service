@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,8 @@ public class BpdmDelegate extends AbstractDelegate {
 
     @Override
     public ItemContainer process(final ItemContainer.ItemContainerBuilder itemContainerBuilder,
-            final JobParameter jobData, final AASTransferProcess aasTransferProcess, final PartChainIdentificationKey itemId) {
+            final JobParameter jobData, final AASTransferProcess aasTransferProcess,
+            final PartChainIdentificationKey itemId) {
 
         if (jobData.isLookupBPNs()) {
             log.debug("BPN Lookup enabled, collecting BPN information");
@@ -72,7 +74,8 @@ public class BpdmDelegate extends AbstractDelegate {
             } catch (final RestClientException e) {
                 log.info("Business Partner endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 requestMetric.incrementFailed();
-                itemContainerBuilder.tombstone(Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.BPDM_REQUEST));
+                itemContainerBuilder.tombstone(
+                        Tombstone.from(itemId.getGlobalAssetId(), null, e, retryCount, ProcessStep.BPDM_REQUEST));
             }
         } else {
             log.debug("BPN lookup disabled, no BPN information will be collected.");
@@ -83,7 +86,8 @@ public class BpdmDelegate extends AbstractDelegate {
 
     private void lookupBPN(final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId,
             final Bpn bpn, final RequestMetric metric) {
-        bpdmFacade.findManufacturerName(bpn.getManufacturerId()).ifPresentOrElse(name -> {
+
+        final Consumer<String> action = name -> {
             if (BPN_RGX.matcher(bpn.getManufacturerId() + bpn.getManufacturerName()).find()) {
                 bpn.updateManufacturerName(name);
                 metric.incrementCompleted();
@@ -96,14 +100,18 @@ public class BpdmDelegate extends AbstractDelegate {
                         Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
                                 ProcessStep.BPDM_VALIDATION));
             }
-        }, () -> {
+        };
+
+        final Runnable fallbackOnEmptyManufacturedId = () -> {
             final String message = String.format("BPN not exist for given ManufacturerId: %s and for CatenaXId: %s.",
                     bpn.getManufacturerId(), itemId);
             log.warn(message);
             metric.incrementFailed();
             itemContainerBuilder.tombstone(Tombstone.from(itemId, null, new BpdmDelegateProcessingException(message), 0,
                     ProcessStep.BPDM_REQUEST));
-        });
+        };
+
+        bpdmFacade.findManufacturerName(bpn.getManufacturerId()).ifPresentOrElse(action, fallbackOnEmptyManufacturedId);
     }
 
 }

@@ -88,8 +88,7 @@ public abstract class AbstractDelegate {
 
     protected SubmodelDescriptor requestSubmodel(final EdcSubmodelFacade submodelFacade,
             final ConnectorEndpointsService connectorEndpointsService, final Endpoint digitalTwinRegistryEndpoint,
-            final String bpn)
-            throws EdcClientException {
+            final String bpn) throws EdcClientException {
 
         final String subprotocolBody = digitalTwinRegistryEndpoint.getProtocolInformation().getSubprotocolBody();
         final Optional<String> dspEndpoint = extractDspEndpoint(subprotocolBody);
@@ -97,8 +96,8 @@ public abstract class AbstractDelegate {
         if (dspEndpoint.isPresent()) {
             log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload", subprotocolBody);
             return submodelFacade.getSubmodelPayload(dspEndpoint.get(),
-                    digitalTwinRegistryEndpoint.getProtocolInformation().getHref(),
-                    extractAssetId(subprotocolBody), bpn);
+                    digitalTwinRegistryEndpoint.getProtocolInformation().getHref(), extractAssetId(subprotocolBody),
+                    bpn);
         } else {
             log.info("SubprotocolBody does not contain '{}'. Using Discovery Service as fallback.", DSP_ENDPOINT);
             final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
@@ -107,8 +106,9 @@ public abstract class AbstractDelegate {
         }
     }
 
-    private SubmodelDescriptor getSubmodel(final EdcSubmodelFacade submodelFacade, final Endpoint digitalTwinRegistryEndpoint,
-            final List<String> connectorEndpoints, final String bpn) throws EdcClientException {
+    private SubmodelDescriptor getSubmodel(final EdcSubmodelFacade submodelFacade,
+            final Endpoint digitalTwinRegistryEndpoint, final List<String> connectorEndpoints, final String bpn)
+            throws EdcClientException {
         for (final String connectorEndpoint : connectorEndpoints) {
             try {
                 return submodelFacade.getSubmodelPayload(connectorEndpoint,

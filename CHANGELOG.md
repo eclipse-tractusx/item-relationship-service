@@ -10,7 +10,16 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Added
 
+- SAMM models can now be added locally #488
+- Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
+
 ### Changed
+
+### Fixed
+
+- ClassCastException in exception handling of EdcSubmodelClientImp#getEndpointReferencesForAsset corrected (returns the exception as failed future now). #405
+- RestClientExceptions are handled correctly in BpdmFacade now. #405
+
 
 ## [4.9.0] - 2024-04-03
 ### Added
@@ -20,8 +29,14 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
 - Support of building relationships based on SingleLevelBomAsBuilt v3.0.0 #488
 
+### Changed
+
+- Renamed item relationship service Helm chart from "irs-helm" to "item-relationship-service". #489
+
+
 ## [4.8.0] - 2024-03-18
 ### Changed
+
 - Improved maintainability in EdcSubmodelClientImpl by reduced method visibility and better naming (in context of #448).
 - EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService throw AlreadyExist exceptions when
   conflict is returned from EDC
@@ -137,7 +152,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
 - Exported health endpoints to prometheus (see HealthMetricsExportConfiguration,
   DependenciesHealthMetricsExportConfiguration) and
-  added [system health dashboard](charts/irs-helm/dashboards/system-health-dashboard.json)
+  added [system health dashboard](charts/item-relationship-service/dashboards/system-health-dashboard.json)
   in order to visualize health metrics of IRS and its dependencies. #283
 
 ### Fixed

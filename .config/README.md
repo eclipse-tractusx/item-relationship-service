@@ -14,6 +14,5 @@ This folder contains configuration, rules and suppression files for code quality
 | irs.header                  | Copyright header definition for the checkstyle module RegexpHeader.                       | see checkstyle.xml file                                                                                                |
 | owasp-suppressions.xml      | [OWASP dependendy check](https://owasp.org/www-project-dependency-check/) suppressions.   | [OWASP suppressions documentation](https://jeremylong.github.io/DependencyCheck/general/suppression.html)              |
 | pmd-rules.xml               | [PMD Source Code Analyzer](https://pmd.github.io/) rules.                                 | [PMD rules documentation](https://pmd.github.io/pmd/pmd_userdocs_making_rulesets.html)                                 |
-| spotbugs-excludes.xml       | [Spotbugs](https://spotbugs.github.io/) excludes.                                         | [Spotbugs excludes documentation](https://spotbugs.readthedocs.io/en/stable/filter.html)                               |
 
  

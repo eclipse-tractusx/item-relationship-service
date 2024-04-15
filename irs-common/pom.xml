@@ -68,10 +68,6 @@
             <artifactId>minio</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.xerial.snappy</groupId>
-            <artifactId>snappy-java</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.squareup.okio</groupId>
             <artifactId>okio-jvm</artifactId>
             <version>${okio-jvm.version}</version>

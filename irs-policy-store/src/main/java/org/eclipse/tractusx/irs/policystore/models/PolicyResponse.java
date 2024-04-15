@@ -26,52 +26,112 @@ import lombok.Builder;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 
 /**
- * Policy representation for get all policies response
+ * Policy representation for policies response
  */
 @Builder
 @Schema(example = PolicyResponse.EXAMPLE_PAYLOAD)
 public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
 
-    @SuppressWarnings({"FileTabCharacter", "java:S2479"})
-    // required to show correctly example payload in open-api
+    public static final String BPN_TO_POLICY_MAP_EXAMPLE = """
+              {
+                  "BPNL1234567890AB": [
+                      {
+                          "validUntil": "2025-12-12T23:59:59.999Z",
+                          "payload": {
+                              "@context": {
+                                  "odrl": "http://www.w3.org/ns/odrl/2/"
+                              },
+                              "@id": "policy-id3",
+                              "policy": {
+                                  "policyId": "p3",
+                                  "createdOn": "2024-03-28T03:34:42.9454448Z",
+                                  "validUntil": "2025-12-12T23:59:59.999Z",
+                                  "permissions": [
+                                      {
+                                          "action": "USE",
+                                          "constraint": {
+                                              "and": [
+                                                  {
+                                                      "leftOperand": "Membership",
+                                                      "operator": {
+                                                          "@id": "eq"
+                                                      },
+                                                      "odrl:rightOperand": "active"
+                                                  },
+                                                  {
+                                                      "leftOperand": "PURPOSE",
+                                                      "operator": {
+                                                          "@id": "eq"
+                                                      },
+                                                      "odrl:rightOperand": "ID 3.1 Trace"
+                                                  }
+                                              ],
+                                              "or": null
+                                          }
+                                      }
+                                  ]
+                              }
+                          }
+                      }
+                  ],
+                  "BPNA1234567890DF": []
+              }
+            """;
+
+    @SuppressWarnings({ "FileTabCharacter",
+                        "java:S2479"
+    })
+    // required to show example of policies correctly in open-api
     public static final String EXAMPLE_PAYLOAD = """
-             [
+            [
+               {
+                	"validUntil": "2025-12-12T23:59:59.999Z",
+                	"payload": {
+                		"@context": {
+                			"odrl": "http://www.w3.org/ns/odrl/2/"
+                		},
+                		"@id": "policy-id1",
+                		"policy": {
+                			"odrl:permission": [
+                				{
+                					"odrl:action": "USE",
+                					"odrl:constraint": {
+                						"odrl:and": [
+                							{
+                								"odrl:leftOperand": "Membership",
+                								"odrl:operator": {
+                									"@id": "odrl:eq"
+                								},
+                								"odrl:rightOperand": "active"
+                							},
+                							{
+                								"odrl:leftOperand": "PURPOSE",
+                								"odrl:operator": {
+                									"@id": "odrl:eq"
+                								},
+                								"odrl:rightOperand": "ID 3.1 Trace"
+                							}
+                						]
+                					}
+                				}
+                			]
+                		}
+                	}
+                },
                 {
-                 	"validUntil": "2025-12-12T23:59:59.999Z",
-                 	"payload": {
-                 		"@context": {
-                 			"odrl": "http://www.w3.org/ns/odrl/2/"
-                 		},
-                 		"@id": "policy-id",
-                 		"policy": {
-                 			"odrl:permission": [
-                 				{
-                 					"odrl:action": "USE",
-                 					"odrl:constraint": {
-                 						"odrl:and": [
-                 							{
-                 								"odrl:leftOperand": "Membership",
-                 								"odrl:operator": {
-                 									"@id": "odrl:eq"
-                 								},
-                 								"odrl:rightOperand": "active"
-                 							},
-                 							{
-                 								"odrl:leftOperand": "PURPOSE",
-                 								"odrl:operator": {
-                 									"@id": "odrl:eq"
-                 								},
-                 								"odrl:rightOperand": "ID 3.1 Trace"
-                 							}
-                 						]
-                 					}
-                 				}
-                 			]
-                 		}
-                 	}
-                 }
-              ]
-                """;
+                	"validUntil": "2025-12-31T23:59:59.999Z",
+                	"payload": {
+                		"@context": {
+                			"odrl": "http://www.w3.org/ns/odrl/2/"
+                		},
+                		"@id": "policy-id2",
+                		"policy": {
+                			...
+                		}
+                	}
+                }
+             ]
+            """;
 
     public static PolicyResponse fromPolicy(final Policy policy) {
         return PolicyResponse.builder()
