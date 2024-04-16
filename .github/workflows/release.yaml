@@ -1,10 +1,12 @@
 name: Release IRS
 
 on:
-  workflow_dispatch:
-  push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_call:
+    inputs:
+      irs-version:
+        description: 'New IRS version'
+        required: true
+        type: string
 
 jobs:
   release:
@@ -18,7 +20,7 @@ jobs:
       - name: Update Chart.yaml appVersion
         uses: mikefarah/yq@v4.40.5
         with:
-          cmd: yq -i eval '.appVersion = "${{ github.ref_name }}"' charts/item-relationship-service/Chart.yaml
+          cmd: yq -i eval '.appVersion = "${{ inputs.irs-version }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Update Chart.yaml version
         uses: mikefarah/yq@v4.40.5
@@ -46,22 +48,15 @@ jobs:
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
-          sed -n -e '/## \[${{ github.ref_name }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
-          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ env.PREVIOUS_VERSION }}...${{ github.ref_name }} >> $GITHUB_ENV
+          sed -n -e '/## \[${{ inputs.irs-version }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
+          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ env.PREVIOUS_VERSION }}...${{ inputs.irs-version }} >> $GITHUB_ENV
           echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Create IRS release
         uses: softprops/action-gh-release@v1
         with:
           body: ${{ env.CHANGELOG }}
-
-  trigger-jira:
-    needs:
-      - release
-    uses: ./.github/workflows/jira-publish-release.yaml
-    with:
-      version: ${{ github.ref_name }}
-    secrets: inherit
+          tag_name: ${{ inputs.irs-version }}
 
   publish-to-swaggerhub:
     name: "Publish OpenAPI spec to Swaggerhub"
@@ -71,5 +66,5 @@ jobs:
       - release
     uses: ./.github/workflows/publish-swagger-hub.yml
     with:
-      version: ${{ github.ref_name }}
+      version: ${{ inputs.irs-version }}
     secrets: inherit
