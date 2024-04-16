@@ -16,7 +16,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - SAMM models can now be added locally #488
 - Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
 
-### Changed
+
+### Fixed
 
 - Policy store API fixes. #199, #505
   - Create policy request limited to create exactly one policy, not multiple (reason: error handling).
@@ -25,8 +26,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   - Consistent naming for business partner number parameters.
   - Corrected default policy handling.
   - Validation of business partner numbers. #505
-
-### Fixed
 
 - ClassCastException in exception handling of EdcSubmodelClientImp#getEndpointReferencesForAsset corrected (returns the
   exception as failed future now). #405
@@ -40,9 +39,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 - IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
 - Support of building relationships based on SingleLevelBomAsBuilt v3.0.0 #488
-
-### Changed
-
 - Renamed item relationship service Helm chart from "irs-helm" to "item-relationship-service". #489
 
 
