@@ -17,11 +17,14 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
 
 ### Changed
+
 - Policy store API fixes. #199, #505
-  - Create policy request returns policy id now.
+  - Create policy request limited to create exactly one policy, not multiple (reason: error handling).
+  - Create policy request returns policy id of the created policy now.
   - Harmonized policy store API between #199 and policy structure from #249.
   - Consistent naming for business partner number parameters.
   - Corrected default policy handling.
+  - Validation of business partner numbers. #505
 
 ### Fixed
 
