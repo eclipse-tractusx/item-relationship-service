@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
-## [UNRELEASED]
+## [Unreleased]
+
+
+## [5.0.0] - 2024-04-16
 
 ### Added
 
@@ -14,12 +17,18 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
 
 ### Changed
+- Policy store API fixes. #199, #505
+  - Create policy request returns policy id now.
+  - Harmonized policy store API between #199 and policy structure from #249.
+  - Consistent naming for business partner number parameters.
+  - Corrected default policy handling.
 
 ### Fixed
 
-- ClassCastException in exception handling of EdcSubmodelClientImp#getEndpointReferencesForAsset corrected (returns the exception as failed future now). #405
+- ClassCastException in exception handling of EdcSubmodelClientImp#getEndpointReferencesForAsset corrected (returns the
+  exception as failed future now). #405
 - RestClientExceptions are handled correctly in BpdmFacade now. #405
-
+- Fixed Base64 encoding and decoding for locally provided Semantic Models #488
 
 ## [4.9.0] - 2024-04-03
 ### Added
@@ -609,7 +618,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.8.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.0...HEAD
+[5.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.9.0...5.0.0
+[4.9.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.8.0...4.9.0
 [4.8.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.7.0...4.8.0
 [4.7.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.6.0...4.7.0
 [4.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.2...4.6.0
