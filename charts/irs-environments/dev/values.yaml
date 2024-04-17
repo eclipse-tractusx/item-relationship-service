@@ -1,4 +1,4 @@
-irs-helm:
+item-relationship-service:
   #####################
   # IRS Configuration #
   #####################
@@ -149,7 +149,7 @@ irs-helm:
         metrics_path: '/actuator/prometheus'
         scrape_interval: 60s
         static_configs:
-          - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+          - targets: [ '{{ .Release.Name }}-item-relationship-service:4004' ]
 
       - job_name: 'minio-actuator'
         metrics_path: /minio/v2/metrics/cluster
@@ -255,7 +255,7 @@ tractusx-connector:
 
   # URL where the EndpointDataReference callback will be sent to
   backendService:
-    httpProxyTokenReceiverUrl: "http://irs-dev-irs-helm:8181/internal/endpoint-data-reference"
+    httpProxyTokenReceiverUrl: "http://irs-dev-item-relationship-service:8181/internal/endpoint-data-reference"
 
   ################################
   # EDC Vault/DAPS Configuration #

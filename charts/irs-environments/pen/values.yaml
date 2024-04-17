@@ -1,4 +1,4 @@
-irs-helm:
+item-relationship-service:
   #####################
   # IRS Configuration #
   #####################
@@ -163,7 +163,7 @@ tractusx-connector:
 
   # URL where the EndpointDataReference callback will be sent to
   backendService:
-    httpProxyTokenReceiverUrl: "http://app-irs-pen-irs-helm:8181/internal/endpoint-data-reference"
+    httpProxyTokenReceiverUrl: "http://app-irs-pen-item-relationship-service:8181/internal/endpoint-data-reference"
 
   ################################
   # EDC Vault/DAPS Configuration #
