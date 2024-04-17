@@ -168,6 +168,8 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 ### Create a Release
 
+#### Full release
+
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
 2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md)
@@ -195,6 +197,16 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
    >   **Full Changelog:** https://github.com/eclipse-tractusx/item-relationship-service/compare/w.w.w...x.x.x
 
    _(replace x.x.x with IRS version to release, y.y.y with IRS helm version to release and w.w.w with previous IRS version)_
+
+#### Release chart only
+
+1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
+   and create a corresponding branch according to the template: `chore/release-chart-x.x.x`.
+2. Add new version to [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md)
+3. Change chart version in [Chart.yaml](charts/item-relationship-service/Chart.yaml) 
+4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/release-chart-x.x.x)
+5. Merge this pull request to main.
+6. Wait for release workflow to complete.
 
 
 ## Contact
