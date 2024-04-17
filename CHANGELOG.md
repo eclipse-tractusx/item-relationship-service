@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## Changed
+
+-  Removed obsolete entries from acceptedPolicies configuration. #530
+
 
 ## [5.0.0] - 2024-04-16
 
