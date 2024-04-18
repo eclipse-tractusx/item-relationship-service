@@ -153,15 +153,9 @@
             <version>${irs-registry-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.jimblackler</groupId>
-            <artifactId>jsonschemafriend</artifactId>
-            <version>${jsonschemafriend.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jsoup</groupId>
-                    <artifactId>jsoup</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${json-schema-validator.version}</version>
         </dependency>
         <!-- Update jsoup manually to avoid a vulnerability; can be removed after jsonschemafriend updates their dependency -->
         <dependency>
