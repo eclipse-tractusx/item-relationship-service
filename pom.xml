@@ -94,7 +94,7 @@
         <swagger-annotations.version>2.2.18</swagger-annotations.version>
         <edc.version>0.2.1</edc.version>
         <okio-jvm.version>3.5.0</okio-jvm.version>
-        <bc-jdk18on.version>1.76</bc-jdk18on.version>
+        <bc-jdk18on.version>1.78</bc-jdk18on.version>
         <wiremock-standalone.version>3.5.2</wiremock-standalone.version>
         <jsoup.version>1.17.2</jsoup.version>
         <jsonschemafriend.version>0.12.4</jsonschemafriend.version>
