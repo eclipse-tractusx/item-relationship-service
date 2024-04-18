@@ -52,12 +52,12 @@ An example policy can look like this:
 ```json
 {
   "policies": {
-    "ID 3.0 Trace": {
+    "ID 3.1 Trace": {
        "@context": {
           "odrl": "http://www.w3.org/ns/odrl/2/"
        },
        "@type": "PolicyDefinitionRequestDto",
-       "@id": "id-3.0-trace",
+       "@id": "id-3.1-trace",
        "policy": {
           "@type": "Policy",
           "odrl:permission": [
@@ -70,7 +70,7 @@ An example policy can look like this:
                          "@type": "Constraint",
                          "odrl:leftOperand": "idsc:PURPOSE",
                          "odrl:operator": "EQ",
-                         "odrl:rightOperand": "ID 3.0 Trace"
+                         "odrl:rightOperand": "ID 3.1 Trace"
                       }
                    ]
                 }

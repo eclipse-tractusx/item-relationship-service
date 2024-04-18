@@ -79,7 +79,7 @@ import org.springframework.web.server.ResponseStatusException;
 class PolicyStoreServiceTest {
 
     private static final String BPN = "testBpn";
-    private static final String EXAMPLE_ALLOWED_NAME = "ID 3.0 Trace";
+    private static final String EXAMPLE_ALLOWED_NAME = "ID 3.1 Trace";
     private static final String EXAMPLE_ACCEPTED_LEFT_OPERAND = "PURPOSE";
     private static final String REGISTER_POLICY_EXAMPLE_PAYLOAD = PolicyStoreControllerTest.REGISTER_POLICY_EXAMPLE_PAYLOAD;
 
