@@ -36,8 +36,8 @@ jobs:
 
       - name: Validate that workflow inputs are SemVer strings
         run: |
-          matched_irs_semver_string=$(echo "${{ inputs.irs-version }}" | grep -Ex "${{ env.SEMVER_PATTERN }}")
-          matched_helm_chart_semver_string=$(echo "${{ inputs.helm-chart-version }}" | grep -Ex "${{ env.SEMVER_PATTERN }}")
+          matched_irs_semver_string=$(echo "${{ inputs.irs-version }}" | grep -Ex "${{ env.SEMVER_PATTERN }}" || echo "")
+          matched_helm_chart_semver_string=$(echo "${{ inputs.helm-chart-version }}" | grep -Ex "${{ env.SEMVER_PATTERN }}" || echo "")
           if [[ -z "$matched_irs_semver_string"  || -z "$matched_helm_chart_semver_string" ]]; then
               exit 1
           fi
@@ -89,7 +89,7 @@ jobs:
           sed -i "$((top_lvl_changelog_placeholder_line_number+1)) s|^|\n## [$new_irs_version] - $date\n|" ${{ env.TOP_LEVEL_CHANGELOG_PATH }}
           
           ### update irs-helm directory's CHANGELOG.md ###
-          if [[ "$irs_change_present_in_helm_changelog" = "No" ]]; then
+          if [[ "$irs_change_present_in_helm_changelog" == "No" ]]; then
             # get line number of first header which is not placeholder
             next_header_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.## \[$semver_pattern\]" | grep -Eo "^[0-9]+")
             # get line number of first  "### Changed" section
