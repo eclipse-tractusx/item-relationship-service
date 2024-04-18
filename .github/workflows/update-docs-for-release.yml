@@ -142,19 +142,28 @@ jobs:
             sleep "$sleep_interval_length"s
           
             # retrieve pr status using GH API's pull requests endpoint with GH CLI
-            pr_status=$(gh pr view $pull_request_number --json mergedAt --jq ".mergedAt")
+            pr_status=$(gh pr view $pull_request_number --json state --jq ".state")
           
-            # response body contains field "mergedAt": will be date time string once pr has been merged, otherwise empty string
-            if [[ -n "$pr_status" ]]; then
-              pull_request_merged="True"
-            else
-              seconds_waited_for_merge=$((seconds_waited_for_merge+sleep_interval_length))
-          
-              # abort workflow when having waited for more than specified time
-              if [[ $seconds_waited_for_merge -gt $((timeout_in_minutes*60)) ]]; then
+            case $pr_status in
+              
+              MERGED)
+                pull_request_merged="True"
+                ;;
+              
+              OPEN)
+                seconds_waited_for_merge=$((seconds_waited_for_merge+sleep_interval_length))
+                # abort workflow when having waited for more than specified time
+                if [[ $seconds_waited_for_merge -gt $((timeout_in_minutes*60)) ]]; then
+                  exit 1
+                fi
+                ;;
+              
+              CLOSED)
                 exit 1
-              fi
-            fi
+                ;;
+          
+            esac
+          
           done
         continue-on-error: false
 
