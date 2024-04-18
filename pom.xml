@@ -81,7 +81,7 @@
         <micrometer.version>1.11.4</micrometer.version>
         <datafaker.version>2.1.0</datafaker.version>
         <json-unit-assertj.version>3.2.7</json-unit-assertj.version>
-        <gatling.version>3.9.5</gatling.version>
+        <gatling.version>3.10.5</gatling.version>
         <resilience4j.version>2.1.0</resilience4j.version>
         <minio.version>8.5.9</minio.version>
         <rest-assured.version>5.4.0</rest-assured.version>
