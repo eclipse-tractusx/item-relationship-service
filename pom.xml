@@ -85,7 +85,7 @@
         <resilience4j.version>2.1.0</resilience4j.version>
         <minio.version>8.5.9</minio.version>
         <rest-assured.version>5.4.0</rest-assured.version>
-        <awaitility.version>4.2.0</awaitility.version>
+        <awaitility.version>4.2.1</awaitility.version>
         <jsonassert.version>1.5.1</jsonassert.version>
         <junit-bom.version>5.9.2</junit-bom.version>
         <cucumber-bom.version>7.11.1</cucumber-bom.version>
