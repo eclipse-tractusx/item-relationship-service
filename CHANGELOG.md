@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
+
+- Update bouncycastle to 1.78 to fix CVE's.
+
 
 ## [5.0.0] - 2024-04-16
 
