@@ -74,7 +74,7 @@ class EdcPolicyDefinitionServiceTest {
     @Test
     void testCreatePolicyDefinitionRequest() throws JsonProcessingException, JSONException {
         // given
-        String policyName = "ID 3.0 Trace";
+        String policyName = "ID 3.1 Trace";
         String policyId = "4cc0bb57-2d64-4cfb-a13b-aceef3477b7e";
 
         // when
@@ -99,7 +99,7 @@ class EdcPolicyDefinitionServiceTest {
                         						{
                         							"@type": "Constraint",
                         							"odrl:leftOperand": "PURPOSE",
-                        							"odrl:rightOperand": "ID 3.0 Trace",
+                        							"odrl:rightOperand": "ID 3.1 Trace",
                         							"odrl:operator": {
                         								"@id": "odrl:eq"
                         							}
