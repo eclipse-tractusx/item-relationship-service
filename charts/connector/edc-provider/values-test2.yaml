@@ -1,3 +1,5 @@
+postgresql:
+  enabled: false
 tractusx-connector:
   install:
     postgresql: true
