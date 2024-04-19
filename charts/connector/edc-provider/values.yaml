@@ -47,17 +47,9 @@ tractusx-connector:
     livenessProbe:
       enabled: true
       initialDelaySeconds: 15
-      periodSeconds: 10
-      timeoutSeconds: 10
-      failureThreshold: 20
-      successThreshold: 1
     readinessProbe:
       enabled: true
       initialDelaySeconds: 15
-      periodSeconds: 10
-      timeoutSeconds: 10
-      failureThreshold: 20
-      successThreshold: 1
 
   dataplane:
     ingresses:
@@ -88,17 +80,9 @@ tractusx-connector:
     livenessProbe:
       enabled: true
       initialDelaySeconds: 15
-      periodSeconds: 10
-      timeoutSeconds: 10
-      failureThreshold: 20
-      successThreshold: 1
     readinessProbe:
       enabled: true
       initialDelaySeconds: 15
-      periodSeconds: 10
-      timeoutSeconds: 10
-      failureThreshold: 20
-      successThreshold: 1
 
   ################################
   # EDC Vault/DAPS Configuration #
