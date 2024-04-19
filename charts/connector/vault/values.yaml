@@ -1,0 +1,16 @@
+vault:
+  injector:
+    enabled: false
+  server:
+    dev:
+      enabled: true
+      devRootToken: "<path:traceability-irs/data/vault#vaultToken>"
+    ingress:
+      enabled: true
+      hosts:
+        - host: irs-vault.dev.demo.catena-x.net
+          paths: [ ]
+      tls:
+        - secretName: tls-secret
+          hosts:
+            - irs-vault.dev.demo.catena-x.net
