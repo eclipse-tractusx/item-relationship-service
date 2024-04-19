@@ -50,7 +50,7 @@ tractusx-connector:
 
   vault:
     hashicorp:
-      url: "https://irs-vault.demo.catena-x.net"
+      url: "https://irs-vault.dev.demo.catena-x.net"
       token: "<path:traceability-irs/data/vault#vaultToken>"
       timeout: 30
     secretNames:
