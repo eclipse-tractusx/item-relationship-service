@@ -128,8 +128,8 @@ public class EdcRegistration {
                     }
                 }
                 """.formatted(assetId, notificationType, essBaseUrl + path);
-        final var entity = restTemplate.exchange(edcProviderUrl + assetsPath, HttpMethod.POST,
-                toEntity(body), String.class);
+        final var entity = restTemplate.exchange(edcProviderUrl + assetsPath, HttpMethod.POST, toEntity(body),
+                String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification asset registered successfully.");
@@ -160,7 +160,7 @@ public class EdcRegistration {
                                   "odrl:operator": {
                                     "@id": "odrl:eq"
                                   },
-                                  "odrl:rightOperand": "ID 3.0 Trace"
+                                  "odrl:rightOperand": "ID 3.1 Trace"
                                 }
                               ]
                             }
@@ -169,8 +169,8 @@ public class EdcRegistration {
                       }
                   }
                 """.formatted(policyId);
-        final var entity = restTemplate.exchange(edcProviderUrl + policydefinitionsPath,
-                HttpMethod.POST, toEntity(body), String.class);
+        final var entity = restTemplate.exchange(edcProviderUrl + policydefinitionsPath, HttpMethod.POST,
+                toEntity(body), String.class);
 
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification policy registered successfully.");
@@ -194,8 +194,8 @@ public class EdcRegistration {
                 }
                 """.formatted(contractId, contractId, assetId);
 
-        final var entity = restTemplate.exchange(edcProviderUrl + contractdefinitionsPath,
-                HttpMethod.POST, toEntity(body), String.class);
+        final var entity = restTemplate.exchange(edcProviderUrl + contractdefinitionsPath, HttpMethod.POST,
+                toEntity(body), String.class);
         if (entity.getStatusCode().is2xxSuccessful()) {
             log.info("Notification contract definition registered successfully.");
         } else {

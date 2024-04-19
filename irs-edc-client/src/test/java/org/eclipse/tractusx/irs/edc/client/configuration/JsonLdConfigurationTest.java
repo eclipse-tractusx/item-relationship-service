@@ -69,7 +69,7 @@ class JsonLdConfigurationTest {
                                                                           .leftExpression(
                                                                                   new LiteralExpression("idsc:PURPOSE"))
                                                                           .rightExpression(
-                                                                                  new LiteralExpression("ID 3.0 Trace"))
+                                                                                  new LiteralExpression("ID 3.1 Trace"))
                                                                           .build();
         final ObjectMapper objectMapper = new JsonLdConfiguration().objectMapper();
         final String s = objectMapper.writeValueAsString(atomicConstraint);
