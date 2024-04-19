@@ -27,9 +27,11 @@ export REGULAR_USER_API_KEY_ESS=
 export ADMIN_USER_API_KEY_ESS=
 ```
 * Execute command 
+
+- Note: Execute command from irs root directory ..\item-relationship-service
+
 ```console
-  source variable.env
-  py -m pytest irs-api-tests.tavern.yaml
+  source local/testing/api-tests/variable.env && python -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml
 ```
 
 
