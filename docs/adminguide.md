@@ -230,13 +230,7 @@ irs-edc-client:
     acceptedPolicies:
       - leftOperand: "PURPOSE"
         operator: "eq"
-        rightOperand: "ID 3.0 Trace"
-      - leftOperand: "PURPOSE"
-        operator: "eq"
         rightOperand: "ID 3.1 Trace"
-      - leftOperand: "PURPOSE"
-        operator: "eq"
-        rightOperand: R2_Traceability
       - leftOperand: "FrameworkAgreement.traceability"
         operator: "eq"
         rightOperand: "active"
@@ -414,13 +408,7 @@ edc:
     acceptedPolicies:
       - leftOperand: "PURPOSE"
         operator: "eq"
-        rightOperand: "ID 3.0 Trace"
-      - leftOperand: "PURPOSE"
-        operator: "eq"
         rightOperand: "ID 3.1 Trace"
-      - leftOperand: "PURPOSE"
-        operator: "eq"
-        rightOperand: R2_Traceability
       - leftOperand: "FrameworkAgreement.traceability"
         operator: "eq"
         rightOperand: "active"
@@ -507,12 +495,18 @@ prometheus:
       metrics_path: '/actuator/prometheus'
       scrape_interval: 5s
       static_configs:
-        - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+        - targets: [ '{{ .Release.Name }}-item-relationship-service:4004' ]
 
     - job_name: 'minio-actuator'
       metrics_path: /minio/v2/metrics/cluster
       static_configs:
         - targets: [ '{{ .Release.Name }}-minio:9000' ]
+
+
+#########################
+# Grafana Configuration #
+#########################
+grafana:
 ```
 
 1. Use this to enable or disable the monitoring components
