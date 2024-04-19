@@ -1,0 +1,72 @@
+tractusx-connector:
+  install:
+    postgresql: true
+    vault: false
+
+  iatp:
+    sts:
+      oauth:
+        client:
+          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id.provider1>
+          secret_alias: dim-secret-dev
+
+  controlplane:
+    ingresses:
+      - enabled: true
+        hostname: "irs-test1-cp.dev.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - protocol
+          - management
+        tls:
+          enabled: true
+          secretName: tls-secret
+
+  dataplane:
+    token:
+      signer:
+        privatekey_alias: irs-dev-daps-cert-provider-key
+      verifier:
+        publickey_alias: irs-dev-daps-cert-provider
+
+    ingresses:
+      - enabled: true
+        hostname: "irs-test1-dp.dev.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - public
+        className: "nginx"
+        tls:
+          enabled: true
+          secretName: tls-secret
+
+  vault:
+    hashicorp:
+      url: "https://irs-vault.demo.catena-x.net"
+      token: "<path:traceability-irs/data/vault#vaultToken>"
+      timeout: 30
+    secretNames:
+      transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-provider-key
+      transferProxyTokenSignerPublicKey: irs-dev-daps-cert-provider
+      transferProxyTokenEncryptionAesKey: test-edc-encryption-key
+
+  postgresql:
+    nameOverride: edc-test-postgresql
+    primary:
+      persistence:
+        enabled: false
+        size: 1Gi
+    auth:
+      database: edc
+      username: testuser
+      postgresPassword: testpass
+      password: testpass
+    username: testuser
+    password: testpass
+    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-edc-test-postgresql:5432/edc"
