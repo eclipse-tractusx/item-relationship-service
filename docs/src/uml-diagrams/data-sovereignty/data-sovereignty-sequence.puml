@@ -30,7 +30,7 @@ note left
                 },
                 "rightExpression": {
                   "edctype": "dataspaceconnector:literalexpression",
-                  "value": "ID 3.0 Trace"
+                  "value": "ID 3.1 Trace"
                 },
                 "operator": "EQ"
               }

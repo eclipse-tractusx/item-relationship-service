@@ -87,7 +87,7 @@ class EdcTransformerTest {
                                         "odrl:operator": {
                                             "@id": "odrl:eq"
                                         },
-                                        "odrl:rightOperand": "ID 3.0 Trace"
+                                        "odrl:rightOperand": "ID 3.1 Trace"
                                     }
                                 }
                             },
@@ -190,7 +190,7 @@ class EdcTransformerTest {
                                                                                   new LiteralExpression("idsc:PURPOSE"))
                                                                           .operator(Operator.EQ)
                                                                           .rightExpression(
-                                                                                  new LiteralExpression("ID 3.0 Trace"))
+                                                                                  new LiteralExpression("ID 3.1 Trace"))
                                                                           .build();
         final OrConstraint orConstraint = OrConstraint.Builder.newInstance().constraint(atomicConstraint).build();
         final Permission permission = Permission.Builder.newInstance()

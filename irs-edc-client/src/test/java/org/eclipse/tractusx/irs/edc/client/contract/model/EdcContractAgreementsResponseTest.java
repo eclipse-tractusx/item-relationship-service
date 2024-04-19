@@ -50,7 +50,7 @@ class EdcContractAgreementsResponseTest {
                 						"odrl:operator": {
                 							"@id": "odrl:eq"
                 						},
-                						"odrl:rightOperand": "ID 3.0 Trace"
+                						"odrl:rightOperand": "ID 3.1 Trace"
                 					}
                 				}
                 			},

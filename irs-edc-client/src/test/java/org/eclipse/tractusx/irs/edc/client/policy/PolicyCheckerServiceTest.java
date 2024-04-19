@@ -71,7 +71,7 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldRejectWhenPolicyStoreIsEmpty() {
         // given
-        Policy policy = createAtomicConstraintPolicy(TestConstants.PURPOSE, TestConstants.ID_3_0_TRACE);
+        Policy policy = createAtomicConstraintPolicy(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE);
         when(policyStore.getAcceptedPolicies(any())).thenReturn(List.of());
         // when
         boolean result = policyCheckerService.isValid(policy, "bpn");
@@ -102,12 +102,12 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldAcceptAndConstraintsWhenAcceptedPolicyContainsMoreConstraintsSuperSetOfProvidedPolicy() {
         // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, new Operator(OperatorType.EQ),
-                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
         final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, new Operator(OperatorType.EQ),
                 TestConstants.STATUS_ACTIVE);
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
-                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
         final var policyList = List.of(
                 new AcceptedPolicy(policy("and-policy", List.of(constraint1, constraint2, constraint3), List.of()),
                         OffsetDateTime.now().plusYears(1)));
@@ -127,12 +127,12 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldAcceptOrConstraintsWhenAcceptedPolicyContainsMoreConstraintsSuperSetOfProvidedPolicy() {
         // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, new Operator(OperatorType.EQ),
-                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
         final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, new Operator(OperatorType.EQ),
                 TestConstants.STATUS_ACTIVE);
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
-                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
         final var policyList = List.of(
                 new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
                         OffsetDateTime.now().plusYears(1)));
@@ -152,12 +152,12 @@ class PolicyCheckerServiceTest {
     @Test
     void shouldAcceptConstraintsWithDefaultPolicy() {
         // given
-        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY, new Operator(OperatorType.EQ),
-                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
         final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, new Operator(OperatorType.EQ),
                 TestConstants.STATUS_ACTIVE);
-        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER, new Operator(OperatorType.EQ),
-                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
 
         final var policyList = List.of(new AcceptedPolicy(
                 policy("default-policy", List.of(constraint1, constraint2, constraint3),
