@@ -53,7 +53,7 @@ jobs:
           matched_helm_chart_version=$(grep -Eo "## \[${{ inputs.helm-chart-version }}\]" ${{ env.IRS_HELM_CHANGELOG_PATH }} || echo "")
           
           if [[ -n "$matched_irs_version" || -n "$matched_helm_chart_version" ]]; then
-              echo "IRS or Helm Chart release version already exists. Previous versions: $matched_irs_version (IRS), $matched_helm_chart_version (Helm Chart). Aborting..."
+              echo "IRS or Helm Chart release version already exists, aborting..."
               exit 1
           fi
         continue-on-error: false
