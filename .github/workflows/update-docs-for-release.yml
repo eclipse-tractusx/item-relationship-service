@@ -30,6 +30,8 @@ on:
 jobs:
   update-docs-for-release:
     runs-on: ubuntu-latest
+    outputs:
+      previous-irs-version: $${{ steps.update-docs.outputs.previous-irs-version }}
 
     steps:
       - uses: actions/checkout@v4
@@ -57,6 +59,7 @@ jobs:
         continue-on-error: false
 
       - name: Update top level changelog, IRS Helm changelog, Helm repository's yaml file and IrsApplication.java
+        id: update-docs
         run: |
           new_irs_version="${{ inputs.irs-version }}"
           new_helm_chart_version="${{ inputs.helm-chart-version }}"
@@ -76,6 +79,7 @@ jobs:
           
           # previous version can be extracted from line below uppermost comparison
           previous_irs_version=$(awk "NR==$((latest_comparison_url_line_number+1))" ${{ env.TOP_LEVEL_CHANGELOG_PATH }} | grep -Eo "\[$semver_pattern\]" | tr -d "[]")
+          echo "previous-irs-version=$previous_irs_version" >> "$GITHUB_OUTPUT"
           
           # correct uppermost comparison
           sed -i "$latest_comparison_url_line_number s|$semver_pattern_sed\.\.\.HEAD|$new_irs_version...HEAD|" ${{ env.TOP_LEVEL_CHANGELOG_PATH }}         
@@ -175,4 +179,6 @@ jobs:
       - update-docs-for-release
     uses: ./.github/workflows/release.yaml
     with:
-      irs-version: ${{ inputs.irs-version }}
+      new-irs-version: ${{ inputs.irs-version }}
+      previous-irs-version: ${{ needs.update-docs-for-release.outputs.previous-irs-version }}
+      helm-chart-version: ${{ inputs.helm-chart-version }}
