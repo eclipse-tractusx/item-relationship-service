@@ -31,7 +31,7 @@ jobs:
   update-docs-for-release:
     runs-on: ubuntu-latest
     outputs:
-      previous-irs-version: $${{ steps.update-docs.outputs.previous-irs-version }}
+      previous-irs-version: ${{ steps.update-docs.outputs.previous-irs-version }}
 
     steps:
       - uses: actions/checkout@v4
