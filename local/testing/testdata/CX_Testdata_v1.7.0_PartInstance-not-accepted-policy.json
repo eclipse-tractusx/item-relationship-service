@@ -7,15 +7,13 @@
       "@type": "PolicyDefinitionRequestDto",
       "@id": "id-3.0-not-accepted",
       "policy": {
-        "@type": "Policy",
+        "@type": "odrl:Set",
         "odrl:permission": [
           {
             "odrl:action": "USE",
             "odrl:constraint": {
-              "@type": "AtomicConstraint",
               "odrl:or": [
                 {
-                  "@type": "Constraint",
                   "odrl:leftOperand": "PURPOSE",
                   "odrl:operator": {
                     "@id": "odrl:eq"

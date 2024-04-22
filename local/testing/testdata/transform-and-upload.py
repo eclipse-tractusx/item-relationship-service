@@ -1,5 +1,25 @@
 #!/usr/bin/python
 
+# #############################################################################
+# Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+# Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License, Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0.
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+# #############################################################################
+
 import argparse
 import json
 import math
@@ -219,6 +239,8 @@ def print_response(response_):
     print(response_)
     if response_.status_code > 205:
         print(response_.text)
+    if response_.status_code in [404, 401] or response_.status_code >= 500:
+        raise Exception("Failed to call service")
 
 
 def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_upload_urls_, edc_urls_, dataplane_urls_):
@@ -642,7 +664,7 @@ if __name__ == "__main__":
                     if is_aas3:
                         endpoint_address = f"{dataplane_url}{dataplane_public_path}/{submodel_identification}"
                         if is_ess and tmp_data["bpnl"] in bpnl_fail:
-                            endpoint_address = f"http://idonotexist/{dataplane_public_path}/{submodel_identification}"
+                            endpoint_address = f"http://idonotexist/{dataplane_public_path}/data/{submodel_identification}"
                         descriptor = create_submodel_descriptor_3_0(submodel_name, submodel_identification, semantic_id,
                                                                     endpoint_address,
                                                                     edc_asset_id,
