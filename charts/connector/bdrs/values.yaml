@@ -30,8 +30,8 @@ bdrs-server-memory:
            nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
            nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
          endpoints:
-           - protocol
-           - public
+           - management
+           - directory
          tls:
            enabled: true
            secretName: tls-secret
