@@ -4,11 +4,11 @@ This folder contains [Tavern](https://tavern.readthedocs.io) API tests for the I
 
 ## Usage 
 
-* Install python
-* Install pytest: ```py -m pip install pytest```
-* Install tavern: ```py -m pip install tavern```
-* Create variable.env in directory api-tests
-* Copy content to variable.env
+1. Install python
+2. Install pytest: ```py -m pip install pytest```
+3.  Install tavern: ```py -m pip install tavern```
+4. Create variable.env in directory api-tests
+5. Copy content to variable.env
 ```
 # this is temporary file for local development to setup environments variable such a secrets and URLs
 # to run it just execute in console:
@@ -26,11 +26,18 @@ export ADMIN_USER_API_KEY=
 export REGULAR_USER_API_KEY_ESS=
 export ADMIN_USER_API_KEY_ESS=
 ```
-* Execute command 
-```console
-  source variable.env
-  py -m pytest irs-api-tests.tavern.yaml
-```
+6. Execute tests
+    
+   1. Run all tests
+        ```console
+          source variable.env
+          py -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml
+        ```
 
-
-
+   2. To run a single test:
+        ```console
+          py -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml::"<test name>"
+          
+          # for example:      
+          py -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml::"Make sure job with submodels process with status COMPLETED with asPlanned-id"
+        ```
