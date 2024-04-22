@@ -45,11 +45,6 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build API documentation with Maven
-        run: |
-          mvn clean package -pl irs-common,irs-models,irs-policy-store,irs-testing,irs-edc-client,irs-registry-client,irs-api -DskipTests --batch-mode
-          cp irs-api/target/generated-sources/openapi/index.html docs/src/docs/api-specification/index.html
-
       - name: Build with Maven
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any

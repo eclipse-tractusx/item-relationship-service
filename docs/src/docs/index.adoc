@@ -3,9 +3,6 @@
 == Administration Guide
 xref:administration/administration-guide.adoc[]
 
-== API-Documentation
-xref:api-specification/api-specification.adoc[OpenApi specification]
-
 == Swagger-UI
 xref:swagger-ui/index.adoc[Swagger-UI]
 
