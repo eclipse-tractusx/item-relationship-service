@@ -75,6 +75,12 @@ public class PolicyTestHelper {
         return extractPolicyIds(bpnToPoliciesMap.get(bpn).stream());
     }
 
+    @SuppressWarnings("rawtypes")
+    public static Stream<LinkedHashMap> extractPoliciesForBpn(
+            final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap, final String bpn) {
+        return extractPolicy(bpnToPoliciesMap.get(bpn).stream());
+    }
+
     public static Stream<String> extractPolicyIdsStartingWith(
             final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap, final String policyIdPrefix) {
         return extractPolicyIds(bpnToPoliciesMap).filter(policyId -> StringUtils.startsWith(policyId, policyIdPrefix));
@@ -85,11 +91,19 @@ public class PolicyTestHelper {
         return extractPolicyIds(bpnToPoliciesMap.values().stream().flatMap(Collection::stream));
     }
 
-    @SuppressWarnings("rawtypes")
     private static Stream<String> extractPolicyIds(final Stream<LinkedHashMap<String, ?>> linkedHashMapStream) {
-        return linkedHashMapStream.map(v -> (LinkedHashMap) v.get("payload"))
-                                  .map(v -> (LinkedHashMap) v.get("policy"))
-                                  .map(v -> (String) v.get("policyId"));
+        return extractPolicy(linkedHashMapStream).map(v -> (String) v.get("policyId"));
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static Stream<LinkedHashMap> extractPolicy(final Stream<LinkedHashMap<String, ?>> linkedHashMapStream) {
+        return extractPolicyPayloads(linkedHashMapStream).map(v -> (LinkedHashMap) v.get("policy"));
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static Stream<LinkedHashMap> extractPolicyPayloads(
+            final Stream<LinkedHashMap<String, ?>> linkedHashMapStream) {
+        return linkedHashMapStream.map(v -> (LinkedHashMap) v.get("payload"));
     }
 
     public static JsonObject jsonFromString(String jsonObjectStr) {

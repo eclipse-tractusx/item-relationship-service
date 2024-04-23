@@ -54,6 +54,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.eclipse.tractusx.irs.component.BatchOrderCreated;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
@@ -71,10 +72,14 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class E2ETestStepDefinitions {
+
+    public static final String URL_IRS_POLICIES = "/irs/policies";
+    public static final String QUERYPARAM_BUSINESS_PARTNER_NUMBERS = "businessPartnerNumbers";
 
     private RegisterJob.RegisterJobBuilder registerJobBuilder;
 
@@ -532,9 +537,29 @@ public class E2ETestStepDefinitions {
     }
 
     @Then("the BPN {string} should have the following policies:")
-    public void thePoliciesShouldBeMappedAsFollows(final String bpn, final List<String> policyIds) {
+    public void theBpnShouldHaveTheFollowingPolicies(final String bpn, final List<String> policyIds) {
         final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).toList();
         assertThat(policyIdsForBpn).containsAll(policyIds);
+    }
+
+    @When("I update validUntil on policy {string}, BPN {string} to {string}")
+    public void iUpdateAPolicyValidUntil(final String policyId, final String bpn, final String validUntil) {
+        updatePolicies(List.of(policyId), List.of(bpn), validUntil);
+    }
+
+    @Then("the BPN {string} should have a policy with policyId {string} and validUntil {string}")
+    @SuppressWarnings({ "rawtypes",
+                        "unchecked"
+    })
+    public void theBpnShouldHaveTheExpectedPolicyWithValidUntil(final String bpn, final String policyId,
+            String validUntil) {
+        final List<LinkedHashMap> policies = PolicyTestHelper.extractPoliciesForBpn(bpnToPoliciesMap, bpn).toList();
+        final List<LinkedHashMap> policiesFiltered = policies.stream()
+                                                             .filter(p -> p.get("policyId").equals(policyId))
+                                                             .toList();
+        assertThat(policiesFiltered).hasSize(1);
+        assertThat(policiesFiltered.get(0)).containsEntry("policyId", policyId) //
+                                           .containsEntry("validUntil", validUntil);
     }
 
     @Given("a policy with policyId {string} for BPN {string} and validUntil {string}")
@@ -546,19 +571,14 @@ public class E2ETestStepDefinitions {
 
     private void cleanupPolicy(final String policyId) {
 
-        authProperties = authenticationPropertiesBuilder.build();
-
-        final int status = given().log()
-                                  .all()
-                                  .spec(authProperties.getNewAuthenticationRequestSpecification())
-                                  .pathParam("policyId", policyId)
-                                  .when()
-                                  .delete("/irs/policies/{policyId}")
-                                  .then()
-                                  .log()
-                                  .all()
-                                  .extract()
-                                  .statusCode();
+        final int status = givenAuthentication().pathParam("policyId", policyId)
+                                                .when()
+                                                .delete(URL_IRS_POLICIES + "/{policyId}")
+                                                .then()
+                                                .log()
+                                                .all()
+                                                .extract()
+                                                .statusCode();
 
         assertThat(List.of(HttpStatus.OK.value(), HttpStatus.NOT_FOUND.value())).describedAs(
                 "Should either return status 200 OK or 404 NOT_FOUND").contains(status);
@@ -572,66 +592,73 @@ public class E2ETestStepDefinitions {
     @SuppressWarnings("unchecked")
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchAllPolicies() {
 
-        authProperties = authenticationPropertiesBuilder.build();
-
-        return given().log()
-                      .all()
-                      .spec(authProperties.getNewAuthenticationRequestSpecification())
-                      .when()
-                      .get("/irs/policies")
-                      .then()
-                      .log()
-                      .all()
-                      .statusCode(HttpStatus.OK.value())
-                      .extract()
-                      .body()
-                      .as(Map.class);
+        return givenAuthentication().when()
+                                    .get(URL_IRS_POLICIES)
+                                    .then()
+                                    .log()
+                                    .all()
+                                    .statusCode(HttpStatus.OK.value())
+                                    .extract()
+                                    .body()
+                                    .as(Map.class);
     }
 
     @SuppressWarnings("unchecked")
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(final String bpn) {
 
-        authProperties = authenticationPropertiesBuilder.build();
-
-        return given().log()
-                      .all()
-                      .spec(authProperties.getNewAuthenticationRequestSpecification())
-                      .queryParam("businessPartnerNumbers", bpn)
-                      .when()
-                      .get("/irs/policies")
-                      .then()
-                      .log()
-                      .all()
-                      .statusCode(HttpStatus.OK.value())
-                      .extract()
-                      .body()
-                      .as(Map.class);
+        return givenAuthentication().queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS, bpn)
+                                    .when()
+                                    .get(URL_IRS_POLICIES)
+                                    .then()
+                                    .log()
+                                    .all()
+                                    .statusCode(HttpStatus.OK.value())
+                                    .extract()
+                                    .body()
+                                    .as(Map.class);
     }
 
     private CreatePoliciesResponse registerPolicyForBpn(final String policyJson, final String bpn,
             final String validUntil) {
 
-        authProperties = authenticationPropertiesBuilder.build();
+        final var createPolicyRequest = CreatePolicyRequest.builder()
+                                                           .validUntil(OffsetDateTime.parse(validUntil))
+                                                           .businessPartnerNumber(bpn)
+                                                           .payload(PolicyTestHelper.jsonFromString(policyJson))
+                                                           .build();
+        return givenAuthentication().contentType(ContentType.JSON)
+                                    .body(createPolicyRequest)
+                                    .when()
+                                    .post(URL_IRS_POLICIES)
+                                    .then()
+                                    .log()
+                                    .all()
+                                    .statusCode(HttpStatus.CREATED.value())
+                                    .extract()
+                                    .as(CreatePoliciesResponse.class);
+    }
 
-        final CreatePolicyRequest.CreatePolicyRequestBuilder builder = CreatePolicyRequest.builder();
-        final var createPolicyRequest = //
-                builder.validUntil(OffsetDateTime.parse(validUntil))
-                       .businessPartnerNumber(bpn)
-                       .payload(PolicyTestHelper.jsonFromString(policyJson))
-                       .build();
-        return given().log()
-                      .all()
-                      .spec(authProperties.getNewAuthenticationRequestSpecification())
-                      .contentType(ContentType.JSON)
-                      .body(createPolicyRequest)
-                      .when()
-                      .post("irs/policies")
-                      .then()
-                      .log()
-                      .all()
-                      .statusCode(HttpStatus.CREATED.value())
-                      .extract()
-                      .as(CreatePoliciesResponse.class);
+    private void updatePolicies(final List<String> policyIds, final List<String> businessPartnerNumbers,
+            final String validUntil) {
+
+        final var updatePolicyRequest = UpdatePolicyRequest.builder()
+                                                           .policyIds(policyIds)
+                                                           .businessPartnerNumbers(businessPartnerNumbers)
+                                                           .validUntil(OffsetDateTime.parse(validUntil))
+                                                           .build();
+        givenAuthentication().contentType(ContentType.JSON)
+                             .body(updatePolicyRequest)
+                             .when()
+                             .put(URL_IRS_POLICIES)
+                             .then()
+                             .log()
+                             .all()
+                             .statusCode(HttpStatus.OK.value());
+    }
+
+    private RequestSpecification givenAuthentication() {
+        authProperties = authenticationPropertiesBuilder.build();
+        return given().log().all().spec(authProperties.getNewAuthenticationRequestSpecification());
     }
 
 }
