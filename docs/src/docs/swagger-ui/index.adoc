@@ -1,14 +1,4 @@
-= Item Relationship Service Documentation
-
-== Administration Guide
-xref:administration/administration-guide.adoc[]
-
-== Swagger-UI
-xref:swagger-ui/index.adoc[Swagger-UI]
-
-== Architecture Documentation (arc42)
-- xref:arc42/index.adoc[Single chapters]
-- xref:arc42/full.adoc[Full document]
+= Swagger-UI
 
 == NOTICE
 

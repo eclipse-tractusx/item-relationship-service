@@ -76,7 +76,7 @@
         <irs-registry-client.version>1.10.0-SNAPSHOT</irs-registry-client.version>
 
         <!-- Dependencies -->
-        <springboot.version>3.1.10</springboot.version>
+        <springboot.version>3.1.11</springboot.version>
         <springdoc.version>2.2.0</springdoc.version>
         <micrometer.version>1.11.4</micrometer.version>
         <datafaker.version>1.9.0</datafaker.version>
