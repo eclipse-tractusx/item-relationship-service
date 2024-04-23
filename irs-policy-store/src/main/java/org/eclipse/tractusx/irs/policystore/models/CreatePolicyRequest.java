@@ -31,12 +31,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.json.JsonObject;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 
 /**
  * Object for API to create policy
  */
 @SuppressWarnings("FileTabCharacter")
 @Schema(description = "Request to add a policy")
+@Builder
 public record CreatePolicyRequest(
 
         @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations.",
