@@ -540,7 +540,7 @@ public class E2ETestStepDefinitions {
     @Given("a policy with policyId {string} for BPN {string} and validUntil {string}")
     public void iRegisterAPolicy(final String policyId, final String bpn, final String validUntil) {
         final String policyJson = PolicyTestHelper.policyTemplate.formatted(policyId);
-        final CreatePoliciesResponse response = registerPolicy(policyJson, bpn, validUntil);
+        final CreatePoliciesResponse response = registerPolicyForBpn(policyJson, bpn, validUntil);
         assertThat(response.policyId()).isEqualTo(policyId);
     }
 
@@ -608,7 +608,8 @@ public class E2ETestStepDefinitions {
                       .as(Map.class);
     }
 
-    private CreatePoliciesResponse registerPolicy(final String policyJson, final String bpn, final String validUntil) {
+    private CreatePoliciesResponse registerPolicyForBpn(final String policyJson, final String bpn,
+            final String validUntil) {
 
         authProperties = authenticationPropertiesBuilder.build();
 
