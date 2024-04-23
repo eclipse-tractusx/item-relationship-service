@@ -30,7 +30,10 @@ import static org.awaitility.Awaitility.await;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -66,22 +69,32 @@ import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
+import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
+import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class E2ETestStepDefinitions {
+
     private RegisterJob.RegisterJobBuilder registerJobBuilder;
+
     private RegisterBatchOrder.RegisterBatchOrderBuilder registerBatchOrderBuilder;
+
     private UUID jobId;
     private UUID orderId;
     private UUID batchId;
+
     private Jobs completedJob;
+
     private BatchOrderResponse batchOrderResponse;
     private BatchResponse batchResponse;
-    private ObjectMapper objectMapper;
-    private AuthenticationProperties authProperties;
 
+    private ObjectMapper objectMapper;
+
+    private AuthenticationProperties authProperties;
     private AuthenticationProperties.AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
+
+    private Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap;
 
     @Before
     public void setup() {
@@ -385,7 +398,8 @@ public class E2ETestStepDefinitions {
             final List<Submodel> actualSubmodels = completedJob.getSubmodels();
             final List<Submodel> expectedSubmodels = getExpectedSubmodels(fileName);
             assertThat(actualSubmodels).hasSameSizeAs(expectedSubmodels)
-                                       .usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification", "contractAgreementId")
+                                       .usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification",
+                                               "contractAgreementId")
                                        .containsAll(expectedSubmodels);
         }
     }
@@ -500,6 +514,123 @@ public class E2ETestStepDefinitions {
     @After("@INTEGRATION_TEST")
     public void addJobIdToResult(Scenario scenario) {
         scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
+    }
+
+    @Given("Clean up all test policies with prefix {string}")
+    public void cleanupPoliciesWithPrefix(final String policyIdPrefix) {
+        fetchPolicyIdsByPrefix(policyIdPrefix).forEach(this::cleanupPolicy);
+    }
+
+    @When("I fetch all policies")
+    public void iFetchAllPolicies() {
+        this.bpnToPoliciesMap = fetchAllPolicies();
+    }
+
+    @When("I fetch policies for BPN {string}")
+    public void iFetchPoliciesForBpn(final String bpn) {
+        this.bpnToPoliciesMap = fetchPoliciesForBpn(bpn);
+    }
+
+    @Then("the BPN {string} should have the following policies:")
+    public void thePoliciesShouldBeMappedAsFollows(final String bpn, final List<String> policyIds) {
+        final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).toList();
+        assertThat(policyIdsForBpn).containsAll(policyIds);
+    }
+
+    @Given("a policy with policyId {string} for BPN {string} and validUntil {string}")
+    public void iRegisterAPolicy(final String policyId, final String bpn, final String validUntil) {
+        final String policyJson = PolicyTestHelper.policyTemplate.formatted(policyId);
+        final CreatePoliciesResponse response = registerPolicy(policyJson, bpn, validUntil);
+        assertThat(response.policyId()).isEqualTo(policyId);
+    }
+
+    private void cleanupPolicy(final String policyId) {
+
+        authProperties = authenticationPropertiesBuilder.build();
+
+        final int status = given().log()
+                                  .all()
+                                  .spec(authProperties.getNewAuthenticationRequestSpecification())
+                                  .pathParam("policyId", policyId)
+                                  .when()
+                                  .delete("/irs/policies/{policyId}")
+                                  .then()
+                                  .log()
+                                  .all()
+                                  .extract()
+                                  .statusCode();
+
+        assertThat(List.of(HttpStatus.OK.value(), HttpStatus.NOT_FOUND.value())).describedAs(
+                "Should either return status 200 OK or 404 NOT_FOUND").contains(status);
+    }
+
+    private List<String> fetchPolicyIdsByPrefix(final String policyIdPrefix) {
+        final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap = fetchAllPolicies();
+        return PolicyTestHelper.extractPolicyIdsStartingWith(bpnToPoliciesMap, policyIdPrefix).toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchAllPolicies() {
+
+        authProperties = authenticationPropertiesBuilder.build();
+
+        return given().log()
+                      .all()
+                      .spec(authProperties.getNewAuthenticationRequestSpecification())
+                      .when()
+                      .get("/irs/policies")
+                      .then()
+                      .log()
+                      .all()
+                      .statusCode(HttpStatus.OK.value())
+                      .extract()
+                      .body()
+                      .as(Map.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(final String bpn) {
+
+        authProperties = authenticationPropertiesBuilder.build();
+
+        return given().log()
+                      .all()
+                      .spec(authProperties.getNewAuthenticationRequestSpecification())
+                      .queryParam("businessPartnerNumbers", bpn)
+                      .when()
+                      .get("/irs/policies")
+                      .then()
+                      .log()
+                      .all()
+                      .statusCode(HttpStatus.OK.value())
+                      .extract()
+                      .body()
+                      .as(Map.class);
+    }
+
+    private CreatePoliciesResponse registerPolicy(final String policyJson, final String bpn, final String validUntil) {
+
+        authProperties = authenticationPropertiesBuilder.build();
+
+        final CreatePolicyRequest.CreatePolicyRequestBuilder builder = CreatePolicyRequest.builder();
+        final var createPolicyRequest = //
+                builder.validUntil(OffsetDateTime.parse(validUntil))
+                       .businessPartnerNumber(bpn)
+                       .payload(PolicyTestHelper.jsonFromString(policyJson))
+                       .build();
+        return given().log()
+                      .all()
+                      .spec(authProperties.getNewAuthenticationRequestSpecification())
+                      .contentType(ContentType.JSON)
+                      .body(createPolicyRequest)
+                      .when()
+                      .post("irs/policies")
+                      .then()
+                      .log()
+                      .all()
+                      .statusCode(HttpStatus.CREATED.value())
+                      .extract()
+                      .as(CreatePoliciesResponse.class);
     }
 
     private static class PropertyNotFoundException extends Exception {
