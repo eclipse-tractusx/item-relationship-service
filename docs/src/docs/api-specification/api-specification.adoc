@@ -1,5 +1,0 @@
-= API specification
-
-:toc:
-
-include::api.adoc[leveloffset=1]
