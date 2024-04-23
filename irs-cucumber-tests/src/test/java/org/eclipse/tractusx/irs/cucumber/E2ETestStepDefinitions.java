@@ -633,9 +633,4 @@ public class E2ETestStepDefinitions {
                       .as(CreatePoliciesResponse.class);
     }
 
-    private static class PropertyNotFoundException extends Exception {
-        public PropertyNotFoundException(final String message) {
-            super(message);
-        }
-    }
 }
