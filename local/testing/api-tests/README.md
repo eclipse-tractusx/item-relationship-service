@@ -6,7 +6,7 @@ This folder contains [Tavern](https://tavern.readthedocs.io) API tests for the I
 
 1. Install python
 2. Install pytest: ```py -m pip install pytest```
-3.  Install tavern: ```py -m pip install tavern```
+3. Install tavern: ```py -m pip install tavern```
 4. Create variable.env in directory api-tests
 5. Copy content to variable.env
 ```
