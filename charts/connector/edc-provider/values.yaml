@@ -12,7 +12,7 @@ tractusx-connector:
       dim:
         url: <path:traceability-irs/data/dev/controlplane#dimUrl>
       oauth:
-        token_url: <path:traceability-irs/data/dev/controlplane#ssi.oauth.tokenurl>
+        token_url: <path:traceability-irs/data/dev/controlplane#iatp.oauth.tokenurl>
         client:
           id: <path:traceability-irs/data/dev/controlplane#dimClientId>
           secret_alias: edc-test-miw-keycloak-secret
