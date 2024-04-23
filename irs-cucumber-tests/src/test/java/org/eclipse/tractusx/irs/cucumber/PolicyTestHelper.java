@@ -19,12 +19,16 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.cucumber;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -88,4 +92,9 @@ public class PolicyTestHelper {
                                   .map(v -> (String) v.get("policyId"));
     }
 
+    public static JsonObject jsonFromString(String jsonObjectStr) {
+        try (JsonReader jsonReader = Json.createReader(new StringReader(jsonObjectStr))) {
+            return jsonReader.readObject();
+        }
+    }
 }
