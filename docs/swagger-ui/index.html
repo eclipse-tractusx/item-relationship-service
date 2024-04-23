@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Domain concepts</title>
+<title>Swagger-UI</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,116 +439,45 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Domain concepts</h1>
+<h1>Swagger-UI</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_domain_entity_model">Domain entity model</a></li>
-<li><a href="#_domain_model">Domain model</a></li>
-<li><a href="#_api_model">API Model</a></li>
-<li><a href="#_jobstatus">JobStatus</a></li>
-<li><a href="#_job_store_datamodel">Job Store Datamodel</a></li>
-<li><a href="#_job_response_datamodel">Job Response Datamodel</a></li>
+<li><a href="#_notice">NOTICE</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_domain_entity_model">Domain entity model</h2>
-<div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="domain-entity-model.svg" alt="domain entity model" width="2747" height="1146">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_domain_model">Domain model</h2>
-<div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="domain-model.svg" alt="domain model" width="2045" height="646">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_api_model">API Model</h2>
+<h2 id="_notice">NOTICE</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For detailed information about the API model, please refer to the <a href="https://eclipse-tractusx.github.io/item-relationship-service/docs/api-specification/api-specification.html">API specification</a>.</p>
+<p>This work is licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache-2.0</a>.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_jobstatus">JobStatus</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>A job can be in one of the following states:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">State</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">UNSAVED</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The job was created, but not yet stored by the system.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">INITIAL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The job was stored by the system and is now queued for processing.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">IN_PROGRESS</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The job is currently being processed.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">TRANSFERS_FINISHED</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All transfers for the job have been finished, and it is now being finalized.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">COMPLETED</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The job has completed. See the job response for details on the data.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The job could not be processed correctly by the IRS due to a technical problem.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="imageblock">
-<div class="content">
-<img src="job-state-machine.svg" alt="job state machine" width="1533" height="282">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_job_store_datamodel">Job Store Datamodel</h2>
-<div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="inmemory-model.svg" alt="inmemory model" width="2144" height="294">
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_job_response_datamodel">Job Response Datamodel</h2>
-<div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="job-response-model.svg" alt="job response model" width="3567" height="866">
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SPDX-License-Identifier: Apache-2.0</p>
+</li>
+<li>
+<p>SPDX-FileCopyrightText: 2021, 2023 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)</p>
+</li>
+<li>
+<p>SPDX-FileCopyrightText: 2022, 2023 BOSCH AG</p>
+</li>
+<li>
+<p>SPDX-FileCopyrightText: 2021, 2022 ZF Friedrichshafen AG</p>
+</li>
+<li>
+<p>SPDX-FileCopyrightText: 2022  ISTOS GmbH</p>
+</li>
+<li>
+<p>SPDX-FileCopyrightText: 2021, 2023 Contributors to the Eclipse Foundation</p>
+</li>
+<li>
+<p>Source URL: <a href="https://github.com/eclipse-tractusx/item-relationship-service" class="bare">https://github.com/eclipse-tractusx/item-relationship-service</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
