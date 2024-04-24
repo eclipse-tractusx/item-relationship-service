@@ -97,11 +97,7 @@ Feature: Policy Store
 
     Then the BPN "BPNL1234567890CD" should have a policy with policyId "integration-test-policy-02" and validUntil "3333-11-11T11:11:11.111Z"
     And the BPN "BPNL1234567890CD" should have a policy with policyId "integration-test-policy-01" and validUntil "4444-11-11T11:11:11.111Z"
-    # TODO (mfischer): #518: currently the update removes the policy from each BPN not specified in the update request (A)
-    # (A) policy removed from BPNL1234567890AB
     And the BPN "BPNL1234567890AB" should have 0 policies having policyId starting with "integration-test-policy-"
-    # (B)
-    #Then the BPN "BPNL1234567890AB" should have a policy with policyId "integration-test-policy-01" and validUntil "2222-11-10T09:09:08.777Z"
 
 
 
