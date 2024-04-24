@@ -544,6 +544,13 @@ public class E2ETestStepDefinitions {
         assertThat(policyIdsForBpn).containsAll(policyIds);
     }
 
+    @When("I delete the following policies:")
+    public void iDeleteTheFollowingPolicies(final List<String> policyIds) {
+        for (final String policyId : policyIds) {
+            cleanupPolicy(policyId);
+        }
+    }
+
     @Then("the BPN {string} should have {int} policies having policyId starting with {string}")
     public void theBpnShouldHaveTheFollowingPolicies(final String bpn, final int numPolicies, final String prefix) {
         final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn)
