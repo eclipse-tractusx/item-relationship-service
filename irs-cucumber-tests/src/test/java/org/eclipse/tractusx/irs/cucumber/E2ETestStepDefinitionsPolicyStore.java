@@ -28,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +42,7 @@ import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.BpnToPolicyId;
 import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
@@ -77,25 +80,43 @@ public class E2ETestStepDefinitionsPolicyStore {
         }
     }
 
-    @Given("Clean up all test policies with prefix {string}")
+    @Given("no policies with prefix {string} exist")
     public void cleanupPoliciesWithPrefix(final String policyIdPrefix) {
         fetchPolicyIdsByPrefix(policyIdPrefix).forEach(this::cleanupPolicy);
     }
 
-    @When("I fetch all policies")
+    @And("I fetch all policies")
     public void iFetchAllPolicies() {
         this.bpnToPoliciesMap = fetchAllPolicies();
     }
 
-    @When("I fetch policies for BPN {string}")
+    @And("I fetch policies for BPN {string}")
     public void iFetchPoliciesForBpn(final String bpn) {
         this.bpnToPoliciesMap = fetchPoliciesForBpn(bpn);
+    }
+
+    @And("I fetch policies for BPNs:")
+    public void iFetchPoliciesForBpn(final List<String> businessPartnerNumbers) {
+        this.bpnToPoliciesMap = fetchPoliciesForBusinessPartnerNumbers(businessPartnerNumbers);
     }
 
     @Then("the BPN {string} should have the following policies:")
     public void theBpnShouldHaveTheFollowingPolicies(final String bpn, final List<String> policyIds) {
         final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).toList();
         assertThat(policyIdsForBpn).containsAll(policyIds);
+    }
+
+    @Then("the BPNs should be associated with policies as follows:")
+    public void theBpnShouldHaveTheFollowingPolicies(final List<BpnToPolicyId> bpnToPolicyIdTable) {
+        HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = PolicyTestHelper.getExpectedBpnToPolicyIdsMapping(
+                bpnToPolicyIdTable);
+
+        expectedBpnToPolicyIdsMapping.forEach((bpn, expectedPolicies) -> {
+            final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn)
+                                                                 .toList();
+            assertThat(policyIdsForBpn).as("BPN '%s' should be associated with the expected policies", bpn)
+                                       .containsAll(expectedPolicies);
+        });
     }
 
     @When("I delete the following policies:")
@@ -134,6 +155,7 @@ public class E2ETestStepDefinitionsPolicyStore {
     })
     public void theBpnShouldHaveTheExpectedPolicyWithValidUntil(final String bpn, final String policyId,
             final String validUntil) {
+
         final List<LinkedHashMap> policies = PolicyTestHelper.extractPoliciesForBpn(bpnToPoliciesMap, bpn).toList();
         final List<LinkedHashMap> policiesFiltered = policies.stream()
                                                              .filter(p -> p.get("policyId").equals(policyId))
@@ -193,6 +215,22 @@ public class E2ETestStepDefinitionsPolicyStore {
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(final String bpn) {
 
         return givenAuthentication().queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS, bpn)
+                                    .when()
+                                    .get(URL_IRS_POLICIES)
+                                    .then()
+                                    .log()
+                                    .all()
+                                    .statusCode(HttpStatus.OK.value())
+                                    .extract()
+                                    .body()
+                                    .as(Map.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBusinessPartnerNumbers(
+            final List<String> businessPartnerNumbers) {
+
+        return givenAuthentication().queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS, businessPartnerNumbers)
                                     .when()
                                     .get(URL_IRS_POLICIES)
                                     .then()

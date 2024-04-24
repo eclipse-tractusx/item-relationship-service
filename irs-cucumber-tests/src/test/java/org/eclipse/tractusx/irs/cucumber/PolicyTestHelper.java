@@ -22,13 +22,20 @@ package org.eclipse.tractusx.irs.cucumber;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import io.cucumber.java.DataTableType;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -69,6 +76,36 @@ public class PolicyTestHelper {
                 }
             }
             """;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class BpnToPolicyId {
+        private String bpn;
+        private String policyId;
+    }
+
+    @DataTableType
+    public BpnToPolicyId bpnToPolicyEntryTransformer(Map<String, String> row) {
+        return new BpnToPolicyId(row.get("BPN"), row.get("policyId"));
+    }
+
+    public static HashMap<String, HashSet<String>> getExpectedBpnToPolicyIdsMapping(
+            final List<BpnToPolicyId> bpnToPolicyIdTable) {
+
+        HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = new HashMap<>();
+        bpnToPolicyIdTable.forEach(entry -> {
+            HashSet<String> policyIds = expectedBpnToPolicyIdsMapping.get(entry.getBpn());
+            if (policyIds == null) {
+                policyIds = new HashSet<>();
+            }
+
+            policyIds.add(entry.getPolicyId());
+
+            expectedBpnToPolicyIdsMapping.put(entry.getBpn(), policyIds);
+        });
+        return expectedBpnToPolicyIdsMapping;
+    }
 
     public static Stream<String> extractPolicyIdsForBpn(
             final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap, final String bpn) {
