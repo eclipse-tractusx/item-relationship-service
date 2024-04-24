@@ -2,14 +2,14 @@
 Feature: Policy Store
 
 	Background:
-		Given the IRS URL "https://irs.dev.demo.catena-x.net/"
-		And the admin user api key
+		# TODO (mfischer): #518 How do we reuse these from E2ETestStepDefinitions (step names must be unique!)
+		Given the IRS URL "https://irs.dev.demo.catena-x.net/" -- policystore
+		And the admin user api key -- policystore
 
     # TODO (mfischer): #518: Use builders
     # TODO (mfischer): #518: Get rid of the need to fetch all policies before then
     # TODO (mfischer): #518 Test is linked to a suitable Xray Testplan or new one is created
-    # TODO (mfischer): #518 Test is executed via CI/CD pipeline
-	# TODO (mfischer): #518 We should split up step definitions for policy store into another class
+
 
 	Scenario: Register and get all policies
 		Given Clean up all test policies with prefix "integration-test-policy-"
