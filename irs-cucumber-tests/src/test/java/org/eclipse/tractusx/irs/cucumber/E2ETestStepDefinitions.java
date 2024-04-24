@@ -40,6 +40,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -55,6 +56,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.component.BatchOrderCreated;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
@@ -542,8 +544,20 @@ public class E2ETestStepDefinitions {
         assertThat(policyIdsForBpn).containsAll(policyIds);
     }
 
-    @When("I update validUntil on policy {string}, BPN {string} to {string}")
-    public void iUpdateAPolicyValidUntil(final String policyId, final String bpn, final String validUntil) {
+    @Then("the BPN {string} should have {int} policies having policyId starting with {string}")
+    public void theBpnShouldHaveTheFollowingPolicies(final String bpn, final int numPolicies, final String prefix) {
+        final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn)
+                                                             .filter(startingWith(prefix))
+                                                             .toList();
+        assertThat(policyIdsForBpn).hasSize(numPolicies);
+    }
+
+    private static Predicate<String> startingWith(final String prefix) {
+        return s -> StringUtils.startsWith(s, prefix);
+    }
+
+    @When("I perform update policy {string}, BPN {string}, validUntil {string}")
+    public void iPerformUpdate(final String policyId, final String bpn, final String validUntil) {
         updatePolicies(List.of(policyId), List.of(bpn), validUntil);
     }
 
@@ -552,7 +566,7 @@ public class E2ETestStepDefinitions {
                         "unchecked"
     })
     public void theBpnShouldHaveTheExpectedPolicyWithValidUntil(final String bpn, final String policyId,
-            String validUntil) {
+            final String validUntil) {
         final List<LinkedHashMap> policies = PolicyTestHelper.extractPoliciesForBpn(bpnToPoliciesMap, bpn).toList();
         final List<LinkedHashMap> policiesFiltered = policies.stream()
                                                              .filter(p -> p.get("policyId").equals(policyId))
