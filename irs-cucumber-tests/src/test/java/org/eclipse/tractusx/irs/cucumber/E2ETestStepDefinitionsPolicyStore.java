@@ -138,20 +138,14 @@ public class E2ETestStepDefinitionsPolicyStore {
         return s -> StringUtils.startsWith(s, prefix);
     }
 
-    @When("I perform update policy {string}, BPN {string}, validUntil {string}")
-    public void iPerformUpdate(final String policyId, final String bpn, final String validUntil) {
+    @When("I update policy {string}, BPN {string}, validUntil {string}")
+    public void iPerformUpdatePolicy(final String policyId, final String bpn, final String validUntil) {
         updatePolicies(List.of(policyId), List.of(bpn), validUntil);
     }
 
     @When("I add policyId {string} to given BPNs using validUntil {string}:")
-    public void iAddPolicyIdToGivenBpns(final String policyId, final String validUntil,
-            List<String> businessPartnerNumbers) {
-        updatePolicies(List.of(policyId), businessPartnerNumbers, validUntil);
-    }
-
     @When("I update policy with policyId {string} and given BPNs using validUntil {string}:")
-    public void iUpdatePolicyWithPolicyIdAndGivenBpnsUsingValidUntil(final String policyId, final String validUntil,
-            List<String> businessPartnerNumbers) {
+    public void iUpdatePolicyBpns(final String policyId, final String validUntil, List<String> businessPartnerNumbers) {
         updatePolicies(List.of(policyId), businessPartnerNumbers, validUntil);
     }
 

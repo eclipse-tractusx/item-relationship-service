@@ -2,7 +2,9 @@
 Feature: Policy Store
 
   Background:
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # TODO (mfischer): #518 How do we reuse these from E2ETestStepDefinitions (step names must be unique!)
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Given the IRS URL "https://irs.dev.demo.catena-x.net/" -- policystore
     And the admin user api key -- policystore
 
@@ -40,7 +42,7 @@ Feature: Policy Store
     Given no policies with prefix "integration-test-policy-" exist
     Given a policy with policyId "integration-test-policy-01" is registered for BPN "BPNL1234567890AB" and validUntil "2222-11-11T11:11:11.111Z"
 
-    When I perform update policy "integration-test-policy-01", BPN "BPNL1234567890AB", validUntil "3333-11-11T11:11:11.111Z"
+    When I update policy "integration-test-policy-01", BPN "BPNL1234567890AB", validUntil "3333-11-11T11:11:11.111Z"
     And I fetch all policies
 
     Then the BPN "BPNL1234567890AB" should have a policy with policyId "integration-test-policy-01" and validUntil "3333-11-11T11:11:11.111Z"
@@ -72,12 +74,12 @@ Feature: Policy Store
     When I update policy with policyId "integration-test-policy-02" and given BPNs using validUntil "7777-11-11T11:11:11.111Z":
       | BPNL1234567890AB |
       | BPNL1234567890CD |
+    And I fetch all policies
 
     Then the BPN "BPNL1234567890AB" should have a policy with policyId "integration-test-policy-01" and validUntil "1111-11-11T11:11:11.111Z"
 
-    # FIXME Looks like a bug: policy "integration-test-policy-02" should have validUntil with year 7777 now, shouldn't it?
-    And the BPN "BPNL1234567890AB" should have a policy with policyId "integration-test-policy-02" and validUntil "2223-11-11T11:11:11.111Z"
-    And the BPN "BPNL1234567890CD" should have a policy with policyId "integration-test-policy-02" and validUntil "2223-11-11T11:11:11.111Z"
+    And the BPN "BPNL1234567890AB" should have a policy with policyId "integration-test-policy-02" and validUntil "7777-11-11T11:11:11.111Z"
+    And the BPN "BPNL1234567890CD" should have a policy with policyId "integration-test-policy-02" and validUntil "7777-11-11T11:11:11.111Z"
 
     And the BPN "BPNL1234567890CD" should have a policy with policyId "integration-test-policy-03" and validUntil "3333-11-11T11:11:11.111Z"
     And the BPN "BPNL1234567890CD" should have a policy with policyId "integration-test-policy-04" and validUntil "4444-11-11T11:11:11.111Z"
@@ -90,7 +92,7 @@ Feature: Policy Store
     Given a policy with policyId "integration-test-policy-01" is registered for BPN "BPNL1234567890AB" and validUntil "2222-11-11T11:11:11.111Z"
     And a policy with policyId "integration-test-policy-02" is registered for BPN "BPNL1234567890CD" and validUntil "3333-11-11T11:11:11.111Z"
 
-    When I perform update policy "integration-test-policy-01", BPN "BPNL1234567890CD", validUntil "4444-11-11T11:11:11.111Z"
+    When I update policy "integration-test-policy-01", BPN "BPNL1234567890CD", validUntil "4444-11-11T11:11:11.111Z"
     And I fetch all policies
 
     Then the BPN "BPNL1234567890CD" should have a policy with policyId "integration-test-policy-02" and validUntil "3333-11-11T11:11:11.111Z"
@@ -107,7 +109,7 @@ Feature: Policy Store
 
     Given no policies with prefix "integration-test-policy-" exist
     Given a policy with policyId "integration-test-policy-01" is registered for BPN "BPNL1234567890AB" and validUntil "2222-11-11T11:11:11.111Z"
-    And   I perform update policy "integration-test-policy-01", BPN "BPNL1234567890AB", validUntil "2222-11-11T11:11:11.111Z"
+    And   I update policy "integration-test-policy-01", BPN "BPNL1234567890AB", validUntil "2222-11-11T11:11:11.111Z"
     And   I fetch all policies
     And   the BPN "BPNL1234567890AB" should have the following policies:
       | integration-test-policy-01 |
@@ -121,6 +123,8 @@ Feature: Policy Store
       | BPN              | policyId                   |
       | BPNL1234567890AB | integration-test-policy-01 |
       | BPNL1234567890CD | integration-test-policy-01 |
+
+
 
 
 
@@ -157,6 +161,5 @@ Feature: Policy Store
       | BPN              | policyId                   |
       | BPNL1234567890AB | integration-test-policy-01 |
       | BPNL1234567890EF | integration-test-policy-01 |
-
 
 
