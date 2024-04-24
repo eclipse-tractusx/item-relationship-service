@@ -149,6 +149,12 @@ public class E2ETestStepDefinitionsPolicyStore {
         updatePolicies(List.of(policyId), businessPartnerNumbers, validUntil);
     }
 
+    @When("I update policy with policyId {string} and given BPNs using validUntil {string}:")
+    public void iUpdatePolicyWithPolicyIdAndGivenBpnsUsingValidUntil(final String policyId, final String validUntil,
+            List<String> businessPartnerNumbers) {
+        updatePolicies(List.of(policyId), businessPartnerNumbers, validUntil);
+    }
+
     @Then("the BPN {string} should have a policy with policyId {string} and validUntil {string}")
     @SuppressWarnings({ "rawtypes",
                         "unchecked"
