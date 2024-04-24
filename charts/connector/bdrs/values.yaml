@@ -1,5 +1,8 @@
 bdrs-server-memory:
    server:
+     env:
+       EDC_IAM_TRUSTED-ISSUER_ISSUER_ID: "did:web:irs-bdrs.dev.demo.catena-x.net:BPNTEST"
+       EDC_IAM_DID_WEB_USE_HTTPS: "false"
      endpoints:
        # -- default api for health checks, should not be added to any ingress
        default:
