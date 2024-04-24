@@ -171,7 +171,7 @@ public class E2ETestStepDefinitionsPolicyStore {
                                            .containsEntry("validUntil", validUntil);
     }
 
-    @Given("a policy with policyId {string} for BPN {string} and validUntil {string}")
+    @Given("a policy with policyId {string} is registered for BPN {string} and validUntil {string}")
     public void iRegisterAPolicy(final String policyId, final String bpn, final String validUntil) {
         final String policyJson = PolicyTestHelper.policyTemplate.formatted(policyId);
         final CreatePoliciesResponse response = registerPolicyForBpn(policyJson, bpn, validUntil);
