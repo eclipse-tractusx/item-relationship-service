@@ -127,11 +127,19 @@ public class E2ETestStepDefinitionsPolicyStore {
     }
 
     @Then("the BPN {string} should have {int} policies having policyId starting with {string}")
-    public void theBpnShouldHaveTheFollowingPolicies(final String bpn, final int numPolicies, final String prefix) {
+    public void theBpnShouldHavePolicyIdsStartingWith(final String bpn, final int numPolicies, final String prefix) {
         final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn)
                                                              .filter(startingWith(prefix))
                                                              .toList();
         assertThat(policyIdsForBpn).hasSize(numPolicies);
+    }
+
+    @Then("the BPN {string} should have no policies with policyId {string}")
+    public void theBpnShouldNotHavePolicyId(final String bpn, final String policyId) {
+        final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn)
+                                                             .filter(policyId::equals)
+                                                             .toList();
+        assertThat(policyIdsForBpn).isEmpty();
     }
 
     private static Predicate<String> startingWith(final String prefix) {
