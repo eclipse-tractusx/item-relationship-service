@@ -49,10 +49,6 @@ tractusx-connector:
           secretName: tls-secret
 
   vault:
-    hashicorp:
-      url: "https://irs-vault.dev.demo.catena-x.net"
-      token: "<path:traceability-irs/data/vault#vaultToken>"
-      timeout: 30
     secretNames:
       transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-provider-key
       transferProxyTokenSignerPublicKey: irs-dev-daps-cert-provider
