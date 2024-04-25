@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## Changed
+
+-  Removed obsolete entries from acceptedPolicies configuration. #530
+
 ### Fixed
 
 - Update bouncycastle to 1.78 to fix CVE's.
