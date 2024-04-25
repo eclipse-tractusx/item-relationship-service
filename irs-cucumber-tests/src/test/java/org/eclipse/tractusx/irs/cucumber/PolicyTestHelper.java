@@ -93,7 +93,7 @@ public class PolicyTestHelper {
     public static HashMap<String, HashSet<String>> getExpectedBpnToPolicyIdsMapping(
             final List<BpnToPolicyId> bpnToPolicyIdTable) {
 
-        HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = new HashMap<>();
+        final HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = new HashMap<>();
         bpnToPolicyIdTable.forEach(entry -> {
             HashSet<String> policyIds = expectedBpnToPolicyIdsMapping.get(entry.getBpn());
             if (policyIds == null) {
