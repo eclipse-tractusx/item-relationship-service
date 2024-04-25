@@ -41,6 +41,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.BpnToPolicyId;
 import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
@@ -55,6 +56,12 @@ public class E2ETestStepDefinitionsPolicyStore {
     public static final String QUERYPARAM_BUSINESS_PARTNER_NUMBERS = "businessPartnerNumbers";
 
     private final AuthenticationProperties.AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
+
+    @Builder
+    public record PolicyRecord(String policyId, List<String> bpn, String validUntil) {
+    }
+
+    private PolicyRecord.PolicyRecordBuilder policyRecordBuilder;
 
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap;
 
@@ -180,9 +187,62 @@ public class E2ETestStepDefinitionsPolicyStore {
         assertThat(response.policyId()).isEqualTo(policyId);
     }
 
-    @Given("I register a policy to be create")
-    public void aPolicyToBeCreate() {
+    @Given("I want to register a policy")
+    @Given("I want to update a policy")
+    public void iWantToRegisterAPolicy() {
+        this.policyRecordBuilder = new PolicyRecord.PolicyRecordBuilder();
+    }
 
+    @Given("I want to register a policy with policyId {string}")
+    @Given("I want to update the policy with policyId {string}")
+    public void iWantToRegisterAPolicyWithPolicyId(final String policyId) {
+        iWantToRegisterAPolicy();
+        policyShouldHavePolicyId(policyId);
+    }
+
+    @And("the policy should have policyId {string}")
+    public void policyShouldHavePolicyId(final String policyId) {
+        this.policyRecordBuilder.policyId(policyId);
+    }
+
+    @And("the policy should be associated to BPN {string}")
+    public void policyShouldBeAssociatedToBpn(final String bpn) {
+        if (this.policyRecordBuilder.bpn == null) {
+            this.policyRecordBuilder.bpn = new ArrayList<>();
+        }
+        this.policyRecordBuilder.bpn.add(bpn);
+    }
+
+    @And("the policy should be associated to the following BPNs:")
+    public void policyShouldBeAssociatedToBpn(final List<String> bpnls) {
+        this.policyRecordBuilder.bpn(bpnls);
+    }
+
+    @And("the policy should have validUntil {string}")
+    public void policyShouldHaveValidUntil(final String validUntil) {
+        this.policyRecordBuilder.validUntil(validUntil);
+    }
+
+    @When("I register the policy")
+    public void iRegisterThePolicy() {
+
+        final PolicyRecord.PolicyRecordBuilder builder = policyRecordBuilder;
+
+        // 'POST policies' only supports one BPN, therefore if we want to associate a policy with multiple BPNs
+        // we first need to create it via POST for the first BPN ...
+        iRegisterAPolicy(builder.policyId, builder.bpn.get(0), builder.validUntil);
+
+        if (builder.bpn.size() > 1) {
+            // ... and then add it via 'UPDATE policies' to all BPNs to which it should be associated
+            // (note that this also update the validUntil).
+            updatePolicies(List.of(builder.policyId), builder.bpn, builder.validUntil);
+        }
+    }
+
+    @When("I update the policy")
+    public void iUpdateThePolicy() {
+        final PolicyRecord.PolicyRecordBuilder builder = policyRecordBuilder;
+        updatePolicies(List.of(builder.policyId), builder.bpn, builder.validUntil);
     }
 
     private void cleanupPolicy(final String policyId) {
