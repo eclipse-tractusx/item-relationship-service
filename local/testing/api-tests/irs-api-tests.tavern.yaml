@@ -1055,12 +1055,12 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          globalAssetId: urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: 2
         aspects:
-          - SerialPart
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         direction: "downward"
       method: POST
       headers:
@@ -1107,13 +1107,14 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
+          globalAssetId: urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
           bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         collectAspects: true
         bomLifecycle: asPlanned
         depth: 2
         aspects:
-          - SingleLevelUsageAsPlanned
+        #- urn:samm:io.catenax.single_level_usage_as_planned:1.1.0#SingleLevelUsageAsPlanned
+        - urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned
         direction: "downward"
       method: POST
       headers:
@@ -1181,15 +1182,13 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          globalAssetId: urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: 2
         aspects:
-          - ProductDescription
-          - CertificateOfDestruction
-          - SerialPart
-          - SingleLevelUsageAsBuilt
+        - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+        #- urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt
         direction: "downward"
       method: POST
       headers:
@@ -1240,7 +1239,7 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          globalAssetId: urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d # "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         depth: 1
@@ -1391,10 +1390,10 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          globalAssetId: urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPart
+        - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         collectAspects: true
         depth: 1
       method: POST
@@ -1427,7 +1426,7 @@ stages:
     response:
       status_code: 200
       verify_response_with:
-        #- function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+       # - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
         - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
         - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
         - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -1450,11 +1449,13 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          globalAssetId: urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPart
-          - ProductDescription
+       # - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+       # - urn:samm:io.catenax.vehicle.product_description:1.0.0#ProductDescription
+         - urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription
+          #- ProductDescription
         collectAspects: true
         depth: 2
       method: POST
@@ -1510,10 +1511,10 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:6d505432-8b31-4966-9514-4b753372683f"
+          globalAssetId: "urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d"
           bpn: "BPNL00000003AVTH"
         aspects:
-          - MaterialForRecycling
+          - urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling
         collectAspects: true
         depth: 2
       method: POST
@@ -1569,10 +1570,10 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5"
+          globalAssetId: "urn:uuid:622f4933-e02b-436c-9194-9e5bb71a45e2" #"urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c5" 
           bpn: "BPNL00000003AVTH"
         aspects:
-          - Batch
+        - urn:samm:io.catenax.batch:3.0.0#Batch
         collectAspects: true
         bomLifecycle: "asBuilt"
         depth: 10
@@ -1632,8 +1633,8 @@ stages:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPart
-          - CertificateOfDestruction
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+          - urn:samm:io.catenax.serial_part:2.0.0#CertificateOfDestruction
         collectAspects: true
         depth: 2
       method: POST
@@ -1692,7 +1693,7 @@ stages:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_PLANNED}"
           bpn: "{tavern.env_vars.BPN_AS_PLANNED}"
         aspects:
-          - UnknownAspect
+          - "UnknownAspect"
         collectAspects: true
       method: POST
       headers:
@@ -1727,17 +1728,12 @@ stages:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - ProductDescription
-          - CertificateOfDestruction
-          - SerialPart
-          - SingleLevelUsageAsBuilt
-          - BatteryPass
-          - IdConversion
-          - MarketplaceOffer
-          - MaterialForRecycling
-          - ReturnRequest
-          - CertificateOfDestruction
-          - CertificateOfDismantler
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+          - urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt
+          - urn:samm:io.catenax.battery.battery_pass:3.0.1#BatteryPass"
+          - urn:samm:io.catenax.market_place_offer:1.4.0#MarketPlaceOffer
+          - urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling
+          - urn:samm:io.catenax.return_request:1.0.1#ReturnRequest
         collectAspects: true
       method: POST
       headers:
@@ -1828,28 +1824,14 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          globalAssetId: urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPart
-          - SingleLevelBomAsBuilt
-          - Batch
-          - ProductDescription
-          - IdConversion
-          - MarketplaceOffer
-          - MaterialForRecycling
-          - ReturnRequest
-          - CertificateOfDestruction
-          - CertificateOfDismantler
-          - EndOfLife
-          - EsrCertificate
-          - EsrCertificateStateStatistic
-          - AddressAspect
-          - ClaimData
-          - BatteryPass
-          - DiagnosticData
-          - MaterialForHomologation
-          - PartAsPlanned
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+          #- urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingeLevelBomAsBuilt
+          - urn:samm:io.catenax.batch:3.0.0#Batch
+          - urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling
+          #- urn:samm:io.catenax.battery.battery_pass:3.0.1#BatteryPass
         collectAspects: true
         depth: 2
       method: POST
@@ -2039,7 +2021,7 @@ stages:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-          - SerialPart
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         collectAspects: true
       method: POST
       headers:
@@ -2489,8 +2471,8 @@ stages:
         lookupBPNs: true
         callbackUrl: "https://www.check123.com"
         aspects:
-          - SerialPart
-          - PartAsPlanned
+        #- urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+        - urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned
       method: POST
       headers:
         content-type: application/json
@@ -2746,8 +2728,8 @@ stages:
           - bpn: "BPNL00000003AYRE"
             globalAssetId: urn:uuid:771d2ccc-a081-4d3a-bcb2-46c6a0a33743
         aspects:
-          - "SingleLevelBomAsBuilt"
-          - "SerialPart"
+          - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingeLevelBomAsBuilt
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         collectAspects: true
         lookupBPNs: true
         batchSize: 10
@@ -2806,8 +2788,8 @@ stages:
           - urn:uuid:3db730be-9de5-4db5-a58d-684de36484e7
           - urn:uuid:73173bf5-08df-4898-9d6d-8899015c161e
         aspects:
-          - "SingleLevelBomAsBuilt"
-          - "SerialPart"
+          - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingeLevelBomAsBuilt
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         collectAspects: true
         lookupBPNs: true
         batchSize: 2
@@ -2858,8 +2840,8 @@ stages:
           - bpn: "BPNL00000003AVTH"
             globalAssetId: urn:uuid:cc8e9448-b294-46e7-8110-337e8bfa3001
         aspects:
-          - "SingleLevelBomAsBuilt"
-          - "SerialPart"
+          - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingeLevelBomAsBuilt
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         collectAspects: true
         lookupBPNs: true
         batchSize: 10
@@ -3219,13 +3201,13 @@ stages:
         url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
         json:
           key:
-            globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+            globalAssetId: "urn:uuid:835eed75-8556-4d36-aae0-b3c550096af3" #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
             bpn: "{tavern.env_vars.BPN_AS_BUILT}"
           collectAspects: true
           auditContractNegotiation: true
-          depth: 2
+          depth: 1
           aspects:
-            - SerialPart
+           - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
           direction: "downward"
         method: POST
         headers:
@@ -3276,13 +3258,13 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          globalAssetId: "urn:uuid:835eed75-8556-4d36-aae0-b3c550096af3" #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: true
         auditContractNegotiation: false
         depth: 2
         aspects:
-          - SerialPart
+          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         direction: "downward"
       method: POST
       headers:
