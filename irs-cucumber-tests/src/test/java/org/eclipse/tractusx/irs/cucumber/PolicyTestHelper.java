@@ -19,7 +19,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.cucumber;
 
-import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,10 +29,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.DataTableType;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -80,7 +79,7 @@ public class PolicyTestHelper {
             """;
 
     @Builder
-    public record CreatePolicyRequest(OffsetDateTime validUntil, String businessPartnerNumber, JsonObject payload) {
+    public record CreatePolicyRequest(OffsetDateTime validUntil, String businessPartnerNumber, JsonNode payload) {
     }
 
     @Builder
@@ -158,9 +157,8 @@ public class PolicyTestHelper {
         return linkedHashMapStream.map(v -> (LinkedHashMap) v.get("payload"));
     }
 
-    public static JsonObject jsonFromString(String jsonObjectStr) {
-        try (JsonReader jsonReader = Json.createReader(new StringReader(jsonObjectStr))) {
-            return jsonReader.readObject();
-        }
+    public static JsonNode jsonFromString(final ObjectMapper objectMapper, final String jsonObjectStr)
+            throws JsonProcessingException {
+        return objectMapper.readTree(jsonObjectStr);
     }
 }

@@ -35,6 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -66,8 +70,15 @@ public class E2ETestStepDefinitionsPolicyStore {
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap;
 
     public E2ETestStepDefinitionsPolicyStore() {
+
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
+
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
+
+    private ObjectMapper objectMapper;
 
     // TODO how to reuse this from E2ETestStepDefinitions
     @Given("the IRS URL {string} -- policystore")
@@ -313,11 +324,17 @@ public class E2ETestStepDefinitionsPolicyStore {
     private CreatePoliciesResponse registerPolicyForBpn(final String policyJson, final String bpn,
             final String validUntil) {
 
-        final var createPolicyRequest = CreatePolicyRequest.builder()
-                                                           .validUntil(OffsetDateTime.parse(validUntil))
-                                                           .businessPartnerNumber(bpn)
-                                                           .payload(PolicyTestHelper.jsonFromString(policyJson))
-                                                           .build();
+        final CreatePolicyRequest createPolicyRequest;
+        try {
+            createPolicyRequest = CreatePolicyRequest.builder()
+                                                     .validUntil(OffsetDateTime.parse(validUntil))
+                                                     .businessPartnerNumber(bpn)
+                                                     .payload(PolicyTestHelper.jsonFromString(objectMapper, policyJson))
+                                                     .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         return givenAuthentication().contentType(ContentType.JSON)
                                     .body(createPolicyRequest)
                                     .when()
