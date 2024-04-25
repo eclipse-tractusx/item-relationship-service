@@ -15,7 +15,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 | SingleLevelBomAsBuilt      | 2.0.0                        | -          | Model version   | 
 | SingleLevelBomAsPlanned    | 2.0.0                        | -          | Model version   | 
 | SingleLevelBomAsSpecified  | 1.0.0                        | -          | Model version   | 
-| SingleLevelUsageAsBuilt    | 2.0.0                        | -          | Model version   | 
+| SingleLevelUsageAsBuilt    | 3.0.0                        | -          | Model version   | 
 | PartAsPlanned              | 2.0.0                        | -          | Model Version   |
 | SingleLevelBomAsPlanned    | 3.0.0                        | -          | Model Version   |
 | SerialPart                 | 3.0.0                        | -          | Model Version   |

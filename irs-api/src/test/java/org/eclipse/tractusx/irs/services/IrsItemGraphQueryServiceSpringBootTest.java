@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
+import static org.eclipse.tractusx.irs.util.TestMother.EXISTING_GLOBAL_ASSET_ID;
 import static org.eclipse.tractusx.irs.util.TestMother.productDescriptionAspectName;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
@@ -134,7 +135,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("https://connector.endpoint.nl"));
-        final RegisterJob registerJob = registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", 100,
+        final RegisterJob registerJob = registerJob(EXISTING_GLOBAL_ASSET_ID, 100,
                 List.of(serialPartAspectName, productDescriptionAspectName, singleLevelBomAsBuiltAspectName),
                 true, false, Direction.DOWNWARD);
         when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
@@ -192,7 +193,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithUpwardDirectionShouldBuildRelationships() {
         // given
-        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41",
+        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:3d45e8cb-2601-446c-9248-2f7f180e1313",
                 Direction.UPWARD);
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("http://localhost/discovery"));
