@@ -7,7 +7,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -26,7 +26,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -37,25 +37,6 @@
             },
             "aspectType": "SingleLevelBomAsPlanned",
             "bpn": "BPNL50096894aNXY"
-        },
-        {
-            "catenaXId": "urn:uuid:e3e2a4d8-58bc-4ae9-afa2-e8946fda1f77",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asPlanned",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
-                "hasAlternatives": false
-            },
-            "aspectType": "SingleLevelBomAsPlanned",
-            "bpn": "BPNL00000003AXS3"
         },
         {
             "catenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
@@ -83,7 +64,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -94,6 +75,25 @@
             },
             "aspectType": "SingleLevelBomAsPlanned",
             "bpn": "BPNL50096894aNXY"
+        },
+        {
+            "catenaXId": "urn:uuid:e3e2a4d8-58bc-4ae9-afa2-e8946fda1f77",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 1.0,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:piece"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
+                "hasAlternatives": false
+            },
+            "aspectType": "SingleLevelBomAsPlanned",
+            "bpn": "BPNL00000003AXS3"
         }
     ]
 }
