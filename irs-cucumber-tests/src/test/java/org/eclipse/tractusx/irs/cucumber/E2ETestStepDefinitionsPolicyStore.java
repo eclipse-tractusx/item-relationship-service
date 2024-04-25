@@ -126,7 +126,8 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     @Then("the BPNs should be associated with policies as follows:")
     public void theBpnShouldHaveTheFollowingPolicies(final List<BpnToPolicyId> bpnToPolicyIdTable) {
-        HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = PolicyTestHelper.getExpectedBpnToPolicyIdsMapping(
+
+        final HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = PolicyTestHelper.getExpectedBpnToPolicyIdsMapping(
                 bpnToPolicyIdTable);
 
         expectedBpnToPolicyIdsMapping.forEach((bpn, expectedPolicies) -> {

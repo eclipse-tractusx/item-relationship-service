@@ -100,7 +100,7 @@ public class PolicyTestHelper {
     }
 
     @DataTableType
-    public BpnToPolicyId bpnToPolicyEntryTransformer(Map<String, String> row) {
+    public BpnToPolicyId bpnToPolicyEntryTransformer(final Map<String, String> row) {
         return new BpnToPolicyId(row.get("BPN"), row.get("policyId"));
     }
 
@@ -109,6 +109,7 @@ public class PolicyTestHelper {
 
         final HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = new HashMap<>();
         bpnToPolicyIdTable.forEach(entry -> {
+
             HashSet<String> policyIds = expectedBpnToPolicyIdsMapping.get(entry.getBpn());
             if (policyIds == null) {
                 policyIds = new HashSet<>();
