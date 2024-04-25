@@ -193,7 +193,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @Test
     void registerJobWithUpwardDirectionShouldBuildRelationships() {
         // given
-        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:3d45e8cb-2601-446c-9248-2f7f180e1313",
+        final RegisterJob registerJob = registerJobWithDirection(EXISTING_GLOBAL_ASSET_ID,
                 Direction.UPWARD);
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("http://localhost/discovery"));
