@@ -44,9 +44,9 @@ import io.restassured.specification.RequestSpecification;
 import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.BpnToPolicyId;
-import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
-import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
-import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
+import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.CreatePoliciesResponse;
+import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.CreatePolicyRequest;
+import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.UpdatePolicyRequest;
 import org.springframework.http.HttpStatus;
 
 public class E2ETestStepDefinitionsPolicyStore {

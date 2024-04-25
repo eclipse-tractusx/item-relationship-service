@@ -20,6 +20,7 @@
 package org.eclipse.tractusx.irs.cucumber;
 
 import java.io.StringReader;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -76,6 +78,19 @@ public class PolicyTestHelper {
                 }
             }
             """;
+
+    @Builder
+    public record CreatePolicyRequest(OffsetDateTime validUntil, String businessPartnerNumber, JsonObject payload) {
+    }
+
+    @Builder
+    public record CreatePoliciesResponse(String policyId) {
+    }
+
+    @Builder
+    public record UpdatePolicyRequest(OffsetDateTime validUntil, List<String> businessPartnerNumbers,
+                                      List<String> policyIds) {
+    }
 
     @Data
     @NoArgsConstructor
