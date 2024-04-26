@@ -58,8 +58,8 @@ public class CxTestDataContainer {
         public static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
         public static final String SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE = "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt";
         public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified";
-        public static final String PART_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned";
-        public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned";
+        public static final String PART_AS_PLANNED_ASPECT_TYPE = "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned";
+        public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned";
         public static final String BATCH_ASPECT_TYPE = "urn:samm:io.catenax.batch:3.0.0#Batch";
         public static final String MATERIAL_FOR_RECYCLING_ASPECT_TYPE = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
         public static final String PRODUCT_DESCRIPTION_ASPECT_TYPE = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";

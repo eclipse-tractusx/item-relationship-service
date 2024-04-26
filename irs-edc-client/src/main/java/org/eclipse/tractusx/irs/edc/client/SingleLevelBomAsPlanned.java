@@ -26,7 +26,6 @@ package org.eclipse.tractusx.irs.edc.client;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -84,22 +83,11 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
                                                                       .lastModifiedOn(this.lastModifiedOn);
 
             if (thereIsQuantity()) {
-                MeasurementUnit measurementUnit = MeasurementUnit.builder().build();
-                if (this.quantity.getMeasurementUnit() instanceof String str) {
-                    measurementUnit = MeasurementUnit.builder()
-                                                     .lexicalValue(str)
-                                                     .build();
-                } else if (this.quantity.getMeasurementUnit() instanceof Map<?, ?> map) {
-                    measurementUnit = MeasurementUnit.builder()
-                                                     .lexicalValue(String.valueOf(map.get("lexicalValue")))
-                                                     .datatypeURI(String.valueOf(map.get("datatypeURI")))
-                                                     .build();
-                }
-
-
                 linkedItem.quantity(org.eclipse.tractusx.irs.component.Quantity.builder()
                                                                                .quantityNumber(this.quantity.getQuantityNumber())
-                                                                               .measurementUnit(measurementUnit)
+                                                                               .measurementUnit(MeasurementUnit.builder()
+                                                                                                               .lexicalValue(this.quantity.getMeasurementUnit())
+                                                                                                               .build())
                                                                                .build());
             }
 
@@ -125,17 +113,8 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
             @JsonAlias({ "quantityNumber", "value" })
             private Double quantityNumber;
             @JsonAlias({ "measurementUnit", "unit" })
-            private Object measurementUnit;
+            private String measurementUnit;
 
-            /**
-             * MeasurementUnit
-             */
-            @Data
-            @Jacksonized
-            /* package */ static class MeasurementUnit {
-                private String lexicalValue;
-                private String datatypeURI;
-            }
         }
     }
 
