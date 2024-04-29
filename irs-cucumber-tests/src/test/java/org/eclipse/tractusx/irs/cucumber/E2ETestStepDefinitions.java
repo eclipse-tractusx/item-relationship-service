@@ -504,7 +504,9 @@ public class E2ETestStepDefinitions {
 
     @After("@INTEGRATION_TEST")
     public void addJobIdToResult(Scenario scenario) {
-        scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
+        if (jobId != null) {
+            scenario.attach(jobId.toString(), MediaType.TEXT_PLAIN_VALUE, "jobId");
+        }
     }
 
 }
