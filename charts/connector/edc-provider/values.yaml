@@ -63,6 +63,10 @@ tractusx-connector:
     ingresses:
       - enabled: false
 
+    env:
+      # workaround till 0.7.1 chart
+      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/dev/controlplane#trustedIssuer>
+
     token:
       refresh:
         expiry_seconds: 300
