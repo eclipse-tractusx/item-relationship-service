@@ -293,4 +293,11 @@ public class PolicyTestHelper {
                 "Should either return status 200 OK or 404 NOT_FOUND").contains(status);
     }
 
+    @Data
+    @NoArgsConstructor
+    public static final class PolicyAttributes {
+        private String policyId;
+        private List<String> bpn;
+        private String validUntil;
+    }
 }

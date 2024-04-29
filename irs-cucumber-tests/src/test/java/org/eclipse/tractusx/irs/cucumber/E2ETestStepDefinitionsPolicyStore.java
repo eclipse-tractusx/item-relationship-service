@@ -42,21 +42,17 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.cucumber.AuthenticationProperties.AuthenticationPropertiesBuilder;
 import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.BpnToPolicyId;
 import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.CreatePoliciesResponse;
+import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.PolicyAttributes;
 
 public class E2ETestStepDefinitionsPolicyStore {
 
     private final AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
 
-    @Builder
-    public record PolicyRecord(String policyId, List<String> bpn, String validUntil) {
-    }
-
-    private PolicyRecord.PolicyRecordBuilder policyRecordBuilder;
+    private PolicyAttributes policyAttributes;
 
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap;
 
@@ -189,7 +185,7 @@ public class E2ETestStepDefinitionsPolicyStore {
     @Given("I want to register a policy")
     @Given("I want to update a policy")
     public void iWantToRegisterAPolicy() {
-        this.policyRecordBuilder = new PolicyRecord.PolicyRecordBuilder();
+        this.policyAttributes = new PolicyAttributes();
     }
 
     @Given("I want to register a policy with policyId {string}")
@@ -201,47 +197,47 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     @And("the policy should have policyId {string}")
     public void policyShouldHavePolicyId(final String policyId) {
-        this.policyRecordBuilder.policyId(policyId);
+        this.policyAttributes.setPolicyId(policyId);
     }
 
     @And("the policy should be associated to BPN {string}")
     public void policyShouldBeAssociatedToBpn(final String bpn) {
-        if (this.policyRecordBuilder.bpn == null) {
-            this.policyRecordBuilder.bpn = new ArrayList<>();
+        if (this.policyAttributes.getBpn() == null) {
+            this.policyAttributes.setBpn(new ArrayList<>());
         }
-        this.policyRecordBuilder.bpn.add(bpn);
+        this.policyAttributes.getBpn().add(bpn);
     }
 
     @And("the policy should be associated to the following BPNs:")
     public void policyShouldBeAssociatedToBpn(final List<String> bpnls) {
-        this.policyRecordBuilder.bpn(bpnls);
+        this.policyAttributes.setBpn(bpnls);
     }
 
     @And("the policy should have validUntil {string}")
     public void policyShouldHaveValidUntil(final String validUntil) {
-        this.policyRecordBuilder.validUntil(validUntil);
+        this.policyAttributes.setValidUntil(validUntil);
     }
 
     @When("I register the policy")
     public void iRegisterThePolicy() {
 
-        final PolicyRecord.PolicyRecordBuilder builder = policyRecordBuilder;
-
         // 'POST policies' only supports one BPN, therefore if we want to associate a policy with multiple BPNs
         // we first need to create it via POST for the first BPN ...
-        iRegisterAPolicy(builder.policyId, builder.bpn.get(0), builder.validUntil);
+        iRegisterAPolicy(policyAttributes.getPolicyId(), policyAttributes.getBpn().get(0),
+                policyAttributes.getValidUntil());
 
-        if (builder.bpn.size() > 1) {
+        if (policyAttributes.getBpn().size() > 1) {
             // ... and then add it via 'UPDATE policies' to all BPNs to which it should be associated
             // (note that this also update the validUntil).
-            updatePolicies(authenticationPropertiesBuilder, List.of(builder.policyId), builder.bpn, builder.validUntil);
+            updatePolicies(authenticationPropertiesBuilder, List.of(policyAttributes.getPolicyId()),
+                    policyAttributes.getBpn(), policyAttributes.getValidUntil());
         }
     }
 
     @When("I update the policy")
     public void iUpdateThePolicy() {
-        final PolicyRecord.PolicyRecordBuilder builder = policyRecordBuilder;
-        updatePolicies(authenticationPropertiesBuilder, List.of(builder.policyId), builder.bpn, builder.validUntil);
+        updatePolicies(authenticationPropertiesBuilder, List.of(policyAttributes.getPolicyId()),
+                policyAttributes.getBpn(), policyAttributes.getValidUntil());
     }
 
 }
