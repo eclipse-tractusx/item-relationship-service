@@ -8,6 +8,10 @@ tractusx-connector:
   iatp:
     # Decentralized IDentifier
     id: <path:traceability-irs/data/dev/controlplane#DID>
+    # -- Configures the trusted issuers for this runtime
+    # ATTENTION: NOT YET WORKING FOR 0.7.0 chart
+    trustedIssuers:
+      - <path:traceability-irs/data/dev/controlplane#trustedIssuer>
     sts:
       dim:
         url: <path:traceability-irs/data/dev/controlplane#dimUrl>
@@ -27,6 +31,10 @@ tractusx-connector:
       server:
         # URL of the BPN/DID Resolution Service - required:
         url: <path:traceability-irs/data/dev/controlplane#bdrsUrl>
+
+    env:
+      # workaround till 0.7.1 chart
+      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/dev/controlplane#trustedIssuer>
 
     endpoints:
       management:
