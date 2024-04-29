@@ -208,15 +208,15 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
 
     @And("the policy should be associated to BPN {string}")
     public void policyShouldBeAssociatedToBpn(final String bpn) {
-        if (this.policyAttributes.getBpn() == null) {
-            this.policyAttributes.setBpn(new ArrayList<>());
+        if (this.policyAttributes.getBpnls() == null) {
+            this.policyAttributes.setBpnls(new ArrayList<>());
         }
-        this.policyAttributes.getBpn().add(bpn);
+        this.policyAttributes.getBpnls().add(bpn);
     }
 
     @And("the policy should be associated to the following BPNs:")
     public void policyShouldBeAssociatedToBpn(final List<String> bpnls) {
-        this.policyAttributes.setBpn(bpnls);
+        this.policyAttributes.setBpnls(bpnls);
     }
 
     @And("the policy should have validUntil {string}")
@@ -229,21 +229,21 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
 
         // 'POST policies' only supports one BPN, therefore if we want to associate a policy with multiple BPNs
         // we first need to create it via POST for the first BPN ...
-        iRegisterAPolicy(policyAttributes.getPolicyId(), policyAttributes.getBpn().get(0),
+        iRegisterAPolicy(policyAttributes.getPolicyId(), policyAttributes.getBpnls().get(0),
                 policyAttributes.getValidUntil());
 
-        if (policyAttributes.getBpn().size() > 1) {
+        if (policyAttributes.getBpnls().size() > 1) {
             // ... and then add it via 'UPDATE policies' to all BPNs to which it should be associated
             // (note that this also update the validUntil).
             updatePolicies(authenticationPropertiesBuilder, List.of(policyAttributes.getPolicyId()),
-                    policyAttributes.getBpn(), policyAttributes.getValidUntil());
+                    policyAttributes.getBpnls(), policyAttributes.getValidUntil());
         }
     }
 
     @When("I update the policy")
     public void iUpdateThePolicy() {
         updatePolicies(authenticationPropertiesBuilder, List.of(policyAttributes.getPolicyId()),
-                policyAttributes.getBpn(), policyAttributes.getValidUntil());
+                policyAttributes.getBpnls(), policyAttributes.getValidUntil());
     }
 
 }

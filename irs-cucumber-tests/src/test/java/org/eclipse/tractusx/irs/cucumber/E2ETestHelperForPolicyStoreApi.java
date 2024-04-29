@@ -297,7 +297,7 @@ public class E2ETestHelperForPolicyStoreApi {
     @NoArgsConstructor
     public static final class PolicyAttributes {
         private String policyId;
-        private List<String> bpn;
+        private List<String> bpnls;
         private String validUntil;
     }
 }
