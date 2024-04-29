@@ -74,9 +74,9 @@ public class E2ETestStepDefinitions {
     // TODO (maintainability): class should be renamed to E2ETestStepDefinitionsJobApi later
     //       (not done in current story in order to avoid conflicts with other E2E test story)
 
-    private RegisterJob.RegisterJobBuilder registerJobBuilder;
+    private final RegisterJob.RegisterJobBuilder registerJobBuilder;
 
-    private RegisterBatchOrder.RegisterBatchOrderBuilder registerBatchOrderBuilder;
+    private final RegisterBatchOrder.RegisterBatchOrderBuilder registerBatchOrderBuilder;
 
     private UUID jobId;
     private UUID orderId;
