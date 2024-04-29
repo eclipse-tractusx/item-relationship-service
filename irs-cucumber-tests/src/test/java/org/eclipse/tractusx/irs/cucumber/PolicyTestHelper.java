@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.cucumber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.givenAuthentication;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.objectMapper;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -35,8 +36,6 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.DataTableType;
 import io.restassured.http.ContentType;
 import lombok.AllArgsConstructor;
@@ -89,14 +88,6 @@ public class PolicyTestHelper {
                 }
             }
             """;
-
-    private static final ObjectMapper objectMapper;
-
-    static {
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-    }
 
     @SuppressWarnings("unchecked")
     public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(

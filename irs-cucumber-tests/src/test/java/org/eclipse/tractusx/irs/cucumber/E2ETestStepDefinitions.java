@@ -27,6 +27,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.getExpectedFile;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.objectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,9 +40,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.After;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.PendingException;
@@ -84,8 +82,6 @@ public class E2ETestStepDefinitions {
     private BatchOrderResponse batchOrderResponse;
     private BatchResponse batchResponse;
 
-    private final ObjectMapper objectMapper;
-
     private AuthenticationProperties authProperties;
     private final AuthenticationProperties.AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
 
@@ -93,10 +89,6 @@ public class E2ETestStepDefinitions {
         registerJobBuilder = RegisterJob.builder();
         registerBatchOrderBuilder = RegisterBatchOrder.builder();
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
-
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
     @DataTableType

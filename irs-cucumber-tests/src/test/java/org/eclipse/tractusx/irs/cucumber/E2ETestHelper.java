@@ -23,12 +23,23 @@ import static io.restassured.RestAssured.given;
 
 import java.io.File;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.specification.RequestSpecification;
 
 /**
  * Helper class for E2E tests.
  */
 public class E2ETestHelper {
+
+    public static final ObjectMapper objectMapper;
+
+    static {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
 
     public static File getExpectedFile(final String fileName) {
         final String path = "expected-files/" + fileName;
