@@ -69,13 +69,13 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
     }
 
-    // TODO how to reuse this from E2ETestStepDefinitions
+    // TODO (later): find a way to re-use this in all step definition classes
     @Given("the IRS URL {string} -- policystore")
     public void theIRSURL(String irsUrl) {
         authenticationPropertiesBuilder.uri(irsUrl);
     }
 
-    // TODO how to reuse this from E2ETestStepDefinitions
+    // TODO (later): find a way to re-use this in all step definition classes
     @And("the admin user api key -- policystore")
     public void theAdminUser() throws PropertyNotFoundException {
         final String adminUserApiKey = "ADMIN_USER_API_KEY";
