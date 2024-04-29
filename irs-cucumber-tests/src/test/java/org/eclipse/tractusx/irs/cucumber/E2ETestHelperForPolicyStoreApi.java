@@ -47,15 +47,15 @@ import org.eclipse.tractusx.irs.cucumber.AuthenticationProperties.Authentication
 import org.springframework.http.HttpStatus;
 
 /**
- * Helper class for policy tests.
+ * Helper class for Policy Store API tests.
  */
-public class PolicyTestHelper {
+public class E2ETestHelperForPolicyStoreApi {
 
     public static final String URL_IRS_POLICIES = "/irs/policies";
 
     public static final String QUERYPARAM_BUSINESS_PARTNER_NUMBERS = "businessPartnerNumbers";
 
-    public static final String policyTemplate = """
+    public static final String POLICY_TEMPLATE = """
             {
                 "@context": {
                     "odrl": "http://www.w3.org/ns/odrl/2/"
@@ -208,13 +208,11 @@ public class PolicyTestHelper {
     public static void updatePolicies(final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
             final List<String> policyIds, final List<String> businessPartnerNumbers, final String validUntil) {
 
-        final var updatePolicyRequest = PolicyTestHelper.UpdatePolicyRequest.builder()
-                                                                            .policyIds(policyIds)
-                                                                            .businessPartnerNumbers(
-                                                                                    businessPartnerNumbers)
-                                                                            .validUntil(
-                                                                                    OffsetDateTime.parse(validUntil))
-                                                                            .build();
+        final var updatePolicyRequest = UpdatePolicyRequest.builder()
+                                                           .policyIds(policyIds)
+                                                           .businessPartnerNumbers(businessPartnerNumbers)
+                                                           .validUntil(OffsetDateTime.parse(validUntil))
+                                                           .build();
         givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
                                                             .body(updatePolicyRequest)
                                                             .when()
@@ -234,7 +232,9 @@ public class PolicyTestHelper {
             createPolicyRequest = CreatePolicyRequest.builder()
                                                      .validUntil(OffsetDateTime.parse(validUntil))
                                                      .businessPartnerNumber(bpn)
-                                                     .payload(PolicyTestHelper.jsonFromString(objectMapper, policyJson))
+                                                     .payload(
+                                                             E2ETestHelperForPolicyStoreApi.jsonFromString(objectMapper,
+                                                                     policyJson))
                                                      .build();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -272,9 +272,9 @@ public class PolicyTestHelper {
 
     public static List<String> fetchPolicyIdsByPrefix(
             final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String policyIdPrefix) {
-        final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap = PolicyTestHelper.fetchAllPolicies(
+        final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap = E2ETestHelperForPolicyStoreApi.fetchAllPolicies(
                 authenticationPropertiesBuilder);
-        return PolicyTestHelper.extractPolicyIdsStartingWith(bpnToPoliciesMap, policyIdPrefix).toList();
+        return E2ETestHelperForPolicyStoreApi.extractPolicyIdsStartingWith(bpnToPoliciesMap, policyIdPrefix).toList();
     }
 
     public static void cleanupPolicy(final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,

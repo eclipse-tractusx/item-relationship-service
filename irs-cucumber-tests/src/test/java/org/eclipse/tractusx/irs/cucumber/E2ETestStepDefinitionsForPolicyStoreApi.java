@@ -24,11 +24,17 @@
 package org.eclipse.tractusx.irs.cucumber;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.cleanupPolicy;
-import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.fetchPoliciesForBusinessPartnerNumbers;
-import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.fetchPolicyIdsByPrefix;
-import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.registerPolicyForBpn;
-import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.updatePolicies;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.POLICY_TEMPLATE;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.cleanupPolicy;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.extractPoliciesForBpn;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.extractPolicyIdsForBpn;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchAllPolicies;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPoliciesForBpn;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPoliciesForBusinessPartnerNumbers;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPolicyIdsByPrefix;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.getExpectedBpnToPolicyIdsMapping;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.registerPolicyForBpn;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.updatePolicies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,11 +50,14 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.cucumber.AuthenticationProperties.AuthenticationPropertiesBuilder;
-import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.BpnToPolicyId;
-import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.CreatePoliciesResponse;
-import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.PolicyAttributes;
+import org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.BpnToPolicyId;
+import org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.CreatePoliciesResponse;
+import org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.PolicyAttributes;
 
-public class E2ETestStepDefinitionsPolicyStore {
+/**
+ * Step definitions for Policy Store API.
+ */
+public class E2ETestStepDefinitionsForPolicyStoreApi {
 
     private final AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
 
@@ -56,7 +65,7 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap;
 
-    public E2ETestStepDefinitionsPolicyStore() {
+    public E2ETestStepDefinitionsForPolicyStoreApi() {
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
     }
 
@@ -86,12 +95,12 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     @And("I fetch all policies")
     public void iFetchAllPolicies() {
-        this.bpnToPoliciesMap = PolicyTestHelper.fetchAllPolicies(authenticationPropertiesBuilder);
+        this.bpnToPoliciesMap = fetchAllPolicies(authenticationPropertiesBuilder);
     }
 
     @And("I fetch policies for BPN {string}")
     public void iFetchPoliciesForBpn(final String bpn) {
-        this.bpnToPoliciesMap = PolicyTestHelper.fetchPoliciesForBpn(authenticationPropertiesBuilder, bpn);
+        this.bpnToPoliciesMap = fetchPoliciesForBpn(authenticationPropertiesBuilder, bpn);
     }
 
     @And("I fetch policies for BPNs:")
@@ -102,19 +111,18 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     @Then("the BPN {string} should have the following policies:")
     public void theBpnShouldHaveTheFollowingPolicies(final String bpn, final List<String> policyIds) {
-        final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).toList();
+        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).toList();
         assertThat(policyIdsForBpn).containsAll(policyIds);
     }
 
     @Then("the BPNs should be associated with policies as follows:")
     public void theBpnShouldHaveTheFollowingPolicies(final List<BpnToPolicyId> bpnToPolicyIdTable) {
 
-        final HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = PolicyTestHelper.getExpectedBpnToPolicyIdsMapping(
+        final HashMap<String, HashSet<String>> expectedBpnToPolicyIdsMapping = getExpectedBpnToPolicyIdsMapping(
                 bpnToPolicyIdTable);
 
         expectedBpnToPolicyIdsMapping.forEach((bpn, expectedPolicies) -> {
-            final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn)
-                                                                 .toList();
+            final List<String> policyIdsForBpn = extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).toList();
             assertThat(policyIdsForBpn).as("BPN '%s' should be associated with the expected policies", bpn)
                                        .containsAll(expectedPolicies);
         });
@@ -129,17 +137,15 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     @Then("the BPN {string} should have {int} policies having policyId starting with {string}")
     public void theBpnShouldHavePolicyIdsStartingWith(final String bpn, final int numPolicies, final String prefix) {
-        final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn)
-                                                             .filter(startingWith(prefix))
-                                                             .toList();
+        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).filter(startingWith(prefix))
+                                                                                          .toList();
         assertThat(policyIdsForBpn).hasSize(numPolicies);
     }
 
     @Then("the BPN {string} should have no policies with policyId {string}")
     public void theBpnShouldNotHavePolicyId(final String bpn, final String policyId) {
-        final List<String> policyIdsForBpn = PolicyTestHelper.extractPolicyIdsForBpn(bpnToPoliciesMap, bpn)
-                                                             .filter(policyId::equals)
-                                                             .toList();
+        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).filter(policyId::equals)
+                                                                                          .toList();
         assertThat(policyIdsForBpn).isEmpty();
     }
 
@@ -165,7 +171,7 @@ public class E2ETestStepDefinitionsPolicyStore {
     public void theBpnShouldHaveTheExpectedPolicyWithValidUntil(final String bpn, final String policyId,
             final String validUntil) {
 
-        final List<LinkedHashMap> policies = PolicyTestHelper.extractPoliciesForBpn(bpnToPoliciesMap, bpn).toList();
+        final List<LinkedHashMap> policies = extractPoliciesForBpn(bpnToPoliciesMap, bpn).toList();
         final List<LinkedHashMap> policiesFiltered = policies.stream()
                                                              .filter(p -> p.get("policyId").equals(policyId))
                                                              .toList();
@@ -176,7 +182,7 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     @Given("a policy with policyId {string} is registered for BPN {string} and validUntil {string}")
     public void iRegisterAPolicy(final String policyId, final String bpn, final String validUntil) {
-        final String policyJson = PolicyTestHelper.policyTemplate.formatted(policyId);
+        final String policyJson = POLICY_TEMPLATE.formatted(policyId);
         final CreatePoliciesResponse response = registerPolicyForBpn(authenticationPropertiesBuilder, policyJson, bpn,
                 validUntil);
         assertThat(response.policyId()).isEqualTo(policyId);
