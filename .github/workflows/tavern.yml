@@ -26,7 +26,7 @@ on:
       global-asset-id-asBuilt:
         type: string
         description: Global-asset-id to use for the asBuilt tests.
-        default: 'urn:uuid: 8724338c-5c85-4c34-91eb-e2735d58fb0d'
+        default: 'urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d'
         required: true
       bpn-asBuilt:
         type: string
