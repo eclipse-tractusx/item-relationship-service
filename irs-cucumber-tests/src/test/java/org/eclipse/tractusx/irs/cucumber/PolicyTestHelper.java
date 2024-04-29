@@ -19,6 +19,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.cucumber;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.givenAuthentication;
+
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,17 +35,26 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.DataTableType;
+import io.restassured.http.ContentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.cucumber.AuthenticationProperties.AuthenticationPropertiesBuilder;
+import org.springframework.http.HttpStatus;
 
 /**
  * Helper class for policy tests.
  */
 public class PolicyTestHelper {
+
+    public static final String URL_IRS_POLICIES = "/irs/policies";
+
+    public static final String QUERYPARAM_BUSINESS_PARTNER_NUMBERS = "businessPartnerNumbers";
 
     public static final String policyTemplate = """
             {
@@ -77,6 +89,45 @@ public class PolicyTestHelper {
                 }
             }
             """;
+
+    private static final ObjectMapper objectMapper;
+
+    static {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String bpn) {
+
+        return givenAuthentication(authenticationPropertiesBuilder).queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS, bpn)
+                                                                   .when()
+                                                                   .get(URL_IRS_POLICIES)
+                                                                   .then()
+                                                                   .log()
+                                                                   .all()
+                                                                   .statusCode(HttpStatus.OK.value())
+                                                                   .extract()
+                                                                   .body()
+                                                                   .as(Map.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchAllPolicies(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder) {
+
+        return givenAuthentication(authenticationPropertiesBuilder).when()
+                                                                   .get(URL_IRS_POLICIES)
+                                                                   .then()
+                                                                   .log()
+                                                                   .all()
+                                                                   .statusCode(HttpStatus.OK.value())
+                                                                   .extract()
+                                                                   .body()
+                                                                   .as(Map.class);
+    }
 
     @Builder
     public record CreatePolicyRequest(OffsetDateTime validUntil, String businessPartnerNumber, JsonNode payload) {
@@ -162,4 +213,93 @@ public class PolicyTestHelper {
             throws JsonProcessingException {
         return objectMapper.readTree(jsonObjectStr);
     }
+
+    public static void updatePolicies(final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
+            final List<String> policyIds, final List<String> businessPartnerNumbers, final String validUntil) {
+
+        final var updatePolicyRequest = PolicyTestHelper.UpdatePolicyRequest.builder()
+                                                                            .policyIds(policyIds)
+                                                                            .businessPartnerNumbers(
+                                                                                    businessPartnerNumbers)
+                                                                            .validUntil(
+                                                                                    OffsetDateTime.parse(validUntil))
+                                                                            .build();
+        givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                            .body(updatePolicyRequest)
+                                                            .when()
+                                                            .put(URL_IRS_POLICIES)
+                                                            .then()
+                                                            .log()
+                                                            .all()
+                                                            .statusCode(HttpStatus.OK.value());
+    }
+
+    public static CreatePoliciesResponse registerPolicyForBpn(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String policyJson,
+            final String bpn, final String validUntil) {
+
+        final CreatePolicyRequest createPolicyRequest;
+        try {
+            createPolicyRequest = CreatePolicyRequest.builder()
+                                                     .validUntil(OffsetDateTime.parse(validUntil))
+                                                     .businessPartnerNumber(bpn)
+                                                     .payload(PolicyTestHelper.jsonFromString(objectMapper, policyJson))
+                                                     .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                   .body(createPolicyRequest)
+                                                                   .when()
+                                                                   .post(URL_IRS_POLICIES)
+                                                                   .then()
+                                                                   .log()
+                                                                   .all()
+                                                                   .statusCode(HttpStatus.CREATED.value())
+                                                                   .extract()
+                                                                   .as(CreatePoliciesResponse.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBusinessPartnerNumbers(
+            AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
+            final List<String> businessPartnerNumbers) {
+
+        return givenAuthentication(authenticationPropertiesBuilder).queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS,
+                                                                           businessPartnerNumbers)
+                                                                   .when()
+                                                                   .get(URL_IRS_POLICIES)
+                                                                   .then()
+                                                                   .log()
+                                                                   .all()
+                                                                   .statusCode(HttpStatus.OK.value())
+                                                                   .extract()
+                                                                   .body()
+                                                                   .as(Map.class);
+    }
+
+    public static List<String> fetchPolicyIdsByPrefix(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String policyIdPrefix) {
+        final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap = PolicyTestHelper.fetchAllPolicies(
+                authenticationPropertiesBuilder);
+        return PolicyTestHelper.extractPolicyIdsStartingWith(bpnToPoliciesMap, policyIdPrefix).toList();
+    }
+
+    public static void cleanupPolicy(final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
+            final String policyId) {
+
+        final int status = givenAuthentication(authenticationPropertiesBuilder).pathParam("policyId", policyId)
+                                                                               .when()
+                                                                               .delete(URL_IRS_POLICIES + "/{policyId}")
+                                                                               .then()
+                                                                               .log()
+                                                                               .all()
+                                                                               .extract()
+                                                                               .statusCode();
+
+        assertThat(List.of(HttpStatus.OK.value(), HttpStatus.NOT_FOUND.value())).describedAs(
+                "Should either return status 200 OK or 404 NOT_FOUND").contains(status);
+    }
+
 }

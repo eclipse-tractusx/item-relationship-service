@@ -23,10 +23,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.cucumber;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.cleanupPolicy;
+import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.fetchPoliciesForBusinessPartnerNumbers;
+import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.fetchPolicyIdsByPrefix;
+import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.registerPolicyForBpn;
+import static org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.updatePolicies;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,31 +38,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import lombok.Builder;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.tractusx.irs.cucumber.AuthenticationProperties.AuthenticationPropertiesBuilder;
 import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.BpnToPolicyId;
 import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.CreatePoliciesResponse;
-import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.CreatePolicyRequest;
-import org.eclipse.tractusx.irs.cucumber.PolicyTestHelper.UpdatePolicyRequest;
-import org.springframework.http.HttpStatus;
 
 public class E2ETestStepDefinitionsPolicyStore {
 
-    public static final String URL_IRS_POLICIES = "/irs/policies";
-
-    public static final String QUERYPARAM_BUSINESS_PARTNER_NUMBERS = "businessPartnerNumbers";
-
-    private final AuthenticationProperties.AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
+    private final AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
 
     @Builder
     public record PolicyRecord(String policyId, List<String> bpn, String validUntil) {
@@ -70,15 +61,8 @@ public class E2ETestStepDefinitionsPolicyStore {
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap;
 
     public E2ETestStepDefinitionsPolicyStore() {
-
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
-
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
-
-    private ObjectMapper objectMapper;
 
     // TODO how to reuse this from E2ETestStepDefinitions
     @Given("the IRS URL {string} -- policystore")
@@ -100,22 +84,24 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     @Given("no policies with prefix {string} exist")
     public void cleanupPoliciesWithPrefix(final String policyIdPrefix) {
-        fetchPolicyIdsByPrefix(policyIdPrefix).forEach(this::cleanupPolicy);
+        fetchPolicyIdsByPrefix(authenticationPropertiesBuilder, policyIdPrefix).forEach(
+                policyId -> cleanupPolicy(authenticationPropertiesBuilder, policyId));
     }
 
     @And("I fetch all policies")
     public void iFetchAllPolicies() {
-        this.bpnToPoliciesMap = fetchAllPolicies();
+        this.bpnToPoliciesMap = PolicyTestHelper.fetchAllPolicies(authenticationPropertiesBuilder);
     }
 
     @And("I fetch policies for BPN {string}")
     public void iFetchPoliciesForBpn(final String bpn) {
-        this.bpnToPoliciesMap = fetchPoliciesForBpn(bpn);
+        this.bpnToPoliciesMap = PolicyTestHelper.fetchPoliciesForBpn(authenticationPropertiesBuilder, bpn);
     }
 
     @And("I fetch policies for BPNs:")
     public void iFetchPoliciesForBpn(final List<String> businessPartnerNumbers) {
-        this.bpnToPoliciesMap = fetchPoliciesForBusinessPartnerNumbers(businessPartnerNumbers);
+        this.bpnToPoliciesMap = fetchPoliciesForBusinessPartnerNumbers(authenticationPropertiesBuilder,
+                businessPartnerNumbers);
     }
 
     @Then("the BPN {string} should have the following policies:")
@@ -141,7 +127,7 @@ public class E2ETestStepDefinitionsPolicyStore {
     @When("I delete the following policies:")
     public void iDeleteTheFollowingPolicies(final List<String> policyIds) {
         for (final String policyId : policyIds) {
-            cleanupPolicy(policyId);
+            cleanupPolicy(authenticationPropertiesBuilder, policyId);
         }
     }
 
@@ -167,13 +153,13 @@ public class E2ETestStepDefinitionsPolicyStore {
 
     @When("I update policy {string}, BPN {string}, validUntil {string}")
     public void iPerformUpdatePolicy(final String policyId, final String bpn, final String validUntil) {
-        updatePolicies(List.of(policyId), List.of(bpn), validUntil);
+        updatePolicies(authenticationPropertiesBuilder, List.of(policyId), List.of(bpn), validUntil);
     }
 
     @When("I add policyId {string} to given BPNs using validUntil {string}:")
     @When("I update policy with policyId {string} and given BPNs using validUntil {string}:")
     public void iUpdatePolicyBpns(final String policyId, final String validUntil, List<String> businessPartnerNumbers) {
-        updatePolicies(List.of(policyId), businessPartnerNumbers, validUntil);
+        updatePolicies(authenticationPropertiesBuilder, List.of(policyId), businessPartnerNumbers, validUntil);
     }
 
     @Then("the BPN {string} should have a policy with policyId {string} and validUntil {string}")
@@ -195,7 +181,8 @@ public class E2ETestStepDefinitionsPolicyStore {
     @Given("a policy with policyId {string} is registered for BPN {string} and validUntil {string}")
     public void iRegisterAPolicy(final String policyId, final String bpn, final String validUntil) {
         final String policyJson = PolicyTestHelper.policyTemplate.formatted(policyId);
-        final CreatePoliciesResponse response = registerPolicyForBpn(policyJson, bpn, validUntil);
+        final CreatePoliciesResponse response = registerPolicyForBpn(authenticationPropertiesBuilder, policyJson, bpn,
+                validUntil);
         assertThat(response.policyId()).isEqualTo(policyId);
     }
 
@@ -247,128 +234,14 @@ public class E2ETestStepDefinitionsPolicyStore {
         if (builder.bpn.size() > 1) {
             // ... and then add it via 'UPDATE policies' to all BPNs to which it should be associated
             // (note that this also update the validUntil).
-            updatePolicies(List.of(builder.policyId), builder.bpn, builder.validUntil);
+            updatePolicies(authenticationPropertiesBuilder, List.of(builder.policyId), builder.bpn, builder.validUntil);
         }
     }
 
     @When("I update the policy")
     public void iUpdateThePolicy() {
         final PolicyRecord.PolicyRecordBuilder builder = policyRecordBuilder;
-        updatePolicies(List.of(builder.policyId), builder.bpn, builder.validUntil);
-    }
-
-    private void cleanupPolicy(final String policyId) {
-
-        final int status = givenAuthentication().pathParam("policyId", policyId)
-                                                .when()
-                                                .delete(URL_IRS_POLICIES + "/{policyId}")
-                                                .then()
-                                                .log()
-                                                .all()
-                                                .extract()
-                                                .statusCode();
-
-        assertThat(List.of(HttpStatus.OK.value(), HttpStatus.NOT_FOUND.value())).describedAs(
-                "Should either return status 200 OK or 404 NOT_FOUND").contains(status);
-    }
-
-    private List<String> fetchPolicyIdsByPrefix(final String policyIdPrefix) {
-        final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap = fetchAllPolicies();
-        return PolicyTestHelper.extractPolicyIdsStartingWith(bpnToPoliciesMap, policyIdPrefix).toList();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchAllPolicies() {
-
-        return givenAuthentication().when()
-                                    .get(URL_IRS_POLICIES)
-                                    .then()
-                                    .log()
-                                    .all()
-                                    .statusCode(HttpStatus.OK.value())
-                                    .extract()
-                                    .body()
-                                    .as(Map.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(final String bpn) {
-
-        return givenAuthentication().queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS, bpn)
-                                    .when()
-                                    .get(URL_IRS_POLICIES)
-                                    .then()
-                                    .log()
-                                    .all()
-                                    .statusCode(HttpStatus.OK.value())
-                                    .extract()
-                                    .body()
-                                    .as(Map.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBusinessPartnerNumbers(
-            final List<String> businessPartnerNumbers) {
-
-        return givenAuthentication().queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS, businessPartnerNumbers)
-                                    .when()
-                                    .get(URL_IRS_POLICIES)
-                                    .then()
-                                    .log()
-                                    .all()
-                                    .statusCode(HttpStatus.OK.value())
-                                    .extract()
-                                    .body()
-                                    .as(Map.class);
-    }
-
-    private CreatePoliciesResponse registerPolicyForBpn(final String policyJson, final String bpn,
-            final String validUntil) {
-
-        final CreatePolicyRequest createPolicyRequest;
-        try {
-            createPolicyRequest = CreatePolicyRequest.builder()
-                                                     .validUntil(OffsetDateTime.parse(validUntil))
-                                                     .businessPartnerNumber(bpn)
-                                                     .payload(PolicyTestHelper.jsonFromString(objectMapper, policyJson))
-                                                     .build();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        return givenAuthentication().contentType(ContentType.JSON)
-                                    .body(createPolicyRequest)
-                                    .when()
-                                    .post(URL_IRS_POLICIES)
-                                    .then()
-                                    .log()
-                                    .all()
-                                    .statusCode(HttpStatus.CREATED.value())
-                                    .extract()
-                                    .as(CreatePoliciesResponse.class);
-    }
-
-    private void updatePolicies(final List<String> policyIds, final List<String> businessPartnerNumbers,
-            final String validUntil) {
-
-        final var updatePolicyRequest = UpdatePolicyRequest.builder()
-                                                           .policyIds(policyIds)
-                                                           .businessPartnerNumbers(businessPartnerNumbers)
-                                                           .validUntil(OffsetDateTime.parse(validUntil))
-                                                           .build();
-        givenAuthentication().contentType(ContentType.JSON)
-                             .body(updatePolicyRequest)
-                             .when()
-                             .put(URL_IRS_POLICIES)
-                             .then()
-                             .log()
-                             .all()
-                             .statusCode(HttpStatus.OK.value());
-    }
-
-    private RequestSpecification givenAuthentication() {
-        final AuthenticationProperties authProperties = authenticationPropertiesBuilder.build();
-        return given().log().all().spec(authProperties.getNewAuthenticationRequestSpecification());
+        updatePolicies(authenticationPropertiesBuilder, List.of(builder.policyId), builder.bpn, builder.validUntil);
     }
 
 }
