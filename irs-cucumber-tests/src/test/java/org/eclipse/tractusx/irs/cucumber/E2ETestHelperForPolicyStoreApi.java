@@ -38,12 +38,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.DataTableType;
 import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.cucumber.AuthenticationProperties.AuthenticationPropertiesBuilder;
+import org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.CreatePolicyRequest.CreatePolicyRequestBuilder;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -105,27 +107,13 @@ public class E2ETestHelperForPolicyStoreApi {
                                                                    .as(Map.class);
     }
 
-    @SuppressWarnings("unchecked")
-    public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchAllPolicies(
+    public static ValidatableResponse fetchAllPolicies(
             final AuthenticationPropertiesBuilder authenticationPropertiesBuilder) {
-
-        return givenAuthentication(authenticationPropertiesBuilder).when()
-                                                                   .get(URL_IRS_POLICIES)
-                                                                   .then()
-                                                                   .log()
-                                                                   .all()
-                                                                   .statusCode(HttpStatus.OK.value())
-                                                                   .extract()
-                                                                   .body()
-                                                                   .as(Map.class);
+        return givenAuthentication(authenticationPropertiesBuilder).when().get(URL_IRS_POLICIES).then().log().all();
     }
 
     @Builder
     public record CreatePolicyRequest(OffsetDateTime validUntil, String businessPartnerNumber, JsonNode payload) {
-    }
-
-    @Builder
-    public record CreatePoliciesResponse(String policyId) {
     }
 
     @Builder
@@ -205,37 +193,38 @@ public class E2ETestHelperForPolicyStoreApi {
         return objectMapper.readTree(jsonObjectStr);
     }
 
-    public static void updatePolicies(final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
-            final List<String> policyIds, final List<String> businessPartnerNumbers, final String validUntil) {
+    public static ValidatableResponse updatePolicies(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final List<String> policyIds,
+            final List<String> businessPartnerNumbers, final String validUntil) {
 
         final var updatePolicyRequest = UpdatePolicyRequest.builder()
                                                            .policyIds(policyIds)
                                                            .businessPartnerNumbers(businessPartnerNumbers)
                                                            .validUntil(OffsetDateTime.parse(validUntil))
                                                            .build();
-        givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
-                                                            .body(updatePolicyRequest)
-                                                            .when()
-                                                            .put(URL_IRS_POLICIES)
-                                                            .then()
-                                                            .log()
-                                                            .all()
-                                                            .statusCode(HttpStatus.OK.value());
+        return givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                   .body(updatePolicyRequest)
+                                                                   .when()
+                                                                   .put(URL_IRS_POLICIES)
+                                                                   .then()
+                                                                   .log()
+                                                                   .all();
     }
 
-    public static CreatePoliciesResponse registerPolicyForBpn(
+    public static ValidatableResponse registerPolicyForBpn(
             final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String policyJson,
             final String bpn, final String validUntil) {
 
         final CreatePolicyRequest createPolicyRequest;
         try {
-            createPolicyRequest = CreatePolicyRequest.builder()
-                                                     .validUntil(OffsetDateTime.parse(validUntil))
-                                                     .businessPartnerNumber(bpn)
-                                                     .payload(
-                                                             E2ETestHelperForPolicyStoreApi.jsonFromString(objectMapper,
-                                                                     policyJson))
-                                                     .build();
+            CreatePolicyRequestBuilder builder = CreatePolicyRequest.builder();
+            if (validUntil != null) {
+                builder = builder.validUntil(OffsetDateTime.parse(validUntil));
+            }
+            createPolicyRequest = builder.businessPartnerNumber(bpn)
+                                         .payload(E2ETestHelperForPolicyStoreApi.jsonFromString(objectMapper,
+                                                 policyJson))
+                                         .build();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -246,51 +235,56 @@ public class E2ETestHelperForPolicyStoreApi {
                                                                    .post(URL_IRS_POLICIES)
                                                                    .then()
                                                                    .log()
-                                                                   .all()
-                                                                   .statusCode(HttpStatus.CREATED.value())
-                                                                   .extract()
-                                                                   .as(CreatePoliciesResponse.class);
+                                                                   .all();
+
     }
 
-    @SuppressWarnings("unchecked")
-    public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBusinessPartnerNumbers(
-            AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
+    public static ValidatableResponse fetchPoliciesForBusinessPartnerNumbers(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
             final List<String> businessPartnerNumbers) {
 
         return givenAuthentication(authenticationPropertiesBuilder).queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS,
-                                                                           businessPartnerNumbers)
-                                                                   .when()
-                                                                   .get(URL_IRS_POLICIES)
-                                                                   .then()
-                                                                   .log()
-                                                                   .all()
-                                                                   .statusCode(HttpStatus.OK.value())
-                                                                   .extract()
-                                                                   .body()
-                                                                   .as(Map.class);
+                businessPartnerNumbers).when().get(URL_IRS_POLICIES).then().log().all();
     }
 
-    public static List<String> fetchPolicyIdsByPrefix(
+    public static void cleanupPolicyIdsByPrefix(final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
+            final String policyIdPrefix) {
+        fetchPolicyIdsByPrefixSuccessfully(authenticationPropertiesBuilder, policyIdPrefix).forEach(
+                policyId -> cleanupPolicy(authenticationPropertiesBuilder, policyId));
+    }
+
+    public static List<String> fetchPolicyIdsByPrefixSuccessfully(
             final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String policyIdPrefix) {
-        final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap = E2ETestHelperForPolicyStoreApi.fetchAllPolicies(
+        final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap = E2ETestHelperForPolicyStoreApi.fetchAllPoliciesSuccessfully(
                 authenticationPropertiesBuilder);
         return E2ETestHelperForPolicyStoreApi.extractPolicyIdsStartingWith(bpnToPoliciesMap, policyIdPrefix).toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchAllPoliciesSuccessfully(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder) {
+        final ValidatableResponse getAllPoliciesResponse = fetchAllPolicies(authenticationPropertiesBuilder);
+        return getAllPoliciesResponse.statusCode(HttpStatus.OK.value()).extract().body().as(Map.class);
     }
 
     public static void cleanupPolicy(final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
             final String policyId) {
 
-        final int status = givenAuthentication(authenticationPropertiesBuilder).pathParam("policyId", policyId)
-                                                                               .when()
-                                                                               .delete(URL_IRS_POLICIES + "/{policyId}")
-                                                                               .then()
-                                                                               .log()
-                                                                               .all()
-                                                                               .extract()
-                                                                               .statusCode();
+        final ValidatableResponse deleteResponse = deletePolicy(authenticationPropertiesBuilder, policyId);
+        final int status = deleteResponse.extract().statusCode();
 
         assertThat(List.of(HttpStatus.OK.value(), HttpStatus.NOT_FOUND.value())).describedAs(
                 "Should either return status 200 OK or 404 NOT_FOUND").contains(status);
+    }
+
+    public static ValidatableResponse deletePolicy(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String policyId) {
+        return givenAuthentication(authenticationPropertiesBuilder).pathParam("policyId", policyId)
+                                                                   .when()
+                                                                   .delete(URL_IRS_POLICIES + "/{policyId}")
+                                                                   .then()
+                                                                   .log()
+                                                                   .all();
     }
 
     @Data

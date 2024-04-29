@@ -26,12 +26,13 @@ package org.eclipse.tractusx.irs.cucumber;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.POLICY_TEMPLATE;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.cleanupPolicy;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.cleanupPolicyIdsByPrefix;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.extractPoliciesForBpn;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.extractPolicyIdsForBpn;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchAllPolicies;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchAllPoliciesSuccessfully;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPoliciesForBpn;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPoliciesForBusinessPartnerNumbers;
-import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPolicyIdsByPrefix;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.getExpectedBpnToPolicyIdsMapping;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.registerPolicyForBpn;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.updatePolicies;
@@ -42,17 +43,16 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.apache.commons.lang3.StringUtils;
+import io.restassured.response.ValidatableResponse;
 import org.eclipse.tractusx.irs.cucumber.AuthenticationProperties.AuthenticationPropertiesBuilder;
 import org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.BpnToPolicyId;
-import org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.PolicyAttributes;
+import org.hamcrest.Matchers;
+import org.springframework.http.HttpStatus;
 
 /**
  * Step definitions for Policy Store API.
@@ -65,23 +65,28 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
 
     private Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap;
 
+    private ValidatableResponse getAllPoliciesResponse;
+    private ValidatableResponse getPolicyForBpnlsResponse;
+    private ValidatableResponse createPoliciesResponse;
+    private ValidatableResponse updatePoliciesResponse;
+    private ValidatableResponse deletePoliciesResponse;
+
     public E2ETestStepDefinitionsForPolicyStoreApi() {
-        authenticationPropertiesBuilder = AuthenticationProperties.builder();
+        this.authenticationPropertiesBuilder = AuthenticationProperties.builder();
     }
 
-    // TODO (later): find a way to re-use this in all step definition classes
+    // TODO (later): find a way to re-use theIRSURL and theAdminUser in all step definition classes
     @Given("the IRS URL {string} -- policystore")
     public void theIRSURL(String irsUrl) {
-        authenticationPropertiesBuilder.uri(irsUrl);
+        this.authenticationPropertiesBuilder.uri(irsUrl);
     }
 
-    // TODO (later): find a way to re-use this in all step definition classes
-    @And("the admin user api key -- policystore")
+    @Given("the admin user api key -- policystore")
     public void theAdminUser() throws PropertyNotFoundException {
         final String adminUserApiKey = "ADMIN_USER_API_KEY";
-        String apiKey = System.getenv(adminUserApiKey);
+        final String apiKey = System.getenv(adminUserApiKey);
         if (apiKey != null) {
-            authenticationPropertiesBuilder.apiKey(apiKey);
+            this.authenticationPropertiesBuilder.apiKey(apiKey);
         } else {
             throw new PropertyNotFoundException("Environment Variable missing: " + adminUserApiKey);
         }
@@ -89,29 +94,54 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
 
     @Given("no policies with prefix {string} exist")
     public void cleanupPoliciesWithPrefix(final String policyIdPrefix) {
-        fetchPolicyIdsByPrefix(authenticationPropertiesBuilder, policyIdPrefix).forEach(
-                policyId -> cleanupPolicy(authenticationPropertiesBuilder, policyId));
+        cleanupPolicyIdsByPrefix(authenticationPropertiesBuilder, policyIdPrefix);
     }
 
-    @And("I fetch all policies")
+    @When("I fetch all policies")
     public void iFetchAllPolicies() {
-        this.bpnToPoliciesMap = fetchAllPolicies(authenticationPropertiesBuilder);
+        this.getAllPoliciesResponse = fetchAllPolicies(authenticationPropertiesBuilder);
+        this.bpnToPoliciesMap = getBpnToPoliciesMap(this.getAllPoliciesResponse);
     }
 
-    @And("I fetch policies for BPN {string}")
+    @SuppressWarnings("unchecked")
+    private Map<String, ArrayList<LinkedHashMap<String, ?>>> getBpnToPoliciesMap(final ValidatableResponse response) {
+        if (response.extract().statusCode() == HttpStatus.OK.value()) {
+            return response.extract().body().as(Map.class);
+        } else {
+            return null;
+        }
+    }
+
+    @When("I successfully fetch all policies")
+    public void iFetchAllPoliciesSuccessfully() {
+        this.bpnToPoliciesMap = fetchAllPoliciesSuccessfully(this.authenticationPropertiesBuilder);
+    }
+
+    @Then("the fetch all policies response should have HTTP status {int}")
+    public void theFetchAllPoliciesPoliciesResponseShouldHaveStatus(final int httpStatus) {
+        this.getAllPoliciesResponse.statusCode(httpStatus);
+    }
+
+    @When("I fetch policies for BPN {string}")
     public void iFetchPoliciesForBpn(final String bpn) {
-        this.bpnToPoliciesMap = fetchPoliciesForBpn(authenticationPropertiesBuilder, bpn);
+        this.bpnToPoliciesMap = fetchPoliciesForBpn(this.authenticationPropertiesBuilder, bpn);
     }
 
-    @And("I fetch policies for BPNs:")
+    @When("I fetch policies for BPNs:")
     public void iFetchPoliciesForBpn(final List<String> businessPartnerNumbers) {
-        this.bpnToPoliciesMap = fetchPoliciesForBusinessPartnerNumbers(authenticationPropertiesBuilder,
+        this.getPolicyForBpnlsResponse = fetchPoliciesForBusinessPartnerNumbers(this.authenticationPropertiesBuilder,
                 businessPartnerNumbers);
+        this.bpnToPoliciesMap = getBpnToPoliciesMap(this.getPolicyForBpnlsResponse);
+    }
+
+    @Then("the fetch policies for BPN response should have HTTP status {int}")
+    public void theFetchPoliciesForBpnResponseShouldHaveStatus(final int httpStatus) {
+        this.getPolicyForBpnlsResponse.statusCode(httpStatus);
     }
 
     @Then("the BPN {string} should have the following policies:")
     public void theBpnShouldHaveTheFollowingPolicies(final String bpn, final List<String> policyIds) {
-        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).toList();
+        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(this.bpnToPoliciesMap, bpn).toList();
         assertThat(policyIdsForBpn).containsAll(policyIds);
     }
 
@@ -122,7 +152,7 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
                 bpnToPolicyIdTable);
 
         expectedBpnToPolicyIdsMapping.forEach((bpn, expectedPolicies) -> {
-            final List<String> policyIdsForBpn = extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).toList();
+            final List<String> policyIdsForBpn = extractPolicyIdsForBpn(this.bpnToPoliciesMap, bpn).toList();
             assertThat(policyIdsForBpn).as("BPN '%s' should be associated with the expected policies", bpn)
                                        .containsAll(expectedPolicies);
         });
@@ -131,37 +161,48 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
     @When("I delete the following policies:")
     public void iDeleteTheFollowingPolicies(final List<String> policyIds) {
         for (final String policyId : policyIds) {
-            cleanupPolicy(authenticationPropertiesBuilder, policyId);
+            cleanupPolicy(this.authenticationPropertiesBuilder, policyId);
         }
+    }
+
+    @When("I delete the policy {string}")
+    public void iDeletePolicyWithPolicyId(final String policyId) {
+        this.deletePoliciesResponse = E2ETestHelperForPolicyStoreApi.deletePolicy(this.authenticationPropertiesBuilder,
+                policyId);
+    }
+
+    @Then("the delete policy response should have HTTP status {int}")
+    public void theDeletePolicyResponseShouldHaveStatus(final int httpStatus) {
+        this.deletePoliciesResponse.statusCode(httpStatus);
     }
 
     @Then("the BPN {string} should have {int} policies having policyId starting with {string}")
     public void theBpnShouldHavePolicyIdsStartingWith(final String bpn, final int numPolicies, final String prefix) {
-        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).filter(startingWith(prefix))
-                                                                                          .toList();
+        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(this.bpnToPoliciesMap, bpn).filter(
+                E2ETestHelper.startingWith(prefix)).toList();
         assertThat(policyIdsForBpn).hasSize(numPolicies);
     }
 
     @Then("the BPN {string} should have no policies with policyId {string}")
     public void theBpnShouldNotHavePolicyId(final String bpn, final String policyId) {
-        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(bpnToPoliciesMap, bpn).filter(policyId::equals)
-                                                                                          .toList();
+        final List<String> policyIdsForBpn = extractPolicyIdsForBpn(this.bpnToPoliciesMap, bpn).filter(policyId::equals)
+                                                                                               .toList();
         assertThat(policyIdsForBpn).isEmpty();
-    }
-
-    private static Predicate<String> startingWith(final String prefix) {
-        return s -> StringUtils.startsWith(s, prefix);
     }
 
     @When("I update policy {string}, BPN {string}, validUntil {string}")
     public void iPerformUpdatePolicy(final String policyId, final String bpn, final String validUntil) {
-        updatePolicies(authenticationPropertiesBuilder, List.of(policyId), List.of(bpn), validUntil);
+        this.updatePoliciesResponse = updatePolicies(this.authenticationPropertiesBuilder, List.of(policyId),
+                List.of(bpn), validUntil);
+        this.updatePoliciesResponse.statusCode(HttpStatus.OK.value());
     }
 
     @When("I add policyId {string} to given BPNs using validUntil {string}:")
     @When("I update policy with policyId {string} and given BPNs using validUntil {string}:")
     public void iUpdatePolicyBpns(final String policyId, final String validUntil, List<String> businessPartnerNumbers) {
-        updatePolicies(authenticationPropertiesBuilder, List.of(policyId), businessPartnerNumbers, validUntil);
+        this.updatePoliciesResponse = updatePolicies(this.authenticationPropertiesBuilder, List.of(policyId),
+                businessPartnerNumbers, validUntil);
+        this.updatePoliciesResponse.statusCode(HttpStatus.OK.value());
     }
 
     @Then("the BPN {string} should have a policy with policyId {string} and validUntil {string}")
@@ -171,7 +212,7 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
     public void theBpnShouldHaveTheExpectedPolicyWithValidUntil(final String bpn, final String policyId,
             final String validUntil) {
 
-        final List<LinkedHashMap> policies = extractPoliciesForBpn(bpnToPoliciesMap, bpn).toList();
+        final List<LinkedHashMap> policies = extractPoliciesForBpn(this.bpnToPoliciesMap, bpn).toList();
         final List<LinkedHashMap> policiesFiltered = policies.stream()
                                                              .filter(p -> p.get("policyId").equals(policyId))
                                                              .toList();
@@ -180,12 +221,11 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
                                            .containsEntry("validUntil", validUntil);
     }
 
-    @Given("a policy with policyId {string} is registered for BPN {string} and validUntil {string}")
+    @When("a policy with policyId {string} is registered for BPN {string} and validUntil {string}")
     public void iRegisterAPolicy(final String policyId, final String bpn, final String validUntil) {
         final String policyJson = POLICY_TEMPLATE.formatted(policyId);
-        final CreatePoliciesResponse response = registerPolicyForBpn(authenticationPropertiesBuilder, policyJson, bpn,
+        this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, policyJson, bpn,
                 validUntil);
-        assertThat(response.policyId()).isEqualTo(policyId);
     }
 
     @Given("I want to register a policy")
@@ -201,12 +241,12 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
         policyShouldHavePolicyId(policyId);
     }
 
-    @And("the policy should have policyId {string}")
+    @Given("the policy should have policyId {string}")
     public void policyShouldHavePolicyId(final String policyId) {
         this.policyAttributes.setPolicyId(policyId);
     }
 
-    @And("the policy should be associated to BPN {string}")
+    @Given("the policy should be associated to BPN {string}")
     public void policyShouldBeAssociatedToBpn(final String bpn) {
         if (this.policyAttributes.getBpnls() == null) {
             this.policyAttributes.setBpnls(new ArrayList<>());
@@ -214,36 +254,64 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
         this.policyAttributes.getBpnls().add(bpn);
     }
 
-    @And("the policy should be associated to the following BPNs:")
+    @Given("the policy should be associated to the following BPNs:")
     public void policyShouldBeAssociatedToBpn(final List<String> bpnls) {
         this.policyAttributes.setBpnls(bpnls);
     }
 
-    @And("the policy should have validUntil {string}")
+    @Given("the policy should have validUntil {string}")
     public void policyShouldHaveValidUntil(final String validUntil) {
         this.policyAttributes.setValidUntil(validUntil);
     }
 
+    @Given("the policy should have no validUntil")
+    public void policyShouldHaveNoValidUntil() {
+        this.policyAttributes.setValidUntil(null);
+    }
+
     @When("I register the policy")
-    public void iRegisterThePolicy() {
+    public void iTryToRegisterThePolicy() {
+
+        this.createPoliciesResponse = null;
+        this.updatePoliciesResponse = null;
 
         // 'POST policies' only supports one BPN, therefore if we want to associate a policy with multiple BPNs
         // we first need to create it via POST for the first BPN ...
-        iRegisterAPolicy(policyAttributes.getPolicyId(), policyAttributes.getBpnls().get(0),
-                policyAttributes.getValidUntil());
+        final String policyJson = POLICY_TEMPLATE.formatted(this.policyAttributes.getPolicyId());
+        this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, policyJson,
+                this.policyAttributes.getBpnls().get(0), this.policyAttributes.getValidUntil());
 
-        if (policyAttributes.getBpnls().size() > 1) {
+        if (this.policyAttributes.getBpnls().size() > 1) {
             // ... and then add it via 'UPDATE policies' to all BPNs to which it should be associated
             // (note that this also update the validUntil).
-            updatePolicies(authenticationPropertiesBuilder, List.of(policyAttributes.getPolicyId()),
-                    policyAttributes.getBpnls(), policyAttributes.getValidUntil());
+            this.updatePoliciesResponse = updatePolicies(this.authenticationPropertiesBuilder,
+                    List.of(this.policyAttributes.getPolicyId()), this.policyAttributes.getBpnls(),
+                    this.policyAttributes.getValidUntil());
         }
+
     }
 
     @When("I update the policy")
     public void iUpdateThePolicy() {
-        updatePolicies(authenticationPropertiesBuilder, List.of(policyAttributes.getPolicyId()),
-                policyAttributes.getBpnls(), policyAttributes.getValidUntil());
+        this.updatePoliciesResponse = updatePolicies(this.authenticationPropertiesBuilder,
+                List.of(this.policyAttributes.getPolicyId()), this.policyAttributes.getBpnls(),
+                this.policyAttributes.getValidUntil());
+        this.updatePoliciesResponse.statusCode(HttpStatus.OK.value());
     }
 
+    @Then("the create policy response should have HTTP status {int} and policyId {string}")
+    public void theCreatePolicyResponseShouldHaveStatus(final int httpStatus, final String policyId) {
+        this.createPoliciesResponse.statusCode(httpStatus);
+        this.createPoliciesResponse.body("policyId", Matchers.equalTo(policyId));
+    }
+
+    @Then("the create policy response should have HTTP status {int}")
+    public void theCreatePolicyResponseShouldHaveStatus(final int httpStatus) {
+        this.createPoliciesResponse.statusCode(httpStatus);
+    }
+
+    @Then("the update policy response should have HTTP status {int}")
+    public void theUpdatePolicyResponseShouldHaveStatus(final int httpStatus) {
+        this.updatePoliciesResponse.statusCode(httpStatus);
+    }
 }
