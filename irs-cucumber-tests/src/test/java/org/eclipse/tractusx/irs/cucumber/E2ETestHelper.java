@@ -22,11 +22,13 @@ package org.eclipse.tractusx.irs.cucumber;
 import static io.restassured.RestAssured.given;
 
 import java.io.File;
+import java.util.function.Predicate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Common helper class for E2E tests.
@@ -57,4 +59,7 @@ public class E2ETestHelper {
         return given().log().all().spec(authProperties.getNewAuthenticationRequestSpecification());
     }
 
+    static Predicate<String> startingWith(final String prefix) {
+        return s -> StringUtils.startsWith(s, prefix);
+    }
 }
