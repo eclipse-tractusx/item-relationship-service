@@ -29,7 +29,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.specification.RequestSpecification;
 
 /**
- * Helper class for E2E tests.
+ * Common helper class for E2E tests.
  */
 public class E2ETestHelper {
 
