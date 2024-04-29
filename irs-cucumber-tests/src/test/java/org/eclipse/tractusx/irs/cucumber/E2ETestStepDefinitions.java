@@ -23,10 +23,10 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.cucumber;
 
-import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.getExpectedFile;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.givenAuthentication;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.objectMapper;
 
 import java.io.File;
@@ -109,7 +109,7 @@ public class E2ETestStepDefinitions {
     @And("the regular user api key")
     public void theRegularUser() throws PropertyNotFoundException {
         final String regularUserApiKey = "REGULAR_USER_API_KEY";
-        String apiKey = System.getenv(regularUserApiKey);
+        final String apiKey = System.getenv(regularUserApiKey);
         if (apiKey != null) {
             authenticationPropertiesBuilder.apiKey(apiKey);
         } else {
@@ -120,7 +120,7 @@ public class E2ETestStepDefinitions {
     @And("the admin user api key")
     public void theAdminUser() throws PropertyNotFoundException {
         final String adminUserApiKey = "ADMIN_USER_API_KEY";
-        String apiKey = System.getenv(adminUserApiKey);
+        final String apiKey = System.getenv(adminUserApiKey);
         if (apiKey != null) {
             authenticationPropertiesBuilder.apiKey(apiKey);
         } else {
@@ -218,15 +218,15 @@ public class E2ETestStepDefinitions {
         final RegisterJob job = registerJobBuilder.build();
         authProperties = authenticationPropertiesBuilder.build();
 
-        final JobHandle createdJobResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                                                    .contentType(ContentType.JSON)
-                                                    .body(job)
-                                                    .when()
-                                                    .post("/irs/jobs")
-                                                    .then()
-                                                    .statusCode(HttpStatus.CREATED.value())
-                                                    .extract()
-                                                    .as(JobHandle.class);
+        final JobHandle createdJobResponse = //
+                givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                    .body(job)
+                                                                    .when()
+                                                                    .post("/irs/jobs")
+                                                                    .then()
+                                                                    .statusCode(HttpStatus.CREATED.value())
+                                                                    .extract()
+                                                                    .as(JobHandle.class);
 
         assertThat(createdJobResponse.getId()).isNotNull();
         jobId = createdJobResponse.getId();
@@ -237,16 +237,15 @@ public class E2ETestStepDefinitions {
         final RegisterBatchOrder order = registerBatchOrderBuilder.build();
         authProperties = authenticationPropertiesBuilder.build();
 
-        final BatchOrderCreated createdOrderResponse = given().spec(
-                                                                      authProperties.getNewAuthenticationRequestSpecification())
-                                                              .contentType(ContentType.JSON)
-                                                              .body(order)
-                                                              .when()
-                                                              .post("/irs/orders")
-                                                              .then()
-                                                              .statusCode(HttpStatus.CREATED.value())
-                                                              .extract()
-                                                              .as(BatchOrderCreated.class);
+        final BatchOrderCreated createdOrderResponse = //
+                givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                    .body(order)
+                                                                    .when()
+                                                                    .post("/irs/orders")
+                                                                    .then()
+                                                                    .statusCode(HttpStatus.CREATED.value())
+                                                                    .extract()
+                                                                    .as(BatchOrderCreated.class);
 
         assertThat(createdOrderResponse.id()).isNotNull();
         orderId = createdOrderResponse.id();
@@ -297,49 +296,46 @@ public class E2ETestStepDefinitions {
         await().atMost(maxWaitTime, TimeUnit.MINUTES)
                .with()
                .pollInterval(Duration.ofSeconds(5L))
-               .until(() -> given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                                   .contentType(ContentType.JSON)
-                                   .queryParam("returnUncompletedJob", false)
-                                   .get("/irs/jobs/" + jobId)
-                                   .as(Jobs.class)
-                                   .getJob()
-                                   .getState()
-                                   .equals(JobState.value(status)));
+               .until(() -> givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                                .queryParam("returnUncompletedJob",
+                                                                                        false)
+                                                                                .get("/irs/jobs/" + jobId)
+                                                                                .as(Jobs.class)
+                                                                                .getJob()
+                                                                                .getState()
+                                                                                .equals(JobState.value(status)));
 
-        completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                              .contentType(ContentType.JSON)
-                              .queryParam("returnUncompletedJob", true)
-                              .get("/irs/jobs/" + jobId)
-                              .as(Jobs.class);
+        completedJob = givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                           .queryParam("returnUncompletedJob", true)
+                                                                           .get("/irs/jobs/" + jobId)
+                                                                           .as(Jobs.class);
     }
 
     @Then("I check, if the order contains {int} batches")
     public void iCheckIfTheOrderContainsBatches(int batchesSize) {
-        batchOrderResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                                    .contentType(ContentType.JSON)
-                                    .get("/irs/orders/" + orderId)
-                                    .as(BatchOrderResponse.class);
+        batchOrderResponse = givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                                 .get("/irs/orders/" + orderId)
+                                                                                 .as(BatchOrderResponse.class);
 
         assertThat(batchOrderResponse.getBatches()).hasSize(batchesSize);
     }
 
     @Then("I check, if the batch contains {int} jobs")
     public void iCheckIfTheBatchContainsJobs(int jobSize) {
-        batchResponse = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                               .contentType(ContentType.JSON)
-                               .get("/irs/orders/" + orderId + "/batches/" + batchId)
-                               .as(BatchResponse.class);
+        batchResponse = givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                            .get("/irs/orders/" + orderId + "/batches/"
+                                                                                    + batchId)
+                                                                            .as(BatchResponse.class);
 
         assertThat(batchResponse.getJobsInBatchChecksum()).isEqualTo(jobSize);
     }
 
     @Then("I check, if job parameter are set with aspects:")
     public void iCheckIfJobParameterAreSetWithAspects(List<String> aspects) {
-        completedJob = given().spec(authProperties.getNewAuthenticationRequestSpecification())
-                              .contentType(ContentType.JSON)
-                              .queryParam("returnUncompletedJob", true)
-                              .get("/irs/jobs/" + jobId)
-                              .as(Jobs.class);
+        completedJob = givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
+                                                                           .queryParam("returnUncompletedJob", true)
+                                                                           .get("/irs/jobs/" + jobId)
+                                                                           .as(Jobs.class);
 
         assertThat(completedJob.getJob().getParameter().getAspects()).containsAll(aspects);
     }
