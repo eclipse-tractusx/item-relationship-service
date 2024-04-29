@@ -12,7 +12,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 -  Removed obsolete entries from acceptedPolicies configuration. #530
 - Support of building relationships based on SingleLevelUsageAsBuilt v3.0.0 #558
-- 
+- Support of building relationships based on SingleLevelBomAsPlanned v3.0.0 #558
+
 ### Fixed
 
 - Update bouncycastle to 1.78 to fix CVE's.
