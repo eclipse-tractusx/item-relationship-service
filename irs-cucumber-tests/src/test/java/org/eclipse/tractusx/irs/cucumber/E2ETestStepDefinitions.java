@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.cucumber;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.getExpectedFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -459,16 +460,14 @@ public class E2ETestStepDefinitions {
     }
 
     private List<Submodel> getExpectedSubmodels(final String fileName) throws IOException {
-        ClassLoader classLoader = this.getClass().getClassLoader();
-        File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
+        final File file = getExpectedFile(fileName);
         assertThat(file).exists();
         final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
         return expectedJob.getSubmodels();
     }
 
     private List<Relationship> getExpectedRelationships(final String fileName) throws IOException {
-        ClassLoader classLoader = this.getClass().getClassLoader();
-        File file = new File(classLoader.getResource("expected-files/" + fileName).getFile());
+        final File file = getExpectedFile(fileName);
         assertThat(file).exists();
         final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
         return expectedJob.getRelationships();

@@ -21,12 +21,24 @@ package org.eclipse.tractusx.irs.cucumber;
 
 import static io.restassured.RestAssured.given;
 
+import java.io.File;
+
 import io.restassured.specification.RequestSpecification;
 
 /**
  * Helper class for E2E tests.
  */
 public class E2ETestHelper {
+
+    public static File getExpectedFile(final String fileName) {
+        final String path = "expected-files/" + fileName;
+        return getFile(path);
+    }
+
+    public static File getFile(final String path) {
+        final ClassLoader classLoader = E2ETestHelper.class.getClassLoader();
+        return new File(classLoader.getResource(path).getFile());
+    }
 
     public static RequestSpecification givenAuthentication(
             AuthenticationProperties.AuthenticationPropertiesBuilder authBuilder) {
