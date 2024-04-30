@@ -1,290 +1,2560 @@
 {
-    "submodels": [
-        {
-            "identification": "urn:uuid:c61ede7a-9f80-4cbd-a8b3-5fe434a0741c",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003AXS3",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:533543fb-5d09-4270-b4d5-0323de239d9a",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Sealant"
-                }
+  "submodels": [
+    {
+      "identification": "urn:uuid:6f920ae9-80a6-4b6d-a4c0-6ae876798588",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:ZmU4YjJlOGEtYmVhZi00ZjA4LWE5ZWEtYzM5MzZiNGU0MzY2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
             }
+          ]
         },
-        {
-            "identification": "urn:uuid:2f124048-b901-48dd-b8b1-b1515f1edb0a",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "catenaXId": "urn:uuid:ee9b9c9e-1416-45a3-b683-d98d5d88e548",
+        "partTypeInformation": {
+          "manufacturerPartId": "SC-00",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
             }
+          ],
+          "nameAtManufacturer": "Mirror left"
         },
-        {
-            "identification": "urn:uuid:7ba8bc2e-eb1b-4ad8-bc43-8ac0f36cfd42",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "itemVersion": "03"
+      }
+    },
+    {
+      "identification": "urn:uuid:1b013dbd-c709-43dc-8d44-eeb12c3caefa",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:ZGYwZjQyY2YtYzAzMy00ZDUwLWFkMWItMWM3NWY5YjY4MmNm",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
             }
+          ]
         },
-        {
-            "identification": "urn:uuid:2f124048-b901-48dd-b8b1-b1515f1edb0a",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "catenaXId": "urn:uuid:0218c3f2-2f70-457c-acc8-b70f1ee53d43",
+        "partTypeInformation": {
+          "manufacturerPartId": "JK-40",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
             }
+          ],
+          "nameAtManufacturer": "Mirror left"
         },
-        {
-            "identification": "urn:uuid:2f124048-b901-48dd-b8b1-b1515f1edb0a",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "itemVersion": "02"
+      }
+    },
+    {
+      "identification": "urn:uuid:e448e4c3-b60f-40b4-b003-8ff70df520e0",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
             }
+          ]
         },
-        {
-            "identification": "urn:uuid:2f124048-b901-48dd-b8b1-b1515f1edb0a",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "catenaXId": "urn:uuid:68da2386-7a95-4307-8ad1-b841ea2f4745",
+        "partTypeInformation": {
+          "manufacturerPartId": "TK-01",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
             }
+          ],
+          "nameAtManufacturer": "Mirror left"
         },
-        {
-            "identification": "urn:uuid:2f124048-b901-48dd-b8b1-b1515f1edb0a",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "itemVersion": "03"
+      }
+    },
+    {
+      "identification": "urn:uuid:2f53c208-7fe3-4483-ace4-9cb9d27c6d4a",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:ZmU4YjJlOGEtYmVhZi00ZjA4LWE5ZWEtYzM5MzZiNGU0MzY2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
             }
+          ]
         },
-        {
-            "identification": "urn:uuid:7ba8bc2e-eb1b-4ad8-bc43-8ac0f36cfd42",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "catenaXId": "urn:uuid:b0157d36-c2ba-47ee-aca2-d39d18f1b7a4",
+        "partTypeInformation": {
+          "manufacturerPartId": "FQ-22",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
             }
+          ],
+          "nameAtManufacturer": "Mirror left"
         },
-        {
-            "identification": "urn:uuid:7ba8bc2e-eb1b-4ad8-bc43-8ac0f36cfd42",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:f11358db-cf88-4a67-bd1d-0bc9cb569a0d",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:ZmU4YjJlOGEtYmVhZi00ZjA4LWE5ZWEtYzM5MzZiNGU0MzY2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
             }
+          ]
         },
-        {
-            "identification": "urn:uuid:7ba8bc2e-eb1b-4ad8-bc43-8ac0f36cfd42",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "catenaXId": "urn:uuid:8d9ae0bc-0c7b-45c0-8350-0f99780a0669",
+        "partTypeInformation": {
+          "manufacturerPartId": "CK-88",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
             }
+          ],
+          "nameAtManufacturer": "Mirror left"
         },
-        {
-            "identification": "urn:uuid:7ba8bc2e-eb1b-4ad8-bc43-8ac0f36cfd42",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "itemVersion": "04"
+      }
+    },
+    {
+      "identification": "urn:uuid:2f53c208-7fe3-4483-ace4-9cb9d27c6d4a",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:ZmU4YjJlOGEtYmVhZi00ZjA4LWE5ZWEtYzM5MzZiNGU0MzY2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
             }
-        }
-    ]
+          ]
+        },
+        "catenaXId": "urn:uuid:b0157d36-c2ba-47ee-aca2-d39d18f1b7a4",
+        "partTypeInformation": {
+          "manufacturerPartId": "FQ-22",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:2f53c208-7fe3-4483-ace4-9cb9d27c6d4a",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:ZmU4YjJlOGEtYmVhZi00ZjA4LWE5ZWEtYzM5MzZiNGU0MzY2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:b0157d36-c2ba-47ee-aca2-d39d18f1b7a4",
+        "partTypeInformation": {
+          "manufacturerPartId": "FQ-22",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:f11358db-cf88-4a67-bd1d-0bc9cb569a0d",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:ZmU4YjJlOGEtYmVhZi00ZjA4LWE5ZWEtYzM5MzZiNGU0MzY2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:8d9ae0bc-0c7b-45c0-8350-0f99780a0669",
+        "partTypeInformation": {
+          "manufacturerPartId": "CK-88",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "04"
+      }
+    },
+    {
+      "identification": "urn:uuid:50c80d6e-f84a-4dce-9440-077669e72886",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:0669d2b5-6a25-453b-ba96-3fdf42797c2d",
+        "partTypeInformation": {
+          "manufacturerPartId": "JC-28",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:b553e542-a608-4c55-941a-5a246ff23161",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:76ad44b1-89bc-47e3-ad84-b668a7899515",
+        "partTypeInformation": {
+          "manufacturerPartId": "QQ-78",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "01"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:2f53c208-7fe3-4483-ace4-9cb9d27c6d4a",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:ZmU4YjJlOGEtYmVhZi00ZjA4LWE5ZWEtYzM5MzZiNGU0MzY2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:b0157d36-c2ba-47ee-aca2-d39d18f1b7a4",
+        "partTypeInformation": {
+          "manufacturerPartId": "FQ-22",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:1ea9ee80-7b54-4c57-9830-6c868d1f42cc",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:MjkzOTk0MGUtYzcyYy00NmZlLWEwMTktMzM1ODk2OWIwOTZh",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:74faafd7-4d71-4a4b-af0e-464fc9f7195e",
+        "partTypeInformation": {
+          "manufacturerPartId": "VI-92",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    },
+    {
+      "identification": "urn:uuid:545357ff-bf07-4432-a493-6305a2d7cdfe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MThhZTU0MWYtMWFkZi00MGQ1LTg4MjItNGI4YjBmMTYxMTQ2",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab",
+        "partTypeInformation": {
+          "manufacturerPartId": "VK-21",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "05"
+      }
+    }
+  ]
 }

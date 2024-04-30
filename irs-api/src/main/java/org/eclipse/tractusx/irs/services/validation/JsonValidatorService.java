@@ -52,7 +52,7 @@ public class JsonValidatorService {
      * @return the validation result, containing the validation errors if applicable
      */
     public ValidationResult validate(final String jsonSchema, final String jsonPayload) throws InvalidSchemaException {
-        log.debug("Trying to validate JSON ({}) with schema ({})", jsonPayload, jsonSchema);
+        log.trace("Trying to validate JSON ({}) with schema ({})", jsonPayload, jsonSchema);
 
         final JsonSchema schemaFromString = loadSchema(jsonSchema);
 
