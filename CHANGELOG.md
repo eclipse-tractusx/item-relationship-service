@@ -13,7 +13,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Cucumber test step definitions for Policy Store API (Happy Path). #518
 
 ## Changed
- 
+
 - Removed obsolete entries from acceptedPolicies configuration. #530
 - Support of building relationships based on SingleLevelUsageAsBuilt v3.0.0 #558
 - Support of building relationships based on SingleLevelBomAsPlanned v3.0.0 #558
@@ -21,6 +21,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Fixed
 
 - Update bouncycastle to 1.78 to fix CVE's.
+- Fixed validation of json-schemas - IRS is creating tombstone instead collecting Submodel payload, when it not passes validation of schema #522
 
 
 ## [5.0.0] - 2024-04-16
