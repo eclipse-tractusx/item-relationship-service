@@ -8,7 +8,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-## Changed
+### Changed
 
 - Removed obsolete entries from acceptedPolicies configuration. #530
 - Support of building relationships based on SingleLevelUsageAsBuilt v3.0.0 #558
