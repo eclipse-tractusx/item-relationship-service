@@ -8,9 +8,13 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-## Changed
+## Added
 
--  Removed obsolete entries from acceptedPolicies configuration. #530
+- Cucumber test step definitions for Policy Store API (Happy Path). #518
+
+## Changed
+ 
+- Removed obsolete entries from acceptedPolicies configuration. #530
 - Support of building relationships based on SingleLevelUsageAsBuilt v3.0.0 #558
 - Support of building relationships based on SingleLevelBomAsPlanned v3.0.0 #558
 
