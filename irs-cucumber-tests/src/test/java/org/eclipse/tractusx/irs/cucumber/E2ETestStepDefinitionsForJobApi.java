@@ -70,9 +70,7 @@ import org.springframework.http.MediaType;
 /**
  * Step definitions for Job API.
  */
-public class E2ETestStepDefinitions {
-    // TODO (maintainability): class should be renamed to E2ETestStepDefinitionsJobApi later
-    //       (not done in current story in order to avoid conflicts with other E2E test story)
+public class E2ETestStepDefinitionsForJobApi {
 
     private final RegisterJob.RegisterJobBuilder registerJobBuilder;
 
@@ -90,7 +88,7 @@ public class E2ETestStepDefinitions {
     private AuthenticationProperties authProperties;
     private final AuthenticationProperties.AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
 
-    public E2ETestStepDefinitions() {
+    public E2ETestStepDefinitionsForJobApi() {
         registerJobBuilder = RegisterJob.builder();
         registerBatchOrderBuilder = RegisterBatchOrder.builder();
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
