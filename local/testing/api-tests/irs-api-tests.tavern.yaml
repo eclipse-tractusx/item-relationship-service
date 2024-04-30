@@ -10,10 +10,10 @@ stages:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations"
       json:
         key:
-          globalAssetId111: urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7
-          bpn111: BPNL00000003CRHK
+          globalAssetId111: "{tavern.env_vars.GLOBAL_ASSET_ID_ESS_AS_BUILT}"
+          bpn111: "{tavern.env_vars.BPN_ESS_AS_BUILT}"
         incidentBPNSs111:
-          - BPNS00000003B6LU
+          - "{tavern.env_vars.BPN_ESS_INCIDENT}"
       method: POST
       headers:
         content-type: application/json
@@ -1043,7 +1043,7 @@ stages:
 ---
 
 
-test_name: Make sure job with status RUNNING is responsed with http code 206
+test_name: Make sure job with status RUNNING is responding with http code 206
 
 strict:
   - headers:off
