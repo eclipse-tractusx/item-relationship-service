@@ -272,3 +272,39 @@ Feature: Policy Store
     Then the create policy response should have HTTP status 400
 
 
+  # https://jira.catena-x.net/browse/TRI-1966
+  Scenario: Fetching policies by BPNLs should fail for invalid BPNLs
+
+    # cleanup
+    Given no policies with prefix "integration-test-policy-" exist
+
+    # test data setup
+    Given a policy with policyId "integration-test-policy-1111" is registered for BPN "BPNL1234567890AB" and validUntil "1111-11-11T11:11:11.111Z"
+    Given a policy with policyId "integration-test-policy-2222" is registered for BPN "BPNL1234567890CD" and validUntil "2222-11-11T11:11:11.111Z"
+    Given a policy with policyId "integration-test-policy-3333" is registered for BPN "BPNL1234567890EF" and validUntil "3333-11-11T11:11:11.111Z"
+
+    # act
+    When I fetch policies for BPNs:
+      | BPNL1234567890AB  |
+      | BPNL1234567890CD |
+    Then the fetch policies for BPN response should have HTTP status 200
+
+    When I fetch policies for BPNs:
+      | BPNL1234567890CD |
+      | INVALID          |
+    Then the fetch policies for BPN response should have HTTP status 400
+
+    When I fetch policies for BPNs:
+      | BPNACB |
+    Then the fetch policies for BPN response should have HTTP status 400
+
+    When I fetch policies for BPNs:
+      | ERRRES |
+    Then the fetch policies for BPN response should have HTTP status 400
+
+    When I fetch policies for BPNs:
+      | DELETE * FROM Table |
+    Then the fetch policies for BPN response should have HTTP status 400
+
+
+
