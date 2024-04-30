@@ -59,6 +59,8 @@ import org.springframework.http.HttpStatus;
  */
 public class E2ETestStepDefinitionsForPolicyStoreApi {
 
+    // TODO(#573): Cucumber Tests: Allow conflict-free parallel execution
+
     private final AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
 
     private PolicyAttributes policyAttributes;
@@ -75,7 +77,8 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
         this.authenticationPropertiesBuilder = AuthenticationProperties.builder();
     }
 
-    // TODO (later): find a way to re-use theIRSURL and theAdminUser in all step definition classes
+    // TODO(#571): Find a way to re-use ""the IRS URL {string}" and ""the admin user api key" in all step def classes
+
     @Given("the IRS URL {string} -- policystore")
     public void theIRSURL(String irsUrl) {
         this.authenticationPropertiesBuilder.uri(irsUrl);
