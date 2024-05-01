@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Changed
+
+- BPN lookup feature was removed #568
+
 ## [5.1.0] - 2024-04-30
 
 ### Changed
