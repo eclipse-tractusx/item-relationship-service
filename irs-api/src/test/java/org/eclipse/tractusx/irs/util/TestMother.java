@@ -112,11 +112,6 @@ public class TestMother {
                 Direction.DOWNWARD);
     }
 
-    public static RegisterJob registerJobWithLookupBPNs() {
-        return registerJob(EXISTING_GLOBAL_ASSET_ID, null,
-                List.of(singleLevelBomAsBuiltAspectName), false, true, Direction.DOWNWARD);
-    }
-
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
             final List<String> aspectTypes, final boolean collectAspects, final boolean lookupBPNs,
             final Direction direction) {

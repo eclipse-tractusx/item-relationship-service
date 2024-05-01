@@ -2344,8 +2344,6 @@ components:
           - DigitalTwinRequest
           - SchemaValidation
           - SchemaRequest
-          - BpdmRequest
-          - BpdmValidation
           - UsagePolicyValidation
           - EssValidation
         retryCounter:
@@ -2481,6 +2479,7 @@ components:
           maxItems: 2147483647
         lookupBPNs:
           type: boolean
+          deprecated: true
           description: Flag to specify whether BPNs should be collected and resolved
             via the configured BPDM URL. Default is false.
         timeout:
@@ -2646,6 +2645,7 @@ components:
           $ref: '#/components/schemas/PartChainIdentificationKey'
         lookupBPNs:
           type: boolean
+          deprecated: true
           description: Flag to specify whether BPNs should be collected and resolved
             via the configured BPDM URL. Default is false.
       required:

@@ -37,11 +37,9 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcessManager;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemTreesAssembler;
 import org.eclipse.tractusx.irs.aaswrapper.job.TreeRecursiveLogic;
-import org.eclipse.tractusx.irs.aaswrapper.job.delegate.BpdmDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
-import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
@@ -144,15 +142,10 @@ public class JobConfiguration {
     }
 
     @Bean
-    public RelationshipDelegate relationshipDelegate(final BpdmDelegate bpdmDelegate,
+    public RelationshipDelegate relationshipDelegate(final SubmodelDelegate submodelDelegate,
             final EdcSubmodelFacade submodelFacade, final ConnectorEndpointsService connectorEndpointsService,
             final JsonUtil jsonUtil) {
-        return new RelationshipDelegate(bpdmDelegate, submodelFacade, connectorEndpointsService, jsonUtil);
-    }
-
-    @Bean
-    public BpdmDelegate bpdmDelegate(final SubmodelDelegate submodelDelegate, final BpdmFacade bpdmFacade) {
-        return new BpdmDelegate(submodelDelegate, bpdmFacade);
+        return new RelationshipDelegate(submodelDelegate, submodelFacade, connectorEndpointsService, jsonUtil);
     }
 
     @Bean

@@ -72,7 +72,6 @@ public class RequestMetric {
      * Type of tracked request. Can be used to filter for the different metrics.
      */
     public enum RequestType {
-        BPDM,
         DITIGAL_TWIN,
         RELATIONSHIP,
         SUBMODEL
