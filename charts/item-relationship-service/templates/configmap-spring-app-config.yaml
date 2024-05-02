@@ -57,9 +57,11 @@ data:
           client:
             registration:
               semantics:
+                authorization-grant-type: client_credentials
                 client-id: "${SEMANTICS_OAUTH2_CLIENT_ID}" # taken from secret ENV
                 client-secret: "${SEMANTICS_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
               discovery:
+                authorization-grant-type: client_credentials
                 client-id: ${DISCOVERY_OAUTH2_CLIENT_ID} # taken from secret ENV
                 client-secret: ${DISCOVERY_OAUTH2_CLIENT_SECRET} # taken from secret ENV
             provider:
