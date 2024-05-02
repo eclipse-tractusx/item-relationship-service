@@ -52,6 +52,7 @@ public class JsonObjectFromCatalogRequestTransformer extends AbstractJsonLdTrans
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
         builder.add(JsonLdKeywords.TYPE, CatalogRequest.CATALOG_REQUEST_TYPE)
                .add(CatalogRequest.CATALOG_REQUEST_COUNTER_PARTY_ADDRESS, dto.getCounterPartyAddress())
+               .add(CatalogRequest.CATALOG_REQUEST_COUNTER_PARTY_ID, dto.getCounterPartyId())
                .add(CatalogRequest.CATALOG_REQUEST_PROTOCOL, dto.getProtocol());
         Optional.ofNullable(dto.getQuerySpec())
                 .ifPresent(s -> builder.add(CatalogRequest.CATALOG_REQUEST_QUERY_SPEC,
