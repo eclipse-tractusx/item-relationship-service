@@ -41,6 +41,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import io.cucumber.java.After;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.PendingException;
 import io.cucumber.java.Scenario;
@@ -91,6 +92,11 @@ public class E2ETestStepDefinitionsForJobApi {
         registerJobBuilder = RegisterJob.builder();
         registerBatchOrderBuilder = RegisterBatchOrder.builder();
         authenticationPropertiesBuilder = AuthenticationProperties.builder();
+    }
+
+    @BeforeAll
+    public static void configureLogging() {
+        E2ETestHelper.configureRequestAndResponseLogging();
     }
 
     @DataTableType

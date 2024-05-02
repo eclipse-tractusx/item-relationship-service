@@ -70,8 +70,6 @@ public class E2ETestHelperForPolicyStoreApi {
                                                                    .when()
                                                                    .get(URL_IRS_POLICIES)
                                                                    .then()
-                                                                   .log()
-                                                                   .all()
                                                                    .statusCode(HttpStatus.OK.value())
                                                                    .extract()
                                                                    .body()
@@ -80,7 +78,7 @@ public class E2ETestHelperForPolicyStoreApi {
 
     public static ValidatableResponse fetchAllPolicies(
             final AuthenticationPropertiesBuilder authenticationPropertiesBuilder) {
-        return givenAuthentication(authenticationPropertiesBuilder).when().get(URL_IRS_POLICIES).then().log().all();
+        return givenAuthentication(authenticationPropertiesBuilder).when().get(URL_IRS_POLICIES).then();
     }
 
     @Builder
@@ -177,9 +175,7 @@ public class E2ETestHelperForPolicyStoreApi {
                                                                    .body(updatePolicyRequest)
                                                                    .when()
                                                                    .put(URL_IRS_POLICIES)
-                                                                   .then()
-                                                                   .log()
-                                                                   .all();
+                                                                   .then();
     }
 
     public static ValidatableResponse registerPolicyForBpn(
@@ -204,9 +200,7 @@ public class E2ETestHelperForPolicyStoreApi {
                                                                    .body(createPolicyRequest)
                                                                    .when()
                                                                    .post(URL_IRS_POLICIES)
-                                                                   .then()
-                                                                   .log()
-                                                                   .all();
+                                                                   .then();
 
     }
 
@@ -215,7 +209,7 @@ public class E2ETestHelperForPolicyStoreApi {
             final List<String> businessPartnerNumbers) {
 
         return givenAuthentication(authenticationPropertiesBuilder).queryParam(QUERYPARAM_BUSINESS_PARTNER_NUMBERS,
-                businessPartnerNumbers).when().get(URL_IRS_POLICIES).then().log().all();
+                businessPartnerNumbers).when().get(URL_IRS_POLICIES).then();
     }
 
     public static void cleanupPolicyIdsByPrefix(final AuthenticationPropertiesBuilder authenticationPropertiesBuilder,
@@ -253,9 +247,7 @@ public class E2ETestHelperForPolicyStoreApi {
         return givenAuthentication(authenticationPropertiesBuilder).pathParam("policyId", policyId)
                                                                    .when()
                                                                    .delete(URL_IRS_POLICIES + "/{policyId}")
-                                                                   .then()
-                                                                   .log()
-                                                                   .all();
+                                                                   .then();
     }
 
     @Data

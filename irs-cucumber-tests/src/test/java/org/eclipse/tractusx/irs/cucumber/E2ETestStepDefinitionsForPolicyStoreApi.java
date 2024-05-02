@@ -45,6 +45,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -79,6 +80,11 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
     }
 
     // TODO(#571): Find a way to re-use ""the IRS URL {string}" and ""the admin user api key" in all step def classes
+
+    @BeforeAll
+    public static void configureLogging() {
+        E2ETestHelper.configureRequestAndResponseLogging();
+    }
 
     @Given("the IRS URL {string} -- policystore")
     public void theIRSURL(String irsUrl) {

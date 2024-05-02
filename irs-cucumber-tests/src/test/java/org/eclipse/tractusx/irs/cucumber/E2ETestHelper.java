@@ -31,6 +31,10 @@ import java.util.function.Predicate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.restassured.RestAssured;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,6 +50,8 @@ public class E2ETestHelper {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
+
+    private static final boolean LOG_EVERY_REQUEST_AND_RESPONSE = true;
 
     public static File getExpectedFile(final String fileName) {
         return getFile("expected-files/" + fileName);
@@ -70,10 +76,21 @@ public class E2ETestHelper {
     public static RequestSpecification givenAuthentication(
             AuthenticationProperties.AuthenticationPropertiesBuilder authBuilder) {
         final AuthenticationProperties authProperties = authBuilder.build();
-        return given().log().all().spec(authProperties.getNewAuthenticationRequestSpecification());
+        return given().spec(authProperties.getNewAuthenticationRequestSpecification());
     }
 
     static Predicate<String> startingWith(final String prefix) {
         return s -> StringUtils.startsWith(s, prefix);
+    }
+
+    public static void configureRequestAndResponseLogging() {
+        if (LOG_EVERY_REQUEST_AND_RESPONSE) {
+            final LogDetail logDetail = LogDetail.ALL;
+            final RequestLoggingFilter requestLoggingFilter = new RequestLoggingFilter(logDetail);
+            final ResponseLoggingFilter responseLoggingFilter = new ResponseLoggingFilter(logDetail);
+            RestAssured.filters(requestLoggingFilter, responseLoggingFilter);
+        } else {
+            RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.ALL);
+        }
     }
 }
