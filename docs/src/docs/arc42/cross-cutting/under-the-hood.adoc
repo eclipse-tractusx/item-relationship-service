@@ -121,10 +121,6 @@ The IRS caches data provided externally to avoid unnecessary requests and reduce
 
 Caching is implemented for the following services:
 
-=== BPDM
-
-Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as this data does not change.
-
 === Semantics Hub
 
 Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable).

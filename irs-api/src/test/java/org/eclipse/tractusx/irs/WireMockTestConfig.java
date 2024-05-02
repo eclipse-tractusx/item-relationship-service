@@ -19,7 +19,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs;
 
-import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.BPDM_REST_TEMPLATE;
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.DISCOVERY_REST_TEMPLATE;
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.DTR_REST_TEMPLATE;
 import static org.eclipse.tractusx.irs.configuration.RestTemplateConfig.EDC_REST_TEMPLATE;
@@ -79,13 +78,6 @@ public class WireMockTestConfig {
     @Profile("integrationtest")
     @Bean(DISCOVERY_REST_TEMPLATE)
     RestTemplate discoveryRestTemplate() {
-        return restTemplateProxy(PROXY_SERVER_HOST, HTTP_PORT);
-    }
-
-    @Primary
-    @Profile("integrationtest")
-    @Bean(BPDM_REST_TEMPLATE)
-    RestTemplate bpdmRestTemplate() {
         return restTemplateProxy(PROXY_SERVER_HOST, HTTP_PORT);
     }
 

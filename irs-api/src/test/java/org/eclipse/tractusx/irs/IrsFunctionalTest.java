@@ -26,11 +26,8 @@ package org.eclipse.tractusx.irs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.oauth2.jwt.JwtClaimNames.SUB;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +56,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.TestPropertySourceUtils;
@@ -68,9 +64,7 @@ import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-                properties = { "bpdm.bpnEndpoint=http://localbpdm.com",
-                               "digitalTwinRegistry.type=central"
-                })
+                properties = { "digitalTwinRegistry.type=central" })
 @ContextConfiguration(initializers = IrsFunctionalTest.MinioConfigInitializer.class)
 @ActiveProfiles(profiles = { "local" })
 class IrsFunctionalTest {
@@ -123,59 +117,6 @@ class IrsFunctionalTest {
         assertThat(finishedJob.get().getJob()).isNotNull();
         assertThat(finishedJob.get().getJob().getSummary()).isNotNull();
         assertThat(finishedJob.get().getJob().getParameter()).isNotNull();
-    }
-
-    @Test
-    void shouldFillSummaryWithoutBPNLookup() {
-        final RegisterJob registerJob = TestMother.registerJobWithoutDepth();
-        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
-                List.of("http://localhost/discovery"));
-
-        thereIsAuthentication();
-
-        final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
-        final Optional<Jobs> finishedJob = Awaitility.await()
-                                                     .pollDelay(500, TimeUnit.MILLISECONDS)
-                                                     .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(15, TimeUnit.SECONDS)
-                                                     .until(getJobDetails(jobHandle),
-                                                             jobs -> jobs.isPresent() && jobs.get()
-                                                                                             .getJob()
-                                                                                             .getState()
-                                                                                             .equals(JobState.COMPLETED));
-
-        assertThat(finishedJob).isPresent();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isPositive();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isZero();
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
-    }
-
-    @Test
-    void shouldFillSummaryWithBPNLookup() {
-        final RegisterJob registerJob = TestMother.registerJobWithLookupBPNs();
-        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
-                List.of("http://localhost/discovery"));
-        thereIsAuthentication();
-
-        final JobHandle jobHandle = controller.registerJobForGlobalAssetId(registerJob);
-        final Optional<Jobs> finishedJob = Awaitility.await()
-                                                     .pollDelay(500, TimeUnit.MILLISECONDS)
-                                                     .pollInterval(500, TimeUnit.MILLISECONDS)
-                                                     .atMost(15, TimeUnit.SECONDS)
-                                                     .until(getJobDetails(jobHandle),
-                                                             jobs -> jobs.isPresent() && jobs.get()
-                                                                                             .getJob()
-                                                                                             .getState()
-                                                                                             .equals(JobState.COMPLETED));
-
-        assertThat(finishedJob).isPresent();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getCompleted()).isPositive();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getFailed()).isZero();
-        assertThat(finishedJob.get().getJob().getSummary().getAsyncFetchedItems().getRunning()).isZero();
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getCompleted()).isPositive();
-        assertThat(finishedJob.get().getJob().getSummary().getBpnLookups().getFailed()).isZero();
     }
 
     private void thereIsAuthentication() {
