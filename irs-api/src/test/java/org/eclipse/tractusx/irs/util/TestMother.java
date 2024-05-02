@@ -78,6 +78,8 @@ public class TestMother {
     public static final String materialForRecyclingAspectName = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
     public static final String productDescriptionAspectName = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";
 
+    public static final String EXISTING_GLOBAL_ASSET_ID = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
+
     Faker faker = new Faker();
 
     public static RegisterJob registerJobWithoutDepthAndAspect() {
@@ -89,7 +91,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
-        return registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", depth, aspectTypes, false, false,
+        return registerJob(EXISTING_GLOBAL_ASSET_ID, depth, aspectTypes, false, false,
                 Direction.DOWNWARD);
     }
 
@@ -98,7 +100,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithUrl(final String callbackUrl) {
-        final RegisterJob registerJob = registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", 100, List.of(),
+        final RegisterJob registerJob = registerJob(EXISTING_GLOBAL_ASSET_ID, 100, List.of(),
                 false, false, Direction.DOWNWARD);
         registerJob.setCallbackUrl(callbackUrl);
         return registerJob;
@@ -106,13 +108,8 @@ public class TestMother {
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
-        return registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", depth, aspectTypes, true, false,
+        return registerJob(EXISTING_GLOBAL_ASSET_ID, depth, aspectTypes, true, false,
                 Direction.DOWNWARD);
-    }
-
-    public static RegisterJob registerJobWithLookupBPNs() {
-        return registerJob("urn:uuid:1398cd56-682b-4c94-93ac-4807f9bfca41", null,
-                List.of(singleLevelBomAsBuiltAspectName), false, true, Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,

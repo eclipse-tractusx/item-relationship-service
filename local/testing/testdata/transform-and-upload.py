@@ -591,7 +591,6 @@ if __name__ == "__main__":
                         " ",
                         "")
                 if "PartAsPlanned" in tmp_key:
-                    # specific_asset_ids_temp = copy(tmp_data[tmp_key][0]["localIdentifiers"])
                     name_at_manufacturer = tmp_data[tmp_key][0]["partTypeInformation"]["nameAtManufacturer"].replace(
                         " ",
                         "")

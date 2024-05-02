@@ -25,7 +25,6 @@ package org.eclipse.tractusx.irs.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
-import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithLookupBPNs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -199,13 +198,6 @@ class IrsItemGraphQueryServiceTest {
         final Executable executable = () -> testee.registerItemJob(registerJobWithDepthAndAspect(1, aspects));
 
         assertThrows(IllegalArgumentException.class, executable);
-    }
-
-    @Test
-    void shouldThrowExceptionWhenLookupBpnAndBpdmEndpointUrlIsMissing() {
-        final Executable executable = () -> testee.registerItemJob(registerJobWithLookupBPNs());
-
-        assertThrows(ResponseStatusException.class, executable);
     }
 
 }
