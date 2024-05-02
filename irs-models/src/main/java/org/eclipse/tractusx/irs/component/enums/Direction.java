@@ -64,8 +64,8 @@ public enum Direction {
         return Stream.of(Direction.values())
                      .filter(direction -> direction.name.equals(value))
                      .findFirst()
-                     .orElseThrow(() -> new NoSuchElementException("Unsupported Direction: " + value
-                             + ". Must be one of: " + supportedDirections()));
+                     .orElseThrow(() -> new NoSuchElementException(
+                             "Unsupported direction. Must be one of: " + supportedDirections()));
     }
 
     private static String supportedDirections() {
