@@ -24,7 +24,6 @@
 package org.eclipse.tractusx.irs.cucumber;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.POLICY_TEMPLATE;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.cleanupPolicy;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.cleanupPolicyIdsByPrefix;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.extractPoliciesForBpn;
@@ -34,9 +33,11 @@ import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.f
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPoliciesForBpn;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPoliciesForBusinessPartnerNumbers;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.getExpectedBpnToPolicyIdsMapping;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.getPolicyTemplate;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.registerPolicyForBpn;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.updatePolicies;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -225,8 +226,8 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
     }
 
     @When("a policy with policyId {string} is registered for BPN {string} and validUntil {string}")
-    public void iRegisterAPolicy(final String policyId, final String bpn, final String validUntil) {
-        final String policyJson = POLICY_TEMPLATE.formatted(policyId);
+    public void iRegisterAPolicy(final String policyId, final String bpn, final String validUntil) throws IOException {
+        final String policyJson = getPolicyTemplate().formatted(policyId);
         this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, policyJson, bpn,
                 validUntil);
     }
@@ -273,14 +274,14 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
     }
 
     @When("I register the policy")
-    public void iTryToRegisterThePolicy() {
+    public void iTryToRegisterThePolicy() throws IOException {
 
         this.createPoliciesResponse = null;
         this.updatePoliciesResponse = null;
 
         // 'POST policies' only supports one BPN, therefore if we want to associate a policy with multiple BPNs
         // we first need to create it via POST for the first BPN ...
-        final String policyJson = POLICY_TEMPLATE.formatted(this.policyAttributes.getPolicyId());
+        final String policyJson = getPolicyTemplate().formatted(this.policyAttributes.getPolicyId());
         this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, policyJson,
                 this.policyAttributes.getBpnls().get(0), this.policyAttributes.getValidUntil());
 

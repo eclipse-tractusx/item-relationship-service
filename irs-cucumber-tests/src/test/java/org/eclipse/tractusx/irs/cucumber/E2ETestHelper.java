@@ -22,6 +22,10 @@ package org.eclipse.tractusx.irs.cucumber;
 import static io.restassured.RestAssured.given;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.function.Predicate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,13 +48,23 @@ public class E2ETestHelper {
     }
 
     public static File getExpectedFile(final String fileName) {
-        final String path = "expected-files/" + fileName;
-        return getFile(path);
+        return getFile("expected-files/" + fileName);
+    }
+
+    public static String getTemplateFileContent(final String fileName) throws IOException {
+        final File file = getTemplateFile(fileName);
+        byte[] bytes = Files.readAllBytes(file.toPath());
+        return new String(bytes, StandardCharsets.UTF_8);
+    }
+
+    public static File getTemplateFile(final String fileName) {
+        return getFile("templates/" + fileName);
     }
 
     public static File getFile(final String path) {
         final ClassLoader classLoader = E2ETestHelper.class.getClassLoader();
-        return new File(classLoader.getResource(path).getFile());
+        final URL ressource = classLoader.getResource(path);
+        return new File(ressource.getFile());
     }
 
     public static RequestSpecification givenAuthentication(

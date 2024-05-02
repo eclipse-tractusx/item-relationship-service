@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.givenAuthentication;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelper.objectMapper;
 
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,39 +58,9 @@ public class E2ETestHelperForPolicyStoreApi {
 
     public static final String QUERYPARAM_BUSINESS_PARTNER_NUMBERS = "businessPartnerNumbers";
 
-    public static final String POLICY_TEMPLATE = """
-            {
-                "@context": {
-                    "odrl": "http://www.w3.org/ns/odrl/2/"
-                },
-                "@id": "%s",
-                "policy": {
-                    "odrl:permission": [
-                        {
-                            "odrl:action": "USE",
-                            "odrl:constraint": {
-                                "odrl:and": [
-                                    {
-                                        "odrl:leftOperand": "Membership",
-                                        "odrl:operator": {
-                                            "@id": "odrl:eq"
-                                        },
-                                        "odrl:rightOperand": "active"
-                                    },
-                                    {
-                                        "odrl:leftOperand": "PURPOSE",
-                                        "odrl:operator": {
-                                            "@id": "odrl:eq"
-                                        },
-                                        "odrl:rightOperand": "ID 3.1 Trace"
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                }
-            }
-            """;
+    public static String getPolicyTemplate() throws IOException {
+        return E2ETestHelper.getTemplateFileContent("policy-for-e2e-tests.json");
+    }
 
     @SuppressWarnings("unchecked")
     public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(
