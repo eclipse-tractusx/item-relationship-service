@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,20 +17,29 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.model;
+package org.eclipse.tractusx.irs.edc.client.model.edr;
+
+import java.util.List;
 
 import lombok.Builder;
-import lombok.Value;
-import org.eclipse.edc.spi.types.domain.offer.ContractOffer;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * EDC catalog and contract offer response.
+ * Payload represents the payload of a transfer process.
+ *
+ * @param transferProcessId  The ID of the transfer process.
+ * @param callbackAddresses  The list of callback addresses.
+ * @param assetId            The ID of the EDC asset.
+ * @param type               The type of payload.
+ * @param contractId         The ID of the contract agreement.
+ * @param dataAddress        The data address.
  */
-@Value
-@Builder(toBuilder = true)
-public class ContractOfferInCatalogResponse {
-
-    private String connectorId;
-    private ContractOffer contractOffer;
-
+@Builder
+@Jacksonized
+public record Payload(String transferProcessId,
+                      List<CallbackAddress> callbackAddresses,
+                      String assetId,
+                      String type,
+                      String contractId,
+                      DataAddress dataAddress) {
 }

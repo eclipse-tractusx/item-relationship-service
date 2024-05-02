@@ -117,7 +117,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         final Policy registeredPolicy;
         final JsonObject policyJson = request.payload();
 
-        final Policy policy = edcTransformer.transformToPolicy(policyJson);
+        final Policy policy = edcTransformer.transformToIrsPolicy(policyJson);
         policy.setValidUntil(request.validUntil());
 
         registeredPolicy = doRegisterPolicy(policy,

@@ -71,6 +71,8 @@ class EndpointDataReferenceCacheServiceTest {
                                                                                           .endpoint("")
                                                                                           .authCode(authCode)
                                                                                           .authKey("")
+                                                                                          .id("testid")
+                                                                                          .contractId("testContractId")
                                                                                           .build();
         when(endpointDataReferenceStorage.get(assetId)).thenReturn(Optional.of(endpointDataReferenceWithExpiredToken));
 
@@ -92,6 +94,8 @@ class EndpointDataReferenceCacheServiceTest {
                                                                                                          .endpoint("")
                                                                                                          .authCode(authCode)
                                                                                                          .authKey("")
+                                                                                                         .id("testid")
+                                                                                                         .contractId("testContractId")
                                                                                                          .build();
         when(endpointDataReferenceStorage.get(assetId)).thenReturn(Optional.of(endpointDataReferenceWithExpiredToken));
 

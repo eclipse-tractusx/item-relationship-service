@@ -51,6 +51,7 @@ import org.eclipse.edc.policy.model.Operator;
 import org.eclipse.edc.policy.model.OrConstraint;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.policy.model.PolicyType;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
@@ -71,19 +72,18 @@ class EdcTransformerTest {
                     "@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
                     "@type": "dcat:Catalog",
                     "dcat:dataset": {
-                        "@id": "58505404-4da1-427a-82aa-b79482bcd1f0",
+                        "@id": "urn:uuid:ea32f6f7-c884-4bfd-af4a-778666a1fffb",
                         "@type": "dcat:Dataset",
                         "odrl:hasPolicy": {
-                            "@id": "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1",
-                            "@type": "odrl:Set",
+                            "@id": "YTYxMjJlNTUtZWY2Ni00MWM4LWFjMjgtZDA5ODhlMmQ2YzRi:dXJuOnV1aWQ6ZWEzMmY2ZjctYzg4NC00YmZkLWFmNGEtNzc4NjY2YTFmZmZi:NzBlZTJjZGMtOTg3Yi00NzU0LWI0M2EtMDhkNDAzMDI4NzNk",
+                            "@type": "odrl:Offer",
                             "odrl:permission": {
-                                "odrl:target": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a",
                                 "odrl:action": {
                                     "odrl:type": "USE"
                                 },
                                 "odrl:constraint": {
                                     "odrl:or": {
-                                        "odrl:leftOperand": "idsc:PURPOSE",
+                                        "odrl:leftOperand": "PURPOSE",
                                         "odrl:operator": {
                                             "@id": "odrl:eq"
                                         },
@@ -92,27 +92,36 @@ class EdcTransformerTest {
                                 }
                             },
                             "odrl:prohibition": [],
-                            "odrl:obligation": [],
-                            "odrl:target": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a"
+                            "odrl:obligation": []
                         },
                         "dcat:distribution": [
                             {
                                 "@type": "dcat:Distribution",
                                 "dct:format": {
-                                    "@id": "HttpProxy"
+                                    "@id": "HttpData-PULL"
                                 },
-                                "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
+                                "dcat:accessService": {
+                                    "@id": "7d021194-7e36-43bf-ba3e-ed59675e4576",
+                                    "@type": "dcat:DataService",
+                                    "dct:terms": "connector",
+                                    "dct:endpointUrl": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp"
+                                }
                             },
                             {
                                 "@type": "dcat:Distribution",
                                 "dct:format": {
-                                    "@id": "AmazonS3"
+                                    "@id": "AmazonS3-PUSH"
                                 },
-                                "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
+                                "dcat:accessService": {
+                                    "@id": "7d021194-7e36-43bf-ba3e-ed59675e4576",
+                                    "@type": "dcat:DataService",
+                                    "dct:terms": "connector",
+                                    "dct:endpointUrl": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp"
+                                }
                             }
                         ],
-                        "edc:description": "IRS EDC Demo Asset",
-                        "edc:id": "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a"
+                        "description": "IRS EDC Demo Asset",
+                        "id": "urn:uuid:ea32f6f7-c884-4bfd-af4a-778666a1fffb"
                     },
                     "dcat:service": {
                         "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
@@ -120,12 +129,16 @@ class EdcTransformerTest {
                         "dct:terms": "connector",
                         "dct:endpointUrl": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp"
                     },
-                    "edc:participantId": "BPNL00000003CRHK",
+                    "dspace:participantId": "BPNL00000003CRHK",
+                    "participantId": "BPNL00000003CRHK",
                     "@context": {
-                        "dct": "https://purl.org/dc/terms/",
-                        "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                        "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
                         "edc": "https://w3id.org/edc/v0.0.1/ns/",
-                        "dcat": "https://www.w3.org/ns/dcat/",
+                        "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                        "tx-auth": "https://w3id.org/tractusx/auth/",
+                        "cx-policy": "https://w3id.org/catenax/policy/",
+                        "dcat": "http://www.w3.org/ns/dcat#",
+                        "dct": "http://purl.org/dc/terms/",
                         "odrl": "http://www.w3.org/ns/odrl/2/",
                         "dspace": "https://w3id.org/dspace/v0.8/"
                     }
@@ -135,51 +148,47 @@ class EdcTransformerTest {
 
     private static Dataset createDataset() {
         final String edcNamespace = "https://w3id.org/edc/v0.0.1/ns/";
-        final String target = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
-        final String distributionId = "4ba1faa1-7f1a-4fb7-a41c-317f450e7443";
-        final String datasetId = "58505404-4da1-427a-82aa-b79482bcd1f0";
-        final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1";
+        final String assetId = "urn:uuid:ea32f6f7-c884-4bfd-af4a-778666a1fffb";
+        final String distributionId = "7d021194-7e36-43bf-ba3e-ed59675e4576";
+        final String offerId = "YTYxMjJlNTUtZWY2Ni00MWM4LWFjMjgtZDA5ODhlMmQ2YzRi:dXJuOnV1aWQ6ZWEzMmY2ZjctYzg4NC00YmZkLWFmNGEtNzc4NjY2YTFmZmZi:NzBlZTJjZGMtOTg3Yi00NzU0LWI0M2EtMDhkNDAzMDI4NzNk";
 
         final HashMap<String, Object> properties = new HashMap<>();
         properties.put(edcNamespace + "description", "IRS EDC Demo Asset");
-        properties.put(edcNamespace + "id", target);
-        final Policy policy = createPolicy(target);
+        properties.put(edcNamespace + "id", assetId);
+        final Policy policy = createPolicy(assetId);
         final Distribution httpProxy = Distribution.Builder.newInstance()
-                                                           .format("HttpProxy")
+                                                           .format("HttpData-PULL")
                                                            .dataService(DataService.Builder.newInstance()
                                                                                            .id(distributionId)
                                                                                            .build())
                                                            .build();
         final Distribution amazonS3 = Distribution.Builder.newInstance()
-                                                          .format("AmazonS3")
+                                                          .format("AmazonS3-PUSH")
                                                           .dataService(DataService.Builder.newInstance()
                                                                                           .id(distributionId)
                                                                                           .build())
                                                           .build();
         final List<Distribution> distributions = List.of(httpProxy, amazonS3);
         return Dataset.Builder.newInstance()
-                              .id(datasetId)
+                              .id(assetId)
                               .offer(offerId, policy)
                               .distributions(distributions)
                               .properties(properties)
                               .build();
     }
 
-    private static NegotiationRequest createNegotiation(final String consumerBPN, final String providerBPN,
-            final String providerConnector, final String protocol, final String offerId, final String assetId) {
-        final Policy policy = createPolicy(assetId);
+    private static NegotiationRequest createNegotiation(final String providerBPN,
+            final String providerConnector, final String protocol, final String assetId) {
+        final Policy policy = createPolicy(assetId).toBuilder()
+                                                   .type(PolicyType.OFFER)
+                                                   .assigner(providerBPN)
+                                                   .build();
 
-        final ContractOfferDescription contractOfferDescription = ContractOfferDescription.builder()
-                                                                                          .offerId(offerId)
-                                                                                          .assetId(assetId)
-                                                                                          .policy(policy)
-                                                                                          .build();
         return NegotiationRequest.builder()
-                                 .connectorId(consumerBPN)
-                                 .connectorId(providerBPN)
-                                 .connectorAddress(providerConnector)
+                                 .policy(policy)
+                                 .counterPartyAddress(providerConnector)
+                                 .counterPartyId(providerBPN)
                                  .protocol(protocol)
-                                 .offer(contractOfferDescription)
                                  .build();
     }
 
@@ -187,17 +196,13 @@ class EdcTransformerTest {
         final Action action = Action.Builder.newInstance().type("USE").build();
         final AtomicConstraint atomicConstraint = AtomicConstraint.Builder.newInstance()
                                                                           .leftExpression(
-                                                                                  new LiteralExpression("idsc:PURPOSE"))
+                                                                                  new LiteralExpression("PURPOSE"))
                                                                           .operator(Operator.EQ)
                                                                           .rightExpression(
                                                                                   new LiteralExpression("ID 3.1 Trace"))
                                                                           .build();
         final OrConstraint orConstraint = OrConstraint.Builder.newInstance().constraint(atomicConstraint).build();
-        final Permission permission = Permission.Builder.newInstance()
-                                                        .action(action)
-                                                        .constraint(orConstraint)
-                                                        .target(assetId)
-                                                        .build();
+        final Permission permission = Permission.Builder.newInstance().action(action).constraint(orConstraint).build();
         return Policy.Builder.newInstance().permission(permission).target(assetId).build();
     }
 
@@ -218,7 +223,7 @@ class EdcTransformerTest {
     @Test
     void shouldDeserializeJsonLdResponseToCatalog() throws JsonProcessingException {
         // Arrange
-        final String key = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c1";
+        final String key = "YTYxMjJlNTUtZWY2Ni00MWM4LWFjMjgtZDA5ODhlMmQ2YzRi:dXJuOnV1aWQ6ZWEzMmY2ZjctYzg4NC00YmZkLWFmNGEtNzc4NjY2YTFmZmZi:NzBlZTJjZGMtOTg3Yi00NzU0LWI0M2EtMDhkNDAzMDI4NzNk";
         final String catalogAsString = getCatalogAsString();
         final DataService expectedDataService = DataService.Builder.newInstance()
                                                                    .id("4ba1faa1-7f1a-4fb7-a41c-317f450e7443")
@@ -226,6 +231,11 @@ class EdcTransformerTest {
                                                                    .endpointUrl(
                                                                            "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp")
                                                                    .build();
+        final Dataset expectedDataset = createDataset();
+        final Distribution expectedDistribution = expectedDataset.getDistributions().get(0);
+        final Policy expectedPolicy = expectedDataset.getOffers().get(key);
+        final String expectedPermission = objectMapper().writeValueAsString(expectedPolicy.getPermissions().get(0));
+
         // Act
         final Catalog actualCatalog = edcTransformer.transformCatalog(catalogAsString, StandardCharsets.UTF_8);
 
@@ -235,25 +245,22 @@ class EdcTransformerTest {
         assertThat(actualCatalog.getProperties()).containsEntry("https://w3id.org/edc/v0.0.1/ns/participantId",
                 "BPNL00000003CRHK");
 
-        final Dataset expectedDataset = createDataset();
-        final Distribution expectedDistribution = expectedDataset.getDistributions().get(0);
-        final Policy expectedPolicy = expectedDataset.getOffers().get(key);
-        final String expectedPermission = objectMapper().writeValueAsString(expectedPolicy.getPermissions().get(0));
+        assertThat(actualCatalog.getDatasets()).hasSize(1);
+        assertThat(actualCatalog.getDataServices().get(0)).isEqualTo(expectedDataService);
 
         final Dataset actualDataset = actualCatalog.getDatasets().get(0);
-        final Distribution actualDistribution = actualDataset.getDistributions().get(0);
-        final Policy actualPolicy = actualDataset.getOffers().get(key);
-        final String actualPermission = objectMapper().writeValueAsString(actualPolicy.getPermissions().get(0));
-
         assertThat(actualDataset.getId()).isEqualTo(expectedDataset.getId());
         assertThat(actualDataset.getProperties()).isEqualTo(expectedDataset.getProperties());
+
+        final Distribution actualDistribution = actualDataset.getDistributions().get(0);
         assertThat(actualDistribution.getFormat()).isEqualTo(expectedDistribution.getFormat());
         assertThat(actualDistribution.getDataService().getId()).isEqualTo(
                 expectedDistribution.getDataService().getId());
-        assertThat(actualPolicy.getTarget()).isEqualTo(expectedPolicy.getTarget());
+
+        final Policy actualPolicy = actualDataset.getOffers().get(key);
+        assertThat(actualPolicy).isNotNull();
+        final String actualPermission = objectMapper().writeValueAsString(actualPolicy.getPermissions().get(0));
         assertThat(actualPermission).isEqualTo(expectedPermission);
-        assertThat(actualCatalog.getDataServices().get(0)).isEqualTo(expectedDataService);
-        assertThat(actualCatalog.getContractOffers()).isNull();
     }
 
     @Test
@@ -281,18 +288,21 @@ class EdcTransformerTest {
         final String providerBPN = "BPNL00000003CRHK";
         final String providerConnector = "https://provider.edc/api/v1/dsp";
         final String protocol = "dataspace-protocol-http";
-        final String offerId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
-        final NegotiationRequest negotiationInitiateRequestDto = createNegotiation(consumerBPN, providerBPN,
-                providerConnector, protocol, offerId, assetId);
+        final NegotiationRequest negotiationInitiateRequestDto = createNegotiation(providerBPN,
+                providerConnector, protocol, assetId);
 
         final JsonObject negotiationJson = edcTransformer.transformNegotiationRequestToJson(
                 negotiationInitiateRequestDto);
+        System.out.println(negotiationJson);
 
         assertThat(negotiationJson).isNotEmpty()
-                                   .contains(entry("edc:connectorAddress", Json.createValue(providerConnector)))
-                                   .contains(entry("edc:connectorId", Json.createValue(consumerBPN)))
+                                   .contains(entry("edc:counterPartyAddress", Json.createValue(providerConnector)))
+                                   .contains(entry("edc:counterPartyId", Json.createValue(providerBPN)))
                                    .contains(entry("edc:protocol", Json.createValue(protocol)));
+        assertThat(negotiationJson.get("edc:policy").asJsonObject()).isNotEmpty()
+                                                                    .contains(entry("odrl:assigner",
+                                                                            Json.createValue(consumerBPN)));
     }
 
     @Test
@@ -306,7 +316,7 @@ class EdcTransformerTest {
         final TransferProcessRequest transferRequestDto = TransferProcessRequest.builder()
                                                                                 .assetId(assetId)
                                                                                 .connectorId(connectorId)
-                                                                                .connectorAddress(providerConnector)
+                                                                                .counterPartyAddress(providerConnector)
                                                                                 .protocol(protocol)
                                                                                 .contractId(contractId)
                                                                                 .managedResources(false)

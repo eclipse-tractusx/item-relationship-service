@@ -60,6 +60,8 @@ class EdcDataPlaneClientTest {
                                                                            .authKey("testkey")
                                                                            .authCode("testcode")
                                                                            .endpoint("testEndpoint")
+                                                                           .id("testid")
+                                                                           .contractId("testContractId")
                                                                            .build();
         when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(), eq(String.class))).thenReturn(
                 ResponseEntity.of(Optional.of(expectedData)));
@@ -80,6 +82,8 @@ class EdcDataPlaneClientTest {
                                                                            .authKey("testkey")
                                                                            .authCode("testcode")
                                                                            .endpoint("testEndpoint")
+                                                                           .id("testid")
+                                                                           .contractId("testContractId")
                                                                            .build();
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(), eq(String.class))).thenReturn(
                 ResponseEntity.of(Optional.of(expectedData)));

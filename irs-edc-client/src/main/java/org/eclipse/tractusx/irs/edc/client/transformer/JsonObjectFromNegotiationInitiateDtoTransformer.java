@@ -54,17 +54,13 @@ public class JsonObjectFromNegotiationInitiateDtoTransformer
     public @Nullable JsonObject transform(@NotNull final NegotiationRequest dto,
             @NotNull final TransformerContext context) {
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add(NegotiationRequest.NEGOTIATION_CONNECTOR_ADDRESS, dto.getConnectorAddress())
-               .add(NegotiationRequest.NEGOTIATION_CONNECTOR_ID, dto.getConnectorId())
-               .add(NegotiationRequest.NEGOTIATION_OFFER, context.transform(dto.getOffer(), JsonObject.class))
+        builder.add(NegotiationRequest.NEGOTIATION_COUNTER_PARTY_ADDRESS, dto.getCounterPartyAddress())
+               .add(NegotiationRequest.NEGOTIATION_COUNTER_PARTY_ID, dto.getCounterPartyId())
+               .add(NegotiationRequest.NEGOTIATION_POLICY, context.transform(dto.getPolicy(), JsonObject.class))
                .add(NegotiationRequest.NEGOTIATION_PROTOCOL, dto.getProtocol());
-        Optional.ofNullable(dto.getProviderId())
-                .ifPresent(s -> builder.add(NegotiationRequest.NEGOTIATION_PROVIDER_ID, dto.getProviderId()));
         Optional.ofNullable(dto.getCallbackAddresses())
                 .ifPresent(s -> builder.add(NegotiationRequest.NEGOTIATION_CALLBACK_ADDRESSES,
                         asArray(dto.getCallbackAddresses(), context)));
-        Optional.ofNullable(dto.getConsumerId())
-                .ifPresent(s -> builder.add(NegotiationRequest.NEGOTIATION_CONSUMER_ID, dto.getConsumerId()));
         return builder.build();
     }
 

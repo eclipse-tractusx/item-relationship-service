@@ -1,5 +1,6 @@
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import static org.eclipse.tractusx.irs.registryclient.TestMother.endpointDataReference;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -7,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -35,9 +35,9 @@ class DecentralDigitalTwinRegistryClientTest {
     @Test
     void shouldCallForAssetAdministrationShellDescriptor() {
         // given
-        EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
-                                                                                   .endpoint("url.to.host")
-                                                                                   .build();
+        final String contractAgreementId = "contractAgreementId";
+        final String endpointUrl = "url.to.host";
+        EndpointDataReference endpointDataReference = endpointDataReference(contractAgreementId, endpointUrl);
         when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(),
                 eq(AssetAdministrationShellDescriptor.class))).thenReturn(
                 ResponseEntity.of(Optional.of(AssetAdministrationShellDescriptor.builder().build())));
@@ -55,6 +55,10 @@ class DecentralDigitalTwinRegistryClientTest {
         // given
         EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
+                                                                                   .contractId("contractId")
+                                                                                   .id("test1")
+                                                                                   .authKey("Authorization")
+                                                                                   .authCode("authCode")
                                                                                    .build();
         when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(), eq(LookupShellsResponse.class))).thenReturn(
                 ResponseEntity.of(Optional.of(LookupShellsResponse.builder().result(Collections.emptyList()).build())));

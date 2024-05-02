@@ -46,6 +46,7 @@ public class TransferProcessRequest {
     public static final String EDC_TRANSFER_REQUEST_DTO_CONTRACT_ID = "https://w3id.org/edc/v0.0.1/ns/contractId";
     public static final String EDC_TRANSFER_REQUEST_DTO_DATA_DESTINATION = "https://w3id.org/edc/v0.0.1/ns/dataDestination";
     public static final String EDC_TRANSFER_REQUEST_DTO_PROTOCOL = "https://w3id.org/edc/v0.0.1/ns/protocol";
+    public static final String EDC_TRANSFER_REQUEST_DTO_TRANSFER_TYPE = "https://w3id.org/edc/v0.0.1/ns/transferType";
     public static final String EDC_TRANSFER_REQUEST_DTO_MANAGED_RESOURCES = "https://w3id.org/edc/v0.0.1/ns/managedResources";
     public static final String EDC_TRANSFER_REQUEST_DTO_CALLBACK_ADDRESSES = "https://w3id.org/edc/v0.0.1/ns/callbackAddresses";
     public static final String EDC_TRANSFER_REQUEST_DTO_PROPERTIES = "https://w3id.org/edc/v0.0.1/ns/properties";
@@ -55,11 +56,12 @@ public class TransferProcessRequest {
     public static final boolean DEFAULT_MANAGED_RESOURCES = false;
 
     private String assetId;
-    private String connectorAddress;
+    private String counterPartyAddress;
     private String connectorId;
     private String contractId;
     private DataAddress dataDestination;
     private String protocol;
+    private String transferType;
     private boolean managedResources;
     private List<CallbackAddress> callbackAddresses;
     private Map<String, String> properties;

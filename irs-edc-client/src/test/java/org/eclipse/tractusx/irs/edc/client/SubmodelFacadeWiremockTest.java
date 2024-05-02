@@ -108,6 +108,7 @@ class SubmodelFacadeWiremockTest {
         config.getControlplane().setRequestTtl(Duration.ofSeconds(5));
         config.getControlplane().setProviderSuffix("/api/v1/dsp");
         config.getSubmodel().setUrnPrefix("/urn");
+        config.setCallbackUrl("http://callback.endpoint");
 
         final List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
         for (final HttpMessageConverter<?> converter : messageConverters) {
@@ -237,7 +238,7 @@ class SubmodelFacadeWiremockTest {
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
 
         // Act & Assert
-        final String errorMessage = "Consumption of asset '58505404-4da1-427a-82aa-b79482bcd1f0' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
+        final String errorMessage = "Consumption of asset '5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
         assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
                 () -> edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID, "bpn")
                                        .get()).withMessageEndingWith(errorMessage);
@@ -315,6 +316,8 @@ class SubmodelFacadeWiremockTest {
                                             .properties(
                                                     Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
                                             .endpoint(DATAPLANE_HOST + PATH_DATAPLANE_PUBLIC)
+                                            .id("testid")
+                                            .contractId(contractAgreementId)
                                             .build();
     }
 

@@ -73,7 +73,7 @@
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>1.10.0-SNAPSHOT</irs-registry-client.version>
+        <irs-registry-client.version>1.11.0-SNAPSHOT</irs-registry-client.version>
 
         <!-- Dependencies -->
         <springboot.version>3.1.11</springboot.version>
@@ -92,7 +92,7 @@
         <snakeyaml.version>2.0</snakeyaml.version>
         <commons-validator.version>1.8.0</commons-validator.version>
         <swagger-annotations.version>2.2.18</swagger-annotations.version>
-        <edc.version>0.2.1</edc.version>
+        <edc.version>0.6.0</edc.version>
         <okio-jvm.version>3.5.0</okio-jvm.version>
         <bc-jdk18on.version>1.78</bc-jdk18on.version>
         <wiremock-standalone.version>3.5.2</wiremock-standalone.version>

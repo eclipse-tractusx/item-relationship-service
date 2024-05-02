@@ -31,6 +31,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
+import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 
 /**
@@ -40,7 +41,8 @@ import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 @Builder(toBuilder = true)
 @Jacksonized
 public class NegotiationRequest {
-    public static final String NEGOTIATION_CONNECTOR_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/connectorAddress";
+    public static final String NEGOTIATION_COUNTER_PARTY_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/counterPartyAddress";
+    public static final String NEGOTIATION_COUNTER_PARTY_ID = "https://w3id.org/edc/v0.0.1/ns/counterPartyId";
     public static final String NEGOTIATION_PROTOCOL = "https://w3id.org/edc/v0.0.1/ns/protocol";
     public static final String NEGOTIATION_CONNECTOR_ID = "https://w3id.org/edc/v0.0.1/ns/connectorId";
     public static final String NEGOTIATION_PROVIDER_ID = "https://w3id.org/edc/v0.0.1/ns/providerId";
@@ -51,16 +53,14 @@ public class NegotiationRequest {
     public static final String NEGOTIATION_ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
     public static final String NEGOTIATION_POLICY = "https://w3id.org/edc/v0.0.1/ns/policy";
 
-    @NotBlank(message = "connectorAddress is mandatory")
-    private String connectorAddress;
+    @NotBlank(message = "counterPartyAddress is mandatory")
+    private String counterPartyAddress;
+    @NotBlank(message = "counterPartyId is mandatory")
+    private String counterPartyId;
     @NotBlank(message = "protocol is mandatory")
     private String protocol;
-    @NotBlank(message = "connectorId is mandatory")
-    private String connectorId;
     @NotNull(message = "offer cannot be null")
-    private ContractOfferDescription offer;
-    private String providerId;
-    private String consumerId;
+    private Policy policy;
     private List<CallbackAddress> callbackAddresses = new ArrayList<>();
 }
 

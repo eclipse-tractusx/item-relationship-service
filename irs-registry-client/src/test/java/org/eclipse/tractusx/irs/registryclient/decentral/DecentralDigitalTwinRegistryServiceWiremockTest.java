@@ -28,6 +28,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.registryclient.TestMother.endpointDataReference;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.EDC_DISCOVERY_PATH;
@@ -36,7 +37,6 @@ import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremock
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.postDiscoveryFinder404;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.postEdcDiscovery200;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.postEdcDiscovery404;
-import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.DATAPLANE_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.LOOKUP_SHELLS_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.LOOKUP_SHELLS_TEMPLATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.SHELL_DESCRIPTORS_PATH;
@@ -52,12 +52,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -65,11 +62,8 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.Shell;
-import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
@@ -118,8 +112,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(getShellDescriptor200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
-                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
+                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act
             final Collection<Shell> shells = decentralDigitalTwinRegistryService.fetchShells(
@@ -167,8 +161,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
-                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
+                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells404());
             final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
@@ -188,8 +182,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
-                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
+                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells200());
             givenThat(getShellDescriptor404());
@@ -211,8 +205,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
-                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
+                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells200Empty());
             givenThat(getShellDescriptor404());
@@ -241,8 +235,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
 
             // simulate endpoint data reference
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
-                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
+                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act
             final Collection<DigitalTwinRegistryKey> digitalTwinRegistryKeys = decentralDigitalTwinRegistryService.lookupShellIdentifiers(
@@ -272,10 +266,10 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
 
             // simulate endpoint data reference
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any(), any())).thenReturn(
-                    List.of(CompletableFuture.completedFuture(endpointDataReference)));
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any(), any())).thenReturn(
-                    endpointDataReferenceForAssetFutures);
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any(),
+                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any(),
+                    any())).thenReturn(endpointDataReferenceForAssetFutures);
 
             // Act
             final Collection<DigitalTwinRegistryKey> digitalTwinRegistryKeys = decentralDigitalTwinRegistryService.lookupShellIdentifiers(
@@ -317,10 +311,10 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             // simulate endpoint data reference
             final var endpointDataReference1 = endpointDataReference("dtr1-assetId");
             final var endpointDataReference2 = endpointDataReference("dtr2-assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any(), any())).thenReturn(
-                    List.of(CompletableFuture.completedFuture(endpointDataReference1)));
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any(), any())).thenReturn(
-                    List.of(CompletableFuture.completedFuture(endpointDataReference2)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any(),
+                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference1)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any(),
+                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference2)));
 
             // Act & Assert
             final Collection<DigitalTwinRegistryKey> digitalTwinRegistryKeys = decentralDigitalTwinRegistryService.lookupShellIdentifiers(
@@ -335,27 +329,5 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             // multiple DTR (one per EDC)
             verify(exactly(edcUrls.size()), getRequestedFor(urlPathEqualTo(LOOKUP_SHELLS_PATH)));
         }
-    }
-
-    private EndpointDataReference endpointDataReference(final String contractAgreementId) {
-        return EndpointDataReference.Builder.newInstance()
-                                            .authKey("X-API-KEY")
-                                            .authCode(edrAuthCode(contractAgreementId))
-                                            .properties(
-                                                    Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
-                                            .endpoint(DATAPLANE_URL)
-                                            .build();
-    }
-
-    private String edrAuthCode(final String contractAgreementId) {
-        final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
-                                                   .cid(contractAgreementId)
-                                                   .dad("test")
-                                                   .exp(9999999999L)
-                                                   .build();
-        final String b64EncodedAuthCode = Base64.getUrlEncoder()
-                                                .encodeToString(StringMapper.mapToString(edrAuthCode)
-                                                                            .getBytes(StandardCharsets.UTF_8));
-        return "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
     }
 }

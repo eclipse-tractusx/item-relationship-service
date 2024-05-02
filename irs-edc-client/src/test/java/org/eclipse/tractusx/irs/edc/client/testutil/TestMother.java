@@ -27,7 +27,6 @@ import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfigurat
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DSPACE;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
-import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_ODRL;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_TRACTUSX;
@@ -104,13 +103,15 @@ public class TestMother {
         final List<Dataset> datasets = IntStream.range(0, numberOfOffers)
                                                 .boxed()
                                                 .map(i -> Dataset.Builder.newInstance()
-                                                                         .properties(
-                                                                                 Map.of(NAMESPACE_EDC_ID, assetId + i))
+                                                                         .id(assetId + i)
                                                                          .offer(getOfferId(assetId + i), policy)
                                                                          .distribution(distribution)
                                                                          .build())
                                                 .toList();
-        return Catalog.Builder.newInstance().datasets(datasets).properties(Map.of(NAMESPACE_EDC_PARTICIPANT_ID, "BPNTEST")).build();
+        return Catalog.Builder.newInstance()
+                              .datasets(datasets)
+                              .properties(Map.of(NAMESPACE_EDC_PARTICIPANT_ID, "BPNTEST"))
+                              .build();
     }
 
     @NotNull
@@ -164,6 +165,8 @@ public class TestMother {
                                             .properties(
                                                     Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
                                             .endpoint("http://provider.dataplane/api/public")
+                                            .id("testid")
+                                            .contractId(contractAgreementId)
                                             .build();
     }
 

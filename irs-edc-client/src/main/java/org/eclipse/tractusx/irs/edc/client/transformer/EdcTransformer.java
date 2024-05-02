@@ -35,41 +35,42 @@ import jakarta.json.Json;
 import jakarta.json.JsonBuilderFactory;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+import org.eclipse.edc.api.transformer.JsonObjectFromCallbackAddressTransformer;
+import org.eclipse.edc.api.transformer.JsonObjectToCallbackAddressTransformer;
 import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.CatalogRequest;
+import org.eclipse.edc.connector.api.management.contractnegotiation.transform.JsonObjectToContractRequestTransformer;
+import org.eclipse.edc.connector.core.base.agent.NoOpParticipantIdMapper;
 import org.eclipse.edc.core.transform.TransformerContextImpl;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromAssetTransformer;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromCatalogTransformer;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromCriterionTransformer;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromDataAddressTransformer;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromDataServiceTransformer;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromDatasetTransformer;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromDistributionTransformer;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromPolicyTransformer;
-import org.eclipse.edc.core.transform.transformer.from.JsonObjectFromQuerySpecTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToActionTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToAssetTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToCatalogTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToConstraintTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToCriterionTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToDataServiceTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToDatasetTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToDistributionTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToDutyTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToOperatorTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToPermissionTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToPolicyTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToProhibitionTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonObjectToQuerySpecTransformer;
-import org.eclipse.edc.core.transform.transformer.to.JsonValueToGenericTypeTransformer;
+import org.eclipse.edc.core.transform.transformer.dcat.from.JsonObjectFromCatalogTransformer;
+import org.eclipse.edc.core.transform.transformer.dcat.from.JsonObjectFromDataServiceTransformer;
+import org.eclipse.edc.core.transform.transformer.dcat.from.JsonObjectFromDatasetTransformer;
+import org.eclipse.edc.core.transform.transformer.dcat.from.JsonObjectFromDistributionTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.from.JsonObjectFromAssetTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.from.JsonObjectFromCriterionTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.from.JsonObjectFromDataAddressTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.from.JsonObjectFromQuerySpecTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.to.JsonObjectToActionTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.to.JsonObjectToAssetTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.to.JsonObjectToCriterionTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.to.JsonObjectToQuerySpecTransformer;
+import org.eclipse.edc.core.transform.transformer.edc.to.JsonValueToGenericTypeTransformer;
+import org.eclipse.edc.core.transform.transformer.odrl.from.JsonObjectFromPolicyTransformer;
+import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToConstraintTransformer;
+import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToDutyTransformer;
+import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToOperatorTransformer;
+import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToPermissionTransformer;
+import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToPolicyTransformer;
+import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToProhibitionTransformer;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
+import org.eclipse.edc.protocol.dsp.negotiation.transform.from.JsonObjectFromContractNegotiationTransformer;
 import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
-import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -84,37 +85,38 @@ public class EdcTransformer {
     private final JsonObjectFromTransferProcessRequestTransformer jsonObjectFromTransferProcessRequestTransformer;
     private final JsonObjectFromContractOfferDescriptionTransformer jsonObjectFromContractOfferDescriptionTransformer;
     private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
-    private final org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer jsonObjectToPolicyTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
     private final TransformerContextImpl transformerContext;
     private final JsonObjectFromAssetTransformer jsonObjectFromAssetTransformer;
+    private final JsonObjectToIrsPolicyTransformer jsonObjectToIrsPolicyTransformer;
 
     public EdcTransformer(@Qualifier(JSON_LD_OBJECT_MAPPER) final ObjectMapper objectMapper,
             final TitaniumJsonLd titaniumJsonLd, final TypeTransformerRegistry typeTransformerRegistry) {
         this.titaniumJsonLd = titaniumJsonLd;
+        transformerContext = new TransformerContextImpl(typeTransformerRegistry);
+        final NoOpParticipantIdMapper participantIdMapper = new NoOpParticipantIdMapper();
         final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(Map.of());
+
+        jsonObjectToCatalogTransformer = new JsonObjectToCatalogTransformer();
+        jsonObjectToIrsPolicyTransformer = new JsonObjectToIrsPolicyTransformer(objectMapper);
 
         jsonObjectFromNegotiationInitiateDtoTransformer = new JsonObjectFromNegotiationInitiateDtoTransformer(
                 jsonBuilderFactory);
-        jsonObjectToCatalogTransformer = new JsonObjectToCatalogTransformer();
         jsonObjectFromTransferProcessRequestTransformer = new JsonObjectFromTransferProcessRequestTransformer(
                 jsonBuilderFactory);
         jsonObjectFromContractOfferDescriptionTransformer = new JsonObjectFromContractOfferDescriptionTransformer(
                 jsonBuilderFactory);
         jsonObjectFromCatalogRequestTransformer = new JsonObjectFromCatalogRequestTransformer(jsonBuilderFactory);
         jsonObjectFromAssetTransformer = new JsonObjectFromAssetTransformer(jsonBuilderFactory, objectMapper);
-        jsonObjectToPolicyTransformer = new org.eclipse.tractusx.irs.edc.client.transformer.JsonObjectToPolicyTransformer(
-                objectMapper);
-
-        transformerContext = new TransformerContextImpl(typeTransformerRegistry);
 
         // JSON to Object
         typeTransformerRegistry.register(jsonObjectToCatalogTransformer);
+        typeTransformerRegistry.register(new JsonObjectToPolicyTransformer(participantIdMapper));
         typeTransformerRegistry.register(new JsonValueToGenericTypeTransformer(objectMapper));
         typeTransformerRegistry.register(new JsonObjectToDataServiceTransformer());
         typeTransformerRegistry.register(new JsonObjectToConstraintTransformer());
         typeTransformerRegistry.register(new JsonObjectToDatasetTransformer());
-        typeTransformerRegistry.register(new JsonObjectToPolicyTransformer());
+        typeTransformerRegistry.register(new JsonObjectToContractRequestTransformer());
         typeTransformerRegistry.register(new JsonObjectToPermissionTransformer());
         typeTransformerRegistry.register(new JsonObjectToActionTransformer());
         typeTransformerRegistry.register(new JsonObjectToDistributionTransformer());
@@ -124,30 +126,42 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectToQuerySpecTransformer());
         typeTransformerRegistry.register(new JsonObjectToCriterionTransformer());
         typeTransformerRegistry.register(new JsonObjectToOperatorTransformer());
+        typeTransformerRegistry.register(new JsonObjectToCallbackAddressTransformer());
+        typeTransformerRegistry.register(jsonObjectToIrsPolicyTransformer);
+
         // JSON from Object
         typeTransformerRegistry.register(jsonObjectFromNegotiationInitiateDtoTransformer);
         typeTransformerRegistry.register(jsonObjectFromCatalogRequestTransformer);
         typeTransformerRegistry.register(jsonObjectFromTransferProcessRequestTransformer);
         typeTransformerRegistry.register(jsonObjectFromContractOfferDescriptionTransformer);
+        typeTransformerRegistry.register(jsonObjectFromAssetTransformer);
+        typeTransformerRegistry.register(new JsonObjectFromContractNegotiationTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromQuerySpecTransformer(jsonBuilderFactory));
-        typeTransformerRegistry.register(new JsonObjectFromCatalogTransformer(jsonBuilderFactory, objectMapper));
+        typeTransformerRegistry.register(
+                new JsonObjectFromCatalogTransformer(jsonBuilderFactory, objectMapper, participantIdMapper));
         typeTransformerRegistry.register(new JsonObjectFromDatasetTransformer(jsonBuilderFactory, objectMapper));
-        typeTransformerRegistry.register(new JsonObjectFromPolicyTransformer(jsonBuilderFactory));
+        typeTransformerRegistry.register(new JsonObjectFromPolicyTransformer(jsonBuilderFactory, participantIdMapper));
         typeTransformerRegistry.register(new JsonObjectFromDistributionTransformer(jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonObjectFromDataServiceTransformer(jsonBuilderFactory));
-        typeTransformerRegistry.register(jsonObjectFromAssetTransformer);
         typeTransformerRegistry.register(new JsonObjectFromCriterionTransformer(jsonBuilderFactory, objectMapper));
         typeTransformerRegistry.register(new JsonObjectFromDataAddressTransformer(jsonBuilderFactory));
+        typeTransformerRegistry.register(new JsonObjectFromCallbackAddressTransformer(jsonBuilderFactory));
     }
 
     public Catalog transformCatalog(final String jsonString, final Charset charset) {
+        final Result<JsonObject> expand;
+        expand = expandJsonLd(jsonString, charset);
+        return jsonObjectToCatalogTransformer.transform(expand.getContent(), transformerContext);
+    }
+
+    public Result<JsonObject> expandJsonLd(final String jsonString, final Charset charset) {
         final Result<JsonObject> expand;
         try (JsonReader reader = Json.createReader(new ByteArrayInputStream(jsonString.getBytes(charset)))) {
 
             expand = titaniumJsonLd.expand(
                     JsonDocument.of(reader.read()).getJsonContent().orElseThrow().asJsonObject());
         }
-        return jsonObjectToCatalogTransformer.transform(expand.getContent(), transformerContext);
+        return expand;
     }
 
     public JsonObject transformNegotiationRequestToJson(final NegotiationRequest negotiationRequest) {
@@ -180,7 +194,7 @@ public class EdcTransformer {
         return titaniumJsonLd.compact(transform).asOptional().orElseThrow();
     }
 
-    public Policy transformToPolicy(final JsonObject body) {
-        return jsonObjectToPolicyTransformer.transform(body, transformerContext);
+    public org.eclipse.tractusx.irs.edc.client.policy.@Nullable Policy transformToIrsPolicy(final JsonObject body) {
+        return jsonObjectToIrsPolicyTransformer.transform(body, transformerContext);
     }
 }

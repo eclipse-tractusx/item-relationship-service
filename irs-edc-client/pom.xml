@@ -96,78 +96,76 @@
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger-annotations.version}</version>
         </dependency>
+
         <!-- EDC Client -->
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>management-api</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp-transfer-process-transform</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp-transfer-process-api</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp-negotiation-transform</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp-negotiation-api</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp-catalog-transform</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>dsp-catalog-api</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>control-plane-policies-lib</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.edc</groupId>
+            <artifactId>policy-engine-lib</artifactId>
+            <version>${edc.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.edc</groupId>
             <artifactId>connector-core</artifactId>
             <version>${edc.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>runtime-metamodel</artifactId>
-                    <groupId>org.eclipse.edc</groupId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bouncycastle</groupId>
-                    <artifactId>bcprov-jdk18on</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.bouncycastle</groupId>
-                    <artifactId>bcpkix-jdk18on</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!-- Below overrides the one provided with above EDC Client -->
-        <dependency>
-            <groupId>com.squareup.okio</groupId>
-            <artifactId>okio-jvm</artifactId>
-            <version>${okio-jvm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk18on</artifactId>
-            <version>${bc-jdk18on.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk18on</artifactId>
-            <version>${bc-jdk18on.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.edc</groupId>
             <artifactId>dsp</artifactId>
             <version>${edc.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>runtime-metamodel</artifactId>
-                    <groupId>org.eclipse.edc</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>websocket-jakarta-server</artifactId>
-                    <groupId>org.eclipse.jetty.websocket</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.websocket</groupId>
-            <artifactId>websocket-jakarta-server</artifactId>
-            <version>11.0.17</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.edc</groupId>
-            <artifactId>json-ld</artifactId>
+            <artifactId>json-ld-lib</artifactId>
             <version>${edc.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>runtime-metamodel</artifactId>
-                    <groupId>org.eclipse.edc</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
-            <artifactId>runtime-metamodel</artifactId>
-            <groupId>org.eclipse.edc</groupId>
+            <groupId>org.eclipse.tractusx.edc</groupId>
+            <artifactId>edr-api</artifactId>
             <version>${edc.version}</version>
         </dependency>
+        <!-- EDC Client -->
+
         <dependency>
             <groupId>org.eclipse.tractusx.irs</groupId>
             <artifactId>irs-common</artifactId>
