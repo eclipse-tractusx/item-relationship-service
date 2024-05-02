@@ -31,6 +31,7 @@ import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithUrl;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -74,6 +75,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -91,9 +93,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
                 properties = { "digitalTwinRegistry.type=central" })
-@ActiveProfiles(profiles = { "test", "local" })
+@ActiveProfiles(profiles = { "test",
+                             "local"
+})
 @Import(TestConfig.class)
-@ExtendWith({ MockitoExtension.class, SpringExtension.class })
+@ExtendWith({ MockitoExtension.class,
+              SpringExtension.class
+})
 class IrsControllerTest extends ControllerTest {
 
     private final UUID jobId = UUID.randomUUID();
@@ -129,25 +135,38 @@ class IrsControllerTest extends ControllerTest {
         final UUID returnedJob = UUID.randomUUID();
         Mockito.when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
 
-        given().port(port).contentType(ContentType.JSON).body(registerJobWithoutDepthAndAspect()).post("/irs/jobs")
-               .then().statusCode(CREATED.value()).body("id", is(returnedJob.toString()));
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body(registerJobWithoutDepthAndAspect())
+               .post("/irs/jobs")
+               .then()
+               .statusCode(CREATED.value())
+               .body("id", is(returnedJob.toString()));
     }
 
     @Test
     void shouldReturnUnauthorizedStatusWhenAuthenticationIsMissing() {
         Mockito.when(authenticationService.getAuthentication(any(HttpServletRequest.class)))
-                .thenThrow(new BadCredentialsException("Wrong ApiKey"));
+               .thenThrow(new BadCredentialsException("Wrong ApiKey"));
 
-        given().port(port).contentType(ContentType.JSON).body(registerJobWithoutDepthAndAspect()).post("/irs/jobs")
-               .then().statusCode(UNAUTHORIZED.value());
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body(registerJobWithoutDepthAndAspect())
+               .post("/irs/jobs")
+               .then()
+               .statusCode(UNAUTHORIZED.value());
     }
 
     @Test
     void shouldReturnForbiddenStatusWhenRequiredAuthorityIsMissing() {
         authenticateWith("view_irs_wrong_authority");
 
-        given().port(port).contentType(ContentType.JSON).body(registerJobWithoutDepthAndAspect()).post("/irs/jobs")
-               .then().statusCode(FORBIDDEN.value());
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body(registerJobWithoutDepthAndAspect())
+               .post("/irs/jobs")
+               .then()
+               .statusCode(FORBIDDEN.value());
     }
 
     @ParameterizedTest
@@ -155,16 +174,52 @@ class IrsControllerTest extends ControllerTest {
     void shouldReturnBadRequestWhenRegisterJobBodyNotValid(final RegisterJob registerJob) {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        given().port(port).contentType(ContentType.JSON).body(registerJob).post("/irs/jobs")
-               .then().statusCode(BAD_REQUEST.value());
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body(registerJob)
+               .post("/irs/jobs")
+               .then()
+               .statusCode(BAD_REQUEST.value());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "upwards",
+                             "downwards"
+    })
+    void shouldReturnBadRequestWhenRegisterJobWithInvalidDirection(String invalidDirection) {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body("""
+                       {
+                          "key": {
+                              "globalAssetId": "urn:uuid:c6d2d642-a055-4ddf-87e3-1a3b02c689e3",
+                              "bpn": "BPNL00000000BJTL"
+                          },
+                          "direction": "<DIRECTION>",
+                          "lookupBPNs": true
+                       }
+                       """.replace("<DIRECTION>", invalidDirection))
+               .post("/irs/jobs")
+               .then()
+               .statusCode(BAD_REQUEST.value())
+               .body("error", containsString("Unsupported direction"))
+               .body("error", containsString("Must be one of: upward, downward"))
+               // error message should not contain unvalidated user input for security reasons
+               .body("error", not(containsString(invalidDirection)));
     }
 
     @Test
     void shouldReturnBadRequestWhenRegisterJobHasWrongCallbackUrl() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        given().port(port).contentType(ContentType.JSON).body(registerJobWithUrl("hhh://example.com")).post("/irs/jobs")
-               .then().statusCode(BAD_REQUEST.value());
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body(registerJobWithUrl("hhh://example.com"))
+               .post("/irs/jobs")
+               .then()
+               .statusCode(BAD_REQUEST.value());
     }
 
     @Test
@@ -174,8 +229,12 @@ class IrsControllerTest extends ControllerTest {
         final UUID returnedJob = UUID.randomUUID();
         Mockito.when(service.registerItemJob(any())).thenReturn(JobHandle.builder().id(returnedJob).build());
 
-        given().port(port).contentType(ContentType.JSON).body(registerJobWithUrl("https://example.com")).post("/irs/jobs")
-               .then().statusCode(CREATED.value());
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body(registerJobWithUrl("https://example.com"))
+               .post("/irs/jobs")
+               .then()
+               .statusCode(CREATED.value());
     }
 
     @Test
@@ -191,18 +250,20 @@ class IrsControllerTest extends ControllerTest {
 
         final String returnJobAsString = objectMapper.writeValueAsString(returnedJob);
 
-        Mockito.when(service.getJobsByState(any(), any())).thenReturn(
-                new PageResult(new PagedListHolder<>(List.of(returnedJob))));
+        Mockito.when(service.getJobsByState(any(), any()))
+               .thenReturn(new PageResult(new PagedListHolder<>(List.of(returnedJob))));
 
-        given().port(port).get("/irs/jobs")
-               .then().statusCode(OK.value())
+        given().port(port)
+               .get("/irs/jobs")
+               .then()
+               .statusCode(OK.value())
                .body(containsString(returnJobAsString))
                .body(containsString(returnedJob.getId().toString()))
                .body(containsString(returnedJob.getState().toString()))
-               .body(containsString(returnedJob.getStartedOn().format(DateTimeFormatter.ofPattern(
-                       "yyyy-MM-dd'T'HH:mm:ss.SSS"))))
-               .body(containsString(returnedJob.getCompletedOn().format(DateTimeFormatter.ofPattern(
-                       "yyyy-MM-dd'T'HH:mm:ss.SSS"))));
+               .body(containsString(
+                       returnedJob.getStartedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))))
+               .body(containsString(
+                       returnedJob.getCompletedOn().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"))));
     }
 
     @Test
@@ -212,19 +273,17 @@ class IrsControllerTest extends ControllerTest {
         final Job canceledJob = Job.builder().id(jobId).state(JobState.CANCELED).build();
         Mockito.when(this.service.cancelJobById(jobId)).thenReturn(canceledJob);
 
-        given().port(port).put("/irs/jobs/" + jobId)
-               .then().statusCode(OK.value());
+        given().port(port).put("/irs/jobs/" + jobId).then().statusCode(OK.value());
     }
 
     @Test
     void cancelJobById_throwEntityNotFoundException() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        BDDMockito.given(this.service.cancelJobById(jobId)).willThrow(
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId));
+        BDDMockito.given(this.service.cancelJobById(jobId))
+                  .willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "No job exists with id " + jobId));
 
-        given().port(port).put("/irs/jobs/" + jobId)
-               .then().statusCode(NOT_FOUND.value());
+        given().port(port).put("/irs/jobs/" + jobId).then().statusCode(NOT_FOUND.value());
     }
 
     @Test
@@ -233,8 +292,7 @@ class IrsControllerTest extends ControllerTest {
 
         final String jobIdMalformed = UUID.randomUUID() + "MALFORMED";
 
-        given().port(port).get("/irs/jobs/" + jobIdMalformed)
-               .then().statusCode(BAD_REQUEST.value());
+        given().port(port).get("/irs/jobs/" + jobIdMalformed).then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
@@ -244,19 +302,23 @@ class IrsControllerTest extends ControllerTest {
         Mockito.when(service.registerItemJob(any())).thenThrow(IllegalArgumentException.class);
         final String requestBody = "{ \"aspects\": [ \"MALFORMED\" ], \"globalAssetId\": \"urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6\" }";
 
-        given().port(port).contentType(ContentType.JSON).body(requestBody).post("/irs/jobs")
-               .then().statusCode(BAD_REQUEST.value());
+        given().port(port)
+               .contentType(ContentType.JSON)
+               .body(requestBody)
+               .post("/irs/jobs")
+               .then()
+               .statusCode(BAD_REQUEST.value());
     }
 
     @Test
     void shouldReturnBadRequestWhenCancelingAlreadyCompletedJob() {
         authenticateWith(IrsRoles.VIEW_IRS);
 
-        BDDMockito.given(this.service.cancelJobById(jobId)).willThrow(new IllegalStateException(
-                format("Cannot transition from state %s to %s", JobState.COMPLETED, JobState.CANCELED)));
+        BDDMockito.given(this.service.cancelJobById(jobId))
+                  .willThrow(new IllegalStateException(
+                          format("Cannot transition from state %s to %s", JobState.COMPLETED, JobState.CANCELED)));
 
-        given().port(port).put("/irs/jobs/" + jobId)
-               .then().statusCode(BAD_REQUEST.value());
+        given().port(port).put("/irs/jobs/" + jobId).then().statusCode(BAD_REQUEST.value());
     }
 
     @Test
@@ -278,8 +340,14 @@ class IrsControllerTest extends ControllerTest {
 
         BDDMockito.given(this.semanticHubService.getAllAspectModels()).willReturn(aspectModels);
 
-        final AspectModels response = given().port(port).get("/irs/aspectmodels")
-                                             .then().statusCode(OK.value()).and().extract().response().as(AspectModels.class);
+        final AspectModels response = given().port(port)
+                                             .get("/irs/aspectmodels")
+                                             .then()
+                                             .statusCode(OK.value())
+                                             .and()
+                                             .extract()
+                                             .response()
+                                             .as(AspectModels.class);
 
         assertEquals(aspectModels, response);
     }
@@ -288,8 +356,7 @@ class IrsControllerTest extends ControllerTest {
     void shouldReturnForbiddenStatusForAspectModelsWhenRequiredAuthorityIsMissing() {
         authenticateWith("view_irs_wrong_authority");
 
-        given().port(port).get("/irs/aspectmodels")
-               .then().statusCode(FORBIDDEN.value());
+        given().port(port).get("/irs/aspectmodels").then().statusCode(FORBIDDEN.value());
     }
 
     @Test
@@ -300,10 +367,16 @@ class IrsControllerTest extends ControllerTest {
 
         Mockito.when(this.service.getJobForJobId(eq(jobId), anyBoolean())).thenReturn(runningJob);
 
-        given().port(port).queryParam("returnUncompletedJob", true).get("/irs/jobs/" + jobId)
-               .then().statusCode(PARTIAL_CONTENT.value());
-        given().port(port).queryParam("returnUncompletedJob", false).get("/irs/jobs/" + jobId)
-               .then().statusCode(PARTIAL_CONTENT.value());
+        given().port(port)
+               .queryParam("returnUncompletedJob", true)
+               .get("/irs/jobs/" + jobId)
+               .then()
+               .statusCode(PARTIAL_CONTENT.value());
+        given().port(port)
+               .queryParam("returnUncompletedJob", false)
+               .get("/irs/jobs/" + jobId)
+               .then()
+               .statusCode(PARTIAL_CONTENT.value());
     }
 
     @Test
@@ -314,10 +387,16 @@ class IrsControllerTest extends ControllerTest {
 
         Mockito.when(this.service.getJobForJobId(eq(jobId), anyBoolean())).thenReturn(completedJob);
 
-        given().port(port).queryParam("returnUncompletedJob", true).get("/irs/jobs/" + jobId)
-               .then().statusCode(OK.value());
-        given().port(port).queryParam("returnUncompletedJob", false).get("/irs/jobs/" + jobId)
-               .then().statusCode(OK.value());
+        given().port(port)
+               .queryParam("returnUncompletedJob", true)
+               .get("/irs/jobs/" + jobId)
+               .then()
+               .statusCode(OK.value());
+        given().port(port)
+               .queryParam("returnUncompletedJob", false)
+               .get("/irs/jobs/" + jobId)
+               .then()
+               .statusCode(OK.value());
     }
 
 }
