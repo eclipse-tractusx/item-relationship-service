@@ -85,7 +85,6 @@ public class E2ETestStepDefinitionsForJobApi {
     private BatchOrderResponse batchOrderResponse;
     private BatchResponse batchResponse;
 
-    private AuthenticationProperties authProperties;
     private final AuthenticationProperties.AuthenticationPropertiesBuilder authenticationPropertiesBuilder;
 
     public E2ETestStepDefinitionsForJobApi() {
@@ -214,7 +213,6 @@ public class E2ETestStepDefinitionsForJobApi {
     @When("I get the job-id")
     public void iGetTheJobId() {
         final RegisterJob job = registerJobBuilder.build();
-        authProperties = authenticationPropertiesBuilder.build();
 
         final JobHandle createdJobResponse = //
                 givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
@@ -233,7 +231,6 @@ public class E2ETestStepDefinitionsForJobApi {
     @When("I get the order-id")
     public void iGetTheOrderId() {
         final RegisterBatchOrder order = registerBatchOrderBuilder.build();
-        authProperties = authenticationPropertiesBuilder.build();
 
         final BatchOrderCreated createdOrderResponse = //
                 givenAuthentication(authenticationPropertiesBuilder).contentType(ContentType.JSON)
