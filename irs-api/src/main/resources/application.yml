@@ -9,7 +9,7 @@ spring:
     oauth2:
       client:
         registration:
-          semantics :
+          semantics:
             authorization-grant-type: client_credentials
             client-id: ${SEMANTICS_OAUTH2_CLIENT_ID} # Semantic Hub OAuth2 client ID used to authenticate with the IAM
             client-secret: ${SEMANTICS_OAUTH2_CLIENT_SECRET} # Semantic Hub OAuth2 client secret used to authenticate with the IAM
