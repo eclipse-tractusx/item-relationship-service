@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: 5.1.0
+  version: 5.0.0
 servers:
 - url: http://localhost:8080
 security:
