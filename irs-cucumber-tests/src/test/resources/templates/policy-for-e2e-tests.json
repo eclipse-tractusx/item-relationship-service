@@ -1,0 +1,31 @@
+{
+  "@context": {
+    "odrl": "http://www.w3.org/ns/odrl/2/"
+  },
+  "@id": "%s",
+  "policy": {
+    "odrl:permission": [
+      {
+        "odrl:action": "USE",
+        "odrl:constraint": {
+          "odrl:and": [
+            {
+              "odrl:leftOperand": "Membership",
+              "odrl:operator": {
+                "@id": "odrl:eq"
+              },
+              "odrl:rightOperand": "active"
+            },
+            {
+              "odrl:leftOperand": "PURPOSE",
+              "odrl:operator": {
+                "@id": "odrl:eq"
+              },
+              "odrl:rightOperand": "ID 3.1 Trace"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
