@@ -304,7 +304,8 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
         payload_ = {
             "@context": edc_context(),
             "edc:protocol": "dataspace-protocol-http",
-            "edc:providerUrl": f"{edc_url_}/api/v1/dsp",
+            "edc:counterPartyAddress": f"{edc_url_}/api/v1/dsp",
+            "edc:counterPartyId": "BPNL00000001CRHK",
             "edc:querySpec": {
                 "edc:filterExpression": {
                     "@type": "edc:Criterion",
@@ -316,7 +317,7 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
         }
         print(f"Query Catalog for registry asset {catalog_url_}")
         response_ = session_.request(method="POST", url=catalog_url_, headers=header_, data=json.dumps(payload_))
-
+        print_response(response_)
         asset_url_ = edc_upload_url_ + edc_asset_path_
         print(response_.status_code)
         catalog_response_ = response_.json()
@@ -526,7 +527,7 @@ if __name__ == "__main__":
             "@context": {
                 "odrl": "http://www.w3.org/ns/odrl/2/"
             },
-            "@type": "PolicyDefinitionRequestDto",
+            "@type": "odrl:Set",
             "@id": "default-policy",
             "policy": {
                 "@type": "Policy",
