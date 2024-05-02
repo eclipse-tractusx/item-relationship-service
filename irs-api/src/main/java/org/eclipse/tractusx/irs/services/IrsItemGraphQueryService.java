@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
@@ -76,7 +75,6 @@ import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.context.ApplicationEventPublisher;
@@ -109,20 +107,16 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    private final String bpdmUrl;
-
     public IrsItemGraphQueryService(final JobOrchestrator<ItemDataRequest, AASTransferProcess> orchestrator,
             final JobStore jobStore, @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore,
             final MeterRegistryService meterRegistryService, final SemanticsHubFacade semanticsHubFacade,
-            final ApplicationEventPublisher applicationEventPublisher,
-            @Value("${bpdm.bpnEndpoint:}") final String bpdmUrl) {
+            final ApplicationEventPublisher applicationEventPublisher) {
         this.orchestrator = orchestrator;
         this.jobStore = jobStore;
         this.blobStore = blobStore;
         this.meterRegistryService = meterRegistryService;
         this.semanticsHubFacade = semanticsHubFacade;
         this.applicationEventPublisher = applicationEventPublisher;
-        this.bpdmUrl = bpdmUrl;
     }
 
     @Override
@@ -172,11 +166,8 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final var params = JobParameter.create(request);
         if (params.getDirection().equals(Direction.UPWARD) && !params.getBomLifecycle().equals(BomLifecycle.AS_BUILT)) {
             // Currently not supported variant
-            throw new IllegalArgumentException("Upward direction is supported only for asBuilt bomLifecycle parameter!");
-        }
-        if (params.isLookupBPNs() && StringUtils.isBlank(bpdmUrl)) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Can't start job with BPN lookup - configured bpdm endpoint is empty!");
+            throw new IllegalArgumentException(
+                    "Upward direction is supported only for asBuilt bomLifecycle parameter!");
         }
         validateAspectTypeValues(params.getAspects());
 
@@ -245,7 +236,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
         final var tombstones = new ArrayList<Tombstone>();
         final var shells = new ArrayList<Shell>();
         final var submodels = new ArrayList<Submodel>();
-        final var bpns = new ArrayList<Bpn>();
 
         if (multiJob.jobIsCompleted()) {
             final var container = retrieveJobResultRelationships(multiJob.getJob().getId());
@@ -253,31 +243,29 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
             tombstones.addAll(container.getTombstones());
             shells.addAll(container.getShells());
             submodels.addAll(container.getSubmodels());
-            bpns.addAll(container.getBpns());
         } else if (includePartialResults) {
             final var container = retrievePartialResults(multiJob);
             relationships.addAll(container.getRelationships());
             tombstones.addAll(container.getTombstones());
             shells.addAll(container.getShells());
             submodels.addAll(container.getSubmodels());
-            bpns.addAll(container.getBpns());
         }
 
-        log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels", multiJob.getJob().getId(),
-                multiJob.getJob().getState(), relationships.size(), tombstones.size(), submodels.size());
+        log.info("Found job with id {} in status {} with {} relationships, {} tombstones and {} submodels",
+                multiJob.getJob().getId(), multiJob.getJob().getState(), relationships.size(), tombstones.size(),
+                submodels.size());
 
         return Jobs.builder()
                    .job(multiJob.getJob()
                                 .toBuilder()
                                 .summary(buildSummary(multiJob.getCompletedTransfers().size(),
-                                        multiJob.getTransferProcessIds().size(), tombstones.size(),
-                                        retrievePartialResults(multiJob)))
+                                        multiJob.getTransferProcessIds().size(), tombstones.size()))
                                 .build())
                    .relationships(relationships)
                    .tombstones(tombstones)
                    .shells(shells)
                    .submodels(submodels)
-                   .bpns(bpns)
+                   .bpns(List.of())
                    .build();
     }
 
@@ -300,28 +288,15 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     }
 
-    private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize,
-            final ItemContainer itemContainer) {
-        final Integer bpnLookupCompleted = getBpnLookupMetric(itemContainer, RequestMetric::getCompleted);
-        final Integer bpnLookupFailed = getBpnLookupMetric(itemContainer, RequestMetric::getFailed);
+    private Summary buildSummary(final int completedTransfersSize, final int runningSize, final int tombstonesSize) {
         return Summary.builder()
                       .asyncFetchedItems(AsyncFetchedItems.builder()
                                                           .completed(completedTransfersSize)
                                                           .running(runningSize)
-                                                          .failed(tombstonesSize - bpnLookupFailed)
+                                                          .failed(tombstonesSize)
                                                           .build())
-                      .bpnLookups(FetchedItems.builder().completed(bpnLookupCompleted).failed(bpnLookupFailed).build())
+                      .bpnLookups(FetchedItems.builder().completed(0).failed(0).build())
                       .build();
-    }
-
-    private Integer getBpnLookupMetric(final ItemContainer itemContainer,
-            final Function<RequestMetric, Integer> requestMetricIntegerFunction) {
-        return itemContainer.getMetrics()
-                            .stream()
-                            .filter(metric -> metric.getType().equals(RequestMetric.RequestType.BPDM))
-                            .map(requestMetricIntegerFunction)
-                            .reduce(Integer::sum)
-                            .orElse(0);
     }
 
     private ItemContainer retrievePartialResults(final MultiTransferJob multiJob) {

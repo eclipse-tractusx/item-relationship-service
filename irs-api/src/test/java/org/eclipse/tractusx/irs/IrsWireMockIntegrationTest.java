@@ -19,7 +19,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -55,7 +54,6 @@ import java.util.Objects;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.awaitility.Awaitility;
-import org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
@@ -68,7 +66,6 @@ import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
-import org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -127,7 +124,6 @@ class IrsWireMockIntegrationTest {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("bpdm.bpnEndpoint", () -> BpdmWireMockSupport.BPDM_URL_TEMPLATE);
         registry.add("digitalTwinRegistry.discovery.discoveryFinderUrl", () -> DISCOVERY_FINDER_URL);
         registry.add("digitalTwinRegistry.shellDescriptorTemplate", () -> SHELL_DESCRIPTORS_TEMPLATE);
         registry.add("digitalTwinRegistry.lookupShellsTemplate", () -> LOOKUP_SHELLS_TEMPLATE);
@@ -171,8 +167,6 @@ class IrsWireMockIntegrationTest {
                 "integrationtesting/singleLevelBomAsBuilt-1.json");
         successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
                 "integrationtesting/singleLevelBomAsBuilt-2.json");
-
-        BpdmWireMockSupport.bpdmWillReturnCompanyName(DiscoveryServiceWiremockSupport.TEST_BPN, "Company Name");
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1);
 
@@ -260,8 +254,6 @@ class IrsWireMockIntegrationTest {
                 "integrationtesting/singleLevelBomAsBuilt-2.json");
         successfulRegistryAndDataRequest(globalAssetIdLevel3, "GenericChemical", TEST_BPN,
                 "integrationtesting/batch-3.json", "integrationtesting/singleLevelBomAsBuilt-3.json");
-
-        BpdmWireMockSupport.bpdmWillReturnCompanyName(DiscoveryServiceWiremockSupport.TEST_BPN, "Company Name");
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 4);
 
