@@ -22,6 +22,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+        # make sure this workflow is executed based on updated repo state
+      - name: Get updated repo state
+        run: git pull
+
       - name: Update Chart.yaml appVersion
         uses: mikefarah/yq@v4.40.5
         with:
@@ -49,10 +53,13 @@ jobs:
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
-          sed -n -e '/## \[${{ inputs.new-irs-version }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
-          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.new-irs-version }} >> $GITHUB_ENV
-          echo "$EOF" >> "$GITHUB_ENV"
+          echo "CHANGELOG<<$EOF" >> "$GITHUB_ENV"
+          changes_details=$(sed -n -e "/## \[${{ inputs.new-irs-version }}\]/,/## \[/ p" CHANGELOG.md | head -n -1 | tail -n +2)
+          # echo details and create blank line
+          echo "$changes_details" >> "$GITHUB_ENV" && echo "" >> "$GITHUB_ENV"
+          full_changelog_string="**Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.new-irs-version }}"
+          echo $full_changelog_string >> "$GITHUB_ENV"
+          echo "$EOF" >> "$GITHUB_ENV"     
 
       - name: Create IRS release
         uses: softprops/action-gh-release@v1
