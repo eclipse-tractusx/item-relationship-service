@@ -52,7 +52,7 @@ class EdcCallbackControllerTest {
                                 "https://w3id.org/edc/v0.0.1/ns/endpoint": "test",
                                 "asset_id": "urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad",
                                 "agreement_id": "testContractId",
-                                "https://w3id.org/edc/v0.0.1/ns/authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODkwODA5OTEsImRhZCI6InRlc3QiLCJjaWQiOiJ0ZXN0SWQiLCJpYXQiOjE2ODkwODI2ODF9.62AIg-k8Yz6xLUBPblv2AtA5fuhoBnm9KMxhdCUunhA"
+                                "https://w3id.org/edc/v0.0.1/ns/authorization": "testToken"
                             }
                         }
                     }
@@ -62,7 +62,7 @@ class EdcCallbackControllerTest {
         final String expectedContractId = "testContractId";
         final String expectedEndpoint = "test";
         final String expectedAuthKey = "Authorization";
-        final String expectedAuthCode = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODkwODA5OTEsImRhZCI6InRlc3QiLCJjaWQiOiJ0ZXN0SWQiLCJpYXQiOjE2ODkwODI2ODF9.62AIg-k8Yz6xLUBPblv2AtA5fuhoBnm9KMxhdCUunhA";
+        final String expectedAuthCode = "testToken";
 
         // act
         testee.receiveEdcCallback(ref);
