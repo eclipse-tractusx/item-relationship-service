@@ -1,10 +1,20 @@
 name: Release IRS
 
 on:
-  workflow_dispatch:
-  push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+  workflow_call:
+    inputs:
+      new-irs-version:
+        description: 'New IRS version'
+        required: true
+        type: string
+      previous-irs-version:
+        description: 'Previous IRS version'
+        required: true
+        type: string
+      helm-chart-version:
+        description: 'New Helm Chart version'
+        required: true
+        type: string
 
 jobs:
   release:
@@ -12,56 +22,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Calculate Helm release version from CHANGELOG
-        run: echo HELM_VERSION=$(cat charts/item-relationship-service/CHANGELOG.md | sed -n 's/.*\[\([0-9]\+\.[0-9]\+\.[0-9]\+\)\].*/\1/p' | head -n 1) >> $GITHUB_ENV
-
       - name: Update Chart.yaml appVersion
         uses: mikefarah/yq@v4.40.5
         with:
-          cmd: yq -i eval '.appVersion = "${{ github.ref_name }}"' charts/item-relationship-service/Chart.yaml
+          cmd: yq -i eval '.appVersion = "${{ inputs.new-irs-version }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Update Chart.yaml version
         uses: mikefarah/yq@v4.40.5
         with:
-          cmd: yq -i eval '.version = "${{ env.HELM_VERSION }}"' charts/item-relationship-service/Chart.yaml
+          cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Prepare Helm release
         uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: "chore(release): Prepare release for Helm version ${{ env.HELM_VERSION }}"
-          branch: chore/prepare-helm-release-${{ env.HELM_VERSION }}
+          commit-message: "chore(release): Prepare release for Helm version ${{ inputs.helm-chart-version }}"
+          branch: chore/prepare-helm-release-${{ inputs.helm-chart-version }}
           base: main
           delete-branch: true
           title: Prepare Helm release for next version
           body: |
-            This PR prepares the Helm chart release for version ${{ env.HELM_VERSION }}. 
+            This PR prepares the Helm chart release for version ${{ inputs.helm-chart-version }}. 
             Please check whether the Chart was updated correctly and that the CHANGELOG contains the relevant information
             for this release. Also, make sure that the values.yaml is correct before merging this PR.
-
-      - name: Get previous version
-        run: echo PREVIOUS_VERSION=$(git tag | grep -E ^[0-9]+\\.[0-9]+\\.[0-9]+ | tail -2 | head -n +1) >> $GITHUB_ENV
 
       - name: Extract changelog text
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
-          sed -n -e '/## \[${{ github.ref_name }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
-          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ env.PREVIOUS_VERSION }}...${{ github.ref_name }} >> $GITHUB_ENV
+          sed -n -e '/## \[${{ inputs.new-irs-version }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
+          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.new-irs-version }} >> $GITHUB_ENV
           echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Create IRS release
         uses: softprops/action-gh-release@v1
         with:
           body: ${{ env.CHANGELOG }}
-
-  trigger-jira:
-    needs:
-      - release
-    uses: ./.github/workflows/jira-publish-release.yaml
-    with:
-      version: ${{ github.ref_name }}
-    secrets: inherit
+          tag_name: ${{ inputs.new-irs-version }}
 
   publish-to-swaggerhub:
     name: "Publish OpenAPI spec to Swaggerhub"
@@ -71,5 +68,5 @@ jobs:
       - release
     uses: ./.github/workflows/publish-swagger-hub.yml
     with:
-      version: ${{ github.ref_name }}
+      version: ${{ inputs.new-irs-version }}
     secrets: inherit

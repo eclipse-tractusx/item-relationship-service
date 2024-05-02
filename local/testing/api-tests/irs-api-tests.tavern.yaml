@@ -1725,16 +1725,18 @@ stages:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
       json:
         key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+          globalAssetId: urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
           - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
-          - urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt
-          - urn:samm:io.catenax.battery.battery_pass:3.0.1#BatteryPass"
-          - urn:samm:io.catenax.market_place_offer:1.4.0#MarketPlaceOffer
+          - urn:samm:io.catenax.batch:3.0.0#Batch
           - urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling
-          - urn:samm:io.catenax.return_request:1.0.1#ReturnRequest
+          #- urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt
+          #- urn:samm:io.catenax.battery.battery_pass:3.0.1#BatteryPass"
+          #- urn:samm:io.catenax.market_place_offer:1.4.0#MarketPlaceOffer
+          #- urn:samm:io.catenax.return_request:1.0.1#ReturnRequest
         collectAspects: true
+        depth: 2 
       method: POST
       headers:
         content-type: application/json
