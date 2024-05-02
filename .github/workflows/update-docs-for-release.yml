@@ -19,14 +19,7 @@ on:
         description: 'New Helm Chart version'
         required: true
         type: string
-      helm-changelog-irs-added:
-        description: '"Update IRS version to ..." change already present in charts/irs-helm/CHANGELOG.md for this release?'
-        required: true
-        type: choice
-        options:
-          - 'Yes'
-          - 'No'
-        default: 'No'
+
 jobs:
   update-docs-for-release:
     runs-on: ubuntu-latest
@@ -63,15 +56,10 @@ jobs:
         run: |
           new_irs_version="${{ inputs.irs-version }}"
           new_helm_chart_version="${{ inputs.helm-chart-version }}"
-          irs_change_present_in_helm_changelog="${{ inputs.helm-changelog-irs-added }}"
           date=$(date +"%Y-%m-%d")
           
           semver_pattern="${{ env.SEMVER_PATTERN }}"
-          semver_pattern_sed="[0-9]\+\.[0-9]\+\.[0-9]\+"
-
-          # get line numbers of "Unreleased" or "UNRELEASED" placeholders in changelogs to use them with sed
-          top_lvl_changelog_placeholder_line_number=$(cat -n ${{ env.TOP_LEVEL_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
-          irs_helm_changelog_placeholder_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
+          semver_pattern_sed="[0-9]\+\.[0-9]\+\.[0-9]\+"      
           
           ### update CHANGELOG.md ###
           # get line number of uppermost comparison url ("[Unreleased]: https://github.com/.../version...HEAD")
@@ -88,24 +76,31 @@ jobs:
           sed -i "$((latest_comparison_url_line_number+1)) s|^|[$new_irs_version]: https://github.com/eclipse-tractusx/item-relationship-service/compare/$previous_irs_version...$new_irs_version\n|" ${{ env.TOP_LEVEL_CHANGELOG_PATH }}        
           
           # replace placeholder
-          # get line numbers of "Unreleased" placeholder in changelogs to use them with sed
           top_lvl_changelog_placeholder_line_number=$(cat -n ${{ env.TOP_LEVEL_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
           sed -i "$((top_lvl_changelog_placeholder_line_number+1)) s|^|\n## [$new_irs_version] - $date\n|" ${{ env.TOP_LEVEL_CHANGELOG_PATH }}
           
-          ### update irs-helm directory's CHANGELOG.md ###
-          if [[ "$irs_change_present_in_helm_changelog" == "No" ]]; then
-            # get line number of first header which is not placeholder
-            next_header_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.## \[$semver_pattern\]" | grep -Eo "^[0-9]+")
-            # get line number of first  "### Changed" section
-            first_changed_section_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.### Changed" | grep -Eo "[0-9]+")
+          ### update Helm Chart directory's CHANGELOG.md ###
+          irs_helm_changelog_placeholder_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
           
-            # "### Changed" is already present for current changelog if it comes before next header -> just insert line below
-            if [[ $first_changed_section_line_number -lt $next_header_line_number ]]; then
-              sed -i "$((first_changed_section_line_number+1)) s|^|- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
-            # not present, insert before beginning of next header
-            else
-              sed -i "$(($next_header_line_number-1)) s|^|\n### Changed\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
+          # get line number of first header which is not placeholder
+          next_header_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.## \[$semver_pattern\]" | grep -Eo "^[0-9]+")
+          
+          # get line number of first  "### Changed" section
+          first_changed_section_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.### Changed" | grep -Eo "[0-9]+")
+          
+          # "### Changed" is already present for current changelog if it comes before next header -> just insert line below
+          if [[ $first_changed_section_line_number -lt $next_header_line_number ]]; then
+          
+            # check if markdown was properly formatted (with blank line between "### Changed" and first change)
+            line_after=$(awk "NR==$((first_changed_section_line_number+1))" ${{ env.IRS_HELM_CHANGELOG_PATH }})
+            if [[ "$line_after" == "" ]]; then
+              sed -i "$((first_changed_section_line_number+1)) s|^|\n- Update IRS version to $new_irs_version|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
+            else # format properly with blank line
+              sed -i "$((first_changed_section_line_number+1)) s|^|\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
             fi
+          
+          else
+            sed -i "$(($irs_helm_changelog_placeholder_line_number+1)) s|^|\n### Changed\n\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
           fi
           
           # replace placeholder
@@ -149,11 +144,11 @@ jobs:
             pr_status=$(gh pr view $pull_request_number --json state --jq ".state")
           
             case $pr_status in
-              
+          
               MERGED)
                 pull_request_merged="True"
                 ;;
-              
+          
               OPEN)
                 seconds_waited_for_merge=$((seconds_waited_for_merge+sleep_interval_length))
                 # abort workflow when having waited for more than specified time
@@ -161,7 +156,7 @@ jobs:
                   exit 1
                 fi
                 ;;
-              
+          
               CLOSED)
                 exit 1
                 ;;
