@@ -10,7 +10,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## Added
 
-- Cucumber test step definitions for Policy Store API (Happy Path). #518
+- Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
 
 ## Changed
 
