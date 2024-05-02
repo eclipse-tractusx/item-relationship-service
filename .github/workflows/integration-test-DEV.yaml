@@ -29,4 +29,5 @@ jobs:
       jiraPassword: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
     with:
       executionFilter: "not @Ignore and @INTEGRATION_TEST and @DEV"
-      exportFilter: "11349"
+      exportFilter: "12420"
+      #exportFilter: "11349"
