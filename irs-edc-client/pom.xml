@@ -102,42 +102,12 @@
             <groupId>org.eclipse.edc</groupId>
             <artifactId>management-api</artifactId>
             <version>${edc.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.edc</groupId>
-            <artifactId>dsp-transfer-process-transform</artifactId>
-            <version>${edc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.edc</groupId>
-            <artifactId>dsp-transfer-process-api</artifactId>
-            <version>${edc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.edc</groupId>
-            <artifactId>dsp-negotiation-transform</artifactId>
-            <version>${edc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.edc</groupId>
-            <artifactId>dsp-negotiation-api</artifactId>
-            <version>${edc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.edc</groupId>
-            <artifactId>dsp-catalog-transform</artifactId>
-            <version>${edc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.edc</groupId>
-            <artifactId>dsp-catalog-api</artifactId>
-            <version>${edc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.edc</groupId>
-            <artifactId>control-plane-policies-lib</artifactId>
-            <version>${edc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>swagger-jaxrs2-jakarta</artifactId>
+                    <groupId>io.swagger.core.v3</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.edc</groupId>
@@ -148,11 +118,31 @@
             <groupId>org.eclipse.edc</groupId>
             <artifactId>connector-core</artifactId>
             <version>${edc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>bcpkix-jdk18on</artifactId>
+                    <groupId>org.bouncycastle</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>policy-engine-lib</artifactId>
+                    <groupId>org.eclipse.edc</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>policy-engine-spi</artifactId>
+                    <groupId>org.eclipse.edc</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.edc</groupId>
             <artifactId>dsp</artifactId>
             <version>${edc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>swagger-jaxrs2-jakarta</artifactId>
+                    <groupId>io.swagger.core.v3</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.edc</groupId>
@@ -163,6 +153,20 @@
             <groupId>org.eclipse.tractusx.edc</groupId>
             <artifactId>edr-api</artifactId>
             <version>${edc.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>management-api</artifactId>
+                    <groupId>org.eclipse.edc</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>validator-core</artifactId>
+                    <groupId>org.eclipse.edc</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>swagger-jaxrs2-jakarta</artifactId>
+                    <groupId>io.swagger.core.v3</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- EDC Client -->
 
