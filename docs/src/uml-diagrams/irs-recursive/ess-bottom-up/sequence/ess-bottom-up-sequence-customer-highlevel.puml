@@ -43,7 +43,7 @@ end note
           "bomLifecycle": "asPlannned",
           "collectAspects": true,
           "depth": 1,
-          "direction": "upwards",
+          "direction": "upward",
           "keys": [
             {
               "bpn": "BPNL0123456789XX",
