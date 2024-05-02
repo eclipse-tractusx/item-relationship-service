@@ -29,14 +29,12 @@ import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
 
 /**
  * Request object for policy update
  */
 @Schema(description = "Request to update a policy")
-@Builder
 public record UpdatePolicyRequest(
 
         @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations.") //
