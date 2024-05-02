@@ -103,7 +103,46 @@ class EdcCallbackControllerTest {
     void shouldDeserializeCallbackEDR() {
         // arrange
         String callbackEDR = """
-                {"id":"b4d5d2f6-9da4-4236-864f-2803aeda1f56","at":1714647576205,"payload":{"transferProcessId":"2a02c181-7bb4-4521-aeb2-867adb829556","callbackAddresses":[{"uri":"https://webhook.site/89fcd62b-8a45-47d7-a195-83307d59b1cf","events":["transfer.process.started"],"transactional":false,"authKey":null,"authCodeId":null}],"assetId":"urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad","type":"CONSUMER","contractId":"e6a5704f-fdba-4ebd-975e-f650af8a70a8","dataAddress":{"properties":{"process_id":"ca06c205-71d6-4a0f-97a8-835189fa9856","participant_id":"BPNL00000001CRHK","asset_id":"urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad","https://w3id.org/edc/v0.0.1/ns/endpointType":"https://w3id.org/idsa/v4.1/HTTP","https://w3id.org/tractusx/auth/refreshEndpoint":"https://irs-test2-dp.dev.demo.catena-x.net/api/public/token","https://w3id.org/tractusx/auth/audience":"did:web:portal-backend.int.demo.catena-x.net:api:administration:staticdata:did:BPNL00000001CRHK","agreement_id":"e6a5704f-fdba-4ebd-975e-f650af8a70a8","flow_type":"PULL","https://w3id.org/edc/v0.0.1/ns/type":"https://w3id.org/idsa/v4.1/HTTP","https://w3id.org/edc/v0.0.1/ns/endpoint":"https://irs-test2-dp.dev.demo.catena-x.net/api/public","https://w3id.org/tractusx/auth/refreshToken":"eyJraWQiOiJpcnMtZGV2LWRhcHMtY2VydC1wcm92aWRlciIsImFsZyI6IlJTMjU2In0.eyJleHAiOjE3MTQ2NDc4NzQsImlhdCI6MTcxNDY0NzU3NCwianRpIjoiOWE1NjgzYTItNmIyNC00ZWFhLWJkZTAtOWNhNWNlZDU5OGNiIn0.hUY_WCgK2NYn_88E9tdK0BBS-9fzm9eXieIzTmi9HCrVQzzLdwj9PCd45Op09hkythCGuvg1hipWNiJdXUiO5uZ_virnyFLl8jf7eSKzQiFexq35Ug5Jfi8Wyqqur1lqCLOPoY2ViE_vdUYy8LYM5S5Se3Y_9B_bTTW8rBIiGMBiSsczE4E5SMKNEa0eXF5tKtDFySQDsskzUpeCaaV0YvL_9bxtzLRZfzzen9xWIELl-ZLXS9dx7l1wF5MtdeGlCbp9EvHFBJJMgqWxE9oWpbbXL0KWCqnHtwzNA_YiaIFNuDa4bI64Khuu49il9InGn_zwE9j7B6fda4-orrc-_A","https://w3id.org/tractusx/auth/expiresIn":"300","https://w3id.org/edc/v0.0.1/ns/authorization":"testJWT","https://w3id.org/tractusx/auth/refreshAudience":"did:web:portal-backend.int.demo.catena-x.net:api:administration:staticdata:did:BPNL00000001CRHK"}}},"type":"TransferProcessStarted"}
+                {
+                    "id": "b4d5d2f6-9da4-4236-864f-2803aeda1f56",
+                    "at": 1714647576205,
+                    "payload": {
+                        "transferProcessId": "2a02c181-7bb4-4521-aeb2-867adb829556",
+                        "callbackAddresses": [
+                            {
+                                "uri": "http://callback.url",
+                                "events": [
+                                    "transfer.process.started"
+                                ],
+                                "transactional": false,
+                                "authKey": null,
+                                "authCodeId": null
+                            }
+                        ],
+                        "assetId": "urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad",
+                        "type": "CONSUMER",
+                        "contractId": "e6a5704f-fdba-4ebd-975e-f650af8a70a8",
+                        "dataAddress": {
+                            "properties": {
+                                "process_id": "ca06c205-71d6-4a0f-97a8-835189fa9856",
+                                "participant_id": "BPNL00000001CRHK",
+                                "asset_id": "urn:uuid:df3aa078-567a-4b39-afa1-c92f32e6eaad",
+                                "https://w3id.org/edc/v0.0.1/ns/endpointType": "https://w3id.org/idsa/v4.1/HTTP",
+                                "https://w3id.org/tractusx/auth/refreshEndpoint": "http://dataplane.url/api/public/token",
+                                "https://w3id.org/tractusx/auth/audience": "did:web:issuer:did:BPNL000000012345",
+                                "agreement_id": "e6a5704f-fdba-4ebd-975e-f650af8a70a8",
+                                "flow_type": "PULL",
+                                "https://w3id.org/edc/v0.0.1/ns/type": "https://w3id.org/idsa/v4.1/HTTP",
+                                "https://w3id.org/edc/v0.0.1/ns/endpoint": "http://dataplane.url/api/public",
+                                "https://w3id.org/tractusx/auth/refreshToken": "testRefreshToken",
+                                "https://w3id.org/tractusx/auth/expiresIn": "300",
+                                "https://w3id.org/edc/v0.0.1/ns/authorization": "testJWT",
+                                "https://w3id.org/tractusx/auth/refreshAudience": "did:web:issuer:did:BPNL000000012345"
+                            }
+                        }
+                    },
+                    "type": "TransferProcessStarted"
+                }
                 """;
         
         // act
