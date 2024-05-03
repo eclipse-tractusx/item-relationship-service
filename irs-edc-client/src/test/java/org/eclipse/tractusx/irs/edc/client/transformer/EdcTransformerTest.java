@@ -30,8 +30,8 @@ import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.objectMapp
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,6 +56,7 @@ import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.types.domain.DataAddress;
+import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOffer;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
@@ -317,25 +318,27 @@ class EdcTransformerTest {
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
         final String connectorId = "BPNL00000003CRHK";
         final DataAddress dataAddress = DataAddress.Builder.newInstance().type("HttpProxy").build();
+        final List<CallbackAddress> callbackAddresses = List.of(CallbackAddress.Builder.newInstance()
+                                                                                       .uri("https://backend.app/endpoint-data-reference")
+                                                                                       .events(Set.of(
+                                                                                               "transfer.process.started"))
+                                                                                       .build());
         final TransferProcessRequest transferRequestDto = TransferProcessRequest.builder()
                                                                                 .assetId(assetId)
                                                                                 .connectorId(connectorId)
                                                                                 .counterPartyAddress(providerConnector)
                                                                                 .protocol(protocol)
                                                                                 .contractId(contractId)
-                                                                                .managedResources(false)
+                                                                                .transferType("HttpData-PULL")
                                                                                 .dataDestination(dataAddress)
-                                                                                .privateProperties(
-                                                                                        Map.of("receiverHttpEndpoint",
-                                                                                                "https://backend.app/endpoint-data-reference"))
+                                                                                .callbackAddresses(callbackAddresses)
                                                                                 .build();
         final JsonObject jsonObject = edcTransformer.transformTransferProcessRequestToJson(transferRequestDto);
         final Optional<JsonObject> optional = jsonLd.compact(jsonObject).asOptional();
         assertThat(optional).isPresent();
-        assertThat(optional.get().getJsonObject("edc:privateProperties")).isNotEmpty();
-        assertThat(optional.get().getJsonObject("edc:privateProperties")).containsKey("edc:receiverHttpEndpoint");
-        assertThat(
-                optional.get().getJsonObject("edc:privateProperties").getString("edc:receiverHttpEndpoint")).isEqualTo(
+        assertThat(optional.get()).contains(entry("edc:transferType", Json.createValue("HttpData-PULL")));
+        assertThat(optional.get().getJsonObject("edc:callbackAddresses")).isNotEmpty().containsKey("edc:uri");
+        assertThat(optional.get().getJsonObject("edc:callbackAddresses").getString("edc:uri")).isEqualTo(
                 "https://backend.app/endpoint-data-reference");
     }
 

@@ -56,7 +56,7 @@ public class JsonObjectFromTransferProcessRequestTransformer
     public @Nullable JsonObject transform(@NotNull final TransferProcessRequest dto, @NotNull final TransformerContext context) {
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
         builder.add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_ASSET_ID, dto.getAssetId())
-               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ADDRESS, dto.getCounterPartyAddress())
+               .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_COUNTER_PARTY_ADDRESS, dto.getCounterPartyAddress())
                .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_CONTRACT_ID, dto.getContractId())
                .add(TransferProcessRequest.EDC_TRANSFER_REQUEST_DTO_DATA_DESTINATION,
                        context.transform(dto.getDataDestination(), JsonObject.class))

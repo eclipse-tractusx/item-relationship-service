@@ -41,7 +41,7 @@ import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 public class TransferProcessRequest {
 
     public static final String EDC_TRANSFER_REQUEST_DTO_ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
-    public static final String EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/connectorAddress";
+    public static final String EDC_TRANSFER_REQUEST_DTO_COUNTER_PARTY_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/counterPartyAddress";
     public static final String EDC_TRANSFER_REQUEST_DTO_CONNECTOR_ID = "https://w3id.org/edc/v0.0.1/ns/connectorId";
     public static final String EDC_TRANSFER_REQUEST_DTO_CONTRACT_ID = "https://w3id.org/edc/v0.0.1/ns/contractId";
     public static final String EDC_TRANSFER_REQUEST_DTO_DATA_DESTINATION = "https://w3id.org/edc/v0.0.1/ns/dataDestination";
