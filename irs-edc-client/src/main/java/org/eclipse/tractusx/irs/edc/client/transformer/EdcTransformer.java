@@ -110,7 +110,9 @@ public class EdcTransformer {
 
         // JSON to Object
         typeTransformerRegistry.register(jsonObjectToCatalogTransformer);
+        typeTransformerRegistry.register(jsonObjectToIrsPolicyTransformer);
         typeTransformerRegistry.register(new JsonObjectToPolicyTransformer(participantIdMapper));
+        typeTransformerRegistry.register(new JsonObjectFromContractOfferTransformer(participantIdMapper, jsonBuilderFactory));
         typeTransformerRegistry.register(new JsonValueToGenericTypeTransformer(objectMapper));
         typeTransformerRegistry.register(new JsonObjectToDataServiceTransformer());
         typeTransformerRegistry.register(new JsonObjectToConstraintTransformer());
@@ -126,7 +128,6 @@ public class EdcTransformer {
         typeTransformerRegistry.register(new JsonObjectToCriterionTransformer());
         typeTransformerRegistry.register(new JsonObjectToOperatorTransformer());
         typeTransformerRegistry.register(new JsonObjectToCallbackAddressTransformer());
-        typeTransformerRegistry.register(jsonObjectToIrsPolicyTransformer);
 
         // JSON from Object
         typeTransformerRegistry.register(jsonObjectFromNegotiationInitiateDtoTransformer);

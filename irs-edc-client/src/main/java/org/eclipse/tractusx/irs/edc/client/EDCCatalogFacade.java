@@ -108,7 +108,7 @@ public class EDCCatalogFacade {
                                                                .stream()
                                                                .findFirst()
                                                                .orElseThrow();
-                final Policy policy = offer.getValue().toBuilder().assigner(getParticipantId(catalog)).build();
+                final Policy policy = offer.getValue().toBuilder().assigner(getParticipantId(catalog)).target(dataset.getId()).build();
 
                 return CatalogItem.builder()
                                   .itemId(dataset.getId())
@@ -159,7 +159,14 @@ public class EDCCatalogFacade {
         return datasets.stream().map(dataset -> createCatalogItem(pageableCatalog, dataset)).toList();
     }
 
-    @Deprecated
+    /**
+     * @deprecated
+     * @param connectorUrl The EDC Connector from which the Catalog will be requested
+     * @param target       The target assetID which will be searched for
+     * @param bpn          The BPN of the company to which the EDC Connector belongs
+     * @return The list of catalog Items matching the target id
+     */
+    @Deprecated(since = "5.0.0")
     public List<CatalogItem> fetchCatalogById(final String connectorUrl, final String target, final String bpn) {
         return fetchCatalogByFilter(connectorUrl, NAMESPACE_EDC_ID, target, bpn);
     }

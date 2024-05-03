@@ -42,6 +42,7 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationExcepti
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
+import org.eclipse.tractusx.irs.edc.client.model.ContractOffer;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
@@ -175,7 +176,8 @@ public class ContractNegotiationService {
                                  .counterPartyAddress(providerConnectorUrl)
                                  .counterPartyId(catalogItem.getConnectorId())
                                  .protocol(EDC_PROTOCOL)
-                                 .policy(catalogItem.getPolicy())
+                                 .contractOffer(ContractOffer.fromPolicy(catalogItem.getPolicy(), catalogItem.getOfferId(), catalogItem.getAssetPropId(),
+                                                                     catalogItem.getConnectorId()))
                                  .build();
     }
 

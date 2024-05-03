@@ -151,7 +151,7 @@ class EdcCallbackControllerTest {
         // assert
         final Optional<EndpointDataReference> actualEdr = storage.get("e6a5704f-fdba-4ebd-975e-f650af8a70a8");
         assertThat(actualEdr).isNotNull();
-        assertThat(actualEdr.isPresent()).isTrue();
+        assertThat(actualEdr).isPresent();
         assertThat(actualEdr.get().getAuthCode()).isEqualTo(
                 "testJWT");
         assertThat(actualEdr.get().getAuthKey()).isEqualTo("Authorization");

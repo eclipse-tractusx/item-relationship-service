@@ -56,6 +56,7 @@ import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.query.Criterion;
 import org.eclipse.edc.spi.query.QuerySpec;
 import org.eclipse.edc.spi.types.domain.DataAddress;
+import org.eclipse.tractusx.irs.edc.client.model.ContractOffer;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.TransferProcessRequest;
@@ -180,11 +181,12 @@ class EdcTransformerTest {
     }
 
     private static NegotiationRequest createNegotiation(final String providerBPN, final String providerConnector,
-            final String protocol, final String assetId) {
+            final String protocol, final String assetId, final String offerId) {
         final Policy policy = createPolicy(assetId).toBuilder().type(PolicyType.OFFER).assigner(providerBPN).build();
 
+        final ContractOffer contractOffer = ContractOffer.fromPolicy(policy, offerId, assetId, providerBPN);
         return NegotiationRequest.builder()
-                                 .policy(policy)
+                                 .contractOffer(contractOffer)
                                  .counterPartyAddress(providerConnector)
                                  .counterPartyId(providerBPN)
                                  .protocol(protocol)
@@ -287,8 +289,10 @@ class EdcTransformerTest {
         final String providerConnector = "https://provider.edc/api/v1/dsp";
         final String protocol = "dataspace-protocol-http";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
+        final String offerId = "test";
+
         final NegotiationRequest negotiationInitiateRequestDto = createNegotiation(providerBPN, providerConnector,
-                protocol, assetId);
+                protocol, assetId, offerId);
 
         final JsonObject negotiationJson = edcTransformer.transformNegotiationRequestToJson(
                 negotiationInitiateRequestDto);
@@ -299,8 +303,9 @@ class EdcTransformerTest {
                                    .contains(entry("edc:protocol", Json.createValue(protocol)));
         final JsonObject policyJsonObject = negotiationJson.get("edc:policy").asJsonObject();
         assertThat(policyJsonObject).isNotEmpty().containsKey("odrl:assigner");
-        assertThat(policyJsonObject.getJsonObject("odrl:assigner")).contains(entry("@id",
-                                                                            Json.createValue(providerBPN)));
+        assertThat(policyJsonObject.getJsonObject("odrl:assigner")).contains(
+                entry("@id", Json.createValue(providerBPN)));
+        assertThat(policyJsonObject).contains(entry("@id", Json.createValue(offerId)));
     }
 
     @Test
@@ -355,18 +360,18 @@ class EdcTransformerTest {
         final Optional<JsonObject> optional = jsonLd.compact(requestJson).asOptional();
         assertThat(optional).isPresent();
         final JsonObject catalogRequestJson = optional.get();
-        assertThat(catalogRequestJson).isNotEmpty();
-        assertThat(catalogRequestJson).contains(entry("@type", Json.createValue("edc:CatalogRequest")));
-        assertThat(catalogRequestJson).contains(entry("edc:counterPartyAddress", Json.createValue(providerConnector)));
-        assertThat(catalogRequestJson).contains(entry("edc:counterPartyId", Json.createValue(providerBPN)));
-        assertThat(catalogRequestJson).contains(entry("edc:protocol", Json.createValue(protocol)));
+        assertThat(catalogRequestJson).isNotEmpty()
+                                      .contains(entry("@type", Json.createValue("edc:CatalogRequest")))
+                                      .contains(entry("edc:counterPartyAddress", Json.createValue(providerConnector)))
+                                      .contains(entry("edc:counterPartyId", Json.createValue(providerBPN)))
+                                      .contains(entry("edc:protocol", Json.createValue(protocol)));
 
         final JsonObject jsonQuerySpec = catalogRequestJson.getJsonObject("edc:querySpec");
         assertThat(jsonQuerySpec).containsKey("edc:filterExpression");
 
         final JsonObject jsonFilterExpression = jsonQuerySpec.getJsonObject("edc:filterExpression");
-        assertThat(jsonFilterExpression).contains(entry("edc:operandLeft", Json.createValue(operandLeft)));
-        assertThat(jsonFilterExpression).contains(entry("edc:operator", Json.createValue(operator)));
-        assertThat(jsonFilterExpression).contains(entry("edc:operandRight", Json.createValue(operandRight)));
+        assertThat(jsonFilterExpression).contains(entry("edc:operandLeft", Json.createValue(operandLeft)))
+                                        .contains(entry("edc:operator", Json.createValue(operator)))
+                                        .contains(entry("edc:operandRight", Json.createValue(operandRight)));
     }
 }

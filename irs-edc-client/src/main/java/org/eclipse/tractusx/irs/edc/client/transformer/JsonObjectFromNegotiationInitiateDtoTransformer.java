@@ -56,7 +56,7 @@ public class JsonObjectFromNegotiationInitiateDtoTransformer
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
         builder.add(NegotiationRequest.NEGOTIATION_COUNTER_PARTY_ADDRESS, dto.getCounterPartyAddress())
                .add(NegotiationRequest.NEGOTIATION_COUNTER_PARTY_ID, dto.getCounterPartyId())
-               .add(NegotiationRequest.NEGOTIATION_POLICY, context.transform(dto.getPolicy(), JsonObject.class))
+               .add(NegotiationRequest.NEGOTIATION_POLICY, context.transform(dto.getContractOffer(), JsonObject.class))
                .add(NegotiationRequest.NEGOTIATION_PROTOCOL, dto.getProtocol());
         Optional.ofNullable(dto.getCallbackAddresses())
                 .ifPresent(s -> builder.add(NegotiationRequest.NEGOTIATION_CALLBACK_ADDRESSES,

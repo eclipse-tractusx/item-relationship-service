@@ -77,18 +77,23 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Transforms a {@link Policy} to an ODRL type as a {@link JsonObject} in expanded JSON-LD form.
  */
+@SuppressWarnings({ "PMD.TooManyStaticImports",
+                    "PMD.ExcessiveImports",
+                    "PMD.TooManyMethods"
+})
 public class JsonObjectFromPolicyTransformer extends AbstractJsonLdTransformer<Policy, JsonObject> {
     private final JsonBuilderFactory jsonFactory;
     private final ParticipantIdMapper participantIdMapper;
 
-    public JsonObjectFromPolicyTransformer(JsonBuilderFactory jsonFactory, ParticipantIdMapper participantIdMapper) {
+    public JsonObjectFromPolicyTransformer(final JsonBuilderFactory jsonFactory,
+            final ParticipantIdMapper participantIdMapper) {
         super(Policy.class, JsonObject.class);
         this.jsonFactory = jsonFactory;
         this.participantIdMapper = participantIdMapper;
     }
 
     @Override
-    public @Nullable JsonObject transform(@NotNull Policy policy, @NotNull TransformerContext context) {
+    public @Nullable JsonObject transform(final @NotNull Policy policy, final @NotNull TransformerContext context) {
         return policy.accept(new Visitor(jsonFactory, participantIdMapper));
     }
 
@@ -101,30 +106,30 @@ public class JsonObjectFromPolicyTransformer extends AbstractJsonLdTransformer<P
         private final JsonBuilderFactory jsonFactory;
         private final ParticipantIdMapper participantIdMapper;
 
-        Visitor(JsonBuilderFactory jsonFactory, ParticipantIdMapper participantIdMapper) {
+        /* default */ Visitor(final JsonBuilderFactory jsonFactory, final ParticipantIdMapper participantIdMapper) {
             this.jsonFactory = jsonFactory;
             this.participantIdMapper = participantIdMapper;
         }
 
         @Override
-        public JsonObject visitAndConstraint(AndConstraint andConstraint) {
+        public JsonObject visitAndConstraint(final AndConstraint andConstraint) {
             return visitMultiplicityConstraint(ODRL_AND_CONSTRAINT_ATTRIBUTE, andConstraint);
         }
 
         @Override
-        public JsonObject visitOrConstraint(OrConstraint orConstraint) {
+        public JsonObject visitOrConstraint(final OrConstraint orConstraint) {
             return visitMultiplicityConstraint(ODRL_OR_CONSTRAINT_ATTRIBUTE, orConstraint);
         }
 
         @Override
-        public JsonObject visitXoneConstraint(XoneConstraint xoneConstraint) {
+        public JsonObject visitXoneConstraint(final XoneConstraint xoneConstraint) {
             return visitMultiplicityConstraint(ODRL_XONE_CONSTRAINT_ATTRIBUTE, xoneConstraint);
         }
 
-        private JsonObject visitMultiplicityConstraint(String operandType,
-                MultiplicityConstraint multiplicityConstraint) {
-            var constraintsBuilder = jsonFactory.createArrayBuilder();
-            for (var constraint : multiplicityConstraint.getConstraints()) {
+        private JsonObject visitMultiplicityConstraint(final String operandType,
+                final MultiplicityConstraint multiplicityConstraint) {
+            final var constraintsBuilder = jsonFactory.createArrayBuilder();
+            for (final var constraint : multiplicityConstraint.getConstraints()) {
                 Optional.of(constraint).map(c -> c.accept(this)).ifPresent(constraintsBuilder::add);
             }
 
@@ -132,11 +137,11 @@ public class JsonObjectFromPolicyTransformer extends AbstractJsonLdTransformer<P
         }
 
         @Override
-        public JsonObject visitAtomicConstraint(AtomicConstraint atomicConstraint) {
-            var constraintBuilder = jsonFactory.createObjectBuilder();
+        public JsonObject visitAtomicConstraint(final AtomicConstraint atomicConstraint) {
+            final var constraintBuilder = jsonFactory.createObjectBuilder();
 
             constraintBuilder.add(ODRL_LEFT_OPERAND_ATTRIBUTE, atomicConstraint.getLeftExpression().accept(this));
-            var operator = atomicConstraint.getOperator().getOdrlRepresentation();
+            final var operator = atomicConstraint.getOperator().getOdrlRepresentation();
             constraintBuilder.add(ODRL_OPERATOR_ATTRIBUTE,
                     jsonFactory.createArrayBuilder().add(jsonFactory.createObjectBuilder().add(ID, operator)));
             constraintBuilder.add(ODRL_RIGHT_OPERAND_ATTRIBUTE, atomicConstraint.getRightExpression().accept(this));
@@ -145,29 +150,29 @@ public class JsonObjectFromPolicyTransformer extends AbstractJsonLdTransformer<P
         }
 
         @Override
-        public JsonObject visitLiteralExpression(LiteralExpression expression) {
+        public JsonObject visitLiteralExpression(final LiteralExpression expression) {
             return jsonFactory.createObjectBuilder()
                               .add(VALUE, Json.createValue(expression.getValue().toString()))
                               .build();
         }
 
         @Override
-        public JsonObject visitPolicy(Policy policy) {
-            var permissionsBuilder = jsonFactory.createArrayBuilder();
+        public JsonObject visitPolicy(final Policy policy) {
+            final var permissionsBuilder = jsonFactory.createArrayBuilder();
             policy.getPermissions().forEach(permission -> permissionsBuilder.add(permission.accept(this)));
 
-            var prohibitionsBuilder = jsonFactory.createArrayBuilder();
+            final var prohibitionsBuilder = jsonFactory.createArrayBuilder();
             policy.getProhibitions().forEach(prohibition -> prohibitionsBuilder.add(prohibition.accept(this)));
 
-            var obligationsBuilder = jsonFactory.createArrayBuilder();
+            final var obligationsBuilder = jsonFactory.createArrayBuilder();
             policy.getObligations().forEach(duty -> obligationsBuilder.add(duty.accept(this)));
 
-            var builder = jsonFactory.createObjectBuilder()
-                                     .add(ID, randomUUID().toString())
-                                     .add(TYPE, getTypeAsString(policy.getType()))
-                                     .add(ODRL_PERMISSION_ATTRIBUTE, permissionsBuilder)
-                                     .add(ODRL_PROHIBITION_ATTRIBUTE, prohibitionsBuilder)
-                                     .add(ODRL_OBLIGATION_ATTRIBUTE, obligationsBuilder);
+            final var builder = jsonFactory.createObjectBuilder()
+                                           .add(ID, randomUUID().toString())
+                                           .add(TYPE, getTypeAsString(policy.getType()))
+                                           .add(ODRL_PERMISSION_ATTRIBUTE, permissionsBuilder)
+                                           .add(ODRL_PROHIBITION_ATTRIBUTE, prohibitionsBuilder)
+                                           .add(ODRL_OBLIGATION_ATTRIBUTE, obligationsBuilder);
 
             Optional.ofNullable(policy.getAssignee())
                     .map(participantIdMapper::toIri)
@@ -185,12 +190,12 @@ public class JsonObjectFromPolicyTransformer extends AbstractJsonLdTransformer<P
         }
 
         @Override
-        public JsonObject visitPermission(Permission permission) {
-            var permissionBuilder = visitRule(permission);
+        public JsonObject visitPermission(final Permission permission) {
+            final var permissionBuilder = visitRule(permission);
 
             if (permission.getDuties() != null && !permission.getDuties().isEmpty()) {
-                var dutiesBuilder = jsonFactory.createArrayBuilder();
-                for (var duty : permission.getDuties()) {
+                final var dutiesBuilder = jsonFactory.createArrayBuilder();
+                for (final var duty : permission.getDuties()) {
                     dutiesBuilder.add(visitDuty(duty));
                 }
                 permissionBuilder.add(ODRL_DUTY_ATTRIBUTE, dutiesBuilder.build());
@@ -200,26 +205,26 @@ public class JsonObjectFromPolicyTransformer extends AbstractJsonLdTransformer<P
         }
 
         @Override
-        public JsonObject visitProhibition(Prohibition prohibition) {
-            var prohibitionBuilder = visitRule(prohibition);
+        public JsonObject visitProhibition(final Prohibition prohibition) {
+            final var prohibitionBuilder = visitRule(prohibition);
 
             return prohibitionBuilder.build();
         }
 
         @Override
-        public JsonObject visitDuty(Duty duty) {
-            var obligationBuilder = visitRule(duty);
+        public JsonObject visitDuty(final Duty duty) {
+            final var obligationBuilder = visitRule(duty);
 
             if (duty.getConsequence() != null) {
-                var consequence = visitDuty(duty.getConsequence());
+                final var consequence = visitDuty(duty.getConsequence());
                 obligationBuilder.add(ODRL_CONSEQUENCE_ATTRIBUTE, consequence);
             }
 
             return obligationBuilder.build();
         }
 
-        private JsonObjectBuilder visitRule(Rule rule) {
-            var ruleBuilder = jsonFactory.createObjectBuilder();
+        private JsonObjectBuilder visitRule(final Rule rule) {
+            final var ruleBuilder = jsonFactory.createObjectBuilder();
 
             ruleBuilder.add(ODRL_ACTION_ATTRIBUTE, visitAction(rule.getAction()));
             if (rule.getConstraints() != null && !rule.getConstraints().isEmpty()) {
@@ -229,18 +234,18 @@ public class JsonObjectFromPolicyTransformer extends AbstractJsonLdTransformer<P
             return ruleBuilder;
         }
 
-        private JsonArray visitConstraints(Rule rule) {
-            var constraintsBuilder = jsonFactory.createArrayBuilder();
+        private JsonArray visitConstraints(final Rule rule) {
+            final var constraintsBuilder = jsonFactory.createArrayBuilder();
 
-            for (var constraint : rule.getConstraints()) {
+            for (final var constraint : rule.getConstraints()) {
                 Optional.of(constraint).map(c -> c.accept(this)).ifPresent(constraintsBuilder::add);
             }
 
             return constraintsBuilder.build();
         }
 
-        private JsonObject visitAction(@Nullable Action action) {
-            var actionBuilder = jsonFactory.createObjectBuilder();
+        private JsonObject visitAction(final @Nullable Action action) {
+            final var actionBuilder = jsonFactory.createObjectBuilder();
             if (action == null) {
                 return actionBuilder.build();
             }
@@ -254,7 +259,7 @@ public class JsonObjectFromPolicyTransformer extends AbstractJsonLdTransformer<P
             return actionBuilder.build();
         }
 
-        private String getTypeAsString(PolicyType type) {
+        private String getTypeAsString(final PolicyType type) {
             return switch (type) {
                 case SET -> ODRL_POLICY_TYPE_SET;
                 case OFFER -> ODRL_POLICY_TYPE_OFFER;

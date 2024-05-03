@@ -31,7 +31,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
-import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 
 /**
@@ -54,13 +53,13 @@ public class NegotiationRequest {
     public static final String NEGOTIATION_POLICY = "https://w3id.org/edc/v0.0.1/ns/policy";
 
     @NotBlank(message = "counterPartyAddress is mandatory")
-    private String counterPartyAddress;
+    /* default */ String counterPartyAddress;
     @NotBlank(message = "counterPartyId is mandatory")
-    private String counterPartyId;
+    /* default */ String counterPartyId;
     @NotBlank(message = "protocol is mandatory")
-    private String protocol;
+    /* default */ String protocol;
     @NotNull(message = "offer cannot be null")
-    private Policy policy;
-    private List<CallbackAddress> callbackAddresses = new ArrayList<>();
+    /* default */ ContractOffer contractOffer;
+    /* default */ List<CallbackAddress> callbackAddresses = new ArrayList<>();
 }
 

@@ -114,6 +114,24 @@ public class TestMother {
                               .build();
     }
 
+    public static Catalog createCatalog(final String assetId, final Policy policy, final String bpn,
+            final String offerId) {
+        final Distribution distribution = Distribution.Builder.newInstance()
+                                                              .format("HttpProxy")
+                                                              .dataService(new DataService())
+                                                              .build();
+
+        final Dataset dataset = Dataset.Builder.newInstance()
+                                                .id(assetId)
+                                                .offer(offerId, policy)
+                                                .distribution(distribution)
+                                                .build();
+        return Catalog.Builder.newInstance()
+                              .dataset(dataset)
+                              .properties(Map.of(NAMESPACE_EDC_PARTICIPANT_ID, bpn))
+                              .build();
+    }
+
     @NotNull
     private static String getOfferId(final String assetId) {
         return UUID.randomUUID() + ":" + assetId + ":" + UUID.randomUUID();
