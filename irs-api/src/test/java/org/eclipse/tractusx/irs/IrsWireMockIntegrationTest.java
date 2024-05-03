@@ -58,7 +58,6 @@ import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport;
@@ -111,12 +110,6 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.successfulSemanticModelRequest();
     }
 
-    @AfterEach
-    void tearDown() {
-        cacheManager.getCacheNames()
-                    .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
-    }
-
     @AfterAll
     static void stopContainer() {
         minioContainer.stop();
@@ -139,6 +132,12 @@ class IrsWireMockIntegrationTest {
         registry.add("irs-edc-client.controlplane.api-key.header", () -> "X-Api-Key");
         registry.add("irs-edc-client.controlplane.api-key.secret", () -> "test");
         registry.add("resilience4j.retry.configs.default.waitDuration", () -> "1s");
+    }
+
+    @AfterEach
+    void tearDown() {
+        cacheManager.getCacheNames()
+                    .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
     }
 
     @Test
@@ -264,7 +263,6 @@ class IrsWireMockIntegrationTest {
         assertThat(jobHandle.getId()).isNotNull();
         waitForCompletion(jobHandle);
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
-        System.out.println(StringMapper.mapToString(jobForJobId));
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(jobForJobId.getShells()).hasSize(3);
@@ -280,8 +278,7 @@ class IrsWireMockIntegrationTest {
             final String batchFileName, final String sbomFileName) {
 
         final String edcAssetId = WiremockSupport.randomUUIDwithPrefix();
-        final String batch = WiremockSupport.submodelRequest(edcAssetId, "Batch",
-                batchAspectName, batchFileName);
+        final String batch = WiremockSupport.submodelRequest(edcAssetId, "Batch", batchAspectName, batchFileName);
 
         final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, "SingleLevelBomAsBuilt",
                 singleLevelBomAsBuiltAspectName, sbomFileName);

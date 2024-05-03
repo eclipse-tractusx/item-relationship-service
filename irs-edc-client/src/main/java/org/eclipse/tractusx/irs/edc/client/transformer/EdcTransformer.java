@@ -55,7 +55,6 @@ import org.eclipse.edc.core.transform.transformer.edc.to.JsonObjectToAssetTransf
 import org.eclipse.edc.core.transform.transformer.edc.to.JsonObjectToCriterionTransformer;
 import org.eclipse.edc.core.transform.transformer.edc.to.JsonObjectToQuerySpecTransformer;
 import org.eclipse.edc.core.transform.transformer.edc.to.JsonValueToGenericTypeTransformer;
-import org.eclipse.edc.core.transform.transformer.odrl.from.JsonObjectFromPolicyTransformer;
 import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToConstraintTransformer;
 import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToDutyTransformer;
 import org.eclipse.edc.core.transform.transformer.odrl.to.JsonObjectToOperatorTransformer;

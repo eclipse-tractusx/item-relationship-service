@@ -282,9 +282,8 @@ class EdcTransformerTest {
     }
 
     @Test
-    void shouldSerializeNegotiationInitiateDtoToJsonObject() {
-        final String consumerBPN = "BPNL00000003CRHK";
-        final String providerBPN = "BPNL00000003CRHK";
+    void shouldSerializeNegotiationRequestToJsonObject() {
+        final String providerBPN = "BPNL00000001CRHK";
         final String providerConnector = "https://provider.edc/api/v1/dsp";
         final String protocol = "dataspace-protocol-http";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
@@ -293,15 +292,15 @@ class EdcTransformerTest {
 
         final JsonObject negotiationJson = edcTransformer.transformNegotiationRequestToJson(
                 negotiationInitiateRequestDto);
-        System.out.println(negotiationJson);
 
         assertThat(negotiationJson).isNotEmpty()
                                    .contains(entry("edc:counterPartyAddress", Json.createValue(providerConnector)))
                                    .contains(entry("edc:counterPartyId", Json.createValue(providerBPN)))
                                    .contains(entry("edc:protocol", Json.createValue(protocol)));
-        assertThat(negotiationJson.get("edc:policy").asJsonObject()).isNotEmpty()
-                                                                    .contains(entry("odrl:assigner",
-                                                                            Json.createValue(consumerBPN)));
+        final JsonObject policyJsonObject = negotiationJson.get("edc:policy").asJsonObject();
+        assertThat(policyJsonObject).isNotEmpty().containsKey("odrl:assigner");
+        assertThat(policyJsonObject.getJsonObject("odrl:assigner")).contains(entry("@id",
+                                                                            Json.createValue(providerBPN)));
     }
 
     @Test

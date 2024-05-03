@@ -94,7 +94,7 @@ class EdcAssetServiceTest {
     }
 
     @Test
-    void testAssetCreateRequestStructure() throws JSONException, JsonProcessingException {
+    void testAssetCreateRequestStructure() throws JSONException {
 
         Map<String, Object> properties = Map.of("https://w3id.org/edc/v0.0.1/ns/description",
                 "endpoint to qualityinvestigation receive", "https://w3id.org/edc/v0.0.1/ns/contenttype",
@@ -118,11 +118,7 @@ class EdcAssetServiceTest {
                                    .properties(properties)
                                    .dataAddress(dataAddress)
                                    .build();
-        System.out.println(objectMapper().writeValueAsString(asset));
-        System.out.println(objectMapper().writeValueAsString(dataAddress));
-        System.out.println(objectMapper().writeValueAsString(properties));
         JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
-        System.out.println(objectMapper().writeValueAsString(jsonObject));
 
         JSONAssert.assertEquals("""
                 {
