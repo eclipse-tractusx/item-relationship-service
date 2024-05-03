@@ -108,27 +108,27 @@ public final class SubmodelFacadeWiremockSupport {
     private static String startNegotiationResponse(final String negotiationId) {
         return """
                 {
-                    "@type": "edc:IdResponseDto",
+                    "@type": "IdResponse",
                     "@id": "%s",
-                    "edc:createdAt": 1686830151573,
+                    "createdAt": 1686830151573,
                     "@context": %s
                 }
                 """.formatted(negotiationId, CONTEXT);
     }
 
     private static String getNegotiationStateResponse(final String negotiationState) {
-        return stateResponseTemplate("edc:NegotiationState", negotiationState);
+        return stateResponseTemplate("NegotiationState", negotiationState);
     }
 
     private static String getTransferProcessStateResponse(final String transferProcessState) {
-        return stateResponseTemplate("edc:TransferState", transferProcessState);
+        return stateResponseTemplate("TransferState", transferProcessState);
     }
 
     private static String stateResponseTemplate(final String responseType, final String negotiationState) {
         return """
                 {
                     "@type": "%s",
-                    "edc:state": "%s",
+                    "state": "%s",
                     "@context": %s
                 }
                 """.formatted(responseType, negotiationState, CONTEXT);
@@ -138,17 +138,18 @@ public final class SubmodelFacadeWiremockSupport {
             final String contractAgreementId) {
         return """
                 {
-                    "@type": "edc:ContractNegotiationDto",
+                    "@type": "ContractNegotiation",
                     "@id": "%s",
-                    "edc:type": "CONSUMER",
-                    "edc:protocol": "dataspace-protocol-http",
-                    "edc:state": "%s",
-                    "edc:counterPartyAddress": "%s",
-                    "edc:callbackAddresses": [],
-                    "edc:contractAgreementId": "%s",
+                    "type": "CONSUMER",
+                    "protocol": "dataspace-protocol-http",
+                    "state": "%s",
+                    "counterPartyAddress": "%s",
+                    "counterPartyId": "%s",
+                    "callbackAddresses": [],
+                    "contractAgreementId": "%s",
                     "@context": %s
                 }
-                """.formatted(negotiationId, negotiationState, EDC_PROVIDER_DUMMY_URL, contractAgreementId, CONTEXT);
+                """.formatted(negotiationId, negotiationState, EDC_PROVIDER_DUMMY_URL, "BPNL00000001TEST",contractAgreementId, CONTEXT);
     }
 
     private static String getTransferConfirmedResponse(final String transferProcessId, final String transferState,
@@ -156,26 +157,28 @@ public final class SubmodelFacadeWiremockSupport {
         return """
                 {
                     "@id": "%s",
-                    "@type": "edc:TransferProcessDto",
-                    "edc:state": "%s",
-                    "edc:stateTimestamp": 1688024335567,
-                    "edc:type": "CONSUMER",
-                    "edc:callbackAddresses": [],
-                    "edc:dataDestination": {
-                        "edc:type": "HttpProxy"
+                    "@type": "TransferProcess",
+                    "state": "%s",
+                    "stateTimestamp": 1688024335567,
+                    "type": "CONSUMER",
+                    "callbackAddresses": {
+                        "@type": "CallbackAddress",
+                        "transactional": false,
+                        "uri": "%s",
+                        "events": "transfer.process.started"
                     },
-                    "edc:dataRequest": {
-                        "@type": "edc:DataRequestDto",
-                        "@id": "%s",
-                        "edc:assetId": "%s",
-                        "edc:contractId": "%s",
-                        "edc:connectorId": "%s"
+                    "correlationId": "%s",
+                    "assetId": "%s",
+                    "contractId": "%s",
+                    "transferType": "HttpData-PULL",
+                    "dataDestination": {
+                        "@type": "DataAddress",
+                        "type": "HttpProxy"
                     },
-                    "edc:receiverHttpEndpoint": "%s",
                     "@context": %s
                 }
-                """.formatted(transferProcessId, transferState, transferProcessId, edcAssetId, contractAgreementId,
-                EDC_PROVIDER_BPN, IRS_INTERNAL_CALLBACK_URL, CONTEXT);
+                """.formatted(transferProcessId, transferState, IRS_INTERNAL_CALLBACK_URL, transferProcessId, edcAssetId, contractAgreementId,
+                CONTEXT);
     }
 
     @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
