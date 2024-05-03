@@ -337,9 +337,14 @@ class EdcTransformerTest {
         final Optional<JsonObject> optional = jsonLd.compact(jsonObject).asOptional();
         assertThat(optional).isPresent();
         assertThat(optional.get()).contains(entry("edc:transferType", Json.createValue("HttpData-PULL")));
+        assertThat(optional.get()).contains(entry("edc:transferType", Json.createValue("HttpData-PULL")));
+        assertThat(optional.get()).contains(entry("edc:transferType", Json.createValue("HttpData-PULL")));
+        assertThat(optional.get()).contains(entry("edc:transferType", Json.createValue("HttpData-PULL")));
+        assertThat(optional.get()).contains(entry("edc:transferType", Json.createValue("HttpData-PULL")));
+        assertThat(optional.get()).contains(entry("edc:transferType", Json.createValue("HttpData-PULL")));
         assertThat(optional.get().getJsonObject("edc:callbackAddresses")).isNotEmpty().containsKey("edc:uri");
-        assertThat(optional.get().getJsonObject("edc:callbackAddresses").getString("edc:uri")).isEqualTo(
-                "https://backend.app/endpoint-data-reference");
+        assertThat(optional.get().getJsonObject("edc:callbackAddresses")).contains(
+                entry("edc:uri", Json.createValue("https://backend.app/endpoint-data-reference")));
     }
 
     @Test

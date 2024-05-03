@@ -64,6 +64,7 @@ public class ContractNegotiationService {
 
     public static final String EDC_PROTOCOL = "dataspace-protocol-http";
     public static final String EVENT_TRANSFER_PROCESS_STARTED = "transfer.process.started";
+    public static final String HTTP_DATA_PULL = "HttpData-PULL";
     private final EdcControlPlaneClient edcControlPlaneClient;
     private final PolicyCheckerService policyCheckerService;
     private final EdcConfiguration config;
@@ -153,6 +154,7 @@ public class ContractNegotiationService {
                                                                                 TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
                                                                         .connectorId(catalogItem.getConnectorId())
                                                                         .counterPartyAddress(providerConnectorUrl)
+                                                                        .transferType(HTTP_DATA_PULL)
                                                                         .contractId(agreementId)
                                                                         .assetId(catalogItem.getAssetPropId())
                                                                         .dataDestination(destination);
@@ -176,8 +178,9 @@ public class ContractNegotiationService {
                                  .counterPartyAddress(providerConnectorUrl)
                                  .counterPartyId(catalogItem.getConnectorId())
                                  .protocol(EDC_PROTOCOL)
-                                 .contractOffer(ContractOffer.fromPolicy(catalogItem.getPolicy(), catalogItem.getOfferId(), catalogItem.getAssetPropId(),
-                                                                     catalogItem.getConnectorId()))
+                                 .contractOffer(
+                                         ContractOffer.fromPolicy(catalogItem.getPolicy(), catalogItem.getOfferId(),
+                                                 catalogItem.getAssetPropId(), catalogItem.getConnectorId()))
                                  .build();
     }
 
