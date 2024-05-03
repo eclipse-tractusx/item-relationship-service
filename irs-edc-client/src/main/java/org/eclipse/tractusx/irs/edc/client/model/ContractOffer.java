@@ -39,7 +39,7 @@ import org.eclipse.edc.policy.model.Prohibition;
 @Jacksonized
 public class ContractOffer {
     public static final String ID_PROPERTY = "@id";
-    public static final String TYPE = "@type";
+    public static final String TYPE_PROPERTY = "@type";
     public static final String ODRL_NAMESPACE = "http://www.w3.org/ns/odrl/2/";
     public static final String ODRL_PERMISSION_ATTRIBUTE = ODRL_NAMESPACE + "permission";
     public static final String ODRL_PROHIBITION_ATTRIBUTE = ODRL_NAMESPACE + "prohibition";
@@ -49,9 +49,9 @@ public class ContractOffer {
     public static final String ODRL_ASSIGNEE_ATTRIBUTE = ODRL_NAMESPACE + "assignee";
     public static final String ODRL_POLICY_TYPE_OFFER = ODRL_NAMESPACE + "Offer";
 
-    @JsonProperty("@type")
+    @JsonProperty(TYPE_PROPERTY)
     /* default */ String type = ODRL_POLICY_TYPE_OFFER;
-    @JsonProperty("@id")
+    @JsonProperty(ID_PROPERTY)
     /* default */ String offerId;
     @Singular
     @JsonProperty(ODRL_PERMISSION_ATTRIBUTE)

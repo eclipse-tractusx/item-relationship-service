@@ -303,11 +303,12 @@ class EdcTransformerTest {
                                    .contains(entry("edc:counterPartyId", Json.createValue(providerBPN)))
                                    .contains(entry("edc:protocol", Json.createValue(protocol)));
         final JsonObject policyJsonObject = negotiationJson.get("edc:policy").asJsonObject();
-        assertThat(policyJsonObject).isNotEmpty().containsKey("odrl:assigner");
-        assertThat(policyJsonObject).contains(entry("@type", Json.createValue("odrl:Offer")));
+        assertThat(policyJsonObject).isNotEmpty()
+                                    .containsKey("odrl:assigner")
+                                    .contains(entry("@type", Json.createValue("odrl:Offer")))
+                                    .contains(entry("@id", Json.createValue(offerId)));
         assertThat(policyJsonObject.getJsonObject("odrl:assigner")).contains(
                 entry("@id", Json.createValue(providerBPN)));
-        assertThat(policyJsonObject).contains(entry("@id", Json.createValue(offerId)));
     }
 
     @Test

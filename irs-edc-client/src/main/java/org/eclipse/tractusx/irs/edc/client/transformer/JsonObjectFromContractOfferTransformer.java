@@ -26,7 +26,7 @@ import static org.eclipse.tractusx.irs.edc.client.model.ContractOffer.ODRL_OBLIG
 import static org.eclipse.tractusx.irs.edc.client.model.ContractOffer.ODRL_PERMISSION_ATTRIBUTE;
 import static org.eclipse.tractusx.irs.edc.client.model.ContractOffer.ODRL_PROHIBITION_ATTRIBUTE;
 import static org.eclipse.tractusx.irs.edc.client.model.ContractOffer.ODRL_TARGET_ATTRIBUTE;
-import static org.eclipse.tractusx.irs.edc.client.model.ContractOffer.TYPE;
+import static org.eclipse.tractusx.irs.edc.client.model.ContractOffer.TYPE_PROPERTY;
 
 import java.util.Optional;
 
@@ -69,7 +69,7 @@ public class JsonObjectFromContractOfferTransformer extends AbstractJsonLdTransf
         final JsonObject transform = context.transform(policy, JsonObject.class);
         final var builder = jsonFactory.createObjectBuilder()
                                        .add(ID_PROPERTY, contractOffer.getOfferId())
-                                       .add(TYPE, contractOffer.getType());
+                                       .add(TYPE_PROPERTY, contractOffer.getType());
 
         if (Optional.ofNullable(transform).isPresent()) {
             builder.add(ODRL_PERMISSION_ATTRIBUTE, transform.getJsonArray(ODRL_PERMISSION_ATTRIBUTE))

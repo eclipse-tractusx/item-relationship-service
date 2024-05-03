@@ -70,6 +70,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
 import org.eclipse.tractusx.irs.edc.client.policy.Operator;
 import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
+import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
@@ -321,8 +322,12 @@ class SubmodelFacadeWiremockTest {
                                             .build();
     }
 
-    private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(String policyId, List<Permission> permissions) {
-        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(policyId, OffsetDateTime.now(),
-                OffsetDateTime.now().plusYears(1), permissions);
+    private Policy policy(String policyId, List<Permission> permissions) {
+        return Policy.builder()
+                     .policyId(policyId)
+                     .validUntil(OffsetDateTime.now().plusYears(1))
+                     .createdOn(OffsetDateTime.now())
+                     .permissions(permissions)
+                     .build();
     }
 }
