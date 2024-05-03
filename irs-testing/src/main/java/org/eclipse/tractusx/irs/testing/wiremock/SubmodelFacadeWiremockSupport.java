@@ -149,7 +149,7 @@ public final class SubmodelFacadeWiremockSupport {
                     "contractAgreementId": "%s",
                     "@context": %s
                 }
-                """.formatted(negotiationId, negotiationState, EDC_PROVIDER_DUMMY_URL, "BPNL00000001TEST",contractAgreementId, CONTEXT);
+                """.formatted(negotiationId, negotiationState, EDC_PROVIDER_DUMMY_URL, "BPNL00000001TEST", contractAgreementId, CONTEXT);
     }
 
     private static String getTransferConfirmedResponse(final String transferProcessId, final String transferState,

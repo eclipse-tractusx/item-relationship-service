@@ -344,16 +344,6 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
             print_response(response_)
 
 
-def edc_context():
-    return {
-        "dct": "https://purl.org/dc/terms/",
-        "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
-        "edc": "https://w3id.org/edc/v0.0.1/ns/",
-        "odrl": "http://www.w3.org/ns/odrl/2/",
-        "dcat": "https://www.w3.org/ns/dcat/",
-        "dspace": "https://w3id.org/dspace/v0.8/"}
-
-
 def create_notification_assets(edc_upload_urls_, edc_asset_path_, edc_contract_definition_path_, edc_catalog_path_,
                                edc_public_path_, header_, session_, edc_urls_, policy_, ess_base_url_):
     for edc_upload_url_ in edc_upload_urls_:
