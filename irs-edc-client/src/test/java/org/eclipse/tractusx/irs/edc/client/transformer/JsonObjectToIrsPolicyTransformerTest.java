@@ -38,7 +38,6 @@ import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -47,23 +46,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class JsonObjectToIrsPolicyTransformerTest {
 
     public static final String EXAMPLE_PAYLOAD = """
-                {
-                    "@context": {
-                        "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
-                        "edc": "https://w3id.org/edc/v0.0.1/ns/",
-                        "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
-                        "tx-auth": "https://w3id.org/tractusx/auth/",
-                        "cx-policy": "https://w3id.org/catenax/policy/",
-                        "odrl": "http://www.w3.org/ns/odrl/2/"
-                    },
-                    "@id": "policy-id",
-                    "policy": {
-                        "@id": "4fbed145-ec14-4c85-8e8e-a78c945be960",
-                        "@type": "odrl:Set",
-                        "odrl:permission": {
-                            "odrl:action": {
-                                "odrl:type": "USE"
-                            },
+            {
+                "@context": {
+                    "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+                    "edc": "https://w3id.org/edc/v0.0.1/ns/",
+                    "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                    "tx-auth": "https://w3id.org/tractusx/auth/",
+                    "cx-policy": "https://w3id.org/catenax/policy/",
+                    "odrl": "http://www.w3.org/ns/odrl/2/"
+                },
+               "@id": "policy-id",
+                "policy": {
+                    "odrl:permission": [
+                        {
+                            "odrl:action": "USE",
                             "odrl:constraint": {
                                 "odrl:and": [
                                     {
@@ -82,12 +78,11 @@ class JsonObjectToIrsPolicyTransformerTest {
                                     }
                                 ]
                             }
-                        },
-                        "odrl:prohibition": [],
-                        "odrl:obligation": []
-                    }
-                 }
-                """;
+                        }
+                    ]
+                }
+             }
+            """;
 
     private JsonObjectToIrsPolicyTransformer jsonObjectToIrsPolicyTransformer;
     private TransformerContext transformerContext;
@@ -99,7 +94,6 @@ class JsonObjectToIrsPolicyTransformerTest {
     }
 
     @Test
-    @Disabled // TODO (ds-jhartmann) fix this policy transform
     void shouldTransformJsonObjectToPolicyCorrectly() {
         // given
         JsonReader jsonReader = Json.createReader(new StringReader(EXAMPLE_PAYLOAD));
