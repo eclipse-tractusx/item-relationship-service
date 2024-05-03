@@ -29,7 +29,6 @@ import lombok.extern.jackson.Jacksonized;
 import org.eclipse.edc.policy.model.Duty;
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
-import org.eclipse.edc.policy.model.PolicyType;
 import org.eclipse.edc.policy.model.Prohibition;
 
 /**
@@ -51,7 +50,7 @@ public class ContractOffer {
     public static final String ODRL_POLICY_TYPE_OFFER = ODRL_NAMESPACE + "Offer";
 
     @JsonProperty("@type")
-    /* default */ String type = PolicyType.OFFER.getType();
+    /* default */ String type = ODRL_POLICY_TYPE_OFFER;
     @JsonProperty("@id")
     /* default */ String offerId;
     @Singular
