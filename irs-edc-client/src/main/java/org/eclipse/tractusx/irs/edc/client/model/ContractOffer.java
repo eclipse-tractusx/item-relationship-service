@@ -48,9 +48,10 @@ public class ContractOffer {
     public static final String ODRL_ASSIGNER_ATTRIBUTE = ODRL_NAMESPACE + "assigner";
     public static final String ODRL_TARGET_ATTRIBUTE = ODRL_NAMESPACE + "target";
     public static final String ODRL_ASSIGNEE_ATTRIBUTE = ODRL_NAMESPACE + "assignee";
+    public static final String ODRL_POLICY_TYPE_OFFER = ODRL_NAMESPACE + "Offer";
 
     @JsonProperty("@type")
-    /* default */ PolicyType type = PolicyType.OFFER;
+    /* default */ String type = PolicyType.OFFER.getType();
     @JsonProperty("@id")
     /* default */ String offerId;
     @Singular

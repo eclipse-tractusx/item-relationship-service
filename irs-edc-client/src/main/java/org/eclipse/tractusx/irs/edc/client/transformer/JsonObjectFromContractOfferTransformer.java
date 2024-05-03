@@ -69,7 +69,7 @@ public class JsonObjectFromContractOfferTransformer extends AbstractJsonLdTransf
         final JsonObject transform = context.transform(policy, JsonObject.class);
         final var builder = jsonFactory.createObjectBuilder()
                                        .add(ID_PROPERTY, contractOffer.getOfferId())
-                                       .add(TYPE, contractOffer.getType().getType());
+                                       .add(TYPE, contractOffer.getType());
 
         if (Optional.ofNullable(transform).isPresent()) {
             builder.add(ODRL_PERMISSION_ATTRIBUTE, transform.getJsonArray(ODRL_PERMISSION_ATTRIBUTE))
