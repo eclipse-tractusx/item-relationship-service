@@ -287,6 +287,9 @@ tractusx-connector:
 postgresql:
   enabled: true
 edc-postgresql:
+  primary:
+    persistence:
+      enabled: false
   auth:
     database: edc
     username: <path:traceability-irs/data/dev/controlplane#databaseuser>

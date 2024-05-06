@@ -136,6 +136,8 @@ postgresql:
   enabled: true
 edc-postgresql:
   primary:
+    persistence:
+      enabled: false
     resources:
       requests:
         memory: 1Gi

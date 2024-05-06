@@ -23,7 +23,7 @@ digital-twin-registry:
   postgresql:
     primary:
       persistence:
-        enabled: true
+        enabled: false
         size: 1Gi
       resources:
         limits:
