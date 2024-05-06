@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 
 import java.util.ArrayList;
@@ -99,26 +100,22 @@ public class EDCCatalogFacade {
     }
 
     private static List<CatalogItem> mapToCatalogItems(final Catalog catalog) {
-        if (catalog.getDatasets() == null) {
-            return List.of();
-        } else {
-            return catalog.getDatasets().stream().map(dataset -> {
-                final Map.Entry<String, Policy> offer = dataset.getOffers()
-                                                               .entrySet()
-                                                               .stream()
-                                                               .findFirst()
-                                                               .orElseThrow();
-                final Policy policy = offer.getValue().toBuilder().assigner(getParticipantId(catalog)).target(dataset.getId()).build();
+        return emptyIfNull(catalog.getDatasets()).stream().map(dataset -> {
+            final Map.Entry<String, Policy> offer = dataset.getOffers().entrySet().stream().findFirst().orElseThrow();
+            final Policy policy = offer.getValue()
+                                       .toBuilder()
+                                       .assigner(getParticipantId(catalog))
+                                       .target(dataset.getId())
+                                       .build();
 
-                return CatalogItem.builder()
-                                  .itemId(dataset.getId())
-                                  .assetPropId(dataset.getId())
-                                  .offerId(offer.getKey())
-                                  .policy(policy)
-                                  .connectorId(getParticipantId(catalog))
-                                  .build();
-            }).toList();
-        }
+            return CatalogItem.builder()
+                              .itemId(dataset.getId())
+                              .assetPropId(dataset.getId())
+                              .offerId(offer.getKey())
+                              .policy(policy)
+                              .connectorId(getParticipantId(catalog))
+                              .build();
+        }).toList();
     }
 
     /**
@@ -160,11 +157,11 @@ public class EDCCatalogFacade {
     }
 
     /**
-     * @deprecated
      * @param connectorUrl The EDC Connector from which the Catalog will be requested
      * @param target       The target assetID which will be searched for
      * @param bpn          The BPN of the company to which the EDC Connector belongs
      * @return The list of catalog Items matching the target id
+     * @deprecated
      */
     @Deprecated(since = "5.0.0")
     public List<CatalogItem> fetchCatalogById(final String connectorUrl, final String target, final String bpn) {
@@ -179,12 +176,18 @@ public class EDCCatalogFacade {
     }
 
     private Optional<Dataset> findOfferIfExist(final String target, final Catalog catalog) {
-        return catalog.getDatasets().stream().filter(dataset -> dataset.getId().equals(target)).findFirst();
+        return emptyIfNull(catalog.getDatasets()).stream()
+                                                 .filter(dataset -> target.equals(dataset.getId()))
+                                                 .findFirst();
     }
 
     private boolean theSameCatalog(final Catalog pageableCatalog, final Catalog newPageableCatalog) {
-        final Set<String> previousOffers = pageableCatalog.getDatasets().stream().map(Dataset::getId).collect(toSet());
-        final Set<String> nextOffers = newPageableCatalog.getDatasets().stream().map(Dataset::getId).collect(toSet());
+        final Set<String> previousOffers = emptyIfNull(pageableCatalog.getDatasets()).stream()
+                                                                                     .map(Dataset::getId)
+                                                                                     .collect(toSet());
+        final Set<String> nextOffers = emptyIfNull(newPageableCatalog.getDatasets()).stream()
+                                                                                    .map(Dataset::getId)
+                                                                                    .collect(toSet());
         return previousOffers.equals(nextOffers);
     }
 }
