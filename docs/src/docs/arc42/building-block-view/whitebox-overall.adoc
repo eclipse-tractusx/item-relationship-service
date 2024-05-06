@@ -43,9 +43,6 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 
 |Semantic Hub
 |Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers.
-
-|BPDM
-|The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.
 |===
 
 
@@ -83,30 +80,27 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | IRS uses *Semantic Hub* to validate of *SubmodelAspects* payloads agains the schema provided in *Semantic Hub*
 
 | 11
-| In case "lookupBPNs" is active IRS provides a lookup of company for given BPN
+| *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
 
 | 12
-| *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
-
-| 13
 | *EDC* communication covering negotiation and data consumption
 
-| 14
+| 13
 | *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
 
-| 15
+| 14
 | *IRS* accessing to *SubmodelServer* on Tier Level using the *EDC*
 
-| 16
+| 15
 | *IRS* accessing the *decentral DigitalTwinRegistry* on Tier Level using the *EDC*
 
-| 17
+| 16
 | In case of the use-case Environmental and Social Standards, *IRS* sends notifications to the *IRS-ESS* instance running at the data provider using the *EDC*.
 
-| 18
+| 17
 | *IRS* uses the Policy Store to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets.
 
-| 19
+| 18
 | IrsApiConsumer calls the IRS public /policy *API*
 |===
 

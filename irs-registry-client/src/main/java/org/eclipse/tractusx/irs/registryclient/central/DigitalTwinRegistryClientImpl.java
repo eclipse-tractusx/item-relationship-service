@@ -61,8 +61,8 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
                 PLACEHOLDER_AAS_IDENTIFIER);
     }
 
-    private static void require(final String bpdmUrl, final String configPath, final String placeholder) {
-        if (!bpdmUrl.contains(wrap(placeholder))) {
+    private static void require(final String descriptorEndpoint, final String configPath, final String placeholder) {
+        if (!descriptorEndpoint.contains(wrap(placeholder))) {
             throw new IllegalStateException(
                     "Configuration value for '" + configPath + "' must contain the URL placeholder '" + placeholder
                             + "'!");
@@ -77,11 +77,11 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
         return Base64.getEncoder().encodeToString(aasIdentifier.getBytes(StandardCharsets.UTF_8));
     }
 
-    private void ensureUrlContainsPlaceholders(final String bpdmUrl, final String configPath,
+    private void ensureUrlContainsPlaceholders(final String descriptorEndpoint, final String configPath,
             final String... placeholders) {
-        if (StringUtils.isNotBlank(bpdmUrl)) {
+        if (StringUtils.isNotBlank(descriptorEndpoint)) {
             for (final var placeholder : placeholders) {
-                require(bpdmUrl, configPath, placeholder);
+                require(descriptorEndpoint, configPath, placeholder);
             }
         }
     }
