@@ -681,17 +681,11 @@ pre.rouge {
             <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
             <span class="na">client-id</span><span class="pi">:</span> <span class="s">${DISCOVERY_OAUTH2_CLIENT_ID}</span> <span class="c1"># Dataspace Discovery OAuth2 client ID used to authenticate with the IAM</span>
             <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${DISCOVERY_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># Dataspace Discovery OAuth2 client secret used to authenticate with the IAM</span>
-          <span class="na">bpdm</span><span class="pi">:</span>
-            <span class="na">authorization-grant-type</span><span class="pi">:</span> <span class="s">client_credentials</span>
-            <span class="na">client-id</span><span class="pi">:</span> <span class="s">${BPDM_OAUTH2_CLIENT_ID}</span> <span class="c1"># BPDM Pool OAuth2 client ID used to authenticate with the IAM</span>
-            <span class="na">client-secret</span><span class="pi">:</span> <span class="s">${BPDM_OAUTH2_CLIENT_SECRET}</span> <span class="c1"># BPDM Pool OAuth2 client secret used to authenticate with the IAM</span>
         <span class="na">provider</span><span class="pi">:</span>
           <span class="na">semantics</span><span class="pi">:</span>
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
           <span class="na">discovery</span><span class="pi">:</span>
             <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
-          <span class="na">bpdm</span><span class="pi">:</span>
-            <span class="na">token-uri</span><span class="pi">:</span> <span class="s">${BPDM_OAUTH2_CLIENT_TOKEN_URI:https://default}</span> <span class="c1"># OAuth2 endpoint to request tokens using the client credentials</span>
 
 <span class="na">management</span><span class="pi">:</span> <span class="c1"># Spring management API config, see https://spring.io/guides/gs/centralized-configuration/</span>
   <span class="na">endpoints</span><span class="pi">:</span>
@@ -882,13 +876,6 @@ pre.rouge {
     <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the semantic hub client</span>
   <span class="na">pageSize</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${SEMANTICSHUB_PAGE_SIZE:100}"</span>
 
-<span class="na">bpdm</span><span class="pi">:</span>
-  <span class="na">bpnEndpoint</span><span class="pi">:</span> <span class="s2">"</span><span class="s">${BPDM_URL:}"</span> <span class="c1"># Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}</span>
-  <span class="na">oAuthClientId</span><span class="pi">:</span> <span class="s">bpdm</span> <span class="c1"># ID of the OAuth2 client registration to use, see config spring.security.oauth2.client</span>
-  <span class="na">timeout</span><span class="pi">:</span>
-    <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the bpdm client</span>
-    <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the bpdm client</span>
-
 <span class="c1"># ESS Module specific properties</span>
 <span class="na">ess</span><span class="pi">:</span>
   <span class="na">localBpn</span><span class="pi">:</span> <span class="s">${ESS_LOCAL_BPN:}</span> <span class="c1"># BPN value of product - used during EDC notification communication</span>
@@ -906,7 +893,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-02 13:53:44 UTC
+Last updated 2024-05-06 07:16:02 UTC
 </div>
 </div>
 </body>

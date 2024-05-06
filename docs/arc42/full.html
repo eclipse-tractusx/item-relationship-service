@@ -1249,7 +1249,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <h4 id="_component_diagram">Component diagram</h4>
 <div class="imageblock">
 <div class="content">
-<img src="architecture-constraints/whitebox_overall_decentral.svg" alt="whitebox overall decentral" width="2764" height="871">
+<img src="architecture-constraints/whitebox_overall_decentral.svg" alt="whitebox overall decentral" width="2773" height="871">
 </div>
 </div>
 </div>
@@ -1307,10 +1307,6 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <td class="tableblock halign-left valign-top"><p class="tableblock">Semantic Hub</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers.</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">BPDM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.</p></td>
-</tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
@@ -1367,38 +1363,34 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">11</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">In case "lookupBPNs" is active IRS provides a lookup of company for given BPN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> is connected to <strong>Managed Identity Wallet</strong> for access policy check for data offers</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> is connected to <strong>Managed Identity Wallet</strong> for access policy check for data offers</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">13</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> communication covering negotiation and data consumption</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>EDC</strong> is connected to <strong>Managed Identity Wallet</strong> for access policy check for data offers</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IRS</strong> accessing to <strong>SubmodelServer</strong> on Tier Level using the <strong>EDC</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IRS</strong> accessing the <strong>decentral DigitalTwinRegistry</strong> on Tier Level using the <strong>EDC</strong></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">In case of the use-case Environmental and Social Standards, <strong>IRS</strong> sends notifications to the <strong>IRS-ESS</strong> instance running at the data provider using the <strong>EDC</strong>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IRS</strong> uses the Policy Store to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">18</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">IrsApiConsumer calls the IRS public /policy <strong>API</strong></p></td>
 </tr>
 </tbody>
@@ -3158,12 +3150,6 @@ This <code>"subprotocolBody"</code> has to contain the <code>"id"</code> of the 
 <p>Caching is implemented for the following services:</p>
 </div>
 <div class="sect4">
-<h5 id="_bpdm">BPDM</h5>
-<div class="paragraph">
-<p>Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as this data does not change.</p>
-</div>
-</div>
-<div class="sect4">
 <h5 id="_semantics_hub">Semantics Hub</h5>
 <div class="paragraph">
 <p>Whenever a semantic model schema is requested from the Semantic Hub, it is stored locally until the cache is evicted (configurable).
@@ -3759,7 +3745,7 @@ For more information see:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-02 13:53:44 UTC
+Last updated 2024-05-06 07:16:02 UTC
 </div>
 </div>
 </body>

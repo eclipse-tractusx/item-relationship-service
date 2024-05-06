@@ -253,7 +253,6 @@ The interfaces show how the components interact with each other and which interf
 | Discovery Finder | The Discovery Finder is used to get the EDC Discovery Endpoint for a certain type of identification, e.g. BPNL. |
 | EDC Discovery | The EDC Discovery Service is used to get EDC endpoints for a certain BPNL. |
 | Semantic Hub | Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers. |
-| BPDM | The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain. |
 
 | Number | Description |
 | --- | --- |
@@ -267,15 +266,14 @@ The interfaces show how the components interact with each other and which interf
 | 08 | IRS lookup for EDC Provider by given BPNs over the **EDC Discovery Service** |
 | 09 | IRS lookup for **EDC Discovery Services** by given type &lt;BPN> over the **Discovery Finder** |
 | 10 | IRS uses **Semantic Hub** to validate of **SubmodelAspects** payloads agains the schema provided in **Semantic Hub** |
-| 11 | In case "lookupBPNs" is active IRS provides a lookup of company for given BPN |
-| 12 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers |
-| 13 | **EDC** communication covering negotiation and data consumption |
-| 14 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers |
-| 15 | **IRS** accessing to **SubmodelServer** on Tier Level using the **EDC** |
-| 16 | **IRS** accessing the **decentral DigitalTwinRegistry** on Tier Level using the **EDC** |
-| 17 | In case of the use-case Environmental and Social Standards, **IRS** sends notifications to the **IRS-ESS** instance running at the data provider using the **EDC**. |
-| 18 | **IRS** uses the Policy Store to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets. |
-| 19 | IrsApiConsumer calls the IRS public /policy **API** |
+| 11 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers |
+| 12 | **EDC** communication covering negotiation and data consumption |
+| 13 | **EDC** is connected to **Managed Identity Wallet** for access policy check for data offers |
+| 14 | **IRS** accessing to **SubmodelServer** on Tier Level using the **EDC** |
+| 15 | **IRS** accessing the **decentral DigitalTwinRegistry** on Tier Level using the **EDC** |
+| 16 | In case of the use-case Environmental and Social Standards, **IRS** sends notifications to the **IRS-ESS** instance running at the data provider using the **EDC**. |
+| 17 | **IRS** uses the Policy Store to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets. |
+| 18 | IrsApiConsumer calls the IRS public /policy **API** |
 
 ## Level 1
 
@@ -1123,10 +1121,6 @@ If the `"dspEndpoint"` is not present, every available EDC endpoint in Discovery
 The IRS caches data provided externally to avoid unnecessary requests and reduce execution time.
 
 Caching is implemented for the following services:
-
-#### BPDM
-
-Whenever a BPN is resolved via BPDM, the partner name is cached on IRS side, as this data does not change.
 
 #### Semantics Hub
 
