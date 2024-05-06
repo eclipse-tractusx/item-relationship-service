@@ -136,14 +136,18 @@ tractusx-connector:
 
   iatp:
     id: <path:traceability-irs/data/dev/controlplane#DID>
+    # -- Configures the trusted issuers for this runtime
+    # ATTENTION: NOT YET WORKING FOR 0.7.0 chart
+    trustedIssuers:
+      - <path:traceability-irs/data/dev/controlplane#trustedIssuer>
     sts:
       dim:
         url: <path:traceability-irs/data/dev/controlplane#dimUrl>
       oauth:
-        tokenurl: <path:traceability-irs/data/dev/controlplane#ssi.oauth.tokenurl>
+        token_url: <path:traceability-irs/data/dev/controlplane#iatp.oauth.tokenurl>
         client:
-          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id>
-          secret_alias: miw-dev-keycloak-secret
+          id: <path:traceability-irs/data/dev/controlplane#dimClientId>
+          secret_alias: dim-secret-dev
 
   controlplane:
     ingresses:
@@ -166,6 +170,10 @@ tractusx-connector:
       server:
         # URL of the BPN/DID Resolution Service - required:
         url: <path:traceability-irs/data/dev/controlplane#bdrsUrl>
+
+    env:
+      # workaround till 0.7.1 chart
+      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/dev/controlplane#trustedIssuer>
 
     endpoints:
       management:

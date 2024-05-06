@@ -22,7 +22,7 @@ dependencies:
     version: 6.16.0
   - name: tractusx-connector
     repository: https://eclipse-tractusx.github.io/tractusx-edc
-    version: 0.7.0-rc1
+    version: 0.7.0
   - condition: postgresql.enabled
     alias: edc-postgresql
     name: postgresql
