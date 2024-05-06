@@ -324,7 +324,7 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
         if response_.status_code == 200 and len(catalog_response_['dcat:dataset']) >= 1:
             first_offer_ = catalog_response_['dcat:dataset']
             print(
-                f"Offer with type {first_offer_['edc:type']} already exists. Skipping creation.")
+                f"Offer with type {first_offer_['type']} already exists. Skipping creation.")
         else:
             payload_ = create_edc_registry_asset_payload(aas_url_, registry_asset_id_)
             response_ = session_.request(method="POST", url=asset_url_,
@@ -517,10 +517,9 @@ if __name__ == "__main__":
             "@context": {
                 "odrl": "http://www.w3.org/ns/odrl/2/"
             },
-            "@type": "odrl:Set",
             "@id": "default-policy",
             "policy": {
-                "@type": "Policy",
+                "@type": "odrl:Set",
                 "odrl:permission": []
             }
         }
