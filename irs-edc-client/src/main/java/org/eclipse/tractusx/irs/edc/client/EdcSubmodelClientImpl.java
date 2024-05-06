@@ -234,7 +234,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
         // CatalogItem = contract offer
         final List<CatalogItem> contractOffers = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey,
-                filterValue);
+                filterValue, bpn);
 
         if (contractOffers.isEmpty()) {
             throw new EdcClientException(
@@ -294,7 +294,8 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         stopWatch.start("Get EDC Submodel task for shell descriptor, endpoint " + endpointAddress);
         final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
 
-        final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey, filterValue);
+        final List<CatalogItem> items = catalogFacade.fetchCatalogByFilter(providerWithSuffix, filterKey, filterValue,
+                bpn);
 
         final NegotiationResponse response = contractNegotiationService.negotiate(providerWithSuffix,
                 items.stream().findFirst().orElseThrow(), endpointDataReferenceStatus, bpn);
@@ -315,11 +316,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         if (response != null) {
             storageId = response.getContractAgreementId();
         } else {
-            final String authCode = endpointDataReferenceStatus.endpointDataReference().getAuthCode();
-            if (authCode == null) {
-                throw new IllegalStateException("Missing information about AuthCode.");
-            }
-            storageId = EDRAuthCode.fromAuthCodeToken(authCode).getCid();
+            storageId = endpointDataReferenceStatus.endpointDataReference().getContractId();
         }
         return storageId;
     }

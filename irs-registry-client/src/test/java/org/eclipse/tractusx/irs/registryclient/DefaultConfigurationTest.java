@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.registryclient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.registryclient.TestMother.endpointDataReference;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -35,7 +36,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
@@ -86,7 +86,8 @@ class DefaultConfigurationTest {
         // ARRANGE
         final var mock = mock(EdcSubmodelFacade.class);
         final var endpointAddress = "endpointaddress";
-        final var endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint(endpointAddress).build();
+        final String contractAgreementId = "contractAgreementId";
+        final var endpointDataReference = endpointDataReference(contractAgreementId, endpointAddress);
         when(mock.getEndpointReferencesForAsset(eq(endpointAddress), any(), any(), any())).thenReturn(
                 List.of(CompletableFuture.completedFuture(endpointDataReference)));
 

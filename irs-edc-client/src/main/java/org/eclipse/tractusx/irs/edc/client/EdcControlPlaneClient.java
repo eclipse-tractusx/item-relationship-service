@@ -86,10 +86,10 @@ public class EdcControlPlaneClient {
         return responseBody;
     }
 
-    /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset) {
+    /* package */ Catalog getCatalog(final String providerConnectorUrl, final int offset, final String bpn) {
         final var limit = config.getControlplane().getCatalogPageSize();
 
-        final CatalogRequest request = buildCatalogRequest(offset, providerConnectorUrl, limit);
+        final CatalogRequest request = buildCatalogRequest(offset, providerConnectorUrl, limit, bpn);
         return getCatalog(request);
     }
 
@@ -105,23 +105,26 @@ public class EdcControlPlaneClient {
         return edcTransformer.transformCatalog(catalog, StandardCharsets.UTF_8);
     }
 
-    private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit) {
+    private CatalogRequest buildCatalogRequest(final int offset, final String providerUrl, final int limit,
+            final String bpn) {
         final QuerySpec.Builder querySpec = QuerySpec.Builder.newInstance().offset(offset);
         if (config.getControlplane().getCatalogPageSize() > 0) {
             querySpec.limit(limit);
         }
         return CatalogRequest.Builder.newInstance()
                                      .counterPartyAddress(providerUrl)
+                                     .counterPartyId(bpn)
                                      .protocol(DATASPACE_PROTOCOL_HTTP)
                                      .querySpec(querySpec.build())
                                      .build();
     }
 
-    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key,
-            final String value) {
+    /* package */ Catalog getCatalogWithFilter(final String providerConnectorUrl, final String key, final String value,
+            final String bpn) {
         final QuerySpec querySpec = QuerySpec.Builder.newInstance().filter(new Criterion(key, "=", value)).build();
         final var catalogRequest = CatalogRequest.Builder.newInstance()
                                                          .counterPartyAddress(providerConnectorUrl)
+                                                         .counterPartyId(bpn)
                                                          .protocol(DATASPACE_PROTOCOL_HTTP)
                                                          .querySpec(querySpec)
                                                          .build();

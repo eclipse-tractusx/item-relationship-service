@@ -25,7 +25,7 @@ package org.eclipse.tractusx.irs.edc.client.model;
 
 import lombok.Builder;
 import lombok.Value;
-import org.eclipse.edc.connector.contract.spi.types.offer.ContractOffer;
+import org.eclipse.edc.spi.types.domain.offer.ContractOffer;
 
 /**
  * EDC catalog and contract offer response.

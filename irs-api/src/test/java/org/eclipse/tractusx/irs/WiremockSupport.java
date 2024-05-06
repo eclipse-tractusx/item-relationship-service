@@ -66,7 +66,9 @@ public class WiremockSupport {
                                                                             .getBytes(StandardCharsets.UTF_8));
         final String jwtToken = "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
         return EndpointDataReference.Builder.newInstance()
-                                            .authKey("testkey")
+                                            .contractId(contractAgreementId)
+                                            .authKey("Authorization")
+                                            .id("test")
                                             .authCode(jwtToken)
                                             .properties(
                                                     Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
