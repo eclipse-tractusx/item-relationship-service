@@ -1,4 +1,4 @@
-irs-helm:
+item-relationship-service:
   #####################
   # IRS Configuration #
   #####################
@@ -165,6 +165,10 @@ tractusx-connector:
       requests:
         cpu: 100m
         memory: 512Mi
+
+  # URL where the EndpointDataReference callback will be sent to
+  backendService:
+    httpProxyTokenReceiverUrl: "http://ess-irs-irs-helm:8181/internal/endpoint-data-reference"
 
   ################################
   # EDC Vault/DAPS Configuration #

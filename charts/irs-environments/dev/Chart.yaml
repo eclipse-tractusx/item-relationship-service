@@ -17,9 +17,9 @@ type: application
 version: 1.0.6
 
 dependencies:
-  - name: irs-helm
+  - name: item-relationship-service
     repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 6.16.0
+    version: 7.0.1
   - name: tractusx-connector
     repository: https://eclipse-tractusx.github.io/tractusx-edc
     version: 0.7.0
