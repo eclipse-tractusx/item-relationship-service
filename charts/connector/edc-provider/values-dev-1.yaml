@@ -3,8 +3,8 @@ tractusx-connector:
     sts:
       oauth:
         client:
-          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id.provider1>
-          secret_alias: dev-provider1-miw-secret
+          id: <path:traceability-irs/data/dev/controlplane#dimClientId>
+          secret_alias: dim-secret-dev
 
   controlplane:
     ingresses:
