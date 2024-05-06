@@ -58,7 +58,7 @@ public class EdcCallbackController {
 
     @PostMapping
     public void receiveEdcCallback(final @RequestBody String endpointDataReferenceCallback) {
-        EndpointDataReference endpointDataReference;
+        final EndpointDataReference endpointDataReference;
 
         try {
             endpointDataReference = mapToEndpointDataReference(endpointDataReferenceCallback);
@@ -72,13 +72,13 @@ public class EdcCallbackController {
         } catch (EdcClientException e) {
             log.error("Could not deserialize Endpoint Data Reference {}", endpointDataReferenceCallback);
         }
-
     }
 
     private static EndpointDataReference mapToEndpointDataReference(final String endpointDataReference)
             throws EdcClientException {
+        final EndpointDataReference dataReference;
+
         try {
-            EndpointDataReference dataReference;
             final EndpointDataReferenceCallback endpointDataReferenceCallback = StringMapper.mapFromString(
                     endpointDataReference, EndpointDataReferenceCallback.class);
             final Payload payload = Optional.ofNullable(endpointDataReferenceCallback.getPayload()).orElseThrow();
@@ -102,5 +102,4 @@ public class EdcCallbackController {
         storage.put(contractId, dataReference);
         log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractId));
     }
-
 }
