@@ -53,13 +53,13 @@ public class NegotiationRequest {
     public static final String NEGOTIATION_POLICY = "https://w3id.org/edc/v0.0.1/ns/policy";
 
     @NotBlank(message = "counterPartyAddress is mandatory")
-    /* default */ String counterPartyAddress;
+    private String counterPartyAddress;
     @NotBlank(message = "counterPartyId is mandatory")
-    /* default */ String counterPartyId;
+    private String counterPartyId;
     @NotBlank(message = "protocol is mandatory")
-    /* default */ String protocol;
+    private String protocol;
     @NotNull(message = "offer cannot be null")
-    /* default */ ContractOffer contractOffer;
-    /* default */ List<CallbackAddress> callbackAddresses = new ArrayList<>();
+    private ContractOffer contractOffer;
+    private List<CallbackAddress> callbackAddresses = new ArrayList<>();
 }
 

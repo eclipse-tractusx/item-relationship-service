@@ -50,24 +50,24 @@ public class ContractOffer {
     public static final String ODRL_POLICY_TYPE_OFFER = ODRL_NAMESPACE + "Offer";
 
     @JsonProperty(TYPE_PROPERTY)
-    /* default */ String type = ODRL_POLICY_TYPE_OFFER;
+    private String type = ODRL_POLICY_TYPE_OFFER;
     @JsonProperty(ID_PROPERTY)
-    /* default */ String offerId;
+    private String offerId;
     @Singular
     @JsonProperty(ODRL_PERMISSION_ATTRIBUTE)
-    /* default */ List<Permission> permissions;
+    private List<Permission> permissions;
     @Singular
     @JsonProperty(ODRL_PROHIBITION_ATTRIBUTE)
-    /* default */ List<Prohibition> prohibitions;
+    private List<Prohibition> prohibitions;
     @Singular
     @JsonProperty(ODRL_OBLIGATION_ATTRIBUTE)
-    /* default */ List<Duty> obligations;
+    private List<Duty> obligations;
     @JsonProperty(ODRL_ASSIGNER_ATTRIBUTE)
-    /* default */ String assigner;
+    private String assigner;
     @JsonProperty(ODRL_ASSIGNEE_ATTRIBUTE)
-    /* default */ String assignee;
+    private String assignee;
     @JsonProperty(ODRL_TARGET_ATTRIBUTE)
-    /* default */ String target;
+    private String target;
 
     public static ContractOffer fromPolicy(final Policy policy, final String offerId, final String target,
             final String assigner) {

@@ -28,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.WiremockSupport.createEndpointDataReference;
 import static org.eclipse.tractusx.irs.WiremockSupport.encodedAssetIds;
 import static org.eclipse.tractusx.irs.WiremockSupport.randomUUID;
+import static org.eclipse.tractusx.irs.component.enums.AspectType.AspectTypesConstants.BATCH;
+import static org.eclipse.tractusx.irs.component.enums.AspectType.AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.EDC_DISCOVERY_PATH;
@@ -278,9 +280,9 @@ class IrsWireMockIntegrationTest {
             final String batchFileName, final String sbomFileName) {
 
         final String edcAssetId = WiremockSupport.randomUUIDwithPrefix();
-        final String batch = WiremockSupport.submodelRequest(edcAssetId, "Batch", batchAspectName, batchFileName);
+        final String batch = WiremockSupport.submodelRequest(edcAssetId, BATCH, batchAspectName, batchFileName);
 
-        final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, "SingleLevelBomAsBuilt",
+        final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, SINGLE_LEVEL_BOM_AS_BUILT,
                 singleLevelBomAsBuiltAspectName, sbomFileName);
 
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);

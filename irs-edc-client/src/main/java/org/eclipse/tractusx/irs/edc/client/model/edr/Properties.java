@@ -26,14 +26,14 @@ import lombok.extern.jackson.Jacksonized;
 /**
  * Properties represents the properties of a transfer process EDR callback.
  *
- * @param process_id       The process ID of the callback.
- * @param participant_id   The participant ID i.e. BPN.
- * @param asset_id         The EDC asset ID of the negotiation.
+ * @param processId       The process ID of the callback.
+ * @param participantId   The participant ID i.e. BPN.
+ * @param assetId         The EDC asset ID of the negotiation.
  * @param endpointType     The type of the endpoint. E.g. "https://w3id.org/idsa/v4.1/HTTP"
  * @param refreshEndpoint  The refresh endpoint to get a new Token.
  * @param audience         The audience DID.
- * @param agreement_id     The EDC contract agreement ID.
- * @param flow_type        The flow type. E.g. "PULL"
+ * @param agreementId     The EDC contract agreement ID.
+ * @param flowType        The flow type. E.g. "PULL"
  * @param type             The type. E.g. "https://w3id.org/idsa/v4.1/HTTP"
  * @param endpoint         The EDC dataplane endpoint.
  * @param refreshToken     The refresh JWT token.
@@ -43,14 +43,14 @@ import lombok.extern.jackson.Jacksonized;
  */
 @Builder
 @Jacksonized
-public record Properties(@JsonProperty("process_id") String process_id,
-                  @JsonProperty("participant_id") String participant_id,
-                  @JsonProperty("asset_id") String asset_id,
+public record Properties(@JsonProperty("process_id") String processId,
+                  @JsonProperty("participant_id") String participantId,
+                  @JsonProperty("asset_id") String assetId,
                   @JsonProperty(NAMESPACE_EDC + "endpointType") String endpointType,
                   @JsonProperty(NAMESPACE_TRACTUSX_AUTH + "refreshEndpoint") String refreshEndpoint,
                   @JsonProperty(NAMESPACE_TRACTUSX_AUTH + "audience") String audience,
-                  @JsonProperty("agreement_id") String agreement_id,
-                  @JsonProperty("flow_type") String flow_type,
+                  @JsonProperty("agreement_id") String agreementId,
+                  @JsonProperty("flow_type") String flowType,
                   @JsonProperty(NAMESPACE_EDC + "type") String type,
                   @JsonProperty(NAMESPACE_EDC + "endpoint") String endpoint,
                   @JsonProperty(NAMESPACE_TRACTUSX_AUTH + "refreshToken") String refreshToken,
