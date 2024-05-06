@@ -168,7 +168,7 @@ public class EDCCatalogFacade {
         return fetchCatalogByFilter(connectorUrl, NAMESPACE_EDC_ID, target, bpn);
     }
 
-    @SuppressWarnings("PMD.UseObjectForClearerAPI") // TODO (ds-jhartmann) create object
+    @SuppressWarnings("PMD.UseObjectForClearerAPI") // TODO (ds-jhartmann) see https://github.com/eclipse-tractusx/item-relationship-service/issues/547
     public List<CatalogItem> fetchCatalogByFilter(final String connectorUrl, final String key, final String value,
             final String bpn) {
         final Catalog catalog = controlPlaneClient.getCatalogWithFilter(connectorUrl, key, value, bpn);
