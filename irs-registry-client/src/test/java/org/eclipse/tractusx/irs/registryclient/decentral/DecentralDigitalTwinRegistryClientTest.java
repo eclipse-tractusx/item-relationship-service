@@ -24,7 +24,7 @@ class DecentralDigitalTwinRegistryClientTest {
 
     public static final String SHELL_DESCRIPTORS = "/shell-descriptors/{aasIdentifier}";
     public static final String LOOKUP_SHELLS = "/lookup/shells";
-    RestTemplate restTemplate = mock(RestTemplate.class);
+    private final RestTemplate restTemplate = mock(RestTemplate.class);
     private DecentralDigitalTwinRegistryClient client;
 
     @BeforeEach
@@ -37,7 +37,7 @@ class DecentralDigitalTwinRegistryClientTest {
         // given
         final String contractAgreementId = "contractAgreementId";
         final String endpointUrl = "url.to.host";
-        EndpointDataReference endpointDataReference = endpointDataReference(contractAgreementId, endpointUrl);
+        final EndpointDataReference endpointDataReference = endpointDataReference(contractAgreementId, endpointUrl);
         when(restTemplate.exchange(any(), eq(HttpMethod.GET), any(),
                 eq(AssetAdministrationShellDescriptor.class))).thenReturn(
                 ResponseEntity.of(Optional.of(AssetAdministrationShellDescriptor.builder().build())));
@@ -53,7 +53,7 @@ class DecentralDigitalTwinRegistryClientTest {
     @Test
     void shouldCallForAllAssetAdministrationShellIdsByAssetLink() {
         // given
-        EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
+        final EndpointDataReference endpointDataReference = EndpointDataReference.Builder.newInstance()
                                                                                    .endpoint("url.to.host")
                                                                                    .contractId("contractId")
                                                                                    .id("test1")

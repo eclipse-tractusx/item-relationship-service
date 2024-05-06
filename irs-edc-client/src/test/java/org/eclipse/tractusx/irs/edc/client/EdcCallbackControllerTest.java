@@ -39,7 +39,7 @@ class EdcCallbackControllerTest {
     @Test
     void shouldStoreAgreementId() {
         // arrange
-        String ref = """
+        final String ref = """
                 {
                     "id": "bc916834-61b8-4754-b3e2-1eb041d253c2",
                     "at": 1714645750814,
@@ -80,7 +80,7 @@ class EdcCallbackControllerTest {
     @Test
     void shouldDoNothingWhenEDRTokenIsInvalid() {
         // arrange
-        String ref = """
+        final String ref = """
                 {
                     "id": "bc916834-61b8-4754-b3e2-1eb041d253c2",
                     "at": 1714645750814,
@@ -102,7 +102,7 @@ class EdcCallbackControllerTest {
     @Test
     void shouldDeserializeCallbackEDR() {
         // arrange
-        String callbackEDR = """
+        final String callbackEDR = """
                 {
                     "id": "b4d5d2f6-9da4-4236-864f-2803aeda1f56",
                     "at": 1714647576205,
