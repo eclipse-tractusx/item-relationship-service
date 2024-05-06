@@ -35,8 +35,8 @@ import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.edr.DataAddress;
 import org.eclipse.tractusx.irs.edc.client.model.edr.EndpointDataReferenceCallback;
-import org.eclipse.tractusx.irs.edc.client.model.edr.Payload;
 import org.eclipse.tractusx.irs.edc.client.model.edr.Properties;
+import org.eclipse.tractusx.irs.edc.client.model.edr.TransferProcessCallbackPayload;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,7 +81,8 @@ public class EdcCallbackController {
         try {
             final EndpointDataReferenceCallback endpointDataReferenceCallback = StringMapper.mapFromString(
                     endpointDataReference, EndpointDataReferenceCallback.class);
-            final Payload payload = Optional.ofNullable(endpointDataReferenceCallback.getPayload()).orElseThrow();
+            final TransferProcessCallbackPayload payload = Optional.ofNullable(
+                    endpointDataReferenceCallback.getPayload()).orElseThrow();
             final DataAddress dataAddress = Optional.ofNullable(payload.dataAddress()).orElseThrow();
             final Properties properties = Optional.ofNullable(dataAddress.properties()).orElseThrow();
 

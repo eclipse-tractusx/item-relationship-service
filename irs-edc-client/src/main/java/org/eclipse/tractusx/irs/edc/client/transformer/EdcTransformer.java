@@ -65,6 +65,7 @@ import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.protocol.dsp.negotiation.transform.from.JsonObjectFromContractNegotiationTransformer;
 import org.eclipse.edc.spi.result.Result;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
+import org.eclipse.edc.transform.spi.TransformerContext;
 import org.eclipse.edc.transform.spi.TypeTransformerRegistry;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
@@ -85,7 +86,7 @@ public class EdcTransformer {
     private final JsonObjectFromContractOfferDescriptionTransformer jsonObjectFromContractOfferDescriptionTransformer;
     private final JsonObjectFromCatalogRequestTransformer jsonObjectFromCatalogRequestTransformer;
     private final TitaniumJsonLd titaniumJsonLd;
-    private final TransformerContextImpl transformerContext;
+    private final TransformerContext transformerContext;
     private final JsonObjectFromAssetTransformer jsonObjectFromAssetTransformer;
     private final JsonObjectToIrsPolicyTransformer jsonObjectToIrsPolicyTransformer;
 

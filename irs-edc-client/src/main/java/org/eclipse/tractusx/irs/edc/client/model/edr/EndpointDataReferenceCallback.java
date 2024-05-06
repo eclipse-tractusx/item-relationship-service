@@ -35,7 +35,7 @@ public class EndpointDataReferenceCallback {
     private String callbackId;
     @JsonProperty("at")
     private long createdAt;
-    private Payload payload;
+    private TransferProcessCallbackPayload payload;
     private String type;
 }
 

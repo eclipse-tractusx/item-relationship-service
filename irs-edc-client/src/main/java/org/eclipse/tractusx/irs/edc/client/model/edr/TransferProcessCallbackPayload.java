@@ -36,10 +36,10 @@ import lombok.extern.jackson.Jacksonized;
  */
 @Builder
 @Jacksonized
-public record Payload(String transferProcessId,
-                      List<CallbackAddress> callbackAddresses,
-                      String assetId,
-                      String type,
-                      String contractId,
-                      DataAddress dataAddress) {
+public record TransferProcessCallbackPayload(String transferProcessId,
+                                             List<CallbackAddress> callbackAddresses,
+                                             String assetId,
+                                             String type,
+                                             String contractId,
+                                             DataAddress dataAddress) {
 }
