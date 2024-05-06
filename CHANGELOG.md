@@ -11,12 +11,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## Added
 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
+- 
 
-## Changed
-
-- BPN lookup feature was removed #568
-
-## [5.1.0] - 2024-04-30
+## [5.1.0] - 2024-05-06
 
 
 ### Changed
@@ -24,6 +21,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Removed obsolete entries from acceptedPolicies configuration. #530
 - Support of building relationships based on SingleLevelUsageAsBuilt v3.0.0 #558
 - Support of building relationships based on SingleLevelBomAsPlanned v3.0.0 #558
+- BPN lookup feature was removed #568
+- Update IRS EDC client to use EDC 0.7.0 #358
 
 ### Fixed
 
