@@ -34,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.policy.model.PolicyType;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
@@ -68,8 +69,8 @@ class ContractNegotiationServiceTest {
     private PolicyCheckerService policyCheckerService;
 
     private static Policy createPolicy(final String assetId) {
-        final Permission permission = Permission.Builder.newInstance().target(assetId).build();
-        return Policy.Builder.newInstance().permission(permission).build();
+        final Permission permission = Permission.Builder.newInstance().build();
+        return Policy.Builder.newInstance().target(assetId).type(PolicyType.SET).permission(permission).build();
     }
 
     private static CatalogItem createCatalogItem(final String assetId, final String offerId) {
@@ -118,8 +119,9 @@ class ContractNegotiationServiceTest {
         when(edcControlPlaneClient.getNegotiationResult(any())).thenReturn(response);
 
         // act & assert
-        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem, new EndpointDataReferenceStatus(null,
-                EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW), "bpn")).isInstanceOf(EdcClientException.class);
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem,
+                new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW),
+                "bpn")).isInstanceOf(EdcClientException.class);
     }
 
     @Test
@@ -143,8 +145,9 @@ class ContractNegotiationServiceTest {
         when(edcControlPlaneClient.getTransferProcess(any())).thenReturn(transferError);
 
         // act & assert
-        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem, new EndpointDataReferenceStatus(null,
-                EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW), "bpn")).isInstanceOf(EdcClientException.class);
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem,
+                new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW),
+                "bpn")).isInstanceOf(EdcClientException.class);
     }
 
     @Test
@@ -159,8 +162,9 @@ class ContractNegotiationServiceTest {
         when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.FALSE);
 
         // act & assert
-        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem, new EndpointDataReferenceStatus(null,
-                EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW), "bpn")).isInstanceOf(EdcClientException.class);
+        assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem,
+                new EndpointDataReferenceStatus(null, EndpointDataReferenceStatus.TokenStatus.REQUIRED_NEW),
+                "bpn")).isInstanceOf(EdcClientException.class);
     }
 
     @Test
@@ -230,8 +234,13 @@ class ContractNegotiationServiceTest {
 
         // when
         testee.negotiate(CONNECTOR_URL, catalogItem, new EndpointDataReferenceStatus(
-                EndpointDataReference.Builder.newInstance().authKey("").authCode(encodedAuthCode).endpoint("").build(),
-                EndpointDataReferenceStatus.TokenStatus.EXPIRED), "bpn");
+                EndpointDataReference.Builder.newInstance()
+                                             .authKey("")
+                                             .authCode(encodedAuthCode)
+                                             .endpoint("")
+                                             .id("testid")
+                                             .contractId("testContractId")
+                                             .build(), EndpointDataReferenceStatus.TokenStatus.EXPIRED), "bpn");
 
         // then
         verify(edcControlPlaneClient, never()).startNegotiations(any());
@@ -247,8 +256,14 @@ class ContractNegotiationServiceTest {
         // when
         // then
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem, new EndpointDataReferenceStatus(
-                EndpointDataReference.Builder.newInstance().authKey("").endpoint("").authCode("").build(),
-                EndpointDataReferenceStatus.TokenStatus.VALID), "bpn")).isInstanceOf(IllegalStateException.class);
+                        EndpointDataReference.Builder.newInstance()
+                                                     .authKey("")
+                                                     .endpoint("")
+                                                     .authCode("")
+                                                     .id("testid")
+                                                     .contractId("testContractId")
+                                                     .build(), EndpointDataReferenceStatus.TokenStatus.VALID),
+                "bpn")).isInstanceOf(IllegalStateException.class);
     }
 
 }

@@ -38,11 +38,14 @@ public final class SubmodelFacadeWiremockSupport {
     public static final String DATAPLANE_HOST = "http://provider.dataplane";
     public static final String CONTEXT = """
             {
-                    "dct": "https://purl.org/dc/terms/",
+                    "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+                    "dct": "http://purl.org/dc/terms/",
                     "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
                     "edc": "https://w3id.org/edc/v0.0.1/ns/",
-                    "dcat": "https://www.w3.org/ns/dcat/",
                     "odrl": "http://www.w3.org/ns/odrl/2/",
+                    "dcat": "http://www.w3.org/ns/dcat#",
+                    "tx-auth": "https://w3id.org/tractusx/auth/",
+                    "cx-policy": "https://w3id.org/catenax/policy/",
                     "dspace": "https://w3id.org/dspace/v0.8/"
                 }""";
     public static final String EDC_PROVIDER_DUMMY_URL = "https://edc.io/api/v1/dsp";
@@ -66,7 +69,8 @@ public final class SubmodelFacadeWiremockSupport {
 
         stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                                                                             .withBody(getCatalogResponse(edcAssetId,
-                                                                                    "USE", EDC_PROVIDER_BPN))));
+                                                                                    contractAgreementId, "USE",
+                                                                                    EDC_PROVIDER_BPN))));
 
         stubFor(post(urlPathEqualTo(PATH_NEGOTIATE)).willReturn(
                 WireMockConfig.responseWithStatus(STATUS_CODE_OK).withBody(startNegotiationResponse(negotiationId))));
@@ -104,27 +108,27 @@ public final class SubmodelFacadeWiremockSupport {
     private static String startNegotiationResponse(final String negotiationId) {
         return """
                 {
-                    "@type": "edc:IdResponseDto",
+                    "@type": "IdResponse",
                     "@id": "%s",
-                    "edc:createdAt": 1686830151573,
+                    "createdAt": 1686830151573,
                     "@context": %s
                 }
                 """.formatted(negotiationId, CONTEXT);
     }
 
     private static String getNegotiationStateResponse(final String negotiationState) {
-        return stateResponseTemplate("edc:NegotiationState", negotiationState);
+        return stateResponseTemplate("NegotiationState", negotiationState);
     }
 
     private static String getTransferProcessStateResponse(final String transferProcessState) {
-        return stateResponseTemplate("edc:TransferState", transferProcessState);
+        return stateResponseTemplate("TransferState", transferProcessState);
     }
 
     private static String stateResponseTemplate(final String responseType, final String negotiationState) {
         return """
                 {
                     "@type": "%s",
-                    "edc:state": "%s",
+                    "state": "%s",
                     "@context": %s
                 }
                 """.formatted(responseType, negotiationState, CONTEXT);
@@ -134,17 +138,18 @@ public final class SubmodelFacadeWiremockSupport {
             final String contractAgreementId) {
         return """
                 {
-                    "@type": "edc:ContractNegotiationDto",
+                    "@type": "ContractNegotiation",
                     "@id": "%s",
-                    "edc:type": "CONSUMER",
-                    "edc:protocol": "dataspace-protocol-http",
-                    "edc:state": "%s",
-                    "edc:counterPartyAddress": "%s",
-                    "edc:callbackAddresses": [],
-                    "edc:contractAgreementId": "%s",
+                    "type": "CONSUMER",
+                    "protocol": "dataspace-protocol-http",
+                    "state": "%s",
+                    "counterPartyAddress": "%s",
+                    "counterPartyId": "%s",
+                    "callbackAddresses": [],
+                    "contractAgreementId": "%s",
                     "@context": %s
                 }
-                """.formatted(negotiationId, negotiationState, EDC_PROVIDER_DUMMY_URL, contractAgreementId, CONTEXT);
+                """.formatted(negotiationId, negotiationState, EDC_PROVIDER_DUMMY_URL, "BPNL00000001TEST", contractAgreementId, CONTEXT);
     }
 
     private static String getTransferConfirmedResponse(final String transferProcessId, final String transferState,
@@ -152,62 +157,68 @@ public final class SubmodelFacadeWiremockSupport {
         return """
                 {
                     "@id": "%s",
-                    "@type": "edc:TransferProcessDto",
-                    "edc:state": "%s",
-                    "edc:stateTimestamp": 1688024335567,
-                    "edc:type": "CONSUMER",
-                    "edc:callbackAddresses": [],
-                    "edc:dataDestination": {
-                        "edc:type": "HttpProxy"
+                    "@type": "TransferProcess",
+                    "state": "%s",
+                    "stateTimestamp": 1688024335567,
+                    "type": "CONSUMER",
+                    "callbackAddresses": {
+                        "@type": "CallbackAddress",
+                        "transactional": false,
+                        "uri": "%s",
+                        "events": "transfer.process.started"
                     },
-                    "edc:dataRequest": {
-                        "@type": "edc:DataRequestDto",
-                        "@id": "%s",
-                        "edc:assetId": "%s",
-                        "edc:contractId": "%s",
-                        "edc:connectorId": "%s"
+                    "correlationId": "%s",
+                    "assetId": "%s",
+                    "contractId": "%s",
+                    "transferType": "HttpData-PULL",
+                    "dataDestination": {
+                        "@type": "DataAddress",
+                        "type": "HttpProxy"
                     },
-                    "edc:receiverHttpEndpoint": "%s",
                     "@context": %s
                 }
-                """.formatted(transferProcessId, transferState, transferProcessId, edcAssetId, contractAgreementId,
-                EDC_PROVIDER_BPN, IRS_INTERNAL_CALLBACK_URL, CONTEXT);
+                """.formatted(transferProcessId, transferState, IRS_INTERNAL_CALLBACK_URL, transferProcessId, edcAssetId, contractAgreementId,
+                CONTEXT);
     }
 
-    public static String getCatalogResponse(final String edcAssetId, final String permissionType,
+    @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
+    public static String getCatalogResponse(final String edcAssetId, final String offerId, final String permissionType,
             final String edcProviderBpn) {
         return """
                 {
                    "@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
                    "@type": "dcat:Catalog",
                    "dcat:dataset": {
-                     "@id": "58505404-4da1-427a-82aa-b79482bcd1f0",
+                     "@id": "%s",
                      "@type": "dcat:Dataset",
                      "odrl:hasPolicy": {
-                       "@id": "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:66131c58-32af-4df0-825d-77f7df6017c1",
-                       "@type": "odrl:Set",
+                       "@id": "%s",
+                       "@type": "odrl:Offer",
                        "odrl:permission": {
-                         "odrl:target": "%s",
                          "odrl:action": {
                            "odrl:type": "%s"
                          },
                          "odrl:constraint": %s
                        },
                        "odrl:prohibition": [],
-                       "odrl:obligation": [],
-                       "odrl:target": "%s"
+                       "odrl:obligation": []
                      },
                      "dcat:distribution": [
                        {
                          "@type": "dcat:Distribution",
                          "dct:format": {
-                           "@id": "HttpProxy"
+                           "@id": "HttpData-PULL"
                          },
-                         "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
+                         "dcat:accessService": {
+                           "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
+                           "@type": "dcat:DataService",
+                           "dct:terms": "connector",
+                           "dct:endpointUrl": "%s"
+                         }
                        }
                      ],
-                     "edc:description": "IRS EDC Test Asset",
-                     "edc:id": "%s"
+                     "description": "IRS EDC Test Asset",
+                     "id": "%s"
                    },
                    "dcat:service": {
                      "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
@@ -215,11 +226,12 @@ public final class SubmodelFacadeWiremockSupport {
                      "dct:terms": "connector",
                      "dct:endpointUrl": "%s"
                    },
-                   "edc:participantId": "%s",
+                   "participantId": "%s",
+                   "dspace:participantId": "%s",
                    "@context": %s
                  }
-                """.formatted(edcAssetId, permissionType, createConstraints(), edcAssetId, edcAssetId,
-                EDC_PROVIDER_DUMMY_URL, edcProviderBpn, CONTEXT);
+                """.formatted(edcAssetId, offerId, permissionType, createConstraints(), EDC_PROVIDER_DUMMY_URL,
+                edcAssetId, EDC_PROVIDER_DUMMY_URL, edcProviderBpn, edcProviderBpn, CONTEXT);
     }
 
     private static String createConstraints() {

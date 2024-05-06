@@ -232,16 +232,24 @@ class PolicyCheckerServiceTest {
     }
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(final String policyId) {
-        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(policyId, OffsetDateTime.now(),
-                OffsetDateTime.now().plusYears(1), Collections.emptyList());
+        return org.eclipse.tractusx.irs.edc.client.policy.Policy.builder()
+                                                                .policyId(policyId)
+                                                                .createdOn(OffsetDateTime.now())
+                                                                .validUntil(OffsetDateTime.now().plusYears(1))
+                                                                .permissions(Collections.emptyList())
+                                                                .build();
     }
 
     private org.eclipse.tractusx.irs.edc.client.policy.Policy policy(final String policyId,
             final List<Constraint> andConstraint, final List<Constraint> orConstraint) {
         final Constraints constraints = new Constraints(andConstraint, orConstraint);
         final List<Permission> permissions = List.of(new Permission(PolicyType.USE, constraints));
-        return new org.eclipse.tractusx.irs.edc.client.policy.Policy(policyId, OffsetDateTime.now(),
-                OffsetDateTime.now().plusYears(1), permissions);
+        return org.eclipse.tractusx.irs.edc.client.policy.Policy.builder()
+                                                                .policyId(policyId)
+                                                                .validUntil(OffsetDateTime.now().plusYears(1))
+                                                                .createdOn(OffsetDateTime.now())
+                                                                .permissions(permissions)
+                                                                .build();
     }
 
 }

@@ -93,6 +93,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private static final String PROVIDER_SUFFIX = "/test";
     private static final String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
     private static final String existingCatenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
+    private static final String BPN = "BPNL00000003CRHK";
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final TimeMachine clock = new TimeMachine();
@@ -136,7 +137,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
         final String agreementId = "agreementId";
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
@@ -164,7 +165,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         final String agreementId = "agreementId";
         final EdcNotification<NotificationContent> notification = EdcNotification.builder().build();
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any(), any(), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
@@ -199,7 +200,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(existingCatenaXId).build()));
         prepareTestdata(existingCatenaXId, "_singleLevelBomAsBuilt");
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
@@ -220,7 +221,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
         final String catenaXId = "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c";
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelBomAsPlanned");
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
@@ -240,7 +241,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(existingCatenaXId).build()));
         prepareTestdata(existingCatenaXId, "_singleLevelBomAsSpecified");
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
@@ -261,7 +262,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
         final String catenaXId = "urn:uuid:61c83b41-def0-4742-a1a8-e4e8a8cb210e";
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(catenaXId).build()));
         prepareTestdata(catenaXId, "_singleLevelUsageAsBuilt");
         when(endpointDataReferenceCacheService.getEndpointDataReference(any())).thenReturn(
@@ -283,7 +284,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
         final String notExistingCatenaXId = "urn:uuid:8a61c8db-561e-4db0-84ec-a693fc5ffdf6";
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(notExistingCatenaXId).build()));
         prepareTestdata(notExistingCatenaXId, "_singleLevelBomAsBuilt");
         when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(
@@ -304,14 +305,14 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
         when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
-                "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID)).thenReturn(createCatalog(ASSET_ID, 3));
+                "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID, BPN)).thenReturn(createCatalog(ASSET_ID, 3));
         prepareTestdata(existingCatenaXId, "_serialPart");
         when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
         final String submodelResponse = testee.getSubmodelPayload("https://connector.endpoint.com",
-                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, "bpn")
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, BPN)
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -328,13 +329,13 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         prepareTestdata(existingCatenaXId, "_serialPart");
         final String target = URLEncoder.encode(ASSET_ID, StandardCharsets.UTF_8);
         when(catalogFacade.fetchCatalogByFilter("https://connector.endpoint.com" + PROVIDER_SUFFIX,
-                "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID)).thenReturn(createCatalog(target, 3));
+                "https://w3id.org/edc/v0.0.1/ns/id", ASSET_ID, BPN)).thenReturn(createCatalog(target, 3));
         when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(
                 new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW));
 
         // act
         final String submodelResponse = testee.getSubmodelPayload("https://connector.endpoint.com",
-                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, "bpn")
+                                                      "/shells/{aasIdentifier}/submodels/{submodelIdentifier}/submodel", ASSET_ID, BPN)
                                               .get(5, TimeUnit.SECONDS)
                                               .getPayload();
 
@@ -350,7 +351,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         final String parentCatenaXId = "urn:uuid:6a424c78-ef94-4b33-aec9-e8a3653374df";
         final BomLifecycle asBuilt = BomLifecycle.AS_BUILT;
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId(parentCatenaXId).build()));
         prepareTestdata(parentCatenaXId, "_singleLevelBomAsBuilt");
         when(endpointDataReferenceCacheService.getEndpointDataReference(ASSET_ID)).thenReturn(
@@ -391,7 +392,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String filterKey = "filter-key";
         final String filterValue = "filter-value";
         final String agreementId = "agreementId";
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("asset-id").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
@@ -418,7 +419,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     void shouldNotThrowClassCastException() throws Exception {
         // arrange
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("asset-id").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenThrow(
@@ -444,7 +445,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         final String filterKey = "filter-key";
         final String filterValue = "filter-value";
         final String agreementId = "agreementId";
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("asset-id").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
@@ -485,7 +486,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
         final String agreementId = "agreementId";
-        when(catalogFacade.fetchCatalogByFilter(any(), any(), any())).thenReturn(
+        when(catalogFacade.fetchCatalogByFilter(any(), any(), any(), any())).thenReturn(
                 List.of(CatalogItem.builder().itemId("itemId").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(

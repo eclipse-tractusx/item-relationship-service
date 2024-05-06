@@ -224,7 +224,12 @@ class ConstraintCheckerServiceTest {
         Permission permission = new Permission(PolicyType.ACCESS, constraints);
         List<Permission> permissions = List.of(permission);
         final String policyId = "policyId";
-        return new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now().plusYears(1), permissions);
+        return org.eclipse.tractusx.irs.edc.client.policy.Policy.builder()
+                                                                .policyId(policyId)
+                                                                .validUntil(OffsetDateTime.now().plusYears(1))
+                                                                .createdOn(OffsetDateTime.now())
+                                                                .permissions(permissions)
+                                                                .build();
     }
 
     public AndConstraint createAndConstraint(final List<org.eclipse.edc.policy.model.Constraint> constraints) {

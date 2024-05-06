@@ -27,6 +27,7 @@ import static java.util.Collections.emptyList;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.registryclient.TestMother.endpointDataReference;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -40,7 +41,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -99,8 +99,8 @@ class DecentralDigitalTwinRegistryServiceTest {
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
 
             final var endpointDataRefFutures = List.of(completedFuture(endpointDataReference));
-            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(), any())).thenReturn(
-                    endpointDataRefFutures);
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(),
+                    any())).thenReturn(endpointDataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
@@ -128,8 +128,8 @@ class DecentralDigitalTwinRegistryServiceTest {
             final var dataRefFutures = List.of( //
                     completedFuture(endpointDataReference("url.to.host1")), //
                     completedFuture(endpointDataReference("url.to.host2")));
-            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    connectorEndpoints, "bpn")).thenReturn(dataRefFutures);
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(connectorEndpoints,
+                    "bpn")).thenReturn(dataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
@@ -161,9 +161,9 @@ class DecentralDigitalTwinRegistryServiceTest {
             final List<String> connectorEndpoints = List.of("address");
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(connectorEndpoints);
 
-            final var dataRefFutures = List.of(completedFuture(endpointDataReference("url.to.host")));
-            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    connectorEndpoints, "bpn")).thenReturn(dataRefFutures);
+            final var dataRefFutures = List.of(completedFuture(endpointDataReference("contractId", "url.to.host")));
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(connectorEndpoints,
+                    "bpn")).thenReturn(dataRefFutures);
 
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
@@ -204,10 +204,6 @@ class DecentralDigitalTwinRegistryServiceTest {
         sut.setResultFinder(resultFinderMock);
     }
 
-    private static EndpointDataReference endpointDataReference(final String url) {
-        return endpointDataReferenceBuilder().endpoint(url).build();
-    }
-
     @Nested
     @DisplayName("lookupGlobalAssetIds")
     class LookupGlobalAssetIdsTests {
@@ -222,13 +218,14 @@ class DecentralDigitalTwinRegistryServiceTest {
             final var expectedShell = shellDescriptor(emptyList()).toBuilder()
                                                                   .globalAssetId(expectedGlobalAssetId)
                                                                   .build();
-            final var dataRefFutures = List.of(completedFuture(endpointDataReference("url.to.host")));
+            final var dataRefFutures = List.of(
+                    completedFuture(endpointDataReference("contractAgreementId", "url.to.host")));
             final var lookupShellsResponse = LookupShellsResponse.builder()
                                                                  .result(List.of(digitalTwinRegistryKey.shellId()))
                                                                  .build();
             when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("address"));
-            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(), any())).thenReturn(
-                    dataRefFutures);
+            when(endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(anyList(),
+                    any())).thenReturn(dataRefFutures);
             when(decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(any(),
                     any(IdentifierKeyValuePair.class))).thenReturn(lookupShellsResponse);
             when(decentralDigitalTwinRegistryClient.getAssetAdministrationShellDescriptor(any(), any())).thenReturn(
@@ -241,7 +238,8 @@ class DecentralDigitalTwinRegistryServiceTest {
                                                                             .findFirst()
                                                                             .map(Shell::payload)
                                                                             .map(AssetAdministrationShellDescriptor::getGlobalAssetId)
-                                                                            .get();// then
+                                                                            .get();
+            // then
             assertThat(actualGlobalAssetId).isEqualTo(expectedGlobalAssetId);
         }
 
@@ -274,10 +272,6 @@ class DecentralDigitalTwinRegistryServiceTest {
                                     .hasMessageContaining("Exception occurred while looking up shell ids for bpn")
                                     .hasMessageContaining("'" + bpn + "'");
         }
-    }
-
-    private static EndpointDataReference.Builder endpointDataReferenceBuilder() {
-        return EndpointDataReference.Builder.newInstance();
     }
 
 }

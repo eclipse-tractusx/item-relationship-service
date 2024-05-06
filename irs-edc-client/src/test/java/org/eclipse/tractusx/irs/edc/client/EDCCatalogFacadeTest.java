@@ -28,6 +28,7 @@ import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createCata
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,6 +36,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.edc.catalog.spi.Catalog;
+import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.edc.policy.model.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,18 +64,20 @@ class EDCCatalogFacadeTest {
         // arrange
         final var assetId = "testTarget";
         final String connectorUrl = "testConnector";
+        final String providerBpn = "BPN000123456";
         final var firstPage = createCatalog("other", DEFAULT_PAGE_SIZE);
         final var secondPage = createCatalog("other", 2);
 
-        when(controlPlaneClient.getCatalog(connectorUrl, 0)).thenReturn(firstPage);
-        when(controlPlaneClient.getCatalog(connectorUrl, 3)).thenReturn(secondPage);
+        when(controlPlaneClient.getCatalog(connectorUrl, 0, providerBpn)).thenReturn(firstPage);
+        when(controlPlaneClient.getCatalog(connectorUrl, 3, providerBpn)).thenReturn(secondPage);
 
         // act
-        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId);
+        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId,
+                providerBpn);
 
         // assert
         assertThat(catalog).hasSize(5);
-        verify(controlPlaneClient, times(2)).getCatalog(any(), anyInt());
+        verify(controlPlaneClient, times(2)).getCatalog(any(), anyInt(), eq(providerBpn));
     }
 
     @Test
@@ -79,16 +85,18 @@ class EDCCatalogFacadeTest {
         // arrange
         final var assetId = "testTarget";
         final String connectorUrl = "testConnector";
+        final String providerBpn = "BPN000123456";
         final var firstPage = createCatalog("other", DEFAULT_PAGE_SIZE);
 
-        when(controlPlaneClient.getCatalog(anyString(), anyInt())).thenReturn(firstPage);
+        when(controlPlaneClient.getCatalog(anyString(), anyInt(), anyString())).thenReturn(firstPage);
 
         // act
-        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId);
+        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId,
+                providerBpn);
 
         // assert
         assertThat(catalog).hasSize(3);
-        verify(controlPlaneClient, times(2)).getCatalog(any(), anyInt());
+        verify(controlPlaneClient, times(2)).getCatalog(any(), anyInt(), eq(providerBpn));
     }
 
     @Test
@@ -96,18 +104,55 @@ class EDCCatalogFacadeTest {
         // arrange
         final var assetId = "testTarget2";
         final String connectorUrl = "testConnector";
+        final String providerBpn = "BPN000123456";
         final var firstPage = createCatalog("testTarget", DEFAULT_PAGE_SIZE);
         final var secondPage = createCatalog("other", DEFAULT_PAGE_SIZE);
 
-        when(controlPlaneClient.getCatalog(connectorUrl, 0)).thenReturn(firstPage);
-        when(controlPlaneClient.getCatalog(connectorUrl, DEFAULT_PAGE_SIZE)).thenReturn(secondPage);
+        when(controlPlaneClient.getCatalog(connectorUrl, 0, providerBpn)).thenReturn(firstPage);
+        when(controlPlaneClient.getCatalog(connectorUrl, DEFAULT_PAGE_SIZE, providerBpn)).thenReturn(secondPage);
 
         // act
-        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId);
+        final List<CatalogItem> catalog = edcCatalogFacade.fetchCatalogItemsUntilMatch(connectorUrl, assetId,
+                providerBpn);
 
         // assert
         assertThat(catalog).hasSize(3);
-        verify(controlPlaneClient, times(1)).getCatalog(any(), anyInt());
+        verify(controlPlaneClient, times(1)).getCatalog(any(), anyInt(), anyString());
     }
 
+    @Test
+    void shouldReturnAndMapCatalog() {
+        // arrange
+        final var assetId = "testTarget";
+        final String connectorUrl = "testConnector";
+        final String providerBpn = "BPN000123456";
+        final String filterKey = "filterKey";
+        final String offerId = "definitionId:%s:randomId".formatted(assetId);
+        final Policy policy = Policy.Builder.newInstance()
+                                            .type(PolicyType.OFFER)
+                                            .permissions(List.of())
+                                            .prohibitions(List.of())
+                                            .duties(List.of())
+                                            .build();
+        final Catalog catalog = createCatalog(assetId, policy, providerBpn, offerId);
+        when(controlPlaneClient.getCatalogWithFilter(connectorUrl, filterKey, assetId, providerBpn)).thenReturn(
+                catalog);
+
+        // act
+        final List<CatalogItem> catalogItems = edcCatalogFacade.fetchCatalogByFilter(connectorUrl, filterKey, assetId,
+                providerBpn);
+
+        // assert
+        assertThat(catalogItems).hasSize(1);
+        final CatalogItem catalogItem = catalogItems.get(0);
+        assertThat(catalogItem.getAssetPropId()).isEqualTo(assetId);
+        assertThat(catalogItem.getItemId()).isEqualTo(assetId);
+        assertThat(catalogItem.getConnectorId()).isEqualTo(providerBpn);
+        assertThat(catalogItem.getOfferId()).isEqualTo(offerId);
+        final Policy catalogPolicy = catalogItem.getPolicy();
+        assertThat(catalogPolicy).isNotNull();
+        assertThat(catalogPolicy.getAssigner()).isEqualTo(providerBpn);
+        assertThat(catalogPolicy.getTarget()).isEqualTo(assetId);
+
+    }
 }
