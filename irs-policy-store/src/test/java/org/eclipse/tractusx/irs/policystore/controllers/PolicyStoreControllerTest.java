@@ -28,16 +28,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
@@ -51,6 +48,7 @@ import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
+import org.eclipse.tractusx.irs.policystore.testutil.PolicyStoreTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -112,10 +110,7 @@ public class PolicyStoreControllerTest {
         void registerAllowedPolicy() {
             // arrange
             final OffsetDateTime now = OffsetDateTime.now();
-            final JsonObject jsonObject;
-            try (JsonReader jsonReader = Json.createReader(new StringReader(REGISTER_POLICY_EXAMPLE_PAYLOAD))) {
-                jsonObject = jsonReader.readObject();
-            }
+            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(REGISTER_POLICY_EXAMPLE_PAYLOAD);
 
             // act
             final CreatePolicyRequest request = new CreatePolicyRequest(now.plusMinutes(1), null,

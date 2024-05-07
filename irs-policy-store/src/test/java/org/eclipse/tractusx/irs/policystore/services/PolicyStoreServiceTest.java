@@ -34,16 +34,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.StringReader;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import org.assertj.core.api.AbstractThrowableAssert;
 import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
@@ -64,6 +61,7 @@ import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
+import org.eclipse.tractusx.irs.policystore.testutil.PolicyStoreTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -115,10 +113,7 @@ class PolicyStoreServiceTest {
 
             // ARRANGE
             final OffsetDateTime now = OffsetDateTime.now();
-            final JsonObject jsonObject;
-            try (JsonReader jsonReader = Json.createReader(new StringReader(REGISTER_POLICY_EXAMPLE_PAYLOAD))) {
-                jsonObject = jsonReader.readObject();
-            }
+            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(REGISTER_POLICY_EXAMPLE_PAYLOAD);
 
             // ACT
             testee.registerPolicy(new CreatePolicyRequest(now, null, jsonObject));
@@ -135,10 +130,7 @@ class PolicyStoreServiceTest {
 
             // ARRANGE
             final OffsetDateTime now = OffsetDateTime.now();
-            final JsonObject jsonObject;
-            try (JsonReader jsonReader = Json.createReader(new StringReader(REGISTER_POLICY_EXAMPLE_PAYLOAD))) {
-                jsonObject = jsonReader.readObject();
-            }
+            final JsonObject jsonObject = PolicyStoreTestUtil.toJsonObject(REGISTER_POLICY_EXAMPLE_PAYLOAD);
 
             // ACT
             final OffsetDateTime validUntil = now.plusMonths(1);
