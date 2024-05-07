@@ -19,6 +19,10 @@ on:
         description: 'New Helm Chart version'
         required: true
         type: string
+      add-change-to-helm-changelog:
+        description: 'Add "Update IRS to ..." change to Helm Chart changelog'
+        required: true
+        type: boolean
 
 jobs:
   update-docs-for-release:
@@ -56,6 +60,8 @@ jobs:
         run: |
           new_irs_version="${{ inputs.irs-version }}"
           new_helm_chart_version="${{ inputs.helm-chart-version }}"
+          add_change_to_helm_changelog="${{ inputs.add-change-to-helm-changelog }}"
+          
           date=$(date +"%Y-%m-%d")
           
           semver_pattern="${{ env.SEMVER_PATTERN }}"
@@ -82,25 +88,27 @@ jobs:
           ### update Helm Chart directory's CHANGELOG.md ###
           irs_helm_changelog_placeholder_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
           
-          # get line number of first header which is not placeholder
-          next_header_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.## \[$semver_pattern\]" | grep -Eo "^[0-9]+")
-          
-          # get line number of first  "### Changed" section
-          first_changed_section_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.### Changed" | grep -Eo "[0-9]+")
-          
-          # "### Changed" is already present for current changelog if it comes before next header -> just insert line below
-          if [[ $first_changed_section_line_number -lt $next_header_line_number ]]; then
-          
-            # check if markdown was properly formatted (with blank line between "### Changed" and first change)
-            line_after=$(awk "NR==$((first_changed_section_line_number+1))" ${{ env.IRS_HELM_CHANGELOG_PATH }})
-            if [[ "$line_after" == "" ]]; then
-              sed -i "$((first_changed_section_line_number+1)) s|^|\n- Update IRS version to $new_irs_version|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
-            else # format properly with blank line
-              sed -i "$((first_changed_section_line_number+1)) s|^|\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
+          if [[ "$add_change_to_helm_changelog" == "true" ]]; then
+            # get line number of first header which is not placeholder
+            next_header_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.## \[$semver_pattern\]" | grep -Eo "^[0-9]+")
+            
+            # get line number of first  "### Changed" section
+            first_changed_section_line_number=$(cat -n ${{ env.IRS_HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.### Changed" | grep -Eo "[0-9]+")
+            
+            # "### Changed" is already present for current changelog if it comes before next header -> just insert line below
+            if [[ $first_changed_section_line_number -lt $next_header_line_number ]]; then
+            
+              # check if markdown was properly formatted (with blank line between "### Changed" and first change)
+              line_after=$(awk "NR==$((first_changed_section_line_number+1))" ${{ env.IRS_HELM_CHANGELOG_PATH }})
+              if [[ "$line_after" == "" ]]; then
+                sed -i "$((first_changed_section_line_number+1)) s|^|\n- Update IRS version to $new_irs_version|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
+              else # format properly with blank line
+                sed -i "$((first_changed_section_line_number+1)) s|^|\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
+              fi
+            
+            else
+              sed -i "$(($irs_helm_changelog_placeholder_line_number+1)) s|^|\n### Changed\n\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
             fi
-          
-          else
-            sed -i "$(($irs_helm_changelog_placeholder_line_number+1)) s|^|\n### Changed\n\n- Update IRS version to $new_irs_version\n|" ${{ env.IRS_HELM_CHANGELOG_PATH }}
           fi
           
           # replace placeholder
