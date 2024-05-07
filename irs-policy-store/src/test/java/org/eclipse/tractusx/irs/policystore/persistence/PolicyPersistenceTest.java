@@ -43,6 +43,7 @@ import java.util.Optional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.assertj.core.api.ThrowableAssert;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
@@ -104,18 +105,22 @@ class PolicyPersistenceTest {
             when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
             // ACT & ASSERT
-            assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
+            assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class)
+                                                                    .hasMessageContaining("'test'")
+                                                                    .hasMessageContaining("already exists");
         }
 
         @Test
-        void saveWithError() throws BlobPersistenceException {
+        void saveWithReadError() throws BlobPersistenceException {
             // ARRANGE
             final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
             when(mockPersistence.getBlob(any())).thenThrow(
                     new BlobPersistenceException("test", new IllegalStateException()));
 
             // ACT & ASSERT
-            assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
+            final ThrowableAssert.ThrowingCallable call = () -> testee.save("testBpn", policy);
+            assertThatThrownBy(call).isInstanceOf(PolicyStoreException.class)
+                                    .hasMessageContaining("Unable to read policy data");
         }
 
         @Test
@@ -126,7 +131,9 @@ class PolicyPersistenceTest {
                                                                                       .putBlob(any(), any());
 
             // ACT & ASSERT
-            assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class);
+            final ThrowableAssert.ThrowingCallable call = () -> testee.save("testBpn", policy);
+            assertThatThrownBy(call).isInstanceOf(PolicyStoreException.class)
+                                    .hasMessageContaining("Unable to store policy data");
         }
     }
 
@@ -213,7 +220,9 @@ class PolicyPersistenceTest {
             final var localTestee = new PolicyPersistence(mockPersistence, mapperMock);
 
             // ACT & ASSERT
-            assertThatThrownBy(() -> localTestee.readAll("testBpn")).isInstanceOf(PolicyStoreException.class);
+            final ThrowableAssert.ThrowingCallable call = () -> localTestee.readAll("testBpn");
+            assertThatThrownBy(call).isInstanceOf(PolicyStoreException.class)
+                                    .hasMessageContaining("Could not read the policies from the store");
         }
     }
 }
