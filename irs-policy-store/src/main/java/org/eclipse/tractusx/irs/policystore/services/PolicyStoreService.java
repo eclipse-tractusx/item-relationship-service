@@ -78,8 +78,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     private final Clock clock;
 
-    private static final String MISSING_REQUEST_FIELD_MESSAGE =
-            "Request does not contain all required fields. " + "Missing: %s";
+    private static final String POLICY_INCOMPLETE_MESSAGE = "Policy does not contain all required fields. Missing: %s";
 
     private static final String DEFAULT = "default";
 
@@ -126,7 +125,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         return registeredPolicy;
     }
 
-    public Policy doRegisterPolicy(final Policy policy, final String businessPartnersNumber) {
+    Policy doRegisterPolicy(final Policy policy, final String businessPartnersNumber) {
         validatePolicy(policy);
         policy.setCreatedOn(OffsetDateTime.now(clock));
         log.info("Registering new policy with id {}, valid until {}", policy.getPolicyId(), policy.getValidUntil());
@@ -146,12 +145,12 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
         if (policy.getPermissions() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:permission"));
+                    String.format(POLICY_INCOMPLETE_MESSAGE, "odrl:permission"));
         }
 
         if (policy.getPermissions().stream().anyMatch(p -> p.getConstraint() == null)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format(MISSING_REQUEST_FIELD_MESSAGE, "odrl:constraint"));
+                    String.format(POLICY_INCOMPLETE_MESSAGE, "odrl:constraint"));
         }
     }
 
