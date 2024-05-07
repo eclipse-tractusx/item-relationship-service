@@ -37,7 +37,6 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
@@ -47,14 +46,12 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StopWatch;
 
 /**
@@ -103,15 +100,10 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             stopWatchOnEdcTask(stopWatch);
 
             return Optional.of(
-                    new SubmodelDescriptor(getContractAgreementId(endpointDataReference.getAuthCode()), payload));
+                    new SubmodelDescriptor(endpointDataReference.getContractId(), payload));
         }
 
         return Optional.empty();
-    }
-
-    @Nullable
-    private String getContractAgreementId(final String authCode) {
-        return StringUtils.isNotBlank(authCode) ? EDRAuthCode.fromAuthCodeToken(authCode).getCid() : null;
     }
 
     private Optional<EndpointDataReference> retrieveEndpointReference(final String storageId,

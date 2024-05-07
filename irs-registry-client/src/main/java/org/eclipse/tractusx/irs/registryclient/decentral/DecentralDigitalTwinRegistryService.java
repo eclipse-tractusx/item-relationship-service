@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -44,7 +43,6 @@ import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -193,7 +191,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         try {
             return keys.stream()
-                       .map(key -> new Shell(contractNegotiationId(endpointDataReference.getAuthCode()),
+                       .map(key -> new Shell(endpointDataReference.getContractId(),
                                fetchShellDescriptor(endpointDataReference, key)))
                        .toList();
         } finally {
@@ -217,10 +215,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
-    }
-
-    private String contractNegotiationId(final String token) {
-        return Optional.ofNullable(token).map(EDRAuthCode::fromAuthCodeToken).map(EDRAuthCode::getCid).orElse("");
     }
 
     /**
