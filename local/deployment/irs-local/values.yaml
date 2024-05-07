@@ -33,8 +33,6 @@ irs-helm:
     discoveryFinderUrl: https://localhost
   semanticshub:
     url: https://localhost
-  bpdm:
-    url: https://localhost
 
   minioUser: "testtest"
   minioPassword: "testtest"

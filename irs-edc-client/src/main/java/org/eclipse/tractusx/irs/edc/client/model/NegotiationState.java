@@ -35,6 +35,6 @@ import lombok.extern.jackson.Jacksonized;
 @Builder(toBuilder = true)
 @Jacksonized
 public class NegotiationState {
-    @JsonProperty("edc:state")
+    @JsonProperty("state")
     private String state;
 }

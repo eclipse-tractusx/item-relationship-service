@@ -57,20 +57,17 @@ data:
           client:
             registration:
               semantics:
+                authorization-grant-type: client_credentials
                 client-id: "${SEMANTICS_OAUTH2_CLIENT_ID}" # taken from secret ENV
                 client-secret: "${SEMANTICS_OAUTH2_CLIENT_SECRET}" # taken from secret ENV
               discovery:
+                authorization-grant-type: client_credentials
                 client-id: ${DISCOVERY_OAUTH2_CLIENT_ID} # taken from secret ENV
                 client-secret: ${DISCOVERY_OAUTH2_CLIENT_SECRET} # taken from secret ENV
-              bpdm:
-                client-id: ${BPDM_OAUTH2_CLIENT_ID} # taken from secret ENV
-                client-secret: ${BPDM_OAUTH2_CLIENT_SECRET} # taken from secret ENV
             provider:
               semantics:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
               discovery:
-                token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
-              bpdm:
                 token-uri: {{ tpl (.Values.oauth2.clientTokenUri | default "http://localhost") . | quote }}
 
     digitalTwinRegistry:
@@ -93,10 +90,6 @@ data:
       {{- if .Values.semanticshub.localModels }}
       localModelDirectory: /app/semantic-models
       {{- end }}
-
-    bpdm:
-      oAuthClientId: {{ .Values.bpdm.oAuthClientId | default "bpdm" }}
-      bpnEndpoint: {{ tpl (.Values.bpdm.bpnEndpoint | default "") . | quote }}
 
     irs-edc-client:
       callback:

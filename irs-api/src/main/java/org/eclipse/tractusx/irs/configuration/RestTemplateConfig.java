@@ -70,7 +70,6 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig {
 
     public static final String DTR_REST_TEMPLATE = "dtrRestTemplate";
-    public static final String BPDM_REST_TEMPLATE = "bpdmRestTemplate";
     public static final String SEMHUB_REST_TEMPLATE = "semhubRestTemplate";
     public static final String NO_ERROR_REST_TEMPLATE = "noErrorRestTemplate";
     public static final String DISCOVERY_REST_TEMPLATE = "discoveryRestTemplate";
@@ -118,14 +117,6 @@ public class RestTemplateConfig {
             @Value("${semanticshub.timeout.read}") final Duration readTimeout,
             @Value("${semanticshub.timeout.connect}") final Duration connectTimeout,
             @Value("${semanticshub.oAuthClientId}") final String clientRegistrationId) {
-        return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId).build();
-    }
-
-    @Bean(BPDM_REST_TEMPLATE)
-        /* package */ RestTemplate bpdmRestTemplate(final RestTemplateBuilder restTemplateBuilder,
-            @Value("${bpdm.timeout.read}") final Duration readTimeout,
-            @Value("${bpdm.timeout.connect}") final Duration connectTimeout,
-            @Value("${bpdm.oAuthClientId}") final String clientRegistrationId) {
         return oAuthRestTemplate(restTemplateBuilder, readTimeout, connectTimeout, clientRegistrationId).build();
     }
 

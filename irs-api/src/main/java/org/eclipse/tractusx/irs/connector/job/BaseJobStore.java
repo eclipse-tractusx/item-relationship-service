@@ -131,8 +131,7 @@ public abstract class BaseJobStore implements JobStore {
                 log.info("Job {} has no remaining transfers, transitioning to TRANSFERS_FINISHED", jobId);
                 newJob.transitionTransfersFinished();
             } else {
-                log.info("Job {} has {} remaining transfers, cannot finish it: {}", jobId, remainingTransfers.size(),
-                        newJob.build());
+                log.info("Job {} has {} remaining transfers, cannot finish it.", jobId, remainingTransfers.size());
             }
             return newJob.build();
         });

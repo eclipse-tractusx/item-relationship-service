@@ -20,7 +20,7 @@
 package org.eclipse.tractusx.irs.edc.client.asset;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.edc.spi.types.domain.HttpDataAddress.HTTP_DATA;
+import static org.eclipse.tractusx.irs.edc.client.asset.EdcAssetService.DATA_ADDRESS_TYPE_HTTP_DATA;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -94,7 +94,7 @@ class EdcAssetServiceTest {
     }
 
     @Test
-    void testAssetCreateRequestStructure() throws JSONException, JsonProcessingException {
+    void testAssetCreateRequestStructure() throws JSONException {
 
         Map<String, Object> properties = Map.of("https://w3id.org/edc/v0.0.1/ns/description",
                 "endpoint to qualityinvestigation receive", "https://w3id.org/edc/v0.0.1/ns/contenttype",
@@ -103,7 +103,7 @@ class EdcAssetServiceTest {
                 "qualityinvestigation", "https://w3id.org/edc/v0.0.1/ns/notificationmethod", "receive");
 
         DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                     .type(HTTP_DATA)
+                                                     .type(DATA_ADDRESS_TYPE_HTTP_DATA)
                                                      .property("https://w3id.org/edc/v0.0.1/ns/type", "HttpData")
                                                      .property("https://w3id.org/edc/v0.0.1/ns/baseUrl",
                                                              "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive")
@@ -118,11 +118,7 @@ class EdcAssetServiceTest {
                                    .properties(properties)
                                    .dataAddress(dataAddress)
                                    .build();
-        System.out.println(objectMapper().writeValueAsString(asset));
-        System.out.println(objectMapper().writeValueAsString(dataAddress));
-        System.out.println(objectMapper().writeValueAsString(properties));
         JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
-        System.out.println(objectMapper().writeValueAsString(jsonObject));
 
         JSONAssert.assertEquals("""
                 {

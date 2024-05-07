@@ -20,7 +20,6 @@
 package org.eclipse.tractusx.irs.edc.client.asset;
 
 import static org.eclipse.edc.spi.types.domain.DataAddress.EDC_DATA_ADDRESS_TYPE_PROPERTY;
-import static org.eclipse.edc.spi.types.domain.HttpDataAddress.HTTP_DATA;
 
 import java.util.Map;
 import java.util.UUID;
@@ -67,6 +66,7 @@ public class EdcAssetService {
     private static final String ASSET_CREATION_PROPERTY_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String ASSET_CREATION_PROPERTY_NOTIFICATION_TYPE = "https://w3id.org/edc/v0.0.1/ns/notificationtype";
     private static final String ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD = "https://w3id.org/edc/v0.0.1/ns/notificationmethod";
+    public static final String DATA_ADDRESS_TYPE_HTTP_DATA = "HttpData";
 
     private final EdcTransformer edcTransformer;
     private final EdcConfiguration config;
@@ -133,8 +133,9 @@ public class EdcAssetService {
                 ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD, notificationMethod.getValue());
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                           .type(HTTP_DATA)
-                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
+                                                           .type(DATA_ADDRESS_TYPE_HTTP_DATA)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY,
+                                                                   DATA_ADDRESS_TYPE_HTTP_DATA)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.TRUE.toString())
@@ -156,7 +157,8 @@ public class EdcAssetService {
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type("DataAddress")
-                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY,
+                                                                   DATA_ADDRESS_TYPE_HTTP_DATA)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.TRUE.toString())
@@ -181,7 +183,8 @@ public class EdcAssetService {
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type("DataAddress")
-                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY,
+                                                                   DATA_ADDRESS_TYPE_HTTP_DATA)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.FALSE.toString())

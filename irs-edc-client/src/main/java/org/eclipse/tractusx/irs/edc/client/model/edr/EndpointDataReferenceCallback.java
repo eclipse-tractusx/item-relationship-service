@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,23 +17,25 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.bpdm;
+package org.eclipse.tractusx.irs.edc.client.model.edr;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 /**
- * Bpn Response
+ * EndpointDataReferenceCallback represents a transfer process callback containing the EndpointDataReference.
  */
-@Value
 @Builder
+@Value
 @Jacksonized
-class BusinessPartnerResponse {
-
-    private String bpn;
-    private List<NameResponse> names;
-
+public class EndpointDataReferenceCallback {
+    @JsonProperty("id")
+    private String callbackId;
+    @JsonProperty("at")
+    private long createdAt;
+    private TransferProcessCallbackPayload payload;
+    private String type;
 }
+
