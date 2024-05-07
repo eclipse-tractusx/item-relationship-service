@@ -105,9 +105,10 @@ class PolicyPersistenceTest {
             when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
 
             // ACT & ASSERT
-            assertThatThrownBy(() -> testee.save("testBpn", policy)).isInstanceOf(PolicyStoreException.class)
-                                                                    .hasMessageContaining("'test'")
-                                                                    .hasMessageContaining("already exists");
+            final ThrowableAssert.ThrowingCallable call = () -> testee.save("testBpn", policy);
+            assertThatThrownBy(call).isInstanceOf(PolicyStoreException.class)
+                                    .hasMessageContaining("'test'")
+                                    .hasMessageContaining("already exists");
         }
 
         @Test
