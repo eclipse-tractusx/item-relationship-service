@@ -8,11 +8,15 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
 
-## Added
+- Fixed issue in EDR Token renewal #358
+
+### Added
 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
  
+
 ## [5.1.0] - 2024-05-06
 
 ### Changed

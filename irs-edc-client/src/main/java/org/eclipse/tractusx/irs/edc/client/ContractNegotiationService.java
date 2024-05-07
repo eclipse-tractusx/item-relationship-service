@@ -43,7 +43,6 @@ import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOffer;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.Response;
@@ -95,12 +94,7 @@ public class ContractNegotiationService {
                 contractAgreementId = negotiationResponse.getContractAgreementId();
             }
             case EXPIRED -> {
-                final String authCode = resultEndpointDataReferenceStatus.endpointDataReference().getAuthCode();
-                if (authCode == null) {
-                    throw new IllegalStateException("Missing information about AuthKey.");
-                }
-                log.error("AuthCode to be parsed: {}", authCode);
-                contractAgreementId = EDRAuthCode.fromAuthCodeToken(authCode).getCid();
+                contractAgreementId = resultEndpointDataReferenceStatus.endpointDataReference().getContractId();
                 log.info(
                         "Cached endpoint data reference has expired token. Refreshing token without new contract negotiation for contractAgreementId: {}",
                         Masker.mask(contractAgreementId));
