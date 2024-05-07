@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed issue in EDR Token renewal #358
+
 ## [5.1.0] - 2024-05-06
 
 ### Changed
