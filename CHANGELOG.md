@@ -119,7 +119,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
 
-## Changed
+### Changed
 
 - Dataspace Discovery Service handles multiple EDC-Urls received for BPN now. #214
 - Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation" #349
