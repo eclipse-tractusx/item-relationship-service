@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+## Added
+
+- Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
+ 
 ## Changed
 
 -  Removed obsolete entries from acceptedPolicies configuration. #530
@@ -15,6 +19,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Fixed
 
 - Update bouncycastle to 1.78 to fix CVE's.
+
 
 
 ## [5.0.0] - 2024-04-16
@@ -114,10 +119,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added "contractAgreementId" field to Submodel model
 - Added Integration Tests for the entire IRS flow using stubbed responses of Discovery Service, Semantic Hub, EDC,
   Digital Twin Registry and BPDM Pool. #344
-
-## Added
-
-- Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
 
 ### Changed
 
