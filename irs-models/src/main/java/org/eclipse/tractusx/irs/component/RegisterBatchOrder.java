@@ -107,7 +107,7 @@ public class RegisterBatchOrder {
     @Schema(description = "Flag to specify whether aspects should be requested and collected. Default is false.")
     private boolean collectAspects;
 
-    @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.")
+    @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.", deprecated = true)
     private boolean lookupBPNs;
 
     @URL

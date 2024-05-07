@@ -43,48 +43,53 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class JsonObjectToPolicyTransformerTest {
+class JsonObjectToIrsPolicyTransformerTest {
 
     public static final String EXAMPLE_PAYLOAD = """
-                {
-                    "@context": {
-                        "odrl": "http://www.w3.org/ns/odrl/2/"
-                    },
-                    "@id": "policy-id",
-                    "policy": {
-                        "odrl:permission": [
-                            {
-                                "odrl:action": "USE",
-                                "odrl:constraint": {
-                                    "odrl:and": [
-                                        {
-                                            "odrl:leftOperand": "Membership",
-                                            "odrl:operator": {
-                                                "@id": "odrl:eq"
-                                            },
-                                            "odrl:rightOperand": "active"
+            {
+                "@context": {
+                    "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
+                    "edc": "https://w3id.org/edc/v0.0.1/ns/",
+                    "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                    "tx-auth": "https://w3id.org/tractusx/auth/",
+                    "cx-policy": "https://w3id.org/catenax/policy/",
+                    "odrl": "http://www.w3.org/ns/odrl/2/"
+                },
+               "@id": "policy-id",
+                "policy": {
+                    "odrl:permission": [
+                        {
+                            "odrl:action": "USE",
+                            "odrl:constraint": {
+                                "odrl:and": [
+                                    {
+                                        "odrl:leftOperand": "Membership",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
                                         },
-                                        {
-                                            "odrl:leftOperand": "PURPOSE",
-                                            "odrl:operator": {
-                                                "@id": "odrl:eq"
-                                            },
-                                            "odrl:rightOperand": "ID 3.1 Trace"
-                                        }
-                                    ]
-                                }
+                                        "odrl:rightOperand": "active"
+                                    },
+                                    {
+                                        "odrl:leftOperand": "PURPOSE",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
+                                        },
+                                        "odrl:rightOperand": "ID 3.1 Trace"
+                                    }
+                                ]
                             }
-                        ]
-                    }
-                 }
-                """;
+                        }
+                    ]
+                }
+             }
+            """;
 
-    private JsonObjectToPolicyTransformer jsonObjectToPolicyTransformer;
+    private JsonObjectToIrsPolicyTransformer jsonObjectToIrsPolicyTransformer;
     private TransformerContext transformerContext;
 
     @BeforeEach
     public void setUp() {
-        jsonObjectToPolicyTransformer = new JsonObjectToPolicyTransformer(new ObjectMapper());
+        jsonObjectToIrsPolicyTransformer = new JsonObjectToIrsPolicyTransformer(new ObjectMapper());
         transformerContext = new TransformerContextImpl(new TypeTransformerRegistryImpl());
     }
 
@@ -96,7 +101,7 @@ class JsonObjectToPolicyTransformerTest {
         jsonReader.close();
 
         // when
-        final Policy transformed = jsonObjectToPolicyTransformer.transform(jsonObject, transformerContext);
+        final Policy transformed = jsonObjectToIrsPolicyTransformer.transform(jsonObject, transformerContext);
 
         // then
         assertThat(transformed.getPolicyId()).isEqualTo("policy-id");

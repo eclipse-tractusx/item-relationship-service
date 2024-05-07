@@ -23,6 +23,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.component.enums;
 
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -62,7 +64,12 @@ public enum Direction {
         return Stream.of(Direction.values())
                      .filter(direction -> direction.name.equals(value))
                      .findFirst()
-                     .orElseThrow();
+                     .orElseThrow(() -> new NoSuchElementException(
+                             "Unsupported direction. Must be one of: " + supportedDirections()));
+    }
+
+    private static String supportedDirections() {
+        return Stream.of(Direction.values()).map(direction -> direction.name).collect(Collectors.joining(", "));
     }
 
     /**

@@ -96,8 +96,8 @@ public class SubmodelDelegate extends AbstractDelegate {
                         getSubmodels(submodelDescriptor, itemContainerBuilder, itemId.getGlobalAssetId(),
                                 itemId.getBpn(), jobData.isAuditContractNegotiation())));
             }
-            log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
-            log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
+            log.trace("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
+            log.trace("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
 
             shell.payload().setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
 

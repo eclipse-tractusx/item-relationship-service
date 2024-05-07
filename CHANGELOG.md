@@ -8,17 +8,25 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+
 ## Added
 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
  
-## Changed
+## [5.1.0] - 2024-05-06
 
--  Removed obsolete entries from acceptedPolicies configuration. #530
+### Changed
+
+- Removed obsolete entries from acceptedPolicies configuration. #530
+- Support of building relationships based on SingleLevelUsageAsBuilt v3.0.0 #558
+- Support of building relationships based on SingleLevelBomAsPlanned v3.0.0 #558
+- BPN lookup feature was removed #568
+- Update IRS EDC client to use EDC 0.7.0 #358
 
 ### Fixed
 
 - Update bouncycastle to 1.78 to fix CVE's.
+- Fixed validation of json-schemas - IRS is creating tombstone instead collecting Submodel payload, when it not passes validation of schema #522
 
 
 
@@ -630,7 +638,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.0...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.0...HEAD
+[5.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.0...5.1.0
 [5.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.9.0...5.0.0
 [4.9.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.8.0...4.9.0
 [4.8.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.7.0...4.8.0

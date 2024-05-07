@@ -101,7 +101,7 @@ public class ResultFinder {
 
         return (value, throwable) -> {
 
-            log.debug("value: '{}', throwable: {}", value, throwable);
+            log.trace("value: '{}', throwable: {}", value, throwable);
 
             final boolean notFinishedByOtherFuture = !overallFuture.isDone();
             log.debug("notFinishedByOtherFuture {} ", notFinishedByOtherFuture);

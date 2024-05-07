@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: 5.0.0
+  version: 5.1.0
 servers:
 - url: http://localhost:8080
 security:
@@ -2344,8 +2344,6 @@ components:
           - DigitalTwinRequest
           - SchemaValidation
           - SchemaRequest
-          - BpdmRequest
-          - BpdmValidation
           - UsagePolicyValidation
           - EssValidation
         retryCounter:
@@ -2481,6 +2479,7 @@ components:
           maxItems: 2147483647
         lookupBPNs:
           type: boolean
+          deprecated: true
           description: Flag to specify whether BPNs should be collected and resolved
             via the configured BPDM URL. Default is false.
         timeout:
@@ -2646,6 +2645,7 @@ components:
           $ref: '#/components/schemas/PartChainIdentificationKey'
         lookupBPNs:
           type: boolean
+          deprecated: true
           description: Flag to specify whether BPNs should be collected and resolved
             via the configured BPDM URL. Default is false.
       required:

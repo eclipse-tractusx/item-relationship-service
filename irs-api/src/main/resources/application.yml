@@ -9,7 +9,7 @@ spring:
     oauth2:
       client:
         registration:
-          semantics :
+          semantics:
             authorization-grant-type: client_credentials
             client-id: ${SEMANTICS_OAUTH2_CLIENT_ID} # Semantic Hub OAuth2 client ID used to authenticate with the IAM
             client-secret: ${SEMANTICS_OAUTH2_CLIENT_SECRET} # Semantic Hub OAuth2 client secret used to authenticate with the IAM
@@ -17,17 +17,11 @@ spring:
             authorization-grant-type: client_credentials
             client-id: ${DISCOVERY_OAUTH2_CLIENT_ID} # Dataspace Discovery OAuth2 client ID used to authenticate with the IAM
             client-secret: ${DISCOVERY_OAUTH2_CLIENT_SECRET} # Dataspace Discovery OAuth2 client secret used to authenticate with the IAM
-          bpdm:
-            authorization-grant-type: client_credentials
-            client-id: ${BPDM_OAUTH2_CLIENT_ID} # BPDM Pool OAuth2 client ID used to authenticate with the IAM
-            client-secret: ${BPDM_OAUTH2_CLIENT_SECRET} # BPDM Pool OAuth2 client secret used to authenticate with the IAM
         provider:
           semantics:
             token-uri: ${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
           discovery:
             token-uri: ${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
-          bpdm:
-            token-uri: ${BPDM_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -217,13 +211,6 @@ semanticshub:
     read: PT90S # HTTP read timeout for the semantic hub client
     connect: PT90S # HTTP connect timeout for the semantic hub client
   pageSize: "${SEMANTICSHUB_PAGE_SIZE:100}"
-
-bpdm:
-  bpnEndpoint: "${BPDM_URL:}" # Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}
-  oAuthClientId: bpdm # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-  timeout:
-    read: PT90S # HTTP read timeout for the bpdm client
-    connect: PT90S # HTTP connect timeout for the bpdm client
 
 # ESS Module specific properties
 ess:

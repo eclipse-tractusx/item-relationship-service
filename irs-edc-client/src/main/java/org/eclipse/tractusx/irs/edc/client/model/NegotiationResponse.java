@@ -40,19 +40,19 @@ public class NegotiationResponse {
 
     @JsonProperty("@id")
     private String responseId;
-    @JsonProperty("edc:contractAgreementId")
+    @JsonProperty("contractAgreementId")
     private String contractAgreementId;
-    @JsonProperty("edc:counterPartyAddress")
+    @JsonProperty("counterPartyAddress")
     private String counterPartyAddress;
-    @JsonProperty("edc:errorDetail")
+    @JsonProperty("errorDetail")
     private String errorDetail;
-    @JsonProperty("edc:protocol")
+    @JsonProperty("protocol")
     private String protocol;
-    @JsonProperty("edc:state")
+    @JsonProperty("state")
     private String state;
-    @JsonProperty("edc:type")
+    @JsonProperty("type")
     private String type;
-    @JsonProperty("edc:callbackAddresses")
+    @JsonProperty("callbackAddresses")
     private List<String> callbackAddresses;
 
 }

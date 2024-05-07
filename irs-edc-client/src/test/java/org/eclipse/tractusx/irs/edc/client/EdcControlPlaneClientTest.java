@@ -102,6 +102,7 @@ class EdcControlPlaneClientTest {
         // arrange
         final var catalog = mock(Catalog.class);
         final var catalogString = "test";
+        final String providerBpn = "BPN000123456";
         final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
         doReturn(emptyJsonObject).when(edcTransformer).transformCatalogRequestToJson(any(CatalogRequest.class));
         doReturn(catalog).when(edcTransformer).transformCatalog(anyString(), eq(StandardCharsets.UTF_8));
@@ -109,7 +110,7 @@ class EdcControlPlaneClientTest {
                 eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(catalogString)));
 
         // act
-        final var result = testee.getCatalog("test", 0);
+        final var result = testee.getCatalog("test", 0, providerBpn);
 
         // assert
         assertThat(result).isEqualTo(catalog);
@@ -120,6 +121,7 @@ class EdcControlPlaneClientTest {
         // arrange
         final var catalog = mock(Catalog.class);
         final var catalogString = "test";
+        final String providerBpn = "BPN000123456";
         final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
         doReturn(emptyJsonObject).when(edcTransformer).transformCatalogRequestToJson(any(CatalogRequest.class));
         doReturn(catalog).when(edcTransformer).transformCatalog(anyString(), eq(StandardCharsets.UTF_8));
@@ -127,7 +129,7 @@ class EdcControlPlaneClientTest {
                 eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(catalogString)));
 
         // act
-        final var result = testee.getCatalogWithFilter("test", "asset:prop:type", "data.core.digitalTwinRegistry");
+        final var result = testee.getCatalogWithFilter("test", "asset:prop:type", "data.core.digitalTwinRegistry", providerBpn);
 
         // assert
         assertThat(result).isEqualTo(catalog);

@@ -7,7 +7,7 @@
       "@type": "PolicyDefinitionRequestDto",
       "@id": "id-3.1-trace",
       "policy": {
-        "@type": "Policy",
+        "@type": "odrl:Set",
         "odrl:permission": [
           {
             "odrl:action": "USE",

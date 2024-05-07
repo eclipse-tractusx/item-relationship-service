@@ -37,11 +37,11 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Transformer to convert JSON-LD to Policy.
  */
-public class JsonObjectToPolicyTransformer extends AbstractJsonLdTransformer<JsonObject, Policy> {
+public class JsonObjectToIrsPolicyTransformer extends AbstractJsonLdTransformer<JsonObject, Policy> {
 
     private final ObjectMapper objectMapper;
 
-    protected JsonObjectToPolicyTransformer(final ObjectMapper objectMapper) {
+    protected JsonObjectToIrsPolicyTransformer(final ObjectMapper objectMapper) {
         super(JsonObject.class, Policy.class);
         this.objectMapper = objectMapper;
     }

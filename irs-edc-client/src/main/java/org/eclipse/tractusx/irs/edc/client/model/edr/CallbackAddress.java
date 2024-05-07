@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,20 +17,23 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.bpdm;
+package org.eclipse.tractusx.irs.edc.client.model.edr;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.List;
+
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
 /**
- * Name response
+ * CallbackAddress represents the properties of a callback address.
+ *
+ * @param uri           The URI of the callback.
+ * @param events        The list of events for the callback.
+ * @param transactional Indicates if the callback is transactional.
+ * @param authKey       The authentication key.
+ * @param authCode      The authentication code.
  */
-@Getter
-@AllArgsConstructor(staticName = "of")
-@NoArgsConstructor
-class NameResponse {
-
-    private String value;
-
+@Builder
+@Jacksonized
+public record CallbackAddress(String uri, List<String> events, boolean transactional, String authKey, String authCode) {
 }

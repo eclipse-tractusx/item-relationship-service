@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,26 +17,17 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.bpdm;
+package org.eclipse.tractusx.irs.edc.client.model.edr;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.Builder;
+import lombok.extern.jackson.Jacksonized;
 
-import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-
-class BpdmFacadeTest {
-
-    private final BpdmFacade bpdmFacade = new BpdmFacade(new BpdmClientLocalStub());
-
-    @Test
-    void shouldReturnManufacturerNameWhenManufacturerIdExists() {
-        final String manufacturerId = "BPNL00000003AYRE";
-
-        final Optional<String> manufacturerName = bpdmFacade.findManufacturerName(manufacturerId);
-
-        assertThat(manufacturerName).isNotEmpty();
-        assertThat(manufacturerName.get()).contains("OEM A");
-    }
-
+/**
+ * DataAddress containing the EDR callback properties.
+ *
+ * @param properties The properties of the EDR callback.
+ */
+@Builder
+@Jacksonized
+public record DataAddress(Properties properties) {
 }

@@ -39,6 +39,7 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 
 class EndpointDataForConnectorsServiceTest {
 
@@ -47,13 +48,26 @@ class EndpointDataForConnectorsServiceTest {
 
     private static final String CONNECTION_ONE_ADDRESS = "connectionOneAddress";
     private static final String CONNECTION_TWO_ADDRESS = "connectionTwoAddress";
+    private static final String CONNECTION_ONE_CONTRACT_ID = "id1";
+    private static final String CONNECTION_TWO_CONTRACT_ID = "id2";
     private static final String BPN = "bpn";
 
     private static final EndpointDataReference CONNECTION_ONE_DATA_REF = //
-            EndpointDataReference.Builder.newInstance().endpoint(CONNECTION_ONE_ADDRESS).build();
+            EndpointDataReference.Builder.newInstance()
+                                         .endpoint(CONNECTION_ONE_ADDRESS)
+                                         .contractId(CONNECTION_ONE_CONTRACT_ID)
+                                         .id("test1")
+                                         .authKey(HttpHeaders.AUTHORIZATION)
+                                         .authCode("authCode")
+                                         .build();
 
     private static final EndpointDataReference CONNECTION_TWO_DATA_REF =  //
-            EndpointDataReference.Builder.newInstance().endpoint(CONNECTION_TWO_ADDRESS).build();
+            EndpointDataReference.Builder.newInstance().endpoint(CONNECTION_TWO_ADDRESS)
+                                         .contractId(CONNECTION_TWO_CONTRACT_ID)
+                                         .id("test1")
+                                         .authKey(HttpHeaders.AUTHORIZATION)
+                                         .authCode("authCode")
+                                         .build();
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade = mock(EdcEndpointReferenceRetriever.class);
 
