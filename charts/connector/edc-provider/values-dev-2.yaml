@@ -1,12 +1,12 @@
 tractusx-connector:
-
-  controlplane:
-    # SSI configuration
-    ssi:
+  iatp:
+    sts:
       oauth:
         client:
-          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id.provider2>
-          secretAlias: dev-provider2-miw-secret
+          id: <path:traceability-irs/data/dev/controlplane#dimClientId>
+          secret_alias: dim-secret-dev
+
+  controlplane:
     ingresses:
       - enabled: true
         hostname: "irs-provider-controlplane2.dev.demo.catena-x.net"
@@ -22,6 +22,12 @@ tractusx-connector:
           secretName: tls-secret
 
   dataplane:
+    token:
+      signer:
+        privatekey_alias: dev-provider2-key
+      verifier:
+        publickey_alias: dev-provider2-cert
+
     ingresses:
       - enabled: true
         hostname: "irs-provider-dataplane2.dev.demo.catena-x.net"
@@ -35,9 +41,6 @@ tractusx-connector:
         tls:
           enabled: true
           secretName: tls-secret
-
-  backendService:
-    httpProxyTokenReceiverUrl: "https://irs-submodel-server.dev.demo.catena-x.net/data/endpoint-data-reference-provider2"
 
   vault:
     secretNames:

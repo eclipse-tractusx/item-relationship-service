@@ -1,4 +1,10 @@
+postgresql:
+  enabled: false
 tractusx-connector:
+  install:
+    postgresql: true
+    vault: false
+
   iatp:
     sts:
       oauth:
@@ -9,7 +15,7 @@ tractusx-connector:
   controlplane:
     ingresses:
       - enabled: true
-        hostname: "irs-provider-controlplane3.dev.demo.catena-x.net"
+        hostname: "irs-test2-cp.dev.demo.catena-x.net"
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -24,13 +30,13 @@ tractusx-connector:
   dataplane:
     token:
       signer:
-        privatekey_alias: dev-provider3-key
+        privatekey_alias: irs-dev-daps-cert-provider-key
       verifier:
-        publickey_alias: dev-provider3-cert
+        publickey_alias: irs-dev-daps-cert-provider
 
     ingresses:
       - enabled: true
-        hostname: "irs-provider-dataplane3.dev.demo.catena-x.net"
+        hostname: "irs-test2-dp.dev.demo.catena-x.net"
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -44,9 +50,21 @@ tractusx-connector:
 
   vault:
     secretNames:
-      transferProxyTokenSignerPrivateKey: dev-provider3-key
-      transferProxyTokenSignerPublicKey: dev-provider3-cert
+      transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-provider-key
+      transferProxyTokenSignerPublicKey: irs-dev-daps-cert-provider
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
 
   postgresql:
-    jdbcUrl: "jdbc:postgresql://irs-provider3-edc-postgresql-hl:5432/edc"
+    nameOverride: edc-test2-postgresql
+    primary:
+      persistence:
+        enabled: false
+        size: 1Gi
+    auth:
+      database: edc
+      username: testuser
+      postgresPassword: testpass
+      password: testpass
+    username: testuser
+    password: testpass
+    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-edc-test2-postgresql:5432/edc"
