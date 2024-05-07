@@ -2,6 +2,7 @@ name: "Validate OpenAPI definition"
 
 on:
   workflow_dispatch: # Trigger manually
+  workflow_call:
   pull_request:
   push:
     branches:

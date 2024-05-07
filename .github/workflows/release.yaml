@@ -1,4 +1,4 @@
-name: Release IRS
+name: Release IRS and call appropriate subsequent workflows
 
 on:
   workflow_call:
@@ -67,12 +67,27 @@ jobs:
           body: ${{ env.CHANGELOG }}
           tag_name: ${{ inputs.new-irs-version }}
 
+  build-irs:
+    name: "Build IRS"
+    needs:
+      - release
+    uses: ./.github/workflows/irs-build.yml
+    secrets: inherit
+
+  trivy-image-scan:
+    name: "Scan image in local registry with Trivy"
+    uses: ./.github/workflows/trivy-image-scan.yml
+    secrets: inherit
+
+  validate-openapi-definition:
+    name: "Validate OpenAPI definition"
+    uses: ./.github/workflows/swagger-editor-validate.yml
+    secrets: inherit
+
   publish-to-swaggerhub:
     name: "Publish OpenAPI spec to Swaggerhub"
     permissions:
       contents: read
-    needs:
-      - release
     uses: ./.github/workflows/publish-swagger-hub.yml
     with:
       version: ${{ inputs.new-irs-version }}
