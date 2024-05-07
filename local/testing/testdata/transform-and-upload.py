@@ -23,10 +23,11 @@
 import argparse
 import json
 import math
-import requests
 import time
 import uuid
 from copy import copy
+
+import requests
 from requests.adapters import HTTPAdapter, Retry
 
 
@@ -243,7 +244,8 @@ def print_response(response_):
         raise Exception("Failed to call service")
 
 
-def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_upload_urls_, edc_urls_, dataplane_urls_):
+def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_upload_urls_, edc_urls_, dataplane_urls_,
+                   edc_bpns_):
     nr_of_submodel_server_upload_urls = len(submodel_server_upload_urls_)
     nr_of_submodel_server_urls = len(submodel_server_urls_)
     if nr_of_submodel_server_upload_urls != nr_of_submodel_server_urls:
@@ -256,6 +258,11 @@ def check_url_args(submodel_server_upload_urls_, submodel_server_urls_, edc_uplo
         raise ArgumentException(
             f"Number and order of edc upload URLs '{edc_upload_urls_}' has to match number and order of edc URLs "
             f"'{edc_urls_}'")
+    nr_of_edc_bpns = len(edc_bpns_)
+    if nr_of_edc_urls != nr_of_edc_bpns:
+        raise ArgumentException(
+            f"Number and order of edc URLs '{nr_of_edc_urls}' has to match number and order of edc BPNs "
+            f"'{nr_of_edc_bpns}'")
     if nr_of_submodel_server_urls != nr_of_edc_urls:
         raise ArgumentException(
             f"Number and order of edc URLs '{edc_urls_}' has to match number and order of submodelserver URLS "
@@ -292,11 +299,12 @@ def create_policy(policy_, edc_upload_url_, edc_policy_path_, headers_, session_
             print(f"Successfully created policy {response_.json()['@id']}.")
 
 
-def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_definition_path_, catalog_path_, header_,
+def create_registry_asset(edc_upload_urls_, edc_bpns_, edc_asset_path_, edc_contract_definition_path_, catalog_path_, header_,
                           session_, edc_urls_, policy_, registry_asset_id_, aas_url_):
     for edc_upload_url_ in edc_upload_urls_:
         index = edc_upload_urls_.index(edc_upload_url_)
         edc_url_ = edc_urls_[index]
+        edc_bpn_ = edc_bpns_[index]
         print(edc_url_)
         print(edc_upload_url_)
 
@@ -305,7 +313,7 @@ def create_registry_asset(edc_upload_urls_, edc_asset_path_, edc_contract_defini
             "@context": edc_context(),
             "edc:protocol": "dataspace-protocol-http",
             "edc:counterPartyAddress": f"{edc_url_}/api/v1/dsp",
-            "edc:counterPartyId": "BPNL00000001CRHK",
+            "edc:counterPartyId": f"{edc_bpn_}",
             "edc:querySpec": {
                 "edc:filterExpression": {
                     "@type": "edc:Criterion",
@@ -430,6 +438,7 @@ if __name__ == "__main__":
     parser.add_argument("-au", "--aasupload", type=str, help="aas url", required=False)
     parser.add_argument("-edc", "--edc", type=str, nargs="*", help="EDC provider control plane display URLs",
                         required=True)
+    parser.add_argument("--edcBPN", type=str, nargs="*", help="The BPN of the provider EDC", required=True)
     parser.add_argument("-eu", "--edcupload", type=str, nargs="*", help="EDC provider control plane upload URLs",
                         required=False)
     parser.add_argument("-k", "--apikey", type=str, help="EDC provider api key", required=True)
@@ -457,6 +466,7 @@ if __name__ == "__main__":
     aas_url = config.get("aas")
     aas_upload_url = config.get("aasupload")
     edc_urls = config.get("edc")
+    edc_bpns = config.get("edcBPN")
     edc_upload_urls = config.get("edcupload")
     edc_api_key = config.get("apikey")
     esr_url = config.get("esr")
@@ -492,7 +502,8 @@ if __name__ == "__main__":
     if is_aas3:
         registry_path = "/shell-descriptors"
 
-    check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls, dataplane_urls)
+    check_url_args(submodel_server_upload_urls, submodel_server_urls, edc_upload_urls, edc_urls, dataplane_urls,
+                   edc_bpns)
 
     edc_asset_path = "/management/v3/assets"
     edc_policy_path = "/management/v2/policydefinitions"
@@ -546,7 +557,7 @@ if __name__ == "__main__":
             for url in edc_upload_urls:
                 create_policy(policies[policy], url, edc_policy_path, headers_with_api_key, session)
 
-    create_registry_asset(edc_upload_urls, edc_asset_path, edc_contract_definition_path, edc_catalog_path,
+    create_registry_asset(edc_upload_urls, edc_bpns, edc_asset_path, edc_contract_definition_path, edc_catalog_path,
                           headers_with_api_key, session, edc_urls, default_policy, registry_asset_id, aas_url)
 
     if is_ess:
