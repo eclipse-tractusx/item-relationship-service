@@ -200,7 +200,6 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
     public void iPerformUpdatePolicy(final String policyId, final String bpn, final String validUntil) {
         this.updatePoliciesResponse = updatePolicies(this.authenticationPropertiesBuilder, List.of(policyId),
                 List.of(bpn), validUntil);
-        this.updatePoliciesResponse.statusCode(HttpStatus.OK.value());
     }
 
     @When("I add policyId {string} to given BPNs using validUntil {string}:")
@@ -302,7 +301,6 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
         this.updatePoliciesResponse = updatePolicies(this.authenticationPropertiesBuilder,
                 List.of(this.policyAttributes.getPolicyId()), this.policyAttributes.getBpnls(),
                 this.policyAttributes.getValidUntil());
-        this.updatePoliciesResponse.statusCode(HttpStatus.OK.value());
     }
 
     @Then("the create policy response should have HTTP status {int} and policyId {string}")
