@@ -28,7 +28,7 @@ package org.eclipse.tractusx.irs.data;
  */
 public class JsonParseException extends RuntimeException {
 
-    public JsonParseException(String message, final Throwable throwable) {
+    public JsonParseException(final String message, final Throwable throwable) {
         super(message, throwable);
     }
 
