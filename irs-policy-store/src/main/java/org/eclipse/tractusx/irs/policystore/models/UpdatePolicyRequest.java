@@ -27,6 +27,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
@@ -39,6 +40,7 @@ public record UpdatePolicyRequest(
 
         @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations.") //
         @NotNull //
+        @Future(message = "must be in future") //
         OffsetDateTime validUntil, //
 
         @Schema(description = "Business Partner Number (BPN).") //

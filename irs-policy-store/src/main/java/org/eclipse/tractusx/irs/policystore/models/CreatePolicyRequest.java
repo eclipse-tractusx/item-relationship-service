@@ -29,6 +29,7 @@ import java.time.OffsetDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.json.JsonObject;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
@@ -42,6 +43,7 @@ public record CreatePolicyRequest(
         @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations.",
                 example = "2025-12-12T23:59:59.999Z") //
         @NotNull //
+        @Future(message = "must be in future") //
         OffsetDateTime validUntil, //
 
         @Schema(description = """
