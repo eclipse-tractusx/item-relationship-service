@@ -1,108 +1,18 @@
 {
   "submodels": [
     {
-      "identification": "urn:uuid:0f28e9b8-d683-4ac7-ab04-e2da39f6dbf4",
+      "identification": "urn:uuid:6f04b1fb-d363-4cae-a72a-2e9b4f7807fd",
       "aspectType": "urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
-      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:ZWQwYjA1Y2EtZTdhMS00OWNjLTgwNzgtYWYxYWU2MWMwYjU4",
+      "contractAgreementId": "73994bcc-6cb6-4140-9cee-54a6b660a8d5",
       "payload": {
         "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
         "subcomponents": [
           {
             "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-            "productType": "pack"
+            "productType": "cell"
           }
         ],
-        "productType": "pack"
-      }
-    },
-    {
-      "identification": "urn:uuid:207317f6-5689-4957-a8b1-be613cf6e811",
-      "aspectType": "urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
-      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MzBkNDllMDgtNzFhNS00Y2E4LTg1OWEtYWIxODkzMGJjN2Qy",
-      "payload": {
-        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-        "subcomponents": [
-          {
-            "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-            "productType": "module"
-          }
-        ],
-        "productType": "module"
-      }
-    },
-    {
-      "identification": "urn:uuid:bbbb4f96-4ffc-4228-bb8b-6c584c714c13",
-      "aspectType": "urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
-      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:N2I3YWEwYTktYzYyNS00ZjdmLWEzMjMtYmYxYTkxNThlMWUw",
-      "payload": {
-        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-        "subcomponents": [
-          {
-            "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-            "productType": "module"
-          }
-        ],
-        "productType": "module"
-      }
-    },
-    {
-      "identification": "urn:uuid:6e432adb-10f0-499f-ad08-bbf36c74f9bb",
-      "aspectType": "urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
-      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MzBkNDllMDgtNzFhNS00Y2E4LTg1OWEtYWIxODkzMGJjN2Qy",
-      "payload": {
-        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-        "subcomponents": [
-          {
-            "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-            "productType": "module"
-          }
-        ],
-        "productType": "module"
-      }
-    },
-    {
-      "identification": "urn:uuid:3685db54-9d52-4df2-87a2-05c32edbdc49",
-      "aspectType": "urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
-      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MzBkNDllMDgtNzFhNS00Y2E4LTg1OWEtYWIxODkzMGJjN2Qy",
-      "payload": {
-        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-        "subcomponents": [
-          {
-            "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-            "productType": "module"
-          }
-        ],
-        "productType": "module"
-      }
-    },
-    {
-      "identification": "urn:uuid:86fee0d5-130c-43cc-b476-4fcce3f9a1c5",
-      "aspectType": "urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
-      "contractAgreementId": "ZTY1ZGNhY2MtZGQ1Ny00N2NjLWE0MjItMzU5OTMzZjg0ZWIz:dXJuOnV1aWQ6MDc4YTJiMTctMjJkZS00NTMwLWI2ODktYzYwNzNmZjRkMjA2:MzBkNDllMDgtNzFhNS00Y2E4LTg1OWEtYWIxODkzMGJjN2Qy",
-      "payload": {
-        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-        "subcomponents": [
-          {
-            "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-            "productType": "module"
-          }
-        ],
-        "productType": "module"
-      }
-    },
-    {
-      "identification": "urn:uuid:5156fe68-a54b-45e6-8c82-0c4fd488be8c",
-      "aspectType": "urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode",
-      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:ZWQwYjA1Y2EtZTdhMS00OWNjLTgwNzgtYWYxYWU2MWMwYjU4",
-      "payload": {
-        "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-        "subcomponents": [
-          {
-            "tractionBatteryCode": "X12MCPM27KLPCLX2M2382320",
-            "productType": "module"
-          }
-        ],
-        "productType": "module"
+        "productType": "cell"
       }
     }
   ]

@@ -1,14 +1,14 @@
 {
   "submodels": [
     {
-      "identification": "urn:uuid:46c4b216-bedd-4161-a141-f6c218784ddf",
+      "identification": "urn:uuid:755ff4a4-f04a-4f30-b245-9ab0c7e050d1",
       "aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-      "contractAgreementId": "NTA2OTRiZTktNzZmNS00N2Q4LWI3ZTctNDQ2YjYyNzZkZWE2:dXJuOnV1aWQ6MTkzODIwYTktYTU4NC00NzcxLTlhYjctYmM0ZmY4Mjg2Zjlh:N2I3YWEwYTktYzYyNS00ZjdmLWEzMjMtYmYxYTkxNThlMWUw",
+      "contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
       "payload": {
         "component": [
           {
             "materialName": "Carbon Steel",
-            "recycledContent": 37,
+            "recycledContent": 40,
             "materialClass": "1.1.2",
             "quantity": {
               "unit": "unit:kilogram",
@@ -19,7 +19,7 @@
           },
           {
             "materialName": "Oil",
-            "recycledContent": 32,
+            "recycledContent": 18,
             "materialClass": "9.2",
             "quantity": {
               "unit": "unit:kilogram",
@@ -30,7 +30,7 @@
           },
           {
             "materialName": "Copper",
-            "recycledContent": 76,
+            "recycledContent": 53,
             "materialClass": "3.1",
             "quantity": {
               "unit": "unit:kilogram",
