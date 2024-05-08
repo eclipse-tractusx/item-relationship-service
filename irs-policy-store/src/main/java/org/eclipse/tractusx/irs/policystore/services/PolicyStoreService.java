@@ -99,10 +99,12 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
             final PolicyPersistence persistence, final EdcTransformer edcTransformer, final Clock clock) {
+        
+        this.clock = clock;
+
         this.allowedPoliciesFromConfig = createDefaultPolicyFromConfig(defaultAcceptedPoliciesConfig);
         this.persistence = persistence;
         this.edcTransformer = edcTransformer;
-        this.clock = clock;
     }
 
     /**
@@ -320,11 +322,17 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
                                              new Constraint(acceptedPolicy.getLeftOperand(),
                                                      new Operator(OperatorType.fromValue(acceptedPolicy.getOperator())),
                                                      acceptedPolicy.getRightOperand())));
-        final Policy policy = new Policy(ConfiguredDefaultPolicy.DEFAULT_POLICY_ID, OffsetDateTime.now(),
-                OffsetDateTime.now().plusYears(ConfiguredDefaultPolicy.DEFAULT_POLICY_LIFETIME_YEARS),
-                List.of(new Permission(PolicyType.USE, new Constraints(constraints, constraints))));
 
-        return List.of(policy);
+        final OffsetDateTime now = OffsetDateTime.now(clock);
+        return List.of(Policy.builder()
+                             .policyId(ConfiguredDefaultPolicy.DEFAULT_POLICY_ID)
+                             .createdOn(now)
+                             .validUntil(now.plusYears(ConfiguredDefaultPolicy.DEFAULT_POLICY_LIFETIME_YEARS))
+                             .permissions(List.of(Permission.builder()
+                                                            .action(PolicyType.USE)
+                                                            .constraint(new Constraints(constraints, constraints))
+                                                            .build()))
+                             .build());
     }
 
 }
