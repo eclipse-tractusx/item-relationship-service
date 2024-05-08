@@ -1,23 +1,23 @@
 {
-    "relationships": [
-        {
-            "catenaXId": "urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 20.0,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e7777066-e453-4431-beb3-4e99d042f923",
-                "hasAlternatives": false
-            },
-            "aspectType": "SingleLevelUsageAsBuilt",
-            "bpn": "BPNL00000003AVTH"
-        }
-    ]
+  "relationships": [
+    {
+      "catenaXId": "urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c",
+      "linkedItem": {
+        "quantity": {
+          "quantityNumber": 20.0,
+          "measurementUnit": {
+            "datatypeURI": null,
+            "lexicalValue": "unit:piece"
+          }
+        },
+        "lifecycleContext": "asBuilt",
+        "assembledOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+        "childCatenaXId": "urn:uuid:10bedf9c-b2e2-4cd8-bb55-290107cceb09",
+        "hasAlternatives": false
+      },
+      "aspectType": "SingleLevelUsageAsBuilt",
+      "bpn": "BPNL00000003AVTH"
+    }
+  ]
 }
