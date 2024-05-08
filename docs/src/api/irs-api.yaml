@@ -1796,7 +1796,7 @@ components:
             This parameter is optional.
             If not set the policy is registered for each existing BPN.
           example: BPNL1234567890AB
-          pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
+          pattern: "(BPNL)[\\w\\d]{10}[\\w\\d]{2}"
         payload:
           type: object
           additionalProperties:
