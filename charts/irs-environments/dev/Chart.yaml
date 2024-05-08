@@ -19,7 +19,7 @@ version: 1.0.6
 dependencies:
   - name: item-relationship-service
     repository: https://eclipse-tractusx.github.io/item-relationship-service
-    version: 7.1.0
+    version: 7.1.1
   - name: tractusx-connector
     repository: https://eclipse-tractusx.github.io/tractusx-edc
     version: 0.7.0
