@@ -21,18 +21,39 @@ package org.eclipse.tractusx.irs.policystore.validators;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Collections;
+import java.util.List;
+
 import jakarta.validation.ConstraintViolationException;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
+import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
+import org.eclipse.tractusx.irs.edc.client.policy.Operator;
+import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
+import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.junit.jupiter.api.Test;
 
 class PolicyValidatorTest {
 
     @Test
     void invalidPolicyId() {
-        final Policy policy = Policy.builder().policyId("_invalid_policy_id_").build();
+        final Policy policy = Policy.builder().policyId("_invalid_policy_id_").permissions(createPermissions()).build();
         assertThatThrownBy(() -> PolicyValidator.validate(policy)).isInstanceOf(ConstraintViolationException.class)
                                                                   .hasMessageContaining("policyId")
                                                                   .hasMessageContaining("must be a valid UUID");
+    }
+
+    private List<Permission> createPermissions() {
+        return List.of(Permission.builder().action(PolicyType.USE).constraint(createConstraints()).build(),
+                Permission.builder().action(PolicyType.ACCESS).constraint(createConstraints()).build());
+    }
+
+    private Constraints createConstraints() {
+        return new Constraints(Collections.emptyList(),
+                List.of(new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
+                        new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"),
+                        new Constraint("PURPOSE", new Operator(OperatorType.EQ), "ID 3.1 Trace")));
     }
 
 }
