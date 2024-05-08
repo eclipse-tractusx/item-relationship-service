@@ -47,10 +47,6 @@
             <artifactId>minio</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.xerial.snappy</groupId>
-            <artifactId>snappy-java</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
@@ -100,7 +96,17 @@
                     <artifactId>json-smart</artifactId>
                     <groupId>net.minidev</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>nimbus-jose-jwt</artifactId>
+                    <groupId>com.nimbusds</groupId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <!-- Update nimbus-jose-jwt manually to avoid vulnerability CVE-2023-52428; can be removed after Spring updates their dependency -->
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>9.37.3</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -147,15 +153,9 @@
             <version>${irs-registry-client.version}</version>
         </dependency>
         <dependency>
-            <groupId>net.jimblackler</groupId>
-            <artifactId>jsonschemafriend</artifactId>
-            <version>${jsonschemafriend.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.jsoup</groupId>
-                    <artifactId>jsoup</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${json-schema-validator.version}</version>
         </dependency>
         <!-- Update jsoup manually to avoid a vulnerability; can be removed after jsonschemafriend updates their dependency -->
         <dependency>

@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
@@ -45,6 +47,7 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
  * SingleLevelBomAsSpecified
  */
 @Data
+@Builder
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
@@ -64,6 +67,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
      * ChildData
      */
     @Data
+    @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     /* package */ static class ChildData {
@@ -74,7 +78,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
         private String businessPartner;
 
         public Relationship toRelationship(final String catenaXId) {
-            final Part childPart = this.part.stream().findFirst().orElse(new Part());
+            final Part childPart = this.part.stream().findFirst().orElse(Part.builder().build());
 
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
@@ -102,6 +106,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
          * Part
          */
         @Data
+        @Builder
         @Jacksonized
         @SuppressWarnings("PMD.ShortClassName")
         /* package */ static class Part {
@@ -117,9 +122,12 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
              * Part Quantity
              */
             @Data
+            @Builder
             @Jacksonized
             /* package */ static class PartQuantity {
+                @JsonAlias({ "quantityNumber", "value" })
                 private Double quantityNumber;
+                @JsonAlias({ "measurementUnit", "unit" })
                 private String measurementUnit;
             }
         }

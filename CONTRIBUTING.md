@@ -83,6 +83,13 @@ If you need ideas for contributions, you can check the following links:
 - [open documentation stories](https://github.com/orgs/eclipse-tractusx/projects/8/views/4?filterQuery=label%3Adocumentation++status%3Ainbox%2Cbacklog)
 - [discussion page concerning documentation improvements](https://github.com/eclipse-tractusx/item-relationship-service/discussions/407)
 
+### Maintaining [CHANGELOG.md](CHANGELOG.md) 
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres
+to [Semantic Versioning](https://semver.org/spec/v2.0.0.html). 
+
+_**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## Contributing as a Consultant
 
@@ -161,31 +168,45 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 ### Create a Release
 
+#### Full release
+
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
 2. Add release notes for new version in [CHANGELOG.md](CHANGELOG.md)
-   and [charts/irs-helm/CHANGELOG.md](charts/irs-helm/CHANGELOG.md)
+   and [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md)
    (for an example [see here](https://github.com/eclipse-tractusx/item-relationship-service/pull/429))
    - Check if the changelog entries for the release are complete.
    - Add the corresponding GitHub issue numbers to each entry if missing.
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md).
-4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) and merge to main.
-5. Create Git tag for the desired release version `git tag x.x.x`
-   (note: the irs-helm tag will be created automatically by the GitHub workflow based on the version in the irs-helm changelog). 
-6. Push Git tag to repository `git push origin x.x.x` (this will trigger the GitHub release workflow).
-7. Wait for release workflow to complete.
-8. Merge the automatically opened PR by GitHub actions bot.
-9. Notify about the release in IRS Matrix Chat using the following template: 
+4. Update IRS API version in IrsApplication class and irs-api.yaml
+5. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x) 
+6. Merge this pull request to main.
+7. Create Git tag for the desired release version `git tag x.x.x`
+   (note: the _item-relationship-service_ tag will be created automatically by the GitHub workflow based on the version in the [helm chart changelog](charts/item-relationship-service/CHANGELOG.md)). 
+8. Push Git tag to repository `git push origin x.x.x` (this will trigger the GitHub release workflow).
+9. Wait for release workflow to complete.
+10. Merge the pull request that was automatically opened by GitHub actions bot.
+11. Notify about the release in IRS Matrix Chat using the following template: 
    
    >   **IRS Release x.x.x**
    >
    >   IRS version x.x.x is released. 
    >
    >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/x.x.x<br>
-   >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/irs-helm-y.y.y<br>
+   >   https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/item-relationship-service-y.y.y<br>
    >   **Full Changelog:** https://github.com/eclipse-tractusx/item-relationship-service/compare/w.w.w...x.x.x
 
    _(replace x.x.x with IRS version to release, y.y.y with IRS helm version to release and w.w.w with previous IRS version)_
+
+#### Release chart only
+
+1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
+   and create a corresponding branch according to the template: `chore/release-chart-x.x.x`.
+2. Add new version to [charts/item-relationship-service/CHANGELOG.md](charts/item-relationship-service/CHANGELOG.md)
+3. Change chart version in [Chart.yaml](charts/item-relationship-service/Chart.yaml) 
+4. Create pull request from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/release-chart-x.x.x)
+5. Merge this pull request to main.
+6. Wait for release workflow to complete.
 
 
 ## Contact

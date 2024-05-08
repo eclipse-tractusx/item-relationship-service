@@ -20,7 +20,7 @@
 package org.eclipse.tractusx.irs.edc.client.asset;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.edc.spi.types.domain.HttpDataAddress.HTTP_DATA;
+import static org.eclipse.tractusx.irs.edc.client.asset.EdcAssetService.DATA_ADDRESS_TYPE_HTTP_DATA;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -49,6 +49,7 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.EdcAssetAlreadyExistsException;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +58,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -91,14 +94,16 @@ class EdcAssetServiceTest {
     }
 
     @Test
-    void testAssetCreateRequestStructure() throws JSONException, JsonProcessingException {
+    void testAssetCreateRequestStructure() throws JSONException {
 
-        Map<String, Object> properties = Map.of("https://w3id.org/edc/v0.0.1/ns/description", "endpoint to qualityinvestigation receive",
-                "https://w3id.org/edc/v0.0.1/ns/contenttype", "application/json", "https://w3id.org/edc/v0.0.1/ns/policy-id", "use-eu", "https://w3id.org/edc/v0.0.1/ns/type", "receive", "https://w3id.org/edc/v0.0.1/ns/notificationtype",
+        Map<String, Object> properties = Map.of("https://w3id.org/edc/v0.0.1/ns/description",
+                "endpoint to qualityinvestigation receive", "https://w3id.org/edc/v0.0.1/ns/contenttype",
+                "application/json", "https://w3id.org/edc/v0.0.1/ns/policy-id", "use-eu",
+                "https://w3id.org/edc/v0.0.1/ns/type", "receive", "https://w3id.org/edc/v0.0.1/ns/notificationtype",
                 "qualityinvestigation", "https://w3id.org/edc/v0.0.1/ns/notificationmethod", "receive");
 
         DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                     .type(HTTP_DATA)
+                                                     .type(DATA_ADDRESS_TYPE_HTTP_DATA)
                                                      .property("https://w3id.org/edc/v0.0.1/ns/type", "HttpData")
                                                      .property("https://w3id.org/edc/v0.0.1/ns/baseUrl",
                                                              "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive")
@@ -113,11 +118,7 @@ class EdcAssetServiceTest {
                                    .properties(properties)
                                    .dataAddress(dataAddress)
                                    .build();
-        System.out.println(objectMapper().writeValueAsString(asset));
-        System.out.println(objectMapper().writeValueAsString(dataAddress));
-        System.out.println(objectMapper().writeValueAsString(properties));
         JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
-        System.out.println(objectMapper().writeValueAsString(jsonObject));
 
         JSONAssert.assertEquals("""
                 {
@@ -224,33 +225,33 @@ class EdcAssetServiceTest {
     }
 
     @Test
-    void givenCreateDtrAsset_whenOK_ThenThrowException() {
+    void givenCreateDtrAsset_whenBadRequest_ThenThrowException() {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String baseUrl = "http://test.test";
         String assetName = "asset1";
-        doThrow(new RestClientException("Surprise")).when(restTemplate)
-                                                    .postForEntity(any(String.class), any(String.class), any());
+        doThrow(HttpClientErrorException.create("Surprise", HttpStatus.BAD_REQUEST, "", null, null, null)).when(
+                restTemplate).postForEntity(any(String.class), any(String.class), any());
 
         // when/then
         assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName));
     }
 
     @Test
-    void givenCreateDtrAsset_whenTemplateException_ThenThrowException() {
+    void givenCreateDtrAsset_whenConflict_ThenThrowException() {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
         when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
         String baseUrl = "http://test.test";
         String assetName = "asset1";
-        doThrow(new RestClientException("Surprise")).when(restTemplate)
-                                                    .postForEntity(any(String.class), any(String.class), any());
+        doThrow(HttpClientErrorException.create("Surprise", HttpStatus.CONFLICT, "", null, null, null)).when(
+                restTemplate).postForEntity(any(String.class), any(String.class), any());
 
         // when/then
-        assertThrows(CreateEdcAssetException.class, () -> service.createDtrAsset(baseUrl, assetName));
+        assertThrows(EdcAssetAlreadyExistsException.class, () -> service.createDtrAsset(baseUrl, assetName));
     }
 
     @Test

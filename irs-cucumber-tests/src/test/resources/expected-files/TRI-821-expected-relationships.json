@@ -7,7 +7,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -26,7 +26,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -45,7 +45,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -64,7 +64,7 @@
                     "quantityNumber": 6.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -83,7 +83,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -102,7 +102,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -115,13 +115,51 @@
             "bpn": "BPNL00000003B3NX"
         },
         {
+            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 1.0,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:piece"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
+                "hasAlternatives": false
+            },
+            "aspectType": "SingleLevelBomAsPlanned",
+            "bpn": "BPNL00000003B3NX"
+        },
+        {
+            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
+            "linkedItem": {
+                "quantity": {
+                    "quantityNumber": 0.3301,
+                    "measurementUnit": {
+                        "datatypeURI": null,
+                        "lexicalValue": "unit:kilogram"
+                    }
+                },
+                "lifecycleContext": "asPlanned",
+                "assembledOn": "2022-02-03T14:48:54.709Z",
+                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+                "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
+                "hasAlternatives": false
+            },
+            "aspectType": "SingleLevelBomAsPlanned",
+            "bpn": "BPNL00000003AXS3"
+        },
+        {
             "catenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
             "linkedItem": {
                 "quantity": {
                     "quantityNumber": 10.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -159,7 +197,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -178,7 +216,7 @@
                     "quantityNumber": 1.0,
                     "measurementUnit": {
                         "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
+                        "lexicalValue": "unit:piece"
                     }
                 },
                 "lifecycleContext": "asPlanned",
@@ -189,44 +227,6 @@
             },
             "aspectType": "SingleLevelBomAsPlanned",
             "bpn": "BPNL00000003B0Q0"
-        },
-        {
-            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.3301,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asPlanned",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
-                "hasAlternatives": false
-            },
-            "aspectType": "SingleLevelBomAsPlanned",
-            "bpn": "BPNL00000003AXS3"
-        },
-        {
-            "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asPlanned",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
-                "hasAlternatives": false
-            },
-            "aspectType": "SingleLevelBomAsPlanned",
-            "bpn": "BPNL00000003B3NX"
         }
     ]
 }

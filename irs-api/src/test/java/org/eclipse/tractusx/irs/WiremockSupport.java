@@ -31,6 +31,8 @@ import static org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport.s
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.DATAPLANE_PUBLIC_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.submodelDescriptor;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
+import static org.eclipse.tractusx.irs.util.TestMother.batchAspectName;
+import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -41,10 +43,12 @@ import java.util.UUID;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterJob;
+import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
+import org.eclipse.tractusx.irs.registryclient.util.SerializationHelper;
 import org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport;
@@ -62,7 +66,9 @@ public class WiremockSupport {
                                                                             .getBytes(StandardCharsets.UTF_8));
         final String jwtToken = "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
         return EndpointDataReference.Builder.newInstance()
-                                            .authKey("testkey")
+                                            .contractId(contractAgreementId)
+                                            .authKey("Authorization")
+                                            .id("test")
                                             .authCode(jwtToken)
                                             .properties(
                                                     Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
@@ -79,7 +85,7 @@ public class WiremockSupport {
         return RegisterJob.builder()
                           .key(PartChainIdentificationKey.builder().bpn(bpn).globalAssetId(globalAssetId).build())
                           .depth(depth)
-                          .aspects(List.of("Batch", "SingleLevelBomAsBuilt"))
+                          .aspects(List.of(batchAspectName, singleLevelBomAsBuiltAspectName))
                           .collectAspects(true)
                           .lookupBPNs(true)
                           .direction(Direction.DOWNWARD)
@@ -93,6 +99,14 @@ public class WiremockSupport {
 
     static String encodedId(final String shellId) {
         return encodeBase64String(shellId.getBytes(StandardCharsets.UTF_8));
+    }
+
+    static String encodedAssetIds(final String assetIds) {
+        final IdentifierKeyValuePair globalAssetId = IdentifierKeyValuePair.builder()
+                                                                           .name("globalAssetId")
+                                                                           .value(assetIds)
+                                                                           .build();
+        return Base64.getEncoder().encodeToString(new SerializationHelper().serialize(globalAssetId));
     }
 
     static void verifyDiscoveryCalls(final int times) {

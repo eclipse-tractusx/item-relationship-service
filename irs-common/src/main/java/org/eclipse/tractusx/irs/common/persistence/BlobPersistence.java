@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.common.persistence;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -33,9 +34,13 @@ import java.util.Optional;
  */
 public interface BlobPersistence {
 
+    String DEFAULT_BLOB_NAME = "default";
+
     void putBlob(String targetBlobName, byte[] blob) throws BlobPersistenceException;
 
     Optional<byte[]> getBlob(String sourceBlobName) throws BlobPersistenceException;
+
+    Map<String, byte[]> getAllBlobs() throws BlobPersistenceException;
 
     Collection<byte[]> findBlobByPrefix(String prefix) throws BlobPersistenceException;
 

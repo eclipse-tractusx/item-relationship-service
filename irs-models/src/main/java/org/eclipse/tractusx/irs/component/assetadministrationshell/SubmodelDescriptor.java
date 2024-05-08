@@ -24,12 +24,16 @@
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vdurmont.semver4j.SemverException;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
+import org.springframework.util.StringUtils;
 
 /**
  * SubmodelDescriptor
@@ -72,7 +76,29 @@ public class SubmodelDescriptor {
      */
     @JsonIgnore
     public String getAspectType() {
-        return this.getSemanticId().getKeys().stream().findFirst().map(SemanticId::getValue).orElse(null);
+        return getSemanticId().getKeys().stream().findFirst().map(SemanticId::getValue).orElse(null);
     }
 
+    /* package */ boolean isAspect(final String filterSemanticId) {
+        return Optional.ofNullable(getAspectType())
+                .filter(aspect -> StringUtils.hasLength(filterSemanticId))
+                .map(aspect -> aspect.contains(lowerCaseNameWithUnderscores(filterSemanticId))
+                        || semanticModelNamesMatchAndVersionIsInRange(aspect, filterSemanticId))
+                .orElse(false);
+    }
+
+    private String lowerCaseNameWithUnderscores(final String filterSemanticId) {
+        return String.join("_", filterSemanticId.split("(?=[A-Z])")).toLowerCase(Locale.ROOT);
+    }
+
+    private boolean semanticModelNamesMatchAndVersionIsInRange(final String semanticId, final String filterSemanticId) {
+        try {
+            final SemanticModel submodel = SemanticModel.parse(semanticId);
+            final SemanticModel filter = SemanticModel.parse(filterSemanticId);
+
+            return filter.matches(submodel);
+        } catch (final IllegalArgumentException | SemverException e) {
+            return false;
+        }
+    }
 }

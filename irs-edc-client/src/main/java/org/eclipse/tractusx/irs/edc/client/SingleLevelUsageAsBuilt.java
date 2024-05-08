@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,13 +53,13 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
 
     private String catenaXId;
-    private Set<Customer> customers;
+    private Set<ParentItem> parentItems;
+    private Set<String> customers;
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.customers).stream().flatMap(Collection::stream)
-                       .map(customer -> customer.toRelationship(this.catenaXId))
-                       .flatMap(Optional::stream)
+        return Optional.ofNullable(this.parentItems).stream().flatMap(Collection::stream)
+                       .map(parentItem -> parentItem.toRelationship(this.catenaXId))
                        .toList();
     }
 
@@ -68,31 +69,16 @@ class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    /* package */ static class Customer {
-
-        private String businessPartner;
-        private ZonedDateTime createdOn;
-        private ZonedDateTime lastModifiedOn;
-        private Set<ParentItem> parentItems;
-
-        public Optional<Relationship> toRelationship(final String catenaXId) {
-            return parentItems.stream().findFirst().map(parentItem -> parentItem.toRelationship(catenaXId, this.businessPartner));
-        }
-    }
-    /**
-     * ParentData
-     */
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
     /* package */ static class ParentItem {
 
         private String catenaXId;
+        private boolean isOnlyPotentialParent;
         private Quantity quantity;
+        private String businessPartner;
         private ZonedDateTime createdOn;
         private ZonedDateTime lastModifiedOn;
 
-        public Relationship toRelationship(final String catenaXId, final String businessPartner) {
+        public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
                                                                       .childCatenaXId(GlobalAssetIdentification.of(catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)
@@ -128,7 +114,9 @@ class SingleLevelUsageAsBuilt implements RelationshipSubmodel {
         @Jacksonized
         /* package */ static class Quantity {
 
+            @JsonAlias({ "quantityNumber", "value" })
             private Double quantityNumber;
+            @JsonAlias({ "measurementUnit", "unit" })
             private String measurementUnit;
 
         }

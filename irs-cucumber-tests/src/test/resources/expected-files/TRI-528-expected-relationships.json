@@ -1,61 +1,61 @@
 {
-    "relationships" : [
-        {
-            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 2.5,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:litre"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:d57a0374-45bc-4d9e-b44c-e6e75cfe84c0",
-                "hasAlternatives": true
-            },
-            "aspectType": "SingleLevelBomAsBuilt",
-            "bpn": "BPNL00000003B3NX"
+  "relationships": [
+    {
+      "catenaXId": "urn:uuid:4b4d41c3-7a7c-4544-b718-8167a70f517d",
+      "linkedItem": {
+        "quantity": {
+          "quantityNumber": 0.2341,
+          "measurementUnit": {
+            "datatypeURI": null,
+            "lexicalValue": "unit:kilogram"
+          }
         },
-        {
-            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2341,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:098d565e-915a-4794-a60a-d92a8391bdde",
-                "hasAlternatives": true
-            },
-            "aspectType": "SingleLevelBomAsBuilt",
-            "bpn": "BPNL00000003AZQP"
+        "lifecycleContext": "asBuilt",
+        "assembledOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+        "childCatenaXId": "urn:uuid:c1b9e521-b7a0-4266-8a57-8f8751222f4c",
+        "hasAlternatives": false
+      },
+      "aspectType": "SingleLevelBomAsBuilt",
+      "bpn": "BPNL00000003AZQP"
+    },
+    {
+      "catenaXId": "urn:uuid:4b4d41c3-7a7c-4544-b718-8167a70f517d",
+      "linkedItem": {
+        "quantity": {
+          "quantityNumber": 20.0,
+          "measurementUnit": {
+            "datatypeURI": null,
+            "lexicalValue": "unit:piece"
+          }
         },
-        {
-            "catenaXId": "urn:uuid:e95f3ff2-c5e7-49a5-873b-aee2728917d3",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 0.2014,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:kilogram"
-                    }
-                },
-                "lifecycleContext": "asBuilt",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:aa42c959-a79c-4350-8ff8-3126a9e984a0",
-                "hasAlternatives": true
-            },
-            "aspectType": "SingleLevelBomAsBuilt",
-            "bpn": "BPNL00000003AYRE"
-        }
-    ]
+        "lifecycleContext": "asBuilt",
+        "assembledOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+        "childCatenaXId": "urn:uuid:5f7d2122-5f8e-439b-a27f-52ae1fb02b13",
+        "hasAlternatives": false
+      },
+      "aspectType": "SingleLevelBomAsBuilt",
+      "bpn": "BPNL00000003B3NX"
+    },
+    {
+      "catenaXId": "urn:uuid:4b4d41c3-7a7c-4544-b718-8167a70f517d",
+      "linkedItem": {
+        "quantity": {
+          "quantityNumber": 0.2014,
+          "measurementUnit": {
+            "datatypeURI": null,
+            "lexicalValue": "unit:kilogram"
+          }
+        },
+        "lifecycleContext": "asBuilt",
+        "assembledOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+        "childCatenaXId": "urn:uuid:18ed69f6-5f4a-44e2-9ff1-9bf881bbf787",
+        "hasAlternatives": false
+      },
+      "aspectType": "SingleLevelBomAsBuilt",
+      "bpn": "BPNL00000003AYRE"
+    }
+  ]
 }

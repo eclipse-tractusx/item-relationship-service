@@ -52,7 +52,6 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInfor
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.JobState;
@@ -72,6 +71,15 @@ import org.eclipse.tractusx.irs.services.MeterRegistryService;
  */
 public class TestMother {
 
+    public static final String singleLevelBomAsBuiltAspectName = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
+    public static final String singleLevelUsageAsBuiltAspectName = "urn:samm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
+    public static final String serialPartAspectName = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
+    public static final String batchAspectName = "urn:samm:io.catenax.batch:3.0.0#Batch";
+    public static final String materialForRecyclingAspectName = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
+    public static final String productDescriptionAspectName = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";
+
+    public static final String EXISTING_GLOBAL_ASSET_ID = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
+
     Faker faker = new Faker();
 
     public static RegisterJob registerJobWithoutDepthAndAspect() {
@@ -79,11 +87,11 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithoutDepth() {
-        return registerJobWithDepthAndAspect(null, List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()));
+        return registerJobWithDepthAndAspect(null, List.of(singleLevelBomAsBuiltAspectName));
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
-        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", depth, aspectTypes, false, false,
+        return registerJob(EXISTING_GLOBAL_ASSET_ID, depth, aspectTypes, false, false,
                 Direction.DOWNWARD);
     }
 
@@ -92,7 +100,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithUrl(final String callbackUrl) {
-        final RegisterJob registerJob = registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", 100, List.of(),
+        final RegisterJob registerJob = registerJob(EXISTING_GLOBAL_ASSET_ID, 100, List.of(),
                 false, false, Direction.DOWNWARD);
         registerJob.setCallbackUrl(callbackUrl);
         return registerJob;
@@ -100,13 +108,8 @@ public class TestMother {
 
     public static RegisterJob registerJobWithDepthAndAspectAndCollectAspects(final Integer depth,
             final List<String> aspectTypes) {
-        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", depth, aspectTypes, true, false,
+        return registerJob(EXISTING_GLOBAL_ASSET_ID, depth, aspectTypes, true, false,
                 Direction.DOWNWARD);
-    }
-
-    public static RegisterJob registerJobWithLookupBPNs() {
-        return registerJob("urn:uuid:8ddd8fe0-1b4f-44b4-90f3-a8f68e551ac7", null,
-                List.of(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()), false, true, Direction.DOWNWARD);
     }
 
     public static RegisterJob registerJob(final String globalAssetId, final Integer depth,
@@ -153,8 +156,7 @@ public class TestMother {
                            .depth(5)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
-                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
                            .auditContractNegotiation(false)
                            .build();
     }
@@ -164,8 +166,7 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.UPWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
-                                   AspectType.SINGLE_LEVEL_USAGE_AS_BUILT.toString()))
+                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
                            .build();
     }
 
@@ -173,8 +174,7 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
-                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
                            .collectAspects(true)
                            .build();
     }
@@ -183,7 +183,7 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(AspectType.MATERIAL_FOR_RECYCLING.toString()))
+                           .aspects(List.of(materialForRecyclingAspectName))
                            .build();
     }
 
@@ -192,8 +192,7 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
-                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
                            .lookupBPNs(true)
                            .build();
     }
@@ -203,8 +202,7 @@ public class TestMother {
                            .depth(5)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(AspectType.SERIAL_PART.toString(),
-                                   AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString()))
+                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
                            .auditContractNegotiation(true)
                            .build();
     }

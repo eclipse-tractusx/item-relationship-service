@@ -19,14 +19,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.WiremockSupport.createEndpointDataReference;
+import static org.eclipse.tractusx.irs.WiremockSupport.encodedAssetIds;
 import static org.eclipse.tractusx.irs.WiremockSupport.randomUUID;
+import static org.eclipse.tractusx.irs.component.enums.AspectType.AspectTypesConstants.BATCH;
+import static org.eclipse.tractusx.irs.component.enums.AspectType.AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_PATH;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.DISCOVERY_FINDER_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport.EDC_DISCOVERY_PATH;
@@ -44,6 +47,8 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_STATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_TRANSFER;
+import static org.eclipse.tractusx.irs.util.TestMother.batchAspectName;
+import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
 
 import java.time.Duration;
 import java.util.List;
@@ -51,12 +56,10 @@ import java.util.Objects;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.awaitility.Awaitility;
-import org.eclipse.tractusx.irs.bpdm.BpdmWireMockSupport;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.enums.JobState;
-import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.EndpointDataReferenceStorage;
 import org.eclipse.tractusx.irs.semanticshub.AspectModels;
 import org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport;
@@ -64,7 +67,6 @@ import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.testing.containers.MinioContainer;
-import org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -110,12 +112,6 @@ class IrsWireMockIntegrationTest {
         WiremockSupport.successfulSemanticModelRequest();
     }
 
-    @AfterEach
-    void tearDown() {
-        cacheManager.getCacheNames()
-                    .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
-    }
-
     @AfterAll
     static void stopContainer() {
         minioContainer.stop();
@@ -123,7 +119,6 @@ class IrsWireMockIntegrationTest {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("bpdm.bpnEndpoint", () -> BpdmWireMockSupport.BPDM_URL_TEMPLATE);
         registry.add("digitalTwinRegistry.discovery.discoveryFinderUrl", () -> DISCOVERY_FINDER_URL);
         registry.add("digitalTwinRegistry.shellDescriptorTemplate", () -> SHELL_DESCRIPTORS_TEMPLATE);
         registry.add("digitalTwinRegistry.lookupShellsTemplate", () -> LOOKUP_SHELLS_TEMPLATE);
@@ -141,6 +136,12 @@ class IrsWireMockIntegrationTest {
         registry.add("resilience4j.retry.configs.default.waitDuration", () -> "1s");
     }
 
+    @AfterEach
+    void tearDown() {
+        cacheManager.getCacheNames()
+                    .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
+    }
+
     @Test
     void shouldStartApplicationAndCollectSemanticModels() throws SchemaNotFoundException {
         // Arrange
@@ -150,14 +151,14 @@ class IrsWireMockIntegrationTest {
         final AspectModels allAspectModels = semanticHubService.getAllAspectModels();
 
         // Assert
-        assertThat(allAspectModels.models()).hasSize(78);
+        assertThat(allAspectModels.models()).hasSize(99);
     }
 
     @Test
     void shouldStopJobAfterDepthIsReached() {
         // Arrange
         final String globalAssetIdLevel1 = "globalAssetId";
-        final String globalAssetIdLevel2 = "urn:uuid:6d505432-8b31-4966-9514-4b753372683f";
+        final String globalAssetIdLevel2 = "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5";
 
         WiremockSupport.successfulSemanticModelRequest();
         WiremockSupport.successfulSemanticHubRequests();
@@ -167,8 +168,6 @@ class IrsWireMockIntegrationTest {
                 "integrationtesting/singleLevelBomAsBuilt-1.json");
         successfulRegistryAndDataRequest(globalAssetIdLevel2, "Polyamid", TEST_BPN, "integrationtesting/batch-2.json",
                 "integrationtesting/singleLevelBomAsBuilt-2.json");
-
-        BpdmWireMockSupport.bpdmWillReturnCompanyName(DiscoveryServiceWiremockSupport.TEST_BPN, "Company Name");
 
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 1);
 
@@ -257,8 +256,6 @@ class IrsWireMockIntegrationTest {
         successfulRegistryAndDataRequest(globalAssetIdLevel3, "GenericChemical", TEST_BPN,
                 "integrationtesting/batch-3.json", "integrationtesting/singleLevelBomAsBuilt-3.json");
 
-        BpdmWireMockSupport.bpdmWillReturnCompanyName(DiscoveryServiceWiremockSupport.TEST_BPN, "Company Name");
-
         final RegisterJob request = WiremockSupport.jobRequest(globalAssetIdLevel1, TEST_BPN, 4);
 
         // Act
@@ -268,7 +265,6 @@ class IrsWireMockIntegrationTest {
         assertThat(jobHandle.getId()).isNotNull();
         waitForCompletion(jobHandle);
         final Jobs jobForJobId = irsService.getJobForJobId(jobHandle.getId(), false);
-        System.out.println(StringMapper.mapToString(jobForJobId));
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(jobForJobId.getShells()).hasSize(3);
@@ -284,11 +280,10 @@ class IrsWireMockIntegrationTest {
             final String batchFileName, final String sbomFileName) {
 
         final String edcAssetId = WiremockSupport.randomUUIDwithPrefix();
-        final String batch = WiremockSupport.submodelRequest(edcAssetId, "Batch",
-                "urn:samm:io.catenax.batch:2.0.0#Batch", batchFileName);
+        final String batch = WiremockSupport.submodelRequest(edcAssetId, BATCH, batchAspectName, batchFileName);
 
-        final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, "SingleLevelBomAsBuilt",
-                "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt", sbomFileName);
+        final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, SINGLE_LEVEL_BOM_AS_BUILT,
+                singleLevelBomAsBuiltAspectName, sbomFileName);
 
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);
 
@@ -296,7 +291,7 @@ class IrsWireMockIntegrationTest {
         final String registryEdcAssetId = "registry-asset";
         successfulNegotiation(registryEdcAssetId);
         stubFor(getLookupShells200(PUBLIC_LOOKUP_SHELLS_PATH, List.of(shellId)).withQueryParam("assetIds",
-                containing(globalAssetId)));
+                equalTo(encodedAssetIds(globalAssetId))));
         stubFor(getShellDescriptor200(PUBLIC_SHELL_DESCRIPTORS_PATH + WiremockSupport.encodedId(shellId), bpn,
                 submodelDescriptors, globalAssetId, shellId, idShort));
         successfulNegotiation(edcAssetId);

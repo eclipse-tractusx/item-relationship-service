@@ -14,7 +14,7 @@ include::irs-spring-config.adoc[leveloffset=+1]
 
 [source,yaml]
 ----
-include::../../../../charts/irs-helm/values.yaml[lines=104..302]
+include::../../../../charts/item-relationship-service/values.yaml[lines=104..302]
 ----
 
 <1> Use this to enable or disable the monitoring components
@@ -63,9 +63,6 @@ The URL of the Discovery Finder. The IRS uses this service to discover EDC to a 
 
 ==== <semantics-hub-url>
 The URL of the SemanticsHub. The IRS uses this service to fetch aspect schemas for payload validation.
-
-==== <bpdm-url>
-The URL of the BPDM service. The IRS uses this service to fetch business partner information based on BPNs.
 
 ==== <oauth2-token-uri>
 The URL of the OAuth2 token API. Used by the IRS for token creation to authenticate with other services.
@@ -167,12 +164,6 @@ Dataspace Discovery  client ID for OAuth2 provider. Request this from your OAuth
 
 === <discovery-client-secret>
 Dataspace Discovery  client secret for OAuth2 provider. Request this from your OAuth2 operator.
-
-=== <bpdm-client-id>
-BPDM client ID for OAuth2 provider. Request this from your OAuth2 operator.
-
-=== <bpdm-client-secret>
-BPDM client secret for OAuth2 provider. Request this from your OAuth2 operator.
 
 === <minio-username>
 Login username for Minio. To be defined by you.

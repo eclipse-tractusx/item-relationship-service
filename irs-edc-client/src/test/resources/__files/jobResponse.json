@@ -2750,16 +2750,6 @@
 			}
 		},
 		{
-			"catenaXId": "urn:uuid:68c9b1bf-b2c1-456a-883c-2aac5f5cb5f4",
-			"endpointURL": null,
-			"processingError": {
-				"processStep": "BpdmRequest",
-				"errorDetail": "Cannot find ManufacturerId for CatenaXId: urn:uuid:68c9b1bf-b2c1-456a-883c-2aac5f5cb5f4",
-				"lastAttempt": "2022-11-08T08:37:18.724609316Z",
-				"retryCounter": 0
-			}
-		},
-		{
 			"catenaXId": "urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4",
 			"endpointURL": "https://subtier-a-edc-ocp0900009.apps.c7von4sy.westeurope.aroapp.io/BPNL00000003B3NX/urn:uuid:68766b51-f794-4033-bcb1-f635ed309cd4-urn:uuid:f6f15bca-c901-4dca-bdb0-6abea6fae5fd/submodel?content=value&extent=withBlobValue",
 			"processingError": {

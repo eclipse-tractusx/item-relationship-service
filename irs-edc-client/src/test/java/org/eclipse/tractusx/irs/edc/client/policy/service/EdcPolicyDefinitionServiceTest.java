@@ -22,6 +22,8 @@ package org.eclipse.tractusx.irs.edc.client.policy.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,6 +35,8 @@ import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolicyDefinitionException;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.EdcPolicyDefinitionAlreadyExists;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.GetEdcPolicyDefinitionException;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +46,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -69,7 +74,7 @@ class EdcPolicyDefinitionServiceTest {
     @Test
     void testCreatePolicyDefinitionRequest() throws JsonProcessingException, JSONException {
         // given
-        String policyName = "ID 3.0 Trace";
+        String policyName = "ID 3.1 Trace";
         String policyId = "4cc0bb57-2d64-4cfb-a13b-aceef3477b7e";
 
         // when
@@ -94,7 +99,7 @@ class EdcPolicyDefinitionServiceTest {
                         						{
                         							"@type": "Constraint",
                         							"odrl:leftOperand": "PURPOSE",
-                        							"odrl:rightOperand": "ID 3.0 Trace",
+                        							"odrl:rightOperand": "ID 3.1 Trace",
                         							"odrl:operator": {
                         								"@id": "odrl:eq"
                         							}
@@ -126,6 +131,42 @@ class EdcPolicyDefinitionServiceTest {
     }
 
     @Test
+    void givenPolicyName_WhenGetPolicy_ThenExists() throws GetEdcPolicyDefinitionException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        String policyName = "policyName";
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions" + "/" + policyName);
+
+        ResponseEntity<String> responseEntity = ResponseEntity.ok("Mocked response");
+        when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
+
+        // when
+        boolean result = service.policyDefinitionExists(policyName);
+
+        // then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void givenPolicyName_WhenGetPolicy_ThenNotExists() throws GetEdcPolicyDefinitionException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        String policyName = "policyName";
+        when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions" + "/" + policyName);
+
+        ResponseEntity<String> responseEntity = ResponseEntity.notFound().build();
+        when(restTemplate.getForEntity(anyString(), eq(String.class))).thenReturn(responseEntity);
+
+        // when
+        boolean result = service.policyDefinitionExists(policyName);
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
     void givenCreatePolicy_whenConflict_thenReturnExstingPolicyId() throws CreateEdcPolicyDefinitionException {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
@@ -133,13 +174,11 @@ class EdcPolicyDefinitionServiceTest {
         when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         final String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
-                any())).thenReturn(ResponseEntity.status(HttpStatus.CONFLICT.value()).build());
+                any())).thenThrow(
+                HttpClientErrorException.create("Surprise", HttpStatus.CONFLICT, "", null, null, null));
 
-        // when
-        final String result = service.createAccessPolicy(policyName);
-
-        // then
-        assertThat(result).isNotBlank();
+        // when/then
+        assertThrows(EdcPolicyDefinitionAlreadyExists.class, () -> service.createAccessPolicy(policyName));
     }
 
     @Test
@@ -163,7 +202,8 @@ class EdcPolicyDefinitionServiceTest {
         when(endpointConfig.getPolicyDefinition()).thenReturn("/management/v2/policydefinitions");
         String policyName = "policyName";
         when(restTemplate.postForEntity(any(String.class), any(EdcCreatePolicyDefinitionRequest.class),
-                any())).thenThrow(new RestClientException("Surprise"));
+                any())).thenThrow(
+                HttpClientErrorException.create("Surprise", HttpStatus.EARLY_HINTS, "", null, null, null));
 
         assertThrows(CreateEdcPolicyDefinitionException.class, () -> service.createAccessPolicy(policyName));
     }
@@ -178,8 +218,7 @@ class EdcPolicyDefinitionServiceTest {
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 
         // when/then
-        assertThrows(DeleteEdcPolicyDefinitionException.class,
-                () -> service.deleteAccessPolicy(policyName));
+        assertThrows(DeleteEdcPolicyDefinitionException.class, () -> service.deleteAccessPolicy(policyName));
     }
 
     @Test

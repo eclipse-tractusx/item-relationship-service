@@ -20,7 +20,6 @@
 package org.eclipse.tractusx.irs.edc.client.asset;
 
 import static org.eclipse.edc.spi.types.domain.DataAddress.EDC_DATA_ADDRESS_TYPE_PROPERTY;
-import static org.eclipse.edc.spi.types.domain.HttpDataAddress.HTTP_DATA;
 
 import java.util.Map;
 import java.util.UUID;
@@ -35,10 +34,12 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.DeleteEdcAssetException;
+import org.eclipse.tractusx.irs.edc.client.asset.model.exception.EdcAssetAlreadyExistsException;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -65,6 +66,7 @@ public class EdcAssetService {
     private static final String ASSET_CREATION_PROPERTY_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String ASSET_CREATION_PROPERTY_NOTIFICATION_TYPE = "https://w3id.org/edc/v0.0.1/ns/notificationtype";
     private static final String ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD = "https://w3id.org/edc/v0.0.1/ns/notificationmethod";
+    public static final String DATA_ADDRESS_TYPE_HTTP_DATA = "HttpData";
 
     private final EdcTransformer edcTransformer;
     private final EdcConfiguration config;
@@ -95,15 +97,13 @@ public class EdcAssetService {
                     transformedPayload.toString(), String.class);
             final HttpStatusCode responseCode = createEdcDataAssetResponse.getStatusCode();
 
-            if (responseCode.value() == HttpStatus.CONFLICT.value()) {
-                log.info("{} asset already exists in the EDC", request.getId());
-                return request.getId();
-            }
-
             if (responseCode.value() == HttpStatus.OK.value()) {
                 return request.getId();
             }
-        } catch (RestClientException e) {
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().value() == HttpStatus.CONFLICT.value()) {
+                throw new EdcAssetAlreadyExistsException("asset already exists in the EDC", e);
+            }
             throw new CreateEdcAssetException(e);
         }
         throw new CreateEdcAssetException("Failed to create asset %s".formatted(request.getId()));
@@ -127,15 +127,15 @@ public class EdcAssetService {
             final NotificationMethod notificationMethod, final NotificationType notificationType) {
         final String assetId = UUID.randomUUID().toString();
         final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, assetName,
-                ASSET_CREATION_PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE,
-                ASSET_CREATION_PROPERTY_POLICY_ID, DEFAULT_POLICY_ID, ASSET_CREATION_PROPERTY_TYPE,
-                notificationType.getValue(), ASSET_CREATION_PROPERTY_NOTIFICATION_TYPE,
-                notificationType.getValue(), ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD,
-                notificationMethod.getValue());
+                ASSET_CREATION_PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE, ASSET_CREATION_PROPERTY_POLICY_ID,
+                DEFAULT_POLICY_ID, ASSET_CREATION_PROPERTY_TYPE, notificationType.getValue(),
+                ASSET_CREATION_PROPERTY_NOTIFICATION_TYPE, notificationType.getValue(),
+                ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD, notificationMethod.getValue());
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
-                                                           .type(HTTP_DATA)
-                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
+                                                           .type(DATA_ADDRESS_TYPE_HTTP_DATA)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY,
+                                                                   DATA_ADDRESS_TYPE_HTTP_DATA)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.TRUE.toString())
@@ -152,12 +152,13 @@ public class EdcAssetService {
     }
 
     private Asset createDtrAssetRequest(final String assetId, final String baseUrl) {
-        final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, "Digital Twin Registry Asset", ASSET_CREATION_PROPERTY_TYPE,
-                "data.core.digitalTwinRegistry");
+        final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION,
+                "Digital Twin Registry Asset", ASSET_CREATION_PROPERTY_TYPE, "data.core.digitalTwinRegistry");
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type("DataAddress")
-                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY,
+                                                                   DATA_ADDRESS_TYPE_HTTP_DATA)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.TRUE.toString())
@@ -182,7 +183,8 @@ public class EdcAssetService {
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type("DataAddress")
-                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY, HTTP_DATA)
+                                                           .property(EDC_DATA_ADDRESS_TYPE_PROPERTY,
+                                                                   DATA_ADDRESS_TYPE_HTTP_DATA)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_BASE_URL, baseUrl)
                                                            .property(ASSET_CREATION_DATA_ADDRESS_PROXY_METHOD,
                                                                    Boolean.FALSE.toString())

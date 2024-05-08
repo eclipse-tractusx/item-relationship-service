@@ -90,13 +90,11 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
     @Override
     public List<AspectModel> getAllAspectModels() {
         return List.of(
-                new AspectModel("urn:bamm:io.catenax.serial_part:1.0.1#SerialPart", "1.0.1",
+                new AspectModel("urn:samm:io.catenax.serial_part:3.0.0#SerialPart", "3.0.0",
                         "SerialPart", MODEL_TYPE, MODEL_STATUS),
-                new AspectModel("urn:bamm:com.catenax.esr_certificates.esr_certificate:1.0.0#EsrCertificate", "1.0.0",
-                        "EsrCertificate", MODEL_TYPE, MODEL_STATUS),
-                new AspectModel("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-                        "1.0.0", "SingleLevelBomAsBuilt", MODEL_TYPE, MODEL_STATUS),
-                new AspectModel("urn:bamm:io.catenax.part_as_specified:2.0.0#PartAsSpecified",
+                new AspectModel("urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+                        "3.0.0", "SingleLevelBomAsBuilt", MODEL_TYPE, MODEL_STATUS),
+                new AspectModel("urn:samm:io.catenax.part_as_specified:2.0.0#PartAsSpecified",
                         "2.0.0", "PartAsSpecified", MODEL_TYPE, MODEL_STATUS),
                 new AspectModel("urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
                         "1.0.1", "PartAsPlanned", MODEL_TYPE, MODEL_STATUS));
@@ -111,7 +109,8 @@ class SemanticsHubClientLocalStub implements SemanticsHubClient {
 @Profile({ "!local && !test" })
 class SemanticsHubClientImpl implements SemanticsHubClient {
 
-    public static final String LOCAL_MODEL_TYPE = "BAMM";
+    public static final String LOCAL_MODEL_TYPE_BAMM = "BAMM";
+    public static final String LOCAL_MODEL_TYPE_SAMM = "SAMM";
     public static final String LOCAL_MODEL_STATUS = "PROVIDED";
     private static final String PLACEHOLDER_URN = "urn";
     private final SemanticsHubConfiguration config;
@@ -184,11 +183,12 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
 
     private Optional<AspectModel> createAspectModel(final String urn) {
         log.debug("Extracting aspect information for urn: '{}'", urn);
-        final Matcher matcher = Pattern.compile("^urn:bamm:.*:(\\d\\.\\d\\.\\d)#(\\w+)$").matcher(urn);
+        final Matcher matcher = Pattern.compile("^urn:[sb]amm:.*:(\\d\\.\\d\\.\\d)#(\\w+)$").matcher(urn);
         if (matcher.find()) {
             final String version = matcher.group(1);
             final String name = matcher.group(2);
-            return Optional.of(new AspectModel(urn, version, name, LOCAL_MODEL_TYPE, LOCAL_MODEL_STATUS));
+            final String localModelType = urn.contains("samm") ? LOCAL_MODEL_TYPE_SAMM : LOCAL_MODEL_TYPE_BAMM;
+            return Optional.of(new AspectModel(urn, version, name, localModelType, LOCAL_MODEL_STATUS));
         }
         log.warn("Could not extract aspect information from urn: '{}'", urn);
         return Optional.empty();
@@ -259,7 +259,7 @@ class SemanticsHubClientImpl implements SemanticsHubClient {
     }
 
     private String normalize(final String urn) {
-        return Base64.getEncoder().encodeToString(FilenameUtils.getName(urn).getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().withoutPadding().encodeToString(FilenameUtils.getName(urn).getBytes(StandardCharsets.UTF_8));
     }
 
     private String decode(final String urnBase64) {

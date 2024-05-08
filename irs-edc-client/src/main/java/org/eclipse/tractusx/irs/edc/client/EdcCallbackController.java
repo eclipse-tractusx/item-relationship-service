@@ -23,13 +23,22 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.data.StringMapper;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
+import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.edr.DataAddress;
+import org.eclipse.tractusx.irs.edc.client.model.edr.EndpointDataReferenceCallback;
+import org.eclipse.tractusx.irs.edc.client.model.edr.Properties;
+import org.eclipse.tractusx.irs.edc.client.model.edr.TransferProcessCallbackPayload;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController("irsEdcClientEdcCallbackController")
-@RequestMapping("${irs-edc-client.callback.mapping:internal/endpoint-data-reference}")
+@RequestMapping("${irs-edc-client.callback.mapping}")
 @Hidden
 @RequiredArgsConstructor
 public class EdcCallbackController {
@@ -48,19 +57,50 @@ public class EdcCallbackController {
     private final EndpointDataReferenceStorage storage;
 
     @PostMapping
-    public void receiveEdcCallback(final @RequestBody EndpointDataReference dataReference) {
-        log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(dataReference));
-        log.debug("Received EndpointDataReference with ID {} and endpoint {}", dataReference.getId(),
-                dataReference.getEndpoint());
-        final String authCode = dataReference.getAuthCode();
-        if (authCode != null) {
-            final var contractAgreementId = EDRAuthCode.fromAuthCodeToken(authCode).getCid();
-            storage.put(contractAgreementId, dataReference);
-            log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractAgreementId));
-        } else {
-            log.error("ContractAgreementId could not be extracted from Endpoint Data Reference {}",
-                    StringMapper.mapToString(dataReference));
+    public void receiveEdcCallback(final @RequestBody String endpointDataReferenceCallback) {
+        final EndpointDataReference endpointDataReference;
+
+        try {
+            endpointDataReference = mapToEndpointDataReference(endpointDataReferenceCallback);
+
+            log.debug("Received EndpointDataReference: {}", StringMapper.mapToString(endpointDataReference));
+            log.debug("Received EndpointDataReference with ID {} and endpoint {}", endpointDataReference.getId(),
+                    endpointDataReference.getEndpoint());
+
+            final String contractId = endpointDataReference.getContractId();
+            storeEdr(contractId, endpointDataReference);
+        } catch (EdcClientException e) {
+            log.error("Could not deserialize Endpoint Data Reference {}", endpointDataReferenceCallback);
         }
     }
 
+    private static EndpointDataReference mapToEndpointDataReference(final String endpointDataReference)
+            throws EdcClientException {
+        final EndpointDataReference dataReference;
+
+        try {
+            final EndpointDataReferenceCallback endpointDataReferenceCallback = StringMapper.mapFromString(
+                    endpointDataReference, EndpointDataReferenceCallback.class);
+            final TransferProcessCallbackPayload payload = Optional.ofNullable(
+                    endpointDataReferenceCallback.getPayload()).orElseThrow();
+            final DataAddress dataAddress = Optional.ofNullable(payload.dataAddress()).orElseThrow();
+            final Properties properties = Optional.ofNullable(dataAddress.properties()).orElseThrow();
+
+            dataReference = EndpointDataReference.Builder.newInstance()
+                                                         .contractId(properties.agreementId())
+                                                         .id(properties.processId())
+                                                         .authKey(HttpHeaders.AUTHORIZATION)
+                                                         .authCode(properties.authorization())
+                                                         .endpoint(properties.endpoint())
+                                                         .build();
+            return dataReference;
+        } catch (JsonParseException | NoSuchElementException e) {
+            throw new EdcClientException(e);
+        }
+    }
+
+    private void storeEdr(final String contractId, final EndpointDataReference dataReference) {
+        storage.put(contractId, dataReference);
+        log.info("Endpoint Data Reference received and cached for agreement: {}", Masker.mask(contractId));
+    }
 }

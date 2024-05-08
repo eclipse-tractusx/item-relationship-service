@@ -107,7 +107,7 @@ public class MockedNotificationReceiverController {
             final EdcNotification<NotificationContent> edcRequest = edcRequest(notificationId, originalNotificationId,
                     senderEdc, senderBpn, recipientBpn, notificationContent);
 
-            final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest);
+            final var response = edcSubmodelFacade.sendNotification(recipientUrl, "ess-response-asset", edcRequest, recipientBpn);
             if (!response.deliveredSuccessfully()) {
                 throw new EdcClientException(
                         "EDC Provider did not accept message with notificationId " + notificationId);

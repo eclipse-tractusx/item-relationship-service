@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.registryclient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.registryclient.TestMother.endpointDataReference;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -46,6 +47,8 @@ import org.springframework.web.client.RestTemplate;
 class DefaultConfigurationTest {
 
     private final DefaultConfiguration testee = new DefaultConfiguration();
+
+    private final EdcConfiguration edcConfiguration = new EdcConfiguration();
     private final String descriptorTemplate = "descriptor/{aasIdentifier}";
     private final String shellLookupTemplate = "shell?{assetIds}";
 
@@ -63,7 +66,8 @@ class DefaultConfigurationTest {
         final var service = testee.decentralDigitalTwinRegistryService(
                 testee.connectorEndpointsService(testee.discoveryFinderClient(new RestTemplate(), "finder")),
                 testee.endpointDataForConnectorsService(facadeMock),
-                testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
+                testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate),
+                edcConfiguration);
 
         assertThat(service).isNotNull();
     }
@@ -71,7 +75,7 @@ class DefaultConfigurationTest {
     @Test
     void edcSubmodelFacade() {
         final EdcSubmodelClient facadeMock = mock(EdcSubmodelClient.class);
-        final EdcSubmodelFacade edcSubmodelFacade = testee.edcSubmodelFacade(facadeMock);
+        final EdcSubmodelFacade edcSubmodelFacade = testee.edcSubmodelFacade(facadeMock, edcConfiguration);
 
         assertThat(edcSubmodelFacade).isNotNull();
     }
@@ -82,14 +86,15 @@ class DefaultConfigurationTest {
         // ARRANGE
         final var mock = mock(EdcSubmodelFacade.class);
         final var endpointAddress = "endpointaddress";
-        final var endpointDataReference = EndpointDataReference.Builder.newInstance().endpoint(endpointAddress).build();
-        when(mock.getEndpointReferencesForAsset(eq(endpointAddress), any(), any())).thenReturn(
+        final String contractAgreementId = "contractAgreementId";
+        final var endpointDataReference = endpointDataReference(contractAgreementId, endpointAddress);
+        when(mock.getEndpointReferencesForAsset(eq(endpointAddress), any(), any(), any())).thenReturn(
                 List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
         // ACT
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
 
-        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(List.of(endpointAddress)) //
+        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(List.of(endpointAddress), "bpn") //
                                         .forEach(future -> {
                                             try {
                                                 future.get();
@@ -102,17 +107,17 @@ class DefaultConfigurationTest {
                                         });
 
         // ASSERT
-        verify(mock).getEndpointReferencesForAsset(eq(endpointAddress), any(), any());
+        verify(mock).getEndpointReferencesForAsset(eq(endpointAddress), any(), any(), any());
     }
 
     @Test
     void endpointDataForConnectorsService_withException() throws EdcClientException {
         final var mock = mock(EdcSubmodelFacade.class);
-        when(mock.getEndpointReferencesForAsset(any(), any(), any())).thenThrow(new EdcClientException("test"));
+        when(mock.getEndpointReferencesForAsset(any(), any(), any(), any())).thenThrow(new EdcClientException("test"));
 
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
         final var dummyEndpoints = List.of("test");
-        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(dummyEndpoints).forEach(future -> {
+        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(dummyEndpoints, "bpn").forEach(future -> {
             assertThatThrownBy(future::get).isInstanceOf(ExecutionException.class)
                                            .extracting(Throwable::getCause)
                                            .isInstanceOf(EdcRetrieverException.class);

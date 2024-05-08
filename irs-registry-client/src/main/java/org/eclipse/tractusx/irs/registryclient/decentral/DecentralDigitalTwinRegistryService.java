@@ -27,10 +27,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,7 +42,7 @@ import org.eclipse.tractusx.irs.common.util.concurrent.ResultFinder;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryKey;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
@@ -63,6 +64,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     private final ConnectorEndpointsService connectorEndpointsService;
     private final EndpointDataForConnectorsService endpointDataForConnectorsService;
     private final DecentralDigitalTwinRegistryClient decentralDigitalTwinRegistryClient;
+    private final EdcConfiguration config;
 
     private ResultFinder resultFinder = new ResultFinder();
 
@@ -98,7 +100,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
                 try {
                     return fetchShellDescriptors(entry, calledEndpoints);
-                } catch (RuntimeException e) {
+                } catch (TimeoutException | RuntimeException e) {
                     // catching generic exception is intended here,
                     // otherwise Jobs stay in state RUNNING forever
                     log.warn(e.getMessage(), e);
@@ -122,12 +124,12 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private Stream<Shell> fetchShellDescriptors(final Map.Entry<String, List<DigitalTwinRegistryKey>> entry,
-            final Set<String> calledEndpoints) {
+            final Set<String> calledEndpoints) throws TimeoutException {
 
         try {
 
             final var futures = fetchShellDescriptors(calledEndpoints, entry.getKey(), entry.getValue());
-            final var shellDescriptors = futures.get();
+            final var shellDescriptors = futures.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
             return shellDescriptors.stream();
 
         } catch (InterruptedException e) {
@@ -155,7 +157,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.info("Found {} connector endpoints for bpn '{}'", edcUrls.size(), bpn);
             calledEndpoints.addAll(edcUrls);
 
-            return fetchShellDescriptorsForConnectorEndpoints(keys, edcUrls);
+            return fetchShellDescriptorsForConnectorEndpoints(keys, edcUrls, bpn);
 
         } finally {
             watch.stop();
@@ -164,10 +166,10 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
     }
 
     private CompletableFuture<List<Shell>> fetchShellDescriptorsForConnectorEndpoints(
-            final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls) {
+            final List<DigitalTwinRegistryKey> keys, final List<String> edcUrls, final String bpn) {
 
         final var service = endpointDataForConnectorsService;
-        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(edcUrls)
+        final var shellsFuture = service.createFindEndpointDataForConnectorsFutures(edcUrls, bpn)
                                         .stream()
                                         .map(edrFuture -> edrFuture.thenCompose(edr -> CompletableFuture.supplyAsync(
                                                 () -> fetchShellDescriptorsForKey(keys, edr))))
@@ -189,7 +191,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
         try {
             return keys.stream()
-                       .map(key -> new Shell(contractNegotiationId(endpointDataReference.getAuthCode()),
+                       .map(key -> new Shell(endpointDataReference.getContractId(),
                                fetchShellDescriptor(endpointDataReference, key)))
                        .toList();
         } finally {
@@ -213,10 +215,6 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
-    }
-
-    private String contractNegotiationId(final String token) {
-        return Optional.ofNullable(token).map(EDRAuthCode::fromAuthCodeToken).map(EDRAuthCode::getCid).orElse("");
     }
 
     /**
@@ -246,7 +244,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
 
             // Try to map the provided ID to the corresponding asset administration shell ID
             final var mappingResultStream = decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
-                    endpointDataReference, List.of(identifierKeyValuePair)).getResult().stream();
+                    endpointDataReference, identifierKeyValuePair).getResult().stream();
 
             // Special scenario: Multiple DTs with the same globalAssetId in one DTR, see:
             // docs/arc42/cross-cutting/discovery-DTR--multiple-DTs-with-the-same-globalAssedId-in-one-DTR.puml
@@ -280,7 +278,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             log.info("Looking up shell ids for bpn '{}' with connector endpoints {}", bpn, edcUrls);
 
             final var endpointDataReferenceFutures = endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(
-                    edcUrls);
+                    edcUrls, bpn);
 
             return lookupShellIds(bpn, endpointDataReferenceFutures);
 
@@ -305,7 +303,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
                                                                     edr -> CompletableFuture.supplyAsync(
                                                                             () -> lookupShellIds(bpn, edr))))
                                                             .toList();
-            final var shellIds = resultFinder.getFastestResult(futures).get();
+            final var shellIds = resultFinder.getFastestResult(futures)
+                                             .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
 
             log.info("Found {} shell id(s) in total", shellIds.size());
             return shellIds;
@@ -319,6 +318,8 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
             throw new RegistryServiceException(
                     "%s occurred while looking up shell ids for bpn '%s'".formatted(e.getClass().getSimpleName(), bpn),
                     e);
+        } catch (TimeoutException e) {
+            throw new RegistryServiceException("Timeout during shell ID lookup", e);
         }
     }
 
@@ -333,7 +334,7 @@ public class DecentralDigitalTwinRegistryService implements DigitalTwinRegistryS
         try {
             return decentralDigitalTwinRegistryClient.getAllAssetAdministrationShellIdsByAssetLink(
                     endpointDataReference,
-                    List.of(IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build())).getResult();
+                    IdentifierKeyValuePair.builder().name("manufacturerId").value(bpn).build()).getResult();
         } finally {
             watch.stop();
             log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());

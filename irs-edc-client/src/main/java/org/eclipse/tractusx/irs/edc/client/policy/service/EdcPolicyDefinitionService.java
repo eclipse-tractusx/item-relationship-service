@@ -36,9 +36,12 @@ import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermissionConst
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermissionConstraintExpression;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.CreateEdcPolicyDefinitionException;
 import org.eclipse.tractusx.irs.edc.client.policy.model.exception.DeleteEdcPolicyDefinitionException;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.EdcPolicyDefinitionAlreadyExists;
+import org.eclipse.tractusx.irs.edc.client.policy.model.exception.GetEdcPolicyDefinitionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -80,25 +83,43 @@ public class EdcPolicyDefinitionService {
         try {
             createPolicyDefinitionResponse = restTemplate.postForEntity(
                     config.getControlplane().getEndpoint().getPolicyDefinition(), policyRequest, String.class);
-        } catch (RestClientException e) {
-            log.error("Failed to create EDC notification asset policy. Reason: ", e);
-
+        } catch (HttpClientErrorException e) {
+            log.error("Failed to create EDC policy definition. Reason: ", e);
+            if (e.getStatusCode().value() == HttpStatus.CONFLICT.value()) {
+                throw new EdcPolicyDefinitionAlreadyExists("Policy definition already exists in the EDC", e);
+            }
             throw new CreateEdcPolicyDefinitionException(e);
         }
 
         final HttpStatusCode responseCode = createPolicyDefinitionResponse.getStatusCode();
-
-        if (responseCode.value() == HttpStatus.CONFLICT.value()) {
-            log.info("Notification asset policy definition already exists in the EDC");
-
-            return policyRequest.getPolicyDefinitionId();
-        }
 
         if (responseCode.value() == HttpStatus.OK.value()) {
             return policyRequest.getPolicyDefinitionId();
         }
 
         throw new CreateEdcPolicyDefinitionException("Failed to create EDC policy definition for asset");
+    }
+
+    public boolean policyDefinitionExists(final String policyName) throws GetEdcPolicyDefinitionException {
+
+        try {
+            final ResponseEntity<String> getPolicyDefinitionRequest = restTemplate.getForEntity(
+                    config.getControlplane().getEndpoint().getPolicyDefinition() + "/" + policyName, String.class);
+
+            final HttpStatusCode responseCode = getPolicyDefinitionRequest.getStatusCode();
+
+            if (responseCode.value() == HttpStatus.OK.value()) {
+                return true;
+            }
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
+                log.info(String.format("Policy with id %s not found within the edc", policyName));
+                return false;
+            } else {
+                throw new GetEdcPolicyDefinitionException(e);
+            }
+        }
+        return false;
     }
 
     public EdcCreatePolicyDefinitionRequest createPolicyDefinition(final String policyName,

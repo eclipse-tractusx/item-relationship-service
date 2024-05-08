@@ -55,6 +55,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -79,6 +80,8 @@ import org.hibernate.validator.constraints.URL;
 })
 public class RegisterBatchOrder {
 
+    private static final String ASPECT_MODEL_REGEX = "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$";
+
     @NotEmpty
     @Valid
     @ArraySchema(schema = @Schema(description = "Keys array contains required attributes for identify part chain entry node ", implementation = PartChainIdentificationKey.class), maxItems = Integer.MAX_VALUE)
@@ -87,8 +90,10 @@ public class RegisterBatchOrder {
     @Schema(description = "BoM Lifecycle of the result tree.", implementation = BomLifecycle.class)
     private BomLifecycle bomLifecycle;
 
-    @ArraySchema(schema = @Schema(implementation = String.class), maxItems = Integer.MAX_VALUE)
-    private List<String> aspects;
+    @ArraySchema(arraySchema = @Schema(description = "List of aspect names that will be collected if \\<collectAspects\\> flag is set to true.",
+                                       example = "[\"urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt\"]",
+                                       implementation = String.class, pattern = ASPECT_MODEL_REGEX), maxItems = Integer.MAX_VALUE)
+    private List<@Pattern(regexp = ASPECT_MODEL_REGEX) String> aspects;
 
     @Schema(implementation = Integer.class, minimum = MIN_TREE_DEPTH_DESC, maximum = MAX_TREE_DEPTH_DESC,
             description = "Max depth of the item graph returned. If no depth is set item graph with max depth is returned.")
@@ -102,7 +107,7 @@ public class RegisterBatchOrder {
     @Schema(description = "Flag to specify whether aspects should be requested and collected. Default is false.")
     private boolean collectAspects;
 
-    @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.")
+    @Schema(description = "Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.", deprecated = true)
     private boolean lookupBPNs;
 
     @URL

@@ -23,22 +23,26 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.edc.spi.types.domain.DataAddress;
+import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
-import org.eclipse.tractusx.irs.edc.client.model.ContractOfferDescription;
-import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
+import org.eclipse.tractusx.irs.edc.client.model.ContractOffer;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.Response;
@@ -58,12 +62,14 @@ import org.springframework.stereotype.Service;
 public class ContractNegotiationService {
 
     public static final String EDC_PROTOCOL = "dataspace-protocol-http";
+    public static final String EVENT_TRANSFER_PROCESS_STARTED = "transfer.process.started";
+    public static final String HTTP_DATA_PULL = "HttpData-PULL";
     private final EdcControlPlaneClient edcControlPlaneClient;
     private final PolicyCheckerService policyCheckerService;
     private final EdcConfiguration config;
 
     public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
-            final EndpointDataReferenceStatus endpointDataReferenceStatus)
+            final EndpointDataReferenceStatus endpointDataReferenceStatus, final String bpn)
             throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
 
         EndpointDataReferenceStatus resultEndpointDataReferenceStatus;
@@ -83,25 +89,19 @@ public class ContractNegotiationService {
         switch (resultEndpointDataReferenceStatus.tokenStatus()) {
             case REQUIRED_NEW -> {
                 final CompletableFuture<NegotiationResponse> responseFuture = startNewNegotiation(providerConnectorUrl,
-                        catalogItem);
+                        catalogItem, bpn);
                 negotiationResponse = Objects.requireNonNull(getNegotiationResponse(responseFuture));
                 contractAgreementId = negotiationResponse.getContractAgreementId();
             }
             case EXPIRED -> {
-                final String authCode = resultEndpointDataReferenceStatus.endpointDataReference().getAuthCode();
-                if (authCode == null) {
-                    throw new IllegalStateException("Missing information about AuthKey.");
-                }
-                log.error("AuthCode to be parsed: " + authCode);
-                contractAgreementId = EDRAuthCode.fromAuthCodeToken(authCode).getCid();
+                contractAgreementId = resultEndpointDataReferenceStatus.endpointDataReference().getContractId();
                 log.info(
                         "Cached endpoint data reference has expired token. Refreshing token without new contract negotiation for contractAgreementId: {}",
                         Masker.mask(contractAgreementId));
             }
             case VALID -> throw new IllegalStateException(
                     "Token is present and valid. Contract negotiation should not be started.");
-            default -> throw new IllegalStateException(
-                    "Unknown token status.");
+            default -> throw new IllegalStateException("Unknown token status.");
         }
 
         final TransferProcessRequest transferProcessRequest = createTransferProcessRequest(providerConnectorUrl,
@@ -119,12 +119,13 @@ public class ContractNegotiationService {
     }
 
     private CompletableFuture<NegotiationResponse> startNewNegotiation(final String providerConnectorUrl,
-            final CatalogItem catalogItem) throws UsagePolicyException {
+            final CatalogItem catalogItem, final String bpn) throws UsagePolicyException {
         log.info("Staring new contract negotiation.");
 
-        if (!policyCheckerService.isValid(catalogItem.getPolicy())) {
+        if (!policyCheckerService.isValid(catalogItem.getPolicy(), bpn)) {
             log.info("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy(), catalogItem.getConnectorId());
+            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy(),
+                    catalogItem.getConnectorId());
         }
 
         final NegotiationRequest negotiationRequest = createNegotiationRequestFromCatalogItem(providerConnectorUrl,
@@ -146,40 +147,44 @@ public class ContractNegotiationService {
                                                                         .managedResources(
                                                                                 TransferProcessRequest.DEFAULT_MANAGED_RESOURCES)
                                                                         .connectorId(catalogItem.getConnectorId())
-                                                                        .connectorAddress(providerConnectorUrl)
+                                                                        .counterPartyAddress(providerConnectorUrl)
+                                                                        .transferType(HTTP_DATA_PULL)
                                                                         .contractId(agreementId)
                                                                         .assetId(catalogItem.getAssetPropId())
                                                                         .dataDestination(destination);
         if (StringUtils.isNotBlank(config.getCallbackUrl())) {
             log.info("Setting EDR callback to {}", config.getCallbackUrl());
             transferProcessRequestBuilder.privateProperties(Map.of("receiverHttpEndpoint", config.getCallbackUrl()));
+            final CallbackAddress callbackAddress = CallbackAddress.Builder.newInstance()
+                                                                           .uri(config.getCallbackUrl())
+                                                                           .events(Set.of(
+                                                                                   EVENT_TRANSFER_PROCESS_STARTED))
+                                                                           .build();
+            transferProcessRequestBuilder.callbackAddresses(List.of(callbackAddress));
         }
         return transferProcessRequestBuilder.build();
     }
 
     private NegotiationRequest createNegotiationRequestFromCatalogItem(final String providerConnectorUrl,
             final CatalogItem catalogItem) {
-        final var contractOfferDescription = ContractOfferDescription.builder()
-                                                                     .offerId(catalogItem.getOfferId())
-                                                                     .assetId(catalogItem.getPolicy().getTarget())
-                                                                     .policy(catalogItem.getPolicy())
-                                                                     .build();
 
         return NegotiationRequest.builder()
-                                 .connectorId(catalogItem.getConnectorId())
-                                 .connectorAddress(providerConnectorUrl)
+                                 .counterPartyAddress(providerConnectorUrl)
+                                 .counterPartyId(catalogItem.getConnectorId())
                                  .protocol(EDC_PROTOCOL)
-                                 .offer(contractOfferDescription)
+                                 .contractOffer(
+                                         ContractOffer.fromPolicy(catalogItem.getPolicy(), catalogItem.getOfferId(),
+                                                 catalogItem.getAssetPropId(), catalogItem.getConnectorId()))
                                  .build();
     }
 
     private NegotiationResponse getNegotiationResponse(final CompletableFuture<NegotiationResponse> negotiationResponse)
             throws ContractNegotiationException {
         try {
-            return negotiationResponse.get();
+            return negotiationResponse.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
+        } catch (TimeoutException | ExecutionException e) {
             throw new ContractNegotiationException(e);
         }
         return null;
@@ -188,10 +193,10 @@ public class ContractNegotiationService {
     private TransferProcessResponse getTransferProcessResponse(
             final CompletableFuture<TransferProcessResponse> transferProcessResponse) throws TransferProcessException {
         try {
-            return transferProcessResponse.get();
+            return transferProcessResponse.get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
+        } catch (TimeoutException | ExecutionException e) {
             throw new TransferProcessException(e);
         }
         return null;

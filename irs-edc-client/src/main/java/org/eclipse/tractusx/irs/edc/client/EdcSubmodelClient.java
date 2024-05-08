@@ -37,20 +37,20 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
 /**
  * Public API facade for EDC domain
  */
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.UseObjectForClearerAPI"})
 public interface EdcSubmodelClient {
 
     CompletableFuture<SubmodelDescriptor> getSubmodelPayload(String connectorEndpoint, String submodelDataplaneUrl,
-            String assetId) throws EdcClientException;
+            String assetId, String bpn) throws EdcClientException;
 
     CompletableFuture<EdcNotificationResponse> sendNotification(String submodelEndpointAddress, String assetId,
-            EdcNotification<NotificationContent> notification) throws EdcClientException;
+            EdcNotification<NotificationContent> notification, String bpn) throws EdcClientException;
 
     List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String endpointAddress,
-            String filterKey, String filterValue) throws EdcClientException;
+            String filterKey, String filterValue, String bpn) throws EdcClientException;
 
     List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String endpointAddress,
-            String filterKey, String filterValue, EndpointDataReferenceStatus cachedEndpointDataReference)
+            String filterKey, String filterValue, EndpointDataReferenceStatus cachedEndpointDataReference, String bpn)
             throws EdcClientException;
 }
 

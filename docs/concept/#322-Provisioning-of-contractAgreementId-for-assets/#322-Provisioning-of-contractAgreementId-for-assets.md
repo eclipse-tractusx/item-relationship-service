@@ -377,7 +377,7 @@ policy store in order to receice further on assets with the specific policy.
           "odrl:operator": {
             "@id": "odrl:eq"
           },
-          "odrl:rightOperand": "ID 3.0 Trace"
+          "odrl:rightOperand": "ID 3.1 Trace"
         }
       }
       }

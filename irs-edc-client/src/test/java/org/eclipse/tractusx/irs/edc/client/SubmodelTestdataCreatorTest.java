@@ -52,13 +52,13 @@ class SubmodelTestdataCreatorTest extends LocalTestDataConfigurationAware {
 
     @Test
     void shouldReturnSingleLevelBomAsBuiltWithPreDefinedChildrenWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:9da45c9a-9052-494c-8328-28e474ee8ae2";
+        final String catenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
         final SingleLevelBomAsBuilt singleLevelBomAsBuilt = submodelTestdataCreator.createSubmodelForId(
                 catenaXId + "_singleLevelBomAsBuilt", SingleLevelBomAsBuilt.class);
 
         final Set<SingleLevelBomAsBuilt.ChildData> childItems = singleLevelBomAsBuilt.getChildItems();
         assertThat(childItems).isNotEmpty();
-        final List<String> childIDs = List.of("urn:uuid:abd54850-bd69-434e-b357-d121a9e0874b");
+        final List<String> childIDs = List.of("urn:uuid:f5b0d0f6-a562-474b-a7e9-fb6fb6d566ab");
         childItems.forEach(childData -> assertThat(childIDs).contains(childData.getCatenaXId()));
     }
 

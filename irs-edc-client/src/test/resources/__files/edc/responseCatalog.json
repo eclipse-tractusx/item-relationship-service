@@ -1,14 +1,14 @@
 {
   "@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
   "@type": "dcat:Catalog",
+  "dspace:participantId": "BPNL00000003CRHK",
   "dcat:dataset": {
-    "@id": "58505404-4da1-427a-82aa-b79482bcd1f0",
+    "@id": "urn:uuid:ea32f6f7-c884-4bfd-af4a-778666a1fffb",
     "@type": "dcat:Dataset",
     "odrl:hasPolicy": {
-      "@id": "7681f966-36ea-4542-b5ea-0d0db81967de:5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7:66131c58-32af-4df0-825d-77f7df6017c1",
-      "@type": "odrl:Set",
+      "@id": "YTYxMjJlNTUtZWY2Ni00MWM4LWFjMjgtZDA5ODhlMmQ2YzRi:dXJuOnV1aWQ6ZWEzMmY2ZjctYzg4NC00YmZkLWFmNGEtNzc4NjY2YTFmZmZi:NzBlZTJjZGMtOTg3Yi00NzU0LWI0M2EtMDhkNDAzMDI4NzNk",
+      "@type": "odrl:Offer",
       "odrl:permission": {
-        "odrl:target": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7",
         "odrl:action": {
           "odrl:type": "USE"
         },
@@ -32,27 +32,48 @@
         }
       },
       "odrl:prohibition": [],
-      "odrl:obligation": [],
-      "odrl:target": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7"
+      "odrl:obligation": []
     },
     "dcat:distribution": [
       {
         "@type": "dcat:Distribution",
         "dct:format": {
-          "@id": "HttpProxy"
+          "@id": "AzureStorage-PUSH"
         },
-        "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
+        "dcat:accessService": {
+          "@id": "7d021194-7e36-43bf-ba3e-ed59675e4576",
+          "@type": "dcat:DataService",
+          "dct:terms": "connector",
+          "dct:endpointUrl": "http://edc.io/api/v1/dsp"
+        }
       },
       {
         "@type": "dcat:Distribution",
         "dct:format": {
-          "@id": "AmazonS3"
+          "@id": "HttpData-PULL"
         },
-        "dcat:accessService": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443"
+        "dcat:accessService": {
+          "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
+          "@type": "dcat:DataService",
+          "dct:terms": "connector",
+          "dct:endpointUrl": "http://edc.io/api/v1/dsp"
+        }
+      },
+      {
+        "@type": "dcat:Distribution",
+        "dct:format": {
+          "@id": "AmazonS3-PUSH"
+        },
+        "dcat:accessService": {
+          "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
+          "@type": "dcat:DataService",
+          "dct:terms": "connector",
+          "dct:endpointUrl": "http://edc.io/api/v1/dsp"
+        }
       }
     ],
-    "edc:description": "IRS EDC Demo Asset",
-    "edc:id": "5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7"
+    "description": "IRS EDC Demo Asset",
+    "id": "urn:uuid:ea32f6f7-c884-4bfd-af4a-778666a1fffb"
   },
   "dcat:service": {
     "@id": "4ba1faa1-7f1a-4fb7-a41c-317f450e7443",
@@ -60,12 +81,15 @@
     "dct:terms": "connector",
     "dct:endpointUrl": "http://edc.io/api/v1/dsp"
   },
-  "edc:participantId": "BPNL00000003CRHK",
+  "participantId": "BPNL00000003CRHK",
   "@context": {
-    "dct": "https://purl.org/dc/terms/",
-    "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+    "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
     "edc": "https://w3id.org/edc/v0.0.1/ns/",
-    "dcat": "https://www.w3.org/ns/dcat/",
+    "tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+    "tx-auth": "https://w3id.org/tractusx/auth/",
+    "cx-policy": "https://w3id.org/catenax/policy/",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dct": "http://purl.org/dc/terms/",
     "odrl": "http://www.w3.org/ns/odrl/2/",
     "dspace": "https://w3id.org/dspace/v0.8/"
   }

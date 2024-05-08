@@ -24,7 +24,7 @@
 package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -32,14 +32,13 @@ import java.io.StringReader;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
-import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
-import org.eclipse.edc.jsonld.TitaniumJsonLd;
-import org.eclipse.edc.spi.monitor.ConsoleMonitor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
 import org.eclipse.tractusx.irs.edc.client.policy.Operator;
@@ -47,121 +46,160 @@ import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
-import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
+import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PolicyStoreControllerTest {
+public class PolicyStoreControllerTest {
 
-    public static final String EXAMPLE_PAYLOAD = """
+    public static final String REGISTER_POLICY_EXAMPLE_PAYLOAD = """
             {
-             	"validUntil": "2025-12-12T23:59:59.999Z",
-             	"payload": {
-             		"@context": {
-             			"odrl": "http://www.w3.org/ns/odrl/2/"
-             		},
-             		"@id": "policy-id",
-             		"policy": {
-             			"odrl:permission": [
-             				{
-             					"odrl:action": "USE",
-             					"odrl:constraint": {
-             						"odrl:and": [
-             							{
-             								"odrl:leftOperand": "Membership",
-             								"odrl:operator": {
-             									"@id": "odrl:eq"
-             								},
-             								"odrl:rightOperand": "active"
-             							},
-             							{
-             								"odrl:leftOperand": "PURPOSE",
-             								"odrl:operator": {
-             									"@id": "odrl:eq"
-             								},
-             								"odrl:rightOperand": "ID 3.1 Trace"
-             							}
-             						]
-             					}
-             				}
-             			]
-             		}
-             	}
-             }
+                "@context": {
+                    "odrl": "http://www.w3.org/ns/odrl/2/"
+                },
+                "@id": "policy-id",
+                "policy": {
+                    "odrl:permission": [
+                        {
+                            "odrl:action": "USE",
+                            "odrl:constraint": {
+                                "odrl:and": [
+                                    {
+                                        "odrl:leftOperand": "Membership",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
+                                        },
+                                        "odrl:rightOperand": "active"
+                                    },
+                                    {
+                                        "odrl:leftOperand": "PURPOSE",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
+                                        },
+                                        "odrl:rightOperand": "ID 3.1 Trace"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
             """;
 
     private PolicyStoreController testee;
-    private final TitaniumJsonLd titaniumJsonLd = new TitaniumJsonLd(new ConsoleMonitor());
-    private final EdcTransformer edcTransformer = new EdcTransformer(new com.fasterxml.jackson.databind.ObjectMapper(),
-            titaniumJsonLd, new TypeTransformerRegistryImpl());
 
     @Mock
-    private PolicyStoreService service;
+    private PolicyStoreService policyStoreServiceMock;
 
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreController(service, edcTransformer);
+        testee = new PolicyStoreController(policyStoreServiceMock, mock(HttpServletRequest.class));
     }
 
-    @Test
-    void registerAllowedPolicy() {
-        // arrange
-        final OffsetDateTime now = OffsetDateTime.now();
-        JsonReader jsonReader = Json.createReader(new StringReader(EXAMPLE_PAYLOAD));
-        JsonObject jsonObject = jsonReader.readObject();
-        jsonReader.close();
+    @Nested
+    class RegisterPolicyTests {
 
-        // act
-        testee.registerAllowedPolicy(
-                new CreatePolicyRequest(now.plusMinutes(1), jsonObject.get("payload").asJsonObject()));
+        @Test
+        void registerAllowedPolicy() {
+            // arrange
+            final OffsetDateTime now = OffsetDateTime.now();
+            final JsonObject jsonObject;
+            try (JsonReader jsonReader = Json.createReader(new StringReader(REGISTER_POLICY_EXAMPLE_PAYLOAD))) {
+                jsonObject = jsonReader.readObject();
+            }
 
-        // assert
-        verify(service).registerPolicy(any());
+            // act
+            final CreatePolicyRequest request = new CreatePolicyRequest(now.plusMinutes(1), null,
+                    jsonObject.get("policy").asJsonObject());
+            when(policyStoreServiceMock.registerPolicy(request)).thenReturn(Policy.builder().policyId("dummy").build());
+            final CreatePoliciesResponse createPoliciesResponse = testee.registerAllowedPolicy(request);
+
+            // assert
+            verify(policyStoreServiceMock).registerPolicy(request);
+            assertThat(createPoliciesResponse.policyId()).isEqualTo("dummy");
+        }
     }
 
-    @Test
-    void getPolicies() {
-        // arrange
-        final List<Policy> policies = List.of(
-                new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
-        when(service.getStoredPolicies()).thenReturn(policies);
+    @Nested
+    class GetPolicyTests {
 
-        // act
-        final List<PolicyResponse> returnedPolicies = testee.getPolicies();
+        @Test
+        void getPolicies() {
+            // arrange
+            final List<Policy> policies = List.of(
+                    new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
+            final String bpn = "bpn1";
+            when(policyStoreServiceMock.getPolicies(List.of(bpn))).thenReturn(Map.of(bpn, policies));
 
-        // assert
-        assertThat(returnedPolicies).isEqualTo(
-                policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
+            // act
+            final Map<String, List<PolicyResponse>> returnedPolicies = testee.getPolicies(List.of(bpn));
+
+            // assert
+            assertThat(returnedPolicies.get(bpn)).isEqualTo(
+                    policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
+        }
+
+        @Test
+        void getAllPolicies() {
+            // arrange
+            final List<Policy> policies = List.of(
+                    new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
+            final String bpn = "bpn1";
+            when(policyStoreServiceMock.getPolicies(null)).thenReturn(Map.of(bpn, policies));
+
+            // act
+            final Map<String, List<PolicyResponse>> returnedPolicies = testee.getPolicies(null);
+
+            // assert
+            assertThat(returnedPolicies).containsEntry(bpn,
+                    policies.stream().map(PolicyResponse::fromPolicy).collect(Collectors.toList()));
+        }
     }
 
-    @Test
-    void deleteAllowedPolicy() {
-        // act
-        testee.deleteAllowedPolicy("testId");
+    @Nested
+    class DeletePolicyTests {
 
-        // assert
-        verify(service).deletePolicy("testId");
+        @Test
+        void deleteAllowedPolicy() {
+            // act
+            testee.deleteAllowedPolicy("testId");
+
+            // assert
+            verify(policyStoreServiceMock).deletePolicy("testId");
+        }
     }
 
-    @Test
-    void updateAllowedPolicy() {
-        // arrange
-        final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now());
+    @Nested
+    class UpdatePolicyTests {
 
-        // act
-        final String policyId = "policyId";
-        testee.updateAllowedPolicy(policyId, request);
+        @Test
+        void updateAllowedPolicy() {
+            // arrange
+            final String policyId = "policyId";
+            final UpdatePolicyRequest request = new UpdatePolicyRequest(OffsetDateTime.now(), List.of("bpn"),
+                    List.of(policyId));
 
-        // assert
-        verify(service).updatePolicy(policyId, request);
+            // act
+            testee.updateAllowedPolicy(request);
+
+            // assert
+            verify(policyStoreServiceMock).updatePolicies(request);
+        }
+
+        /*
+         There are no null and empty tests for the list of business partner numbers and the list of policy IDs
+         because this is done via jakarta validation.
+        */
+
     }
 
     private List<Permission> createPermissions() {

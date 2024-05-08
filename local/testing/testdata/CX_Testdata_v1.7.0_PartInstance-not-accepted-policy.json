@@ -1,0 +1,480 @@
+{
+  "policies": {
+    "ID 3.0 NotAccepted": {
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "id-3.0-not-accepted",
+      "policy": {
+        "@type": "odrl:Set",
+        "odrl:permission": [
+          {
+            "odrl:action": "USE",
+            "odrl:constraint": {
+              "odrl:or": [
+                {
+                  "odrl:leftOperand": "PURPOSE",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "ID 3.0 NotAccepted"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "https://catenax.io/schema/TestDataContainer/1.0.0" : [ 
+  {
+    "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt" : [ {
+      "catenaXId" : "urn:uuid:b0cc2dc9-b011-4b21-9c58-f48bd06d439f",
+      "childItems" : [ {
+        "catenaXId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c3",
+        "quantity" : {
+          "value" : 2.5,
+          "unit" : "unit:litre"
+        },
+        "hasAlternatives" : false,
+        "businessPartner" : "BPNL00000003B0Q0",
+        "createdOn" : "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
+      } ]
+    } ],
+    "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription" : [ {
+      "minimalStateOfHealth" : {
+        "minimalStateOfHealthValue" : 90,
+        "specificatorId" : "OEM",
+        "minimalStateOfHealthPhase" : "as specified by OEM"
+      },
+      "currentStateOfHealth" : [ {
+        "currentStateOfHealthTimestamp" : "2021-05-29",
+        "currentStateOfHealthPhase" : "as specified by OEM",
+        "currentStateOfHealthValue" : 105
+      }, {
+        "currentStateOfHealthTimestamp" : "2024-02-24",
+        "currentStateOfHealthPhase" : "as recieved by dismantling",
+        "currentStateOfHealthValue" : 95
+      } ],
+      "performanceIndicator" : {
+        "electrictiyCapacityMax" : 3117.732935335289,
+        "electrictiyCapacityMin" : 26212.182226034147
+      },
+      "type" : "HVB"
+    } ],
+    "catenaXId" : "urn:uuid:b0cc2dc9-b011-4b21-9c58-f48bd06d439f",
+    "bpnl" : "BPNL00000003AYRE",
+    "urn:samm:io.catenax.secondary_material_content_verifiable:1.0.0#SecondaryMaterialContentVerifiable" : [ {
+      "orderNumber" : "845221",
+      "secondaryMaterialContent" : [ {
+        "bioBased" : {
+          "primaryBioBased" : {
+            "percentageOfMaterialWeight" : 12
+          },
+          "bioBasedClass" : "gen1",
+          "secondaryBioBased" : {
+            "isMassBalanced" : true,
+            "percentageOfMaterialWeight" : 18
+          }
+        },
+        "additionalInformation" : "eOMtThyhVNLWUZNRcBaQKxI",
+        "materialClass" : "3.1",
+        "unitOfMeasure" : {
+          "unitOfMeasureKey" : "unit:centigram",
+          "grossMaterialInputMass" : 3500,
+          "materialNetMass" : 3000
+        },
+        "certificate" : [ {
+          "certificateName" : "Yellowcert",
+          "certificateLink" : "telnet://192.0.2.16:80/"
+        } ],
+        "materialNameStandardized" : {
+          "referencedStandard" : "AISI",
+          "referencedStandardID" : "1665",
+          "materialNameStandardizedValue" : "PP-TD10"
+        },
+        "inorganic" : {
+          "primaryInorganic" : {
+            "percentageOfMaterialWeight" : 12
+          },
+          "secondaryInorganic" : {
+            "postConsumer" : {
+              "isPreviousIndustryAutomotive" : false,
+              "chemicalRecycling" : {
+                "isMassBalanced" : false,
+                "percentageOfMaterialWeight" : 13
+              },
+              "mechanicalRecycling" : {
+                "isMassBalanced" : true,
+                "percentageOfMaterialWeight" : 11
+              }
+            },
+            "postConsumerAutomotive" : {
+              "chemicalRecycling" : {
+                "isMassBalanced" : true,
+                "percentageOfMaterialWeight" : 12
+              },
+              "mechanicalRecycling" : {
+                "isMassBalanced" : true,
+                "percentageOfMaterialWeight" : 12
+              }
+            },
+            "preConsumer" : {
+              "mechanicalRecycling" : {
+                "isMassBalanced" : true,
+                "percentageOfMaterialWeight" : 10
+              }
+            }
+          }
+        }
+      } ]
+    } ],
+    "urn:samm:io.catenax.serial_part:3.0.0#SerialPart" : [ {
+      "localIdentifiers" : [ {
+        "value" : "BPNL00000003AYRE",
+        "key" : "manufacturerId"
+      }, {
+        "value" : "8840838-04",
+        "key" : "manufacturerPartId"
+      }, {
+        "value" : "NO-088559388438816364444095",
+        "key" : "partInstanceId"
+      } ],
+      "manufacturingInformation" : {
+        "date" : "2022-02-04T14:48:54",
+        "country" : "DEU",
+        "sites" : [ {
+          "catenaXsiteId" : "BPNS000004711DMY",
+          "function" : "production"
+        } ]
+      },
+      "catenaXId" : "urn:uuid:b0cc2dc9-b011-4b21-9c58-f48bd06d439f",
+      "partTypeInformation" : {
+        "manufacturerPartId" : "8840374-09",
+        "customerPartId" : "8840374-09",
+        "partClassification" : [ {
+          "classificationDescription" : "Standard data element types with associated classification scheme for electric components.",
+          "classificationStandard" : "IEC",
+          "classificationID" : "61360- 2:2012 "
+        } ],
+        "nameAtManufacturer" : "ZB ZELLE",
+        "nameAtCustomer" : "ZB ZELLE"
+      },
+      "itemVersion" : "04"
+    } ],
+    "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified" : [ {
+      "assetId" : "urn:uuid:b0cc2dc9-b011-4b21-9c58-f48bd06d439f",
+      "manufacturerId" : "BPNL00000003AYRE",
+      "childItems" : [ {
+        "item" : [ {
+          "itemClassification" : [ {
+            "value" : "Mirror left",
+            "key" : "BPNL00000003AYRE:PartFamily"
+          } ],
+          "itemQuantity" : {
+            "quantityNumber" : 2,
+            "measurementUnit" : "unit:litre"
+          },
+          "ownerItemId" : "urn:uuid:a7852bf6-ea94-40e5-895b-bd240eee8469",
+          "itemVersion" : "04",
+          "itemDescription" : "The steering wheel is nice and round",
+          "createdOn" : "2022-02-03T14:48:54.709Z",
+          "itemPositioning" : "right",
+          "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
+        } ],
+        "childassetId" : "urn:uuid:397b63ae-89d7-4131-b45a-575e840dc5c3",
+        "childItemCategory" : "e.g. vehicle, winter wheels, bicycle rack"
+      } ]
+    } ],
+    "urn:samm:io.catenax.physical_dimension:1.0.0#PhysicalDimension" : [ {
+      "physicalDimensionsProperty" : {
+        "diameter" : 380,
+        "width" : 590,
+        "length" : 810,
+        "weight" : 85,
+        "height" : 610
+      }
+    } ],
+    "urn:samm:io.catenax.part_as_specified:2.0.0#PartAsSpecified" : [ {
+      "validityPeriod" : {
+        "validFrom" : "2023-02-10T07:17:52.396Z",
+        "validTo" : "2023-02-10T07:17:52.396Z"
+      },
+      "catenaXId" : "urn:uuid:b0cc2dc9-b011-4b21-9c58-f48bd06d439f",
+      "partTypeInformation" : {
+        "ownerPartId" : "8840374-09",
+        "partVersion" : "04",
+        "itemCategory" : "component",
+        "partDescription" : "ZB ZELLE",
+        "partClassification" : [ {
+          "value" : "ZB ZELLE",
+          "key" : "BPNL00000003AYRE:PartFamily"
+        } ],
+        "nameAtOwner" : "ZB ZELLE"
+      }
+    } ],
+    "urn:samm:io.catenax.battery.battery_pass:3.0.1#BatteryPass" : [ {
+      "electrochemicalProperties" : {
+        "ratedCapacity" : 210,
+        "batteryEnergy" : {
+          "energyRoundtripEfficiencyChange" : 67,
+          "maximumAllowedBatteryEnergy" : 90000,
+          "energyRoundtripEfficiency" : 56
+        },
+        "ratioMaximumAllowedBatteryPowerAndMaximumAllowedBatteryEnergy" : 0.611,
+        "batteryVoltage" : {
+          "nominalVoltage" : 4.3,
+          "maxVoltage" : 6,
+          "minVoltage" : 2.04
+        },
+        "internalResistance" : {
+          "cellInternalResistance" : 45,
+          "packInternalResistance" : 67,
+          "packInternalResistanceIncrease" : 23
+        },
+        "capacityThresholdExhaustion" : 23,
+        "batteryPower" : {
+          "originalPowerCapability" : -1.7976931348623157E308,
+          "powerFade" : 23,
+          "originalPowerCapabilityLimits" : -1.7976931348623157E308,
+          "maximumAllowedBatteryPower" : -1.7976931348623157E308,
+          "powerCapabilityAt20Charge" : -1.7976931348623157E308,
+          "powerCapabilityAt80Charge" : -1.7976931348623157E308
+        },
+        "capacityFade" : 34
+      },
+      "document" : {
+        "responsibleSourcing" : [ {
+          "fileLocation" : "telnet://192.0.2.16:80/",
+          "title" : "LlN"
+        } ],
+        "packagingInstructions" : [ {
+          "fileLocation" : "telnet://192.0.2.16:80/",
+          "title" : "eOMtThyhVNLWUZNRcBaQKxI"
+        } ],
+        "transportationInstructions" : [ {
+          "fileLocation" : "ftp://ftp.is.co.za/rfc/rfc1808.txt",
+          "title" : "yedUsFwdkelQbxeTeQOvaScfqIOOmaa"
+        } ],
+        "vehicleDismantlingProcedure" : [ {
+          "fileLocation" : "http://www.ietf.org/rfc/rfc2396.txt",
+          "title" : "JxkyvRnL"
+        } ],
+        "testReportsResults" : [ {
+          "fileLocation" : "telnet://192.0.2.16:80/",
+          "title" : "UMaAIKKIkknjWEXJUfPxxQHeWKEJ"
+        } ],
+        "batteryDismantlingProcedure" : [ {
+          "fileLocation" : "http://www.wikipedia.org",
+          "title" : "RYtGKbgicZaHCBRQDSx"
+        } ],
+        "safetyMeasures" : [ {
+          "fileLocation" : "ftp://ftp.is.co.za/rfc/rfc1808.txt",
+          "title" : "VLhpfQGTMDYpsBZxvfBoeygjb"
+        } ],
+        "declarationOfConformity" : [ {
+          "fileLocation" : "http://www.wikipedia.org",
+          "title" : "dpHYZGhtgdntugzvvKAXLhM"
+        } ]
+      },
+      "datePlacedOnMarket" : "2023-03-14",
+      "cellChemistry" : {
+        "anodeCompositionOther" : [ {
+          "materialName" : "Graphite",
+          "materialWeight" : 2.5,
+          "materialPercentageMassFraction" : 19
+        } ],
+        "anodeActiveMaterials" : [ {
+          "materialName" : "Graphite",
+          "materialWeight" : 2.5,
+          "materialPercentageMassFraction" : 19
+        } ],
+        "cathodeCompositionOther" : [ {
+          "materialName" : "Graphite",
+          "materialWeight" : 2.5,
+          "materialPercentageMassFraction" : 19
+        } ],
+        "electrolyteComposition" : [ {
+          "materialName" : "Graphite",
+          "materialWeight" : 2.5,
+          "materialPercentageMassFraction" : 19
+        } ],
+        "recyclateContentActiveMaterials" : [ {
+          "materialName" : "Graphite",
+          "materialWeight" : 2.5,
+          "materialPercentageMassFraction" : 19
+        } ],
+        "cathodeActiveMaterials" : [ {
+          "materialName" : "Graphite",
+          "materialWeight" : 2.5,
+          "materialPercentageMassFraction" : 19
+        } ]
+      },
+      "physicalDimensions" : {
+        "diameter" : 3,
+        "length" : 20000,
+        "width" : 1000,
+        "weight" : 1007,
+        "height" : 1
+      },
+      "temperatureRangeIdleState" : {
+        "temperatureRangeIdleStateUpperLimit" : 67,
+        "temperatureRangeIdleStateLowerLimit" : 67
+      },
+      "batteryCycleLife" : {
+        "cycleLifeTestCRate" : 45,
+        "expectedLifetime" : 456,
+        "cycleLifeTestDepthOfDischarge" : 23
+      },
+      "manufacturer" : {
+        "address" : {
+          "country" : {
+            "shortName" : "XB-1M"
+          },
+          "premise" : {
+            "technicalKey" : "BUILDING",
+            "value" : "Werk 1"
+          },
+          "postalDeliveryPoint" : {
+            "technicalKey" : "INTERURBAN_DELIVERY_POINT",
+            "value" : "Tor 1"
+          },
+          "locality" : {
+            "technicalKey" : "BLOCK",
+            "value" : "Mannheim"
+          },
+          "postCode" : {
+            "technicalKey" : "CEDEX",
+            "value" : "68161-12"
+          },
+          "thoroughfare" : {
+            "number" : "45",
+            "technicalKey" : "STREET",
+            "value" : "Bernstraße"
+          }
+        },
+        "contact" : {
+          "website" : "https://www.samsung.com",
+          "phoneNumber" : "+49 89 1234567890",
+          "faxNumber" : "+49 89 0987654321",
+          "email" : "test.mail@example.com"
+        },
+        "name" : "Company A"
+      },
+      "warrantyPeriod" : 60,
+      "composition" : {
+        "components" : {
+          "componentsSupplier" : [ {
+            "componentsSupplierName" : "XY Corporation",
+            "address" : {
+              "country" : {
+                "shortName" : ""
+              },
+              "premise" : {
+                "technicalKey" : "BUILDING",
+                "value" : "Werk 1"
+              },
+              "postalDeliveryPoint" : {
+                "technicalKey" : "INTERURBAN_DELIVERY_POINT",
+                "value" : "Tor 1"
+              },
+              "locality" : {
+                "technicalKey" : "BLOCK",
+                "value" : "Mannheim"
+              },
+              "postCode" : {
+                "technicalKey" : "CEDEX",
+                "value" : "68161-12"
+              },
+              "thoroughfare" : {
+                "number" : "45",
+                "technicalKey" : "STREET",
+                "value" : "Bernstraße"
+              }
+            },
+            "contact" : {
+              "website" : "https://www.samsung.com",
+              "phoneNumber" : "+49 89 1234567890",
+              "faxNumber" : "+49 89 0987654321",
+              "email" : "test.mail@example.com"
+            }
+          } ],
+          "componentsPartNumber" : [ "Case xxxxxxx/xx; Controller xxxxxxx/xx" ]
+        },
+        "compositionOfBattery" : [ {
+          "materialName" : "Graphite",
+          "materialWeight" : 2.5,
+          "materialPercentageMassFraction" : 19
+        } ],
+        "criticalRawMaterials" : "gNfZBdyFGRajVfJNonEnOinZj"
+      },
+      "manufacturing" : {
+        "address" : {
+          "country" : {
+            "shortName" : "RG-8"
+          },
+          "premise" : {
+            "technicalKey" : "BUILDING",
+            "value" : "Werk 1"
+          },
+          "postalDeliveryPoint" : {
+            "technicalKey" : "INTERURBAN_DELIVERY_POINT",
+            "value" : "Tor 1"
+          },
+          "locality" : {
+            "technicalKey" : "BLOCK",
+            "value" : "Mannheim"
+          },
+          "postCode" : {
+            "technicalKey" : "CEDEX",
+            "value" : "68161-12"
+          },
+          "thoroughfare" : {
+            "number" : "45",
+            "technicalKey" : "STREET",
+            "value" : "Bernstraße"
+          }
+        },
+        "dateOfManufacturing" : "2023-03-07"
+      },
+      "batteryIdentification" : {
+        "batteryIDDMCCode" : "NO-088559388438816364444095",
+        "batteryModel" : "LFP, Natrium, Li-Ion, NMC, NCA, Solid-State",
+        "batteryType" : "LFP, Natrium, Li-Ion, NMC, NCA, Solid-State"
+      },
+      "stateOfBattery" : {
+        "stateOfCharge" : 23,
+        "stateOfHealth" : 12,
+        "statusBattery" : "first life/ waste/ repaired/ repurposed/ recycled"
+      },
+      "cO2FootprintTotal" : 124
+    } ],
+    "urn:samm:io.catenax.traction_battery_code:1.0.0#TractionBatteryCode" : [ {
+      "tractionBatteryCode" : "X12MCPM27KLPCLX2M2382320",
+      "subcomponents" : [ {
+        "tractionBatteryCode" : "X12MCPM27KLPCLX2M2382320",
+        "productType" : "cell"
+      } ],
+      "productType" : "cell"
+    } ],
+    "urn:samm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt" : [ {
+      "catenaXId" : "urn:uuid:b0cc2dc9-b011-4b21-9c58-f48bd06d439f",
+      "customers" : [ {
+        "businessPartner" : "BPNL00000003AYRE",
+        "parentItems" : [ {
+          "catenaXId" : "urn:uuid:3b2345a5-b08e-4cfb-9131-5e8414f27984",
+          "quantity" : {
+            "quantityNumber" : 2.5,
+            "measurementUnit" : "unit:litre"
+          },
+          "createdOn" : "2022-02-03T14:48:54.709Z",
+          "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
+        } ],
+        "createdOn" : "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
+      } ]
+    } ]
+  } ]
+}

@@ -69,10 +69,12 @@ class EdcContractAgreementServiceTest {
         List<String> contractAgreementIds = List.of("contractAgreementId");
 
         final EdcContractAgreementsResponse[] edcContractAgreementsResponse = new EdcContractAgreementsResponse[1];
-        edcContractAgreementsResponse[0] = EdcContractAgreementsResponse.builder().contractAgreementId("id")
+        edcContractAgreementsResponse[0] = EdcContractAgreementsResponse.builder()
+                                                                        .contractAgreementId("id")
                                                                         .assetId("assetId")
                                                                         .consumerId("consumerId")
                                                                         .providerId("providerId")
+                                                                        .policy("theProvidedPolicy")
                                                                         .build();
         when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(),
                 eq(EdcContractAgreementsResponse[].class))).thenReturn(
@@ -88,6 +90,8 @@ class EdcContractAgreementServiceTest {
                        eq("https://irs-consumer-controlplane.dev.demo.net/data/management/v2/contractagreements/request"),
                        any(), any(), eq(EdcContractAgreementsResponse[].class));
         assertThat(contractAgreements).isNotNull();
+        assertThat(contractAgreements.get(0).policy()).isNotNull();
+
     }
 
     @Test

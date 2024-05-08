@@ -4,7 +4,7 @@ The interfaces show how the components interact with each other and which interf
 
 == Component diagram
 
-[plantuml, target=whitebox-overview, format=svg]
+[plantuml, target=whitebox_overall_decentral, format=svg]
 ....
 include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.puml[]
 ....
@@ -18,10 +18,13 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |Proxy for any consumer of the IRS api.
 
 |IRS
-|The IRS consumes relationship information across the CX-Network and builds the graph view. Within this Documentation, the focus lies on the IRS
+|The IRS consumes relationship information across the CX-network and builds the graph view. Within this documentation, the focus lies on the IRS
+
+|Policy Store
+|The Policy Store component stores usage policies used to validate the consumption of data asset.
 
 |EDC Consumer
-|The EDC Consumer Component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists out of a control plane and a data plane.
+|The EDC Consumer component is there to fulfill the GAIA-X and IDSA-data sovereignty principles. The EDC Consumer consists of a control plane and a data plane.
 
 |EDC Provider
 |The EDC Provider Component connects with EDC Consumer component and forms the end point for the actual exchange of data. It handles automatic contract negotiation and the subsequent exchange of data assets for connected applications.
@@ -40,9 +43,6 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 
 |Semantic Hub
 |Semantic Hub provides information about semantic models in a specific version. This also includes JSON schemas, which IRS uses to validate the payload received by data providers.
-
-|BPDM
-|The Business Partner Data Management (BPDM) Service is used by the IRS to access shared business partner data for BPNs of Data Providers along the supply chain.
 |===
 
 
@@ -50,7 +50,7 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 |Number |Description
 
 | 01
-| IrsApiConsumer calls the *IRS* public *API*
+| IrsApiConsumer calls the *IRS* public /irs *API*
 
 | 02
 | IrsApiConsumer must authorize using *technical C-X User*
@@ -80,26 +80,28 @@ include::../../../uml-diagrams/building-block-view/whitebox_overall_decentral.pu
 | IRS uses *Semantic Hub* to validate of *SubmodelAspects* payloads agains the schema provided in *Semantic Hub*
 
 | 11
-| In case "lookupBPNs" is active IRS provides a lookup of company for given BPN
+| *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
 
 | 12
-| *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
-
-| 13
 | *EDC* communication covering negotiation and data consumption
 
-| 14
+| 13
 | *EDC* is connected to *Managed Identity Wallet* for access policy check for data offers
 
-| 15
+| 14
 | *IRS* accessing to *SubmodelServer* on Tier Level using the *EDC*
 
-| 16
+| 15
 | *IRS* accessing the *decentral DigitalTwinRegistry* on Tier Level using the *EDC*
 
-| 17
+| 16
 | In case of the use-case Environmental and Social Standards, *IRS* sends notifications to the *IRS-ESS* instance running at the data provider using the *EDC*.
-|===
 
+| 17
+| *IRS* uses the Policy Store to load the usage policies stored for BPNLs in order to check the usage policies during the consumption of the data assets.
+
+| 18
+| IrsApiConsumer calls the IRS public /policy *API*
+|===
 
 

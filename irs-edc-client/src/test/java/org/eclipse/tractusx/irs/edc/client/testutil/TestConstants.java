@@ -31,7 +31,6 @@ public class TestConstants {
     public static final String FRAMEWORK_AGREEMENT_DISMANTLER = "FrameworkAgreement.dismantler";
     public static final String FRAMEWORK_AGREEMENT_TEST = "FrameworkAgreement.test";
     public static final String MEMBERSHIP = "Membership";
-    public static final String ID_3_0_TRACE = "ID 3.0 Trace";
     public static final String ID_3_1_TRACE = "ID 3.1 Trace";
     public static final String STATUS_ACTIVE = "active";
     public static final String PURPOSE = "PURPOSE";

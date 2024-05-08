@@ -1,0 +1,40 @@
+{
+  "submodels": [
+    {
+      "identification": "urn:uuid:17354138-5bf3-45ba-899a-d5245d4d9c83",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "MDBmZDcyMDktYTE2MS00OWM5LWFiMzAtMmUwMDllNWE3MDAw:dXJuOnV1aWQ6Njc1NWMyZTAtNzc5Ni00NTYzLWE1NjktYTk3NmZjZTNiYjQ3:MjhhN2VlY2EtMDQwNi00ZjQ4LWI2NDktMjhiYzU0NzcyNTcx",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:ee9b9c9e-1416-45a3-b683-d98d5d88e548",
+        "partTypeInformation": {
+          "manufacturerPartId": "SC-00",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "03"
+      }
+    }
+  ]
+}

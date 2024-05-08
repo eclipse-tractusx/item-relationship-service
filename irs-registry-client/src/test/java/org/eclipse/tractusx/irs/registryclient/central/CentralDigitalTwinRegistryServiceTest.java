@@ -57,8 +57,8 @@ import org.springframework.web.client.RestClientException;
 @ExtendWith(MockitoExtension.class)
 class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAware {
 
-    private final String singleLevelBomAsBuiltURN = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0";
-    private final String serialPartURN = "urn:bamm:io.catenax.serial_part:1.0.0";
+    private final String singleLevelBomAsBuiltURN = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
+    private final String serialPartURN = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
     private DigitalTwinRegistryService digitalTwinRegistryService;
     @Mock
     private DigitalTwinRegistryClient dtRegistryClientMock;
@@ -77,7 +77,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() throws RegistryServiceException {
-        final String existingCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
+        final String existingCatenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
 
         final Collection<Shell> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
                 List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")));
@@ -174,7 +174,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() throws RegistryServiceException {
-        final String existingCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
+        final String existingCatenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
 
         final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryService.fetchShells(
                                                                                           List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")))

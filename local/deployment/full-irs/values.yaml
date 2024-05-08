@@ -593,7 +593,7 @@ irs:
         metrics_path: '/actuator/prometheus'
         scrape_interval: 5s
         static_configs:
-          - targets: [ '{{ .Release.Name }}-irs-helm:4004' ]
+          - targets: [ '{{ .Release.Name }}-item-relationship-service:4004' ]
 
       - job_name: 'minio-actuator'
         metrics_path: /minio/v2/metrics/cluster

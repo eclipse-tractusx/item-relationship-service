@@ -33,12 +33,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 
 class JsonValidatorServiceTest {
 
-    private final JsonValidatorService testee = new JsonValidatorService(new JsonUtil());
+    private final JsonValidatorService testee = new JsonValidatorService();
+
+    @Test
+    void shouldFailWhenSchemaIsInThirdVerAndPayloadInSecondVer() throws Exception {
+        final String schema = readFile("/json-schema/slab-v3.0.0.json");
+        final String payload = readFile("/__files/integrationtesting/singleLevelBomAsBuilt#2.0.0.json");
+
+        final ValidationResult result = testee.validate(schema, payload);
+
+        assertThat(result.isValid()).isFalse();
+    }
 
     @Test
     void shouldValidateAssemblyPartRelationship() throws Exception {
