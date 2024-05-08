@@ -39,6 +39,7 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import jakarta.json.JsonObject;
 import org.assertj.core.api.AbstractThrowableAssert;
@@ -120,7 +121,7 @@ class PolicyStoreServiceTest {
 
             // ASSERT
             verify(persistenceMock).save(eq("default"), policyCaptor.capture());
-            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("policy-id");
+            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("e917f5f-8dac-49ac-8d10-5b4d254d2b48");
             assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(now);
             assertThat(policyCaptor.getValue().getPermissions()).hasSize(1);
         }
@@ -141,7 +142,7 @@ class PolicyStoreServiceTest {
 
             // ASSERT
             verify(persistenceMock).save(eq("BPNL00000123ABCD"), policyCaptor.capture());
-            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("policy-id");
+            assertThat(policyCaptor.getValue().getPolicyId()).isEqualTo("e917f5f-8dac-49ac-8d10-5b4d254d2b48");
             assertThat(policyCaptor.getValue().getValidUntil()).isEqualTo(validUntil);
             assertThat(policyCaptor.getValue().getPermissions()).isNotEmpty();
 
@@ -156,7 +157,13 @@ class PolicyStoreServiceTest {
 
             // ARRANGE
             final OffsetDateTime now = OffsetDateTime.now(clock);
-            final Policy policy = new Policy("testId", now, now.plusMinutes(1), emptyList());
+            final String policyId = randomPolicyId();
+            final Policy policy = Policy.builder()
+                                        .policyId(policyId)
+                                        .createdOn(now)
+                                        .validUntil(now.plusMinutes(1))
+                                        .permissions(emptyList())
+                                        .build();
 
             // ACT
             testee.doRegisterPolicy(policy, BPN);
@@ -170,7 +177,13 @@ class PolicyStoreServiceTest {
 
             // ARRANGE
             final OffsetDateTime now = OffsetDateTime.now(clock);
-            final Policy policy = new Policy("testId", now, now.plusMinutes(1), null);
+            final String policyId = randomPolicyId();
+            final Policy policy = Policy.builder()
+                                        .policyId(policyId)
+                                        .createdOn(now)
+                                        .validUntil(now.plusMinutes(1))
+                                        .permissions(null)
+                                        .build();
 
             // ACT
             final ThrowableAssert.ThrowingCallable call = () -> testee.doRegisterPolicy(policy, "A");
@@ -188,7 +201,13 @@ class PolicyStoreServiceTest {
 
             // ARRANGE
             final OffsetDateTime now = OffsetDateTime.now(clock);
-            final Policy policy = new Policy("testId", now, now.plusMinutes(1), createPermissions());
+            final String policyId = randomPolicyId();
+            final Policy policy = Policy.builder()
+                                        .policyId(policyId)
+                                        .createdOn(now)
+                                        .validUntil(now.plusMinutes(1))
+                                        .permissions(createPermissions())
+                                        .build();
 
             // ACT
             testee.doRegisterPolicy(policy, BPN);
@@ -207,9 +226,15 @@ class PolicyStoreServiceTest {
         void doRegisterPolicy_whenPolicyStoreExceptionOccurs() {
 
             // ACT
-            final String policyId = "testId";
+            final String policyId = randomPolicyId();
             final OffsetDateTime now = OffsetDateTime.now(clock);
-            final Policy policy = new Policy(policyId, now, now.plusMinutes(1), createPermissions());
+            final Policy policy = Policy.builder()
+                                        .policyId(policyId)
+                                        .createdOn(now)
+                                        .validUntil(now.plusMinutes(1))
+                                        .permissions(createPermissions())
+                                        .build();
+
             doThrow(new PolicyStoreException("")).when(persistenceMock).save(any(), any());
 
             // ASSERT
@@ -221,6 +246,7 @@ class PolicyStoreServiceTest {
 
             // ARRANGE
             final Policy policy = Policy.builder()
+                                        .policyId(randomPolicyId())
                                         .permissions(List.of(Permission.builder()
                                                                        .constraint(new Constraints(emptyList(),
                                                                                emptyList()))
@@ -329,7 +355,12 @@ class PolicyStoreServiceTest {
     }
 
     private Policy createPolicy(final String policyId) {
-        return new Policy(policyId, OffsetDateTime.now(clock), OffsetDateTime.now(clock).plusDays(1), emptyList());
+        return Policy.builder()
+                     .policyId(policyId)
+                     .createdOn(OffsetDateTime.now(clock))
+                     .validUntil(OffsetDateTime.now(clock).plusDays(1))
+                     .permissions(emptyList())
+                     .build();
     }
 
     private List<Permission> createPermissions() {
@@ -350,21 +381,32 @@ class PolicyStoreServiceTest {
         @Test
         void deletePolicy_deleteSuccessful() {
             // ARRANGE
-            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
+            final String policyId = randomPolicyId();
+            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(Policy.builder()
+                                                                                 .policyId(policyId)
+                                                                                 .createdOn(null)
+                                                                                 .validUntil(null)
+                                                                                 .permissions(null)
+                                                                                 .build())));
 
             // ACT
-            testee.deletePolicy("testId");
+            testee.deletePolicy(policyId);
 
             // ASSERT
-            verify(persistenceMock).delete(BPN, "testId");
+            verify(persistenceMock).delete(BPN, policyId);
         }
 
         @Test
         void deletePolicy_exceptionFromPolicyPersistence_shouldReturnHttpStatus500() {
 
             // ACT
-            final String policyId = "testId";
-            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(new Policy(policyId, null, null, null))));
+            final String policyId = randomPolicyId();
+            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(Policy.builder()
+                                                                                 .policyId(policyId)
+                                                                                 .createdOn(null)
+                                                                                 .validUntil(null)
+                                                                                 .permissions(null)
+                                                                                 .build())));
             doThrow(new PolicyStoreException("")).when(persistenceMock).delete(BPN, policyId);
 
             // ASSERT
@@ -376,13 +418,17 @@ class PolicyStoreServiceTest {
         void deletePolicy_whenPolicyNotFound_shouldReturnHttpStatus404() {
 
             // ACT
-            final String policyId = "notExistingPolicyId";
-            when(persistenceMock.readAll()).thenReturn(Map.of(BPN, List.of(new Policy("testId", null, null, null))));
+            final String notExistingPolicyId = randomPolicyId();
+            final String policyId = randomPolicyId();
+            when(persistenceMock.readAll()).thenReturn(
+                    Map.of(BPN, List.of(Policy.builder().policyId(policyId).build())));
 
             // ASSERT
-            assertThatThrownBy(() -> testee.deletePolicy(policyId)).isInstanceOf(ResponseStatusException.class)
-                                                                   .hasMessageContaining("404 NOT_FOUND")
-                                                                   .hasMessageContaining(policyId);
+            assertThatThrownBy(() -> testee.deletePolicy(notExistingPolicyId)).isInstanceOf(
+                                                                                      ResponseStatusException.class)
+                                                                              .hasMessageContaining("404 NOT_FOUND")
+                                                                              .hasMessageContaining(
+                                                                                      notExistingPolicyId);
         }
 
     }
@@ -404,7 +450,12 @@ class PolicyStoreServiceTest {
 
             final List<Permission> permissions = emptyList();
 
-            final Policy testPolicy = new Policy(policyId, createdOn, originalValidUntil, permissions);
+            final Policy testPolicy = Policy.builder()
+                                            .policyId(policyId)
+                                            .createdOn(createdOn)
+                                            .validUntil(originalValidUntil)
+                                            .permissions(permissions)
+                                            .build();
             when(persistenceMock.readAll()).thenReturn(Map.of(originalBpn, List.of(testPolicy)));
             // get policies for bpn
             when(persistenceMock.readAll(originalBpn)).thenReturn(List.of(testPolicy));
@@ -434,7 +485,12 @@ class PolicyStoreServiceTest {
             // BPN1 without any policies
 
             // BPN2 with testPolicy
-            final Policy testPolicy = new Policy(policyId, createdOn, validUntil, permissions);
+            final Policy testPolicy = Policy.builder()
+                                            .policyId(policyId)
+                                            .createdOn(createdOn)
+                                            .validUntil(validUntil)
+                                            .permissions(permissions)
+                                            .build();
             when(persistenceMock.readAll()).thenReturn(Map.of("bpn2", List.of(testPolicy)));
             when(persistenceMock.readAll("bpn2")).thenReturn(List.of(testPolicy));
 
@@ -468,16 +524,34 @@ class PolicyStoreServiceTest {
 
             final List<Permission> permissions = emptyList();
 
-            final Policy testPolicy1 = new Policy(policyId1, createdOn, originalValidUntil, permissions);
-            final Policy testPolicy2 = new Policy(policyId2, createdOn, originalValidUntil, permissions);
+            final Policy testPolicy1 = Policy.builder()
+                                             .policyId(policyId1)
+                                             .createdOn(createdOn)
+                                             .validUntil(originalValidUntil)
+                                             .permissions(permissions)
+                                             .build();
+            final Policy testPolicy2 = Policy.builder()
+                                             .policyId(policyId2)
+                                             .createdOn(createdOn)
+                                             .validUntil(originalValidUntil)
+                                             .permissions(permissions)
+                                             .build();
 
             // BPN1 without any policies
 
             // BPN2 with testPolicy1 and testPolicy2
             when(persistenceMock.readAll()).thenReturn(Map.of(bpn2, List.of(testPolicy1, testPolicy2)));
-            when(persistenceMock.readAll(bpn2)).thenReturn(
-                    List.of(new Policy(policyId1, createdOn, originalValidUntil, permissions),
-                            new Policy(policyId2, createdOn, originalValidUntil, permissions)));
+            when(persistenceMock.readAll(bpn2)).thenReturn(List.of(Policy.builder()
+                                                                         .policyId(policyId1)
+                                                                         .createdOn(createdOn)
+                                                                         .validUntil(originalValidUntil)
+                                                                         .permissions(permissions)
+                                                                         .build(), Policy.builder()
+                                                                                         .policyId(policyId2)
+                                                                                         .createdOn(createdOn)
+                                                                                         .validUntil(originalValidUntil)
+                                                                                         .permissions(permissions)
+                                                                                         .build()));
 
             // ACT
             testee.updatePolicies(
@@ -523,4 +597,7 @@ class PolicyStoreServiceTest {
 
     }
 
+    private static String randomPolicyId() {
+        return UUID.randomUUID().toString();
+    }
 }

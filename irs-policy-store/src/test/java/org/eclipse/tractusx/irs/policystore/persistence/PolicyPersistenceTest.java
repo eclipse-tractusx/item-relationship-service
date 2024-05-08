@@ -39,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,7 +77,7 @@ class PolicyPersistenceTest {
         @Test
         void save() throws BlobPersistenceException {
             // ARRANGE
-            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            final var policy = policyBuilder(randomPolicyId()).build();
 
             // ACT
             testee.save("testBpn", policy);
@@ -88,7 +89,7 @@ class PolicyPersistenceTest {
         @Test
         void saveWithoutBpn() throws BlobPersistenceException {
             // ARRANGE
-            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            final var policy = policyBuilder(randomPolicyId()).build();
 
             // ACT
             testee.save("default", policy);
@@ -100,26 +101,27 @@ class PolicyPersistenceTest {
         @Test
         void saveDuplicate() throws BlobPersistenceException, JsonProcessingException {
             // ARRANGE
-            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-            final var policies = List.of(policy);
-            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+            final String policyId = randomPolicyId();
+            final var policy = policyBuilder(policyId).build();
+            when(mockPersistence.getBlob(anyString())).thenReturn(
+                    Optional.of(mapper.writeValueAsBytes(List.of(policy))));
 
             // ACT & ASSERT
             final ThrowableAssert.ThrowingCallable call = () -> testee.save("testBpn", policy);
             assertThatThrownBy(call).isInstanceOf(PolicyStoreException.class)
-                                    .hasMessageContaining("'test'")
+                                    .hasMessageContaining("'" + policyId + "'")
                                     .hasMessageContaining("already exists");
         }
 
         @Test
         void saveWithReadError() throws BlobPersistenceException {
             // ARRANGE
-            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
             when(mockPersistence.getBlob(any())).thenThrow(
-                    new BlobPersistenceException("test", new IllegalStateException()));
+                    new BlobPersistenceException("test exception", new IllegalStateException()));
 
             // ACT & ASSERT
-            final ThrowableAssert.ThrowingCallable call = () -> testee.save("testBpn", policy);
+            final ThrowableAssert.ThrowingCallable call = () -> testee.save("testBpn",
+                    policyBuilder(randomPolicyId()).build());
             assertThatThrownBy(call).isInstanceOf(PolicyStoreException.class)
                                     .hasMessageContaining("Unable to read policy data");
         }
@@ -127,12 +129,12 @@ class PolicyPersistenceTest {
         @Test
         void saveWithWriteError() throws BlobPersistenceException {
             // ARRANGE
-            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-            doThrow(new BlobPersistenceException("test", new IllegalStateException())).when(mockPersistence)
-                                                                                      .putBlob(any(), any());
+            final String policyId = randomPolicyId();
+            doThrow(new BlobPersistenceException(policyId, new IllegalStateException())).when(mockPersistence)
+                                                                                        .putBlob(any(), any());
 
             // ACT & ASSERT
-            final ThrowableAssert.ThrowingCallable call = () -> testee.save("testBpn", policy);
+            final ThrowableAssert.ThrowingCallable call = () -> testee.save("testBpn", policyBuilder(policyId).build());
             assertThatThrownBy(call).isInstanceOf(PolicyStoreException.class)
                                     .hasMessageContaining("Unable to store policy data");
         }
@@ -143,10 +145,9 @@ class PolicyPersistenceTest {
         @Test
         void delete_success() throws BlobPersistenceException, JsonProcessingException {
             // ARRANGE
-            final String policyId = "test";
-            final var policy = new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-            final var policies = List.of(policy);
-            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+            final String policyId = randomPolicyId();
+            when(mockPersistence.getBlob(anyString())).thenReturn(
+                    Optional.of(mapper.writeValueAsBytes(List.of(policyBuilder(policyId).build()))));
 
             // ACT
             testee.delete("testBpn", policyId);
@@ -158,13 +159,17 @@ class PolicyPersistenceTest {
         @Test
         void delete_shouldThrowExceptionIfPolicyWithIdDoesntExists()
                 throws BlobPersistenceException, JsonProcessingException {
+
             // ARRANGE
-            final var policy = new Policy("policyId", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+
+            final String policyId = randomPolicyId();
+            final String notExistingPolicyId = randomPolicyId();
+
             when(mockPersistence.getBlob(anyString())).thenReturn(
-                    Optional.of(mapper.writeValueAsBytes(List.of(policy))));
+                    Optional.of(mapper.writeValueAsBytes(List.of(policyBuilder(policyId).build()))));
 
             // ACT
-            assertThrows(PolicyStoreException.class, () -> testee.delete("testBpn", "notExistingPolicyId"));
+            assertThrows(PolicyStoreException.class, () -> testee.delete("testBpn", notExistingPolicyId));
         }
     }
 
@@ -173,10 +178,11 @@ class PolicyPersistenceTest {
 
         @Test
         void readAll_withBpn() throws BlobPersistenceException, JsonProcessingException {
+
             // ARRANGE
-            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-            final var policies = List.of(policy);
-            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+            final String policyId = randomPolicyId();
+            when(mockPersistence.getBlob(anyString())).thenReturn(
+                    Optional.of(mapper.writeValueAsBytes(List.of(policyBuilder(policyId).build()))));
 
             // ACT
             final var readPolicies = testee.readAll("testBpn");
@@ -187,15 +193,11 @@ class PolicyPersistenceTest {
 
         @Test
         void readAll_shouldReturnCorrect() throws BlobPersistenceException, JsonProcessingException {
+
             // ARRANGE
-            final var policy = Policy.builder()
-                                     .policyId("test")
-                                     .createdOn(OffsetDateTime.now())
-                                     .validUntil(OffsetDateTime.now())
-                                     .permissions(emptyList())
-                                     .build();
+            final String policyId = randomPolicyId();
             final Map<String, byte[]> blobMap = new HashMap<>();
-            blobMap.put("bpn1", mapper.writeValueAsBytes(List.of(policy)));
+            blobMap.put("bpn1", mapper.writeValueAsBytes(List.of(policyBuilder(policyId).build())));
             blobMap.put("bpn2", mapper.writeValueAsBytes(emptyList()));
             when(mockPersistence.getAllBlobs()).thenReturn(blobMap);
 
@@ -211,11 +213,12 @@ class PolicyPersistenceTest {
 
         @Test
         void readAll_withBpn_withError() throws BlobPersistenceException, JsonProcessingException {
+
             // ARRANGE
-            final var policy = new Policy("test", OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
-            final var policies = List.of(policy);
+            final String policyId = randomPolicyId();
             final var mapperMock = mock(ObjectMapper.class);
-            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(policies)));
+            when(mockPersistence.getBlob(anyString())).thenReturn(
+                    Optional.of(mapper.writeValueAsBytes(List.of(policyBuilder(policyId).build()))));
             when(mapperMock.readerForListOf(Policy.class)).thenThrow(new IllegalStateException());
 
             final var localTestee = new PolicyPersistence(mockPersistence, mapperMock);
@@ -225,5 +228,17 @@ class PolicyPersistenceTest {
             assertThatThrownBy(call).isInstanceOf(PolicyStoreException.class)
                                     .hasMessageContaining("Could not read the policies from the store");
         }
+    }
+
+    private static Policy.PolicyBuilder policyBuilder(final String policyId) {
+        return Policy.builder()
+                     .policyId(policyId)
+                     .createdOn(OffsetDateTime.now())
+                     .validUntil(OffsetDateTime.now())
+                     .permissions(emptyList());
+    }
+
+    private static String randomPolicyId() {
+        return UUID.randomUUID().toString();
     }
 }
