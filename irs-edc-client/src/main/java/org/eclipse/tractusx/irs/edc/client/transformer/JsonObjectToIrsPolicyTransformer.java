@@ -56,7 +56,7 @@ public class JsonObjectToIrsPolicyTransformer extends AbstractJsonLdTransformer<
             try {
                 final Object result = objectMapper.readerFor(Policy.class).readValue(v.asJsonObject().toString());
                 builder.permissions(((Policy) result).getPermissions());
-            } catch (JsonProcessingException e) {
+            } catch (ClassCastException | JsonProcessingException e) {
                 throw new JsonParseException("Invalid policy", e);
             }
         });
