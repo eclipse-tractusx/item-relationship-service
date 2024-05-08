@@ -70,7 +70,7 @@ public record CreatePolicyRequest(
                 "@context": {
                     "odrl": "http://www.w3.org/ns/odrl/2/"
                 },
-                "@id": "policy-id",
+                "@id": "e917f5f-8dac-49ac-8d10-5b4d254d2b48",
                 "@type": "PolicyDefinitionRequestDto",
                 "policy": {
                     "@type": "Policy",
