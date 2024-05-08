@@ -133,7 +133,7 @@ public class PolicyStoreController {
         try {
             registeredPolicy = service.registerPolicy(request);
         } catch (JsonParseException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
 
         if (registeredPolicy == null) {
