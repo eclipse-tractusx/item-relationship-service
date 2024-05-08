@@ -27,15 +27,41 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Validator for policy
+ */
 public class PolicyValidator {
+
+    private static final String POLICY_INCOMPLETE_MESSAGE = "Policy does not contain all required fields. Missing: %s";
 
     record PolicyId(@ValidPolicyId String policyId) {
     }
 
+    /**
+     * Validates the policy
+     *
+     * @param policy the policy
+     */
     public static void validate(final Policy policy) {
 
-        try (final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
+        if (policy.getPolicyId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(POLICY_INCOMPLETE_MESSAGE, "@id"));
+        }
+
+        if (policy.getPermissions() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format(POLICY_INCOMPLETE_MESSAGE, "odrl:permission"));
+        }
+
+        if (policy.getPermissions().stream().anyMatch(p -> p.getConstraint() == null)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format(POLICY_INCOMPLETE_MESSAGE, "odrl:constraint"));
+        }
+
+        try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
 
             final Validator validator = validatorFactory.getValidator();
 
@@ -50,6 +76,7 @@ public class PolicyValidator {
             if (!policyViolations.isEmpty()) {
                 throw new ConstraintViolationException(policyViolations);
             }
+
         }
 
     }

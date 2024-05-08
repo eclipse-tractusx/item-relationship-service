@@ -56,6 +56,7 @@ import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
+import org.eclipse.tractusx.irs.policystore.validators.PolicyValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -78,8 +79,6 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     private final Clock clock;
 
-    private static final String POLICY_INCOMPLETE_MESSAGE = "Policy does not contain all required fields. Missing: %s";
-
     private static final String DEFAULT = "default";
 
     /**
@@ -99,7 +98,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
 
     public PolicyStoreService(final DefaultAcceptedPoliciesConfig defaultAcceptedPoliciesConfig,
             final PolicyPersistence persistence, final EdcTransformer edcTransformer, final Clock clock) {
-        
+
         this.clock = clock;
 
         this.allowedPoliciesFromConfig = createDefaultPolicyFromConfig(defaultAcceptedPoliciesConfig);
@@ -128,31 +127,13 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     Policy doRegisterPolicy(final Policy policy, final String businessPartnersNumber) {
-        validatePolicy(policy);
+        PolicyValidator.validate(policy);
         policy.setCreatedOn(OffsetDateTime.now(clock));
         log.info("Registering new policy with id {}, valid until {}", policy.getPolicyId(), policy.getValidUntil());
         try {
             return persistence.save(businessPartnersNumber, policy);
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Checks whether policy from register policy request has all required fields
-     *
-     * @param policy policy to register
-     */
-    private void validatePolicy(final Policy policy) {
-
-        if (policy.getPermissions() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format(POLICY_INCOMPLETE_MESSAGE, "odrl:permission"));
-        }
-
-        if (policy.getPermissions().stream().anyMatch(p -> p.getConstraint() == null)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format(POLICY_INCOMPLETE_MESSAGE, "odrl:constraint"));
         }
     }
 
