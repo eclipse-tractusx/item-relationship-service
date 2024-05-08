@@ -59,7 +59,7 @@ jobs:
           echo "$changes_details" >> "$GITHUB_ENV" && echo "" >> "$GITHUB_ENV"
           full_changelog_string="**Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.new-irs-version }}"
           echo $full_changelog_string >> "$GITHUB_ENV"
-          echo "$EOF" >> "$GITHUB_ENV"     
+          echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Create IRS release
         uses: softprops/action-gh-release@v1
