@@ -83,7 +83,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 | SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
 | SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
 
-## [CATENA-X Release 23.12]([https://eclipse-tractusx.github.io/CHANGELOG#2312---2023-12-08](https://github.com/eclipse-tractusx/sig-release/issues/85)) [4.0.2](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.0.2) - 2023-11-20
+## [CATENA-X Release 23.12](https://eclipse-tractusx.github.io/CHANGELOG#2312---2023-12-08) [4.0.2](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.0.2) - 2023-11-20
 | Dependency                | Version                      | Helm       | Comments        |
 |---------------------------|------------------------------|------------|-----------------|
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
