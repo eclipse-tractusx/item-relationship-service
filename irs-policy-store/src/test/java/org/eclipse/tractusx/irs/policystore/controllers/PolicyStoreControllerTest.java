@@ -32,6 +32,7 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import jakarta.json.JsonObject;
@@ -64,7 +65,7 @@ public class PolicyStoreControllerTest {
                 "@context": {
                     "odrl": "http://www.w3.org/ns/odrl/2/"
                 },
-                "@id": "policy-id",
+                "@id": "e917f5f-8dac-49ac-8d10-5b4d254d2b48",
                 "policy": {
                     "odrl:permission": [
                         {
@@ -130,8 +131,13 @@ public class PolicyStoreControllerTest {
         @Test
         void getPolicies() {
             // arrange
-            final List<Policy> policies = List.of(
-                    new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
+            final String policyId = randomPolicyId();
+            final List<Policy> policies = List.of(Policy.builder()
+                                                        .policyId(policyId)
+                                                        .createdOn(OffsetDateTime.now())
+                                                        .validUntil(OffsetDateTime.now())
+                                                        .permissions(createPermissions())
+                                                        .build());
             final String bpn = "bpn1";
             when(policyStoreServiceMock.getPolicies(List.of(bpn))).thenReturn(Map.of(bpn, policies));
 
@@ -146,8 +152,13 @@ public class PolicyStoreControllerTest {
         @Test
         void getAllPolicies() {
             // arrange
-            final List<Policy> policies = List.of(
-                    new Policy("testId", OffsetDateTime.now(), OffsetDateTime.now(), createPermissions()));
+            final String policyId = randomPolicyId();
+            final List<Policy> policies = List.of(Policy.builder()
+                                                        .policyId(policyId)
+                                                        .createdOn(OffsetDateTime.now())
+                                                        .validUntil(OffsetDateTime.now())
+                                                        .permissions(createPermissions())
+                                                        .build());
             final String bpn = "bpn1";
             when(policyStoreServiceMock.getPolicies(null)).thenReturn(Map.of(bpn, policies));
 
@@ -208,4 +219,9 @@ public class PolicyStoreControllerTest {
                         new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"),
                         new Constraint("PURPOSE", new Operator(OperatorType.EQ), "ID 3.1 Trace")));
     }
+
+    private static String randomPolicyId() {
+        return UUID.randomUUID().toString();
+    }
+
 }

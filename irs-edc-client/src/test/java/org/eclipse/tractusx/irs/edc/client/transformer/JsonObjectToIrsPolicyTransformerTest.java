@@ -55,7 +55,7 @@ class JsonObjectToIrsPolicyTransformerTest {
                     "cx-policy": "https://w3id.org/catenax/policy/",
                     "odrl": "http://www.w3.org/ns/odrl/2/"
                 },
-               "@id": "policy-id",
+               "@id": "e917f5f-8dac-49ac-8d10-5b4d254d2b48",
                 "policy": {
                     "odrl:permission": [
                         {
@@ -104,7 +104,7 @@ class JsonObjectToIrsPolicyTransformerTest {
         final Policy transformed = jsonObjectToIrsPolicyTransformer.transform(jsonObject, transformerContext);
 
         // then
-        assertThat(transformed.getPolicyId()).isEqualTo("policy-id");
+        assertThat(transformed.getPolicyId()).isEqualTo("e917f5f-8dac-49ac-8d10-5b4d254d2b48");
         final Permission permission = transformed.getPermissions().get(0);
         assertThat(permission.getAction()).isEqualTo(PolicyType.USE);
         final List<Constraint> and = permission.getConstraint().getAnd();
