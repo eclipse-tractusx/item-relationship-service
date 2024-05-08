@@ -49,6 +49,7 @@ class AcceptedPoliciesProviderTest {
 
         assertThat(acceptedPolicies).hasSize(1);
     }
+
     @Test
     void shouldRemoveStoredPolicies() {
         testee.addAcceptedPolicies(List.of(policy()));
@@ -60,8 +61,9 @@ class AcceptedPoliciesProviderTest {
 
         assertThat(testee.getAcceptedPolicies("testBpn")).isEmpty();
     }
+
     @NotNull
     private static AcceptedPolicy policy() {
-        return new AcceptedPolicy(new Policy(), OffsetDateTime.now());
+        return new AcceptedPolicy(Policy.builder().build(), OffsetDateTime.now());
     }
 }
