@@ -35,7 +35,7 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 | SingleLevelBomAsSpecified | 1.0.0                        | -          | Model version   | 
 | SingleLevelUsageAsBuilt   | 2.0.0                        | -          | Model version   | 
 
-## [CATENA-X Release 24.03](https://github.com/eclipse-tractusx/sig-release/issues/494) [4.5.2](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.5.2) - 2024-02-22
+## [CATENA-X Release 24.03](https://eclipse-tractusx.github.io/CHANGELOG#2403---2024-03-08) [4.5.2](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/4.5.2) - 2024-02-22
 | Dependency                | Version                      | Helm       | Comments        |
 |---------------------------|------------------------------|------------|-----------------|
 | EDC                       | 0.5.3                        | 0.5.3      |                 |
