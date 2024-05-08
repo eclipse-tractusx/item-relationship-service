@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Changed
+
+- Updated default accepted policy to latest traceability framework agreement #596
+
 ## [5.1.1] - 2024-05-08
 
 ### Fixed
