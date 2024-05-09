@@ -32,27 +32,17 @@ public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, Str
     @Override
     public boolean isValid(final String value, final ConstraintValidatorContext context) {
 
-        // allow null and empty here (in order to allow flexible combination with @NotNull)
-        if (value == null) {
-            return true;
-        }
+        // allow  null and empty here (in order to allow flexible combination with @NotNull)
+        final boolean isNull = value == null;
 
-        if (isInvalid(value)) {
-            return false;
-        }
-
-        return true;
-    }
-
-    private static boolean isInvalid(final String policyId) {
-        return !isValid(policyId);
+        return isNull || isValid(value);
     }
 
     private static boolean isValid(final String policyId) {
         return validateUUID(policyId);
     }
 
-    static boolean validateUUID(String uuidStr) {
+    private static boolean validateUUID(final String uuidStr) {
         try {
             UUID.fromString(uuidStr);
             return true;

@@ -33,11 +33,15 @@ import org.springframework.web.server.ResponseStatusException;
 /**
  * Validator for policy
  */
-public class PolicyValidator {
+public final class PolicyValidator {
 
     private static final String POLICY_INCOMPLETE_MESSAGE = "Policy does not contain all required fields. Missing: %s";
 
     record PolicyId(@ValidPolicyId String policyId) {
+    }
+
+    private PolicyValidator() {
+        super();
     }
 
     /**
@@ -47,6 +51,18 @@ public class PolicyValidator {
      */
     public static void validate(final Policy policy) {
 
+        validateRequiredFields(policy);
+
+        try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
+            final Validator validator = validatorFactory.getValidator();
+            // workaround to avoid manipulating the class policy which comes from other module
+            validatePolicyId(policy, validator);
+            validatePolicy(policy, validator);
+        }
+
+    }
+
+    private static void validateRequiredFields(final Policy policy) {
         if (policy.getPolicyId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(POLICY_INCOMPLETE_MESSAGE, "@id"));
         }
@@ -60,24 +76,20 @@ public class PolicyValidator {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     String.format(POLICY_INCOMPLETE_MESSAGE, "odrl:constraint"));
         }
+    }
 
-        try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
-
-            final Validator validator = validatorFactory.getValidator();
-
-            // workaround to avoid manipulating the class policy which comes from other module
-            final Set<ConstraintViolation<PolicyId>> policyIdViolations = validator.validate(
-                    new PolicyId(policy.getPolicyId()));
-            if (!policyIdViolations.isEmpty()) {
-                throw new ConstraintViolationException(policyIdViolations);
-            }
-
-            final Set<ConstraintViolation<Policy>> policyViolations = validator.validate(policy);
-            if (!policyViolations.isEmpty()) {
-                throw new ConstraintViolationException(policyViolations);
-            }
-
+    private static void validatePolicy(final Policy policy, final Validator validator) {
+        final Set<ConstraintViolation<Policy>> policyViolations = validator.validate(policy);
+        if (!policyViolations.isEmpty()) {
+            throw new ConstraintViolationException(policyViolations);
         }
+    }
 
+    private static void validatePolicyId(final Policy policy, final Validator validator) {
+        final Set<ConstraintViolation<PolicyId>> policyIdViolations = validator.validate(
+                new PolicyId(policy.getPolicyId()));
+        if (!policyIdViolations.isEmpty()) {
+            throw new ConstraintViolationException(policyIdViolations);
+        }
     }
 }

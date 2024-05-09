@@ -126,7 +126,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         return registeredPolicy;
     }
 
-    Policy doRegisterPolicy(final Policy policy, final String businessPartnersNumber) {
+    /* package */ Policy doRegisterPolicy(final Policy policy, final String businessPartnersNumber) {
         PolicyValidator.validate(policy);
         policy.setCreatedOn(OffsetDateTime.now(clock));
         log.info("Registering new policy with id {}, valid until {}", policy.getPolicyId(), policy.getValidUntil());
