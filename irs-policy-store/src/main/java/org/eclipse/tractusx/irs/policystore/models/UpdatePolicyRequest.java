@@ -31,6 +31,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
+import org.eclipse.tractusx.irs.policystore.validators.ListOfPolicyIds;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
 
 /**
@@ -52,6 +53,7 @@ public record UpdatePolicyRequest(
         @Schema(description = "The IDs of the policies to be updated.") //
         @NotNull //
         @NotEmpty //
+        @ListOfPolicyIds //
         List<String> policyIds //
 ) {
 }

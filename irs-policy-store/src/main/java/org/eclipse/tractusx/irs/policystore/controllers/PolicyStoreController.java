@@ -56,6 +56,7 @@ import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.eclipse.tractusx.irs.policystore.validators.BusinessPartnerNumberListValidator;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
+import org.eclipse.tractusx.irs.policystore.validators.ValidPolicyId;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -220,7 +221,7 @@ public class PolicyStoreController {
     @DeleteMapping("/policies/{policyId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void deleteAllowedPolicy(@PathVariable("policyId") final String policyId) {
+    public void deleteAllowedPolicy(@ValidPolicyId @PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
     }
 

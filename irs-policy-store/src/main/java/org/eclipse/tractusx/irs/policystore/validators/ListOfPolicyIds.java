@@ -19,35 +19,29 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.validators;
 
-import java.util.UUID;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 /**
- * Validator for list of business partner numbers (BPN).
+ * Annotation for validating list of policyIDs
  */
-public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, String> {
+@Documented
+@Constraint(validatedBy = ListOfPolicyIdsValidator.class)
+@Target({ ElementType.FIELD,
+          ElementType.PARAMETER
+})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ListOfPolicyIds {
 
-    @Override
-    public boolean isValid(final String value, final ConstraintValidatorContext context) {
+    String message() default "Invalid list of policyIDs";
 
-        // allow  null and empty here (in order to allow flexible combination with @NotNull)
-        final boolean isNull = value == null;
+    Class<?>[] groups() default { };
 
-        return isNull || isValid(value);
-    }
-
-    public static boolean isValid(final String policyId) {
-        return validateUUID(policyId);
-    }
-
-    private static boolean validateUUID(final String uuidStr) {
-        try {
-            UUID.fromString(uuidStr);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
+    Class<? extends Payload>[] payload() default { };
 }

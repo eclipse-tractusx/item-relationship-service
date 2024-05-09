@@ -19,35 +19,33 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.validators;
 
-import java.util.UUID;
+import java.util.List;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * Validator for list of business partner numbers (BPN).
+ * Validator for list of policyIDs
  */
-public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, String> {
+public class ListOfPolicyIdsValidator implements ConstraintValidator<ListOfPolicyIds, List<String>> {
 
     @Override
-    public boolean isValid(final String value, final ConstraintValidatorContext context) {
+    public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
 
-        // allow  null and empty here (in order to allow flexible combination with @NotNull)
-        final boolean isNull = value == null;
-
-        return isNull || isValid(value);
-    }
-
-    public static boolean isValid(final String policyId) {
-        return validateUUID(policyId);
-    }
-
-    private static boolean validateUUID(final String uuidStr) {
-        try {
-            UUID.fromString(uuidStr);
+        // allow null and empty here (in order to allow flexible combination with @NotNull and @NotEmpty)
+        if (value == null || value.isEmpty()) {
             return true;
-        } catch (IllegalArgumentException e) {
-            return false;
         }
+
+        for (int index = 0; index < value.size(); index++) {
+            if (!PolicyIdValidator.isValid(value.get(index))) {
+                context.disableDefaultConstraintViolation();
+                final String msg = "The policyId at index %d is invalid (should be a valid UUID)";
+                context.buildConstraintViolationWithTemplate(msg.formatted(index)).addConstraintViolation();
+                return false;
+            }
+        }
+
+        return true;
     }
 }
