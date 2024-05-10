@@ -16,6 +16,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Added
 
+- Added endpoint for dedicated removal of policy from BPNL. #559 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
  
 
