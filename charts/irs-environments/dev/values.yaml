@@ -93,7 +93,7 @@ item-relationship-service:
         ttl: PT2M
     controlplane:
       request:
-        ttl: PT2M
+        ttl: PT5M
       apikey:
         secret: <path:traceability-irs/data/dev/controlplane#apiKey>
 
