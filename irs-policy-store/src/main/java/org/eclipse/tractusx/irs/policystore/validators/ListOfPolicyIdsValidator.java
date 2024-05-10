@@ -19,7 +19,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.validators;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -37,6 +39,13 @@ public class ListOfPolicyIdsValidator implements ConstraintValidator<ListOfPolic
             return true;
         }
 
+        if (containsDuplicates(value)) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("The list of policyIds must not contain duplicates")
+                   .addConstraintViolation();
+            return false;
+        }
+
         for (int index = 0; index < value.size(); index++) {
             if (!PolicyIdValidator.isValid(value.get(index))) {
                 context.disableDefaultConstraintViolation();
@@ -47,5 +56,11 @@ public class ListOfPolicyIdsValidator implements ConstraintValidator<ListOfPolic
         }
 
         return true;
+    }
+
+    /* package */
+    static boolean containsDuplicates(final List<String> strings) {
+        final Set<String> set = new HashSet<>(strings);
+        return set.size() < strings.size();
     }
 }
