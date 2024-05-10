@@ -184,14 +184,20 @@ public class E2ETestHelperForPolicyStoreApi {
 
         final CreatePolicyRequest createPolicyRequest;
         try {
+
             CreatePolicyRequestBuilder builder = CreatePolicyRequest.builder();
+
             if (validUntil != null) {
                 builder = builder.validUntil(OffsetDateTime.parse(validUntil));
             }
-            createPolicyRequest = builder.businessPartnerNumber(bpn)
-                                         .payload(E2ETestHelperForPolicyStoreApi.jsonFromString(objectMapper,
-                                                 policyJson))
-                                         .build();
+
+            builder = builder.businessPartnerNumber(bpn);
+
+            if (policyJson != null) {
+                builder = builder.payload(E2ETestHelperForPolicyStoreApi.jsonFromString(objectMapper, policyJson));
+            }
+
+            createPolicyRequest = builder.build();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
