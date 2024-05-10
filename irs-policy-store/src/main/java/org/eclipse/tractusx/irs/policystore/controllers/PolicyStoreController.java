@@ -42,6 +42,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -215,6 +216,18 @@ public class PolicyStoreController {
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void deleteAllowedPolicy(@PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
+    }
+
+    @DeleteMapping("/policies/{policyId}/bpnl/{bpnl}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    public void removeAllowedPolicyFromBpnl(
+            // TODO (#528): add validation
+            //@ValidPolicyId
+            @PathVariable("policyId") final String policyId, //
+            @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") //
+            @PathVariable("bpnl") final String bpnl) {
+        service.deletePolicyForEachBpn(policyId, List.of(bpnl));
     }
 
     @Operation(operationId = "updateAllowedPolicy", summary = "Updates existing policies.",
