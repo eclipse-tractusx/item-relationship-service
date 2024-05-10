@@ -19,7 +19,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 
 - Improved policy store API input validation. #528
-- 
 
 ## [5.1.0] - 2024-05-06
 
