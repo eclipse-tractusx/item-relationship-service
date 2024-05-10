@@ -187,16 +187,6 @@ public class TestMother {
                            .build();
     }
 
-    public static JobParameter jobParameterCollectBpns() {
-        return JobParameter.builder()
-                           .depth(0)
-                           .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .direction(Direction.DOWNWARD)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
-                           .lookupBPNs(true)
-                           .build();
-    }
-
     public static JobParameter jobParameterAuditContractNegotiation() {
         return JobParameter.builder()
                            .depth(5)

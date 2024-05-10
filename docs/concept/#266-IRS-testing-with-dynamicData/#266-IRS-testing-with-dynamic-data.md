@@ -76,7 +76,6 @@ When IRS job for globalAssetId "urn:uuid..." and BPN "BPN..." is registered
 And with "all available" aspects
 And with "valid" direction
 And depth 10
-And lookupBpns "true"
 And collectAspects "true"
 Then job-id is responsed
         
@@ -192,8 +191,6 @@ Hints:
 
 ### What job parameter can be set and expected?
 * Jobs with requested submodels have to contain **Relationships**.
-* If _lookupBPNs_ = _true_ → **bpns** have to contain at least one object.
-* If _lookupBPNs_ = _false_ → **bpns** have to be empty.
 
 
 ### Which lifecycle does the globalAssetId belongs to?
