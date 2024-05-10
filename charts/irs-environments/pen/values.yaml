@@ -76,22 +76,25 @@ item-relationship-service:
 tractusx-connector:
   install:
     postgresql: false
-    daps: false
     vault: false
   participant:
     id: <path:traceability-irs/data/int/controlplane#participantId>
 
-  controlplane:
-    # SSI configuration
-    ssi:
-      miw:
-        url: <path:traceability-irs/data/int/controlplane#ssi.miw.url>
-        authorityId: <path:traceability-irs/data/int/controlplane#ssi.miw.authorityId>
+  iatp:
+    id: <path:traceability-irs/data/pen/controlplane#DID>
+    # -- Configures the trusted issuers for this runtime
+    # ATTENTION: NOT YET WORKING FOR 0.7.0 chart
+    trustedIssuers:
+      - <path:traceability-irs/data/pen/controlplane#trustedIssuer>
+    sts:
+      dim:
+        url: <path:traceability-irs/data/pen/controlplane#dimUrl>
       oauth:
-        tokenurl: <path:traceability-irs/data/int/controlplane#ssi.oauth.tokenurl>
+        token_url: <path:traceability-irs/data/pen/controlplane#iatp.oauth.tokenurl>
         client:
-          id: <path:traceability-irs/data/pen/controlplane#ssi.oauth.client.id>
-          secretAlias: miw-pen-keycloak-secret
+          id: <path:traceability-irs/data/pen/controlplane#dimClientId>
+          secret_alias: dim-secret-pen
+  controlplane:
     ingresses:
       - enabled: true
         hostname: "irs-consumer-controlplane-pen.int.demo.catena-x.net"
@@ -106,24 +109,20 @@ tractusx-connector:
           enabled: true
           secretName: tls-secret
 
-    endpoints:
-      # -- data management api, used by internal users, can be added to an ingress and must not be internet facing
-      management:
-        port: 8081
-        path: /management
-        authKey: <path:traceability-irs/data/int/controlplane#apiKey>  # -- authentication key, must be attached to each 'X-Api-Key' request header
-      # -- protocol api, used for inter connector communication and must be internet facing
-      protocol:
-        port: 8084
-        path: /api/v1/dsp
+    bdrs:
+      # time that a cached BPN/DID resolution map is valid in seconds, default is 10 min
+      cache_validity_seconds: 600
+      server:
+        # URL of the BPN/DID Resolution Service - required:
+        url: <path:traceability-irs/data/pen/controlplane#bdrsUrl>
 
-    internationalDataSpaces:
-      id: TXDC
-      description: Tractus-X Eclipse IDS Data Space Connector
-      title: "IRS PEN Consumer EDC"
-      maintainer: ""
-      curator: ""
-      catalogId: TXDC-Catalog
+    env:
+      # workaround till 0.7.1 chart
+      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/pen/controlplane#trustedIssuer>
+
+    endpoints:
+      management:
+        authKey: <path:traceability-irs/data/int/controlplane#apiKey>  # -- authentication key, must be attached to each 'X-Api-Key' request header
 
     resources:
       limits:
@@ -148,10 +147,13 @@ tractusx-connector:
           enabled: true
           secretName: tls-secret
 
-    endpoints:
-      public:
-        port: 8081
-        path: /api/public
+    token:
+      signer:
+        # alias under which the private key is stored in the vault (JWK or PEM format)
+        privatekey_alias: irs-int-daps-key
+      verifier:
+        # alias under which the public key is stored in the vault, that belongs to the private key ("privatekey_alias", JWK or PEM format)
+        publickey_alias: irs-int-daps-cert
 
     resources:
       limits:
@@ -160,10 +162,6 @@ tractusx-connector:
       requests:
         cpu: 200m
         memory: 512Mi
-
-  # URL where the EndpointDataReference callback will be sent to
-  backendService:
-    httpProxyTokenReceiverUrl: "http://app-irs-pen-item-relationship-service:8181/internal/endpoint-data-reference"
 
   ################################
   # EDC Vault/DAPS Configuration #

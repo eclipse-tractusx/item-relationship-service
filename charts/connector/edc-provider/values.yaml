@@ -5,62 +5,40 @@ tractusx-connector:
   participant:
     id: <path:traceability-irs/data/dev/controlplane#participantId>
 
-  controlplane:
-    # SSI configuration
-    ssi:
-      miw:
-        url: <path:traceability-irs/data/dev/controlplane#ssi.miw.url>
-        authorityId: <path:traceability-irs/data/dev/controlplane#ssi.miw.authorityId>
+  iatp:
+    # Decentralized IDentifier
+    id: <path:traceability-irs/data/dev/controlplane#DID>
+    # -- Configures the trusted issuers for this runtime
+    # ATTENTION: NOT YET WORKING FOR 0.7.0 chart
+    trustedIssuers:
+      - <path:traceability-irs/data/dev/controlplane#trustedIssuer>
+    sts:
+      dim:
+        url: <path:traceability-irs/data/dev/controlplane#dimUrl>
       oauth:
-        tokenurl: <path:traceability-irs/data/dev/controlplane#ssi.oauth.tokenurl>
+        token_url: <path:traceability-irs/data/dev/controlplane#iatp.oauth.tokenurl>
         client:
-          id: <path:traceability-irs/data/dev/controlplane#ssi.oauth.client.id>
-          secretAlias: edc-test-miw-keycloak-secret
+          id: <path:traceability-irs/data/dev/controlplane#dimClientId>
+          secret_alias: edc-test-miw-keycloak-secret
+
+  controlplane:
     ingresses:
       - enabled: false
 
+    bdrs:
+      # time that a cached BPN/DID resolution map is valid in seconds, default is 10 min
+      cache_validity_seconds: 600
+      server:
+        # URL of the BPN/DID Resolution Service - required:
+        url: <path:traceability-irs/data/dev/controlplane#bdrsUrl>
+
+    env:
+      # workaround till 0.7.1 chart
+      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/dev/controlplane#trustedIssuer>
+
     endpoints:
-      # -- default api for health checks, should not be added to any ingress
-      default:
-        port: 8080
-        path: /api
-      # -- data management api, used by internal users, can be added to an ingress and must not be internet facing
       management:
-        port: 8081
-        path: /management
-        # -- authentication key, must be attached to each 'X-Api-Key' request header
         authKey: <path:traceability-irs/data/dev/controlplane#apiKey>
-      # -- control api, used for internal control calls. can be added to the internal ingress, but should probably not
-      control:
-        port: 8083
-        path: /control
-      # -- ids api, used for inter connector communication and must be internet facing
-      protocol:
-        port: 8084
-        path: /api/v1/dsp
-      # -- metrics api, used for application metrics, must not be internet facing
-      metrics:
-        port: 9090
-        path: /metrics
-      # -- observability api with unsecured access, must not be internet facing
-      observability:
-        port: 8085
-        # -- observability api, provides /health /readiness and /liveness endpoints
-        path: /observability
-        # -- allow or disallow insecure access, i.e. access without authentication
-        insecure: true
-
-    internationalDataSpaces:
-      id: TXDC
-      description: Tractus-X Eclipse IDS Data Space Connector
-      title: ""
-      maintainer: ""
-      curator: ""
-      catalogId: TXDC-Catalog
-
-    # Explicitly declared url for reaching the ids api (e.g. if ingresses not used)
-    url:
-      ids: ""
 
     # Files system has to be set to writeable for now since controlplane relies on temporary files to write SSI related things to
     securityContext:
@@ -74,31 +52,33 @@ tractusx-connector:
         cpu: 300m
         memory: 2Gi
 
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 15
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 15
+
   dataplane:
     ingresses:
       - enabled: false
 
-    endpoints:
-      default:
-        port: 8080
-        path: /api
-      public:
-        port: 8081
-        path: /api/public
-      control:
-        port: 8083
-        path: /api/dataplane/control
-      observability:
-        port: 8085
-        path: /observability
-        insecure: true
-      metrics:
-        port: 9090
-        path: /metrics
+    env:
+      # workaround till 0.7.1 chart
+      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/dev/controlplane#trustedIssuer>
 
-    # Explicitly declared url for reaching the public api (e.g. if ingresses not used)
-    url:
-      public: ""
+    token:
+      refresh:
+        expiry_seconds: 300
+        expiry_tolerance_seconds: 10
+        # optional URL that can be provided where clients go to refresh tokens.
+        refresh_endpoint:
+      signer:
+        # alias under which the private key is stored in the vault (JWK or PEM format)
+        privatekey_alias:
+      verifier:
+        # alias under which the public key is stored in the vault, that belongs to the private key ("privatekey_alias", JWK or PEM format)
+        publickey_alias:
 
     resources:
       limits:
@@ -108,9 +88,13 @@ tractusx-connector:
         cpu: 200m
         memory: 512Mi
 
-  # URL where the EndpointDataReference callback will be sent to
-  backendService:
-    httpProxyTokenReceiverUrl: ""
+
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 15
+    readinessProbe:
+      enabled: true
+      initialDelaySeconds: 15
 
   ################################
   # EDC Vault/DAPS Configuration #
@@ -152,6 +136,8 @@ postgresql:
   enabled: true
 edc-postgresql:
   primary:
+    persistence:
+      enabled: false
     resources:
       requests:
         memory: 1Gi
