@@ -316,7 +316,23 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
 
     @Then("the create policy response should have message containing {string}")
     public void theCreatePolicyResponseShouldHaveMessageContaining(final String string) {
-        this.createPoliciesResponse.body("messages", Matchers.hasItem(Matchers.containsString(string)));
+        final ValidatableResponse validatableResponse = this.createPoliciesResponse;
+        assertThatResponseHasMessageContaining(validatableResponse, string);
+    }
+
+    @Then("the delete policy response should have message containing {string}")
+    public void thedeletePolicyResponseShouldHaveMessageContaining(final String string) {
+        assertThatResponseHasMessageContaining(this.deletePoliciesResponse, string);
+    }
+
+    @Then("the update policy response should have message containing {string}")
+    public void theUpdatePolicyResponseShouldHaveMessageContaining(final String string) {
+        assertThatResponseHasMessageContaining(this.updatePoliciesResponse, string);
+    }
+
+    private static void assertThatResponseHasMessageContaining(final ValidatableResponse validatableResponse,
+            final String string) {
+        validatableResponse.body("messages", Matchers.hasItem(Matchers.containsString(string)));
     }
 
     @Then("the update policy response should have HTTP status {int}")
