@@ -49,7 +49,7 @@ public class ListOfPolicyIdsValidator implements ConstraintValidator<ListOfPolic
         for (int index = 0; index < value.size(); index++) {
             if (!PolicyIdValidator.isValid(value.get(index))) {
                 context.disableDefaultConstraintViolation();
-                final String msg = "The policyId at index %d is invalid (should be a valid UUID)";
+                final String msg = "The policyId at index %d is invalid (must be a valid UUID)";
                 context.buildConstraintViolationWithTemplate(msg.formatted(index)).addConstraintViolation();
                 return false;
             }
