@@ -62,6 +62,14 @@ public class E2ETestHelperForPolicyStoreApi {
         return E2ETestHelper.getTemplateFileContent("policy-for-e2e-tests.json");
     }
 
+    public static String getPolicyTemplateWithoutDefinition() throws IOException {
+        return E2ETestHelper.getTemplateFileContent("policy-for-e2e-tests-without-definition.json");
+    }
+
+    public static String getPolicyTemplateWithEmptyDefinition() throws IOException {
+        return E2ETestHelper.getTemplateFileContent("policy-for-e2e-tests-with-empty-definition.json");
+    }
+
     @SuppressWarnings("unchecked")
     public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(
             final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String bpn) {
