@@ -160,7 +160,7 @@ item-relationship-service:
 tractusx-connector:
   install:
     postgresql: false
-    vault: true
+    vault: false
   participant:
     id: <path:traceability-irs/data/dev/controlplane#participantId>
 
