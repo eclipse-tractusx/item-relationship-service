@@ -314,6 +314,11 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
         this.createPoliciesResponse.statusCode(httpStatus);
     }
 
+    @Then("the create policy response should have message containing {string}")
+    public void theCreatePolicyResponseShouldHaveMessageContaining(final String string) {
+        this.createPoliciesResponse.body("messages", Matchers.hasItem(Matchers.containsString(string)));
+    }
+
     @Then("the update policy response should have HTTP status {int}")
     public void theUpdatePolicyResponseShouldHaveStatus(final int httpStatus) {
         this.updatePoliciesResponse.statusCode(httpStatus);
