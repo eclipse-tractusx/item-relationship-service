@@ -8,6 +8,11 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
+
+-  Cleaning up BPNLs without policies. #533
+
+
 ## [5.1.1] - 2024-05-08
 
 ### Fixed
