@@ -123,7 +123,11 @@ public class E2ETestHelperForPolicyStoreApi {
 
     public static Stream<String> extractPolicyIdsForBpn(
             final Map<String, ArrayList<LinkedHashMap<String, ?>>> bpnToPoliciesMap, final String bpn) {
-        return extractPolicyIds(bpnToPoliciesMap.get(bpn).stream());
+        List<LinkedHashMap<String, ?>> policyIds = bpnToPoliciesMap.get(bpn);
+        if (policyIds == null) {
+            policyIds = new ArrayList<>();
+        }
+        return extractPolicyIds(policyIds.stream());
     }
 
     @SuppressWarnings("rawtypes")
