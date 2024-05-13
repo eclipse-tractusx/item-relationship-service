@@ -42,6 +42,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -215,6 +216,40 @@ public class PolicyStoreController {
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void deleteAllowedPolicy(@PathVariable("policyId") final String policyId) {
         service.deletePolicy(policyId);
+    }
+
+    @Operation(operationId = "removeAllowedPolicyFromBpnl",
+               summary = "Removes a policy from BPNL that should no longer be accepted in EDC negotiation.",
+               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               description = "Removes a policy from BPNL that should no longer be accepted in EDC negotiation.")
+    @ApiResponses(value = { @ApiResponse(responseCode = "200"),
+                            @ApiResponse(responseCode = "400", description = "Policy deletion failed.",
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-400"))
+                                         }),
+                            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-401"))
+                                         }),
+                            @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                                         content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                              schema = @Schema(implementation = ErrorResponse.class),
+                                                              examples = @ExampleObject(name = "error",
+                                                                                        ref = "#/components/examples/error-response-403"))
+                                         }),
+    })
+    @DeleteMapping("/policies/{policyId}/bpnl/{bpnl}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    public void removeAllowedPolicyFromBpnl(
+            @PathVariable("policyId") final String policyId, //
+            @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") //
+            @PathVariable("bpnl") final String bpnl) {
+        service.deletePolicyForEachBpn(policyId, List.of(bpnl));
     }
 
     @Operation(operationId = "updateAllowedPolicy", summary = "Updates existing policies.",

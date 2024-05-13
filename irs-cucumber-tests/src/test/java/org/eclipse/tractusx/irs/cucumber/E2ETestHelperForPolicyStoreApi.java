@@ -264,6 +264,16 @@ public class E2ETestHelperForPolicyStoreApi {
                                                                    .then();
     }
 
+    public static ValidatableResponse removePolicyFromBpnl(
+            final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String policyId,
+            final String bpnl) {
+        return givenAuthentication(authenticationPropertiesBuilder).pathParam("policyId", policyId)
+                                                                   .pathParam("bpnl", bpnl)
+                                                                   .when()
+                                                                   .delete(URL_IRS_POLICIES + "/{policyId}/bpnl/{bpnl}")
+                                                                   .then();
+    }
+
     @Data
     @NoArgsConstructor
     public static final class PolicyAttributes {
