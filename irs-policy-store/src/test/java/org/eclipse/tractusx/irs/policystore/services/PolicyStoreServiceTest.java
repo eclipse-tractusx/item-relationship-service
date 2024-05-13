@@ -375,6 +375,17 @@ class PolicyStoreServiceTest {
     class DeletePolicyTests {
 
         @Test
+        void deletePolicyForEachBpn_success() {
+            // ACT
+            final String policyId = UUID.randomUUID().toString();
+            testee.deletePolicyForEachBpn(policyId, List.of("BPN1", "BPN2"));
+
+            // ASSERT
+            verify(persistenceMock).delete("BPN1", policyId);
+            verify(persistenceMock).delete("BPN2", policyId);
+        }
+
+        @Test
         void deletePolicy_deleteSuccessful() {
             // ARRANGE
             final String policyId = randomPolicyId();

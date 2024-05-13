@@ -13,6 +13,23 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Improved policy store API input validation. #528
 
 
+
+## Added
+
+- Added endpoint for dedicated removal of policy from BPNL. #559 
+- Integration Test Policy Store API Unhappy Path. #519
+
+### Fixed
+
+-  Cleaning up BPNLs without policies. #533
+
+### Changed
+
+- Updated default accepted policy to latest traceability framework agreement #596
+- BPN summary was removed from Job response #568
+- Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
+
+
 ## [5.1.1] - 2024-05-08
 
 ### Fixed
@@ -37,8 +54,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Update bouncycastle to 1.78 to fix CVE's.
 - Fixed validation of json-schemas - IRS is creating tombstone instead collecting Submodel payload, when it not passes validation of schema #522
-
-
 
 ## [5.0.0] - 2024-04-16
 

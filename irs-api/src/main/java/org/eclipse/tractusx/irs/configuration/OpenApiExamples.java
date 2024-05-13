@@ -34,7 +34,6 @@ import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
 import org.eclipse.tractusx.irs.component.Bpn;
-import org.eclipse.tractusx.irs.component.FetchedItems;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobErrorDetails;
@@ -284,7 +283,6 @@ public class OpenApiExamples {
                                                                                         .completed(FETCHED_ITEMS_SIZE)
                                                                                         .failed(NO_RUNNING_OR_FAILED_ITEMS)
                                                                                         .build(),
-                FetchedItems.builder().completed(FETCHED_ITEMS_SIZE).failed(NO_RUNNING_OR_FAILED_ITEMS).build(),
                 SENT_NOTIFICATIONS_SIZE, SENT_NOTIFICATIONS_SIZE);
         final Job job = essJobsJobs.getJob().toBuilder().summary(newSummary).build();
         return toExample(essJobsJobs.toBuilder().job(job).build());

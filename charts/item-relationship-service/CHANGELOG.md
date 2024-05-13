@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated default accepted policy to latest traceability framework agreement #596
+
 ## [7.1.1] - 2024-05-08
 
 ### Changed

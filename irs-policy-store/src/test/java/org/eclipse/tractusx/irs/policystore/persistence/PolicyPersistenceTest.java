@@ -145,15 +145,32 @@ class PolicyPersistenceTest {
         @Test
         void delete_success() throws BlobPersistenceException, JsonProcessingException {
             // ARRANGE
-            final String policyId = randomPolicyId();
-            when(mockPersistence.getBlob(anyString())).thenReturn(
-                    Optional.of(mapper.writeValueAsBytes(List.of(policyBuilder(policyId).build()))));
+            final String policyId =  randomPolicyId();
+            final String policyId2 =  randomPolicyId();
+            final var policy = policyBuilder(policyId).build();
+            final var policy2 = policyBuilder(policyId2).build();
+            when(mockPersistence.getBlob(anyString())).thenReturn(Optional.of(mapper.writeValueAsBytes(List.of(policy, policy2))));
 
             // ACT
             testee.delete("testBpn", policyId);
 
             // ASSERT
             verify(mockPersistence).putBlob(anyString(), any());
+        }
+
+        @Test
+        void delete_whenNoOtherPolicyLeftForBpn() throws BlobPersistenceException, JsonProcessingException {
+            // ARRANGE
+            final String policyId = "policy1";
+            final var policy = new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now(), emptyList());
+            when(mockPersistence.getBlob(anyString())).thenReturn(
+                    Optional.of(mapper.writeValueAsBytes(List.of(policy))));
+
+            // ACT
+            testee.delete("testBpn", policyId);
+
+            // ASSERT
+            verify(mockPersistence).delete(anyString(), any());
         }
 
         @Test

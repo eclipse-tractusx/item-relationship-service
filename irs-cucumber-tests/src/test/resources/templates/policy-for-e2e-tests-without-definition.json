@@ -1,0 +1,6 @@
+{
+  "@context": {
+    "odrl": "http://www.w3.org/ns/odrl/2/"
+  },
+  "@id": "%s"
+}

@@ -74,11 +74,6 @@ public class DigitalTwinDelegate extends AbstractDelegate {
                                                           // DigitalTwinRegistryKey here
                                                           .findFirst().orElseThrow();
 
-            if (!expectedDepthOfTreeIsNotReached(jobData.getDepth(), aasTransferProcess.getDepth())) {
-                // filter submodel descriptors if next delegate will not be executed
-                shell.payload().withFilteredSubmodelDescriptors(jobData.getAspects());
-            }
-
             itemContainerBuilder.shell(
                     jobData.isAuditContractNegotiation() ? shell : shell.withoutContractAgreementId());
         } catch (final RegistryServiceException | RuntimeException e) {
