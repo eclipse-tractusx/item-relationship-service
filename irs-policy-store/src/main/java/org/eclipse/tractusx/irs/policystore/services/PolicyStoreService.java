@@ -218,7 +218,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
     }
 
-    public void deletePolicyForEachBpn(final String policyId, final List<String> bpnList) {
+    private void deletePolicyForEachBpn(final String policyId, final List<String> bpnList) {
         try {
             for (final String bpn : bpnList) {
                 persistence.delete(bpn, policyId);

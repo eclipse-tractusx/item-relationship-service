@@ -8,10 +8,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Added
 
-## Added
-
-- Added endpoint for dedicated removal of policy from BPNL. #559 
 - Integration Test Policy Store API Unhappy Path. #519
 
 ### Fixed

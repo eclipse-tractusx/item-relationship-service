@@ -179,12 +179,6 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
                 policyId);
     }
 
-    @When("I remove the policy {string} from BPN {string}")
-    public void iRemovePolicyFromBpnl(final String policyId, final String bpnl) {
-        this.deletePoliciesResponse = E2ETestHelperForPolicyStoreApi.removePolicyFromBpnl(
-                this.authenticationPropertiesBuilder, policyId, bpnl);
-    }
-
     @Then("the delete policy response should have HTTP status {int}")
     public void theDeletePolicyResponseShouldHaveStatus(final int httpStatus) {
         this.deletePoliciesResponse.statusCode(httpStatus);
