@@ -74,18 +74,4 @@ class PolicyIdListValidatorTest {
         assertThat(messageCaptor.getValue()).contains("policyId").contains(" index 1 ").contains("invalid");
     }
 
-    //    @ParameterizedTest
-    //    @ValueSource(strings = { "BPN",
-    //                             "BPNL",
-    //                             "BPNACB",
-    //                             "BPNA1234567890AB",
-    //                             "BPNS1234567890AB",
-    //                             "DELETE * FROM Table",
-    //                             "ERRRES"
-    //    })
-    //    void withInvalidBPN(final String invalidBPN) {
-    //        assertThat(validator.isValid(Collections.singletonList(invalidBPN), contextMock)).isFalse();
-    //        verify(contextMock).buildConstraintViolationWithTemplate(messageCaptor.capture());
-    //        assertThat(messageCaptor.getValue()).contains("BPN").contains(" index 0 ").contains("invalid");
-    //    }
 }
