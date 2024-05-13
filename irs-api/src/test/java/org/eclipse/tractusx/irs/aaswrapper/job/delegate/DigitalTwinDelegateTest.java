@@ -86,7 +86,7 @@ class DigitalTwinDelegateTest {
     }
 
     @Test
-    void shouldFillItemContainerWithShellAndSubmodelDescriptorsWhenDepthReached() throws RegistryServiceException {
+    void shouldFillItemContainerWithShellAndFilteredSubmodelDescriptorsWhenDepthReached() throws RegistryServiceException {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
                 List.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
@@ -99,7 +99,7 @@ class DigitalTwinDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getShells()).isNotEmpty();
-        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isEmpty();
     }
 
     @Test
