@@ -23,6 +23,7 @@ import java.util.UUID;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Validator for list of business partner numbers (BPN).
@@ -44,7 +45,7 @@ public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, Str
 
     private static boolean validateUUID(final String uuidStr) {
         try {
-            UUID.fromString(uuidStr);
+            UUID.fromString(StringUtils.removeStart(uuidStr, "urn:uuid:"));
             return true;
         } catch (IllegalArgumentException e) {
             return false;
