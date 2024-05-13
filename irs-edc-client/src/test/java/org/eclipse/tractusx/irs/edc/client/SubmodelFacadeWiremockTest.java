@@ -28,6 +28,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.ACTIVE_MEMBERSHIP;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE;
 import static org.eclipse.tractusx.irs.edc.client.testutil.TestMother.createEdcTransformer;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.DATAPLANE_HOST;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_DATAPLANE_PUBLIC;
@@ -67,8 +69,6 @@ import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.ConstraintCheckerService;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
-import org.eclipse.tractusx.irs.edc.client.policy.Operator;
-import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyCheckerService;
@@ -134,11 +134,10 @@ class SubmodelFacadeWiremockTest {
                 storage);
 
         acceptedPoliciesProvider = mock(AcceptedPoliciesProvider.class);
-        when(acceptedPoliciesProvider.getAcceptedPolicies("BPN")).thenReturn(List.of(new AcceptedPolicy(policy("IRS Policy",
-                List.of(new Permission(PolicyType.USE, new Constraints(
-                        List.of(new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
-                                new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ),
-                                        "active")), new ArrayList<>())))), OffsetDateTime.now().plusYears(1))));
+        when(acceptedPoliciesProvider.getAcceptedPolicies("BPN")).thenReturn(List.of(new AcceptedPolicy(
+                policy("IRS Policy", List.of(new Permission(PolicyType.USE,
+                        new Constraints(List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE),
+                                new ArrayList<>())))), OffsetDateTime.now().plusYears(1))));
         final PolicyCheckerService policyCheckerService = new PolicyCheckerService(acceptedPoliciesProvider,
                 new ConstraintCheckerService());
         final ContractNegotiationService contractNegotiationService = new ContractNegotiationService(controlPlaneClient,
@@ -157,11 +156,9 @@ class SubmodelFacadeWiremockTest {
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
                 responseWithStatus(200).withBodyFile("singleLevelBomAsBuilt.json")));
 
-        final List<Constraint> andConstraints = List.of(
-                new Constraint("Membership", new Operator(OperatorType.EQ), "active"), new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"));
+        final List<Constraint> andConstraints = List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE);
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
-        final Permission permission = new Permission(PolicyType.USE,
-                new Constraints(andConstraints, orConstraints));
+        final Permission permission = new Permission(PolicyType.USE, new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
         when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
@@ -182,11 +179,9 @@ class SubmodelFacadeWiremockTest {
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
                 responseWithStatus(200).withBodyFile("materialForRecycling.json")));
 
-        final List<Constraint> andConstraints = List.of(
-                new Constraint("Membership", new Operator(OperatorType.EQ), "active"), new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"));
+        final List<Constraint> andConstraints = List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE);
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
-        final Permission permission = new Permission(PolicyType.USE,
-                new Constraints(andConstraints, orConstraints));
+        final Permission permission = new Permission(PolicyType.USE, new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
         when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
@@ -206,11 +201,9 @@ class SubmodelFacadeWiremockTest {
         prepareNegotiation();
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
 
-        final List<Constraint> andConstraints = List.of(
-                new Constraint("Membership", new Operator(OperatorType.EQ), "active"), new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"));
+        final List<Constraint> andConstraints = List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE);
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
-        final Permission permission = new Permission(PolicyType.USE,
-                new Constraints(andConstraints, orConstraints));
+        final Permission permission = new Permission(PolicyType.USE, new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
         when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
@@ -226,8 +219,7 @@ class SubmodelFacadeWiremockTest {
     @Test
     void shouldThrowExceptionWhenPoliciesAreNotAccepted() {
         // Arrange
-        final List<Constraint> andConstraints = List.of(
-                new Constraint("Membership", new Operator(OperatorType.EQ), "active"));
+        final List<Constraint> andConstraints = List.of(ACTIVE_MEMBERSHIP);
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
         final Permission permission = new Permission(PolicyType.USE, new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
@@ -241,8 +233,8 @@ class SubmodelFacadeWiremockTest {
         // Act & Assert
         final String errorMessage = "Consumption of asset '5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7' is not permitted as the required catalog offer policies do not comply with defined IRS policies.";
         assertThatExceptionOfType(UsagePolicyException.class).isThrownBy(
-                () -> edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID, "bpn")
-                                       .get()).withMessageEndingWith(errorMessage);
+                () -> edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID,
+                        "bpn").get()).withMessageEndingWith(errorMessage);
     }
 
     @Test
@@ -252,11 +244,9 @@ class SubmodelFacadeWiremockTest {
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
                 responseWithStatus(400).withBody("{ error: '400'}")));
 
-        final List<Constraint> andConstraints = List.of(
-                new Constraint("Membership", new Operator(OperatorType.EQ), "active"), new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"));
+        final List<Constraint> andConstraints = List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE);
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
-        final Permission permission = new Permission(PolicyType.USE,
-                new Constraints(andConstraints, orConstraints));
+        final Permission permission = new Permission(PolicyType.USE, new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
         when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));
@@ -277,11 +267,9 @@ class SubmodelFacadeWiremockTest {
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(
                 responseWithStatus(500).withBody("{ error: '500'}")));
 
-        final List<Constraint> andConstraints = List.of(
-                new Constraint("Membership", new Operator(OperatorType.EQ), "active"), new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"));
+        final List<Constraint> andConstraints = List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE);
         final ArrayList<Constraint> orConstraints = new ArrayList<>();
-        final Permission permission = new Permission(PolicyType.USE,
-                new Constraints(andConstraints, orConstraints));
+        final Permission permission = new Permission(PolicyType.USE, new Constraints(andConstraints, orConstraints));
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
         when(acceptedPoliciesProvider.getAcceptedPolicies(eq("bpn"))).thenReturn(List.of(acceptedPolicy));

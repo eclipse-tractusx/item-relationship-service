@@ -24,6 +24,9 @@
 package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.ACTIVE_MEMBERSHIP;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE;
+import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.PURPOSE_ID_3_1_TRACE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,10 +40,7 @@ import java.util.stream.Collectors;
 
 import jakarta.json.JsonObject;
 import jakarta.servlet.http.HttpServletRequest;
-import org.eclipse.tractusx.irs.edc.client.policy.Constraint;
 import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
-import org.eclipse.tractusx.irs.edc.client.policy.Operator;
-import org.eclipse.tractusx.irs.edc.client.policy.OperatorType;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
@@ -215,9 +215,7 @@ public class PolicyStoreControllerTest {
 
     private Constraints createConstraints() {
         return new Constraints(Collections.emptyList(),
-                List.of(new Constraint("Membership", new Operator(OperatorType.EQ), "active"),
-                        new Constraint("FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active"),
-                        new Constraint("PURPOSE", new Operator(OperatorType.EQ), "ID 3.1 Trace")));
+                List.of(ACTIVE_MEMBERSHIP, FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE, PURPOSE_ID_3_1_TRACE));
     }
 
     private static String randomPolicyId() {
