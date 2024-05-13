@@ -55,6 +55,7 @@ import org.springframework.web.client.RestClientException;
 /**
  * Builds submodels array for AAShell from previous steps.
  * All submodels are being retrieved from EDC's components.
+ * Additionally, submodel descriptors from shell are being filtered to requested aspect types.
  */
 @Slf4j
 public class SubmodelDelegate extends AbstractDelegate {

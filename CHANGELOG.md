@@ -22,7 +22,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Updated default accepted policy to latest traceability framework agreement #596
 - BPN summary was removed from Job response #568
-- Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
 
 
 ## [5.1.1] - 2024-05-08
