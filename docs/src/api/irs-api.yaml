@@ -1016,59 +1016,6 @@ paths:
       summary: Removes a policy that should no longer be accepted in EDC negotiation.
       tags:
       - Item Relationship Service
-  /irs/policies/{policyId}/bpnl/{bpnl}:
-    delete:
-      description: Removes a policy from BPNL that should no longer be accepted in
-        EDC negotiation.
-      operationId: removeAllowedPolicyFromBpnl
-      parameters:
-      - in: path
-        name: policyId
-        required: true
-        schema:
-          type: string
-      - in: path
-        name: bpnl
-        required: true
-        schema:
-          type: string
-          pattern: "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}"
-      responses:
-        "200":
-          description: OK
-        "400":
-          content:
-            application/json:
-              examples:
-                error:
-                  $ref: '#/components/examples/error-response-400'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Policy deletion failed.
-        "401":
-          content:
-            application/json:
-              examples:
-                error:
-                  $ref: '#/components/examples/error-response-401'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: No valid authentication credentials.
-        "403":
-          content:
-            application/json:
-              examples:
-                error:
-                  $ref: '#/components/examples/error-response-403'
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-          description: Authorization refused by server.
-      security:
-      - api_key: []
-      summary: Removes a policy from BPNL that should no longer be accepted in EDC
-        negotiation.
-      tags:
-      - Item Relationship Service
 components:
   examples:
     aspect-models-list:
