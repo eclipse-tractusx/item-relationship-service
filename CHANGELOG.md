@@ -16,7 +16,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Updated default accepted policy to latest traceability framework agreement #596
 - BPN summary was removed from Job response #568
-- Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
 
 
 ## [5.1.1] - 2024-05-08
@@ -28,6 +27,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Added
 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
+ 
 
 ## [5.1.0] - 2024-05-06
 
@@ -43,6 +43,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Update bouncycastle to 1.78 to fix CVE's.
 - Fixed validation of json-schemas - IRS is creating tombstone instead collecting Submodel payload, when it not passes validation of schema #522
+
 
 ## [5.0.0] - 2024-04-16
 

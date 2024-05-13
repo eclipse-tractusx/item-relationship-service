@@ -55,6 +55,7 @@ import org.springframework.web.client.RestClientException;
 /**
  * Builds submodels array for AAShell from previous steps.
  * All submodels are being retrieved from EDC's components.
+ * Additionally submodel descriptors from shell are being filtered to requested aspect types.
  */
 @Slf4j
 public class SubmodelDelegate extends AbstractDelegate {
@@ -85,19 +86,21 @@ public class SubmodelDelegate extends AbstractDelegate {
             final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.payload().getSubmodelDescriptors();
             log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
 
+            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.payload()
+                                                                                          .filterDescriptorsByAspectTypes(
+                                                                                                  jobData.getAspects());
+
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
-                final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.payload()
-                                                                                              .filterDescriptorsByAspectTypes(
-                                                                                                      jobData.getAspects());
-
                 filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
                         getSubmodels(submodelDescriptor, itemContainerBuilder, itemId.getGlobalAssetId(),
                                 itemId.getBpn(), jobData.isAuditContractNegotiation())));
-
-                log.trace("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
-                log.trace("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
             }
+            log.trace("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
+            log.trace("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
+
+            shell.payload().setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
+
         });
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
