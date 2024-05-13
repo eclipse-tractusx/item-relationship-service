@@ -24,10 +24,6 @@ package org.eclipse.tractusx.irs.edc.client.policy;
  */
 public final class ConstraintConstants {
 
-    private ConstraintConstants() {
-        // helper class
-    }
-
     public static final Constraint ACTIVE_MEMBERSHIP = new Constraint("Membership", new Operator(OperatorType.EQ),
             "active");
 
@@ -36,5 +32,9 @@ public final class ConstraintConstants {
 
     public static final Constraint PURPOSE_ID_3_1_TRACE = new Constraint("PURPOSE", new Operator(OperatorType.EQ),
             "ID 3.1 Trace");
+
+    private ConstraintConstants() {
+        // helper class
+    }
 
 }
