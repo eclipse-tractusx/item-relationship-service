@@ -39,7 +39,9 @@ import jakarta.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPolicyId {
 
-    String message() default "must be a valid UUID";
+    String DEFAULT_MESSAGE = "must only contain safe URL path variable characters";
+
+    String message() default DEFAULT_MESSAGE;
 
     Class<?>[] groups() default { };
 

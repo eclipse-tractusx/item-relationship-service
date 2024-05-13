@@ -79,8 +79,7 @@ class PolicyIdValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "a_",
-                             "*",
+    @ValueSource(strings = { "*",
                              "(",
                              ")",
                              "<",
@@ -89,11 +88,10 @@ class PolicyIdValidatorTest {
                              "]",
                              "{",
                              "}",
-                             "p3",
-                             "123",
-                             "abc",
-                             "abc123",
-                             "abc-def-4444"
+                             "a/policyId",
+                             "a\\policyId",
+                             "my?policyId",
+                             "my#policyId"
     })
     void withInvalidPolicyId(final String invalidPolicyId) {
         assertThat(validator.isValid(invalidPolicyId, contextMock)).isFalse();

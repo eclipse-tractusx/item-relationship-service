@@ -68,7 +68,7 @@ class PolicyIdListValidatorTest {
 
     @Test
     void withListContainingInvalidPolicyId() {
-        List<String> invalidList = Arrays.asList(UUID.randomUUID().toString(), "_INVALID_POLICY_ID_");
+        List<String> invalidList = Arrays.asList(UUID.randomUUID().toString(), "###INVALID_POLICY_ID###");
         assertThat(validator.isValid(invalidList, contextMock)).isFalse();
         verify(contextMock).buildConstraintViolationWithTemplate(messageCaptor.capture());
         assertThat(messageCaptor.getValue()).contains("policyId").contains(" index 1 ").contains("invalid");

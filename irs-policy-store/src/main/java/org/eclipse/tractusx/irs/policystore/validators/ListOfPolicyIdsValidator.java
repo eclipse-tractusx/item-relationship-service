@@ -34,7 +34,8 @@ public class ListOfPolicyIdsValidator implements ConstraintValidator<ListOfPolic
     @Override
     public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
 
-        // allow null and empty here (in order to allow flexible combination with @NotNull and @NotEmpty)
+        // allow null and empty here
+        // (in order to allow flexible combination with @NotNull and @NotEmpty)
         if (value == null || value.isEmpty()) {
             return true;
         }
@@ -49,8 +50,9 @@ public class ListOfPolicyIdsValidator implements ConstraintValidator<ListOfPolic
         for (int index = 0; index < value.size(); index++) {
             if (!PolicyIdValidator.isValid(value.get(index))) {
                 context.disableDefaultConstraintViolation();
-                final String msg = "The policyId at index %d is invalid (must be a valid UUID)";
-                context.buildConstraintViolationWithTemplate(msg.formatted(index)).addConstraintViolation();
+                final String msg = "The policyId at index %d is invalid (%s)";
+                context.buildConstraintViolationWithTemplate(msg.formatted(index, ValidPolicyId.DEFAULT_MESSAGE))
+                       .addConstraintViolation();
                 return false;
             }
         }
@@ -58,8 +60,7 @@ public class ListOfPolicyIdsValidator implements ConstraintValidator<ListOfPolic
         return true;
     }
 
-    /* package */
-    static boolean containsDuplicates(final List<String> strings) {
+    protected static boolean containsDuplicates(final List<String> strings) {
         final Set<String> set = new HashSet<>(strings);
         return set.size() < strings.size();
     }

@@ -36,10 +36,11 @@ class PolicyValidatorTest {
 
     @Test
     void invalidPolicyId() {
-        final Policy policy = Policy.builder().policyId("_invalid_policy_id_").permissions(createPermissions()).build();
+        final Policy policy = Policy.builder().policyId("?invalid_policy_id#").permissions(createPermissions()).build();
         assertThatThrownBy(() -> PolicyValidator.validate(policy)).isInstanceOf(ConstraintViolationException.class)
                                                                   .hasMessageContaining("policyId")
-                                                                  .hasMessageContaining("must be a valid UUID");
+                                                                  .hasMessageContaining(
+                                                                          "must only contain safe URL path variable characters");
     }
 
     private List<Permission> createPermissions() {

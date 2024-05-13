@@ -19,16 +19,17 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.validators;
 
-import java.util.UUID;
+import java.util.regex.Pattern;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Validator for list of business partner numbers (BPN).
  */
 public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, String> {
+
+    private static final Pattern PATTERN_SAFE_PATH_VARIABLE_CHARACTERS = Pattern.compile("[a-zA-Z0-9\\-_~.:]+");
 
     @Override
     public boolean isValid(final String value, final ConstraintValidatorContext context) {
@@ -40,15 +41,7 @@ public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, Str
     }
 
     public static boolean isValid(final String policyId) {
-        return validateUUID(policyId);
+        return PATTERN_SAFE_PATH_VARIABLE_CHARACTERS.matcher(policyId).matches();
     }
 
-    private static boolean validateUUID(final String uuidStr) {
-        try {
-            UUID.fromString(StringUtils.removeStart(uuidStr, "urn:uuid:"));
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
 }
