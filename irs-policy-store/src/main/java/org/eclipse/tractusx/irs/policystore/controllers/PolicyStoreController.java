@@ -246,8 +246,6 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public void removeAllowedPolicyFromBpnl(
-            // TODO (#528): add validation
-            //@ValidPolicyId
             @PathVariable("policyId") final String policyId, //
             @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") //
             @PathVariable("bpnl") final String bpnl) {
