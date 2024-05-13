@@ -88,7 +88,6 @@ You can use these snippets for testing purposes.
 ```json
 {
   "bomLifecycle": "asBuilt",
-  "lookupBPNs": false,
   "direction": "downward",
   "depth": 10,
   "auditContractNegotiation": false,
