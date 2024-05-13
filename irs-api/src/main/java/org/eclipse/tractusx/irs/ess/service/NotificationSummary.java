@@ -30,7 +30,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
-import org.eclipse.tractusx.irs.component.FetchedItems;
 import org.eclipse.tractusx.irs.component.Summary;
 
 /**
@@ -42,15 +41,14 @@ public class NotificationSummary extends Summary {
 
     private final NotificationItems notifications;
 
-    public NotificationSummary(final AsyncFetchedItems asyncFetchedItems, final FetchedItems bpnLookups,
-            final NotificationItems notificationItems) {
-        super(asyncFetchedItems, bpnLookups);
+    public NotificationSummary(final AsyncFetchedItems asyncFetchedItems, final NotificationItems notificationItems) {
+        super(asyncFetchedItems);
         this.notifications = notificationItems;
     }
 
-    public NotificationSummary(final AsyncFetchedItems asyncFetchedItems, final FetchedItems bpnLookups,
-            final Integer sentNotification, final Integer receivedNotification) {
-        super(asyncFetchedItems, bpnLookups);
+    public NotificationSummary(final AsyncFetchedItems asyncFetchedItems, final Integer sentNotification,
+            final Integer receivedNotification) {
+        super(asyncFetchedItems);
         this.notifications = new NotificationItems(sentNotification, receivedNotification);
     }
 }

@@ -28,6 +28,7 @@ import static org.eclipse.tractusx.irs.policystore.config.PolicyConfiguration.PO
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -96,7 +97,11 @@ public class PolicyPersistence {
     private void save(final String bpn, final List<Policy> modifiedPolicies) {
         writeLock(() -> {
             try {
-                policyStorePersistence.putBlob(bpn, mapper.writeValueAsBytes(modifiedPolicies));
+                if (modifiedPolicies.isEmpty()) {
+                    policyStorePersistence.delete(bpn, Collections.emptyList());
+                } else {
+                    policyStorePersistence.putBlob(bpn, mapper.writeValueAsBytes(modifiedPolicies));
+                }
             } catch (BlobPersistenceException | JsonProcessingException e) {
                 throw new PolicyStoreException("Unable to store policy data", e);
             }
