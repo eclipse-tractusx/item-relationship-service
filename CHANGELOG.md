@@ -13,8 +13,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added endpoint for dedicated removal of policy from BPNL. #559 
 
 
-
-
 ## [5.1.1] - 2024-05-08
 
 ### Fixed
