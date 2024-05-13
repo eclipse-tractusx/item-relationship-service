@@ -52,6 +52,10 @@ public final class SubmodelFacadeWiremockSupport {
     public static final String IRS_INTERNAL_CALLBACK_URL = "https://irs.test/internal/endpoint-data-reference";
     public static final String EDC_PROVIDER_BPN = "BPNL00000003CRHK";
     public static final int STATUS_CODE_OK = 200;
+    public static final String CX_POLICY_FRAMEWORK_AGREEMENT = "cx-policy:FrameworkAgreement";
+    public static final String TRACEABILITY_1_0 = "traceability:1.0";
+    public static final String CX_POLICY_USAGE_PURPOSE = "cx-policy:UsagePurpose";
+    public static final String CX_CORE_INDUSTRYCORE_1 = "cx.core.industrycore:1";
 
     private SubmodelFacadeWiremockSupport() {
     }
@@ -149,7 +153,8 @@ public final class SubmodelFacadeWiremockSupport {
                     "contractAgreementId": "%s",
                     "@context": %s
                 }
-                """.formatted(negotiationId, negotiationState, EDC_PROVIDER_DUMMY_URL, "BPNL00000001TEST", contractAgreementId, CONTEXT);
+                """.formatted(negotiationId, negotiationState, EDC_PROVIDER_DUMMY_URL, "BPNL00000001TEST",
+                contractAgreementId, CONTEXT);
     }
 
     private static String getTransferConfirmedResponse(final String transferProcessId, final String transferState,
@@ -177,8 +182,8 @@ public final class SubmodelFacadeWiremockSupport {
                     },
                     "@context": %s
                 }
-                """.formatted(transferProcessId, transferState, IRS_INTERNAL_CALLBACK_URL, transferProcessId, edcAssetId, contractAgreementId,
-                CONTEXT);
+                """.formatted(transferProcessId, transferState, IRS_INTERNAL_CALLBACK_URL, transferProcessId,
+                edcAssetId, contractAgreementId, CONTEXT);
     }
 
     @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
@@ -235,8 +240,9 @@ public final class SubmodelFacadeWiremockSupport {
     }
 
     private static String createConstraints() {
-        final List<String> atomitConstraints = List.of(createAtomicConstraint("Membership", "active"),
-                createAtomicConstraint("FrameworkAgreement.traceability", "active"));
+        final List<String> atomitConstraints = List.of(
+                createAtomicConstraint(CX_POLICY_FRAMEWORK_AGREEMENT, TRACEABILITY_1_0),
+                createAtomicConstraint(CX_POLICY_USAGE_PURPOSE, CX_CORE_INDUSTRYCORE_1));
         return """
                 {
                   "odrl:and": [

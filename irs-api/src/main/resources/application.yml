@@ -156,15 +156,12 @@ irs-edc-client:
     # IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.
     # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
     acceptedPolicies:
-      - leftOperand: "PURPOSE"
+      - leftOperand: "cx-policy:FrameworkAgreement"
         operator: "eq"
-        rightOperand: "ID 3.1 Trace"
-      - leftOperand: "FrameworkAgreement.traceability"
+        rightOperand: "traceability:1.0"
+      - leftOperand: "cx-policy:UsagePurpose"
         operator: "eq"
-        rightOperand: "active"
-      - leftOperand: "Membership"
-        operator: "eq"
-        rightOperand: "active"
+        rightOperand: "cx.core.industrycore:1"
   discoveryFinderClient:
     cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:

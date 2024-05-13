@@ -197,8 +197,7 @@ class IrsControllerTest extends ControllerTest {
                               "globalAssetId": "urn:uuid:c6d2d642-a055-4ddf-87e3-1a3b02c689e3",
                               "bpn": "BPNL00000000BJTL"
                           },
-                          "direction": "<DIRECTION>",
-                          "lookupBPNs": true
+                          "direction": "<DIRECTION>"
                        }
                        """.replace("<DIRECTION>", invalidDirection))
                .post("/irs/jobs")

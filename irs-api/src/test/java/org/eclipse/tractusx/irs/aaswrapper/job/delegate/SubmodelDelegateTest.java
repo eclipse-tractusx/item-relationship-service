@@ -68,7 +68,7 @@ class SubmodelDelegateTest {
             jsonValidatorService, new JsonUtil(), connectorEndpointsService);
 
     @Test
-    void shouldFilterSubmodelDescriptorsByAspectTypeFilter() {
+    void shouldNotFilterSubmodelDescriptorsByAspectTypeFilter() {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
                                                                                                    .shell(shell("", shellDescriptor(
@@ -85,7 +85,7 @@ class SubmodelDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
     }
 
     @Test
