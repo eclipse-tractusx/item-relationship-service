@@ -130,7 +130,8 @@ flowchart LR
   "direction": "downward",
   "key": {
     ...
-  }
+  }, 
+  "lookupBPNs": true
 }
 ```
 
