@@ -2470,7 +2470,6 @@ stages:
         depth: 2
         direction: "downward"
         bomLifecycle: "asPlanned"
-        lookupBPNs: false
         callbackUrl: "https://www.check123.com"
         aspects:
         #- urn:samm:io.catenax.serial_part:3.0.0#SerialPart
@@ -2578,7 +2577,6 @@ stages:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: false
-        lookupBPNs: false
         depth: 1
         direction: "downward"
       method: POST
@@ -2632,7 +2630,6 @@ stages:
           globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         collectAspects: false
-        lookupBPNs: false
         depth: 1
         direction: "downward"
       method: POST
@@ -2733,7 +2730,6 @@ stages:
           - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingeLevelBomAsBuilt
           - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         collectAspects: true
-        lookupBPNs: false
         batchSize: 10
         batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
         depth: 1
@@ -2793,7 +2789,6 @@ stages:
           - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingeLevelBomAsBuilt
           - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         collectAspects: true
-        lookupBPNs: false
         batchSize: 2
         batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
         depth: 1
@@ -2845,7 +2840,6 @@ stages:
           - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingeLevelBomAsBuilt
           - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
         collectAspects: true
-        lookupBPNs: false
         batchSize: 10
         batchStrategy: "PRESERVE_BATCH_JOB_ORDER"
         depth: 1

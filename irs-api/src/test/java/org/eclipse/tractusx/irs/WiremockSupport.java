@@ -87,7 +87,6 @@ public class WiremockSupport {
                           .depth(depth)
                           .aspects(List.of(batchAspectName, singleLevelBomAsBuiltAspectName))
                           .collectAspects(true)
-                          .lookupBPNs(true)
                           .direction(Direction.DOWNWARD)
                           .build();
     }

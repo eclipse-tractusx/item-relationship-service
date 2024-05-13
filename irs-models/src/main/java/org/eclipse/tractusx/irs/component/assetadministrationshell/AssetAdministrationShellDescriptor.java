@@ -97,15 +97,6 @@ public class AssetAdministrationShellDescriptor {
     }
 
     /**
-     * @param aspectTypes the aspect types which should be filtered by
-     * @return AssetAdministrationShellDescriptor with filtered submodel descriptors
-     */
-    public AssetAdministrationShellDescriptor withFilteredSubmodelDescriptors(final List<String> aspectTypes) {
-        setSubmodelDescriptors(filterDescriptorsByAspectTypes(aspectTypes));
-        return this;
-    }
-
-    /**
      * @param relationshipAspect filter for aspect type
      * @return The filtered list of submodel addresses
      */
