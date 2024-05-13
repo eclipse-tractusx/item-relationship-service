@@ -239,11 +239,6 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
                 validUntil);
     }
 
-    @When("a policy WITHOUT payload is registered for BPN {string} and validUntil {string}")
-    public void iRegisterAPolicyWithoutPayload(final String bpn, final String validUntil) {
-        this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, null, bpn, validUntil);
-    }
-
     @Given("I want to register a policy")
     @Given("I want to update a policy")
     public void iWantToRegisterAPolicy() {
