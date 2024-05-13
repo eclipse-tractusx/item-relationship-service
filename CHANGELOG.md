@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
+ 
+### Changed
+
+- Improved policy store API input validation. #528
+
 
 ## [5.1.1] - 2024-05-08
 
@@ -17,10 +22,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Added
 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
- 
-### Changed
-
-- Improved policy store API input validation. #528
 
 ## [5.1.0] - 2024-05-06
 
