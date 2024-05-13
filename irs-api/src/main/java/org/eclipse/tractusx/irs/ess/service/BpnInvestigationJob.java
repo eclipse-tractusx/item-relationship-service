@@ -167,7 +167,6 @@ public class BpnInvestigationJob {
     private Jobs extendSummary(final Jobs irsJob) {
         final Summary oldSummary = Optional.ofNullable(irsJob.getJob().getSummary()).orElse(Summary.builder().build());
         final NotificationSummary newSummary = new NotificationSummary(oldSummary.getAsyncFetchedItems(),
-                oldSummary.getBpnLookups(),
                 new NotificationItems(unansweredNotifications.size() + answeredNotifications.size(),
                         answeredNotifications.size()));
         final Job job = irsJob.getJob().toBuilder().summary(newSummary).build();
