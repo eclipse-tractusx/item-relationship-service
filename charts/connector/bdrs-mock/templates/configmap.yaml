@@ -108,5 +108,6 @@ data:
       "BPNS00000003B3NX": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
       "BPNS00000000BJTL": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
       "BPNS000000000DQB": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL50096894aNXY": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
       "BPNS00000003B0Q0": "{{ .Values.didPrefix }}:BPNL00000001CRHK"
     }
