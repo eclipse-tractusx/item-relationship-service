@@ -9,8 +9,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ## [Unreleased]
 
 ## Added
-
-- Added endpoint for dedicated removal of policy from BPNL. #559 
+ 
 - Integration Test Policy Store API Unhappy Path. #519
 
 ### Fixed
@@ -32,7 +31,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Added
 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
-
+ 
 
 ## [5.1.0] - 2024-05-06
 
