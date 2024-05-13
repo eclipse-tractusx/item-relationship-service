@@ -8,6 +8,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Added
+
+- Integration Test Policy Store API Unhappy Path. #519
+
 ### Fixed
 
 -  Cleaning up BPNLs without policies. #533

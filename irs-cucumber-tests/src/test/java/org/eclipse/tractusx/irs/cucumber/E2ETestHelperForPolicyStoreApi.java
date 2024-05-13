@@ -62,6 +62,14 @@ public class E2ETestHelperForPolicyStoreApi {
         return E2ETestHelper.getTemplateFileContent("policy-for-e2e-tests.json");
     }
 
+    public static String getPolicyTemplateWithoutDefinition() throws IOException {
+        return E2ETestHelper.getTemplateFileContent("policy-for-e2e-tests-without-definition.json");
+    }
+
+    public static String getPolicyTemplateWithEmptyDefinition() throws IOException {
+        return E2ETestHelper.getTemplateFileContent("policy-for-e2e-tests-with-empty-definition.json");
+    }
+
     @SuppressWarnings("unchecked")
     public static Map<String, ArrayList<LinkedHashMap<String, ?>>> fetchPoliciesForBpn(
             final AuthenticationPropertiesBuilder authenticationPropertiesBuilder, final String bpn) {
@@ -184,14 +192,20 @@ public class E2ETestHelperForPolicyStoreApi {
 
         final CreatePolicyRequest createPolicyRequest;
         try {
+
             CreatePolicyRequestBuilder builder = CreatePolicyRequest.builder();
+
             if (validUntil != null) {
                 builder = builder.validUntil(OffsetDateTime.parse(validUntil));
             }
-            createPolicyRequest = builder.businessPartnerNumber(bpn)
-                                         .payload(E2ETestHelperForPolicyStoreApi.jsonFromString(objectMapper,
-                                                 policyJson))
-                                         .build();
+
+            builder = builder.businessPartnerNumber(bpn);
+
+            if (policyJson != null) {
+                builder = builder.payload(E2ETestHelperForPolicyStoreApi.jsonFromString(objectMapper, policyJson));
+            }
+
+            createPolicyRequest = builder.build();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
