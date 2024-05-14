@@ -948,15 +948,12 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.</span>
     <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
     <span class="na">acceptedPolicies</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PURPOSE"</span>
+      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx-policy:FrameworkAgreement"</span>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">ID</span><span class="nv"> </span><span class="s">3.1</span><span class="nv"> </span><span class="s">Trace"</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">FrameworkAgreement.traceability"</span>
+        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">traceability:1.0"</span>
+      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx-policy:UsagePurpose"</span>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Membership"</span>
-        <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
+        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx.core.industrycore:1"</span>
   <span class="na">discoveryFinderClient</span><span class="pi">:</span>
     <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache</span>
   <span class="na">connectorEndpointService</span><span class="pi">:</span>
@@ -1111,15 +1108,12 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.</span>
     <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
     <span class="na">acceptedPolicies</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">PURPOSE"</span>
+      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx-policy:FrameworkAgreement"</span>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">ID</span><span class="nv"> </span><span class="s">3.1</span><span class="nv"> </span><span class="s">Trace"</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">FrameworkAgreement.traceability"</span>
+        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">traceability:1.0"</span>
+      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx-policy:UsagePurpose"</span>
         <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
-      <span class="pi">-</span> <span class="na">leftOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">Membership"</span>
-        <span class="na">operator</span><span class="pi">:</span> <span class="s2">"</span><span class="s">eq"</span>
-        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">active"</span>
+        <span class="na">rightOperand</span><span class="pi">:</span> <span class="s2">"</span><span class="s">cx.core.industrycore:1"</span>
   <span class="na">discoveryFinderClient</span><span class="pi">:</span>
     <span class="na">cacheTTL</span><span class="pi">:</span> <span class="s">PT24H</span>  <span class="c1"># Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache</span>
   <span class="na">connectorEndpointService</span><span class="pi">:</span>
@@ -1221,7 +1215,10 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">user</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-username&gt;</span>
   <span class="na">password</span><span class="pi">:</span>  <span class="c1"># &lt;grafana-password&gt;</span>
 
-  <span class="na">admin</span><span class="pi">:</span></code></pre>
+  <span class="na">admin</span><span class="pi">:</span>
+    <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-item-relationship-service"</span>
+    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
+    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1592,7 +1589,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-13 13:39:24 UTC
+Last updated 2024-05-14 07:55:54 UTC
 </div>
 </div>
 </body>
