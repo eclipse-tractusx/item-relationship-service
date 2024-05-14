@@ -1,0 +1,70 @@
+postgresql:
+  enabled: false
+tractusx-connector:
+  install:
+    postgresql: true
+    vault: false
+
+  iatp:
+    sts:
+      oauth:
+        client:
+          id: <path:traceability-irs/data/dev/controlplane#dimClientId>
+          secret_alias: dim-secret-dev
+
+  controlplane:
+    ingresses:
+      - enabled: true
+        hostname: "irs-test1-cp.dev.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - protocol
+          - management
+        tls:
+          enabled: true
+          secretName: tls-secret
+
+  dataplane:
+    token:
+      signer:
+        privatekey_alias:
+      verifier:
+        publickey_alias:
+
+    ingresses:
+      - enabled: true
+        hostname: "irs-test1-dp.dev.demo.catena-x.net"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        endpoints:
+          - public
+        className: "nginx"
+        tls:
+          enabled: true
+          secretName: tls-secret
+
+  vault:
+    secretNames:
+      transferProxyTokenSignerPrivateKey:
+      transferProxyTokenSignerPublicKey:
+      transferProxyTokenEncryptionAesKey: test-edc-encryption-key
+
+  postgresql:
+    nameOverride: edc-test-postgresql
+    primary:
+      persistence:
+        enabled: false
+        size: 1Gi
+    auth:
+      database: edc
+      username: testuser
+      postgresPassword: testpass
+      password: testpass
+    username: testuser
+    password: testpass
+    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-edc-test-postgresql:5432/edc"

@@ -32,10 +32,6 @@ tractusx-connector:
         # URL of the BPN/DID Resolution Service - required:
         url: <path:traceability-irs/data/dev/controlplane#bdrsUrl>
 
-    env:
-      # workaround till 0.7.1 chart
-      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/dev/controlplane#trustedIssuer>
-
     endpoints:
       management:
         authKey: <path:traceability-irs/data/dev/controlplane#apiKey>
@@ -62,10 +58,6 @@ tractusx-connector:
   dataplane:
     ingresses:
       - enabled: false
-
-    env:
-      # workaround till 0.7.1 chart
-      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/dev/controlplane#trustedIssuer>
 
     token:
       refresh:
@@ -101,8 +93,8 @@ tractusx-connector:
   ################################
   vault:
     hashicorp:
-      url: "https://vault.demo.catena-x.net"
-      token: "<path:traceability-irs/data/dev/controlplane#vaultToken>"
+      url: "https://irs-vault.dev.demo.catena-x.net"
+      token: "<path:traceability-irs/data/vault#vaultToken>"
       timeout: 30
       healthCheck:
         enabled: true
