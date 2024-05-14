@@ -1,9 +1,9 @@
 {
   "submodels": [
     {
-      "identification": "urn:uuid:17354138-5bf3-45ba-899a-d5245d4d9c83",
+      "identification": "urn:uuid:25f66a0d-2a2e-4af7-a134-c3559be44bb9",
       "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
-      "contractAgreementId": "MDBmZDcyMDktYTE2MS00OWM5LWFiMzAtMmUwMDllNWE3MDAw:dXJuOnV1aWQ6Njc1NWMyZTAtNzc5Ni00NTYzLWE1NjktYTk3NmZjZTNiYjQ3:MjhhN2VlY2EtMDQwNi00ZjQ4LWI2NDktMjhiYzU0NzcyNTcx",
+      "contractAgreementId": "063c65bd-aeed-48f7-b3b3-1e4dc9d5405c",
       "payload": {
         "localIdentifiers": [
           {
@@ -12,7 +12,7 @@
           }
         ],
         "manufacturingInformation": {
-          "date": "2022-02-04T14:48:54",
+          "date": "2022-02-04T14:48:54Z",
           "country": "HUR",
           "sites": [
             {
@@ -21,9 +21,9 @@
             }
           ]
         },
-        "catenaXId": "urn:uuid:ee9b9c9e-1416-45a3-b683-d98d5d88e548",
+        "catenaXId": "urn:uuid:d78045d5-4ee7-4980-b24c-31dafeb6f54f",
         "partTypeInformation": {
-          "manufacturerPartId": "SC-00",
+          "manufacturerPartId": "GH-22",
           "partClassification": [
             {
               "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
