@@ -73,13 +73,18 @@ No impact on data consumers.
 
 ![AAS_Access_v3_Architecture.svg](AAS_Access_v3_Architecture.svg)
 
+<small>This diagram was created with <a href="http://www.inkscape.org/" target="_blank" alt="Inkscape">Inkscape</a> from
+the original JPG from
+[#438: Investigation and impact determination on new dDTR API endpoints for access management](https://github.com/eclipse-tractusx/item-relationship-service/issues/438)
+in order to fulfill [TRG 1.04](https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-4).</small>
+
 ## Glossary
 
 | Abbreviation | Name                      |
 |--------------|---------------------------|
-| CRUD             | Create Read Update Delete |
-| MIW             | Managed Identity Wallet  |
-| AAS | Asset Adminstration Shell | 
+| CRUD         | Create Read Update Delete |
+| MIW          | Managed Identity Wallet   |
+| AAS          | Asset Adminstration Shell | 
 
 ## References
 - [Concept of CRUD API for Access management APIs](https://github.com/eclipse-tractusx/sldt-digital-twin-registry/issues/291)
