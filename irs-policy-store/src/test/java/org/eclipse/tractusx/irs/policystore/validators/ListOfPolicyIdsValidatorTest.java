@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,18 +17,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.data;
+package org.eclipse.tractusx.irs.policystore.validators;
 
-/**
- * Exception when parsing JSON
- */
-public class JsonParseException extends RuntimeException {
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-    public JsonParseException(final String message, final Throwable throwable) {
-        super(message, throwable);
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+class ListOfPolicyIdsValidatorTest {
+
+    @Test
+    void containsDuplicates() {
+        assertThat(ListOfPolicyIdsValidator.containsDuplicates(List.of("abc", "def", "abc", "ghi"))).isTrue();
     }
 
-    public JsonParseException(final Throwable cause) {
-        super(cause);
+    @Test
+    void containsDuplicates_not() {
+        assertThat(ListOfPolicyIdsValidator.containsDuplicates(List.of("abc", "def", "ghi"))).isFalse();
     }
+
 }

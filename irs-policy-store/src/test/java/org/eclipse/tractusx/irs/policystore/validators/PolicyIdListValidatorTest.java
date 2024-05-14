@@ -24,12 +24,11 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -38,13 +37,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class BusinessPartnerNumberListValidatorTest {
-
-    public static final String VALID_BPN_1 = "BPNL1234567890AB";
-    public static final String VALID_BPN_2 = "BPNL123456789012";
+class PolicyIdListValidatorTest {
 
     @InjectMocks
-    private BusinessPartnerNumberListValidator validator;
+    private ListOfPolicyIdsValidator validator;
 
     @Captor
     private ArgumentCaptor<String> messageCaptor;
@@ -64,30 +60,18 @@ class BusinessPartnerNumberListValidatorTest {
 
     @Test
     void withValidListOfStrings() {
-        List<String> validList = Arrays.asList(VALID_BPN_1, VALID_BPN_2);
+        final String policyId1 = UUID.randomUUID().toString();
+        final String policyId2 = UUID.randomUUID().toString();
+        List<String> validList = Arrays.asList(policyId1, policyId2);
         assertThat(validator.isValid(validList, contextMock)).isTrue();
     }
 
     @Test
-    void withListContainingInvalidBPN() {
-        List<String> invalidList = Arrays.asList(VALID_BPN_1, "INVALID_BPN", VALID_BPN_2);
+    void withListContainingInvalidPolicyId() {
+        List<String> invalidList = Arrays.asList(UUID.randomUUID().toString(), "###INVALID_POLICY_ID###");
         assertThat(validator.isValid(invalidList, contextMock)).isFalse();
         verify(contextMock).buildConstraintViolationWithTemplate(messageCaptor.capture());
-        assertThat(messageCaptor.getValue()).contains("BPN").contains(" index 1 ").contains("invalid");
+        assertThat(messageCaptor.getValue()).contains("policyId").contains(" index 1 ").contains("invalid");
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = { "BPN",
-                             "BPNL",
-                             "BPNACB",
-                             "BPNA1234567890AB",
-                             "BPNS1234567890AB",
-                             "DELETE * FROM Table",
-                             "ERRRES"
-    })
-    void withInvalidBPN(final String invalidBPN) {
-        assertThat(validator.isValid(Collections.singletonList(invalidBPN), contextMock)).isFalse();
-        verify(contextMock).buildConstraintViolationWithTemplate(messageCaptor.capture());
-        assertThat(messageCaptor.getValue()).contains("BPN").contains(" index 0 ").contains("invalid");
-    }
 }

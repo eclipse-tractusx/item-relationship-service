@@ -19,7 +19,6 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.validators;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import jakarta.validation.ConstraintValidator;
@@ -28,33 +27,21 @@ import jakarta.validation.ConstraintValidatorContext;
 /**
  * Validator for list of business partner numbers (BPN).
  */
-public class BusinessPartnerNumberListValidator
-        implements ConstraintValidator<ValidListOfBusinessPartnerNumbers, List<String>> {
+public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, String> {
 
-    /**
-     * Regex for BPN.
-     */
-    public static final String BPN_REGEX = "(BPNL)[\\w\\d]{10}[\\w\\d]{2}";
-
-    private static final Pattern PATTERN = Pattern.compile(BPN_REGEX);
+    private static final Pattern PATTERN_SAFE_PATH_VARIABLE_CHARACTERS = Pattern.compile("[a-zA-Z0-9\\-_~.:]+");
 
     @Override
-    public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
+    public boolean isValid(final String value, final ConstraintValidatorContext context) {
 
-        // allow null and empty here (in order to allow flexible combination with @NotNull and @NotEmpty)
-        if (value == null || value.isEmpty()) {
-            return true;
-        }
+        // allow  null and empty here (in order to allow flexible combination with @NotNull)
+        final boolean isNull = value == null;
 
-        for (int index = 0; index < value.size(); index++) {
-            if (!PATTERN.matcher(value.get(index)).matches()) {
-                context.disableDefaultConstraintViolation();
-                final String msg = "The business partner number at index %d is invalid (should conform to pattern '%s')";
-                context.buildConstraintViolationWithTemplate(msg.formatted(index, BPN_REGEX)).addConstraintViolation();
-                return false;
-            }
-        }
-
-        return true;
+        return isNull || isValid(value);
     }
+
+    public static boolean isValid(final String policyId) {
+        return PATTERN_SAFE_PATH_VARIABLE_CHARACTERS.matcher(policyId).matches();
+    }
+
 }
