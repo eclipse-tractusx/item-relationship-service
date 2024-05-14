@@ -21,7 +21,7 @@ To this end, the API and the necessary changes to the IRS must be determined, do
 ## Summary
 Extension of reference implementation of Digital Twin Registry (DTR) in Catena-X for scalable access management to Asset Administration Shells (AAS) and adhering Submodel server(s).
 
-## Assessment 
+## Assessment
 
 - IRS uses the EDC for any request to the dDTR and Submodel Server 
 
