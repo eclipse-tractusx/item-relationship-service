@@ -1,18 +1,18 @@
 {
   "submodels": [
     {
-      "identification": "urn:uuid:52d1ed27-2729-4ff8-bb3f-d10ff0dcaf76",
+      "identification": "urn:uuid:d24501dd-7ce7-4433-a50f-87673d11e5b0",
       "aspectType": "urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
-      "contractAgreementId": "NGFkNjljZjctNzRhYy00MzYzLWJkNGUtZjBjYjc5MTFhNDY2:dXJuOnV1aWQ6MTU5MGU0ZDgtNjRiOS00NDUyLThjZGYtZjgyMjFmNGNlNzEz:OTU4MjFhY2QtNmQxMS00MjQ3LTkxZWEtZDk3ODAwMzRkMzIw",
+      "contractAgreementId": "2f477d8a-5efa-4d87-86b9-8dd36215fd22",
       "payload": {
         "localIdentifiers": [
           {
-            "value": "82227044FBE",
+            "value": "81939668QMA",
             "key": "jisNumber"
           }
         ],
         "manufacturingInformation": {
-          "date": "2022-02-04T14:48:54",
+          "date": "2022-02-04T14:48:54Z",
           "country": "HUR",
           "sites": [
             {
@@ -21,7 +21,7 @@
             }
           ]
         },
-        "catenaXId": "urn:uuid:c6d2d642-a055-4ddf-87e3-1a3b02c689e3",
+        "catenaXId": "urn:uuid:57be2fd7-501e-4fea-9f3b-a6c746c3579d",
         "partTypeInformation": {
           "manufacturerPartId": "123-0.740-3434-A",
           "customerPartId": "PRT-12345",
