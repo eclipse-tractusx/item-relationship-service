@@ -51,7 +51,7 @@
         "partTypeInformation": {
           "manufacturerPartId": "123564887-01",
           "classification": "product",
-          "nameAtManufacturer": "Tire Model A"
+         "nameAtManufacturer": "Tire Model A"
         },
         "partSitesInformationAsPlanned": [
           {

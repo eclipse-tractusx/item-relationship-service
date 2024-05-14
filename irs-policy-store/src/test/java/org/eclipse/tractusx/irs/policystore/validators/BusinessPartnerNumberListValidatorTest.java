@@ -28,6 +28,8 @@ import java.util.List;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -36,7 +38,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class BusinessPartnerNumberListValidatorTest {
+class BusinessPartnerNumberListValidatorTest {
 
     public static final String VALID_BPN_1 = "BPNL1234567890AB";
     public static final String VALID_BPN_2 = "BPNL123456789012";
@@ -72,5 +74,20 @@ public class BusinessPartnerNumberListValidatorTest {
         assertThat(validator.isValid(invalidList, contextMock)).isFalse();
         verify(contextMock).buildConstraintViolationWithTemplate(messageCaptor.capture());
         assertThat(messageCaptor.getValue()).contains("BPN").contains(" index 1 ").contains("invalid");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "BPN",
+                             "BPNL",
+                             "BPNACB",
+                             "BPNA1234567890AB",
+                             "BPNS1234567890AB",
+                             "DELETE * FROM Table",
+                             "ERRRES"
+    })
+    void withInvalidBPN(final String invalidBPN) {
+        assertThat(validator.isValid(Collections.singletonList(invalidBPN), contextMock)).isFalse();
+        verify(contextMock).buildConstraintViolationWithTemplate(messageCaptor.capture());
+        assertThat(messageCaptor.getValue()).contains("BPN").contains(" index 0 ").contains("invalid");
     }
 }

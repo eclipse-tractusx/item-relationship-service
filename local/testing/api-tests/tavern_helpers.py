@@ -48,7 +48,6 @@ def ESS_job_parameter_are_as_requested(response):
     assert parameter.get('collectAspects') is True
     assert parameter.get('depth') == 1
     assert parameter.get('direction') == 'downward'
-    assert parameter.get('lookupBPNs') is False
     aspects_list = parameter.get("aspects")
     assert 'PartSiteInformationAsPlanned' in aspects_list
     assert 'PartAsPlanned' in aspects_list
@@ -336,7 +335,6 @@ def job_parameter_are_as_requested(response):
     assert parameter.get('collectAspects') is True
     assert parameter.get('depth') == 2
     assert parameter.get('direction') == 'downward'
-    assert parameter.get('lookupBPNs') is False
     assert parameter.get('callbackUrl') == 'https://www.check123.com'
     aspects_list = parameter.get("aspects")
     assert 'urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned' in aspects_list

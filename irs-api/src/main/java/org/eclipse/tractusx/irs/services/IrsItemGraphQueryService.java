@@ -47,7 +47,6 @@ import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.Bpn;
-import org.eclipse.tractusx.irs.component.FetchedItems;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.JobParameter;
@@ -295,7 +294,6 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
                                                           .running(runningSize)
                                                           .failed(tombstonesSize)
                                                           .build())
-                      .bpnLookups(FetchedItems.builder().completed(0).failed(0).build())
                       .build();
     }
 

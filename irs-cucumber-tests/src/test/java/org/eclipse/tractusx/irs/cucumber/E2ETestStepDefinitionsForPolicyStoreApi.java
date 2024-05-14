@@ -30,6 +30,8 @@ import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.f
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.fetchPoliciesForBusinessPartnerNumbers;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.getExpectedBpnToPolicyIdsMapping;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.getPolicyTemplate;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.getPolicyTemplateWithEmptyDefinition;
+import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.getPolicyTemplateWithoutDefinition;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.registerPolicyForBpn;
 import static org.eclipse.tractusx.irs.cucumber.E2ETestHelperForPolicyStoreApi.updatePolicies;
 
@@ -177,6 +179,12 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
                 policyId);
     }
 
+    @When("I remove the policy {string} from BPN {string}")
+    public void iRemovePolicyFromBpnl(final String policyId, final String bpnl) {
+        this.deletePoliciesResponse = E2ETestHelperForPolicyStoreApi.removePolicyFromBpnl(
+                this.authenticationPropertiesBuilder, policyId, bpnl);
+    }
+
     @Then("the delete policy response should have HTTP status {int}")
     public void theDeletePolicyResponseShouldHaveStatus(final int httpStatus) {
         this.deletePoliciesResponse.statusCode(httpStatus);
@@ -231,6 +239,27 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
         final String policyJson = getPolicyTemplate().formatted(policyId);
         this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, policyJson, bpn,
                 validUntil);
+    }
+
+    @When("a policy with policyId {string} WITHOUT definition is registered for BPN {string} and validUntil {string}")
+    public void iRegisterAPolicyWithoutDefinition(final String policyId, final String bpn, final String validUntil)
+            throws IOException {
+        final String policyJson = getPolicyTemplateWithoutDefinition().formatted(policyId);
+        this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, policyJson, bpn,
+                validUntil);
+    }
+
+    @When("a policy with policyId {string} WITH EMPTY definition is registered for BPN {string} and validUntil {string}")
+    public void iRegisterAPolicyWithEmptyDefinition(final String policyId, final String bpn, final String validUntil)
+            throws IOException {
+        final String policyJson = getPolicyTemplateWithEmptyDefinition().formatted(policyId);
+        this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, policyJson, bpn,
+                validUntil);
+    }
+
+    @When("a policy WITHOUT payload is registered for BPN {string} and validUntil {string}")
+    public void iRegisterAPolicyWithoutPayload(final String bpn, final String validUntil) {
+        this.createPoliciesResponse = registerPolicyForBpn(this.authenticationPropertiesBuilder, null, bpn, validUntil);
     }
 
     @Given("I want to register a policy")
@@ -312,6 +341,27 @@ public class E2ETestStepDefinitionsForPolicyStoreApi {
     @Then("the create policy response should have HTTP status {int}")
     public void theCreatePolicyResponseShouldHaveStatus(final int httpStatus) {
         this.createPoliciesResponse.statusCode(httpStatus);
+    }
+
+    @Then("the create policy response should have message containing {string}")
+    public void theCreatePolicyResponseShouldHaveMessageContaining(final String string) {
+        final ValidatableResponse validatableResponse = this.createPoliciesResponse;
+        assertThatResponseHasMessageContaining(validatableResponse, string);
+    }
+
+    @Then("the delete policy response should have message containing {string}")
+    public void thedeletePolicyResponseShouldHaveMessageContaining(final String string) {
+        assertThatResponseHasMessageContaining(this.deletePoliciesResponse, string);
+    }
+
+    @Then("the update policy response should have message containing {string}")
+    public void theUpdatePolicyResponseShouldHaveMessageContaining(final String string) {
+        assertThatResponseHasMessageContaining(this.updatePoliciesResponse, string);
+    }
+
+    private static void assertThatResponseHasMessageContaining(final ValidatableResponse validatableResponse,
+            final String string) {
+        validatableResponse.body("messages", Matchers.hasItem(Matchers.containsString(string)));
     }
 
     @Then("the update policy response should have HTTP status {int}")

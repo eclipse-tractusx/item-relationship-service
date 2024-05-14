@@ -19,44 +19,44 @@
             "aspectType": "SingleLevelBomAsPlanned",
             "bpn": "BPNL00000003B5MJ"
         },
-        {
-            "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1.0,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:piece"
-                    }
-                },
-                "lifecycleContext": "asPlanned",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
-                "hasAlternatives": false
-            },
-            "aspectType": "SingleLevelBomAsPlanned",
-            "bpn": "BPNL50096894aNXY"
-        },
-        {
-            "catenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
-            "linkedItem": {
-                "quantity": {
-                    "quantityNumber": 1580.0,
-                    "measurementUnit": {
-                        "datatypeURI": null,
-                        "lexicalValue": "unit:gram"
-                    }
-                },
-                "lifecycleContext": "asPlanned",
-                "assembledOn": "2022-02-03T14:48:54.709Z",
-                "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-                "childCatenaXId": "urn:uuid:94d086c6-0124-4f2c-86b2-1d419e47499d",
-                "hasAlternatives": false
-            },
-            "aspectType": "SingleLevelBomAsPlanned",
-            "bpn": "BPNL50096894aNXY"
-        },
+        //{
+        //    "catenaXId": "urn:uuid:65e1554e-e5cd-4560-bac1-1352582122fb",
+        //    "linkedItem": {
+        //        "quantity": {
+        //            "quantityNumber": 1.0,
+        //            "measurementUnit": {
+        //                "datatypeURI": null,
+        //                "lexicalValue": "unit:piece"
+        //            }
+        //        },
+        //        "lifecycleContext": "asPlanned",
+        //        "assembledOn": "2022-02-03T14:48:54.709Z",
+        //        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+        //        "childCatenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
+        //        "hasAlternatives": false
+        //    },
+        //    "aspectType": "SingleLevelBomAsPlanned",
+        //    "bpn": "BPNL50096894aNXY"
+        //},
+        //{
+        //    "catenaXId": "urn:uuid:e8c48a8e-d2d7-43d9-a867-65c70c85f5b8",
+        //    "linkedItem": {
+        //        "quantity": {
+        //            "quantityNumber": 1580.0,
+        //            "measurementUnit": {
+        //                "datatypeURI": null,
+        //                "lexicalValue": "unit:gram"
+        //            }
+        //        },
+        //        "lifecycleContext": "asPlanned",
+        //        "assembledOn": "2022-02-03T14:48:54.709Z",
+        //        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+        //        "childCatenaXId": "urn:uuid:94d086c6-0124-4f2c-86b2-1d419e47499d",
+        //        "hasAlternatives": false
+        //    },
+        //    "aspectType": "SingleLevelBomAsPlanned",
+        //    "bpn": "BPNL50096894aNXY"
+        //},
         {
             "catenaXId": "urn:uuid:94d086c6-0124-4f2c-86b2-1d419e47499d",
             "linkedItem": {

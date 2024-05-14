@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.1.2] - 2024-05-13
+
+### Changed
+
+- Update IRS version to 5.1.2
+- Updated default accepted policy to latest traceability framework agreement #596
+
 ## [7.1.1] - 2024-05-08
 
 ### Changed

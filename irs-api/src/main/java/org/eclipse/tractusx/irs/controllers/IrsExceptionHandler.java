@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.controllers;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,9 @@ public class IrsExceptionHandler {
      */
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse> handleResponseStatusException(final ResponseStatusException exception) {
-        log.info(exception.getClass().getName(), exception);
+        final UUID errorRef = UUID.randomUUID();
+        final String messageTemplate = "%s (errorRef: %s)";
+        log.info(messageTemplate.formatted(exception.getClass().getName(), errorRef), exception);
 
         final HttpStatus httpStatus = HttpStatus.valueOf(exception.getStatusCode().value());
 
@@ -63,7 +66,8 @@ public class IrsExceptionHandler {
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(httpStatus)
                                                 .withError(httpStatus.getReasonPhrase())
-                                                .withMessages(List.of(exception.getReason()))
+                                                .withMessages(List.of(messageTemplate.formatted(exception.getReason(),
+                                                        errorRef)))
                                                 .build());
     }
 

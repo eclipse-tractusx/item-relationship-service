@@ -160,12 +160,6 @@ public class E2ETestStepDefinitionsForJobApi {
         registerBatchOrderBuilder.collectAspects(Boolean.parseBoolean(collectAspects));
     }
 
-    @And("lookupBPNs {string}")
-    public void lookupBPNs(String lookupBPNs) {
-        registerJobBuilder.lookupBPNs(Boolean.parseBoolean(lookupBPNs));
-        registerBatchOrderBuilder.lookupBPNs(Boolean.parseBoolean(lookupBPNs));
-    }
-
     @And("depth {int}")
     public void depth(int depth) {
         registerJobBuilder.depth(depth);
@@ -368,9 +362,6 @@ public class E2ETestStepDefinitionsForJobApi {
         if ("summary".equals(summary)) {
             assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getCompleted()).isEqualTo(completed);
             assertThat(completedJob.getJob().getSummary().getAsyncFetchedItems().getFailed()).isEqualTo(failed);
-        } else if ("bpn summary".equals(summary)) {
-            assertThat(completedJob.getJob().getSummary().getBpnLookups().getCompleted()).isEqualTo(completed);
-            assertThat(completedJob.getJob().getSummary().getBpnLookups().getFailed()).isEqualTo(failed);
         }
     }
 
@@ -435,11 +426,6 @@ public class E2ETestStepDefinitionsForJobApi {
     @And("direction is {string}")
     public void directionIs(String direction) {
         assertThat(completedJob.getJob().getParameter().getDirection()).isEqualTo(Direction.fromValue(direction));
-    }
-
-    @And("lookupBPNs is {string}")
-    public void lookupBPNsIs(String lookupBPNs) {
-        assertThat(completedJob.getJob().getParameter().isLookupBPNs()).isEqualTo(Boolean.valueOf(lookupBPNs));
     }
 
     @And("bomLifecycle is {string}")

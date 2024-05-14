@@ -34,7 +34,7 @@ public class BusinessPartnerNumberListValidator
     /**
      * Regex for BPN.
      */
-    public static final String BPN_REGEX = "(BPN)[LSA][\\w\\d]{10}[\\w\\d]{2}";
+    public static final String BPN_REGEX = "(BPNL)[\\w\\d]{10}[\\w\\d]{2}";
 
     private static final Pattern PATTERN = Pattern.compile(BPN_REGEX);
 
