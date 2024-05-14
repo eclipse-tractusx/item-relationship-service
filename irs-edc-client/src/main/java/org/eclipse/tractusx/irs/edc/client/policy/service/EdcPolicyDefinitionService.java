@@ -64,12 +64,14 @@ public class EdcPolicyDefinitionService {
     private final EdcConfiguration config;
     private final RestTemplate restTemplate;
 
+    @Deprecated(since = "5.1.1")
     public String createAccessPolicy(final String policyName) throws CreateEdcPolicyDefinitionException {
         final String accessPolicyId = UUID.randomUUID().toString();
 
         return createAccessPolicy(policyName, accessPolicyId);
     }
-
+    
+    @Deprecated(since = "5.1.1")
     public String createAccessPolicy(final String policyName, final String policyId)
             throws CreateEdcPolicyDefinitionException {
         final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, policyId);
