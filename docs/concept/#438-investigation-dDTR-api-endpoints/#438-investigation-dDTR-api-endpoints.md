@@ -71,7 +71,7 @@ No impact on data consumers.
 
 ### AAS_Access_v3_Architecture
 
-![AAS_Access_v3_Architecture.jpg](AAS_Access_v3_Architecture.jpg)
+![AAS_Access_v3_Architecture.svg](AAS_Access_v3_Architecture.svg)
 
 ## Glossary
 
