@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
+ 
+### Changed
+
+- Improved policy store API input validation. #528
+
 
 
 ## Added
@@ -31,7 +36,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Fixed
 
-- Fixed issue in EDR Token renewal #358
+- Fixed issue in EDR token renewal. #358
 
 ### Added
 

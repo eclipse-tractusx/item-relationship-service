@@ -19,42 +19,49 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.validators;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * Validator for list of business partner numbers (BPN).
+ * Validator for list of policyIDs
  */
-public class BusinessPartnerNumberListValidator
-        implements ConstraintValidator<ValidListOfBusinessPartnerNumbers, List<String>> {
-
-    /**
-     * Regex for BPN.
-     */
-    public static final String BPN_REGEX = "(BPNL)[\\w\\d]{10}[\\w\\d]{2}";
-
-    private static final Pattern PATTERN = Pattern.compile(BPN_REGEX);
+public class ListOfPolicyIdsValidator implements ConstraintValidator<ListOfPolicyIds, List<String>> {
 
     @Override
     public boolean isValid(final List<String> value, final ConstraintValidatorContext context) {
 
-        // allow null and empty here (in order to allow flexible combination with @NotNull and @NotEmpty)
+        // allow null and empty here
+        // (in order to allow flexible combination with @NotNull and @NotEmpty)
         if (value == null || value.isEmpty()) {
             return true;
         }
 
+        if (containsDuplicates(value)) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("The list of policyIds must not contain duplicates")
+                   .addConstraintViolation();
+            return false;
+        }
+
         for (int index = 0; index < value.size(); index++) {
-            if (!PATTERN.matcher(value.get(index)).matches()) {
+            if (!PolicyIdValidator.isValid(value.get(index))) {
                 context.disableDefaultConstraintViolation();
-                final String msg = "The business partner number at index %d is invalid (should conform to pattern '%s')";
-                context.buildConstraintViolationWithTemplate(msg.formatted(index, BPN_REGEX)).addConstraintViolation();
+                final String msg = "The policyId at index %d is invalid (%s)";
+                context.buildConstraintViolationWithTemplate(msg.formatted(index, ValidPolicyId.DEFAULT_MESSAGE))
+                       .addConstraintViolation();
                 return false;
             }
         }
 
         return true;
+    }
+
+    protected static boolean containsDuplicates(final List<String> strings) {
+        final Set<String> set = new HashSet<>(strings);
+        return set.size() < strings.size();
     }
 }

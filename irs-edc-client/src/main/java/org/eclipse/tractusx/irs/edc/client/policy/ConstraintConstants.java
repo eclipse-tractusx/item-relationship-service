@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,18 +17,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.data;
+package org.eclipse.tractusx.irs.edc.client.policy;
 
 /**
- * Exception when parsing JSON
+ * Constants for {@link Constraint}s
  */
-public class JsonParseException extends RuntimeException {
+public final class ConstraintConstants {
 
-    public JsonParseException(final String message, final Throwable throwable) {
-        super(message, throwable);
+    public static final Constraint ACTIVE_MEMBERSHIP = new Constraint("Membership", new Operator(OperatorType.EQ),
+            "active");
+
+    public static final Constraint FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE = new Constraint(
+            "FrameworkAgreement.traceability", new Operator(OperatorType.EQ), "active");
+
+    public static final Constraint PURPOSE_ID_3_1_TRACE = new Constraint("PURPOSE", new Operator(OperatorType.EQ),
+            "ID 3.1 Trace");
+
+    private ConstraintConstants() {
+        // helper class
     }
 
-    public JsonParseException(final Throwable cause) {
-        super(cause);
-    }
 }

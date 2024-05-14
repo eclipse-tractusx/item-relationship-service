@@ -29,19 +29,23 @@ import java.time.OffsetDateTime;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.json.JsonObject;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 
 /**
  * Object for API to create policy
  */
 @SuppressWarnings("FileTabCharacter")
 @Schema(description = "Request to add a policy")
+@Builder
 public record CreatePolicyRequest(
 
         @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations.",
                 example = "2025-12-12T23:59:59.999Z") //
         @NotNull //
+        @Future(message = "must be in future") //
         OffsetDateTime validUntil, //
 
         @Schema(description = """
@@ -66,7 +70,7 @@ public record CreatePolicyRequest(
                 "@context": {
                     "odrl": "http://www.w3.org/ns/odrl/2/"
                 },
-                "@id": "policy-id",
+                "@id": "e917f5f-8dac-49ac-8d10-5b4d254d2b48",
                 "@type": "PolicyDefinitionRequestDto",
                 "policy": {
                     "@type": "Policy",
