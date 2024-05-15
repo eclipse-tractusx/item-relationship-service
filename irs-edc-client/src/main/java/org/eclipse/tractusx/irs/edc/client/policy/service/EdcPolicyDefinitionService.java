@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.edc.client.policy.service;
 
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_ODRL;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -135,6 +136,7 @@ public class EdcPolicyDefinitionService {
 
         final var edcPolicyPermissionConstraint = EdcPolicyPermissionConstraint.builder()
                                                                                .andExpressions(List.of(constraint))
+                                                                               .orExpressions(Collections.emptyList())
                                                                                .type(ATOMIC_CONSTRAINT)
                                                                                .build();
 
