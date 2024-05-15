@@ -92,7 +92,7 @@ class EdcPolicyDefinitionServiceTest {
                         		"@type": "Policy",
                         		"odrl:permission": [
                         			{
-                        				"odrl:action": "USE",
+                        				"odrl:action": "odrl:use",
                         				"odrl:constraint": {
                         					"@type": "AtomicConstraint",
                         					"odrl:or": [
@@ -167,7 +167,7 @@ class EdcPolicyDefinitionServiceTest {
     }
 
     @Test
-    void givenCreatePolicy_whenConflict_thenReturnExstingPolicyId() throws CreateEdcPolicyDefinitionException {
+    void givenCreatePolicy_whenConflict_thenReturnExstingPolicyId() {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);

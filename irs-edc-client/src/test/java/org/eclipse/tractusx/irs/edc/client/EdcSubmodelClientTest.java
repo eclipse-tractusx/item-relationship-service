@@ -93,7 +93,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private static final String PROVIDER_SUFFIX = "/test";
     private static final String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
     private static final String existingCatenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
-    private static final String BPN = "BPNL00000003CRHK";
+    private static final String BPN = "BPNL00000000TEST";
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final TimeMachine clock = new TimeMachine();

@@ -65,7 +65,7 @@ public class EdcAssetService {
     private static final String ASSET_CREATION_PROPERTY_POLICY_ID = "https://w3id.org/edc/v0.0.1/ns/policy-id";
     private static final String ASSET_CREATION_PROPERTY_EDC_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String ASSET_CREATION_PROPERTY_DATA_CORE_REGISTRY = "data.core.digitalTwinRegistry";
-    private static final String ASSET_CREATION_PROPERTY_DCAT_TYPE = "https://purl.org/dc/terms/type";
+    private static final String ASSET_CREATION_PROPERTY_DCAT_TYPE = "http://purl.org/dc/terms/type";
     private static final String ASSET_CREATION_PROPERTY_DCAT_REGISTRY = "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry";
     private static final String ASSET_CREATION_PROPERTY_COMMON_VERSION_KEY = "https://w3id.org/catenax/ontology/common#version";
     private static final String ASSET_CREATION_PROPERTY_COMMON_VERSION_VALUE = "3.0";

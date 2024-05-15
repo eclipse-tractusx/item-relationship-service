@@ -48,7 +48,7 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                                   "validUntil": "2025-12-12T23:59:59.999Z",
                                   "permissions": [
                                       {
-                                          "action": "USE",
+                                          "action": "odrl:use",
                                           "constraint": {
                                               "and": [
                                                   {
@@ -94,7 +94,7 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                 		"policy": {
                 			"odrl:permission": [
                 				{
-                					"odrl:action": "USE",
+                					"odrl:action": "odrl:use",
                 					"odrl:constraint": {
                 						"odrl:and": [
                 							{

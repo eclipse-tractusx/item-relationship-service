@@ -23,11 +23,19 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * A PolicyType object use in Permission
  */
+@Getter
+@RequiredArgsConstructor
 public enum PolicyType {
+    ACCESS("odrl:access"),
+    USE("odrl:use");
 
-    ACCESS, USE
-
+    @JsonValue
+    private final String value;
 }

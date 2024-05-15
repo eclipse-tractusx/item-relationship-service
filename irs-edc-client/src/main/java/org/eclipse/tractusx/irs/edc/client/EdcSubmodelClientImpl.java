@@ -67,7 +67,7 @@ import org.springframework.util.StopWatch;
 })
 public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
-    private static final String DT_DCAT_TYPE_ID = "'https://purl.org/dc/terms/type'.'@id'";
+    private static final String DT_DCAT_TYPE_ID = "'http://purl.org/dc/terms/type'.'@id'";
     private static final String DT_TAXONOMY_REGISTRY = "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry";
     private static final String DT_EDC_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
     private static final String DT_DATA_CORE_REGISTRY = "data.core.digitalTwinRegistry";

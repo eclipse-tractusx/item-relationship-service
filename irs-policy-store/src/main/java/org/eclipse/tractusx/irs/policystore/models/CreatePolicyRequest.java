@@ -72,7 +72,7 @@ public record CreatePolicyRequest(
                     "@type": "Policy",
                     "odrl:permission": [
                         {
-                            "odrl:action": "USE",
+                            "odrl:action": "odrl:use",
                             "odrl:constraint": {
                                 "odrl:and": [
                                     {

@@ -83,7 +83,7 @@ class EdcTransformerTest {
                             "@type": "odrl:Offer",
                             "odrl:permission": {
                                 "odrl:action": {
-                                    "odrl:type": "USE"
+                                    "odrl:type": "odrl:use"
                                 },
                                 "odrl:constraint": {
                                     "odrl:or": {
@@ -133,8 +133,8 @@ class EdcTransformerTest {
                         "dct:terms": "connector",
                         "dct:endpointUrl": "https://irs-test-controlplane-provider.dev.demo.catena-x.net/api/v1/dsp"
                     },
-                    "dspace:participantId": "BPNL00000003CRHK",
-                    "participantId": "BPNL00000003CRHK",
+                    "dspace:participantId": "BPNL00000000TEST",
+                    "participantId": "BPNL00000000TEST",
                     "@context": {
                         "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
                         "edc": "https://w3id.org/edc/v0.0.1/ns/",
@@ -195,7 +195,7 @@ class EdcTransformerTest {
     }
 
     private static Policy createPolicy(final String assetId) {
-        final Action action = Action.Builder.newInstance().type("USE").build();
+        final Action action = Action.Builder.newInstance().type("odrl:use").build();
         final AtomicConstraint atomicConstraint = AtomicConstraint.Builder.newInstance()
                                                                           .leftExpression(
                                                                                   new LiteralExpression("PURPOSE"))
@@ -212,11 +212,13 @@ class EdcTransformerTest {
     void setUp() {
         jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
         jsonLd.registerNamespace("odrl", "http://www.w3.org/ns/odrl/2/");
-        jsonLd.registerNamespace("dct", "https://purl.org/dc/terms/");
+        jsonLd.registerNamespace("dct", "http://purl.org/dc/terms/");
         jsonLd.registerNamespace("tx", "https://w3id.org/tractusx/v0.0.1/ns/");
         jsonLd.registerNamespace("edc", "https://w3id.org/edc/v0.0.1/ns/");
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
+        jsonLd.registerNamespace("cx-common", "https://w3id.org/catenax/ontology/common#");
+        jsonLd.registerNamespace("cx-taxo", "https://w3id.org/catenax/taxonomy#");
 
         ObjectMapper objectMapper = objectMapper();
         edcTransformer = new EdcTransformer(objectMapper, jsonLd, new TypeTransformerRegistryImpl());
@@ -245,7 +247,7 @@ class EdcTransformerTest {
         assertThat(actualCatalog).isNotNull();
         assertThat(actualCatalog.getId()).isEqualTo("78ff625c-0c05-4014-965c-bd3d0a6a0de0");
         assertThat(actualCatalog.getProperties()).containsEntry("https://w3id.org/edc/v0.0.1/ns/participantId",
-                "BPNL00000003CRHK");
+                "BPNL00000000TEST");
 
         assertThat(actualCatalog.getDatasets()).hasSize(1);
         assertThat(actualCatalog.getDataServices().get(0)).isEqualTo(expectedDataService);
@@ -317,7 +319,7 @@ class EdcTransformerTest {
         final String protocol = "dataspace-protocol-http";
         final String contractId = "7681f966-36ea-4542-b5ea-0d0db81967de:35c78eca-db53-442c-9e01-467fc22c9434-55840861-5d7f-444b-972a-6e8b78552d8a:66131c58-32af-4df0-825d-77f7df6017c";
         final String assetId = "urn:uuid:35c78eca-db53-442c-9e01-467fc22c9434-urn:uuid:55840861-5d7f-444b-972a-6e8b78552d8a";
-        final String connectorId = "BPNL00000003CRHK";
+        final String connectorId = "BPNL00000000TEST";
         final DataAddress dataAddress = DataAddress.Builder.newInstance().type("HttpProxy").build();
         final List<CallbackAddress> callbackAddresses = List.of(CallbackAddress.Builder.newInstance()
                                                                                        .uri("https://backend.app/endpoint-data-reference")

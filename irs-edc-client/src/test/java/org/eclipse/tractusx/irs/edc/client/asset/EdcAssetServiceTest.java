@@ -82,7 +82,7 @@ class EdcAssetServiceTest {
     void setUp() {
         TitaniumJsonLd jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
         jsonLd.registerNamespace("odrl", "http://www.w3.org/ns/odrl/2/");
-        jsonLd.registerNamespace("dct", "https://purl.org/dc/terms/");
+        jsonLd.registerNamespace("dct", "http://purl.org/dc/terms/");
         jsonLd.registerNamespace("tx", "https://w3id.org/tractusx/v0.0.1/ns/");
         jsonLd.registerNamespace("edc", "https://w3id.org/edc/v0.0.1/ns/");
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
@@ -142,7 +142,7 @@ class EdcAssetServiceTest {
                 		"edc:baseUrl": "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive"
                 	},
                 	"@context": {
-                		"dct": "https://purl.org/dc/terms/",
+                		"dct": "http://purl.org/dc/terms/",
                 		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
                 		"edc": "https://w3id.org/edc/v0.0.1/ns/",
                 		"odrl": "http://www.w3.org/ns/odrl/2/",
@@ -156,7 +156,7 @@ class EdcAssetServiceTest {
     @Test
     void testRegistryAssetCreateRequestStructure() throws JSONException {
 
-        Map<String, Object> properties = Map.of("https://purl.org/dc/terms/type",
+        Map<String, Object> properties = Map.of("http://purl.org/dc/terms/type",
                 Map.of("@id", "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry"),
                 "https://w3id.org/catenax/ontology/common#version", "3.0", "https://w3id.org/edc/v0.0.1/ns/type",
                 "data.core.digitalTwinRegistry");
@@ -201,7 +201,7 @@ class EdcAssetServiceTest {
                 		"edc:baseUrl": "https://test.dtr/registry"
                 	},
                 	"@context": {
-                		"dct": "https://purl.org/dc/terms/",
+                		"dct": "http://purl.org/dc/terms/",
                 		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
                 		"edc": "https://w3id.org/edc/v0.0.1/ns/",
                 		"odrl": "http://www.w3.org/ns/odrl/2/",

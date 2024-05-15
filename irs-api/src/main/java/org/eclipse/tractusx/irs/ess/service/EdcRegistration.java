@@ -150,7 +150,7 @@ public class EdcRegistration {
                       "policy": {
                         "odrl:permission": [
                           {
-                            "odrl:action": "USE",
+                            "odrl:action": "odrl:use",
                             "odrl:constraint": {
                               "@type": "AtomicConstraint",
                               "odrl:or": [

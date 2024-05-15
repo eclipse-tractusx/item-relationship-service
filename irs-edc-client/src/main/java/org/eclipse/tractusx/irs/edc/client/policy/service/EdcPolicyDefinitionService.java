@@ -54,12 +54,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class EdcPolicyDefinitionService {
 
-    private static final String USE_ACTION = "USE";
     private static final String POLICY_TYPE = "Policy";
     private static final String POLICY_DEFINITION_TYPE = "PolicyDefinitionRequestDto";
     private static final String ATOMIC_CONSTRAINT = "AtomicConstraint";
     private static final String CONSTRAINT = "Constraint";
     private static final String OPERATOR_PREFIX = "odrl:";
+    private static final String USE_ACTION = OPERATOR_PREFIX + "use";
 
     private final EdcConfiguration config;
     private final RestTemplate restTemplate;

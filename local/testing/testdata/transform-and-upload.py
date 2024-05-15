@@ -60,9 +60,11 @@ def create_edc_registry_asset_payload(registry_url_, asset_prop_id_):
         "@context": edc_context(),
         "@id": f"{asset_prop_id_}",  # DTR-EDC-instance-unique-ID
         "edc:properties": {
-            "dct:type": {"@id": "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry"},
+            "dct:type": {
+                "@id": "cx-taxo:DigitalTwinRegistry"
+            },
             "cx-common:version": "3.0",
-            "edc:description": "Digital Twin Registry Endpoint of IRS DEV",
+            "edc:description": "Digital Twin Registry Endpoint",
             "edc:id": f"{asset_prop_id_}",  # DTR-EDC-instance-unique-ID
             "edc:type": "data.core.digitalTwinRegistry"
         },
@@ -87,6 +89,7 @@ def edc_context():
         "dcat": "https://www.w3.org/ns/dcat/",
         "odrl": "http://www.w3.org/ns/odrl/2/",
         "dspace": "https://w3id.org/dspace/v0.8/",
+        "cx-taxo": "https://w3id.org/catenax/taxonomy#",
         "cx-common": "https://w3id.org/catenax/ontology/common#"
     }
 

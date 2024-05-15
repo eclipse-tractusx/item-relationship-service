@@ -41,7 +41,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Permission {
 
-    @Schema(implementation = PolicyType.class, example = "USE")
+    @Schema(implementation = PolicyType.class, example = "odrl:use")
     @JsonAlias({"odrl:action"})
     private PolicyType action;
     @Schema
