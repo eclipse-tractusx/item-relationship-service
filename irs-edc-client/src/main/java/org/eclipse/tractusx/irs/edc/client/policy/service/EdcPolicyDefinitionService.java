@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.edc.client.policy.service;
 
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_ODRL;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,12 +65,14 @@ public class EdcPolicyDefinitionService {
     private final EdcConfiguration config;
     private final RestTemplate restTemplate;
 
+    @Deprecated(since = "5.1.1")
     public String createAccessPolicy(final String policyName) throws CreateEdcPolicyDefinitionException {
         final String accessPolicyId = UUID.randomUUID().toString();
 
         return createAccessPolicy(policyName, accessPolicyId);
     }
 
+    @Deprecated(since = "5.1.1")
     public String createAccessPolicy(final String policyName, final String policyId)
             throws CreateEdcPolicyDefinitionException {
         final EdcCreatePolicyDefinitionRequest request = createPolicyDefinition(policyName, policyId);
@@ -124,29 +127,23 @@ public class EdcPolicyDefinitionService {
 
     public EdcCreatePolicyDefinitionRequest createPolicyDefinition(final String policyName,
             final String accessPolicyId) {
-        final EdcPolicyPermissionConstraintExpression constraint = EdcPolicyPermissionConstraintExpression.builder()
-                                                                                                          .leftOperand(
-                                                                                                                  "PURPOSE")
-                                                                                                          .rightOperand(
-                                                                                                                  policyName)
-                                                                                                          .operator(
-                                                                                                                  new EdcOperator(
-                                                                                                                          OPERATOR_PREFIX
-                                                                                                                                  + "eq"))
-                                                                                                          .type(CONSTRAINT)
-                                                                                                          .build();
+        final var constraint = EdcPolicyPermissionConstraintExpression.builder()
+                                                                      .leftOperand("PURPOSE")
+                                                                      .rightOperand(policyName)
+                                                                      .operator(new EdcOperator(OPERATOR_PREFIX + "eq"))
+                                                                      .type(CONSTRAINT)
+                                                                      .build();
 
-        final EdcPolicyPermissionConstraint edcPolicyPermissionConstraint = EdcPolicyPermissionConstraint.builder()
-                                                                                                         .orExpressions(
-                                                                                                                 List.of(constraint))
-                                                                                                         .type(ATOMIC_CONSTRAINT)
-                                                                                                         .build();
+        final var edcPolicyPermissionConstraint = EdcPolicyPermissionConstraint.builder()
+                                                                               .andExpressions(List.of(constraint))
+                                                                               .orExpressions(Collections.emptyList())
+                                                                               .type(ATOMIC_CONSTRAINT)
+                                                                               .build();
 
-        final EdcPolicyPermission odrlPermissions = EdcPolicyPermission.builder()
-                                                                       .action(USE_ACTION)
-                                                                       .edcPolicyPermissionConstraints(
-                                                                               edcPolicyPermissionConstraint)
-                                                                       .build();
+        final var odrlPermissions = EdcPolicyPermission.builder()
+                                                       .action(USE_ACTION)
+                                                       .edcPolicyPermissionConstraints(edcPolicyPermissionConstraint)
+                                                       .build();
 
         final EdcPolicy edcPolicy = EdcPolicy.builder()
                                              .odrlPermissions(List.of(odrlPermissions))
