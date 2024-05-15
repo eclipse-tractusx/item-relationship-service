@@ -282,7 +282,7 @@ class EssServiceTest {
     @Test
     void shouldCompleteJobIfFinalNotificationWasReceived() {
         // Arrange
-git         final UUID jobId = UUID.randomUUID();
+        final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId);
         final String notificationId = UUID.randomUUID().toString();
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(jobSnapshot, null).update(jobSnapshot,

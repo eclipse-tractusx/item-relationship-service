@@ -7,13 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
- 
+
+### Fixed
+
+-  Fixed ESS Investigation job processing not starting #579
+
 ### Changed
 
 - Improved policy store API input validation. #528
 - Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
 - Marked createAccessPolicy requests with deprecation mark.
-
 
 ## Added
 
