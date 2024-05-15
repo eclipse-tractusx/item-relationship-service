@@ -292,9 +292,11 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         final List<CatalogItem> contractOffers = new ArrayList<>(
                 catalogFacade.fetchCatalogByFilter(providerWithSuffix, DT_DCAT_TYPE_ID, DT_TAXONOMY_REGISTRY, bpn));
 
-        final List<CatalogItem> contractOffersDataCore = catalogFacade.fetchCatalogByFilter(providerWithSuffix,
-                DT_EDC_TYPE, DT_DATA_CORE_REGISTRY, bpn);
-        contractOffers.addAll(contractOffersDataCore);
+        if (contractOffers.isEmpty()) {
+            final List<CatalogItem> contractOffersDataCore = catalogFacade.fetchCatalogByFilter(providerWithSuffix,
+                    DT_EDC_TYPE, DT_DATA_CORE_REGISTRY, bpn);
+            contractOffers.addAll(contractOffersDataCore);
+        }
 
         if (contractOffers.isEmpty()) {
             throw new EdcClientException(
