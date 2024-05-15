@@ -180,7 +180,7 @@ class IrsWireMockIntegrationTest {
 
         // Assert
         WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(3);
+        WiremockSupport.verifyNegotiationCalls(5);
 
         assertThat(jobForJobId.getJob().getState()).isEqualTo(JobState.COMPLETED);
         assertThat(jobForJobId.getShells()).hasSize(2);
@@ -273,7 +273,7 @@ class IrsWireMockIntegrationTest {
         assertThat(jobForJobId.getSubmodels()).hasSize(6);
 
         WiremockSupport.verifyDiscoveryCalls(1);
-        WiremockSupport.verifyNegotiationCalls(6);
+        WiremockSupport.verifyNegotiationCalls(9);
     }
 
     private void successfulRegistryAndDataRequest(final String globalAssetId, final String idShort, final String bpn,

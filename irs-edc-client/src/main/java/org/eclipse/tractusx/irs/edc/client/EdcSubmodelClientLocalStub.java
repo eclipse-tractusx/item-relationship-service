@@ -81,4 +81,10 @@ public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
             final String filterKey, final String filterValue, final String bpn) throws EdcClientException {
         throw new EdcClientException("Not implemented");
     }
+
+    @Override
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(
+            final String endpointAddress, final String bpn) throws EdcClientException {
+        throw new EdcClientException("Not implemented");
+    }
 }
