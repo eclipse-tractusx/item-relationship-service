@@ -11,8 +11,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 ### Changed
 
 - Improved policy store API input validation. #528
-- eclipse-tractusx/traceability-foss#963 remove edc namespace from EdcContractAgreementNegotiationResponse and
-  EdcContractAgreementsResponse
+- Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
+- Marked createAccessPolicy requests with deprecation mark.
+- remove edc namespace from EdcContractAgreementNegotiationResponse and
+  EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
 
 
 ## Added
