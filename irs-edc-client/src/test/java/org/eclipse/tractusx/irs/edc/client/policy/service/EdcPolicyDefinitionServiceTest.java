@@ -95,7 +95,7 @@ class EdcPolicyDefinitionServiceTest {
                         				"odrl:action": "USE",
                         				"odrl:constraint": {
                         					"@type": "AtomicConstraint",
-                        					"odrl:or": [
+                        					"odrl:and": [
                         						{
                         							"@type": "Constraint",
                         							"odrl:leftOperand": "PURPOSE",
