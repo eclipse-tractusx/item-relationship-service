@@ -13,6 +13,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - IRS now searches for Digital Twin Registry contract offers by
   type `dct:type`: `https://w3id.org/catenax/taxonomy#DigitalTwinRegistry`
   or `edc:type`: `data.core.digitalTwinRegistry`. #616
+- Fix missing and malformed properties for EDC policy transformation. #648
 
 
 ## [5.1.2] - 2024-05-13
