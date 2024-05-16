@@ -2651,7 +2651,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\"\n}"
+				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"http://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2712,7 +2712,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:querySpec\": {\n\t\t\"edc:filterExpression\": {\n\t\t\t\"edc:operandLeft\": \"https://w3id.org/edc/v0.0.1/ns/type\",\n\t\t\t\"edc:operator\": \"=\",\n\t\t\t\"edc:operandRight\": \"data.core.digitalTwinRegistry\"\n\t\t}\n\t}\n}"
+				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"http://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:querySpec\": {\n\t\t\"edc:filterExpression\": {\n\t\t\t\"edc:operandLeft\": \"https://w3id.org/edc/v0.0.1/ns/type\",\n\t\t\t\"edc:operator\": \"=\",\n\t\t\t\"edc:operandRight\": \"data.core.digitalTwinRegistry\"\n\t\t}\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2749,7 +2749,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:querySpec\": {\n\t\t\"edc:filterExpression\": {\n\t\t\t\"edc:operandLeft\": \"https://w3id.org/edc/v0.0.1/ns/id\",\n\t\t\t\"edc:operator\": \"=\",\n\t\t\t\"edc:operandRight\": \"{% prompt 'assetId', '', '', '', false, true %}\"\n\t\t}\n\t}\n}"
+				"text": "{\n\t\"@context\": {\n\t\t\"dct\": \"http://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t},\n\t\"edc:providerUrl\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:querySpec\": {\n\t\t\"edc:filterExpression\": {\n\t\t\t\"edc:operandLeft\": \"https://w3id.org/edc/v0.0.1/ns/id\",\n\t\t\t\"edc:operator\": \"=\",\n\t\t\t\"edc:operandRight\": \"{% prompt 'assetId', '', '', '', false, true %}\"\n\t\t}\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2786,7 +2786,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"edc:connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:connectorId\": \"BPNL00000001CRHK\",\n\t\"edc:offer\": {\n\t\t\"@type\": \"edc:ContractOfferDescription\",\n\t\t\"edc:offerId\": \"ZGR0ci1jeG1lbWJlcnMtY29udHJhY3Q=:ZGlnaXRhbC10d2luLXJlZ2lzdHJ5:OGQ0ZTNkODYtOTIxOC00MjljLWI1N2EtNWZlZTZkODIzMmEx\",\n\t\t\"edc:assetId\": \"digital-twin-registry\",\n\t\t\"edc:policy\": {\n\t\t\t\"@type\": \"odrl:Set\",\n\t\t\t\"odrl:permission\": {\n\t\t\t\t\"odrl:target\": \"digital-twin-registry\",\n\t\t\t\t\"odrl:action\": {\n\t\t\t\t\t\"odrl:type\": \"USE\"\n\t\t\t\t}\n\t\t\t},\n\t\t\t\"odrl:prohibition\": [],\n\t\t\t\"odrl:obligation\": [],\n\t\t\t\"odrl:target\": \"digital-twin-registry\"\n\t\t}\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:callbackAddresses\": [],\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t}\n}"
+				"text": "{\n\t\"edc:connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:connectorId\": \"BPNL00000001CRHK\",\n\t\"edc:offer\": {\n\t\t\"@type\": \"edc:ContractOfferDescription\",\n\t\t\"edc:offerId\": \"ZGR0ci1jeG1lbWJlcnMtY29udHJhY3Q=:ZGlnaXRhbC10d2luLXJlZ2lzdHJ5:OGQ0ZTNkODYtOTIxOC00MjljLWI1N2EtNWZlZTZkODIzMmEx\",\n\t\t\"edc:assetId\": \"digital-twin-registry\",\n\t\t\"edc:policy\": {\n\t\t\t\"@type\": \"odrl:Set\",\n\t\t\t\"odrl:permission\": {\n\t\t\t\t\"odrl:target\": \"digital-twin-registry\",\n\t\t\t\t\"odrl:action\": {\n\t\t\t\t\t\"odrl:type\": \"USE\"\n\t\t\t\t}\n\t\t\t},\n\t\t\t\"odrl:prohibition\": [],\n\t\t\t\"odrl:obligation\": [],\n\t\t\t\"odrl:target\": \"digital-twin-registry\"\n\t\t}\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:callbackAddresses\": [],\n\t\"@context\": {\n\t\t\"dct\": \"http://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -2935,7 +2935,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"edc:assetId\": \"digital-twin-registry\",\n\t\"edc:connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:contractId\": \"ZGR0ci1jeG1lbWJlcnMtY29udHJhY3Q=:ZGlnaXRhbC10d2luLXJlZ2lzdHJ5:NGNlMDk0ODgtOTMzYy00ZDk3LThiNTAtNDMyZWRjMzIwM2Fm\",\n\t\"edc:dataDestination\": {\n\t\t\"edc:type\": \"HttpProxy\"\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:managedResources\": false,\n\t\"edc:connectorId\": \"BPNL00000001CRHK\",\n\t\"@context\": {\n\t\t\"dct\": \"https://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t}\n}"
+				"text": "{\n\t\"edc:assetId\": \"digital-twin-registry\",\n\t\"edc:connectorAddress\": \"{{ _.PROVIDER_CONTROLPLANE_1 }}/api/v1/dsp\",\n\t\"edc:contractId\": \"ZGR0ci1jeG1lbWJlcnMtY29udHJhY3Q=:ZGlnaXRhbC10d2luLXJlZ2lzdHJ5:NGNlMDk0ODgtOTMzYy00ZDk3LThiNTAtNDMyZWRjMzIwM2Fm\",\n\t\"edc:dataDestination\": {\n\t\t\"edc:type\": \"HttpProxy\"\n\t},\n\t\"edc:protocol\": \"dataspace-protocol-http\",\n\t\"edc:managedResources\": false,\n\t\"edc:connectorId\": \"BPNL00000001CRHK\",\n\t\"@context\": {\n\t\t\"dct\": \"http://purl.org/dc/terms/\",\n\t\t\"tx\": \"https://w3id.org/tractusx/v0.0.1/ns/\",\n\t\t\"edc\": \"https://w3id.org/edc/v0.0.1/ns/\",\n\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\",\n\t\t\"dcat\": \"https://www.w3.org/ns/dcat/\",\n\t\t\"dspace\": \"https://w3id.org/dspace/v0.8/\"\n\t}\n}"
 			},
 			"parameters": [],
 			"headers": [
