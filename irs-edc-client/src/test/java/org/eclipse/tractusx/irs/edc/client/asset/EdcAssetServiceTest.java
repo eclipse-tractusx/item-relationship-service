@@ -87,7 +87,7 @@ class EdcAssetServiceTest {
         jsonLd.registerNamespace("edc", "https://w3id.org/edc/v0.0.1/ns/");
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
-        jsonLd.registerNamespace("cx-common", "https://w3id.org/catenax/ontology/common#");
+        jsonLd.registerNamespace("cx-policy", "https://w3id.org/catenax/policy/");
 
         this.edcTransformer = new EdcTransformer(objectMapper(), jsonLd, new TypeTransformerRegistryImpl());
         this.service = new EdcAssetService(edcTransformer, edcConfiguration, restTemplate);
@@ -187,7 +187,7 @@ class EdcAssetServiceTest {
                         "dct:type": {
                             "@id": "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry"
                         },
-                        "cx-common:version": "3.0",
+                        "https://w3id.org/catenax/ontology/common#version": "3.0",
                 		"edc:type": "data.core.digitalTwinRegistry",
                         "edc:id": "Asset1",
                         "edc:contenttype": "Asset"

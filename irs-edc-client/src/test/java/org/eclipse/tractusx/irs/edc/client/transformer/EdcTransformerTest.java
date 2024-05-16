@@ -217,8 +217,7 @@ class EdcTransformerTest {
         jsonLd.registerNamespace("edc", "https://w3id.org/edc/v0.0.1/ns/");
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
-        jsonLd.registerNamespace("cx-common", "https://w3id.org/catenax/ontology/common#");
-        jsonLd.registerNamespace("cx-taxo", "https://w3id.org/catenax/taxonomy#");
+        jsonLd.registerNamespace("cx-policy", "https://w3id.org/catenax/policy/");
 
         ObjectMapper objectMapper = objectMapper();
         edcTransformer = new EdcTransformer(objectMapper, jsonLd, new TypeTransformerRegistryImpl());
