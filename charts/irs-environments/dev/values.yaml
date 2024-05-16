@@ -159,7 +159,7 @@ item-relationship-service:
 
 tractusx-connector:
   install:
-    postgresql: true
+    postgresql: false
     vault: false
   participant:
     id: <path:traceability-irs/data/dev/controlplane#participantId>
@@ -204,8 +204,6 @@ tractusx-connector:
     endpoints:
       management:
         authKey: <path:traceability-irs/data/dev/controlplane#apiKey>  # -- authentication key, must be attached to each 'X-Api-Key' request header
-    securityContext:
-      readOnlyRootFilesystem: false
 
     resources:
       limits:
@@ -269,16 +267,27 @@ tractusx-connector:
   # EDC Postgres Configuration #
   ##################################
   postgresql:
-    nameOverride: consumer-edc-postgresql
-    primary:
-      persistence:
-        enabled: false
+    enabled: true
     auth:
-      database: edc
       username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
       password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
-      postgresPassword: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
-
     username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
     password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
-    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-consumer-edc-postgresql:5432/edc"
+    jdbcUrl: "jdbc:postgresql://irs-dev-edc-postgresql:5432/edc"
+
+##############################
+# EDC Postgres Configuration #
+##############################
+# EDC chart do not support multiple postgres instances in the same namespace at the moment.
+# Enable this to use the postgres dependency for when you want to deploy multiple EDC instances in one namespace
+postgresql:
+  enabled: true
+edc-postgresql:
+  primary:
+    persistence:
+      enabled: false
+  auth:
+    database: edc
+    username: <path:traceability-irs/data/dev/controlplane#databaseuser>
+    postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
+    password: <path:traceability-irs/data/dev/controlplane#databasepassword>
