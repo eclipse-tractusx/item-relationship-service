@@ -519,7 +519,7 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldFailEndpointReferenceRetrievalForNoRegistryAsset() throws Exception {
+    void shouldFailEndpointReferenceRetrievalForNoRegistryAsset() {
         // arrange
         final String edcUrl = "https://edc.controlplane.org/public";
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);

@@ -44,6 +44,7 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
 @SuppressWarnings("PMD.UseObjectForClearerAPI")
 public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
 
+    public static final String NOT_IMPLEMENTED = "Not implemented";
     private final SubmodelTestdataCreator testdataCreator;
 
     /* package */
@@ -73,18 +74,18 @@ public class EdcSubmodelClientLocalStub implements EdcSubmodelClient {
     public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue,
             final EndpointDataReferenceStatus cachedEndpointDataReference, final String bpn) throws EdcClientException {
-        throw new EdcClientException("Not implemented");
+        throw new EdcClientException(NOT_IMPLEMENTED);
     }
 
     @Override
     public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
             final String filterKey, final String filterValue, final String bpn) throws EdcClientException {
-        throw new EdcClientException("Not implemented");
+        throw new EdcClientException(NOT_IMPLEMENTED);
     }
 
     @Override
     public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(
             final String endpointAddress, final String bpn) throws EdcClientException {
-        throw new EdcClientException("Not implemented");
+        throw new EdcClientException(NOT_IMPLEMENTED);
     }
 }
