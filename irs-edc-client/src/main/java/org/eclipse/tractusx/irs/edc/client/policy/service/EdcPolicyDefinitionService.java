@@ -59,7 +59,7 @@ public class EdcPolicyDefinitionService {
     private static final String ATOMIC_CONSTRAINT = "AtomicConstraint";
     private static final String CONSTRAINT = "Constraint";
     private static final String OPERATOR_PREFIX = "odrl:";
-    private static final String USE_ACTION = OPERATOR_PREFIX + "use";
+    private static final String USE_ACTION = "use";
 
     private final EdcConfiguration config;
     private final RestTemplate restTemplate;

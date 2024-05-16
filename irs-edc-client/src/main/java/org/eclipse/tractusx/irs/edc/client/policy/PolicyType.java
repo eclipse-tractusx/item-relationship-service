@@ -33,8 +33,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 @Getter
 @RequiredArgsConstructor
 public enum PolicyType {
-    ACCESS("odrl:access"),
-    USE("odrl:use");
+    ACCESS("access"),
+    USE("use");
 
     @JsonValue
     private final String value;

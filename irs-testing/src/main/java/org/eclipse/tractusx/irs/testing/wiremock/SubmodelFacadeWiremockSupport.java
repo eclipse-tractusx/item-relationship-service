@@ -56,7 +56,7 @@ public final class SubmodelFacadeWiremockSupport {
     public static final String TRACEABILITY_1_0 = "traceability:1.0";
     public static final String CX_POLICY_USAGE_PURPOSE = "cx-policy:UsagePurpose";
     public static final String CX_CORE_INDUSTRYCORE_1 = "cx.core.industrycore:1";
-    public static final String PERMISSION_TYPE = "odrl:use";
+    public static final String PERMISSION_TYPE = "use";
 
     private SubmodelFacadeWiremockSupport() {
     }

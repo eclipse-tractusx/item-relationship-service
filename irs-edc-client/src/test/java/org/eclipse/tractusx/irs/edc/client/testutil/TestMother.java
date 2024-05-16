@@ -139,7 +139,7 @@ public class TestMother {
 
     private static Permission createUsePermission(final Constraint constraint) {
         return Permission.Builder.newInstance()
-                                 .action(Action.Builder.newInstance().type("odrl:use").build())
+                                 .action(Action.Builder.newInstance().type("use").build())
                                  .constraint(constraint)
                                  .build();
     }

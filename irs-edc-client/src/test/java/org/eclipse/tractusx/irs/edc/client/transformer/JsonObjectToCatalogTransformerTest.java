@@ -96,7 +96,7 @@ class JsonObjectToCatalogTransformerTest {
                 				"@type": "odrl:Offer",
                 				"odrl:permission": {
                 					"odrl:action": {
-                						"odrl:type": "odrl:use"
+                						"odrl:type": "use"
                 					},
                 					"odrl:constraint": {
                 						"odrl:or": {
@@ -161,7 +161,7 @@ class JsonObjectToCatalogTransformerTest {
                 				"@type": "odrl:Offer",
                 				"odrl:permission": {
                 					"odrl:action": {
-                						"odrl:type": "odrl:use"
+                						"odrl:type": "use"
                 					},
                 					"odrl:constraint": {
                 						"odrl:or": {

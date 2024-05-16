@@ -70,7 +70,7 @@ public class PolicyStoreControllerTest {
                 "policy": {
                     "odrl:permission": [
                         {
-                            "odrl:action": "odrl:use",
+                            "odrl:action": "use",
                             "odrl:constraint": {
                                 "odrl:and": [
                                     {

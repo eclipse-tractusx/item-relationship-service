@@ -83,7 +83,7 @@ class EdcTransformerTest {
                             "@type": "odrl:Offer",
                             "odrl:permission": {
                                 "odrl:action": {
-                                    "odrl:type": "odrl:use"
+                                    "odrl:type": "use"
                                 },
                                 "odrl:constraint": {
                                     "odrl:or": {
@@ -195,7 +195,7 @@ class EdcTransformerTest {
     }
 
     private static Policy createPolicy(final String assetId) {
-        final Action action = Action.Builder.newInstance().type("odrl:use").build();
+        final Action action = Action.Builder.newInstance().type("use").build();
         final AtomicConstraint atomicConstraint = AtomicConstraint.Builder.newInstance()
                                                                           .leftExpression(
                                                                                   new LiteralExpression("PURPOSE"))

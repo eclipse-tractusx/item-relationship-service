@@ -42,7 +42,7 @@ class EdcContractAgreementsResponseTest {
                 			"odrl:permission": {
                 				"odrl:target": "registry-asset",
                 				"odrl:action": {
-                					"odrl:type": "odrl:use"
+                					"odrl:type": "use"
                 				},
                 				"odrl:constraint": {
                 					"odrl:or": {
