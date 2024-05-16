@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
- 
+
+### Fixed
+
+-  Fixed ESS Investigation job processing not starting #579
+
 ### Changed
 
 - Improved policy store API input validation. #528
@@ -15,7 +19,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Marked createAccessPolicy requests with deprecation mark.
 - remove edc namespace from EdcContractAgreementNegotiationResponse and
   EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
-
 
 ## Added
 
