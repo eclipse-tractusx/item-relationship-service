@@ -1,404 +1,404 @@
 {
   "submodels": [
-		{
-			"identification": "urn:uuid:def208e3-7b6e-40e0-83ed-7db6ad47b721",
-			"aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
-			"contractAgreementId": "73994bcc-6cb6-4140-9cee-54a6b660a8d5",
-			"payload": {
-				"catenaXId": "urn:uuid:aeada37a-a1d8-4535-a476-5f5e1142e3fe",
-				"childItems": [
-					{
-						"catenaXId": "urn:uuid:6c49a74d-1a91-4d46-a261-46b5311b0fee",
-						"quantity": {
-							"unit": "unit:kilogram",
-							"value": 0.2014
-						},
-						"hasAlternatives": false,
-						"businessPartner": "BPNL00000003AYRE",
-						"createdOn": "2022-02-03T14:48:54.709Z",
-						"lastModifiedOn": "2022-02-03T14:48:54.709Z"
-					},
-					{
-						"catenaXId": "urn:uuid:4c9bbfb1-414c-4c55-b197-3b3958d73ea1",
-						"quantity": {
-							"unit": "unit:piece",
-							"value": 20
-						},
-						"hasAlternatives": false,
-						"businessPartner": "BPNL00000003B3NX",
-						"createdOn": "2022-02-03T14:48:54.709Z",
-						"lastModifiedOn": "2022-02-03T14:48:54.709Z"
-					},
-					{
-						"catenaXId": "urn:uuid:d78045d5-4ee7-4980-b24c-31dafeb6f54f",
-						"quantity": {
-							"unit": "unit:kilogram",
-							"value": 0.2341
-						},
-						"hasAlternatives": false,
-						"businessPartner": "BPNL00000003AZQP",
-						"createdOn": "2022-02-03T14:48:54.709Z",
-						"lastModifiedOn": "2022-02-03T14:48:54.709Z"
-					}
-				]
-			}
-		},
-		{
-			"identification": "urn:uuid:d15adb67-86b6-4f1a-a401-5b6b9fe3dd0f",
-			"aspectType": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
-			"contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
-			"payload": {
-				"localIdentifiers": [
-					{
-						"value": "BPNL00000003B2OM",
-						"key": "manufacturerId"
-					},
-					{
-						"value": "NO-911298432628361791379708",
-						"key": "partInstanceId"
-					},
-					{
-						"value": "Company 2",
-						"key": "customKey:company"
-					},
-					{
-						"value": "Brand 2",
-						"key": "customKey:brand"
-					}
-				],
-				"manufacturingInformation": {
-					"date": "2022-02-04T14:48:54Z",
-					"country": "DEU",
-					"sites": [
-						{
-							"catenaXsiteId": "BPNS00000003B2OM",
-							"function": "production"
-						}
-					]
-				},
-				"catenaXId": "urn:uuid:aeada37a-a1d8-4535-a476-5f5e1142e3fe",
-				"partTypeInformation": {
-					"manufacturerPartId": "42555H1-52",
-					"customerPartId": "42555H1-52",
-					"partClassification": [
-						{
-							"classificationDescription": "Standard data element types with associated classification scheme for electric components.",
-							"classificationStandard": "IEC",
-							"classificationID": "61360- 2:2012 "
-						}
-					],
-					"nameAtManufacturer": "Transmission",
-					"nameAtCustomer": "Transmission"
-				},
-				"itemVersion": "02"
-			}
-		},
-		{
-			"identification": "urn:uuid:5e805df2-ca16-47fc-a364-162741f9c593",
-			"aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-			"contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
-			"payload": {
-				"component": [
-					{
-						"materialName": "Carbon Steel",
-						"recycledContent": 19,
-						"materialClass": "1.1.2",
-						"quantity": {
-							"unit": "unit:kilogram",
-							"value": 72.843
-						},
-						"aggregateState": "solid",
-						"materialAbbreviation": "CS2"
-					},
-					{
-						"materialName": "Oil",
-						"recycledContent": 51,
-						"materialClass": "9.2",
-						"quantity": {
-							"unit": "unit:kilogram",
-							"value": 6.9
-						},
-						"aggregateState": "liquid",
-						"materialAbbreviation": "SAE40"
-					},
-					{
-						"materialName": "Copper",
-						"recycledContent": 57,
-						"materialClass": "3.1",
-						"quantity": {
-							"unit": "unit:kilogram",
-							"value": 1.2
-						},
-						"aggregateState": "solid",
-						"materialAbbreviation": "CO7"
-					}
-				]
-			}
-		},
-		{
-			"identification": "urn:uuid:d92b43ef-5216-496d-8fe0-5046307ea71e",
-			"aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-			"contractAgreementId": "73994bcc-6cb6-4140-9cee-54a6b660a8d5",
-			"payload": {
-				"component": [
-					{
-						"materialName": "Glue",
-						"materialClass": "6.2",
-						"quantity": {
-							"unit": "unit:kilogram",
-							"value": 2.5
-						},
-						"weight": "0.2341",
-						"materialAbbreviation": "GL338"
-					}
-				]
-			}
-		},
-		{
-			"identification": "urn:uuid:d1039527-8a13-4306-853c-760742bc4cf6",
-			"aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
-			"contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
-			"payload": {
-				"catenaXId": "urn:uuid:d78045d5-4ee7-4980-b24c-31dafeb6f54f",
-				"childItems": []
-			}
-		},
-		{
-			"identification": "urn:uuid:25f66a0d-2a2e-4af7-a134-c3559be44bb9",
-			"aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
-			"contractAgreementId": "73994bcc-6cb6-4140-9cee-54a6b660a8d5",
-			"payload": {
-				"localIdentifiers": [
-					{
-						"value": "BPNL00000003AXS3",
-						"key": "batchId"
-					}
-				],
-				"manufacturingInformation": {
-					"date": "2022-02-04T14:48:54Z",
-					"country": "HUR",
-					"sites": [
-						{
-							"catenaXsiteId": "BPNS00000003AXS3",
-							"function": "production"
-						}
-					]
-				},
-				"catenaXId": "urn:uuid:d78045d5-4ee7-4980-b24c-31dafeb6f54f",
-				"partTypeInformation": {
-					"manufacturerPartId": "GH-22",
-					"partClassification": [
-						{
-							"classificationDescription": "Standard data element types with associated classification scheme for electric components.",
-							"classificationStandard": "IEC",
-							"classificationID": "61360- 2:2012 "
-						}
-					],
-					"nameAtManufacturer": "Mirror left"
-				},
-				"itemVersion": "03"
-			}
-		},
-		{
-			"identification": "urn:uuid:a4a1114b-d636-4be0-934a-0ceec3871b92",
-			"aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
-			"contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
-			"payload": {
-				"catenaXId": "urn:uuid:4c9bbfb1-414c-4c55-b197-3b3958d73ea1",
-				"childItems": [
-					{
-						"catenaXId": "urn:uuid:fbbb6872-d76b-411f-84a5-fb0a1d78b40d",
-						"quantity": {
-							"unit": "unit:kilogram",
-							"value": 0.1908
-						},
-						"hasAlternatives": false,
-						"businessPartner": "BPNL00000003B0Q0",
-						"createdOn": "2022-02-03T14:48:54.709Z",
-						"lastModifiedOn": "2022-02-03T14:48:54.709Z"
-					}
-				]
-			}
-		},
-		{
-			"identification": "urn:uuid:dbc70252-1129-46c4-8779-be7dedf126cf",
-			"aspectType": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
-			"contractAgreementId": "a91bc80f-0f06-4914-827f-f0c37da0e6cf",
-			"payload": {
-				"localIdentifiers": [
-					{
-						"value": "BPNL00000003B3NX",
-						"key": "manufacturerId"
-					},
-					{
-						"value": "NO-999668972150309987656972",
-						"key": "partInstanceId"
-					}
-				],
-				"manufacturingInformation": {
-					"date": "2022-02-04T14:48:54Z",
-					"country": "DEU",
-					"sites": [
-						{
-							"catenaXsiteId": "BPNS00000003CSGV",
-							"function": "production"
-						}
-					]
-				},
-				"catenaXId": "urn:uuid:4c9bbfb1-414c-4c55-b197-3b3958d73ea1",
-				"partTypeInformation": {
-					"manufacturerPartId": "18032C7-20",
-					"customerPartId": "18032C7-20",
-					"partClassification": [
-						{
-							"classificationDescription": "Standard data element types with associated classification scheme for electric components.",
-							"classificationStandard": "IEC",
-							"classificationID": "61360- 2:2012 "
-						}
-					],
-					"nameAtManufacturer": "Sensor",
-					"nameAtCustomer": "Sensor"
-				},
-				"itemVersion": "04"
-			}
-		},
-		{
-			"identification": "urn:uuid:4ad57d92-9249-4477-a9ef-df1f2e3a7e64",
-			"aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-			"contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
-			"payload": {
-				"materialName": "NTIER Product",
-				"materialClass": "5.5",
-				"component": [
-					{
-						"materialName": "Aluminium oxide",
-						"recycledContent": 8,
-						"materialClass": "5.5.1",
-						"quantity": {
-							"unit": "unit:percent",
-							"value": 60
-						},
-						"aggregateState": "solid",
-						"materialAbbreviation": ""
-					},
-					{
-						"materialName": "Other",
-						"recycledContent": 84,
-						"materialClass": "5.5.2",
-						"quantity": {
-							"unit": "unit:percent",
-							"value": 40
-						},
-						"aggregateState": "solid",
-						"materialAbbreviation": ""
-					}
-				]
-			}
-		},
-		{
-			"identification": "urn:uuid:73dac146-e817-43d8-b329-16fba84ec83f",
-			"aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
-			"contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
-			"payload": {
-				"localIdentifiers": [
-					{
-						"value": "BPNL00000003B0Q0",
-						"key": "batchId"
-					}
-				],
-				"manufacturingInformation": {
-					"date": "2022-02-04T14:48:54Z",
-					"country": "HUR",
-					"sites": [
-						{
-							"catenaXsiteId": "BPNS00000003B0Q0",
-							"function": "production"
-						}
-					]
-				},
-				"catenaXId": "urn:uuid:fbbb6872-d76b-411f-84a5-fb0a1d78b40d",
-				"partTypeInformation": {
-					"manufacturerPartId": "FI-94",
-					"partClassification": [
-						{
-							"classificationDescription": "Standard data element types with associated classification scheme for electric components.",
-							"classificationStandard": "IEC",
-							"classificationID": "61360- 2:2012 "
-						}
-					],
-					"nameAtManufacturer": "Mirror left"
-				},
-				"itemVersion": "03"
-			}
-		},
-		{
-			"identification": "urn:uuid:0f48e306-a7db-464d-9be6-8a418e6fe8fe",
-			"aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
-			"contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
-			"payload": {
-				"localIdentifiers": [
-					{
-						"value": "BPNL00000003B0Q0",
-						"key": "batchId"
-					}
-				],
-				"manufacturingInformation": {
-					"date": "2022-02-04T14:48:54Z",
-					"country": "HUR",
-					"sites": [
-						{
-							"catenaXsiteId": "BPNS00000003B0Q0",
-							"function": "production"
-						}
-					]
-				},
-				"catenaXId": "urn:uuid:6c49a74d-1a91-4d46-a261-46b5311b0fee",
-				"partTypeInformation": {
-					"manufacturerPartId": "ZY-73",
-					"partClassification": [
-						{
-							"classificationDescription": "Standard data element types with associated classification scheme for electric components.",
-							"classificationStandard": "IEC",
-							"classificationID": "61360- 2:2012 "
-						}
-					],
-					"nameAtManufacturer": "Mirror left"
-				},
-				"itemVersion": "03"
-			}
-		},
-		{
-			"identification": "urn:uuid:410ffc96-b6e1-4bff-a380-1392ea784f14",
-			"aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
-			"contractAgreementId": "1e1c1083-073f-41aa-abbb-50ef26176486",
-			"payload": {
-				"materialName": "Engineering Plastics",
-				"materialClass": "5.1",
-				"component": [
-					{
-						"materialName": "PA66",
-						"recycledContent": 24,
-						"materialClass": "5.1",
-						"quantity": {
-							"unit": "unit:percent",
-							"value": 70
-						},
-						"aggregateState": "solid",
-						"materialAbbreviation": "PA66"
-					},
-					{
-						"materialName": "GF-Faser",
-						"recycledContent": 40,
-						"materialClass": "5.1",
-						"quantity": {
-							"unit": "unit:percent",
-							"value": 30
-						},
-						"aggregateState": "solid",
-						"materialAbbreviation": "GF30"
-					}
-				]
-			}
-		}
-	]
+    {
+      "identification": "urn:uuid:def208e3-7b6e-40e0-83ed-7db6ad47b721",
+      "aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+      "contractAgreementId": "063c65bd-aeed-48f7-b3b3-1e4dc9d5405c",
+      "payload": {
+        "catenaXId": "urn:uuid:aeada37a-a1d8-4535-a476-5f5e1142e3fe",
+        "childItems": [
+          {
+            "catenaXId": "urn:uuid:6c49a74d-1a91-4d46-a261-46b5311b0fee",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 0.2014
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003AYRE",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          },
+          {
+            "catenaXId": "urn:uuid:4c9bbfb1-414c-4c55-b197-3b3958d73ea1",
+            "quantity": {
+              "unit": "unit:piece",
+              "value": 20
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003B3NX",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          },
+          {
+            "catenaXId": "urn:uuid:d78045d5-4ee7-4980-b24c-31dafeb6f54f",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 0.2341
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003AZQP",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:d15adb67-86b6-4f1a-a401-5b6b9fe3dd0f",
+      "aspectType": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
+      "contractAgreementId": "fe9cdf8b-dbe3-4963-b9cb-ffb7f6315bee",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B2OM",
+            "key": "manufacturerId"
+          },
+          {
+            "value": "NO-911298432628361791379708",
+            "key": "partInstanceId"
+          },
+          {
+            "value": "Company 2",
+            "key": "customKey:company"
+          },
+          {
+            "value": "Brand 2",
+            "key": "customKey:brand"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "DEU",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B2OM",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:aeada37a-a1d8-4535-a476-5f5e1142e3fe",
+        "partTypeInformation": {
+          "manufacturerPartId": "42555H1-52",
+          "customerPartId": "42555H1-52",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Transmission",
+          "nameAtCustomer": "Transmission"
+        },
+        "itemVersion": "02"
+      }
+    },
+    {
+      "identification": "urn:uuid:5e805df2-ca16-47fc-a364-162741f9c593",
+      "aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "contractAgreementId": "fe9cdf8b-dbe3-4963-b9cb-ffb7f6315bee",
+      "payload": {
+        "component": [
+          {
+            "materialName": "Carbon Steel",
+            "recycledContent": 19,
+            "materialClass": "1.1.2",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 72.843
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "CS2"
+          },
+          {
+            "materialName": "Oil",
+            "recycledContent": 51,
+            "materialClass": "9.2",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 6.9
+            },
+            "aggregateState": "liquid",
+            "materialAbbreviation": "SAE40"
+          },
+          {
+            "materialName": "Copper",
+            "recycledContent": 57,
+            "materialClass": "3.1",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 1.2
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "CO7"
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:410ffc96-b6e1-4bff-a380-1392ea784f14",
+      "aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "contractAgreementId": "fe9cdf8b-dbe3-4963-b9cb-ffb7f6315bee",
+      "payload": {
+        "materialName": "Engineering Plastics",
+        "materialClass": "5.1",
+        "component": [
+          {
+            "materialName": "PA66",
+            "recycledContent": 24,
+            "materialClass": "5.1",
+            "quantity": {
+              "unit": "unit:percent",
+              "value": 70
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "PA66"
+          },
+          {
+            "materialName": "GF-Faser",
+            "recycledContent": 40,
+            "materialClass": "5.1",
+            "quantity": {
+              "unit": "unit:percent",
+              "value": 30
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": "GF30"
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:0f48e306-a7db-464d-9be6-8a418e6fe8fe",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "fe9cdf8b-dbe3-4963-b9cb-ffb7f6315bee",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:6c49a74d-1a91-4d46-a261-46b5311b0fee",
+        "partTypeInformation": {
+          "manufacturerPartId": "ZY-73",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "03"
+      }
+    },
+    {
+      "identification": "urn:uuid:a4a1114b-d636-4be0-934a-0ceec3871b92",
+      "aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+      "contractAgreementId": "fe9cdf8b-dbe3-4963-b9cb-ffb7f6315bee",
+      "payload": {
+        "catenaXId": "urn:uuid:4c9bbfb1-414c-4c55-b197-3b3958d73ea1",
+        "childItems": [
+          {
+            "catenaXId": "urn:uuid:fbbb6872-d76b-411f-84a5-fb0a1d78b40d",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 0.1908
+            },
+            "hasAlternatives": false,
+            "businessPartner": "BPNL00000003B0Q0",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:dbc70252-1129-46c4-8779-be7dedf126cf",
+      "aspectType": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
+      "contractAgreementId": "2f477d8a-5efa-4d87-86b9-8dd36215fd22",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B3NX",
+            "key": "manufacturerId"
+          },
+          {
+            "value": "NO-999668972150309987656972",
+            "key": "partInstanceId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "DEU",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003CSGV",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:4c9bbfb1-414c-4c55-b197-3b3958d73ea1",
+        "partTypeInformation": {
+          "manufacturerPartId": "18032C7-20",
+          "customerPartId": "18032C7-20",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Sensor",
+          "nameAtCustomer": "Sensor"
+        },
+        "itemVersion": "04"
+      }
+    },
+    {
+      "identification": "urn:uuid:d92b43ef-5216-496d-8fe0-5046307ea71e",
+      "aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "contractAgreementId": "063c65bd-aeed-48f7-b3b3-1e4dc9d5405c",
+      "payload": {
+        "component": [
+          {
+            "materialName": "Glue",
+            "materialClass": "6.2",
+            "quantity": {
+              "unit": "unit:kilogram",
+              "value": 2.5
+            },
+            "weight": "0.2341",
+            "materialAbbreviation": "GL338"
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:d1039527-8a13-4306-853c-760742bc4cf6",
+      "aspectType": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+      "contractAgreementId": "fe9cdf8b-dbe3-4963-b9cb-ffb7f6315bee",
+      "payload": {
+        "catenaXId": "urn:uuid:d78045d5-4ee7-4980-b24c-31dafeb6f54f",
+        "childItems": []
+      }
+    },
+    {
+      "identification": "urn:uuid:25f66a0d-2a2e-4af7-a134-c3559be44bb9",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "063c65bd-aeed-48f7-b3b3-1e4dc9d5405c",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:d78045d5-4ee7-4980-b24c-31dafeb6f54f",
+        "partTypeInformation": {
+          "manufacturerPartId": "GH-22",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "03"
+      }
+    },
+    {
+      "identification": "urn:uuid:4ad57d92-9249-4477-a9ef-df1f2e3a7e64",
+      "aspectType": "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
+      "contractAgreementId": "fe9cdf8b-dbe3-4963-b9cb-ffb7f6315bee",
+      "payload": {
+        "materialName": "NTIER Product",
+        "materialClass": "5.5",
+        "component": [
+          {
+            "materialName": "Aluminium oxide",
+            "recycledContent": 8,
+            "materialClass": "5.5.1",
+            "quantity": {
+              "unit": "unit:percent",
+              "value": 60
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": ""
+          },
+          {
+            "materialName": "Other",
+            "recycledContent": 84,
+            "materialClass": "5.5.2",
+            "quantity": {
+              "unit": "unit:percent",
+              "value": 40
+            },
+            "aggregateState": "solid",
+            "materialAbbreviation": ""
+          }
+        ]
+      }
+    },
+    {
+      "identification": "urn:uuid:73dac146-e817-43d8-b329-16fba84ec83f",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "fe9cdf8b-dbe3-4963-b9cb-ffb7f6315bee",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
+            }
+          ]
+        },
+        "catenaXId": "urn:uuid:fbbb6872-d76b-411f-84a5-fb0a1d78b40d",
+        "partTypeInformation": {
+          "manufacturerPartId": "FI-94",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
+            }
+          ],
+          "nameAtManufacturer": "Mirror left"
+        },
+        "itemVersion": "03"
+      }
+    }
+  ]
 }
