@@ -2,7 +2,8 @@
   "policies": {
     "traceability-core": {
       "@context": {
-        "odrl": "http://www.w3.org/ns/odrl/2/"
+        "odrl": "http://www.w3.org/ns/odrl/2/",
+        "cx-policy": "https://w3id.org/catenax/policy/"
       },
       "@type": "PolicyDefinitionRequestDto",
       "@id": "traceability-core",
@@ -10,7 +11,7 @@
         "@type": "odrl:Set",
         "odrl:permission": [
           {
-            "odrl:action": "USE",
+            "odrl:action": "use",
             "odrl:constraint": {
               "@type": "AtomicConstraint",
               "odrl:and": [
