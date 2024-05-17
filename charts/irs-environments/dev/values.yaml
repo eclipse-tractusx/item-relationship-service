@@ -92,6 +92,8 @@ item-relationship-service:
       request:
         ttl: PT2M
     controlplane:
+      endpoint:
+        data: https://irs-consumer-controlplane.dev.demo.catena-x.net/management
       request:
         ttl: PT5M
       apikey:
@@ -158,6 +160,8 @@ item-relationship-service:
 
 
 tractusx-connector:
+  nameOverride: irs-edc-consumer
+  fullnameOverride: irs-edc-consumer
   install:
     postgresql: false
     vault: false
@@ -273,7 +277,7 @@ tractusx-connector:
       password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
     username: "<path:traceability-irs/data/dev/controlplane#databaseuser>"
     password: "<path:traceability-irs/data/dev/controlplane#databasepassword>"
-    jdbcUrl: "jdbc:postgresql://irs-dev-edc-postgresql-hl:5432/edc"
+    jdbcUrl: "jdbc:postgresql://irs-edc-consumer-postgresql:5432/edc"
 
 ##############################
 # EDC Postgres Configuration #
@@ -283,6 +287,8 @@ tractusx-connector:
 postgresql:
   enabled: true
 edc-postgresql:
+  nameOverride: irs-edc-consumer-postgresql
+  fullnameOverride: irs-edc-consumer-postgresql
   primary:
     persistence:
       enabled: false
