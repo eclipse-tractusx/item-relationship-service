@@ -30,6 +30,7 @@ import java.util.Map;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.enums.NodeType;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
@@ -37,6 +38,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 /**
  * Tombstone with information about request failure
  */
+@Value
 @Getter
 @Builder
 @Jacksonized
@@ -61,7 +63,8 @@ public class Tombstone {
     }
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
-            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber, final Map<String, Object> policy) {
+            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber,
+            final Map<String, Object> policy) {
 
         return Tombstone.builder()
                         .endpointURL(endpointURL)
