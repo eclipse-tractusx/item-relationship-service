@@ -23,7 +23,7 @@ jobs:
 
       - name: Check if CHANGELOG file was changed
         id: changelog-changed
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@v44
         with:
           files: |
             CHANGELOG.md
