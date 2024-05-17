@@ -31,10 +31,10 @@ import lombok.Builder;
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record EdcContractAgreementNegotiationResponse(@JsonProperty("@id") String correlationId,
-                                                      @JsonProperty("edc:counterPartyId") String counterPartyId,
+                                                      @JsonProperty("counterPartyId") String counterPartyId,
                                                       @JsonProperty(
-                                                              "edc:counterPartyAddress") String counterPartyAddress,
-                                                      @JsonProperty("edc:protocol") String protocol,
-                                                      @JsonProperty("edc:state") String state,
-                                                      @JsonProperty("edc:type") String type) {
+                                                              "counterPartyAddress") String counterPartyAddress,
+                                                      @JsonProperty("protocol") String protocol,
+                                                      @JsonProperty("state") String state,
+                                                      @JsonProperty("type") String type) {
 }

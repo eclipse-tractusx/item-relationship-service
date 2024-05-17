@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,18 +17,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.data;
+package org.eclipse.tractusx.irs.policystore.validators;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 /**
- * Exception when parsing JSON
+ * Annotation for validating list of policyIDs
  */
-public class JsonParseException extends RuntimeException {
+@Documented
+@Constraint(validatedBy = ListOfPolicyIdsValidator.class)
+@Target({ ElementType.FIELD,
+          ElementType.PARAMETER
+})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ListOfPolicyIds {
 
-    public JsonParseException(final String message, final Throwable throwable) {
-        super(message, throwable);
-    }
+    String message() default "Invalid list of policyIDs";
 
-    public JsonParseException(final Throwable cause) {
-        super(cause);
-    }
+    Class<?>[] groups() default { };
+
+    Class<? extends Payload>[] payload() default { };
 }

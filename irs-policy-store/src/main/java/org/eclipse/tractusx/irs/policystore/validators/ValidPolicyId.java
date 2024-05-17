@@ -1,9 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2022,2024
- *       2022: ZF Friedrichshafen AG
- *       2022: ISTOS GmbH
- *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
- *       2022,2023: BOSCH AG
+ * Copyright (c) 2022,2024 Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
@@ -21,18 +17,33 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.data;
+package org.eclipse.tractusx.irs.policystore.validators;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 /**
- * Exception when parsing JSON
+ * Annotation for validating policyId.
  */
-public class JsonParseException extends RuntimeException {
+@Documented
+@Constraint(validatedBy = PolicyIdValidator.class)
+@Target({ ElementType.FIELD,
+          ElementType.PARAMETER
+})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ValidPolicyId {
 
-    public JsonParseException(final String message, final Throwable throwable) {
-        super(message, throwable);
-    }
+    String DEFAULT_MESSAGE = "must only contain safe URL path variable characters";
 
-    public JsonParseException(final Throwable cause) {
-        super(cause);
-    }
+    String message() default DEFAULT_MESSAGE;
+
+    Class<?>[] groups() default { };
+
+    Class<? extends Payload>[] payload() default { };
 }

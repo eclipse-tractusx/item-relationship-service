@@ -151,7 +151,7 @@
 			"method": "PUT",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n  \"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumbers\": [\n\t\t\"BPNL00000001CRHK\"\n\t],\n\t\"policyIds\": [\n\t\t\"policy-id12\"\n\t]\n}"
+				"text": "{\n  \"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumbers\": [\n\t\t\"BPNL00000001CRHK\"\n\t],\n\t\"policyIds\": [\n\t\t\"e917f5f-8dac-49ac-8d10-5b4d254d2b48\"\n\t]\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -3224,7 +3224,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumber\": \"BPNL00000000BJTL\",\n\t\"payload\": {\n\t\t\t\"@context\": {\n\t\t\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\"\n\t\t\t},\n\t\t\t\"@id\": \"policy-id12\",\n\t\t\t\"policy\": {\n\t\t\t\t\"odrl:permission\": [\n\t\t\t\t\t{\n\t\t\t\t\t\t\"odrl:action\": \"USE\",\n\t\t\t\t\t\t\"odrl:constraint\": {\n\t\t\t\t\t\t\t\"odrl:and\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"Membership\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"active\"\n\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"PURPOSE\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"ID 3.1 Trace\"\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t}\n\t\t}\n}"
+				"text": "{\n\t\"validUntil\": \"2025-12-12T23:59:59.999Z\",\n\t\"businessPartnerNumber\": \"BPNL00000000BJTL\",\n\t\"payload\": {\n\t\t\t\"@context\": {\n\t\t\t\t\"odrl\": \"http://www.w3.org/ns/odrl/2/\"\n\t\t\t},\n\t\t\t\"@id\": \"e917f5f-8dac-49ac-8d10-5b4d254d2b48\",\n\t\t\t\"policy\": {\n\t\t\t\t\"odrl:permission\": [\n\t\t\t\t\t{\n\t\t\t\t\t\t\"odrl:action\": \"USE\",\n\t\t\t\t\t\t\"odrl:constraint\": {\n\t\t\t\t\t\t\t\"odrl:and\": [\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"Membership\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"active\"\n\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\t\t\"odrl:leftOperand\": \"PURPOSE\",\n\t\t\t\t\t\t\t\t\t\"odrl:operator\": {\n\t\t\t\t\t\t\t\t\t\t\"@id\": \"odrl:eq\"\n\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\"odrl:rightOperand\": \"ID 3.1 Trace\"\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t]\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t]\n\t\t\t}\n\t\t}\n}"
 			},
 			"parameters": [],
 			"headers": [

@@ -1,18 +1,18 @@
 {
   "submodels": [
     {
-      "identification": "urn:uuid:39eb0751-bc99-48ee-8fd8-dbf233badb5f",
+      "identification": "urn:uuid:0d298774-a215-411e-9587-0e97fe100e6e",
       "aspectType": "urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
-      "contractAgreementId": "MmVjYjQ1YzEtN2QxNy00NTMxLWFlMmItNDhiYjQwYzA5MTcw:dXJuOnV1aWQ6MjIwZGI2NmQtM2VmMi00Yzg1LWFiYzgtZDlhNDhkMDZiMDNh:YzQzYzUyY2MtNjA4ZC00M2E0LTliNWYtMjcxZDE0NDMwOTUw",
+      "contractAgreementId": "f73e1829-5aec-4bbd-88ad-360fb139e67a",
       "payload": {
         "localIdentifiers": [
           {
-            "value": "82227044FBE",
+            "value": "29825269KCX",
             "key": "jisNumber"
           }
         ],
         "manufacturingInformation": {
-          "date": "2022-02-04T14:48:54",
+          "date": "2022-02-04T14:48:54Z",
           "country": "HUR",
           "sites": [
             {
@@ -21,7 +21,7 @@
             }
           ]
         },
-        "catenaXId": "urn:uuid:c6d2d642-a055-4ddf-87e3-1a3b02c689e3",
+        "catenaXId": "urn:uuid:fc9a079f-1b55-4ccc-8649-e188f899bf39",
         "partTypeInformation": {
           "manufacturerPartId": "123-0.740-3434-A",
           "customerPartId": "PRT-12345",
@@ -38,9 +38,9 @@
       }
     },
     {
-      "identification": "urn:uuid:ec9ba5fc-339e-4142-89be-872650c6ab2f",
+      "identification": "urn:uuid:7175849b-bfec-4d0c-bc51-d12687ee7852",
       "aspectType": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
-      "contractAgreementId": "MDBmZDcyMDktYTE2MS00OWM5LWFiMzAtMmUwMDllNWE3MDAw:dXJuOnV1aWQ6Njc1NWMyZTAtNzc5Ni00NTYzLWE1NjktYTk3NmZjZTNiYjQ3:MjhhN2VlY2EtMDQwNi00ZjQ4LWI2NDktMjhiYzU0NzcyNTcx",
+      "contractAgreementId": "a40d01cc-f19f-4216-9cb3-785fc4798689",
       "payload": {
         "localIdentifiers": [
           {
@@ -48,16 +48,12 @@
             "key": "manufacturerId"
           },
           {
-            "value": "95657762-59",
-            "key": "manufacturerPartId"
-          },
-          {
-            "value": "NO-073366714159387479576634",
+            "value": "NO-097885571011173114989419",
             "key": "partInstanceId"
           }
         ],
         "manufacturingInformation": {
-          "date": "2022-02-04T14:48:54",
+          "date": "2022-02-04T14:48:54Z",
           "country": "DEU",
           "sites": [
             {
@@ -66,7 +62,7 @@
             }
           ]
         },
-        "catenaXId": "urn:uuid:c6d2d642-a055-4ddf-87e3-1a3b02c689e3",
+        "catenaXId": "urn:uuid:fc9a079f-1b55-4ccc-8649-e188f899bf39",
         "partTypeInformation": {
           "manufacturerPartId": "95657762-59",
           "customerPartId": "95657762-59",

@@ -41,9 +41,9 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                               "@context": {
                                   "odrl": "http://www.w3.org/ns/odrl/2/"
                               },
-                              "@id": "policy-id3",
+                              "@id": "e917f5f-8dac-49ac-8d10-5b4d254d2b48",
                               "policy": {
-                                  "policyId": "p3",
+                                  "policyId": "e917f5f-8dac-49ac-8d10-5b4d254d2b48",
                                   "createdOn": "2024-03-28T03:34:42.9454448Z",
                                   "validUntil": "2025-12-12T23:59:59.999Z",
                                   "permissions": [

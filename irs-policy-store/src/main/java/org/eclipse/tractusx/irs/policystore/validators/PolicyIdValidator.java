@@ -17,29 +17,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.policy.model;
+package org.eclipse.tractusx.irs.policystore.validators;
 
-import java.util.List;
+import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.ToString;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * EdcPolicyPermissionConstraint used for policy create request
+ * Validator for list of business partner numbers (BPN).
  */
+public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, String> {
 
-@ToString
-@Builder
-public class EdcPolicyPermissionConstraint {
+    private static final Pattern PATTERN_SAFE_PATH_VARIABLE_CHARACTERS = Pattern.compile("[a-zA-Z0-9\\-_~.:]+");
 
-    @JsonProperty("@type")
-    private String type;
+    @Override
+    public boolean isValid(final String value, final ConstraintValidatorContext context) {
 
-    @JsonProperty("odrl:or")
-    private List<EdcPolicyPermissionConstraintExpression> orExpressions;
+        // allow  null and empty here (in order to allow flexible combination with @NotNull)
+        final boolean isNull = value == null;
 
-    @JsonProperty("odrl:and")
-    private List<EdcPolicyPermissionConstraintExpression> andExpressions;
+        return isNull || isValid(value);
+    }
+
+    public static boolean isValid(final String policyId) {
+        return PATTERN_SAFE_PATH_VARIABLE_CHARACTERS.matcher(policyId).matches();
+    }
 
 }

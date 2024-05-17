@@ -22,6 +22,25 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Fixed
 
+-  Fixed ESS Investigation job processing not starting #579
+
+### Changed
+
+- Improved policy store API input validation. #528
+- Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
+- Marked createAccessPolicy requests with deprecation mark.
+- remove edc namespace from EdcContractAgreementNegotiationResponse and
+  EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
+
+## Added
+
+- Added endpoint for dedicated removal of policy from BPNL. #559 
+- Integration Test Policy Store API Unhappy Path. #519
+
+## [5.1.2] - 2024-05-13
+
+### Fixed
+
 -  Cleaning up BPNLs without policies. #533
 
 ### Changed
@@ -34,7 +53,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Fixed
 
-- Fixed issue in EDR Token renewal #358
+- Fixed issue in EDR token renewal. #358
 
 ### Added
 
