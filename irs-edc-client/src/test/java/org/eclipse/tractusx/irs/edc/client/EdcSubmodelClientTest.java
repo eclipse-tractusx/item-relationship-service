@@ -469,15 +469,18 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     @Test
-    void shouldRetrieveEndpointReferenceForRegistryAssetForOldIdentifier() throws Exception {
+    void shouldRetrieveEndpointReferenceForRegistryAssetUsingFallbackOldIdentifier() throws Exception {
         // arrange
-        when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
-
-        final String agreementId = "agreementId";
+        // no catalog item for taxonomy#DigitalTwinRegistry is found,
+        // so the fallback data.core.digitalTwinRegistry is used
         when(catalogFacade.fetchCatalogByFilter(any(), eq(DCT_TYPE_ID), eq(TAXONOMY_DIGITAL_TWIN_REGISTRY),
                 any())).thenReturn(Collections.emptyList());
         when(catalogFacade.fetchCatalogByFilter(any(), eq(EDC_TYPE), eq(DATA_CORE_DIGITAL_TWIN_REGISTRY),
                 any())).thenReturn(List.of(CatalogItem.builder().itemId("asset-id").build()));
+
+        when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
+
+        final String agreementId = "agreementId";
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());
@@ -497,11 +500,13 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     @Test
     void shouldRetrieveEndpointReferenceForRegistryAssetForNewIdentifier() throws Exception {
         // arrange
+        // catalog item for taxonomy#DigitalTwinRegistry is found, so the fallback type is not used
+        when(catalogFacade.fetchCatalogByFilter(any(), eq(DCT_TYPE_ID), eq(TAXONOMY_DIGITAL_TWIN_REGISTRY),
+                any())).thenReturn(List.of(CatalogItem.builder().itemId("asset-id").build()));
+
         when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
 
         final String agreementId = "agreementId";
-        when(catalogFacade.fetchCatalogByFilter(any(), eq(DCT_TYPE_ID), eq(TAXONOMY_DIGITAL_TWIN_REGISTRY),
-                any())).thenReturn(List.of(CatalogItem.builder().itemId("asset-id").build()));
         when(contractNegotiationService.negotiate(any(), any(),
                 eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
                 NegotiationResponse.builder().contractAgreementId(agreementId).build());

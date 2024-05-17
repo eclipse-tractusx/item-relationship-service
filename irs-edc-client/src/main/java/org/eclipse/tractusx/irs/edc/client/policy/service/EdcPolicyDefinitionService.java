@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.asset.model.OdrlContext;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcOperator;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicy;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcPolicyPermission;
@@ -59,7 +60,7 @@ public class EdcPolicyDefinitionService {
     private static final String ATOMIC_CONSTRAINT = "AtomicConstraint";
     private static final String CONSTRAINT = "Constraint";
     private static final String OPERATOR_PREFIX = "odrl:";
-    private static final String USE_ACTION = "use";
+    private static final String USE_ACTION = PolicyType.USE.getValue();
 
     private final EdcConfiguration config;
     private final RestTemplate restTemplate;

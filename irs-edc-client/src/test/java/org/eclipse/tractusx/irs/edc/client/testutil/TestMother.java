@@ -67,6 +67,7 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.jetbrains.annotations.NotNull;
 
@@ -141,7 +142,7 @@ public class TestMother {
 
     private static Permission createUsePermission(final Constraint constraint) {
         return Permission.Builder.newInstance()
-                                 .action(Action.Builder.newInstance().type("use").build())
+                                 .action(Action.Builder.newInstance().type(PolicyType.USE.getValue()).build())
                                  .constraint(constraint)
                                  .build();
     }
