@@ -205,11 +205,11 @@ tractusx-connector:
   ################################
   vault:
     hashicorp:
-      url: "https://vault.demo.catena-x.net"
-      token: "<path:traceability-irs/data/int/controlplane#vaultToken>"
+      url: "https://irs-vault.dev.demo.catena-x.net"
+      token: "<path:traceability-irs/data/vault#vaultToken>"
       timeout: 30
       healthCheck:
-        enabled: false
+        enabled: true
         standbyOk: true
       paths:
         secret: /v1/traceability-irs
