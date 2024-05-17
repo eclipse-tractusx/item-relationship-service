@@ -129,7 +129,6 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public CreatePoliciesResponse registerAllowedPolicy(@Valid @RequestBody final CreatePolicyRequest request) {
-
         final Policy registeredPolicy;
 
         try {

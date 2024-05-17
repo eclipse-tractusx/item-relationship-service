@@ -59,7 +59,7 @@ class JsonObjectToIrsPolicyTransformerTest {
                 "policy": {
                     "odrl:permission": [
                         {
-                            "odrl:action": "USE",
+                            "odrl:action": "use",
                             "odrl:constraint": {
                                 "odrl:and": [
                                     {

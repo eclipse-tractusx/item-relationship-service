@@ -60,7 +60,7 @@ class EdcSubmodelFacadeTest {
     @Mock
     private EdcSubmodelClient client;
 
-    private EdcConfiguration config = new EdcConfiguration();
+    private final EdcConfiguration config = new EdcConfiguration();
 
     @BeforeEach
     public void beforeEach() {
@@ -174,10 +174,10 @@ class EdcSubmodelFacadeTest {
         void shouldThrowEdcClientExceptionForEndpointReference() throws EdcClientException {
             // arrange
             final EdcClientException e = new EdcClientException("test");
-            when(client.getEndpointReferencesForAsset(any(), any(), any(), any())).thenThrow(e);
+            when(client.getEndpointReferencesForRegistryAsset(any(), any())).thenThrow(e);
 
             // act
-            ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferencesForAsset("", "", "", "");
+            ThrowableAssert.ThrowingCallable action = () -> testee.getEndpointReferencesForRegistryAsset("", "");
 
             // assert
             assertThatThrownBy(action).isInstanceOf(EdcClientException.class);
@@ -187,12 +187,11 @@ class EdcSubmodelFacadeTest {
         void shouldReturnFailedFuture() throws EdcClientException {
 
             // arrange
-            when(client.getEndpointReferencesForAsset(any(), any(), any(), any())).thenReturn(
+            when(client.getEndpointReferencesForRegistryAsset(any(), any())).thenReturn(
                     List.of(CompletableFuture.failedFuture(new EdcClientException("test"))));
 
             // act
-            final List<CompletableFuture<EndpointDataReference>> results = testee.getEndpointReferencesForAsset("", "",
-                    "", "");
+            final List<CompletableFuture<EndpointDataReference>> results = testee.getEndpointReferencesForRegistryAsset("", "");
 
             // assert
             assertThat(results).hasSize(1);

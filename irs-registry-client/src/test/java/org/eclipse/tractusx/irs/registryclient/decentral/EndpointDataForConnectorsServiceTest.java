@@ -43,9 +43,6 @@ import org.springframework.http.HttpHeaders;
 
 class EndpointDataForConnectorsServiceTest {
 
-    private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
-    private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
-
     private static final String CONNECTION_ONE_ADDRESS = "connectionOneAddress";
     private static final String CONNECTION_TWO_ADDRESS = "connectionTwoAddress";
     private static final String CONNECTION_ONE_CONTRACT_ID = "id1";
@@ -77,8 +74,7 @@ class EndpointDataForConnectorsServiceTest {
     void shouldReturnExpectedEndpointDataReference() throws EdcRetrieverException {
 
         // GIVEN
-        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_ONE_ADDRESS, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE, BPN)).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_ONE_ADDRESS, BPN)).thenReturn(
                 List.of(CompletableFuture.completedFuture(CONNECTION_ONE_DATA_REF)));
 
         // WHEN
@@ -99,13 +95,11 @@ class EndpointDataForConnectorsServiceTest {
         // GIVEN
 
         // a first endpoint failing (1)
-        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_ONE_ADDRESS, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE, BPN)).thenThrow(
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_ONE_ADDRESS, BPN)).thenThrow(
                 new EdcRetrieverException(new EdcClientException("EdcClientException")));
 
         // and a second endpoint returning successfully (2)
-        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_TWO_ADDRESS, DT_REGISTRY_ASSET_TYPE,
-                DT_REGISTRY_ASSET_VALUE, BPN)).thenReturn(
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(CONNECTION_TWO_ADDRESS, BPN)).thenReturn(
                 List.of(CompletableFuture.completedFuture(CONNECTION_TWO_DATA_REF)));
 
         // WHEN
@@ -140,8 +134,7 @@ class EndpointDataForConnectorsServiceTest {
     void shouldThrowExceptionWhenConnectorEndpointsNotReachable() throws EdcRetrieverException {
 
         // GIVEN
-        when(edcSubmodelFacade.getEndpointReferencesForAsset(anyString(), eq(DT_REGISTRY_ASSET_TYPE),
-                eq(DT_REGISTRY_ASSET_VALUE), eq(BPN))).thenThrow(
+        when(edcSubmodelFacade.getEndpointReferencesForAsset(anyString(), eq(BPN))).thenThrow(
                 new EdcRetrieverException(new EdcClientException("EdcClientException")));
 
         // WHEN

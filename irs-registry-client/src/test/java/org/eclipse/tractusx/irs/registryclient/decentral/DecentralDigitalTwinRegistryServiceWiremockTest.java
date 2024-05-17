@@ -112,8 +112,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(getShellDescriptor200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
-                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act
             final Collection<Shell> shells = decentralDigitalTwinRegistryService.fetchShells(
@@ -161,8 +160,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
-                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells404());
             final List<DigitalTwinRegistryKey> testId = List.of(new DigitalTwinRegistryKey("testId", TEST_BPN));
@@ -182,8 +180,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
-                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells200());
             givenThat(getShellDescriptor404());
@@ -205,8 +202,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             givenThat(postEdcDiscovery200());
 
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
-                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             givenThat(getLookupShells200Empty());
             givenThat(getShellDescriptor404());
@@ -235,8 +231,7 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
 
             // simulate endpoint data reference
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any(), any(),
-                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(any(), any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
             // Act
             final Collection<DigitalTwinRegistryKey> digitalTwinRegistryKeys = decentralDigitalTwinRegistryService.lookupShellIdentifiers(
@@ -266,10 +261,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
 
             // simulate endpoint data reference
             final var endpointDataReference = endpointDataReference("assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any(),
-                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any(),
-                    any())).thenReturn(endpointDataReferenceForAssetFutures);
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any())).thenReturn(endpointDataReferenceForAssetFutures);
 
             // Act
             final Collection<DigitalTwinRegistryKey> digitalTwinRegistryKeys = decentralDigitalTwinRegistryService.lookupShellIdentifiers(
@@ -311,10 +304,8 @@ class DecentralDigitalTwinRegistryServiceWiremockTest {
             // simulate endpoint data reference
             final var endpointDataReference1 = endpointDataReference("dtr1-assetId");
             final var endpointDataReference2 = endpointDataReference("dtr2-assetId");
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any(), any(),
-                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference1)));
-            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any(), any(),
-                    any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference2)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc1Url), any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference1)));
+            when(edcEndpointReferenceRetrieverMock.getEndpointReferencesForAsset(eq(edc2Url), any())).thenReturn(List.of(CompletableFuture.completedFuture(endpointDataReference2)));
 
             // Act & Assert
             final Collection<DigitalTwinRegistryKey> digitalTwinRegistryKeys = decentralDigitalTwinRegistryService.lookupShellIdentifiers(

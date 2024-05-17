@@ -23,20 +23,19 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
+import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class EdcSubmodelClientLocalStubTest {
-
-    @Mock
-    private SubmodelTestdataCreator testdataCreator;
 
     @InjectMocks
     private EdcSubmodelClientLocalStub edcSubmodelClientLocalStub;
@@ -47,6 +46,32 @@ class EdcSubmodelClientLocalStubTest {
         String assetId = "urn:uuid:c35ee875-5443-4a2d-bc14-fdacd64b9446";
 
         // when
-        assertThrows(EdcClientException.class, () -> edcSubmodelClientLocalStub.getSubmodelPayload("", "", assetId, ""));
+        assertThrows(EdcClientException.class,
+                () -> edcSubmodelClientLocalStub.getSubmodelPayload("", "", assetId, ""));
+    }
+
+    @Test
+    void sendNotification() {
+        final EdcNotification<NotificationContent> notification = EdcNotification.builder().build();
+        final var actual = edcSubmodelClientLocalStub.sendNotification("", "", notification, "");
+        assertThat(actual).isCompleted();
+    }
+
+    @Test
+    void getEndpointReferencesForAsset() {
+        assertThrows(EdcClientException.class,
+                () -> edcSubmodelClientLocalStub.getEndpointReferencesForAsset("", "", "", ""));
+    }
+
+    @Test
+    void testGetEndpointReferencesForAsset() {
+        assertThrows(EdcClientException.class,
+                () -> edcSubmodelClientLocalStub.getEndpointReferencesForAsset("", "", "", ""));
+    }
+
+    @Test
+    void getEndpointReferencesForRegistryAsset() {
+        assertThrows(EdcClientException.class,
+                () -> edcSubmodelClientLocalStub.getEndpointReferencesForRegistryAsset("", ""));
     }
 }

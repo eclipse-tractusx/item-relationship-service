@@ -59,7 +59,7 @@ public class IrsApplication {
     /**
      * The IRS API version.
      */
-    public static final String API_VERSION = "5.1.2";
+    public static final String API_VERSION = "5.1.3";
 
     /**
      * The URL prefix for IRS API URLs.

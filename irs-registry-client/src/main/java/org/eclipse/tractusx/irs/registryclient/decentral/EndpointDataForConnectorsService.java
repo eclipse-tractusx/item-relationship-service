@@ -40,8 +40,6 @@ import org.springframework.util.StopWatch;
 @RequiredArgsConstructor
 public class EndpointDataForConnectorsService {
 
-    private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
-    private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
     private static final String TOOK_MS = "{} took {} ms";
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
@@ -77,8 +75,7 @@ public class EndpointDataForConnectorsService {
         log.info(msg);
 
         try {
-            return edcSubmodelFacade.getEndpointReferencesForAsset(edcUrl, DT_REGISTRY_ASSET_TYPE,
-                    DT_REGISTRY_ASSET_VALUE, bpn);
+            return edcSubmodelFacade.getEndpointReferencesForAsset(edcUrl, bpn);
         } catch (EdcRetrieverException e) {
             log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
             return List.of(CompletableFuture.failedFuture(e));
