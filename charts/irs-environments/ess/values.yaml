@@ -140,7 +140,7 @@ tractusx-connector:
       cache_validity_seconds: 600
       server:
         # URL of the BPN/DID Resolution Service - required:
-        url: <path:traceability-irs/data/int/controlplane#bdrsUrl>
+        url: <path:traceability-irs/data/ess/controlplane#bdrsUrl>
 
     env:
       # workaround till 0.7.1 chart

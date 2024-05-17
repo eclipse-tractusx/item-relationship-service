@@ -109,5 +109,17 @@ data:
       "BPNS00000000BJTL": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
       "BPNS000000000DQB": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
       "BPNL50096894aNXY": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
-      "BPNS00000003B0Q0": "{{ .Values.didPrefix }}:BPNL00000001CRHK"
+      "BPNS00000003B0Q0": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY1": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY2": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY3": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY4": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY5": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY6": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY7": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY8": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00ARBITRARY9": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL0ARBITRARY10": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL0ARBITRARY11": "{{ .Values.didPrefix }}:BPNL00000001CRHK",
+      "BPNL00000004FAIL": "{{ .Values.didPrefix }}:BPNL00000001CRHK"
     }
