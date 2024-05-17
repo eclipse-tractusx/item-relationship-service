@@ -63,9 +63,15 @@ public class EdcAssetService {
     private static final String ASSET_CREATION_PROPERTY_DESCRIPTION = "https://w3id.org/edc/v0.0.1/ns/description";
     private static final String ASSET_CREATION_PROPERTY_CONTENT_TYPE = "https://w3id.org/edc/v0.0.1/ns/contenttype";
     private static final String ASSET_CREATION_PROPERTY_POLICY_ID = "https://w3id.org/edc/v0.0.1/ns/policy-id";
-    private static final String ASSET_CREATION_PROPERTY_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
+    private static final String ASSET_CREATION_PROPERTY_EDC_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
+    private static final String ASSET_CREATION_PROPERTY_DATA_CORE_REGISTRY = "data.core.digitalTwinRegistry";
+    private static final String ASSET_CREATION_PROPERTY_DCAT_TYPE = "http://purl.org/dc/terms/type";
+    private static final String ASSET_CREATION_PROPERTY_DCAT_REGISTRY = "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry";
+    private static final String ASSET_CREATION_PROPERTY_COMMON_VERSION_KEY = "https://w3id.org/catenax/ontology/common#version";
+    private static final String ASSET_CREATION_PROPERTY_COMMON_VERSION_VALUE = "3.0";
     private static final String ASSET_CREATION_PROPERTY_NOTIFICATION_TYPE = "https://w3id.org/edc/v0.0.1/ns/notificationtype";
     private static final String ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD = "https://w3id.org/edc/v0.0.1/ns/notificationmethod";
+
     public static final String DATA_ADDRESS_TYPE_HTTP_DATA = "HttpData";
 
     private final EdcTransformer edcTransformer;
@@ -128,7 +134,7 @@ public class EdcAssetService {
         final String assetId = UUID.randomUUID().toString();
         final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION, assetName,
                 ASSET_CREATION_PROPERTY_CONTENT_TYPE, DEFAULT_CONTENT_TYPE, ASSET_CREATION_PROPERTY_POLICY_ID,
-                DEFAULT_POLICY_ID, ASSET_CREATION_PROPERTY_TYPE, notificationType.getValue(),
+                DEFAULT_POLICY_ID, ASSET_CREATION_PROPERTY_EDC_TYPE, notificationType.getValue(),
                 ASSET_CREATION_PROPERTY_NOTIFICATION_TYPE, notificationType.getValue(),
                 ASSET_CREATION_PROPERTY_NOTIFICATION_METHOD, notificationMethod.getValue());
 
@@ -153,7 +159,10 @@ public class EdcAssetService {
 
     private Asset createDtrAssetRequest(final String assetId, final String baseUrl) {
         final Map<String, Object> properties = Map.of(ASSET_CREATION_PROPERTY_DESCRIPTION,
-                "Digital Twin Registry Asset", ASSET_CREATION_PROPERTY_TYPE, "data.core.digitalTwinRegistry");
+                "Digital Twin Registry Asset", ASSET_CREATION_PROPERTY_EDC_TYPE,
+                ASSET_CREATION_PROPERTY_DATA_CORE_REGISTRY, ASSET_CREATION_PROPERTY_COMMON_VERSION_KEY,
+                ASSET_CREATION_PROPERTY_COMMON_VERSION_VALUE, ASSET_CREATION_PROPERTY_DCAT_TYPE,
+                Map.of("@id", ASSET_CREATION_PROPERTY_DCAT_REGISTRY));
 
         final DataAddress dataAddress = DataAddress.Builder.newInstance()
                                                            .type("DataAddress")

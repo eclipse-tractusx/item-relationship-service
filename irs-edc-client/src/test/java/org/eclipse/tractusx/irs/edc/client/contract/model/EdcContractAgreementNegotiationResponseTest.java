@@ -42,7 +42,7 @@ class EdcContractAgreementNegotiationResponseTest {
                 	"edc:createdAt": 1708590580001,
                 	"edc:contractAgreementId": "ODA3MmUyNTQtOGNlZi00YzQ2LTljNGYtNGYzNjE2YjQ5NTZl:cmVnaXN0cnktYXNzZXQ=:MDljNDMzY2EtODI5OS00OGE3LWI0MjYtNzZmZjJmODE1ZWE2",
                 	"@context": {
-                		"dct": "https://purl.org/dc/terms/",
+                		"dct": "http://purl.org/dc/terms/",
                 		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
                 		"edc": "https://w3id.org/edc/v0.0.1/ns/",
                 		"dcat": "https://www.w3.org/ns/dcat/",

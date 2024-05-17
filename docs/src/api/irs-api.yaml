@@ -821,7 +821,7 @@ paths:
                       createdOn: 2024-03-28T03:34:42.9454448Z
                       validUntil: 2025-12-12T23:59:59.999Z
                       permissions:
-                      - action: USE
+                      - action: use
                         constraint:
                           and:
                           - leftOperand: Membership
@@ -1807,7 +1807,7 @@ components:
             policy:
               '@type': Policy
               odrl:permission:
-              - odrl:action: USE
+              - odrl:action: use
                 odrl:constraint:
                   odrl:and:
                   - odrl:leftOperand: Membership
@@ -2200,7 +2200,7 @@ components:
         policy:
           '@type': Policy
           odrl:permission:
-          - odrl:action: USE
+          - odrl:action: use
             odrl:constraint:
               odrl:and:
               - odrl:leftOperand: Membership

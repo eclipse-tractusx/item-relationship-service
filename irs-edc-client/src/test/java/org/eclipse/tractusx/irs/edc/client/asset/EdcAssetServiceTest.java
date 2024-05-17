@@ -29,7 +29,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -83,11 +82,12 @@ class EdcAssetServiceTest {
     void setUp() {
         TitaniumJsonLd jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
         jsonLd.registerNamespace("odrl", "http://www.w3.org/ns/odrl/2/");
-        jsonLd.registerNamespace("dct", "https://purl.org/dc/terms/");
+        jsonLd.registerNamespace("dct", "http://purl.org/dc/terms/");
         jsonLd.registerNamespace("tx", "https://w3id.org/tractusx/v0.0.1/ns/");
         jsonLd.registerNamespace("edc", "https://w3id.org/edc/v0.0.1/ns/");
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
+        jsonLd.registerNamespace("cx-policy", "https://w3id.org/catenax/policy/");
 
         this.edcTransformer = new EdcTransformer(objectMapper(), jsonLd, new TypeTransformerRegistryImpl());
         this.service = new EdcAssetService(edcTransformer, edcConfiguration, restTemplate);
@@ -142,7 +142,66 @@ class EdcAssetServiceTest {
                 		"edc:baseUrl": "https://traceability.dev.demo.catena-x.net/api/qualitynotifications/receive"
                 	},
                 	"@context": {
-                		"dct": "https://purl.org/dc/terms/",
+                		"dct": "http://purl.org/dc/terms/",
+                		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
+                		"edc": "https://w3id.org/edc/v0.0.1/ns/",
+                		"odrl": "http://www.w3.org/ns/odrl/2/",
+                		"dcat": "https://www.w3.org/ns/dcat/",
+                		"dspace": "https://w3id.org/dspace/v0.8/"
+                	}
+                }
+                """, jsonObject.toString(), false);
+    }
+
+    @Test
+    void testRegistryAssetCreateRequestStructure() throws JSONException {
+
+        Map<String, Object> properties = Map.of("http://purl.org/dc/terms/type",
+                Map.of("@id", "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry"),
+                "https://w3id.org/catenax/ontology/common#version", "3.0", "https://w3id.org/edc/v0.0.1/ns/type",
+                "data.core.digitalTwinRegistry");
+
+        DataAddress dataAddress = DataAddress.Builder.newInstance()
+                                                     .type(DATA_ADDRESS_TYPE_HTTP_DATA)
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/type", "HttpData")
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/baseUrl",
+                                                             "https://test.dtr/registry")
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/proxyMethod", "true")
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/proxyBody", "true")
+                                                     .property("https://w3id.org/edc/v0.0.1/ns/method", "POST")
+                                                     .build();
+
+        Asset asset = Asset.Builder.newInstance()
+                                   .id("Asset1")
+                                   .contentType("Asset")
+                                   .properties(properties)
+                                   .dataAddress(dataAddress)
+                                   .build();
+        JsonObject jsonObject = edcTransformer.transformAssetToJson(asset);
+
+        JSONAssert.assertEquals("""
+                {
+                	"@id": "Asset1",
+                	"@type": "edc:Asset",
+                	"edc:properties": {
+                        "dct:type": {
+                            "@id": "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry"
+                        },
+                        "https://w3id.org/catenax/ontology/common#version": "3.0",
+                		"edc:type": "data.core.digitalTwinRegistry",
+                        "edc:id": "Asset1",
+                        "edc:contenttype": "Asset"
+                	},
+                	"edc:dataAddress": {
+                		"@type": "edc:DataAddress",
+                		"edc:method": "POST",
+                		"edc:type": "HttpData",
+                		"edc:proxyMethod": "true",
+                		"edc:proxyBody": "true",
+                		"edc:baseUrl": "https://test.dtr/registry"
+                	},
+                	"@context": {
+                		"dct": "http://purl.org/dc/terms/",
                 		"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
                 		"edc": "https://w3id.org/edc/v0.0.1/ns/",
                 		"odrl": "http://www.w3.org/ns/odrl/2/",
