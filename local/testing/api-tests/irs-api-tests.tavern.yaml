@@ -1617,62 +1617,62 @@ stages:
 
 ---
 
-
-test_name: Make sure job with aspects SerialPart and CertificateOfDestruction is processed (1.3.4)
-
-strict:
-  - headers:off
-  - json:off
-
-stages:
-  - name: create a job and check for success
-    request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
-      json:
-        key:
-          globalAssetId: "urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c"
-          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
-        aspects:
-          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
-          - urn:samm:io.catenax.serial_part:2.0.0#CertificateOfDestruction
-        collectAspects: true
-        depth: 2
-      method: POST
-      headers:
+# test not needed CertificateOfDestruction not included in testdata
+#test_name: Make sure job with aspects SerialPart and CertificateOfDestruction is processed (1.3.4)
+#
+#strict:
+#  - headers:off
+#  - json:off
+#
+#stages:
+#  - name: create a job and check for success
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+#      json:
+#        key:
+#          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+#          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
+#        aspects:
+#          - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+#          - urn:samm:io.catenax.serial_part:2.0.0#CertificateOfDestruction
+#        collectAspects: true
+#        depth: 2
+#      method: POST
+#      headers:
         content-type: application/json
         $ext:
           function: local.testing.api-tests.tavern_helpers:create_api_key
-    response:
-      status_code: 201
-      json:
-        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-      headers:
-        content-type: application/json
-      save:
-        json:
-          job_id: id
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
-
-  - name: verify job response with desired test steps and check details
-    request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
-      params:
-        returnUncompletedJob: true
-      method: GET
-      headers:
-        content-type: application/json
-        $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
-    response:
-      status_code: 200
-      verify_response_with:
-        # - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
-        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
-        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
-        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
-      headers:
-        content-type: application/json
+#    response:
+#      status_code: 201
+#      json:
+#        id: !re_fullmatch "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+#      headers:
+#        content-type: application/json
+#      save:
+#        json:
+#          job_id: id
+#
+#  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+#
+#  - name: verify job response with desired test steps and check details
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+#      params:
+#        returnUncompletedJob: true
+#      method: GET
+#      headers:
+#        content-type: application/json
+#        $ext:
+#          function: local.testing.api-tests.tavern_helpers:create_api_key
+#    response:
+#      status_code: 200
+#      verify_response_with:
+#        # - function: local.testing.api-tests.tavern_helpers:tombstones_are_empty
+#        - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
+#        - function: local.testing.api-tests.tavern_helpers:submodels_are_not_empty
+#        - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
+#      headers:
+#        content-type: application/json
 
 
 ---
@@ -2615,56 +2615,56 @@ stages:
 
 ---
 
-
-test_name: Make sure IRS-jobs with BPN-lookups content summary information
-
-strict:
-  - headers:off
-  - json:off
-
-stages:
-  - name: create a job and wait
-    request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
-      json:
-        key:
-          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
-          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
-        collectAspects: false
-        depth: 1
-        direction: "downward"
-      method: POST
-      headers:
-        content-type: application/json
-        $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
-    response:
-      status_code: 201
-      headers:
-        content-type: application/json
-      save:
-        json:
-          job_id: id
-
-  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
-
-  - name: verify job response with desired test steps
-    request:
-      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
-      params:
-        returnUncompletedJob: true
-      method: GET
-      headers:
-        content-type: application/json
-        $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
-    response:
-      status_code: 200
-      verify_response_with:
-        - function: local.testing.api-tests.tavern_helpers:bpns_are_not_empty
-        - function: local.testing.api-tests.tavern_helpers:summary_for_bpns_is_given
-      headers:
-        content-type: application/json
+#lookupBPNs are deprecated and no longer used
+#test_name: Make sure IRS-jobs with BPN-lookups content summary information
+#
+#strict:
+#  - headers:off
+#  - json:off
+#
+#stages:
+#  - name: create a job and wait
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs"
+#      json:
+#        key:
+#          globalAssetId: "{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
+#          bpn: "{tavern.env_vars.BPN_AS_BUILT}"
+#        collectAspects: false
+#        depth: 1
+#        direction: "downward"
+#      method: POST
+#      headers:
+#        content-type: application/json
+#        $ext:
+#          function: local.testing.api-tests.tavern_helpers:create_api_key
+#    response:
+#      status_code: 201
+#      headers:
+#        content-type: application/json
+#      save:
+#        json:
+#         job_id: id
+#
+#  - *verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
+#
+#  - name: verify job response with desired test steps
+#    request:
+#      url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
+#      params:
+#        returnUncompletedJob: true
+#      method: GET
+#      headers:
+#        content-type: application/json
+#        $ext:
+#          function: local.testing.api-tests.tavern_helpers:create_api_key
+#    response:
+#      status_code: 200
+#      verify_response_with:
+#        - function: local.testing.api-tests.tavern_helpers:bpns_are_not_empty
+#        - function: local.testing.api-tests.tavern_helpers:summary_for_bpns_is_given
+#      headers:
+#        content-type: application/json
 
 
 ---
