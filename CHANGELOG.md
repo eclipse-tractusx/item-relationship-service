@@ -8,18 +8,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-## [5.1.3] - 2024-05-17
-
-### Fixed
-
-- IRS now searches for Digital Twin Registry contract offers by
-  type `dct:type`: `https://w3id.org/catenax/taxonomy#DigitalTwinRegistry`
-  or `edc:type`: `data.core.digitalTwinRegistry`. #616
-- Fix missing and malformed properties for EDC policy transformation. #648
-
-
-## [5.1.2] - 2024-05-13
-
 ### Fixed
 
 -  Fixed ESS Investigation job processing not starting #579
@@ -34,8 +22,17 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## Added
 
-- Added endpoint for dedicated removal of policy from BPNL. #559 
+- Added endpoint for dedicated removal of policy from BPNL. #559
 - Integration Test Policy Store API Unhappy Path. #519
+
+## [5.1.3] - 2024-05-17
+
+### Fixed
+
+- IRS now searches for Digital Twin Registry contract offers by
+  type `dct:type`: `https://w3id.org/catenax/taxonomy#DigitalTwinRegistry`
+  or `edc:type`: `data.core.digitalTwinRegistry`. #616
+- Fix missing and malformed properties for EDC policy transformation. #648
 
 ## [5.1.2] - 2024-05-13
 
@@ -48,7 +45,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Updated default accepted policy to latest traceability framework agreement #596
 - BPN summary was removed from Job response #568
 - Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
-
 
 ## [5.1.1] - 2024-05-08
 
