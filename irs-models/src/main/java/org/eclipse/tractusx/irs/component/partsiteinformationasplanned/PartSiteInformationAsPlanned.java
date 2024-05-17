@@ -35,6 +35,6 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 public record PartSiteInformationAsPlanned(String catenaXId, List<Site> sites) {
     public List<String> getCatenaXSiteId() {
-        return sites().stream().map(Site::catenaXSiteId).toList();
+        return sites().stream().map(Site::catenaXsiteId).toList();
     }
 }

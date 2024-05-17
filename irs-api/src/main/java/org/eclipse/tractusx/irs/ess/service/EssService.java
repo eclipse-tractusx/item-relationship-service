@@ -55,8 +55,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class EssService {
 
-    private static final String PART_AS_PLANNED = "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned";
-    private static final String PART_SITE_INFORMATION_AS_PLANNED = "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned";
+    public static final String PART_AS_PLANNED = "urn:samm:io.catenax.part_as_planned:1.0.1#PartAsPlanned";
+    public static final String PART_SITE_INFORMATION_AS_PLANNED = "urn:samm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned";
 
     private final IrsItemGraphQueryService irsItemGraphQueryService;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
