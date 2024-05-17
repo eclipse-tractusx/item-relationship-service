@@ -3,8 +3,8 @@ tractusx-connector:
     sts:
       oauth:
         client:
-          id: <path:traceability-irs/data/ess/controlplane#ssi.oauth.client.id.provider>
-          secret_alias: miw-ess-provider-keycloak-secret
+          id: <path:traceability-irs/data/dev/controlplane#dimClientId>
+          secret_alias: dim-secret-dev
 
   controlplane:
     ingresses:
@@ -59,9 +59,6 @@ tractusx-connector:
         memory: 512Mi
 
   vault:
-    hashicorp:
-      healthCheck:
-        enabled: false
     secretNames:
       transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-provider-key
       transferProxyTokenSignerPublicKey: irs-dev-daps-cert-provider

@@ -18,7 +18,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################
 
-registry:
+digital-twin-registry:
   postgresql:
     primary:
       resources:
@@ -29,8 +29,6 @@ registry:
           cpu: 100m
           memory: 1Gi
   registry:
-    authentication: false
-    idpIssuerUri: https://centralidp.int.demo.catena-x.net/auth/realms/CX-Central
     host: irs-aas-registry-ess.int.demo.catena-x.net
     resources:
       limits:
