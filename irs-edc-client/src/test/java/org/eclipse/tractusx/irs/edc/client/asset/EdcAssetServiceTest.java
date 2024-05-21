@@ -24,6 +24,7 @@ import static org.eclipse.tractusx.irs.edc.client.asset.EdcAssetService.DATA_ADD
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,6 +45,7 @@ import org.eclipse.edc.spi.monitor.ConsoleMonitor;
 import org.eclipse.edc.spi.types.domain.DataAddress;
 import org.eclipse.edc.spi.types.domain.asset.Asset;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.asset.model.Notification;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationMethod;
 import org.eclipse.tractusx.irs.edc.client.asset.model.NotificationType;
 import org.eclipse.tractusx.irs.edc.client.asset.model.exception.CreateEdcAssetException;
@@ -66,6 +68,7 @@ import org.springframework.web.client.RestTemplate;
 @ExtendWith(MockitoExtension.class)
 class EdcAssetServiceTest {
 
+    public static final String MANAGEMENT_ASSETS_PATH = "/management/v2/assets";
     @Mock
     EdcConfiguration edcConfiguration;
     @Mock
@@ -217,7 +220,7 @@ class EdcAssetServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         NotificationMethod notificationMethod = NotificationMethod.RECEIVE;
@@ -230,6 +233,38 @@ class EdcAssetServiceTest {
 
         // then
         assertThat(assetId).isNotBlank();
+        final String expectedRequestPayload = expectedCreateNotificationAssetPayload(assetId,
+                Notification.RECEIVE_QUALITY_ALERT_NOTIFICATION);
+        verify(restTemplate, times(1)).postForEntity(MANAGEMENT_ASSETS_PATH, expectedRequestPayload, String.class);
+    }
+
+    @Test
+    void givenCreateTaxoNotificationAsset_whenOk_ThenReturnCreatedAssetId() throws CreateEdcAssetException {
+        // given
+        when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
+        when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
+        String baseUrl = "http://test.test";
+        String assetName = "asset1";
+        Notification updateQualityAlertNotification = Notification.UPDATE_QUALITY_ALERT_NOTIFICATION;
+        when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
+                ResponseEntity.ok("test"));
+
+        // when
+        String assetId = service.createNotificationAsset(baseUrl, assetName, updateQualityAlertNotification);
+
+        // then
+        assertThat(assetId).isNotBlank();
+        final String expectedRequestPayload = expectedCreateNotificationAssetPayload(assetId,
+                Notification.UPDATE_QUALITY_ALERT_NOTIFICATION);
+        verify(restTemplate, times(1)).postForEntity(MANAGEMENT_ASSETS_PATH, expectedRequestPayload, String.class);
+    }
+
+    private static String expectedCreateNotificationAssetPayload(final String assetId,
+            final Notification notification) {
+        return """
+                {"@id":"%s","@type":"edc:Asset","edc:properties":{"edc:policy-id":"use-eu","dct:type":{"@id":"https://w3id.org/catenax/taxonomy#%s"},"edc:description":"asset1","https://w3id.org/catenax/ontology/common#version":"1.2","edc:id":"%s","edc:contenttype":"application/json"},"edc:dataAddress":{"@type":"edc:DataAddress","edc:method":"POST","edc:type":"HttpData","edc:proxyMethod":"true","edc:proxyBody":"true","edc:baseUrl":"http://test.test"},"@context":{"odrl":"http://www.w3.org/ns/odrl/2/","dct":"http://purl.org/dc/terms/","tx":"https://w3id.org/tractusx/v0.0.1/ns/","edc":"https://w3id.org/edc/v0.0.1/ns/","dcat":"https://www.w3.org/ns/dcat/","dspace":"https://w3id.org/dspace/v0.8/","cx-policy":"https://w3id.org/catenax/policy/"}}""".formatted(
+                assetId, notification.getValue(), assetId);
     }
 
     @Test
@@ -237,7 +272,7 @@ class EdcAssetServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
@@ -255,7 +290,7 @@ class EdcAssetServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         when(restTemplate.postForEntity(any(String.class), any(String.class), any())).thenReturn(
@@ -273,7 +308,7 @@ class EdcAssetServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
         String assetId = "id";
 
         // when
@@ -288,7 +323,7 @@ class EdcAssetServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         doThrow(HttpClientErrorException.create("Surprise", HttpStatus.BAD_REQUEST, "", null, null, null)).when(
@@ -303,7 +338,7 @@ class EdcAssetServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
         String baseUrl = "http://test.test";
         String assetName = "asset1";
         doThrow(HttpClientErrorException.create("Surprise", HttpStatus.CONFLICT, "", null, null, null)).when(
@@ -318,7 +353,7 @@ class EdcAssetServiceTest {
         // given
         when(edcConfiguration.getControlplane()).thenReturn(controlplaneConfig);
         when(controlplaneConfig.getEndpoint()).thenReturn(endpointConfig);
-        when(endpointConfig.getAsset()).thenReturn("/management/v2/assets");
+        when(endpointConfig.getAsset()).thenReturn(MANAGEMENT_ASSETS_PATH);
         String assetId = "id";
         doThrow(new RestClientException("Surprise")).when(restTemplate).delete(any(String.class));
 

@@ -17,9 +17,10 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Improved policy store API input validation. #528
 - Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
 - Marked createAccessPolicy requests with deprecation mark.
-- remove edc namespace from EdcContractAgreementNegotiationResponse and
+- Remove edc namespace from EdcContractAgreementNegotiationResponse and
   EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
-- added missing @context values in edc asset creation eclipse-tractusx/traceability-foss#978
+- Added missing @context values in edc asset creation eclipse-tractusx/traceability-foss#978
+- Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation eclipse-tractusx/traceability-foss#978
 
 ## Added
 

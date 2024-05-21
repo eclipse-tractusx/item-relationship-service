@@ -42,6 +42,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
@@ -67,9 +68,10 @@ import org.springframework.util.StopWatch;
 })
 public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
-    private static final String DT_DCAT_TYPE_ID = "'http://purl.org/dc/terms/type'.'@id'";
-    private static final String DT_TAXONOMY_REGISTRY = "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry";
-    private static final String DT_EDC_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
+    private static final String DT_DCAT_TYPE_ID = "'" + JsonLdConfiguration.NAMESPACE_DCT + "type'.'@id'";
+    private static final String DT_TAXONOMY_REGISTRY =
+            JsonLdConfiguration.NAMESPACE_CX_TAXONOMY + "DigitalTwinRegistry";
+    private static final String DT_EDC_TYPE = JsonLdConfiguration.NAMESPACE_EDC + "type";
     private static final String DT_DATA_CORE_REGISTRY = "data.core.digitalTwinRegistry";
 
     private final EdcConfiguration config;
