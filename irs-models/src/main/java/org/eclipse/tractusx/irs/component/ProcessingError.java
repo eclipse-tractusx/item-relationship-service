@@ -31,13 +31,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 
 /**
  * Processing Error Data Class
  */
-@Data
+@Value
 @Builder(toBuilder = true, setterPrefix = "with")
 @JsonDeserialize(builder = ProcessingError.ProcessingErrorBuilder.class)
 public class ProcessingError {

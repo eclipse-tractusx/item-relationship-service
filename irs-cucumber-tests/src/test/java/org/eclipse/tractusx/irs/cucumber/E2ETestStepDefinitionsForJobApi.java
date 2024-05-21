@@ -382,19 +382,10 @@ public class E2ETestStepDefinitionsForJobApi {
         } else if ("tombstones".equals(valueType)) {
             final List<Tombstone> actualTombstones = completedJob.getTombstones();
             final List<Tombstone> expectedTombstones = getExpectedTombstones(fileName);
-            assertThat(actualTombstones).hasSameSizeAs(expectedTombstones);
-
-            // ugly but simple hack to ignore lastAttempt (because this timestamp will always be different
-            // as the value from the expectation file
-            // (note: this requires setter for lastAttempt in the class ProcessingError)
-            for (Tombstone actualTombstone : actualTombstones) {
-                actualTombstone.getProcessingError().setLastAttempt(null);
-            }
-            for (Tombstone expectedTombstone : expectedTombstones) {
-                expectedTombstone.getProcessingError().setLastAttempt(null);
-            }
-
-            assertThat(actualTombstones).containsAll(expectedTombstones);
+            assertThat(actualTombstones).hasSameSizeAs(expectedTombstones)
+                                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields(
+                                                "processingError.lastAttempt")
+                                        .containsAll(expectedTombstones);
         }
     }
 
