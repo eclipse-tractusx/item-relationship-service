@@ -20,6 +20,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - remove edc namespace from EdcContractAgreementNegotiationResponse and
   EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
 - added missing @context values in edc asset creation eclipse-tractusx/traceability-foss#978
+- switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation eclipse-tractusx/traceability-foss#978
 
 ## Added
 
