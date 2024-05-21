@@ -1,7 +1,7 @@
 {
   "@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
   "@type": "dcat:Catalog",
-  "dspace:participantId": "BPNL00000003CRHK",
+  "dspace:participantId": "BPNL00000000TEST",
   "dcat:dataset": {
     "@id": "urn:uuid:ea32f6f7-c884-4bfd-af4a-778666a1fffb",
     "@type": "dcat:Dataset",
@@ -81,7 +81,7 @@
     "dct:terms": "connector",
     "dct:endpointUrl": "http://edc.io/api/v1/dsp"
   },
-  "participantId": "BPNL00000003CRHK",
+  "participantId": "BPNL00000000TEST",
   "@context": {
     "@vocab": "https://w3id.org/edc/v0.0.1/ns/",
     "edc": "https://w3id.org/edc/v0.0.1/ns/",

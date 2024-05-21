@@ -43,7 +43,9 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.UseObjectForClearerAPI"})
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                    "PMD.UseObjectForClearerAPI"
+})
 public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
@@ -93,9 +95,9 @@ public class EdcSubmodelFacade {
         }
     }
 
-    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
-            final String filterKey, final String filterValue, final String bpn) throws EdcClientException {
-        return client.getEndpointReferencesForAsset(endpointAddress, filterKey, filterValue, bpn);
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(
+            final String endpointAddress, final String bpn) throws EdcClientException {
+        return client.getEndpointReferencesForRegistryAsset(endpointAddress, bpn);
     }
 
 }

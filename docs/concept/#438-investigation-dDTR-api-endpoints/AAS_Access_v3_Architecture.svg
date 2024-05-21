@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- @formatter:off -->
+<!--
+     Created with Inkscape (http://www.inkscape.org/) from the original JPG from
+     https://github.com/eclipse-tractusx/item-relationship-service/issues/438
+     in order to fulfill
+     https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-4
+-->
+
+<svg
+   width="297.465mm"
+   height="131.09615mm"
+   viewBox="0 0 297.465 131.09615"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   >
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="marker81"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path81" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="marker80"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path80" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Triangle"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       preserveAspectRatio="xMidYMid">
+      <path
+         transform="scale(0.5)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 5.77,0 -2.88,5 V -5 Z"
+         id="path135" />
+    </marker>
+    <pattern
+       id="EMFhbasepattern"
+       patternUnits="userSpaceOnUse"
+       width="6"
+       height="6"
+       x="0"
+       y="0" />
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(0.2325,-9.3596257)">
+    <rect
+       style="fill:#808080;fill-opacity:1;stroke-width:0.375539"
+       id="rect1"
+       width="65.986412"
+       height="104.95477"
+       x="8.3751678"
+       y="19.544041" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.50648px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+       x="41.283657"
+       y="73.634338"
+       id="text38"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+         x="41.283657"
+         y="73.634338"
+         id="tspan38">Data Consumer EDC</tspan></text>
+    <rect
+       style="fill:#cccccc;fill-opacity:1;stroke-width:0.227134"
+       id="rect7"
+       width="65.986412"
+       height="38.392845"
+       x="222.02713"
+       y="86.452347" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.50648px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#000000;fill-opacity:1;stroke-width:0.375539"
+       x="255.07753"
+       y="104.44514"
+       id="text28"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.375539"
+         x="255.07753"
+         y="104.44514"
+         id="tspan28">Submodel</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.375539"
+         x="255.07753"
+         y="110.07823"
+         id="tspan29">Server</tspan></text>
+    <g
+       id="g70"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <rect
+         style="fill:#ff9934;fill-opacity:1;stroke-width:0.264583"
+         id="rect6"
+         width="46.490139"
+         height="73.944946"
+         x="82.954971"
+         y="17.449057" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="106.14036"
+         y="22.959326"
+         id="text2"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="106.14036"
+           y="22.959326"
+           id="tspan2">Data Provider EDC</tspan></text>
+    </g>
+    <rect
+       style="fill:#808080;fill-opacity:1;stroke-width:0.168505"
+       id="rect5"
+       width="37.084503"
+       height="37.598618"
+       x="121.36031"
+       y="36.300831" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.50648px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+       x="139.88385"
+       y="50.63327"
+       id="text11"><tspan
+         id="tspan11"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+         x="139.88385"
+         y="50.63327">Contract</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+         x="139.88385"
+         y="56.266369"
+         id="tspan12">Digital Twin</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+         x="139.88385"
+         y="61.899467"
+         id="tspan13">Registry</tspan></text>
+    <rect
+       style="fill:#808080;fill-opacity:1;stroke-width:0.168505;font-variation-settings:normal;opacity:1;vector-effect:none;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       id="rect2"
+       width="37.084503"
+       height="37.598618"
+       x="121.36031"
+       y="81.123283" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.50648px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+       x="139.95978"
+       y="95.902412"
+       id="text16"><tspan
+         id="tspan14"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+         x="139.95978"
+         y="95.902412">Contract</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+         x="139.95978"
+         y="101.53551"
+         id="tspan16">Submodel</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.375539"
+         x="139.95978"
+         y="107.16861"
+         id="tspan17">Server</tspan></text>
+    <g
+       id="g74"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <rect
+         style="fill:#007bbf;fill-opacity:1;stroke-width:0.191085"
+         id="rect11"
+         width="46.490139"
+         height="38.569275"
+         x="157.84787"
+         y="17.621624" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="180.98442"
+         y="22.329906"
+         id="text26"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="180.98442"
+           y="22.329906"
+           id="tspan26">Digital Twin Registry</tspan></text>
+    </g>
+    <g
+       id="g71"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <rect
+         style="fill:#203864;fill-opacity:1;stroke-width:0.117939"
+         id="rect8"
+         width="25.95499"
+         height="26.317209"
+         x="174.06891"
+         y="25.214451" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="187.15802"
+         y="35.52129"
+         id="text20"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="187.15802"
+           y="35.52129"
+           id="tspan20">Asset</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="187.15802"
+           y="39.49004"
+           id="tspan22">Administration</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="187.15802"
+           y="43.45879"
+           id="tspan23">Shell</tspan></text>
+    </g>
+    <g
+       id="g72"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <rect
+         style="opacity:1;vector-effect:none;fill:#487a98;fill-opacity:1;stroke:#ff9934;stroke-width:0.377;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.131, 0.377;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="rect9"
+         width="10.424207"
+         height="12.512068"
+         x="162.33453"
+         y="25.214451" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.44561px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffff00;fill-opacity:1;stroke-width:0.305701"
+         x="-31.528997"
+         y="165.3506"
+         id="text40"
+         transform="rotate(-90)"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.44561px;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffff00;fill-opacity:1;stroke-width:0.305701"
+           x="-31.528997"
+           y="165.3506"
+           id="tspan40">Policy</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.44561px;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffff00;fill-opacity:1;stroke-width:0.305701"
+           x="-31.528997"
+           y="168.40761"
+           id="tspan41">Enforce-</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.44561px;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffff00;fill-opacity:1;stroke-width:0.305701"
+           x="-31.528997"
+           y="171.46463"
+           id="tspan42">ment</tspan></text>
+    </g>
+    <g
+       id="g73"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <rect
+         style="opacity:1;vector-effect:none;fill:#487a98;fill-opacity:1;stroke:#ff9934;stroke-width:0.377;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.131, 0.377;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+         id="rect10"
+         width="10.424207"
+         height="12.512068"
+         x="162.33453"
+         y="39.192158" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.44561px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffff00;fill-opacity:1;stroke-width:0.305701"
+         x="-45.458344"
+         y="166.8791"
+         id="text45"
+         transform="rotate(-90)"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.44561px;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffff00;fill-opacity:1;stroke-width:0.305701"
+           x="-45.458344"
+           y="166.8791"
+           id="tspan45">Policy</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.44561px;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffff00;fill-opacity:1;stroke-width:0.305701"
+           x="-45.458344"
+           y="169.93611"
+           id="tspan47">Decision</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#333333;stroke-width:0.621025;stroke-dasharray:none;marker-end:url(#marker81);font-variation-settings:normal;opacity:1;vector-effect:none;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       d="m 74.36158,40.463387 h 44.76633"
+       id="path4" />
+    <path
+       style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#333333;stroke-width:0.621025;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-end:url(#marker81);stop-color:#000000;stop-opacity:1"
+       d="m 158.44481,40.463374 h 61.41493"
+       id="path7" />
+    <path
+       style="display:inline;opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#333333;stroke-width:0.621025;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-end:url(#marker81);font-variation-settings:normal;stop-color:#000000;stop-opacity:1"
+       d="M 222.02713,51.369498 H 199.04821 V 76.792219 L 76.604915,76.697624"
+       id="path8" />
+    <path
+       style="fill:none;stroke:#333333;stroke-width:0.621025;stroke-dasharray:none;marker-end:url(#marker81);font-variation-settings:normal;opacity:1;vector-effect:none;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       d="M 74.361576,99.559057 H 119.14215"
+       id="path9" />
+    <path
+       style="fill:none;stroke:#333333;stroke-width:0.621025;stroke-dasharray:none;marker-end:url(#marker81);font-variation-settings:normal;opacity:1;vector-effect:none;fill-opacity:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       d="M 121.36031,112.84344 H 76.577876"
+       id="path10" />
+    <path
+       style="fill:#000000;stroke:#333333;stroke-width:0.643834;stroke-dasharray:none;marker-end:url(#marker80)"
+       d="m 175.94688,99.424477 h 43.84996"
+       id="path11" />
+    <path
+       style="fill:#000000;stroke:#333333;stroke-width:0.660004;stroke-dasharray:none;marker-end:url(#Triangle)"
+       d="M 175.70195,98.812148 250.9879,75.550306"
+       id="path12" />
+    <rect
+       style="fill:#bf8a58;fill-opacity:1;stroke:#543e3e;stroke-width:0.5351;stroke-dasharray:1.6053, 0.5351;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect4"
+       width="15.530535"
+       height="37.598618"
+       x="160.32069"
+       y="81.123283" />
+    <path
+       style="opacity:1;vector-effect:none;fill:none;fill-opacity:1;stroke:#333333;stroke-width:0.660004;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none"
+       d="m 158.4448,112.99713 h 63.58233"
+       id="path13" />
+    <g
+       id="g59"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.1995575,-4.6933133)">
+      <text
+         xml:space="preserve"
+         style="font-size:3.175px;display:inline;fill:#ffff00;fill-opacity:1;stroke-width:0.267558"
+         x="-73.793175"
+         y="119.24496"
+         id="text31"
+         transform="rotate(-90)"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffff00;fill-opacity:1;stroke-width:0.267558"
+           x="-73.793175"
+           y="119.24496"
+           id="tspan31">EDC-Extension</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:2.44561px;display:inline;fill:#ffff00;fill-opacity:1;stroke-width:0.316236"
+         x="-73.862282"
+         y="122.65272"
+         id="text34"
+         transform="rotate(-90)"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.44561px;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#ffff00;fill-opacity:1;stroke-width:0.316236"
+           x="-73.862282"
+           y="122.65272"
+           id="tspan34">Policy Enforcement</tspan></text>
+    </g>
+    <g
+       id="g27"
+       transform="matrix(1.4193636,0,0,1.4193636,-1.3371101,-5.5854095)">
+      <g
+         id="g24"
+         transform="translate(-0.97871084,-78.94519)">
+        <g
+           id="g60">
+          <rect
+             style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+             id="rect13"
+             width="7.5768967"
+             height="5.4369316"
+             x="60.290596"
+             y="108.66998" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+             x="64.337166"
+             y="112.52946"
+             id="text19"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+               x="64.337166"
+               y="112.52946"
+               id="tspan19">A1</tspan></text>
+        </g>
+      </g>
+    </g>
+    <g
+       id="g61"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <g
+         id="g62">
+        <rect
+           style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+           id="rect24"
+           width="7.5768967"
+           height="5.4369316"
+           x="68.257133"
+           y="29.152443" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="72.187431"
+           y="33.011925"
+           id="text24"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+             x="72.187431"
+             y="33.011925"
+             id="tspan24">B1</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g64"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <rect
+         style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+         id="rect26"
+         width="7.5768967"
+         height="5.4369316"
+         x="68.26693"
+         y="54.691235" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="72.007317"
+         y="58.531338"
+         id="text27"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="72.007317"
+           y="58.531338"
+           id="tspan27">B3</tspan></text>
+    </g>
+    <g
+       id="g63"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <g
+         id="g26"
+         transform="translate(-0.49032794,-53.906096)">
+        <rect
+           style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+           id="rect25"
+           width="7.5768967"
+           height="5.4369316"
+           x="60.290596"
+           y="108.66998" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="64.165329"
+           y="112.34682"
+           id="text25"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+             x="64.165329"
+             y="112.34682"
+             id="tspan25">A3</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g65"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <g
+         id="g35"
+         transform="translate(73.27129,-79.444907)">
+        <rect
+           style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+           id="rect34"
+           width="7.5768967"
+           height="5.4369316"
+           x="60.290596"
+           y="108.66998" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="64.165329"
+           y="112.34682"
+           id="text35"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+             x="64.165329"
+             y="112.34682"
+             id="tspan35">A2</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g66"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <rect
+         style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+         id="rect36"
+         width="7.5768967"
+         height="5.4369316"
+         x="142.02855"
+         y="29.152443" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="145.78056"
+         y="33.011925"
+         id="text36"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="145.78056"
+           y="33.011925"
+           id="tspan36">B2</tspan></text>
+    </g>
+    <g
+       id="g53"
+       transform="matrix(1.4193636,0,0,1.4193636,-0.36164026,-6.1934825)">
+      <rect
+         style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+         id="rect37"
+         width="7.5768967"
+         height="5.4369316"
+         x="62.790791"
+         y="71.585281" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="66.665527"
+         y="75.262115"
+         id="text37"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="66.665527"
+           y="75.262115"
+           id="tspan37">C1</tspan></text>
+    </g>
+    <g
+       id="g56"
+       transform="matrix(1.4193636,0,0,1.4193636,-4.2678978,-2.4514317)">
+      <rect
+         style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+         id="rect39"
+         width="7.5768967"
+         height="5.4369316"
+         x="139.60223"
+         y="62.528858" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="143.42479"
+         y="66.38369"
+         id="text39"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="143.42479"
+           y="66.38369"
+           id="tspan39">C2i</tspan></text>
+    </g>
+    <g
+       id="g57"
+       transform="matrix(1.4193636,0,0,1.4193636,-2.0163929,-4.8761292)">
+      <rect
+         style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+         id="rect40"
+         width="7.5768967"
+         height="5.4369316"
+         x="138.07697"
+         y="70.606987" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="141.89952"
+         y="74.461815"
+         id="text43"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="141.89952"
+           y="74.461815"
+           id="tspan43">C2ii</tspan></text>
+    </g>
+    <g
+       id="g58"
+       transform="matrix(1.4193636,0,0,1.4193636,-4.2678978,-1.498872)">
+      <rect
+         style="fill:#595959;fill-opacity:1;stroke-width:0.0289636"
+         id="rect43"
+         width="7.5768967"
+         height="5.4369316"
+         x="139.60223"
+         y="78.180519" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+         x="143.38371"
+         y="82.035347"
+         id="text44"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.264583"
+           x="143.38371"
+           y="82.035347"
+           id="tspan46">C3</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.22708px;font-family:Arial;-inkscape-font-specification:Arial;display:inline;fill:#ffffff;fill-opacity:1;stroke-width:0.268921"
+       x="56.234039"
+       y="130.01047"
+       id="text49"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.268921"
+         x="56.682335"
+         y="130.01047"
+         id="tspan49">Copyright © 2024 Robert Bosch Manufacturing Solutions GmbH </tspan></text>
+  </g>
+</svg>
+
+<!-- @formatter:on -->

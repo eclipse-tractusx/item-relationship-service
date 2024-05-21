@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
- 
+
+### Fixed
+
+-  Fixed ESS Investigation job processing not starting #579
+
 ### Changed
 
 - Improved policy store API input validation. #528
@@ -16,11 +20,19 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - remove edc namespace from EdcContractAgreementNegotiationResponse and
   EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
 
-
 ## Added
 
-- Added endpoint for dedicated removal of policy from BPNL. #559 
+- Added endpoint for dedicated removal of policy from BPNL. #559
 - Integration Test Policy Store API Unhappy Path. #519
+
+## [5.1.3] - 2024-05-17
+
+### Fixed
+
+- IRS now searches for Digital Twin Registry contract offers by
+  type `dct:type`: `https://w3id.org/catenax/taxonomy#DigitalTwinRegistry`
+  or `edc:type`: `data.core.digitalTwinRegistry`. #616
+- Fix missing and malformed properties for EDC policy transformation. #648
 
 ## [5.1.2] - 2024-05-13
 
@@ -33,7 +45,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Updated default accepted policy to latest traceability framework agreement #596
 - BPN summary was removed from Job response #568
 - Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
-
 
 ## [5.1.1] - 2024-05-08
 
@@ -669,7 +680,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.2...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.3...HEAD
+[5.1.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.0...5.1.1
 [5.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.0...5.1.0

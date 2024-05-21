@@ -27,7 +27,7 @@ replicaCount: 1
 
 image:
   repository: tractusx/irs-api
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 

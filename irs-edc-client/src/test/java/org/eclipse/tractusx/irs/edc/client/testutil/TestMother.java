@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.testutil;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_CATENAX_POLICY;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCAT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DSPACE;
@@ -66,6 +67,7 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.data.StringMapper;
 import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,6 +81,7 @@ public class TestMother {
         titaniumJsonLd.registerNamespace("edc", NAMESPACE_EDC);
         titaniumJsonLd.registerNamespace("dcat", NAMESPACE_DCAT);
         titaniumJsonLd.registerNamespace("dspace", NAMESPACE_DSPACE);
+        titaniumJsonLd.registerNamespace("cx-policy", NAMESPACE_CATENAX_POLICY);
         return new EdcTransformer(objectMapper(), titaniumJsonLd, new TypeTransformerRegistryImpl());
     }
 
@@ -139,7 +142,7 @@ public class TestMother {
 
     private static Permission createUsePermission(final Constraint constraint) {
         return Permission.Builder.newInstance()
-                                 .action(Action.Builder.newInstance().type("USE").build())
+                                 .action(Action.Builder.newInstance().type(PolicyType.USE.getValue()).build())
                                  .constraint(constraint)
                                  .build();
     }

@@ -42,7 +42,7 @@ class JsonLdConfigurationTest {
         final JsonLdConfiguration jsonLdConfiguration = new JsonLdConfiguration();
         final TitaniumJsonLd titaniumJsonLd = jsonLdConfiguration.titaniumJsonLd(jsonLdConfiguration.monitor());
         final JsonObject build = Json.createObjectBuilder()
-                                     .add("dct", "https://purl.org/dc/terms/")
+                                     .add("dct", "http://purl.org/dc/terms/")
                                      .add("tx", "https://w3id.org/tractusx/v0.0.1/ns/")
                                      .add("edc", "https://w3id.org/edc/v0.0.1/ns/")
                                      .add("dcat", "https://www.w3.org/ns/dcat/")

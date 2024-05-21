@@ -50,12 +50,13 @@ public final class SubmodelFacadeWiremockSupport {
                 }""";
     public static final String EDC_PROVIDER_DUMMY_URL = "https://edc.io/api/v1/dsp";
     public static final String IRS_INTERNAL_CALLBACK_URL = "https://irs.test/internal/endpoint-data-reference";
-    public static final String EDC_PROVIDER_BPN = "BPNL00000003CRHK";
+    public static final String EDC_PROVIDER_BPN = "BPNL00000000TEST";
     public static final int STATUS_CODE_OK = 200;
     public static final String CX_POLICY_FRAMEWORK_AGREEMENT = "cx-policy:FrameworkAgreement";
     public static final String TRACEABILITY_1_0 = "traceability:1.0";
     public static final String CX_POLICY_USAGE_PURPOSE = "cx-policy:UsagePurpose";
     public static final String CX_CORE_INDUSTRYCORE_1 = "cx.core.industrycore:1";
+    public static final String PERMISSION_TYPE = "use";
 
     private SubmodelFacadeWiremockSupport() {
     }
@@ -73,7 +74,8 @@ public final class SubmodelFacadeWiremockSupport {
 
         stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
                                                                             .withBody(getCatalogResponse(edcAssetId,
-                                                                                    contractAgreementId, "USE",
+                                                                                    contractAgreementId,
+                                                                                    PERMISSION_TYPE,
                                                                                     EDC_PROVIDER_BPN))));
 
         stubFor(post(urlPathEqualTo(PATH_NEGOTIATE)).willReturn(

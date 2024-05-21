@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,6 +46,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -93,7 +95,11 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     private static final String PROVIDER_SUFFIX = "/test";
     private static final String CONNECTOR_ENDPOINT = "https://connector.endpoint.com";
     private static final String existingCatenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
-    private static final String BPN = "BPNL00000003CRHK";
+    private static final String BPN = "BPNL00000000TEST";
+    public static final String TAXONOMY_DIGITAL_TWIN_REGISTRY = "https://w3id.org/catenax/taxonomy#DigitalTwinRegistry";
+    public static final String DCT_TYPE_ID = "'http://purl.org/dc/terms/type'.'@id'";
+    public static final String EDC_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
+    public static final String DATA_CORE_DIGITAL_TWIN_REGISTRY = "data.core.digitalTwinRegistry";
 
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final TimeMachine clock = new TimeMachine();
@@ -460,6 +466,79 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
 
         // assert
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void shouldRetrieveEndpointReferenceForRegistryAssetUsingFallbackOldIdentifier() throws Exception {
+        // arrange
+        // no catalog item for taxonomy#DigitalTwinRegistry is found,
+        // so the fallback data.core.digitalTwinRegistry is used
+        when(catalogFacade.fetchCatalogByFilter(any(), eq(DCT_TYPE_ID), eq(TAXONOMY_DIGITAL_TWIN_REGISTRY),
+                any())).thenReturn(Collections.emptyList());
+        when(catalogFacade.fetchCatalogByFilter(any(), eq(EDC_TYPE), eq(DATA_CORE_DIGITAL_TWIN_REGISTRY),
+                any())).thenReturn(List.of(CatalogItem.builder().itemId("asset-id").build()));
+
+        when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
+
+        final String agreementId = "agreementId";
+        when(contractNegotiationService.negotiate(any(), any(),
+                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
+                NegotiationResponse.builder().contractAgreementId(agreementId).build());
+        final EndpointDataReference expected = mock(EndpointDataReference.class);
+        when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
+                Optional.ofNullable(expected));
+
+        // act
+        final var result = testee.getEndpointReferencesForRegistryAsset(ENDPOINT_ADDRESS, "bpn");
+
+        // assert
+        assertThat(result).hasSize(1);
+        final EndpointDataReference actual = result.get(0).get(5, TimeUnit.SECONDS);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void shouldRetrieveEndpointReferenceForRegistryAssetForNewIdentifier() throws Exception {
+        // arrange
+        // catalog item for taxonomy#DigitalTwinRegistry is found, so the fallback type is not used
+        when(catalogFacade.fetchCatalogByFilter(any(), eq(DCT_TYPE_ID), eq(TAXONOMY_DIGITAL_TWIN_REGISTRY),
+                any())).thenReturn(List.of(CatalogItem.builder().itemId("asset-id").build()));
+
+        when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
+
+        final String agreementId = "agreementId";
+        when(contractNegotiationService.negotiate(any(), any(),
+                eq(new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW)), any())).thenReturn(
+                NegotiationResponse.builder().contractAgreementId(agreementId).build());
+        final EndpointDataReference expected = mock(EndpointDataReference.class);
+        when(endpointDataReferenceCacheService.getEndpointDataReferenceFromStorage(agreementId)).thenReturn(
+                Optional.ofNullable(expected));
+
+        // act
+        final var result = testee.getEndpointReferencesForRegistryAsset(ENDPOINT_ADDRESS, "bpn");
+
+        // assert
+        assertThat(result).hasSize(1);
+        final EndpointDataReference actual = result.get(0).get(5, TimeUnit.SECONDS);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void shouldFailEndpointReferenceRetrievalForNoRegistryAsset() {
+        // arrange
+        final String edcUrl = "https://edc.controlplane.org/public";
+        when(config.getControlplane().getProviderSuffix()).thenReturn(PROVIDER_SUFFIX);
+
+        when(catalogFacade.fetchCatalogByFilter(any(), eq(DCT_TYPE_ID), eq(TAXONOMY_DIGITAL_TWIN_REGISTRY),
+                any())).thenReturn(Collections.emptyList());
+        when(catalogFacade.fetchCatalogByFilter(any(), eq(EDC_TYPE), eq(DATA_CORE_DIGITAL_TWIN_REGISTRY),
+                any())).thenReturn(Collections.emptyList());
+
+        // act & assert
+        final String expectedErrorMessage = "No DigitalTwinRegistry contract offers found for endpointAddress '%s' filterKey '%s', filterValue '%s' or filterKey '%s', filterValue '%s'".formatted(
+                edcUrl, DCT_TYPE_ID, TAXONOMY_DIGITAL_TWIN_REGISTRY, EDC_TYPE, DATA_CORE_DIGITAL_TWIN_REGISTRY);
+        assertThatThrownBy(() -> testee.getEndpointReferencesForRegistryAsset(edcUrl, "bpn")).isInstanceOf(
+                EdcClientException.class).hasMessage(expectedErrorMessage);
     }
 
     @Test
