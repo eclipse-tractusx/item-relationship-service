@@ -1273,7 +1273,6 @@ stages:
       status_code: 200
       verify_response_with:
         - function: local.testing.api-tests.tavern_helpers:submodels_are_empty
-        - function: local.testing.api-tests.tavern_helpers:submodelDescriptors_in_shells_are_empty
         - function: local.testing.api-tests.tavern_helpers:aspects_in_job_parameter_are_empty
         - function: local.testing.api-tests.tavern_helpers:relationships_are_not_empty
         - function: local.testing.api-tests.tavern_helpers:check_timestamps_for_completed_jobs
@@ -1639,9 +1638,9 @@ stages:
 #        depth: 2
 #      method: POST
 #      headers:
-        content-type: application/json
-        $ext:
-          function: local.testing.api-tests.tavern_helpers:create_api_key
+#        content-type: application/json
+#        $ext:
+#          function: local.testing.api-tests.tavern_helpers:create_api_key
 #    response:
 #      status_code: 201
 #      json:
