@@ -33,7 +33,7 @@ jobs:
           cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Prepare Helm release
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "chore(release): Prepare release for Helm version ${{ inputs.helm-chart-version }}"
           branch: chore/prepare-helm-release-${{ inputs.helm-chart-version }}

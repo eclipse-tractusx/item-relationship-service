@@ -68,7 +68,7 @@ jobs:
           sed -i -e 's#<irs-registry-client\.version>.*</irs-registry-client\.version>#<irs-registry-client\.version>'$VERSION'</irs-registry-client\.version>#g' pom.xml
 
       - name: Create PR for irs-registry-client version update
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "chore(dependencies): Update irs-registry-client to ${{ env.NEXT_VERSION }}"
           branch: chore/update-irs-registry-client-${{ env.NEXT_VERSION }}
