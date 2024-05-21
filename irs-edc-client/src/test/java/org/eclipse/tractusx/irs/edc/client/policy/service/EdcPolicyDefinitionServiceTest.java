@@ -84,7 +84,10 @@ class EdcPolicyDefinitionServiceTest {
         JSONAssert.assertEquals(objectMapper.writeValueAsString(request), """
                         {
                         	"@context": {
-                        		"odrl": "http://www.w3.org/ns/odrl/2/"
+                        		"odrl": "http://www.w3.org/ns/odrl/2/",
+                        		"@vocab":null,
+                        		"edc":null,
+                        		"cx-policy":null
                         	},
                         	"@id": "4cc0bb57-2d64-4cfb-a13b-aceef3477b7e",
                         	"@type": "PolicyDefinitionRequestDto",
