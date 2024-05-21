@@ -19,6 +19,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy.service;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_CATENAX_POLICY;
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_ODRL;
 
 import java.util.Collections;
@@ -28,7 +30,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
-import org.eclipse.tractusx.irs.edc.client.asset.model.OdrlContext;
+import org.eclipse.tractusx.irs.edc.client.asset.model.Context;
 import org.eclipse.tractusx.irs.edc.client.contract.model.EdcOperator;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.policy.model.EdcCreatePolicyDefinitionRequest;
@@ -151,12 +153,16 @@ public class EdcPolicyDefinitionService {
                                              .type(POLICY_TYPE)
                                              .build();
 
-        final OdrlContext odrlContext = OdrlContext.builder().odrl(NAMESPACE_ODRL).build();
+        final Context context = Context.builder()
+                                       .odrl(NAMESPACE_ODRL)
+                                       .edc(NAMESPACE_EDC)
+                                       .vocab(NAMESPACE_EDC)
+                                       .cxPolicy(NAMESPACE_CATENAX_POLICY)
+                                       .build();
 
         return EdcCreatePolicyDefinitionRequest.builder()
                                                .policyDefinitionId(accessPolicyId)
-                                               .policy(edcPolicy)
-                                               .odrlContext(odrlContext)
+                                               .policy(edcPolicy).context(context)
                                                .type(POLICY_DEFINITION_TYPE)
                                                .build();
     }
