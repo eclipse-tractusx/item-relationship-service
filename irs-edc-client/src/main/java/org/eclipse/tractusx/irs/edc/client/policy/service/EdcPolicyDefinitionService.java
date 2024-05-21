@@ -19,6 +19,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy.service;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_CATENAX_POLICY;
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_ODRL;
 
 import java.util.Collections;
@@ -151,7 +153,12 @@ public class EdcPolicyDefinitionService {
                                              .type(POLICY_TYPE)
                                              .build();
 
-        final Context context = Context.builder().odrl(NAMESPACE_ODRL).build();
+        final Context context = Context.builder()
+                                       .odrl(NAMESPACE_ODRL)
+                                       .edc(NAMESPACE_EDC)
+                                       .vocab(NAMESPACE_EDC)
+                                       .cxPolicy(NAMESPACE_CATENAX_POLICY)
+                                       .build();
 
         return EdcCreatePolicyDefinitionRequest.builder()
                                                .policyDefinitionId(accessPolicyId)
