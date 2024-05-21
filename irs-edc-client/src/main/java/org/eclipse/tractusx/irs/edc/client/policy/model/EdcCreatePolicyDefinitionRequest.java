@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.eclipse.tractusx.irs.edc.client.asset.model.OdrlContext;
+import org.eclipse.tractusx.irs.edc.client.asset.model.Context;
 
 /**
  * EdcCreatePolicyDefinitionRequest used for policy create request
@@ -35,7 +35,7 @@ import org.eclipse.tractusx.irs.edc.client.asset.model.OdrlContext;
 public class EdcCreatePolicyDefinitionRequest {
 
     @JsonProperty("@context")
-    private OdrlContext odrlContext;
+    private Context context;
 
     @JsonProperty("@id")
     private String policyDefinitionId;

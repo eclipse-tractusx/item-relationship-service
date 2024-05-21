@@ -24,12 +24,18 @@ import lombok.Builder;
 import lombok.ToString;
 
 /**
- * OdrlContext used for creating edc assets
+ * Context used for creating edc assets
  */
 
 @ToString
 @Builder
-public class OdrlContext {
+public class Context {
     @JsonProperty("odrl")
     private String odrl;
+    @JsonProperty("@vocab")
+    private String vocab;
+    @JsonProperty("edc")
+    private String edc;
+    @JsonProperty("cx-policy")
+    private String cxPolicy;
 }
