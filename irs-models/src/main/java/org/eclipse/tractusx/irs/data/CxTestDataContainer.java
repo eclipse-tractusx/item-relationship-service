@@ -56,10 +56,11 @@ public class CxTestDataContainer {
 
         public static final String SERIAL_PART_ASPECT_TYPE = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
         public static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
-        public static final String SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE = "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt";
+        public static final String SINGLE_LEVEL_USAGE_AS_BUILT_ASPECT_TYPE = "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt";
         public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified";
         public static final String PART_AS_PLANNED_ASPECT_TYPE = "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned";
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned";
+        public static final String SINGLE_LEVEL_USAGE_AS_PLANNED_ASPECT_TYPE = "urn:samm:io.catenax.single_level_usage_as_planned:2.0.0#SingleLevelUsageAsPlanned";
         public static final String BATCH_ASPECT_TYPE = "urn:samm:io.catenax.batch:3.0.0#Batch";
         public static final String MATERIAL_FOR_RECYCLING_ASPECT_TYPE = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
         public static final String PRODUCT_DESCRIPTION_ASPECT_TYPE = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";
@@ -71,7 +72,7 @@ public class CxTestDataContainer {
         private List<Map<String, Object>> serialPart;
         @JsonProperty(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE)
         private List<Map<String, Object>> singleLevelBomAsBuilt;
-        @JsonProperty(SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE)
+        @JsonProperty(SINGLE_LEVEL_USAGE_AS_BUILT_ASPECT_TYPE)
         private List<Map<String, Object>> singleLevelUsageAsBuilt;
         @JsonProperty(SINGLE_LEVEL_BOM_AS_SPECIFIED_ASPECT_TYPE)
         private List<Map<String, Object>> singleLevelBomAsSpecified;
@@ -79,6 +80,8 @@ public class CxTestDataContainer {
         private List<Map<String, Object>> partAsPlanned;
         @JsonProperty(SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE)
         private List<Map<String, Object>> singleLevelBomAsPlanned;
+        @JsonProperty(SINGLE_LEVEL_USAGE_AS_PLANNED_ASPECT_TYPE)
+        private List<Map<String, Object>> singleLevelUsageAsPlanned;
         @JsonProperty(BATCH_ASPECT_TYPE)
         private List<Map<String, Object>> batch;
         @JsonProperty(MATERIAL_FOR_RECYCLING_ASPECT_TYPE)
@@ -112,6 +115,10 @@ public class CxTestDataContainer {
 
         public Optional<Map<String, Object>> getSingleLevelBomAsPlanned() {
             return singleLevelBomAsPlanned != null ? singleLevelBomAsPlanned.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getSingleLevelUsageAsPlanned() {
+            return singleLevelUsageAsPlanned != null ? singleLevelUsageAsPlanned.stream().findFirst() : Optional.empty();
         }
 
         public Optional<Map<String, Object>> getBatch() {

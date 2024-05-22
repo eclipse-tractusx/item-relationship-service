@@ -47,8 +47,8 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_STATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_TRANSFER;
-import static org.eclipse.tractusx.irs.util.TestMother.batchAspectName;
-import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
+import static org.eclipse.tractusx.irs.util.TestMother.BATCH_3_0_0;
+import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 
 import java.time.Duration;
 import java.util.List;
@@ -280,10 +280,10 @@ class IrsWireMockIntegrationTest {
             final String batchFileName, final String sbomFileName) {
 
         final String edcAssetId = WiremockSupport.randomUUIDwithPrefix();
-        final String batch = WiremockSupport.submodelRequest(edcAssetId, BATCH, batchAspectName, batchFileName);
+        final String batch = WiremockSupport.submodelRequest(edcAssetId, BATCH, BATCH_3_0_0, batchFileName);
 
         final String singleLevelBomAsBuilt = WiremockSupport.submodelRequest(edcAssetId, SINGLE_LEVEL_BOM_AS_BUILT,
-                singleLevelBomAsBuiltAspectName, sbomFileName);
+                SINGLE_LEVEL_BOM_AS_BUILT_3_0_0, sbomFileName);
 
         final List<String> submodelDescriptors = List.of(batch, singleLevelBomAsBuilt);
 

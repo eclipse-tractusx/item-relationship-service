@@ -60,7 +60,7 @@ import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
+import org.eclipse.tractusx.irs.edc.client.relationships.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 
 /**
@@ -71,12 +71,23 @@ import org.eclipse.tractusx.irs.services.MeterRegistryService;
  */
 public class TestMother {
 
-    public static final String singleLevelBomAsBuiltAspectName = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
-    public static final String singleLevelUsageAsBuiltAspectName = "urn:samm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
-    public static final String serialPartAspectName = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
-    public static final String batchAspectName = "urn:samm:io.catenax.batch:3.0.0#Batch";
-    public static final String materialForRecyclingAspectName = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
-    public static final String productDescriptionAspectName = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";
+    public static final String SINGLE_LEVEL_BOM_AS_BUILT_3_0_0 = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
+    public static final String SINGLE_LEVEL_USAGE_AS_BUILT_2_0_0 = "urn:samm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
+    public static final String SERIAL_PART_3_0_0 = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
+    public static final String PART_AS_SPECIFIED_3_0_0 = "urn:samm:io.catenax.part_as_specified:3.0.0#PartAsSpecified";
+    public static final String BATCH_3_0_0 = "urn:samm:io.catenax.batch:3.0.0#Batch";
+    public static final String MATERIAL_FOR_RECYCLING_1_1_0 = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
+    public static final String PRODUCT_DESCRIPTION_1_0_1 = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";
+    public static final String SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0 = "urn:samm:io.catenax.single_level_usage_as_planned:2.0.0#SingleLevelUsageAsPlanned";
+    public static final String SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0 = "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned";
+    public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_2_0_0 = "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified";
+    public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_1_0_0 = "urn:samm:io.catenax.single_level_bom_as_specified:1.0.0#SingleLevelBomAsSpecified";
+    public static final String SINGLE_LEVEL_USAGE_AS_PLANNED_2_1_0 = "urn:samm:io.catenax.single_level_usage_as_planned:2.1.0#SingleLevelUsageAsPlanned";
+    public static final String SINGLE_LEVEL_BOM_AS_PLANNED_3_1_0 = "urn:samm:io.catenax.single_level_bom_as_planned:3.1.0#SingleLevelBomAsPlanned";
+    public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_2_1_0 = "urn:samm:io.catenax.single_level_bom_as_specified:2.1.0#SingleLevelBomAsSpecified";
+    public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_1_1_0 = "urn:samm:io.catenax.single_level_bom_as_specified:1.1.0#SingleLevelBomAsSpecified";
+    public static final String SINGLE_LEVEL_BOM_AS_BUILT_3_1_0 = "urn:samm:io.catenax.single_level_bom_as_built:3.1.0#SingleLevelBomAsBuilt";
+    public static final String SINGLE_LEVEL_USAGE_AS_BUILT_2_1_0 = "urn:samm:io.catenax.single_level_usage_as_built:2.1.0#SingleLevelUsageAsBuilt";
 
     public static final String EXISTING_GLOBAL_ASSET_ID = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
 
@@ -87,7 +98,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithoutDepth() {
-        return registerJobWithDepthAndAspect(null, List.of(singleLevelBomAsBuiltAspectName));
+        return registerJobWithDepthAndAspect(null, List.of(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0));
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
@@ -156,7 +167,7 @@ public class TestMother {
                            .depth(5)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
+                           .aspects(List.of(SERIAL_PART_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                            .auditContractNegotiation(false)
                            .build();
     }
@@ -166,7 +177,34 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.UPWARD)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
+                           .aspects(List.of(SERIAL_PART_3_0_0, SINGLE_LEVEL_USAGE_AS_BUILT_2_0_0))
+                           .build();
+    }
+
+    public static JobParameter jobParameterUpwardAsPlanned() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_PLANNED)
+                           .direction(Direction.UPWARD)
+                           .aspects(List.of(SERIAL_PART_3_0_0, SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0))
+                           .build();
+    }
+
+    public static JobParameter jobParameterDownwardAsPlanned() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_PLANNED)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(SERIAL_PART_3_0_0, SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0))
+                           .build();
+    }
+
+    public static JobParameter jobParameterDownwardAsSpecified() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_SPECIFIED)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(PART_AS_SPECIFIED_3_0_0, SINGLE_LEVEL_BOM_AS_SPECIFIED_2_0_0))
                            .build();
     }
 
@@ -174,7 +212,7 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
+                           .aspects(List.of(SERIAL_PART_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                            .collectAspects(true)
                            .build();
     }
@@ -183,7 +221,7 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(materialForRecyclingAspectName))
+                           .aspects(List.of(MATERIAL_FOR_RECYCLING_1_1_0))
                            .build();
     }
 
@@ -192,7 +230,7 @@ public class TestMother {
                            .depth(5)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
+                           .aspects(List.of(SERIAL_PART_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                            .auditContractNegotiation(true)
                            .build();
     }

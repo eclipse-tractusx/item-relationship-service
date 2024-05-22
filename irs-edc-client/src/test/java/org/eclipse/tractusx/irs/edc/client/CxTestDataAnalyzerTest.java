@@ -32,7 +32,7 @@ import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.PRODU
 import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SERIAL_PART_ASPECT_TYPE;
 import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE;
 import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_USAGE_AS_BUILT_ASPECT_TYPE;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +50,7 @@ import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.edc.client.relationships.RelationshipAspect;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
 
@@ -303,7 +304,7 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
                     SERIAL_PART_ASPECT_TYPE);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelUsageAsBuilt,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned), submodels,
-                    SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE);
+                    SINGLE_LEVEL_USAGE_AS_BUILT_ASPECT_TYPE);
             checkAndAddSubmodel(testParameters.shouldCountBatch,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels, BATCH_ASPECT_TYPE);
             checkAndAddSubmodel(testParameters.shouldCountMaterialForRecycling,
