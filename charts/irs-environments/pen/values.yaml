@@ -3,7 +3,7 @@ item-relationship-service:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs-pen.int.demo.catena-x.net"
-  bpn: BPNL00000001CRHK
+  bpn: <path:traceability-irs/data/int/irs#bpn>
   apiKeyAdmin: <path:traceability-irs/data/int/irs#apiKeyAdmin>
   apiKeyRegular: <path:traceability-irs/data/int/irs#apiKeyRegular>
   ingress:
@@ -116,10 +116,6 @@ tractusx-connector:
         # URL of the BPN/DID Resolution Service - required:
         url: <path:traceability-irs/data/pen/controlplane#bdrsUrl>
 
-    env:
-      # workaround till 0.7.1 chart
-      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/pen/controlplane#trustedIssuer>
-
     endpoints:
       management:
         authKey: <path:traceability-irs/data/int/controlplane#apiKey>  # -- authentication key, must be attached to each 'X-Api-Key' request header
@@ -192,7 +188,7 @@ tractusx-connector:
       password: <path:traceability-irs/data/int/controlplane#databasepassword>
     username: <path:traceability-irs/data/int/controlplane#databaseuser>
     password: <path:traceability-irs/data/int/controlplane#databasepassword>
-    jdbcUrl: "jdbc:postgresql://app-irs-pen-edc-postgresql-hl:5432/edc"
+    jdbcUrl: "jdbc:postgresql://irs-pen-edc-consumer-postgresql:5432/edc"
 
 ##############################
 # EDC Postgres Configuration #
@@ -202,6 +198,8 @@ tractusx-connector:
 postgresql:
   enabled: true
 edc-postgresql:
+  nameOverride: irs-pen-edc-consumer-postgresql
+  fullnameOverride: irs-pen-edc-consumer-postgresql
   auth:
     database: edc
     username: <path:traceability-irs/data/int/controlplane#databaseuser>
