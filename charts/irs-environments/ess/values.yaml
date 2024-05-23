@@ -3,7 +3,7 @@ item-relationship-service:
   # IRS Configuration #
   #####################
   irsUrl: "https://irs-ess.int.demo.catena-x.net"
-  bpn: BPNL00000001CRHK
+  bpn: <path:traceability-irs/data/dev/irs#bpn>
   apiKeyAdmin: <path:traceability-irs/data/int/irs#apiKeyAdmin>
   apiKeyRegular: <path:traceability-irs/data/int/irs#apiKeyRegular>
   ingress:
@@ -100,6 +100,8 @@ item-relationship-service:
 
 
 tractusx-connector:
+  nameOverride: ess-edc-consumer
+  fullnameOverride: ess-edc-consumer
   install:
     postgresql: false
     vault: false
@@ -142,10 +144,6 @@ tractusx-connector:
         # URL of the BPN/DID Resolution Service - required:
         url: <path:traceability-irs/data/ess/controlplane#bdrsUrl>
 
-    env:
-      # workaround till 0.7.1 chart
-      EDC_IAM_TRUSTED-ISSUER_ISSUER1_ID: <path:traceability-irs/data/int/controlplane#trustedIssuer>
-
     endpoints:
       management:
         authKey: <path:traceability-irs/data/ess/controlplane#apiKey>  # -- authentication key, must be attached to each 'X-Api-Key' request header
@@ -159,23 +157,16 @@ tractusx-connector:
         memory: 1Gi
 
   dataplane:
-    ## Ingress declaration to expose the network service.
     ingresses:
-      ## Public / Internet facing Ingress
       - enabled: true
-        # -- The hostname to be used to precisely map incoming traffic onto the underlying network service
         hostname: "irs-ess-consumer-dataplane.int.demo.catena-x.net"
-        # -- Additional ingress annotations to add
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        # -- EDC endpoints exposed by this ingress resource
         endpoints:
           - public
-        # -- Defines the [ingress class](https://kubernetes.io/docs/concepts/services-networking/ingress/#ingress-class)  to use
         className: "nginx"
-        # -- Enables TLS on the ingress resource
         tls:
           enabled: true
           secretName: tls-secret
@@ -195,10 +186,6 @@ tractusx-connector:
       requests:
         cpu: 100m
         memory: 512Mi
-
-  # URL where the EndpointDataReference callback will be sent to
-  backendService:
-    httpProxyTokenReceiverUrl: "http://ess-irs-irs-helm:8181/internal/endpoint-data-reference"
 
   ################################
   # EDC Vault/DAPS Configuration #
@@ -229,7 +216,7 @@ tractusx-connector:
       password: <path:traceability-irs/data/int/controlplane#databasepassword>
     username: <path:traceability-irs/data/int/controlplane#databaseuser>
     password: <path:traceability-irs/data/int/controlplane#databasepassword>
-    jdbcUrl: "jdbc:postgresql://app-irs-int-edc-postgresql-hl:5432/edc"
+    jdbcUrl: "jdbc:postgresql://ess-edc-consumer-postgresql:5432/edc"
 
 ##############################
 # EDC Postgres Configuration #
@@ -239,6 +226,11 @@ tractusx-connector:
 postgresql:
   enabled: true
 edc-postgresql:
+  nameOverride: ess-edc-consumer-postgresql
+  fullnameOverride: ess-edc-consumer-postgresql
+  primary:
+    persistence:
+      enabled: false
   auth:
     database: edc
     username: <path:traceability-irs/data/int/controlplane#databaseuser>
