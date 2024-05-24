@@ -1,4 +1,10 @@
+postgresql:
+  enabled: false
 tractusx-connector:
+  install:
+    postgresql: true
+    vault: false
+
   iatp:
     sts:
       oauth:
@@ -9,7 +15,7 @@ tractusx-connector:
   controlplane:
     ingresses:
       - enabled: true
-        hostname: "irs-ess-provider-controlplane.int.demo.catena-x.net"
+        hostname: "irs-test1-cp.dev.demo.catena-x.net"
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -21,24 +27,16 @@ tractusx-connector:
           enabled: true
           secretName: tls-secret
 
-    resources:
-      limits:
-        cpu: 750m
-        memory: 1Gi
-      requests:
-        cpu: 250m
-        memory: 1Gi
-
   dataplane:
     token:
       signer:
-        privatekey_alias: irs-dev-daps-cert-provider-key
+        privatekey_alias:
       verifier:
-        publickey_alias: irs-dev-daps-cert-provider
+        publickey_alias:
 
     ingresses:
       - enabled: true
-        hostname: "irs-ess-provider-dataplane.int.demo.catena-x.net"
+        hostname: "irs-test1-dp.dev.demo.catena-x.net"
         annotations:
           nginx.ingress.kubernetes.io/ssl-passthrough: "false"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -50,19 +48,23 @@ tractusx-connector:
           enabled: true
           secretName: tls-secret
 
-    resources:
-      limits:
-        cpu: 500m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 512Mi
-
   vault:
     secretNames:
-      transferProxyTokenSignerPrivateKey: irs-dev-daps-cert-provider-key
-      transferProxyTokenSignerPublicKey: irs-dev-daps-cert-provider
+      transferProxyTokenSignerPrivateKey:
+      transferProxyTokenSignerPublicKey:
       transferProxyTokenEncryptionAesKey: test-edc-encryption-key
 
   postgresql:
-    jdbcUrl: "jdbc:postgresql://ess-provider-edc-postgresql-hl:5432/edc"
+    nameOverride: edc-test-postgresql
+    primary:
+      persistence:
+        enabled: false
+        size: 1Gi
+    auth:
+      database: edc
+      username: testuser
+      postgresPassword: testpass
+      password: testpass
+    username: testuser
+    password: testpass
+    jdbcUrl: "jdbc:postgresql://{{ .Release.Name }}-edc-test-postgresql:5432/edc"

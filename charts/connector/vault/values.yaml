@@ -2,15 +2,54 @@ vault:
   injector:
     enabled: false
   server:
+    authDelegator:
+      enabled: false
+    postStart:
+      - /bin/sh
+      - -c
+      - |-
+        {
+        sleep 5
+
+        /bin/vault kv put secret/dim-secret-dev content=<path:traceability-irs/data/dim-secret-dev#content>
+
+        /bin/vault kv put secret/test-edc-encryption-key content=<path:traceability-irs/data/test-edc-encryption-key#content>
+        /bin/vault kv put secret/irs-dev-daps-cert-consumer-key content=<path:traceability-irs/data/irs-dev-daps-cert-consumer-key#content>
+        /bin/vault kv put secret/irs-dev-daps-cert-consumer content=<path:traceability-irs/data/irs-dev-daps-cert-consumer#content>
+
+        /bin/vault kv put secret/dev-provider1-miw-secret content=<path:traceability-irs/data/dev-provider1-miw-secret#content>
+        /bin/vault kv put secret/dev-provider2-cert content=<path:traceability-irs/data/dev-provider2-cert#content>
+        /bin/vault kv put secret/dev-provider2-key content=<path:traceability-irs/data/dev-provider2-key#content>
+        /bin/vault kv put secret/dev-provider2-miw-secret content=<path:traceability-irs/data/dev-provider2-miw-secret#content>
+        /bin/vault kv put secret/dev-provider3-cert content=<path:traceability-irs/data/dev-provider3-cert#content>
+        /bin/vault kv put secret/dev-provider3-key content=<path:traceability-irs/data/dev-provider3-key#content>
+        /bin/vault kv put secret/dev-provider3-miw-secret content=<path:traceability-irs/data/dev-provider3-miw-secret#content>
+        /bin/vault kv put secret/dil-consumer-miw-secret content=<path:traceability-irs/data/dil-consumer-miw-secret#content>
+        /bin/vault kv put secret/dim-secret-dev content=<path:traceability-irs/data/dim-secret-dev#content>
+        /bin/vault kv put secret/edc-test-miw-keycloak-secret content=<path:traceability-irs/data/edc-test-miw-keycloak-secret#content>
+        /bin/vault kv put secret/irs-dev-daps-cert-consumer content=<path:traceability-irs/data/irs-dev-daps-cert-consumer#content>
+        /bin/vault kv put secret/irs-dev-daps-cert-consumer-key content=<path:traceability-irs/data/irs-dev-daps-cert-consumer-key#content>
+        /bin/vault kv put secret/irs-dev-daps-cert-provider content=<path:traceability-irs/data/irs-dev-daps-cert-provider#content>
+        /bin/vault kv put secret/irs-dev-daps-cert-provider-key content=<path:traceability-irs/data/irs-dev-daps-cert-provider-key#content>
+        /bin/vault kv put secret/irs-int-daps-cert content=<path:traceability-irs/data/irs-int-daps-cert#content>
+        /bin/vault kv put secret/irs-int-daps-key content=<path:traceability-irs/data/irs-int-daps-key#content>
+        /bin/vault kv put secret/miw-dev-keycloak-secret content=<path:traceability-irs/data/miw-dev-keycloak-secret#content>
+        /bin/vault kv put secret/miw-ess-keycloak-secret content=<path:traceability-irs/data/miw-ess-keycloak-secret#content>
+        /bin/vault kv put secret/miw-ess-provider-keycloak-secret content=<path:traceability-irs/data/miw-ess-provider-keycloak-secret#content>
+        /bin/vault kv put secret/miw-int-keycloak-secret content=<path:traceability-irs/data/miw-int-keycloak-secret#content>
+        /bin/vault kv put secret/miw-pen-keycloak-secret content=<path:traceability-irs/data/miw-pen-keycloak-secret#content>
+        /bin/vault kv put secret/test-edc-encryption-key content=<path:traceability-irs/data/test-edc-encryption-key#content>
+        }
+
     dev:
       enabled: true
       devRootToken: "<path:traceability-irs/data/vault#vaultToken>"
     ingress:
       enabled: true
       hosts:
-        - host: irs-vault.dev.demo.catena-x.net
+        - host: irs-vault-1.dev.demo.catena-x.net
           paths: [ ]
       tls:
         - secretName: tls-secret
           hosts:
-            - irs-vault.dev.demo.catena-x.net
+            - irs-vault-1.dev.demo.catena-x.net
