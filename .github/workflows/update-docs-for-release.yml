@@ -121,7 +121,7 @@ jobs:
           
           ### update IrsApplication.java ###
           sed -i "s|API_VERSION = \"$semver_pattern_sed\"|API_VERSION = \"$new_irs_version\"|" ${{ env.IRS_APPLICATION_PATH }}
-      # pr auf den branch wo gestartet hat und tag von dem branch
+
       - name: Create pull request
         id: cpr
         uses: peter-evans/create-pull-request@v5
