@@ -126,9 +126,9 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: 'chore(docs): Update docs for release ${{ inputs.irs-version }}'
+          commit-message: 'chore(docs): Update docs for IRS release ${{ inputs.irs-version }}'
           branch: chore/update-docs-for-irs-release-${{ inputs.irs-version }}
-          base: main
+          base: ${{ github.ref_name }}
           delete-branch: true
           title: Updated docs for next release
           body: This PR prepares the docs for IRS release version ${{ inputs.irs-version }}.
