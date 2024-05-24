@@ -88,6 +88,8 @@ item-relationship-service:
       request:
         ttl: PT2M
     controlplane:
+      endpoint:
+        data: "http://ess-edc-consumer-controlplane:8081/management"
       request:
         ttl: PT2M
       apikey:
