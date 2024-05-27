@@ -940,6 +940,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
   <span class="na">submodel</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration</span>
     <span class="na">urn-prefix</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_URN_PREFIX:/urn}</span> <span class="c1"># A prefix used to identify URNs correctly in the submodel endpoint address</span>
+    <span class="na">submodel-suffix</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/$value"</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the submodel client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the submodel client</span>
@@ -1104,6 +1105,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
     <span class="na">request</span><span class="pi">:</span>
       <span class="na">ttl</span><span class="pi">:</span> <span class="s">PT10M</span>  <span class="c1"># Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)</span>
     <span class="na">urnprefix</span><span class="pi">:</span> <span class="s">/urn</span>
+    <span class="na">suffix</span><span class="pi">:</span> <span class="s">/$value</span>
   <span class="na">catalog</span><span class="pi">:</span>
     <span class="c1"># IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.</span>
     <span class="c1"># If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.</span>
@@ -1217,8 +1219,7 @@ You can define the URLs as well as most of the secrets yourself.</p>
 
   <span class="na">admin</span><span class="pi">:</span>
     <span class="na">existingSecret</span><span class="pi">:</span> <span class="s2">"</span><span class="s">{{</span><span class="nv"> </span><span class="s">.Release.Name</span><span class="nv"> </span><span class="s">}}-item-relationship-service"</span>
-    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span>
-    <span class="na">passwordKey</span><span class="pi">:</span> <span class="s">grafanaPassword</span></code></pre>
+    <span class="na">userKey</span><span class="pi">:</span> <span class="s">grafanaUser</span></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1589,7 +1590,7 @@ It can also happen if the persistent volume claim is deleted / recreated.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-17 14:16:39 UTC
+Last updated 2024-05-27 15:10:48 UTC
 </div>
 </div>
 </body>

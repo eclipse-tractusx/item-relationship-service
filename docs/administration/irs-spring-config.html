@@ -812,6 +812,7 @@ pre.rouge {
   <span class="na">submodel</span><span class="pi">:</span>
     <span class="na">request-ttl</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_REQUEST_TTL:PT10M}</span> <span class="c1"># How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration</span>
     <span class="na">urn-prefix</span><span class="pi">:</span> <span class="s">${EDC_SUBMODEL_URN_PREFIX:/urn}</span> <span class="c1"># A prefix used to identify URNs correctly in the submodel endpoint address</span>
+    <span class="na">submodel-suffix</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/$value"</span>
     <span class="na">timeout</span><span class="pi">:</span>
       <span class="na">read</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP read timeout for the submodel client</span>
       <span class="na">connect</span><span class="pi">:</span> <span class="s">PT90S</span> <span class="c1"># HTTP connect timeout for the submodel client</span>
@@ -890,7 +891,7 @@ pre.rouge {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-17 14:16:39 UTC
+Last updated 2024-05-27 15:10:48 UTC
 </div>
 </div>
 </body>

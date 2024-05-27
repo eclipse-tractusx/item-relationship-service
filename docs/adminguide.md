@@ -214,6 +214,7 @@ irs-edc-client:
   submodel:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M} # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
     urn-prefix: ${EDC_SUBMODEL_URN_PREFIX:/urn} # A prefix used to identify URNs correctly in the submodel endpoint address
+    submodel-suffix: "/$value"
     timeout:
       read: PT90S # HTTP read timeout for the submodel client
       connect: PT90S # HTTP connect timeout for the submodel client
@@ -376,6 +377,7 @@ edc:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     urnprefix: /urn
+    suffix: /$value
   catalog:
     # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
     # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
@@ -490,7 +492,6 @@ grafana:
   admin:
     existingSecret: "{{ .Release.Name }}-item-relationship-service"
     userKey: grafanaUser
-    passwordKey: grafanaPassword
 ```
 
 1. Use this to enable or disable the monitoring components
