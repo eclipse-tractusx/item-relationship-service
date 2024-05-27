@@ -185,6 +185,7 @@ edc:
     request:
       ttl: PT10M  # Requests to dataplane will time out after this duration (see https://en.wikipedia.org/wiki/ISO_8601#Durations)
     urnprefix: /urn
+    suffix: /$value
   catalog:
     # IRS will only negotiate contracts for offers with a policy as defined in the allowedNames list.
     # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.

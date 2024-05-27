@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Added configuration property `edc.submodel.suffix`.
+
 ## [7.1.3] - 2024-05-17
 
 ### Changed

@@ -8,6 +8,11 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed submodel request path by introducing configuration property `irs-edc-client.submodel.submodel-suffix` which will
+  be appended to the href URL.
+
 ## [5.1.3] - 2024-05-17
 
 ### Fixed
