@@ -6,8 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [7.1.4] - 2024-05-27
+
 ### Added
 - Added configuration property `edc.submodel.suffix`.
+
+### Changed
+
+- Update IRS version to 5.1.4
 
 ## [7.1.3] - 2024-05-17
 
