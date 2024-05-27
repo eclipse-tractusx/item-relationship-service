@@ -795,7 +795,7 @@
               },
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "businessPartner": "BPNL00ARBITRARY10",
+              "businessPartner": "BPNL0ARBITRARY10",
               "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8"
             }
           ]
@@ -1183,7 +1183,7 @@
               },
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "businessPartner": "BPNL00ARBITRARY10",
+              "businessPartner": "BPNL0ARBITRARY10",
               "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8"
             }
           ]
@@ -1249,7 +1249,7 @@
               },
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "businessPartner": "BPNL00ARBITRARY10",
+              "businessPartner": "BPNL0ARBITRARY10",
               "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8"
             }
           ]
@@ -1315,7 +1315,7 @@
               },
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "businessPartner": "BPNL00ARBITRARY10",
+              "businessPartner": "BPNL0ARBITRARY10",
               "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8"
             }
           ]
@@ -1381,7 +1381,7 @@
               },
               "createdOn": "2022-02-03T14:48:54.709Z",
               "lastModifiedOn": "2022-02-03T14:48:54.709Z",
-              "businessPartner": "BPNL00ARBITRARY10",
+              "businessPartner": "BPNL0ARBITRARY10",
               "catenaXId": "urn:uuid:22847bfd-eb8d-41b7-b088-3a548b7541a8"
             }
           ]
