@@ -8,6 +8,25 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixed ESS Investigation job processing not starting #579
+
+### Changed
+
+- Improved policy store API input validation. #528
+- Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
+- Marked createAccessPolicy requests with deprecation mark.
+- Remove edc namespace from EdcContractAgreementNegotiationResponse and
+  EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
+- Added missing @context values in edc asset creation eclipse-tractusx/traceability-foss#978
+- Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation eclipse-tractusx/traceability-foss#978
+- Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
+
+## Added
+
+- Added endpoint for dedicated removal of policy from BPNL. #559
+- Integration Test Policy Store API Unhappy Path. #519
 
 ## [5.1.4] - 2024-05-27
 
@@ -25,7 +44,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
   or `edc:type`: `data.core.digitalTwinRegistry`. #616
 - Fix missing and malformed properties for EDC policy transformation. #648
 
-
 ## [5.1.2] - 2024-05-13
 
 ### Fixed
@@ -42,12 +60,11 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Fixed
 
-- Fixed issue in EDR Token renewal #358
+- Fixed issue in EDR token renewal. #358
 
 ### Added
 
 - Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
- 
 
 ## [5.1.0] - 2024-05-06
 
@@ -63,7 +80,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Update bouncycastle to 1.78 to fix CVE's.
 - Fixed validation of json-schemas - IRS is creating tombstone instead collecting Submodel payload, when it not passes validation of schema #522
-
 
 ## [5.0.0] - 2024-04-16
 

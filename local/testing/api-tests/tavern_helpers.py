@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import os
+import re
 from box import Box
 
 
@@ -49,8 +50,8 @@ def ESS_job_parameter_are_as_requested(response):
     assert parameter.get('depth') == 1
     assert parameter.get('direction') == 'downward'
     aspects_list = parameter.get("aspects")
-    assert 'PartSiteInformationAsPlanned' in aspects_list
-    assert 'PartAsPlanned' in aspects_list
+    assert 'urn:samm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned' in aspects_list
+    assert 'urn:samm:io.catenax.part_as_planned:1.0.1#PartAsPlanned' in aspects_list
 
 
 def tombstone_for_EssValidation_are_correct(response, expectedTombstone):
@@ -187,7 +188,8 @@ def status_of_all_jobs_are_given(response):
 def errors_for_unknown_requested_globalAssetId_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
-    assert 'No job exists with id bc1b4f4f-aa00-4296-8738-e7913c95f2d9' in error_list
+    pattern = r"No job exists with id bc1b4f4f-aa00-4296-8738-e7913c95f2d9 \(errorRef: [0-9a-fA-F-]{36}\)"
+    assert any(re.compile(pattern).search(element) for element in error_list), ( "No element in the list matches the expected error message pattern")
 
 
 def check_timestamps_for_completed_jobs(response):

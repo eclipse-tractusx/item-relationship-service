@@ -26,7 +26,7 @@ on:
       global-asset-id-asBuilt:
         type: string
         description: Global-asset-id to use for the asBuilt tests.
-        default: 'urn:uuid:8724338c-5c85-4c34-91eb-e2735d58fb0d'
+        default: 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c'
         required: true
       bpn-asBuilt:
         type: string
@@ -87,7 +87,7 @@ jobs:
           BPN_ESS_AS_BUILT: ${{ github.event.inputs.bpn-ess-asBuilt || 'BPNL00000003CRHK' }}
           BPN_ESS_INCIDENT: ${{ github.event.inputs.bpn-ess-incident || 'BPNS00000003B6LU' }}
           BPN_AS_PLANNED: ${{ github.event.inputs.bpn-asPlanned || 'BPNL00000003AYRE' }}
-          GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:6d505432-8b31-4966-9514-4b753372683f' }}
+          GLOBAL_ASSET_ID_AS_BUILT: ${{ github.event.inputs.global-asset-id-asBuilt || 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c' }}
           BPN_AS_BUILT: ${{ github.event.inputs.bpn-asBuilt || 'BPNL00000003AVTH' }}
         run: |
           python -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml

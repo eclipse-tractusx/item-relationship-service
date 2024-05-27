@@ -39,4 +39,7 @@ public class EdcPolicyPermissionConstraint {
     @JsonProperty("odrl:or")
     private List<EdcPolicyPermissionConstraintExpression> orExpressions;
 
+    @JsonProperty("odrl:and")
+    private List<EdcPolicyPermissionConstraintExpression> andExpressions;
+
 }

@@ -17,19 +17,31 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.edc.client.asset.model;
+package org.eclipse.tractusx.irs.policystore.validators;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.ToString;
+import java.util.regex.Pattern;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * OdrlContext used for creating edc assets
+ * Validator for list of business partner numbers (BPN).
  */
+public class PolicyIdValidator implements ConstraintValidator<ValidPolicyId, String> {
 
-@ToString
-@Builder
-public class OdrlContext {
-    @JsonProperty("odrl")
-    private String odrl;
+    private static final Pattern PATTERN_SAFE_PATH_VARIABLE_CHARACTERS = Pattern.compile("[a-zA-Z0-9\\-_~.:]+");
+
+    @Override
+    public boolean isValid(final String value, final ConstraintValidatorContext context) {
+
+        // allow  null and empty here (in order to allow flexible combination with @NotNull)
+        final boolean isNull = value == null;
+
+        return isNull || isValid(value);
+    }
+
+    public static boolean isValid(final String policyId) {
+        return PATTERN_SAFE_PATH_VARIABLE_CHARACTERS.matcher(policyId).matches();
+    }
+
 }

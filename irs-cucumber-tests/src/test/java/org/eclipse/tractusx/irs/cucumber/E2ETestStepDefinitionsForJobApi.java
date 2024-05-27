@@ -61,6 +61,7 @@ import org.eclipse.tractusx.irs.component.RegisterBatchOrder;
 import org.eclipse.tractusx.irs.component.RegisterJob;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
+import org.eclipse.tractusx.irs.component.Tombstone;
 import org.eclipse.tractusx.irs.component.enums.BatchStrategy;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
@@ -378,6 +379,13 @@ public class E2ETestStepDefinitionsForJobApi {
                                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("identification",
                                                "contractAgreementId")
                                        .containsAll(expectedSubmodels);
+        } else if ("tombstones".equals(valueType)) {
+            final List<Tombstone> actualTombstones = completedJob.getTombstones();
+            final List<Tombstone> expectedTombstones = getExpectedTombstones(fileName);
+            assertThat(actualTombstones).hasSameSizeAs(expectedTombstones)
+                                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields(
+                                                "processingError.lastAttempt")
+                                        .containsAll(expectedTombstones);
         }
     }
 
@@ -440,17 +448,21 @@ public class E2ETestStepDefinitionsForJobApi {
     }
 
     private List<Submodel> getExpectedSubmodels(final String fileName) throws IOException {
-        final File file = getExpectedFile(fileName);
-        assertThat(file).exists();
-        final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
-        return expectedJob.getSubmodels();
+        return getExpectedJob(fileName).getSubmodels();
+    }
+
+    private List<Tombstone> getExpectedTombstones(final String fileName) throws IOException {
+        return getExpectedJob(fileName).getTombstones();
     }
 
     private List<Relationship> getExpectedRelationships(final String fileName) throws IOException {
+        return getExpectedJob(fileName).getRelationships();
+    }
+
+    private static Jobs getExpectedJob(final String fileName) throws IOException {
         final File file = getExpectedFile(fileName);
         assertThat(file).exists();
-        final Jobs expectedJob = objectMapper.readValue(file, Jobs.class);
-        return expectedJob.getRelationships();
+        return objectMapper.readValue(file, Jobs.class);
     }
 
     @And("I check, if submodels contains BPNL number {string} exactly {int} times")

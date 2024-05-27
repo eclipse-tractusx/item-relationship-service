@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
 import org.eclipse.tractusx.irs.component.JobHandle;
@@ -63,13 +62,11 @@ class EssServiceTest {
 
     private final IrsItemGraphQueryService irsItemGraphQueryService = mock(IrsItemGraphQueryService.class);
 
-    private final SecurityHelperService securityHelperService = mock(SecurityHelperService.class);
-
     private final BpnInvestigationJobCache bpnInvestigationJobCache = new InMemoryBpnInvestigationJobCache();
     private final JobStore jobStore = mock(JobStore.class);
     private final EssRecursiveNotificationHandler recursiveNotificationHandler = Mockito.mock(
             EssRecursiveNotificationHandler.class);
-    private final EssService essService = new EssService(irsItemGraphQueryService, securityHelperService, bpnInvestigationJobCache,
+    private final EssService essService = new EssService(irsItemGraphQueryService, bpnInvestigationJobCache,
             jobStore, recursiveNotificationHandler);
 
     @Test
@@ -98,7 +95,6 @@ class EssServiceTest {
         when(irsItemGraphQueryService.registerItemJob(any(RegisterJob.class), any())).thenReturn(JobHandle.builder().id(createdJobId).build());
         when(jobStore.find(createdJobId.toString())).thenReturn(Optional.of(MultiTransferJob.builder().job(expectedResponse.getJob()).build()));
         when(irsItemGraphQueryService.getJobForJobId(any(MultiTransferJob.class), eq(true))).thenReturn(expectedResponse);
-        when(securityHelperService.isAdmin()).thenReturn(true);
 
         final JobHandle jobHandle = essService.startIrsJob(request);
         final Jobs jobs = essService.getIrsJob(jobHandle.getId().toString());
@@ -235,7 +231,6 @@ class EssServiceTest {
     void shouldKeepJobInRunningIfNotificationIsOpen() {
         final String notificationId = UUID.randomUUID().toString();
         final UUID jobId = UUID.randomUUID();
-        when(securityHelperService.isAdmin()).thenReturn(true);
 
         final BpnInvestigationJob bpnInvestigationJob = new BpnInvestigationJob(
                 Jobs.builder().job(Job.builder().id(jobId).build()).build(),
@@ -258,7 +253,6 @@ class EssServiceTest {
     void shouldCompleteJobIfAllNotificationsSentWereAnswered() {
         // Arrange
         final String notificationId = UUID.randomUUID().toString();
-        when(securityHelperService.isAdmin()).thenReturn(true);
 
         final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId);
@@ -288,8 +282,6 @@ class EssServiceTest {
     @Test
     void shouldCompleteJobIfFinalNotificationWasReceived() {
         // Arrange
-        when(securityHelperService.isAdmin()).thenReturn(true);
-
         final UUID jobId = UUID.randomUUID();
         final Jobs jobSnapshot = job(jobId);
         final String notificationId = UUID.randomUUID().toString();

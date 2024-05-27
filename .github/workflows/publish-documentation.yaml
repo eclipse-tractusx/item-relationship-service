@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Graphviz
-        uses: ts-graphviz/setup-graphviz@v1
+        uses: ts-graphviz/setup-graphviz@v2
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -39,7 +39,7 @@ jobs:
           node-version: 20
 
       - name: Cache maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -63,7 +63,7 @@ jobs:
             asciidoctor-reducer -o docs/target/arc42.adoc docs/src/docs/arc42/full.adoc
 
       - name: Cache plantuml jar
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: plantuml.jar
           key: ${{ runner.os }}-file-${{ hashFiles('plantuml.jar') }}
