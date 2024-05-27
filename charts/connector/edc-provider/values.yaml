@@ -142,3 +142,16 @@ edc-postgresql:
     username: <path:traceability-irs/data/dev/controlplane#databaseuser>
     postgresPassword: <path:traceability-irs/data/dev/controlplane#databasepassword>
     password: <path:traceability-irs/data/dev/controlplane#databasepassword>
+
+simple-data-backend:
+  enabled: true
+  image:
+    tag: 0.0.2
+  ingress:
+    enabled: false
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    hosts: []

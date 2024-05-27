@@ -66,3 +66,16 @@ tractusx-connector:
 
   postgresql:
     jdbcUrl: "jdbc:postgresql://ess-provider-edc-postgresql:5432/edc"
+
+simple-data-backend:
+  ingress:
+    enabled: true
+    hosts:
+      - host: "irs-ess-submodel-server.int.demo.catena-x.net"
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - "irs-ess-submodel-server.int.demo.catena-x.net"
+        secretName: tls-secret
