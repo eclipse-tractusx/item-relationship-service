@@ -56,7 +56,9 @@ public class EdcSubmodelFacade {
     public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId, final String bpn) throws EdcClientException {
         try {
-            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId, bpn)
+            final String fullSubmodelDataplaneUrl = submodelDataplaneUrl + config.getSubmodel().getSubmodelSuffix();
+            log.debug("Requesting Submodel for URL: '{}'", fullSubmodelDataplaneUrl);
+            return client.getSubmodelPayload(connectorEndpoint, fullSubmodelDataplaneUrl, assetId, bpn)
                          .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred.", e);

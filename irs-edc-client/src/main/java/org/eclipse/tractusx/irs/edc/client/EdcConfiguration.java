@@ -105,6 +105,7 @@ public class EdcConfiguration {
         private Duration requestTtl;
 
         private String urnPrefix;
+        private String submodelSuffix;
     }
 
 }
