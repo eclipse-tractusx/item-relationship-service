@@ -25,6 +25,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATCH_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 import static org.eclipse.tractusx.irs.WiremockSupport.createEndpointDataReference;
 import static org.eclipse.tractusx.irs.WiremockSupport.encodedAssetIds;
 import static org.eclipse.tractusx.irs.WiremockSupport.randomUUID;
@@ -47,8 +49,6 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_NEGOTIATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_STATE;
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.PATH_TRANSFER;
-import static org.eclipse.tractusx.irs.util.TestMother.BATCH_3_0_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 
 import java.time.Duration;
 import java.util.List;

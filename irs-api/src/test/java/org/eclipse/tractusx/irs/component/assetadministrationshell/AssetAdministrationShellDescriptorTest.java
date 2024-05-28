@@ -24,13 +24,18 @@
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.util.TestMother.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_2_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_1_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
 
 import java.util.List;
 
+import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellDescriptorTest {
@@ -50,7 +55,8 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
     }
 
     @Test

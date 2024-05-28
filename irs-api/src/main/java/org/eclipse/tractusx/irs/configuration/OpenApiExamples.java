@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
@@ -90,8 +91,8 @@ public class OpenApiExamples {
     private static final String SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE = "supply_chain_impacted";
     private static final String SUPPLY_CHAIN_IMPACTED_KEY = "supplyChainImpacted";
     private static final String SUPPLY_CHAIN_IMPACTER_RESULT = "YES";
-    private static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
-    private static final String SERIAL_PART_ASPECT = "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart";
+    private static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT = SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+    private static final String SERIAL_PART_ASPECT = SemanticModelNames.SERIAL_PART_3_0_0;
     private static final int FETCHED_ITEMS_SIZE = 3;
     private static final int NO_RUNNING_OR_FAILED_ITEMS = 0;
     private static final int SENT_NOTIFICATIONS_SIZE = 6;

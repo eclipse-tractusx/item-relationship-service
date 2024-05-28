@@ -1083,7 +1083,7 @@ components:
         - name: SerialPart
           status: RELEASED
           type: BAMM
-          urn: urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+          urn: urn:samm:io.catenax.serial_part:3.0.0#SerialPart
           version: 1.0.1
     canceled-job-response:
       value:
@@ -1109,7 +1109,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1160,7 +1160,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1283,7 +1283,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1443,7 +1443,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1481,7 +1481,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1601,7 +1601,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false

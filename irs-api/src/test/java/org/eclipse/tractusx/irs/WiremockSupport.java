@@ -27,12 +27,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATCH_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 import static org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport.semanticHubWillReturnAllModels;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.DATAPLANE_PUBLIC_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.submodelDescriptor;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
-import static org.eclipse.tractusx.irs.util.TestMother.BATCH_3_0_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -147,12 +147,12 @@ public class WiremockSupport {
         return UUID.randomUUID().toString();
     }
 
-    static String submodelRequest(final String edcAssetId, final String SingleLevelBomAsBuilt, final String semanticId,
+    static String submodelRequest(final String edcAssetId, final String idShort, final String semanticId,
             final String sbomFileName) {
-        final String sbomId = randomUUIDwithPrefix();
-        final String submoodel = submodelDescriptor(DATAPLANE_PUBLIC_URL, edcAssetId,
-                DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, SingleLevelBomAsBuilt, sbomId, semanticId);
-        successfulDataRequests(sbomId, sbomFileName);
-        return submoodel;
+        final String submodelDescriptorId = randomUUIDwithPrefix();
+        final String submodel = submodelDescriptor(DATAPLANE_PUBLIC_URL, edcAssetId,
+                DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, idShort, submodelDescriptorId, semanticId);
+        successfulDataRequests(submodelDescriptorId, sbomFileName);
+        return submodel;
     }
 }

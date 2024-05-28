@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,8 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
     AssetAdministrationShellTestdataCreatorTest() throws IOException {
         super();
 
-        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator(localTestDataConfiguration.cxTestDataContainer());
+        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator(
+                localTestDataConfiguration.cxTestDataContainer());
     }
 
     @Test
@@ -64,8 +66,10 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
         assertThat(endpointAddress).isEqualTo("singleLevelBomAsBuilt");
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints().get(0).getProtocolInformation().getSubprotocolBody()).contains(catenaXId);
 
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo("urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt");
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo("urn:samm:io.catenax.serial_part:3.0.0#SerialPart");
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SemanticModelNames.SERIAL_PART_3_0_0);
     }
 
     @Test

@@ -24,14 +24,17 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_BOM_AS_BUILT_3_1_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_BOM_AS_PLANNED_3_1_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_USAGE_AS_BUILT_2_0_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_USAGE_AS_BUILT_2_1_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0;
-import static org.eclipse.tractusx.irs.util.TestMother.SINGLE_LEVEL_USAGE_AS_PLANNED_2_1_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_2_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_1_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_2_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_1_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_USAGE_AS_BUILT_2_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_USAGE_AS_BUILT_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_USAGE_AS_BUILT_3_1_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_USAGE_AS_PLANNED_2_1_0;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterDownwardAsPlanned;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterUpward;
@@ -196,7 +199,7 @@ class RelationshipDelegateTest {
     private static Stream<Arguments> relationshipParameters() {
         return Stream.of(Arguments.of("singleLevelUsageAsPlanned-2.0.0.json", SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0,
                         jobParameterUpwardAsPlanned()),
-                Arguments.of("singleLevelUsageAsBuilt-3.0.0.json", SINGLE_LEVEL_USAGE_AS_BUILT_2_0_0,
+                Arguments.of("singleLevelUsageAsBuilt-3.0.0.json", SINGLE_LEVEL_USAGE_AS_BUILT_3_0_0,
                         jobParameterUpward()),
                 Arguments.of("singleLevelBomAsBuilt-3.0.0.json", SINGLE_LEVEL_BOM_AS_BUILT_3_0_0, jobParameter()),
                 Arguments.of("singleLevelBomAsPlanned-3.0.0.json", SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0,
@@ -243,7 +246,7 @@ class RelationshipDelegateTest {
     public static Stream<Arguments> relationshipParametersFutureVersions() {
         return Stream.of(Arguments.of("singleLevelUsageAsPlanned-2.1.0.json", SINGLE_LEVEL_USAGE_AS_PLANNED_2_1_0,
                         jobParameterUpwardAsPlanned()),
-                Arguments.of("singleLevelUsageAsBuilt-3.1.0.json", SINGLE_LEVEL_USAGE_AS_BUILT_2_1_0,
+                Arguments.of("singleLevelUsageAsBuilt-3.1.0.json", SINGLE_LEVEL_USAGE_AS_BUILT_3_1_0,
                         jobParameterUpward()),
                 Arguments.of("singleLevelBomAsBuilt-3.1.0.json", SINGLE_LEVEL_BOM_AS_BUILT_3_1_0, jobParameter()),
                 Arguments.of("singleLevelBomAsPlanned-3.1.0.json", SINGLE_LEVEL_BOM_AS_PLANNED_3_1_0,
