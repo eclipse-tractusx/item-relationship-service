@@ -79,7 +79,7 @@ def response_contains_expected_error(response, expected_error_detail, expected_p
             "errorDetail": expected_error_detail
         }
     ]
-    check_tombstones(error_list, criteria)
+    assert check_tombstones(error_list, criteria) is True
     for tombstone in error_list:
         processing_error_last_attempt = tombstone.get("processingError").get("lastAttempt")
         print("LastAttempt: ", processing_error_last_attempt)
