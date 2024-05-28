@@ -448,9 +448,12 @@ stages:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
           extra_kwargs:
             expectedSupplyChainImpacted: "Unknown"
-        - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
+        - function: local.testing.api-tests.tavern_helpers:tombstones_have_size
           extra_kwargs:
-            expectedTombstone: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
+            number_of_tombstones: 1
+        - function: local.testing.api-tests.tavern_helpers:tombstone_for_ess_validation_is_correct
+          extra_kwargs:
+            expected_error_detail: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
       headers:
         content-type: application/json
 
@@ -512,7 +515,7 @@ stages:
             number_of_tombstones: 2
         - function: local.testing.api-tests.tavern_helpers:tombstone_for_submodel_validation_is_correct
           extra_kwargs:
-            expected_error_detail: "Submodel payload validation failed. $.sites[0]: required property 'catenaXsiteId' not found."
+            expected_error_detail: "Submodel payload validation failed. $.sites[0]: required property 'catenaXsiteId' not found"
         - function: local.testing.api-tests.tavern_helpers:tombstone_for_ess_validation_is_correct
           extra_kwargs:
             expected_error_detail: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
