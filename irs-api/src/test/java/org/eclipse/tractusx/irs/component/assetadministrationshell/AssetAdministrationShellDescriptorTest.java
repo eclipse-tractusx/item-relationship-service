@@ -106,7 +106,28 @@ class AssetAdministrationShellDescriptorTest {
         // Assert
         assertThat(result).hasSize(2);
         assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(SERIAL_PART_3_0_0);
-        assertThat(result.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
+        assertThat(result.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
+    }
+
+    @Test
+    void shouldFilterByByRelationshipAspectType() {
+        // Arrange
+        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
+                List.of(submodelDescriptorWithDspEndpoint(SINGLE_LEVEL_BOM_AS_BUILT_2_0_0, "endpoint1"),
+                        submodelDescriptorWithDspEndpoint(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0, "endpoint2"),
+                        submodelDescriptorWithDspEndpoint(SINGLE_LEVEL_BOM_AS_BUILT_3_1_0, "endpoint3"),
+                        submodelDescriptorWithDspEndpoint(SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0, "endpoint4")));
+
+        // Act
+        final List<Endpoint> result = shellDescriptor.findRelationshipEndpointAddresses(
+                AspectType.SINGLE_LEVEL_BOM_AS_BUILT);
+
+        // Assert
+        assertThat(result).hasSize(3);
+        assertThat(result.get(0).getProtocolInformation().getHref()).isEqualTo("endpoint1");
+        assertThat(result.get(1).getProtocolInformation().getHref()).isEqualTo("endpoint2");
+        assertThat(result.get(2).getProtocolInformation().getHref()).isEqualTo("endpoint3");
     }
 
 }

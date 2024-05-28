@@ -259,6 +259,43 @@ class RelationshipDelegateTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("relationshipParametersPreviousVersions")
+    void shouldFillItemContainerWithPreviousVersions(final String relationshipFile, final String aspectName,
+            final JobParameter jobParameter) throws Exception {
+        // given
+        final String payload = Files.readString(Paths.get(
+                Objects.requireNonNull(getClass().getResource("/relationships/previous/" + relationshipFile)).toURI()));
+        when(submodelFacade.getSubmodelPayload(anyString(), anyString(), anyString(), any())).thenReturn(
+                new SubmodelDescriptor("cid", payload));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("http://localhost"));
+
+        final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
+                                                                                       .shell(shell("", shellDescriptor(
+                                                                                               List.of(submodelDescriptorWithDspEndpoint(
+                                                                                                       aspectName,
+                                                                                                       "address")))));
+        final AASTransferProcess aasTransferProcess = new AASTransferProcess();
+
+        // when
+        final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter,
+                aasTransferProcess, createKey());
+
+        // then
+        assertThat(result).isNotNull();
+        assertThat(result.getRelationships()).isNotEmpty();
+        assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
+        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
+        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
+    }
+
+    public static Stream<Arguments> relationshipParametersPreviousVersions() {
+        return Stream.of(
+                Arguments.of("singleLevelBomAsBuilt-2.0.0.json", SINGLE_LEVEL_BOM_AS_BUILT_2_0_0, jobParameter()),
+                Arguments.of("SingleLevelBomAsPlanned-2.0.0.json", SINGLE_LEVEL_BOM_AS_PLANNED_2_0_0,
+                        jobParameterDownwardAsPlanned()));
+    }
+
     @Test
     void shouldPutTombstoneForMissingBpn() {
         final ItemContainer.ItemContainerBuilder itemContainerWithShell = ItemContainer.builder()
