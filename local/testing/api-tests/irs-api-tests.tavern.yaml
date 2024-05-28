@@ -67,7 +67,7 @@ stages:
 
   - &verify_ESS_job_response_with_desired_test_steps_and_wait_up_to_15_minutes_for_COMPLETED
     name: verify job response with desired test steps and wait for desired job status
-    max_retries: 30
+    max_retries: 180
     request:
       url: "{tavern.env_vars.IRS_ESS_HOST}/ess/bpn/investigations/{job_id}"
       params:
@@ -82,7 +82,7 @@ stages:
       json:
         job:
           state: COMPLETED
-    delay_after: 30
+    delay_after: 5
 
   - name: get response for created investigation
     request:
@@ -448,9 +448,12 @@ stages:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
           extra_kwargs:
             expectedSupplyChainImpacted: "Unknown"
-        - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
+        - function: local.testing.api-tests.tavern_helpers:tombstones_have_size
           extra_kwargs:
-            expectedTombstone: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
+            number_of_tombstones: 1
+        - function: local.testing.api-tests.tavern_helpers:tombstone_for_ess_validation_is_correct
+          extra_kwargs:
+            expected_error_detail: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
       headers:
         content-type: application/json
 
@@ -507,9 +510,15 @@ stages:
         - function: local.testing.api-tests.tavern_helpers:supplyChainImpacted_is_as_expected
           extra_kwargs:
             expectedSupplyChainImpacted: "Unknown"
-        - function: local.testing.api-tests.tavern_helpers:tombstone_for_EssValidation_are_correct
+        - function: local.testing.api-tests.tavern_helpers:tombstones_have_size
           extra_kwargs:
-            expectedTombstone: "'PartSiteInformationAsPlanned' exists, but catenaXSiteId could not be found."
+            number_of_tombstones: 2
+        - function: local.testing.api-tests.tavern_helpers:tombstone_for_submodel_validation_is_correct
+          extra_kwargs:
+            expected_error_detail: "Submodel payload validation failed. $.sites[0]: required property 'catenaXsiteId' not found"
+        - function: local.testing.api-tests.tavern_helpers:tombstone_for_ess_validation_is_correct
+          extra_kwargs:
+            expected_error_detail: "AspectType 'PartSiteInformationAsPlanned' not found in Job."
       headers:
         content-type: application/json
 
@@ -749,7 +758,7 @@ stages:
         - function: local.testing.api-tests.tavern_helpers:ESS_job_parameter_are_as_requested
         - function: local.testing.api-tests.tavern_helpers:supplyChainFirstLevelBpn_is_as_expected
           extra_kwargs:
-            expectedBpnl: BPNL00ARBITRARY10
+            expectedBpnl: BPNL0ARBITRARY10
       headers:
         content-type: application/json
 
@@ -1131,7 +1140,7 @@ stages:
 
   - &verify_job_is_running_and_wait_up_to_15_minutes_for_COMPLETED
     name: verify job is running and wait for desired job status
-    max_retries: 30
+    max_retries: 180
     request:
       url: "{tavern.env_vars.IRS_HOST}/irs/jobs/{job_id}"
       params:
@@ -1146,7 +1155,7 @@ stages:
       json:
         job:
           state: COMPLETED
-    delay_after: 30
+    delay_after: 5
 
   - name: verify job response with desired test steps
     request:
@@ -1451,10 +1460,8 @@ stages:
           globalAssetId: urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-       # - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
-       # - urn:samm:io.catenax.vehicle.product_description:1.0.0#ProductDescription
-         - urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription
-          #- ProductDescription
+        - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+        - urn:samm:io.catenax.vehicle.product_description:1.0.0#ProductDescription
         collectAspects: true
         depth: 2
       method: POST
