@@ -1451,10 +1451,8 @@ stages:
           globalAssetId: urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c #"{tavern.env_vars.GLOBAL_ASSET_ID_AS_BUILT}"
           bpn: "{tavern.env_vars.BPN_AS_BUILT}"
         aspects:
-       # - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
-       # - urn:samm:io.catenax.vehicle.product_description:1.0.0#ProductDescription
-         - urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription
-          #- ProductDescription
+        - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+        - urn:samm:io.catenax.vehicle.product_description:1.0.0#ProductDescription
         collectAspects: true
         depth: 2
       method: POST
