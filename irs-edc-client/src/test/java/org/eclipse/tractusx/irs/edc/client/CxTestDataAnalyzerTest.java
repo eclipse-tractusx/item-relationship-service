@@ -24,15 +24,15 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.BATCH_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.MATERIAL_FOR_RECYCLING_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.PART_AS_PLANNED_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.PHYSICAL_DIMENSION_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.PRODUCT_DESCRIPTION_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SERIAL_PART_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.SINGLE_LEVEL_USAGE_AS_BUILT_ASPECT_TYPE;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATCH_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATTERY_PRODUCT_DESCRIPTION_1_0_1;
+import static org.eclipse.tractusx.irs.SemanticModelNames.MATERIAL_FOR_RECYCLING_1_1_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.PART_AS_PLANNED_2_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.PHYSICAL_DIMENSION_1_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_USAGE_AS_BUILT_3_0_0;
 
 import java.io.File;
 import java.io.IOException;
@@ -297,33 +297,32 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
         if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsBuilt, relationshipSubmodelData, submodels,
-                    SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE);
+                    SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
 
             checkAndAddSubmodel(testParameters.shouldCountSerialPart,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPart), submodels,
-                    SERIAL_PART_ASPECT_TYPE);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPart), submodels, SERIAL_PART_3_0_0);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelUsageAsBuilt,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned), submodels,
-                    SINGLE_LEVEL_USAGE_AS_BUILT_ASPECT_TYPE);
+                    SINGLE_LEVEL_USAGE_AS_BUILT_3_0_0);
             checkAndAddSubmodel(testParameters.shouldCountBatch,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels, BATCH_ASPECT_TYPE);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels, BATCH_3_0_0);
             checkAndAddSubmodel(testParameters.shouldCountMaterialForRecycling,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getMaterialForRecycling), submodels,
-                    MATERIAL_FOR_RECYCLING_ASPECT_TYPE);
+                    MATERIAL_FOR_RECYCLING_1_1_0);
             checkAndAddSubmodel(testParameters.shouldCountProductDescription,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getProductDescription), submodels,
-                    PRODUCT_DESCRIPTION_ASPECT_TYPE);
+                    BATTERY_PRODUCT_DESCRIPTION_1_0_1);
             checkAndAddSubmodel(testParameters.shouldCountPhysicalDimension,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension), submodels,
-                    PHYSICAL_DIMENSION_ASPECT_TYPE);
+                    PHYSICAL_DIMENSION_1_0_0);
         } else if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsPlanned, relationshipSubmodelData, submodels,
-                    SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE);
+                    SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0);
 
             checkAndAddSubmodel(testParameters.shouldCountPartAsPlanned,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned), submodels,
-                    PART_AS_PLANNED_ASPECT_TYPE);
+                    PART_AS_PLANNED_2_0_0);
         }
 
         if (relationshipSubmodelData.isPresent()) {
@@ -349,7 +348,8 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
     private void checkAndAddSubmodel(final boolean shouldCountSubmodel, final Optional<Map<String, Object>> payload,
             final List<Submodel> submodels, final String aspectType) {
         if (shouldCountSubmodel && payload.isPresent()) {
-            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, UUID.randomUUID().toString(), payload.get()));
+            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, UUID.randomUUID().toString(),
+                    payload.get()));
         }
     }
 
