@@ -292,7 +292,7 @@ class RelationshipDelegateTest {
     public static Stream<Arguments> relationshipParametersPreviousVersions() {
         return Stream.of(
                 Arguments.of("singleLevelBomAsBuilt-2.0.0.json", SINGLE_LEVEL_BOM_AS_BUILT_2_0_0, jobParameter()),
-                Arguments.of("SingleLevelBomAsPlanned-2.0.0.json", SINGLE_LEVEL_BOM_AS_PLANNED_2_0_0,
+                Arguments.of("singleLevelBomAsPlanned-2.0.0.json", SINGLE_LEVEL_BOM_AS_PLANNED_2_0_0,
                         jobParameterDownwardAsPlanned()));
     }
 
