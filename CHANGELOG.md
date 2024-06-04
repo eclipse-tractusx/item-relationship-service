@@ -27,7 +27,8 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Added endpoint for dedicated removal of policy from BPNL. #559
 - Integration Test Policy Store API Unhappy Path. #519
-- Add support for SingleLevelUsageAsPlanned. #470
+- Support for SingleLevelUsageAsPlanned. #470
+- Documentation to describe the delegate process. #470
 
 ## [5.1.4] - 2024-05-27
 
