@@ -32,8 +32,10 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.MeasurementUnit;
@@ -46,6 +48,8 @@ import org.eclipse.tractusx.irs.edc.client.RelationshipSubmodel;
  * SingleLevelBomAsBuilt
  */
 @Data
+@Builder
+@Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
 class SingleLevelBomAsBuilt implements RelationshipSubmodel {
@@ -55,7 +59,9 @@ class SingleLevelBomAsBuilt implements RelationshipSubmodel {
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.childItems).stream().flatMap(Collection::stream)
+        return Optional.ofNullable(this.childItems)
+                       .stream()
+                       .flatMap(Collection::stream)
                        .map(childData -> childData.toRelationship(this.catenaXId))
                        .toList();
     }
@@ -64,6 +70,8 @@ class SingleLevelBomAsBuilt implements RelationshipSubmodel {
      * ChildData
      */
     @Data
+    @Builder
+    @Jacksonized
     @AllArgsConstructor
     @NoArgsConstructor
     /* package */ static class ChildData {
@@ -77,7 +85,8 @@ class SingleLevelBomAsBuilt implements RelationshipSubmodel {
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
-                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.catenaXId))
+                                                                      .childCatenaXId(GlobalAssetIdentification.of(
+                                                                              this.catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_BUILT)
                                                                       .hasAlternatives(this.hasAlternatives)
                                                                       .assembledOn(this.createdOn)
@@ -86,19 +95,17 @@ class SingleLevelBomAsBuilt implements RelationshipSubmodel {
             if (thereIsQuantity()) {
                 MeasurementUnit measurementUnit = MeasurementUnit.builder().build();
                 if (this.quantity.getMeasurementUnit() instanceof String str) {
-                    measurementUnit = MeasurementUnit.builder()
-                                   .lexicalValue(str)
-                                   .build();
+                    measurementUnit = MeasurementUnit.builder().lexicalValue(str).build();
                 } else if (this.quantity.getMeasurementUnit() instanceof Map<?, ?> map) {
                     measurementUnit = MeasurementUnit.builder()
-                                   .lexicalValue(String.valueOf(map.get("lexicalValue")))
-                                   .datatypeURI(String.valueOf(map.get("datatypeURI")))
-                                   .build();
+                                                     .lexicalValue(String.valueOf(map.get("lexicalValue")))
+                                                     .datatypeURI(String.valueOf(map.get("datatypeURI")))
+                                                     .build();
                 }
 
-
                 linkedItem.quantity(org.eclipse.tractusx.irs.component.Quantity.builder()
-                                                                               .quantityNumber(this.quantity.getQuantityNumber())
+                                                                               .quantityNumber(
+                                                                                       this.quantity.getQuantityNumber())
                                                                                .measurementUnit(measurementUnit)
                                                                                .build());
             }
@@ -119,17 +126,25 @@ class SingleLevelBomAsBuilt implements RelationshipSubmodel {
          * Quantity
          */
         @Data
+        @Builder
+        @Jacksonized
         /* package */ static class Quantity {
 
-            @JsonAlias({ "quantityNumber", "value" })
+            @JsonAlias({ "quantityNumber",
+                         "value"
+            })
             private Double quantityNumber;
-            @JsonAlias({ "measurementUnit", "unit" })
+            @JsonAlias({ "measurementUnit",
+                         "unit"
+            })
             private Object measurementUnit;
 
             /**
              * MeasurementUnit
              */
             @Data
+            @Builder
+            @Jacksonized
             /* package */ static class MeasurementUnit {
                 private String lexicalValue;
                 private String datatypeURI;

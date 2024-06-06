@@ -23,8 +23,10 @@ import java.time.ZonedDateTime;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.LinkedItem;
 import org.eclipse.tractusx.irs.component.MeasurementUnit;
@@ -36,6 +38,8 @@ import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
  * Customer
  */
 @Data
+@Builder
+@Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
 class ParentItem {
@@ -83,6 +87,8 @@ class ParentItem {
      * Quantity
      */
     @Data
+    @Builder
+    @Jacksonized
     /* package */ static class Quantity {
 
         @JsonAlias({ "quantityNumber",

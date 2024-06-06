@@ -77,6 +77,7 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
      */
     @Data
     @Builder
+    @Jacksonized
     @AllArgsConstructor
     @NoArgsConstructor
     /* package */ static class ChildData {

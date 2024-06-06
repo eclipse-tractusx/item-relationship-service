@@ -31,6 +31,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
@@ -46,6 +47,7 @@ import org.eclipse.tractusx.irs.edc.client.RelationshipSubmodel;
  * SingleLevelBomAsPlanned
  */
 @Data
+@Builder
 @Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
@@ -56,7 +58,9 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.childItems).stream().flatMap(Collection::stream)
+        return Optional.ofNullable(this.childItems)
+                       .stream()
+                       .flatMap(Collection::stream)
                        .map(childData -> childData.toRelationship(this.catenaXId))
                        .toList();
     }
@@ -65,6 +69,8 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
      * ChildData
      */
     @Data
+    @Builder
+    @Jacksonized
     @AllArgsConstructor
     @NoArgsConstructor
     /* package */ static class ChildData {
@@ -77,7 +83,8 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
 
         public Relationship toRelationship(final String catenaXId) {
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
-                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.catenaXId))
+                                                                      .childCatenaXId(GlobalAssetIdentification.of(
+                                                                              this.catenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_PLANNED)
                                                                       .hasAlternatives(Boolean.FALSE)
                                                                       .assembledOn(this.createdOn)
@@ -85,10 +92,13 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
 
             if (thereIsQuantity()) {
                 linkedItem.quantity(org.eclipse.tractusx.irs.component.Quantity.builder()
-                                                                               .quantityNumber(this.quantity.getQuantityNumber())
-                                                                               .measurementUnit(MeasurementUnit.builder()
-                                                                                                               .lexicalValue(this.quantity.getMeasurementUnit())
-                                                                                                               .build())
+                                                                               .quantityNumber(
+                                                                                       this.quantity.getQuantityNumber())
+                                                                               .measurementUnit(
+                                                                                       MeasurementUnit.builder()
+                                                                                                      .lexicalValue(
+                                                                                                              this.quantity.getMeasurementUnit())
+                                                                                                      .build())
                                                                                .build());
             }
 
@@ -108,16 +118,20 @@ class SingleLevelBomAsPlanned implements RelationshipSubmodel {
          * Quantity
          */
         @Data
+        @Builder
         @Jacksonized
         /* package */ static class Quantity {
 
-            @JsonAlias({ "quantityNumber", "value" })
+            @JsonAlias({ "quantityNumber",
+                         "value"
+            })
             private Double quantityNumber;
-            @JsonAlias({ "measurementUnit", "unit" })
+            @JsonAlias({ "measurementUnit",
+                         "unit"
+            })
             private String measurementUnit;
 
         }
     }
-
 
 }
