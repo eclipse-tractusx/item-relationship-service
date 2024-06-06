@@ -59,6 +59,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.component.Quantity;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
@@ -130,7 +131,9 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getRelationships()).isNotEmpty();
+        final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
+        assertThat(quantity.getQuantityNumber()).isEqualTo(20.0);
+        assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:piece");
         assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
@@ -160,10 +163,13 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getRelationships()).isNotEmpty();
+        final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
+        assertThat(quantity.getQuantityNumber()).isEqualTo(20.0);
+        assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:piece");
         assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
-        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
+        assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isEqualTo(
+                "urn:uuid:56319907-28dc-440e-afcc-72d67ad343e7");
+        assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isEqualTo("BPNL50096894aNXY");
     }
 
     @ParameterizedTest
@@ -190,7 +196,10 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getRelationships()).isNotEmpty();
+        assertThat(result.getRelationships()).hasSize(1);
+        final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
+        assertThat(quantity.getQuantityNumber()).isEqualTo(20.0);
+        assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:piece");
         assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
@@ -237,7 +246,10 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getRelationships()).isNotEmpty();
+        assertThat(result.getRelationships()).hasSize(1);
+        final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
+        assertThat(quantity.getQuantityNumber()).isEqualTo(20.0);
+        assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:piece");
         assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();
@@ -283,7 +295,10 @@ class RelationshipDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getRelationships()).isNotEmpty();
+        assertThat(result.getRelationships()).hasSize(1);
+        final Quantity quantity = result.getRelationships().get(0).getLinkedItem().getQuantity();
+        assertThat(quantity.getQuantityNumber()).isEqualTo(2.5);
+        assertThat(quantity.getMeasurementUnit().getLexicalValue()).isEqualTo("unit:litre");
         assertThat(aasTransferProcess.getIdsToProcess()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess().get(0).getGlobalAssetId()).isNotEmpty();
         assertThat(aasTransferProcess.getIdsToProcess().get(0).getBpn()).isNotEmpty();

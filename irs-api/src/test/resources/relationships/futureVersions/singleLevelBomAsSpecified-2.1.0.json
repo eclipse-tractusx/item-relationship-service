@@ -13,8 +13,8 @@
             }
           ],
           "itemQuantity": {
-            "quantityNumber": 350.0,
-            "measurementUnit": "unit:kW"
+            "quantityNumber": 20.0,
+            "measurementUnit": "unit:piece"
           },
           "ownerItemId": "urn:uuid:b4741433-92bb-4027-9a02-bbc64a58d193",
           "itemVersion": "05",

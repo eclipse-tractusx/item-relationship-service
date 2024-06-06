@@ -8,8 +8,8 @@
           "ownerPartId": "uuid!",
           "partVersion": "05",
           "partQuantity": {
-            "quantityNumber": 350.0,
-            "measurementUnit": "kW"
+            "quantityNumber": 20.0,
+            "measurementUnit": "unit:piece"
           },
           "partDescription": "The steering wheel is nice and round",
           "partClassification": [
