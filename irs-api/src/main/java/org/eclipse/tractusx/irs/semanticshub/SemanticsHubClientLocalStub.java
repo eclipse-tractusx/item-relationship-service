@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 })
 class SemanticsHubClientLocalStub implements SemanticsHubClient {
 
-    public static final String MODEL_TYPE = "BAMM";
+    public static final String MODEL_TYPE = "SAMM";
     public static final String MODEL_STATUS = "RELEASED";
 
     @Override
