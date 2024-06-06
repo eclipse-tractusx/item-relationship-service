@@ -54,12 +54,20 @@ import org.eclipse.tractusx.irs.edc.client.RelationshipSubmodel;
 @NoArgsConstructor
 public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
 
+    @JsonAlias({ "catenaXId",
+                 "assetId"
+    })
     private String catenaXId;
+    @JsonAlias({ "childParts",
+                 "childItems"
+    })
     private Set<ChildData> childParts;
 
     @Override
     public List<Relationship> asRelationships() {
-        return Optional.ofNullable(this.childParts).stream().flatMap(Collection::stream)
+        return Optional.ofNullable(this.childParts)
+                       .stream()
+                       .flatMap(Collection::stream)
                        .map(childData -> childData.toRelationship(this.catenaXId))
                        .toList();
     }
@@ -73,8 +81,17 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
     @NoArgsConstructor
     /* package */ static class ChildData {
 
+        @JsonAlias({ "childPartsCategory",
+                     "childItemCategory"
+        })
         private String childPartsCategory;
+        @JsonAlias({ "part",
+                     "item"
+        })
         private Set<Part> part;
+        @JsonAlias({ "childCatenaXId",
+                     "childassetId"
+        })
         private String childCatenaXId;
         private String businessPartner;
 
@@ -82,7 +99,8 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
             final Part childPart = this.part.stream().findFirst().orElse(Part.builder().build());
 
             final LinkedItem.LinkedItemBuilder linkedItem = LinkedItem.builder()
-                                                                      .childCatenaXId(GlobalAssetIdentification.of(this.childCatenaXId))
+                                                                      .childCatenaXId(GlobalAssetIdentification.of(
+                                                                              this.childCatenaXId))
                                                                       .lifecycleContext(BomLifecycle.AS_SPECIFIED)
                                                                       .hasAlternatives(Boolean.FALSE)
                                                                       .assembledOn(childPart.getCreatedOn())
@@ -91,7 +109,10 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
             if (childPart.getPartQuantity() != null) {
                 linkedItem.quantity(Quantity.builder()
                                             .quantityNumber(childPart.getPartQuantity().getQuantityNumber())
-                                            .measurementUnit(MeasurementUnit.builder().lexicalValue(childPart.getPartQuantity().getMeasurementUnit()).build())
+                                            .measurementUnit(MeasurementUnit.builder()
+                                                                            .lexicalValue(childPart.getPartQuantity()
+                                                                                                   .getMeasurementUnit())
+                                                                            .build())
                                             .build());
             }
 
@@ -112,9 +133,21 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
         @SuppressWarnings("PMD.ShortClassName")
         /* package */ static class Part {
 
+            @JsonAlias({ "ownerPartId",
+                         "ownerItemId"
+            })
             private String ownerPartId;
+            @JsonAlias({ "partVersion",
+                         "itemVersion"
+            })
             private String partVersion;
+            @JsonAlias({ "partQuantity",
+                         "itemQuantity"
+            })
             private PartQuantity partQuantity;
+            @JsonAlias({ "partDescription",
+                         "itemDescription"
+            })
             private String partDescription;
             private ZonedDateTime createdOn;
             private ZonedDateTime lastModifiedOn;
@@ -126,9 +159,13 @@ public class SingleLevelBomAsSpecified implements RelationshipSubmodel {
             @Builder
             @Jacksonized
             /* package */ static class PartQuantity {
-                @JsonAlias({ "quantityNumber", "value" })
+                @JsonAlias({ "quantityNumber",
+                             "value"
+                })
                 private Double quantityNumber;
-                @JsonAlias({ "measurementUnit", "unit" })
+                @JsonAlias({ "measurementUnit",
+                             "unit"
+                })
                 private String measurementUnit;
             }
         }
