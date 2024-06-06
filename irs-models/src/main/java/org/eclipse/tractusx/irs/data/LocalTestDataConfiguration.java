@@ -33,9 +33,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /**
- * Local spring configuration for loading test data from resrouces.
+ * Local spring configuration for loading test data from resources.
  */
-@Profile({ "local", "stubtest" })
+@Profile({ "local",
+           "stubtest"
+})
 @Configuration
 @RequiredArgsConstructor
 public class LocalTestDataConfiguration {
