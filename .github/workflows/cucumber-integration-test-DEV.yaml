@@ -21,12 +21,10 @@ concurrency:
 
 jobs:
   trigger-integration-test:
-    uses: ./.github/workflows/xray-cucumber-integration.yaml
+    uses: ./.github/workflows/cucumber-integration-test.yaml
     secrets:
       regularUserApiKey: ${{ secrets.DEV_REGULAR_USER_API_KEY }}
       adminUserApiKey: ${{ secrets.DEV_ADMIN_USER_API_KEY }}
-      jiraUser: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
-      jiraPassword: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
+      cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
     with:
-      executionFilter: "not @Ignore and @INTEGRATION_TEST and @DEV"
-      exportFilter: "11349"
+      executionFilter: "!Ignore & !INACTIVE & INTEGRATION_TEST & DEV"
