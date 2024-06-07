@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 
 /**
  * Container to load test data from resources
@@ -54,40 +55,30 @@ public class CxTestDataContainer {
     @Data
     public static class CxTestData {
 
-        public static final String SERIAL_PART_ASPECT_TYPE = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
-        public static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
-        public static final String SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE = "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt";
-        public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified";
-        public static final String PART_AS_PLANNED_ASPECT_TYPE = "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned";
-        public static final String SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE = "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned";
-        public static final String BATCH_ASPECT_TYPE = "urn:samm:io.catenax.batch:3.0.0#Batch";
-        public static final String MATERIAL_FOR_RECYCLING_ASPECT_TYPE = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
-        public static final String PRODUCT_DESCRIPTION_ASPECT_TYPE = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";
-        public static final String PHYSICAL_DIMENSION_ASPECT_TYPE = "urn:samm:io.catenax.physical_dimension:1.0.0#PhysicalDimension";
-        public static final String PART_AS_SPECIFIED_ASPECT_TYPE = "urn:samm:io.catenax.part_as_specified:2.0.0#PartAsSpecified";
-
         private String catenaXId;
-        @JsonProperty(SERIAL_PART_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.SERIAL_PART_3_0_0)
         private List<Map<String, Object>> serialPart;
-        @JsonProperty(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0)
         private List<Map<String, Object>> singleLevelBomAsBuilt;
-        @JsonProperty(SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.SINGLE_LEVEL_USAGE_AS_BUILT_3_0_0)
         private List<Map<String, Object>> singleLevelUsageAsBuilt;
-        @JsonProperty(SINGLE_LEVEL_BOM_AS_SPECIFIED_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.SINGLE_LEVEL_BOM_AS_SPECIFIED_2_0_0)
         private List<Map<String, Object>> singleLevelBomAsSpecified;
-        @JsonProperty(PART_AS_PLANNED_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.PART_AS_PLANNED_2_0_0)
         private List<Map<String, Object>> partAsPlanned;
-        @JsonProperty(SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0)
         private List<Map<String, Object>> singleLevelBomAsPlanned;
-        @JsonProperty(BATCH_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0)
+        private List<Map<String, Object>> singleLevelUsageAsPlanned;
+        @JsonProperty(SemanticModelNames.BATCH_3_0_0)
         private List<Map<String, Object>> batch;
-        @JsonProperty(MATERIAL_FOR_RECYCLING_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.MATERIAL_FOR_RECYCLING_1_1_0)
         private List<Map<String, Object>> materialForRecycling;
-        @JsonProperty(PRODUCT_DESCRIPTION_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.BATTERY_PRODUCT_DESCRIPTION_1_0_1)
         private List<Map<String, Object>> productDescription;
-        @JsonProperty(PHYSICAL_DIMENSION_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.PHYSICAL_DIMENSION_1_0_0)
         private List<Map<String, Object>> physicalDimension;
-        @JsonProperty(PART_AS_SPECIFIED_ASPECT_TYPE)
+        @JsonProperty(SemanticModelNames.PART_AS_SPECIFIED_2_0_0)
         private List<Map<String, Object>> partAsSpecified;
 
         public Optional<Map<String, Object>> getSerialPart() {
@@ -112,6 +103,10 @@ public class CxTestDataContainer {
 
         public Optional<Map<String, Object>> getSingleLevelBomAsPlanned() {
             return singleLevelBomAsPlanned != null ? singleLevelBomAsPlanned.stream().findFirst() : Optional.empty();
+        }
+
+        public Optional<Map<String, Object>> getSingleLevelUsageAsPlanned() {
+            return singleLevelUsageAsPlanned != null ? singleLevelUsageAsPlanned.stream().findFirst() : Optional.empty();
         }
 
         public Optional<Map<String, Object>> getBatch() {

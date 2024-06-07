@@ -15,8 +15,9 @@ Full changelog of IRS: [changelog](CHANGELOG.md)
 | Kubernetes                | 1.29                         | -     | -               |
 | SingleLevelBomAsBuilt     | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
 | SingleLevelBomAsPlanned   | [ 2.0.0; 3.0.0 ]             | -     | Model version   |
-| SingleLevelBomAsSpecified | 1.0.0                        | -     | Model version   |
+| SingleLevelBomAsSpecified | 2.0.0                        | -     | Model version   |
 | SingleLevelUsageAsBuilt   | 3.0.0                        | -     | Model version   |
+| SingleLevelUsageAsPlanned | 2.0.0                        | -     | Model version   |
 
 ## [CATENA-X Release 24.05](https://eclipse-tractusx.github.io/CHANGELOG/) - [5.1.3](https://github.com/eclipse-tractusx/item-relationship-service/releases/tag/5.1.3) - 2024-05-17
 

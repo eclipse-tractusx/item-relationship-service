@@ -1,0 +1,30 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+skinparam nodesep 10
+skinparam ranksep 100
+skinparam linetype ortho
+skinparam defaultFontName "Architects daughter"
+
+component [**TransferProcessManagement**] <<Component>> as TransferProcessManagement {
+    component [**AASTransferProcessManager**] <<Component>> as TPM
+    component [**ExecutorService**] <<Component>> as executor
+    component [**Runnable**] <<Component>> as runnable {
+        component [**DigitalTwinDelegate**] <<Component>> as DTRDelegate
+        component [**RelationshipDelegate**] <<Component>> as RelDelegate
+        component [**SubmodelDelegate**] <<Component>> as SubDelegate
+        DTRDelegate -> RelDelegate
+        RelDelegate -> SubDelegate
+    }
+    TPM .. runnable
+    runnable ..> executor
+}
+
+[**DigitalTwinRegistryService**] <<Component>> as AASR
+[**EdcSubmodelFacade**] <<Component>> as SMS
+
+DTRDelegate ---(0 AASR
+RelDelegate ---(0 SMS
+SubDelegate ---(0 SMS
+
+@enduml

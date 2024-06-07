@@ -37,6 +37,7 @@ import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
+import org.eclipse.tractusx.irs.edc.client.relationships.SubmodelTestdataCreator;
 
 /**
  * Submodel facade stub used in local environment
