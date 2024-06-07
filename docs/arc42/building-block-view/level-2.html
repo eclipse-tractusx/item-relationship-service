@@ -461,10 +461,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_component_description_3">Component description</a></li>
 </ul>
 </li>
-<li><a href="#_ess_controller">ESS controller</a>
+<li><a href="#_aastransferprocessmanager">AASTransferProcessManager</a>
 <ul class="sectlevel2">
 <li><a href="#_component_diagram_4">Component diagram</a></li>
 <li><a href="#_component_description_4">Component description</a></li>
+</ul>
+</li>
+<li><a href="#_ess_controller">ESS controller</a>
+<ul class="sectlevel2">
+<li><a href="#_component_diagram_5">Component diagram</a></li>
+<li><a href="#_component_description_5">Component description</a></li>
 </ul>
 </li>
 </ul>
@@ -635,13 +641,58 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
+<h2 id="_aastransferprocessmanager">AASTransferProcessManager</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The AASTransferProcessManager coordinates creation of Runnables which are then passed to the ExecutorService for asynchronous and parallel execution.
+The Runnable consists of different Delegates which are each responsible for requesting certain types of data.</p>
+</div>
+<div class="sect2">
+<h3 id="_component_diagram_4">Component diagram</h3>
+<div class="imageblock">
+<div class="content">
+<img src="level-2-int-transfer-process-delegate.svg" alt="level 2 int transfer process delegate" width="743" height="615">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_component_description_4">Component description</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Components</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DigitalTwinDelegate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request the digital twin for the globalAssetId. The result is stored in "shells" of the job response.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RelationshipDelegate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request the payload for relationship aspects, found in the DTR. Relationships are mapped to the internal linkedItem data structure of IRS and validated to be within the supported major Traversal Aspect version range which can be found in the technical context.
+The result is stored in "relationships" of the job response.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SubmodelDelegate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request the payload for the other semantic models requested by the Job. The result is stored in "submodels" of the job response.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_ess_controller">ESS controller</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The ESS REST controller is used to provide a RESTful web service to related Environmental and Social Standards functionalities.</p>
 </div>
 <div class="sect2">
-<h3 id="_component_diagram_4">Component diagram</h3>
+<h3 id="_component_diagram_5">Component diagram</h3>
 <div class="imageblock">
 <div class="content">
 <img src="level-2-ess-controller.svg" alt="level 2 ess controller" width="627" height="445">
@@ -649,7 +700,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_component_description_4">Component description</h3>
+<h3 id="_component_description_5">Component description</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -686,7 +737,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-27 15:10:48 UTC
+Last updated 2024-06-07 08:08:57 UTC
 </div>
 </div>
 </body>

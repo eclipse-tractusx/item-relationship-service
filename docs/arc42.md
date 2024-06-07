@@ -147,8 +147,8 @@ The integrated EDC client in the IRS is responsible for creating restful request
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| SingleLevelBomAsBuilt | The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as-built lifecycle themselves, unless parts can only be tracked by an part ID. If it’s unclear which item has been built-in into the parent item, all potential parts must be listed. This is the case when, e.g. the same item is supplied by two suppliers and the item is only tracked by a customer part ID during assembly, these items can not be differentiated from each other. | 3.0.0 |
-| SingleLevelUsageAsBuilt | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | 2.0.0 |
+| SingleLevelBomAsBuilt | The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as-built lifecycle themselves, unless parts can only be tracked by an part ID. If it’s unclear which item has been built-in into the parent item, all potential parts must be listed. This is the case when, e.g. the same item is supplied by two suppliers and the item is only tracked by a customer part ID during assembly, these items can not be differentiated from each other. | [2.0.0, 3.0.0] |
+| SingleLevelUsageAsBuilt | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part. | 3.0.0 |
 
 ##### Semantic Model
 
@@ -167,15 +167,15 @@ The integrated EDC client in the IRS is responsible for creating restful request
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| SingleLevelBomAsPlanned | The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM. | 2.0.0 |
-| SingleLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list. | Not supported |
+| SingleLevelBomAsPlanned | The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM. | [2.0.0, 3.0.0] |
+| SingleLevelUsageAsPlanned | The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list. | 2.0.0 |
 
 ##### Semantic Model
 
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| PartAsPlanned | A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version. | [1.0,0, 1.0.1] |
+| PartAsPlanned | A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version. | [1.0.0, 1.0.1] |
 | PartSiteInformationAsPlanned | The aspect provides site related information for a given as planned item (i.e. a part type or part instance that is uniquely identifiable within Catena-X via its Catena-X ID). A site is a delimited geographical area where a legal entity does business. In the \"as planned\" lifecycle context all potentially related sites are listed including all sites where e.g. production of this part (type) is planned. | 1.0.0 |
 
 #### Overview asSpecified
@@ -185,7 +185,7 @@ The integrated EDC client in the IRS is responsible for creating restful request
 |     |     |     |
 | --- | --- | --- |
 | Name | Description |  |
-| SingleLevelBomAsSpecified | The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place. | 1.0.0 |
+| SingleLevelBomAsSpecified | The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the marketplace. | 2.0.0 |
 
 ##### Semantic Model
 
@@ -356,6 +356,22 @@ The TransferProcessManager creates executions and provides them to the executor 
 | BlobStore | The BlobStore is the database where the relationships and tombstones are stored for a requested item. |
 | DigitalTwinRegistry | The DigitalTwinRegistry is the central database of registered assets. In a decentralized network, the registry is no longer central, but every provider has its own registry. |
 | ExecutorService | The ExecutorService enables the simultaneous execution of requests of transfer processes. |
+
+### AASTransferProcessManager
+
+The AASTransferProcessManager coordinates creation of Runnables which are then passed to the ExecutorService for asynchronous and parallel execution.
+The Runnable consists of different Delegates which are each responsible for requesting certain types of data.
+
+#### Component diagram
+
+#### Component description
+
+|     |     |
+| --- | --- |
+| Components | Description |
+| DigitalTwinDelegate | Request the digital twin for the globalAssetId. The result is stored in "shells" of the job response. |
+| RelationshipDelegate | Request the payload for relationship aspects, found in the DTR. Relationships are mapped to the internal linkedItem data structure of IRS and validated to be within the supported major Traversal Aspect version range which can be found in the technical context. The result is stored in "relationships" of the job response. |
+| SubmodelDelegate | Request the payload for the other semantic models requested by the Job. The result is stored in "submodels" of the job response. |
 
 ### ESS controller
 

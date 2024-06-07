@@ -527,12 +527,12 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelBomAsBuilt</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The single-level bill of material represents one sub-level of an assembly and does not include any lower-level subassemblies. The as-built lifecycle references all child items as manufactured by the manufacturer referencing only child items in an as-built lifecycle themselves, unless parts can only be tracked by an part ID. If it&#8217;s unclear which item has been built-in into the parent item, all potential parts must be listed. This is the case when, e.g. the same item is supplied by two suppliers and the item is only tracked by a customer part ID during assembly, these items can not be differentiated from each other.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[2.0.0, 3.0.0]</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelUsageAsBuilt</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. Could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as-built lifecycle phase, i.e. a batch or a serialized part.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
 </tr>
 </tbody>
 </table>
@@ -594,12 +594,12 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelBomAsPlanned</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The single-level Bill of Material represents one sub-level of an assembly and does not include any lower-level subassemblies. In as planned lifecycle state all variants are covered (\"120% BoM\"). If multiple versions of child parts exist that can be assembled into the same parent part, all versions of the child part are included in the BoM. If there are multiple suppliers for the same child part, each supplier has an entry for their child part in the BoM.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[2.0.0, 3.0.0]</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelUsageAsPlanned</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The aspect provides the information in which parent part(s)/product(s) the given item is assembled in. This could be a 1:1 relationship in terms of a e.g. a brake component or 1:n for e.g. coatings. The given item as well as the parent item must refer to an object from as planned lifecycle phase. If multiple versions of parent parts exist that the child part can be assembled into, all versions of the parent part are included in the usage list.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Not supported</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
 </tr>
 </tbody>
 </table>
@@ -621,7 +621,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PartAsPlanned</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A Part as Planned represents an item in the Catena-X Bill of Material (BOM) in As-Planned lifecycle status in a specific version.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0,0, 1.0.1]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[1.0.0, 1.0.1]</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">PartSiteInformationAsPlanned</p></td>
@@ -650,8 +650,8 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">SingleLevelBomAsSpecified</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the market place.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The SingleLevelBomAsSpecified defines the view of the OEM or producer of the whole product, e.g. the OEM of a vehicle. It is free of any supplier-related information and specifies the promised and guaranteed content of the whole product to the end customer. This “top-down” view is in contrast to the “bottom-up” view of the SingleLevelBoMAsPlanned, though several sub-aspects are shared. The BomAsSpecified is merely one aspect, which is attached to the twin of the whole product and itself does neither introduce further twins nor reference them. Instead it merely comprises all functional information required by dismantlers, workshops or requestors for used parts to search for and to make a match on the marketplace.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
 </tr>
 </tbody>
 </table>
@@ -684,7 +684,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-27 15:10:48 UTC
+Last updated 2024-06-07 08:08:57 UTC
 </div>
 </div>
 </body>
