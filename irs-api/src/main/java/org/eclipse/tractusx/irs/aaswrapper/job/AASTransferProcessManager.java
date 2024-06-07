@@ -55,11 +55,14 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private final AbstractDelegate abstractDelegate;
 
+    private final JsonUtil jsonUtil;
+
     public AASTransferProcessManager(final AbstractDelegate abstractDelegate, final ExecutorService executor,
-            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore) {
+            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JsonUtil jsonUtil) {
         this.abstractDelegate = abstractDelegate;
         this.executor = executor;
         this.blobStore = blobStore;
+        this.jsonUtil = jsonUtil;
     }
 
     @Override
@@ -95,7 +98,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private void storeItemContainer(final String processId, final ItemContainer itemContainer) {
         try {
-            final JsonUtil jsonUtil = new JsonUtil();
             blobStore.putBlob(processId, jsonUtil.asString(itemContainer).getBytes(StandardCharsets.UTF_8));
         } catch (BlobPersistenceException e) {
             log.error("Unable to store AAS result", e);

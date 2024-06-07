@@ -80,6 +80,9 @@ class AssetAdministrationShellTestdataCreator {
                   .ifPresent(submodel -> submodelDescriptors.add(
                           createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get()
+                  .getSingleLevelUsageAsPlanned()
+                  .ifPresent(submodel -> submodelDescriptors.add(createSingleLevelUsageAsPlannedSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
                   .getPartAsPlanned()
                   .ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get()
@@ -118,8 +121,13 @@ class AssetAdministrationShellTestdataCreator {
                 "singleLevelBomAsBuilt");
     }
 
+    private SubmodelDescriptor createSingleLevelUsageAsPlannedSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_usage_as_planned:2.0.0#SingleLevelUsageAsPlanned",
+                "singleLevelUsageAsPlanned");
+    }
+
     private SubmodelDescriptor createSingleLevelUsageAsBuiltSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt",
                 "singleLevelUsageAsBuilt");
     }
 
@@ -133,12 +141,12 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createSingleLevelBomAsPlannedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned",
                 "singleLevelBomAsPlanned");
     }
 
     private SubmodelDescriptor createPartAsPlannedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned", "partAsPlanned");
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.part_as_planned:1.0.1#PartAsPlanned", "partAsPlanned");
     }
 
     private SubmodelDescriptor createBatchSubmodelDescriptor(final String catenaXId) {
@@ -160,7 +168,7 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createPartAsSpecifiedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_specified:2.0.0#PartAsSpecified",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.part_as_specified:2.0.0#PartAsSpecified",
                 "partAsSpecified");
     }
 

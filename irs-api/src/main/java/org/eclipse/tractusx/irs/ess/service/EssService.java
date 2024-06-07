@@ -30,6 +30,7 @@ import java.util.function.Predicate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Notification;
@@ -55,8 +56,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class EssService {
 
-    private static final String PART_AS_PLANNED = "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned";
-    private static final String PART_SITE_INFORMATION_AS_PLANNED = "urn:bamm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned";
+    private static final String PART_AS_PLANNED = SemanticModelNames.PART_AS_PLANNED_2_0_0;
+    private static final String PART_SITE_INFORMATION_AS_PLANNED = SemanticModelNames.PART_SITE_INFORMATION_AS_PLANNED_1_0_0;
 
     private final IrsItemGraphQueryService irsItemGraphQueryService;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;

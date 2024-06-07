@@ -18,15 +18,17 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
 - Marked createAccessPolicy requests with deprecation mark.
 - Remove edc namespace from EdcContractAgreementNegotiationResponse and
-  EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
-- Added missing @context values in edc asset creation eclipse-tractusx/traceability-foss#978
-- Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation eclipse-tractusx/traceability-foss#978
+  EdcContractAgreementsResponse. eclipse-tractusx/traceability-foss#963
+- Added missing @context values in edc asset creation. eclipse-tractusx/traceability-foss#978
+- Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation. eclipse-tractusx/traceability-foss#978
 - Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
 
 ## Added
 
 - Added endpoint for dedicated removal of policy from BPNL. #559
 - Integration Test Policy Store API Unhappy Path. #519
+- Support for SingleLevelUsageAsPlanned. #470
+- Documentation to describe the delegate process. #470
 
 ## [5.1.4] - 2024-05-27
 

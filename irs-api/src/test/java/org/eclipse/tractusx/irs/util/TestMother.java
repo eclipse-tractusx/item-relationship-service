@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import net.datafaker.Faker;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.component.GlobalAssetIdentification;
 import org.eclipse.tractusx.irs.component.Job;
@@ -60,7 +61,7 @@ import org.eclipse.tractusx.irs.connector.job.MultiTransferJob;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcess;
-import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
+import org.eclipse.tractusx.irs.edc.client.relationships.RelationshipAspect;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
 
 /**
@@ -71,13 +72,6 @@ import org.eclipse.tractusx.irs.services.MeterRegistryService;
  */
 public class TestMother {
 
-    public static final String singleLevelBomAsBuiltAspectName = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
-    public static final String singleLevelUsageAsBuiltAspectName = "urn:samm:io.catenax.single_level_usage_as_built:2.0.0#SingleLevelUsageAsBuilt";
-    public static final String serialPartAspectName = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
-    public static final String batchAspectName = "urn:samm:io.catenax.batch:3.0.0#Batch";
-    public static final String materialForRecyclingAspectName = "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling";
-    public static final String productDescriptionAspectName = "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription";
-
     public static final String EXISTING_GLOBAL_ASSET_ID = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
 
     Faker faker = new Faker();
@@ -87,7 +81,7 @@ public class TestMother {
     }
 
     public static RegisterJob registerJobWithoutDepth() {
-        return registerJobWithDepthAndAspect(null, List.of(singleLevelBomAsBuiltAspectName));
+        return registerJobWithDepthAndAspect(null, List.of(SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0));
     }
 
     public static RegisterJob registerJobWithDepthAndAspect(final Integer depth, final List<String> aspectTypes) {
@@ -156,7 +150,8 @@ public class TestMother {
                            .depth(5)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
+                           .aspects(List.of(SemanticModelNames.SERIAL_PART_3_0_0,
+                                   SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                            .auditContractNegotiation(false)
                            .build();
     }
@@ -166,7 +161,38 @@ public class TestMother {
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.UPWARD)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
+                           .aspects(List.of(SemanticModelNames.SERIAL_PART_3_0_0,
+                                   SemanticModelNames.SINGLE_LEVEL_USAGE_AS_BUILT_2_0_0))
+                           .build();
+    }
+
+    public static JobParameter jobParameterUpwardAsPlanned() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_PLANNED)
+                           .direction(Direction.UPWARD)
+                           .aspects(List.of(SemanticModelNames.SERIAL_PART_3_0_0,
+                                   SemanticModelNames.SINGLE_LEVEL_USAGE_AS_PLANNED_2_0_0))
+                           .build();
+    }
+
+    public static JobParameter jobParameterDownwardAsPlanned() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_PLANNED)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(SemanticModelNames.SERIAL_PART_3_0_0,
+                                   SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0))
+                           .build();
+    }
+
+    public static JobParameter jobParameterDownwardAsSpecified() {
+        return JobParameter.builder()
+                           .depth(0)
+                           .bomLifecycle(BomLifecycle.AS_SPECIFIED)
+                           .direction(Direction.DOWNWARD)
+                           .aspects(List.of(SemanticModelNames.PART_AS_SPECIFIED_3_0_0,
+                                   SemanticModelNames.SINGLE_LEVEL_BOM_AS_SPECIFIED_2_0_0))
                            .build();
     }
 
@@ -174,7 +200,8 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
+                           .aspects(List.of(SemanticModelNames.SERIAL_PART_3_0_0,
+                                   SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                            .collectAspects(true)
                            .build();
     }
@@ -183,7 +210,7 @@ public class TestMother {
         return JobParameter.builder()
                            .depth(0)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
-                           .aspects(List.of(materialForRecyclingAspectName))
+                           .aspects(List.of(SemanticModelNames.MATERIAL_FOR_RECYCLING_1_1_0))
                            .build();
     }
 
@@ -192,7 +219,8 @@ public class TestMother {
                            .depth(5)
                            .bomLifecycle(BomLifecycle.AS_BUILT)
                            .direction(Direction.DOWNWARD)
-                           .aspects(List.of(serialPartAspectName, singleLevelBomAsBuiltAspectName))
+                           .aspects(List.of(SemanticModelNames.SERIAL_PART_3_0_0,
+                                   SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                            .auditContractNegotiation(true)
                            .build();
     }
