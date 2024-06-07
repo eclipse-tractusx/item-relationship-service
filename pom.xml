@@ -89,8 +89,8 @@
         <rest-assured.version>5.4.0</rest-assured.version>
         <awaitility.version>4.2.0</awaitility.version>
         <jsonassert.version>1.5.1</jsonassert.version>
-        <junit-bom.version>5.9.2</junit-bom.version>
-        <cucumber-bom.version>7.11.1</cucumber-bom.version>
+        <junit-bom.version>5.10.2</junit-bom.version>
+        <cucumber-bom.version>7.18.0</cucumber-bom.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <commons-validator.version>1.8.0</commons-validator.version>
         <swagger-annotations.version>2.2.18</swagger-annotations.version>
