@@ -3,12 +3,14 @@ name: "Eclipse DASH IP Check"
 on:
   workflow_dispatch: # Trigger manually
   push:
-    branches: main
+    branches:
+      - main
     paths-ignore:
       - '**/*.md'
       - '**/*.txt'
   pull_request:
-    branches: main
+    branches:
+      - main
     paths:
       - '**/pom.xml'
       - 'pom.xml'
@@ -34,13 +36,13 @@ jobs:
 
       - name: Build with Maven and check dependencies with dash
         run: |
-          mvn --batch-mode --update-snapshots verify -Ddash.fail=true -DskipTests
+          mvn --batch-mode --update-snapshots verify -P dash
 
       - name: Ensure DEPENDENCIES file is reflecting the current state
         run: |
           mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.summary=DEPENDENCIES-gen
           diff DEPENDENCIES DEPENDENCIES-gen
-          
+
 
       - name: upload results
         if: always()
