@@ -53,6 +53,7 @@ import org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.DiscoveryServiceWiremockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
+import wiremock.com.fasterxml.jackson.databind.JsonNode;
 
 public class WiremockSupport {
 
@@ -133,12 +134,18 @@ public class WiremockSupport {
                 responseWithStatus(200).withBodyFile(fileName)));
     }
 
+    static void successfulDataRequestsForPayload(final String assetId, final JsonNode payload) {
+        stubFor(get(
+                urlPathMatching(DtrWiremockSupport.DATAPLANE_PUBLIC_PATH + "/" + assetId + SUBMODEL_SUFFIX)).willReturn(
+                responseWithStatus(200).withJsonBody(payload)));
+    }
+
     static void successfulSemanticHubRequests() {
         SemanticHubWireMockSupport.semanticHubWillReturnBatchSchema();
         SemanticHubWireMockSupport.semanticHubWillReturnSingleLevelBomAsBuiltSchema();
     }
 
-    static String randomUUIDwithPrefix() {
+    public static String randomUUIDwithPrefix() {
         final String uuidPrefix = "urn:uuid:";
         return uuidPrefix + randomUUID();
     }
@@ -153,6 +160,15 @@ public class WiremockSupport {
         final String submodel = submodelDescriptor(DATAPLANE_PUBLIC_URL, edcAssetId,
                 DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, idShort, submodelDescriptorId, semanticId);
         successfulDataRequests(submodelDescriptorId, sbomFileName);
+        return submodel;
+    }
+
+    static String submodelRequestForPayload(final String edcAssetId, final String singleLevelModel,
+            final String semanticId, final JsonNode payload) {
+        final String modelId = randomUUIDwithPrefix();
+        final String submodel = submodelDescriptor(DATAPLANE_PUBLIC_URL, edcAssetId,
+                DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, singleLevelModel, modelId, semanticId);
+        successfulDataRequestsForPayload(modelId, payload);
         return submodel;
     }
 }
