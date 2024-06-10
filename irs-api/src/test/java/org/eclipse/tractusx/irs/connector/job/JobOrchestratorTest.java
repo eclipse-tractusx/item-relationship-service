@@ -30,6 +30,8 @@ import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -39,7 +41,10 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -173,7 +178,9 @@ class JobOrchestratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
+    @EnumSource(value = ResponseStatus.class, names = { "OK",
+                                                        "NOT_STARTED_JOB_CANCELLED"
+    }, mode = EXCLUDE)
     void startJob_WhenTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
         when(handler.initiate(any())).thenReturn(Stream.of(dataRequest, dataRequest2));
@@ -250,6 +257,41 @@ class JobOrchestratorTest {
         verify(processManager).initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()));
         verify(jobStore).completeTransferProcess(job.getJobIdString(), transfer);
 
+    }
+
+    @Test
+    void cancelJob_WhenCancelling_JumpsOverAnyImpossibleOrFailedIfConditional() {
+        String firstTransferProcess = UUID.randomUUID().toString();
+        String secondTransferProcess = UUID.randomUUID().toString();
+        final Collection<String> transferProcesses = new HashSet<>();
+        transferProcesses.add(firstTransferProcess);
+        transferProcesses.add(secondTransferProcess);
+
+        doNothing().when(processManager).cancelRequest(firstTransferProcess);
+        doNothing().when(processManager).cancelRequest(secondTransferProcess);
+
+        sut.cancelJob(generate.job().toBuilder().transferProcessIds(transferProcesses).build());
+
+        verify(meterRegistryService).incrementJobCancelled();
+    }
+
+    @Test
+    void cancelJob_WhenCancelling_EntersAnyImpossibleOrFailedIfConditional() {
+        String firstTransferProcess = UUID.randomUUID().toString();
+        String secondTransferProcess = UUID.randomUUID().toString();
+        final Collection<String> transferProcesses = new HashSet<>();
+        transferProcesses.add(firstTransferProcess);
+        transferProcesses.add(secondTransferProcess);
+
+        doThrow(new JobException(
+                TransferProcessManager.CANCELLATION_IMPOSSIBLE_FUTURE_NOT_FOUND.formatted(firstTransferProcess),
+                firstTransferProcess)).when(processManager).cancelRequest(firstTransferProcess);
+        doThrow(new JobException(TransferProcessManager.CANCELLATION_FAILED.formatted(secondTransferProcess),
+                secondTransferProcess)).when(processManager).cancelRequest(secondTransferProcess);
+
+        sut.cancelJob(generate.job().toBuilder().transferProcessIds(transferProcesses).build());
+
+        verify(meterRegistryService).incrementException();
     }
 
     @Test
@@ -348,7 +390,9 @@ class JobOrchestratorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = ResponseStatus.class, names = "OK", mode = EXCLUDE)
+    @EnumSource(value = ResponseStatus.class, names = { "OK",
+                                                        "NOT_STARTED_JOB_CANCELLED"
+    }, mode = EXCLUDE)
     void transferProcessCompleted_WhenNextTransferStartUnsuccessful_Abort(ResponseStatus status) {
         // Arrange
         when(processManager.initiateRequest(eq(dataRequest), any(), any(), eq(jobParameter()))).thenReturn(
