@@ -26,16 +26,21 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 import static org.eclipse.tractusx.irs.configuration.JobConfiguration.JOB_BLOB_PERSISTENCE;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.AbstractDelegate;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
 import org.eclipse.tractusx.irs.component.JobParameter;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.connector.job.JobException;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.connector.job.TransferProcessManager;
@@ -57,6 +62,9 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private final JsonUtil jsonUtil;
 
+    @Getter
+    private final Map<String, Future<?>> futures = new ConcurrentHashMap<>();
+
     public AASTransferProcessManager(final AbstractDelegate abstractDelegate, final ExecutorService executor,
             @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JsonUtil jsonUtil) {
         this.abstractDelegate = abstractDelegate;
@@ -69,13 +77,34 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
     public TransferInitiateResponse initiateRequest(final ItemDataRequest dataRequest,
             final Consumer<String> preExecutionHandler, final Consumer<AASTransferProcess> completionCallback,
             final JobParameter jobData) {
-
         final String processId = UUID.randomUUID().toString();
         preExecutionHandler.accept(processId);
 
-        executor.execute(getRunnable(dataRequest, completionCallback, processId, jobData));
+        if (Thread.currentThread().isInterrupted()) {
+            log.debug("Returning from initiateRequest due to interrupt");
+
+            return new TransferInitiateResponse(processId, ResponseStatus.NOT_STARTED_JOB_CANCELLED);
+        }
+        final Future<?> future = executor.submit(getRunnable(dataRequest, completionCallback, processId, jobData));
+        futures.put(processId, future);
 
         return new TransferInitiateResponse(processId, ResponseStatus.OK);
+    }
+
+    @Override
+    public void cancelRequest(final String processId) {
+        final Future<?> future = futures.get(processId);
+        if (future == null) {
+            throw new JobException(CANCELLATION_IMPOSSIBLE_FUTURE_NOT_FOUND.formatted(processId), processId);
+        }
+
+        future.cancel(true);
+
+        if (future.isDone()) {
+            futures.remove(processId);
+        } else {
+            throw new JobException(CANCELLATION_FAILED.formatted(processId), processId);
+        }
     }
 
     private Runnable getRunnable(final ItemDataRequest dataRequest,
