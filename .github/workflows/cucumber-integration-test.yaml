@@ -55,6 +55,7 @@ jobs:
         run: |
           grep -E "^│.*│$" irs-cucumber-tests/report-banner.txt > irs-cucumber-tests/cucumber-report.txt
           sed -i 's/│//g' irs-cucumber-tests/cucumber-report.txt
+          cat irs-cucumber-tests/cucumber-report.txt
 
       - name: Find previous comment in PR
         if: always() && github.event_name == 'pull_request'
