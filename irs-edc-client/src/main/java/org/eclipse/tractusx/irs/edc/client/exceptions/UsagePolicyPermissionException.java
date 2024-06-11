@@ -27,17 +27,18 @@ import lombok.Getter;
 import org.eclipse.edc.policy.model.Policy;
 
 /**
- * Usage Policy Exception errors in the contract negotiation.
+ * Usage Policy Permission Exception errors in the contract negotiation.
  */
 @Getter
-public class UsagePolicyException extends EdcClientException {
+public class UsagePolicyPermissionException extends EdcClientException {
 
     private final transient Policy policy;
     private final String businessPartnerNumber;
 
-    public UsagePolicyException(final String itemId, final Policy policy, final String businessPartnerNumber) {
+    public UsagePolicyPermissionException(final String itemId, final Policy policy,
+            final String businessPartnerNumber) {
         super("Consumption of asset '" + itemId
-                + "' is not permitted as the required catalog offer policies do not comply with defined IRS policies.");
+                + "' is not permitted as the required catalog offer policies do not comply with defined policies.");
         this.policy = policy;
         this.businessPartnerNumber = businessPartnerNumber;
     }

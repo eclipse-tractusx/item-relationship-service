@@ -71,7 +71,8 @@ import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointD
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyExpiredException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
@@ -586,7 +587,8 @@ class EdcSubmodelClientTest extends LocalTestDataConfigurationAware {
     }
 
     private void prepareTestdata(final String catenaXId, final String submodelDataSuffix)
-            throws ContractNegotiationException, IOException, UsagePolicyException, TransferProcessException {
+            throws ContractNegotiationException, IOException, UsagePolicyPermissionException, TransferProcessException,
+            UsagePolicyExpiredException {
 
         final String agreementId = "agreementId";
         when(contractNegotiationService.negotiate(any(), any(),

@@ -24,12 +24,12 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterFilter;
-import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
 import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
 import static org.mockito.ArgumentMatchers.any;
@@ -46,7 +46,7 @@ import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
@@ -152,7 +152,8 @@ class SubmodelDelegateTest {
                                                                                                                            "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
-        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(new UsagePolicyException("itemId", null, businessPartnerNumber));
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
+                new UsagePolicyPermissionException("itemId", null, businessPartnerNumber));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
                 jobParameterCollectAspects(), new AASTransferProcess(), createKey());
