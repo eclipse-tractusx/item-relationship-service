@@ -23,6 +23,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation. eclipse-tractusx/traceability-foss#978
 - Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
 - Updated contributing, notice, and readme files for TRG 7 #681
+- Handling of expired policies when approving a notification eclipse-tractusx/traceability-foss#639
 
 ## Added
 

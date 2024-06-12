@@ -63,7 +63,7 @@ import org.eclipse.tractusx.irs.component.Quantity;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -391,7 +391,7 @@ class RelationshipDelegateTest {
 
         // when
         when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
-                new UsagePolicyException("itemId", null, businessPartnerNumber));
+                new UsagePolicyPermissionException("itemId", null, businessPartnerNumber));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = relationshipDelegate.process(itemContainerWithShell, jobParameter(),
                 new AASTransferProcess(), createKey());
