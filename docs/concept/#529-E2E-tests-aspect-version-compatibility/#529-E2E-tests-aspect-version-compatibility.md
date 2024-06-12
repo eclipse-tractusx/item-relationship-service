@@ -55,14 +55,15 @@ Test:
   - [529-single-level-bom-as-built-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-submodels.json)
 
 
+## SingleLevelBomAsSpecified
+
+todo
 
 ## SingleLevelUsageAsBuilt
 
-SingleLevelBomAsBuilt
-SingleLevelUsageAsPlanned
-SingleLevelUsageAsBuilt
+todo
 
-## SingleLevelBomAsSpecified
 
-SingleLevelBomAsSpecified
+## SingleLevelUsageAsPlanned
 
+todo

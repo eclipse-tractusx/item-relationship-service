@@ -5,7 +5,7 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
     And the admin user api key
 
   ######################################################################################################################
-  ## SingleLevelUsageAsPlanned
+  ## SingleLeveBomAsPlanned
   ######################################################################################################################
 
   Scenario: SingleLevelBomAsPlanned
@@ -48,26 +48,6 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
 
 
   ######################################################################################################################
-  ## SingleLevelUsageAsBuilt
-  ######################################################################################################################
-
-  Scenario: SingleLevelUsageAsBuilt
-    Given I register an IRS job for globalAssetId "urn:uuid:15cf842e-b20e-4219-a61b-99c01cec42ea" and BPN "BPNL00000003AVTH"
-    And collectAspects "true"
-    And depth 10
-
-    # SingleLevelUsageAsBuilt (see RelationshipAspect)
-    And direction "upward"
-    And bomLifecycle "asBuilt"
-
-    When I get the job-id
-    Then I check, if the job has status "COMPLETED" within 20 minutes
-    And I check, if "relationships" are equal to "529-single-level-usage-as-built-3-0-0-expected-relationships.json"
-    And I check, if "submodels" are equal to "529-single-level-usage-as-built-3-0-0-expected-submodels.json"
-
-
-
-  ######################################################################################################################
   ## SingleLevelBomAsSpecified
   ######################################################################################################################
 
@@ -82,6 +62,46 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
 
     When I get the job-id
     Then I check, if the job has status "COMPLETED" within 20 minutes
-    And I check, if "relationships" are equal to "529-single-level-bom-as-specified-3-0-0-expected-relationships.json"
-    And I check, if "submodels" are equal to "529-single-level-bom-as-specified-3-0-0-expected-submodels.json"
+    And I check, if "relationships" are equal to "529-single-level-bom-as-specified-expected-relationships.json"
+    And I check, if "submodels" are equal to "529-single-level-bom-as-specified-expected-submodels.json"
+
+
+  ######################################################################################################################
+  ## SingleLevelUsageAsBuilt
+  ######################################################################################################################
+
+  Scenario: SingleLevelUsageAsBuilt
+    Given I register an IRS job for globalAssetId "urn:uuid:15cf842e-b20e-4219-a61b-99c01cec42ea" and BPN "BPNL00000003AVTH"
+    And collectAspects "true"
+    And depth 10
+
+    # SingleLevelUsageAsBuilt (see RelationshipAspect)
+    And direction "upward"
+    And bomLifecycle "asBuilt"
+
+    When I get the job-id
+    Then I check, if the job has status "COMPLETED" within 20 minutes
+    And I check, if "relationships" are equal to "529-single-level-usage-as-built-expected-relationships.json"
+    And I check, if "submodels" are equal to "529-single-level-usage-as-built-expected-submodels.json"
+
+
+
+  ######################################################################################################################
+  ## SingleLevelUsageAsPlanned
+  ######################################################################################################################
+
+  Scenario: SingleLevelUsageAsPlanned
+    Given I register an IRS job for globalAssetId "urn:uuid:15cf842e-b20e-4219-a61b-99c01cec42ea" and BPN "BPNL00000003AVTH"
+    And collectAspects "true"
+    And depth 10
+
+    # SingleLevelUsageAsPlanned (see RelationshipAspect)
+    And direction "upward"
+    And bomLifecycle "asPlanned"
+
+    When I get the job-id
+    Then I check, if the job has status "COMPLETED" within 20 minutes
+    And I check, if "relationships" are equal to "529-single-level-usage-as-planned-expected-relationships.json"
+    And I check, if "submodels" are equal to "529-single-level-usage-as-planned-expected-submodels.json"
+
 
