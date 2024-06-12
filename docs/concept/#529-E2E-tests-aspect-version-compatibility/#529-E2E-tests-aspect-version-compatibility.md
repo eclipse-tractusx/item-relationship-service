@@ -36,16 +36,17 @@ Test data:
 - [CX_Testdata_529_compatibility_SingleLevelBomAsBuilt.json](../../../local/testing/testdata/CX_Testdata_529_compatibility_SingleLevelBomAsBuilt.json)
 
 
-todo prüfen ob schema passt
 Structure of test data:
 - SingleLevelBomAsBuilt 3.0.0, BPNL00E2EASPCPT1, a0589022-a790-4560-aad1-5e8f7939fe92
-  - SerialPart 1.0.1, todo
+  - SerialPart 1.0.1, 6d759367-12fe-4f04-9a8c-5c9432135e41
   - SingleLevelBomAsBuilt 3.1.0, BPNL00E2EASPCP11, 4b1b50f7-686d-4c3a-b81a-5f6fc6ae5c42
     - futureAddedField
-    - SerialPart 2.0.0, todo
-    - SerialPart 3.0.0, todo
+    - SerialPart 2.0.0, ff5d998c-aadb-4189-9cf0-9ab5c42c94fe
+    - SerialPart 3.0.0, 976dbbce-5a5f-4118-a2bd-5fbca2aeabb5
   - SingleLevelBomAsBuilt 2.0.0, BPNL00E2EASPCP12, 62aa5c23-780c-4036-8416-97922e3f71a4
-    - SerialPart 2.0.0, todo
+    - SerialPart 2.0.0, 024f941b-594f-43ce-a42e-d17d1c302685
+    - SingleLevelBomAsBuilt 2.0.0, BPNL00E2EASPC121, 2507bfdd-22df-43c2-99ab-9c2cf9ac0251
+      - SerialPart 2.0.0, 34c790e9-afa3-475c-a41b-3a86a9969f61
 
 Test:
 
