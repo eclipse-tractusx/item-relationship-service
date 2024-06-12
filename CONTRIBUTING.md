@@ -4,14 +4,16 @@ Thanks for your interest in this project.
 
 # Table of Contents
 1. [Project description](#project-description)
-2. [Developer resources](#developer-resources)
-3. [Eclipse Development Process](#eclipse-development-process)
-4. [Eclipse Contributor Agreement](#eclipse-contributor-agreement)
-5. [Code of Conduct](#code-of-conduct)
-6. [General contribution to the project](#general-contribution-to-the-project)
-7. [Contributing as a Consultant](#contributing-as-a-consultant)
-8. [Contributing as a Developer](#contributing-as-a-developer)
-9. [Contact](#contact)
+2. [Project licenses](#project-licenses)
+3. [Terms of Use](#terms-of-use)
+4. [Developer resources](#developer-resources)
+5. [Eclipse Development Process](#eclipse-development-process)
+6. [Eclipse Contributor Agreement](#eclipse-contributor-agreement)
+7. [Code of Conduct](#code-of-conduct)
+8. [General contribution to the project](#general-contribution-to-the-project)
+9. [Contributing as a Consultant](#contributing-as-a-consultant)
+10. [Contributing as a Developer](#contributing-as-a-developer)
+11. [Contact](#contact)
 
 ## Project Description
 
