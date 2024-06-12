@@ -17,6 +17,10 @@ Structure of test data:
     - PartAsPlanned 2.0.0, 4bf0acbc-fd1c-46f3-a4df-6da98be2ee8d
   - SingleLevelBomAsPlanned 2.0.0, BPNL00E2EASPCP12, 8acc354c-5ca3-4cd7-83bf-a28681e99f28
     - PartAsPlanned 2.0.0, urn:uuid:1ddca474-2fd6-48c4-aa16-54a03fe40cd7
+    - SingleLevelBomAsPlanned 2.0.0, 3161de8c-923a-415a-9a6b-0b902e3153b9
+      - PartAsPlanned 2.0.0, urn:uuid:b091ce38-22dc-4f79-bb3b-7e1af648b176
+      
+
 
 Test:
 
