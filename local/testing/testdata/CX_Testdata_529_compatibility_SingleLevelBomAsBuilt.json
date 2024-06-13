@@ -42,7 +42,7 @@
     {
       "catenaXId": "urn:uuid:a0589022-a790-4560-aad1-5e8f7939fe92",
       "bpnl": "BPNL00E2EASPCPT1",
-      "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsBuilt": [
+      "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt": [
         {
           "catenaXId": "urn:uuid:a0589022-a790-4560-aad1-5e8f7939fe92",
           "childItems": [
@@ -74,7 +74,7 @@
           ]
         }
       ],
-      "urn:samm:io.catenax.part_as_planned:1.0.1#SerialPart": [
+      "urn:samm:io.catenax.serial_part:1.0.1#SerialPart": [
         {
           "catenaXId": "urn:uuid:6d759367-12fe-4f04-9a8c-5c9432135e41",
           "localIdentifiers": [
@@ -100,14 +100,14 @@
     {
       "catenaXId": "urn:uuid:4b1b50f7-686d-4c3a-b81a-5f6fc6ae5c42",
       "bpnl": "BPNL00E2EASPCP11",
-      "urn:samm:io.catenax.single_level_bom_as_planned:3.1.0#SingleLevelBomAsBuilt": [
+      "urn:samm:io.catenax.single_level_bom_as_built:3.1.0#SingleLevelBomAsBuilt": [
         {
           "catenaXId": "urn:uuid:4b1b50f7-686d-4c3a-b81a-5f6fc6ae5c42",
           "childItems": [],
           "futureAddedField": "test"
         }
       ],
-      "urn:samm:io.catenax.part_as_planned:2.0.0#SerialPart": [
+      "urn:samm:io.catenax.serial_part:2.0.0#SerialPart": [
         {
           "catenaXId": "urn:uuid:ff5d998c-aadb-4189-9cf0-9ab5c42c94fe",
           "localIdentifiers": [
@@ -135,7 +135,7 @@
           }
         }
       ],
-      "urn:samm:io.catenax.part_as_planned:3.0.0#SerialPart": [
+      "urn:samm:io.catenax.serial_part:3.0.0#SerialPart": [
         {
           "catenaXId": "urn:uuid:976dbbce-5a5f-4118-a2bd-5fbca2aeabb5",
           "localIdentifiers": [
@@ -173,7 +173,7 @@
     {
       "catenaXId": "urn:uuid:62aa5c23-780c-4036-8416-97922e3f71a4",
       "bpnl": "BPNL00E2EASPCP12",
-      "urn:samm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsBuilt": [
+      "urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt": [
         {
           "catenaXId": "urn:uuid:62aa5c23-780c-4036-8416-97922e3f71a4",
           "childItems": [
@@ -191,7 +191,7 @@
           ]
         }
       ],
-      "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned": [
+      "urn:samm:io.catenax.serial_part:2.0.0#SerialPart": [
         {
           "catenaXId": "urn:uuid:024f941b-594f-43ce-a42e-d17d1c302685",
           "localIdentifiers": [
@@ -223,13 +223,13 @@
     {
       "catenaXId": "urn:uuid:2507bfdd-22df-43c2-99ab-9c2cf9ac0251",
       "bpnl": "BPNL00E2EASPC121",
-      "urn:samm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsBuilt": [
+      "urn:samm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt": [
         {
           "catenaXId": "urn:uuid:2507bfdd-22df-43c2-99ab-9c2cf9ac0251",
           "childItems": []
         }
       ],
-      "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned": [
+      "urn:samm:io.catenax.serial_part:2.0.0#SerialPart": [
         {
           "catenaXId": "urn:uuid:34c790e9-afa3-475c-a41b-3a86a9969f61",
           "localIdentifiers": [
