@@ -55,15 +55,19 @@ Test:
   - [529-single-level-bom-as-built-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-submodels.json)
 
 
-## SingleLevelBomAsSpecified
-
-todo
-
 ## SingleLevelUsageAsBuilt
 
 todo
+
+| SingleLevelUsageAsBuilt   | 3.0.0
+submodels?
+
+
+
 
 
 ## SingleLevelUsageAsPlanned
 
 todo
+supported? not in compatibility matrix?
+submodels?

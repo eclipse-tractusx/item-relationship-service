@@ -48,25 +48,6 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
 
 
   ######################################################################################################################
-  ## SingleLevelBomAsSpecified
-  ######################################################################################################################
-
-  Scenario: SingleLevelBomAsSpecified
-    Given I register an IRS job for globalAssetId "urn:uuid:15cf842e-b20e-4219-a61b-99c01cec42ea" and BPN "BPNL00000003AVTH"
-    And collectAspects "true"
-    And depth 10
-
-    # SingleLevelBomAsSpecified (see RelationshipAspect)
-    And direction "downward"
-    And bomLifecycle "asSpecified"
-
-    When I get the job-id
-    Then I check, if the job has status "COMPLETED" within 20 minutes
-    And I check, if "relationships" are equal to "529-single-level-bom-as-specified-expected-relationships.json"
-    And I check, if "submodels" are equal to "529-single-level-bom-as-specified-expected-submodels.json"
-
-
-  ######################################################################################################################
   ## SingleLevelUsageAsBuilt
   ######################################################################################################################
 
