@@ -1,0 +1,86 @@
+# #############################################################################
+  # Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
+  #
+  # See the NOTICE file(s) distributed with this work for additional
+  # information regarding copyright ownership.
+  #
+  # This program and the accompanying materials are made available under the
+  # terms of the Apache License, Version 2.0 which is available at
+  # https://www.apache.org/licenses/LICENSE-2.0.
+  #
+  # Unless required by applicable law or agreed to in writing, software
+  # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  # License for the specific language governing permissions and limitations
+  # under the License.
+  #
+  # SPDX-License-Identifier: Apache-2.0
+  # #############################################################################
+---
+{{- $fullName := include "vault.fullname" . -}}
+{{- $vaultUrl := (index .Values.vault.server.ingress.hosts 0).host -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $fullName }}-vault-edc-configmap
+data:
+  irs-dev-daps-cert-consumer-key.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/irs-dev-daps-cert-consumer-key#content>"
+      }
+    }
+  irs-dev-daps-cert-consumer.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/irs-dev-daps-cert-consumer#content>"
+      }
+    }
+  irs-dev-daps-cert-provider.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/irs-dev-daps-cert-provider#content>"
+      }
+    }
+  irs-dev-daps-cert-provider-key.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/irs-dev-daps-cert-provider-key#content>"
+      }
+    }
+  dev-provider2-cert.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/dev-provider2-cert#content>"
+      }
+    }
+  dev-provider2-key.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/dev-provider2-key#content>"
+      }
+    }
+  dev-provider3-cert.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/dev-provider3-cert#content>"
+      }
+    }
+  dev-provider3-key.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/dev-provider3-key#content>"
+      }
+    }
+  irs-int-daps-cert.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/irs-int-daps-cert#content>"
+      }
+    }
+  irs-int-daps-key.json: |-
+    {
+      "data": {
+        "content": "<path:traceability-irs/data/irs-int-daps-key#content>"
+      }
+    }
