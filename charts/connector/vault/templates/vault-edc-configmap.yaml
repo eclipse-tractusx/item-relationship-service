@@ -17,70 +17,23 @@
   # SPDX-License-Identifier: Apache-2.0
   # #############################################################################
 ---
+{{ $cert := genSelfSignedCert "" (list) (list) 365 }}
 {{- $fullName := include "vault.fullname" . -}}
-{{- $vaultUrl := (index .Values.vault.server.ingress.hosts 0).host -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ $fullName }}-vault-edc-configmap
 data:
-  irs-dev-daps-cert-consumer-key.json: |-
+  cert.json: |-
     {
       "data": {
-        "content": "{{ "<path:traceability-irs/data/irs-dev-daps-cert-consumer-key#content>" | replace "\n" "\\n" }}"
+        "content": {{ $cert.Cert | toString | quote }}
       }
     }
-  irs-dev-daps-cert-consumer.json: |-
+
+  key.json: |-
     {
       "data": {
-        "content": "{{ "<path:traceability-irs/data/irs-dev-daps-cert-consumer#content>" | replace "\n" "\\n" }}"
-      }
-    }
-  irs-dev-daps-cert-provider.json: |-
-    {
-      "data": {
-        "content": "{{ "<path:traceability-irs/data/irs-dev-daps-cert-provider#content>" | replace "\n" "\\n" }}"
-      }
-    }
-  irs-dev-daps-cert-provider-key.json: |-
-    {
-      "data": {
-        "content": "{{ "<path:traceability-irs/data/irs-dev-daps-cert-provider-key#content>" | replace "\n" "\\n" }}"
-      }
-    }
-  dev-provider2-cert.json: |-
-    {
-      "data": {
-        "content": "{{ "<path:traceability-irs/data/dev-provider2-cert#content>" | replace "\n" "\\n" }}"
-      }
-    }
-  dev-provider2-key.json: |-
-    {
-      "data": {
-        "content": "{{ "<path:traceability-irs/data/dev-provider2-key#content>" | replace "\n" "\\n" }}"
-      }
-    }
-  dev-provider3-cert.json: |-
-    {
-      "data": {
-        "content": "{{ "<path:traceability-irs/data/dev-provider3-cert#content>" | replace "\n" "\\n" }}"
-      }
-    }
-  dev-provider3-key.json: |-
-    {
-      "data": {
-        "content": "{{ "<path:traceability-irs/data/dev-provider3-key#content>" | replace "\n" "\\n" }}"
-      }
-    }
-  irs-int-daps-cert.json: |-
-    {
-      "data": {
-        "content": "{{ "<path:traceability-irs/data/irs-int-daps-cert#content>" | replace "\n" "\\n" }}"
-      }
-    }
-  irs-int-daps-key.json: |-
-    {
-      "data": {
-        "content": "{{ "<path:traceability-irs/data/irs-int-daps-key#content>" | replace "\n" "\\n" }}"
+        "content": {{ $cert.Key | toString | quote }}
       }
     }

@@ -57,34 +57,34 @@ spec:
               sleep 10
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/irs-dev-daps-cert-consumer-key.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-dev-daps-cert-consumer-key"
+               --post-file=/opt/config/key.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-dev-daps-cert-consumer-key"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/irs-dev-daps-cert-consumer.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-dev-daps-cert-consumer"
+               --post-file=/opt/config/cert.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-dev-daps-cert-consumer"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/irs-dev-daps-cert-provider.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-dev-daps-cert-provider"
+               --post-file=/opt/config/cert.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-dev-daps-cert-provider"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/irs-dev-daps-cert-provider-key.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-dev-daps-cert-provider-key"
+               --post-file=/opt/config/key.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-dev-daps-cert-provider-key"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/dev-provider2-cert.json "{{ $vaultUrl }}/v1/traceability-irs/data/dev-provider2-cert"
+               --post-file=/opt/config/cert.json "{{ $vaultUrl }}/v1/traceability-irs/data/dev-provider2-cert"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/dev-provider2-key.json "{{ $vaultUrl }}/v1/traceability-irs/data/dev-provider2-key"
+               --post-file=/opt/config/key.json "{{ $vaultUrl }}/v1/traceability-irs/data/dev-provider2-key"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/dev-provider3-cert.json "{{ $vaultUrl }}/v1/traceability-irs/data/dev-provider3-cert"
+               --post-file=/opt/config/cert.json "{{ $vaultUrl }}/v1/traceability-irs/data/dev-provider3-cert"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/dev-provider3-key.json "{{ $vaultUrl }}/v1/traceability-irs/data/dev-provider3-key"
+               --post-file=/opt/config/key.json "{{ $vaultUrl }}/v1/traceability-irs/data/dev-provider3-key"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/irs-int-daps-cert.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-int-daps-cert"
+               --post-file=/opt/config/cert.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-int-daps-cert"
 
               wget --header 'Content-Type: application/json' --header 'X-Vault-Token: {{ $vaultToken }}' \
-               --post-file=/opt/config/irs-int-daps-key.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-int-daps-key"
+               --post-file=/opt/config/key.json "{{ $vaultUrl }}/v1/traceability-irs/data/irs-int-daps-key"
 
           volumeMounts:
             - name: config-volume
