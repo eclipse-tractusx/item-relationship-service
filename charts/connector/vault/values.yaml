@@ -4,26 +4,26 @@ vault:
   server:
     authDelegator:
       enabled: false
-    postStart:
-      - /bin/sh
-      - -c
-      - |-
-        {
-        sleep 5
-
-        /bin/vault kv put traceability-irs/test-edc-encryption-key content=<path:traceability-irs/data/test-edc-encryption-key#content>
-        /bin/vault kv put traceability-irs/dev-provider1-miw-secret content=<path:traceability-irs/data/dev-provider1-miw-secret#content>
-        /bin/vault kv put traceability-irs/dev-provider2-miw-secret content=<path:traceability-irs/data/dev-provider2-miw-secret#content>
-        /bin/vault kv put traceability-irs/dev-provider3-miw-secret content=<path:traceability-irs/data/dev-provider3-miw-secret#content>
-        /bin/vault kv put traceability-irs/dil-consumer-miw-secret content=<path:traceability-irs/data/dil-consumer-miw-secret#content>
-        /bin/vault kv put traceability-irs/edc-test-miw-keycloak-secret content=<path:traceability-irs/data/edc-test-miw-keycloak-secret#content>
-        /bin/vault kv put traceability-irs/miw-dev-keycloak-secret content=<path:traceability-irs/data/miw-dev-keycloak-secret#content>
-        /bin/vault kv put traceability-irs/miw-ess-keycloak-secret content=<path:traceability-irs/data/miw-ess-keycloak-secret#content>
-        /bin/vault kv put traceability-irs/miw-ess-provider-keycloak-secret content=<path:traceability-irs/data/miw-ess-provider-keycloak-secret#content>
-        /bin/vault kv put traceability-irs/miw-int-keycloak-secret content=<path:traceability-irs/data/miw-int-keycloak-secret#content>
-        /bin/vault kv put traceability-irs/miw-pen-keycloak-secret content=<path:traceability-irs/data/miw-pen-keycloak-secret#content>
-        /bin/vault kv put traceability-irs/dim-secret-dev content=<path:traceability-irs/data/dim-secret-dev#content>
-        }
+#    postStart:
+#      - /bin/sh
+#      - -c
+#      - |-
+#        {
+#        sleep 5
+#
+#        /bin/vault kv put traceability-irs/test-edc-encryption-key content=<path:traceability-irs/data/test-edc-encryption-key#content>
+#        /bin/vault kv put traceability-irs/dev-provider1-miw-secret content=<path:traceability-irs/data/dev-provider1-miw-secret#content>
+#        /bin/vault kv put traceability-irs/dev-provider2-miw-secret content=<path:traceability-irs/data/dev-provider2-miw-secret#content>
+#        /bin/vault kv put traceability-irs/dev-provider3-miw-secret content=<path:traceability-irs/data/dev-provider3-miw-secret#content>
+#        /bin/vault kv put traceability-irs/dil-consumer-miw-secret content=<path:traceability-irs/data/dil-consumer-miw-secret#content>
+#        /bin/vault kv put traceability-irs/edc-test-miw-keycloak-secret content=<path:traceability-irs/data/edc-test-miw-keycloak-secret#content>
+#        /bin/vault kv put traceability-irs/miw-dev-keycloak-secret content=<path:traceability-irs/data/miw-dev-keycloak-secret#content>
+#        /bin/vault kv put traceability-irs/miw-ess-keycloak-secret content=<path:traceability-irs/data/miw-ess-keycloak-secret#content>
+#        /bin/vault kv put traceability-irs/miw-ess-provider-keycloak-secret content=<path:traceability-irs/data/miw-ess-provider-keycloak-secret#content>
+#        /bin/vault kv put traceability-irs/miw-int-keycloak-secret content=<path:traceability-irs/data/miw-int-keycloak-secret#content>
+#        /bin/vault kv put traceability-irs/miw-pen-keycloak-secret content=<path:traceability-irs/data/miw-pen-keycloak-secret#content>
+#        /bin/vault kv put traceability-irs/dim-secret-dev content=<path:traceability-irs/data/dim-secret-dev#content>
+#        }
 
     dev:
       enabled: true
