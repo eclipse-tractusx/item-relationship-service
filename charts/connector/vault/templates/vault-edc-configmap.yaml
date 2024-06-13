@@ -27,60 +27,60 @@ data:
   irs-dev-daps-cert-consumer-key.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/irs-dev-daps-cert-consumer-key#content>"
+        "content": "{{ "<path:traceability-irs/data/irs-dev-daps-cert-consumer-key#content>" | replace "\n" "\\n" }}"
       }
     }
   irs-dev-daps-cert-consumer.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/irs-dev-daps-cert-consumer#content>"
+        "content": "{{ "<path:traceability-irs/data/irs-dev-daps-cert-consumer#content>" | replace "\n" "\\n" }}"
       }
     }
   irs-dev-daps-cert-provider.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/irs-dev-daps-cert-provider#content>"
+        "content": "{{ "<path:traceability-irs/data/irs-dev-daps-cert-provider#content>" | replace "\n" "\\n" }}"
       }
     }
   irs-dev-daps-cert-provider-key.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/irs-dev-daps-cert-provider-key#content>"
+        "content": "{{ "<path:traceability-irs/data/irs-dev-daps-cert-provider-key#content>" | replace "\n" "\\n" }}"
       }
     }
   dev-provider2-cert.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/dev-provider2-cert#content>"
+        "content": "{{ "<path:traceability-irs/data/dev-provider2-cert#content>" | replace "\n" "\\n" }}"
       }
     }
   dev-provider2-key.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/dev-provider2-key#content>"
+        "content": "{{ "<path:traceability-irs/data/dev-provider2-key#content>" | replace "\n" "\\n" }}"
       }
     }
   dev-provider3-cert.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/dev-provider3-cert#content>"
+        "content": "{{ "<path:traceability-irs/data/dev-provider3-cert#content>" | replace "\n" "\\n" }}"
       }
     }
   dev-provider3-key.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/dev-provider3-key#content>"
+        "content": "{{ "<path:traceability-irs/data/dev-provider3-key#content>" | replace "\n" "\\n" }}"
       }
     }
   irs-int-daps-cert.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/irs-int-daps-cert#content>"
+        "content": "{{ "<path:traceability-irs/data/irs-int-daps-cert#content>" | replace "\n" "\\n" }}"
       }
     }
   irs-int-daps-key.json: |-
     {
       "data": {
-        "content": "<path:traceability-irs/data/irs-int-daps-key#content>"
+        "content": "{{ "<path:traceability-irs/data/irs-int-daps-key#content>" | replace "\n" "\\n" }}"
       }
     }
