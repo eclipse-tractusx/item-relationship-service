@@ -33,11 +33,6 @@ on:
         description: BPN to use for the asBuilt global-asset-id.
         default: 'BPNL00000003AYRE'
         required: true
-      execution-ticket:
-        type: string
-        description: JIRA execution ticket to safe results in.
-        default: 'TRI-1531'
-        required: true
 
 jobs:
   test:
