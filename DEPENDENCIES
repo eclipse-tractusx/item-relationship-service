@@ -23,7 +23,7 @@ maven/mavencentral/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.15
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jakarta-jsonp/2.15.4, Apache-2.0, approved, #9179
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jakarta-jsonp/2.16.2, Apache-2.0, approved, #11854
 maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/2.15.4, Apache-2.0, approved, #8808
-maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.15.4, Apache-2.0, approved, #7930
+maven/mavencentral/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/2.15.4, Apache-2.0, approved, #15189
 maven/mavencentral/com.fasterxml.jackson.module/jackson-module-parameter-names/2.15.4, Apache-2.0, approved, #8803
 maven/mavencentral/com.fasterxml/classmate/1.5.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/com.github.ben-manes.caffeine/caffeine/3.1.8, Apache-2.0, approved, clearlydefined
@@ -70,7 +70,7 @@ maven/mavencentral/com.vdurmont/semver4j/3.1.0, MIT, approved, clearlydefined
 maven/mavencentral/commons-beanutils/commons-beanutils/1.9.4, Apache-2.0, approved, CQ12654
 maven/mavencentral/commons-codec/commons-codec/1.15, Apache-2.0 AND BSD-3-Clause AND LicenseRef-Public-Domain, approved, CQ22641
 maven/mavencentral/commons-codec/commons-codec/1.16.1, Apache-2.0 AND (Apache-2.0 AND BSD-3-Clause), approved, #9157
-maven/mavencentral/commons-collections/commons-collections/3.2.2, Apache-2.0, approved, CQ10385
+maven/mavencentral/commons-collections/commons-collections/3.2.2, Apache-2.0, approved, #15185
 maven/mavencentral/commons-digester/commons-digester/2.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/commons-io/commons-io/2.15.1, Apache-2.0, approved, #11244
 maven/mavencentral/commons-io/commons-io/2.16.1, Apache-2.0, approved, #14190
@@ -90,7 +90,7 @@ maven/mavencentral/io.cucumber/cucumber-gherkin/7.18.0, MIT, approved, clearlyde
 maven/mavencentral/io.cucumber/cucumber-java/7.18.0, MIT, approved, clearlydefined
 maven/mavencentral/io.cucumber/cucumber-junit-platform-engine/7.18.0, MIT, approved, clearlydefined
 maven/mavencentral/io.cucumber/cucumber-plugin/7.18.0, MIT, approved, clearlydefined
-maven/mavencentral/io.cucumber/datatable/7.18.0, None, restricted, #15145
+maven/mavencentral/io.cucumber/datatable/7.18.0, Apache-2.0, approved, #15145
 maven/mavencentral/io.cucumber/docstring/7.18.0, MIT, approved, clearlydefined
 maven/mavencentral/io.cucumber/gherkin/28.0.0, MIT, approved, #14276
 maven/mavencentral/io.cucumber/html-formatter/21.3.1, Apache-2.0 AND MIT, approved, #14275
