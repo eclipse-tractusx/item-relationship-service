@@ -70,7 +70,7 @@ maven/mavencentral/com.vdurmont/semver4j/3.1.0, MIT, approved, clearlydefined
 maven/mavencentral/commons-beanutils/commons-beanutils/1.9.4, Apache-2.0, approved, CQ12654
 maven/mavencentral/commons-codec/commons-codec/1.15, Apache-2.0 AND BSD-3-Clause AND LicenseRef-Public-Domain, approved, CQ22641
 maven/mavencentral/commons-codec/commons-codec/1.16.1, Apache-2.0 AND (Apache-2.0 AND BSD-3-Clause), approved, #9157
-maven/mavencentral/commons-collections/commons-collections/3.2.2, Apache-2.0, approved, CQ10385
+maven/mavencentral/commons-collections/commons-collections/3.2.2, Apache-2.0, approved, #15185
 maven/mavencentral/commons-digester/commons-digester/2.1, Apache-2.0, approved, clearlydefined
 maven/mavencentral/commons-io/commons-io/2.15.1, Apache-2.0, approved, #11244
 maven/mavencentral/commons-io/commons-io/2.16.1, Apache-2.0, approved, #14190
