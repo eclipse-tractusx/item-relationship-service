@@ -23,14 +23,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.micrometer.core.instrument.Tag;
-import org.springframework.boot.actuate.metrics.web.client.RestTemplateExchangeTags;
-import org.springframework.boot.actuate.metrics.web.client.RestTemplateExchangeTagsProvider;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpResponse;
+import io.micrometer.common.KeyValue;
+import io.micrometer.common.KeyValues;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.http.client.observation.ClientRequestObservationContext;
+import org.springframework.http.client.observation.DefaultClientRequestObservationConvention;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,26 +36,20 @@ import org.springframework.stereotype.Service;
  * to lots of metric entries for each different call.
  */
 @Service
-public class CustomUriTagProvider implements RestTemplateExchangeTagsProvider {
+public class CustomKeyValueProvider extends DefaultClientRequestObservationConvention {
     private static final String GLOBAL_ASSET_ID_REGEX = "urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
     @Override
-    public Iterable<Tag> getTags(final String urlTemplate, final HttpRequest request,
-            final ClientHttpResponse response) {
-        final List<Tag> tags = new ArrayList<>();
-        // build default tags
-        tags.add(RestTemplateExchangeTags.clientName(request));
-        tags.add(RestTemplateExchangeTags.outcome(response));
-        tags.add(RestTemplateExchangeTags.method(request));
-        tags.add(RestTemplateExchangeTags.status(response));
+    public @NotNull KeyValues getLowCardinalityKeyValues(@NotNull final ClientRequestObservationContext context) {
 
-        // only include path in the URI tag, not the query string
-        final String path = request.getURI()
-                             .getPath()
-                             .replaceAll(GLOBAL_ASSET_ID_REGEX,
-                                     "{uuid}");
-        tags.add(RestTemplateExchangeTags.uri(path));
+        final KeyValues keyValues = KeyValues.empty();
 
-        return tags;
+        keyValues.and(KeyValues.of(clientName(context), outcome(context), method(context), status(context)));
+
+        final KeyValue uri = uri(context);
+
+        keyValues.and(KeyValue.of(uri.getKey(), uri.getValue().replaceAll(GLOBAL_ASSET_ID_REGEX, "{uuid}")));
+
+        return keyValues;
     }
 }
