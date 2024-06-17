@@ -60,6 +60,7 @@
             {
               "catenaXId": "urn:uuid:6e709d64-bdc7-49f4-a87d-4e1f7e2c3b7c",
               "businessPartner": "BPNL00000003CSAP",
+              "hasAlternatives": false,
               "validityPeriod": {
                 "validFrom": "2023-03-21T08:17:29.187+01:00",
                 "validTo": "2024-07-01T16:10:00.000+01:00"
@@ -76,7 +77,7 @@
       ],
       "urn:samm:io.catenax.serial_part:1.0.1#SerialPart": [
         {
-          "catenaXId": "urn:uuid:25bba830-bcd8-4123-be72-e5507b2ae827",
+          "catenaXId": "urn:uuid:bec0a457-4d6b-4c1c-88f7-125d04f04d68",
           "localIdentifiers": [
             {
               "value": "SN12345678",
@@ -109,7 +110,7 @@
       ],
       "urn:samm:io.catenax.serial_part:2.0.0#SerialPart": [
         {
-          "catenaXId": "urn:uuid:1c151801-0d9d-4fc6-af91-0ddcfe8d86e3",
+          "catenaXId": "urn:uuid:589d7f27-d200-4009-b24c-27b0f4b81528",
           "localIdentifiers": [
             {
               "value": "SN23456789",
@@ -137,7 +138,7 @@
       ],
       "urn:samm:io.catenax.serial_part:3.0.0#SerialPart": [
         {
-          "catenaXId": "urn:uuid:5bd8e513-b69d-4b08-a387-24d787ac5545",
+          "catenaXId": "urn:uuid:589d7f27-d200-4009-b24c-27b0f4b81528",
           "localIdentifiers": [
             {
               "value": "SN56789012",
@@ -145,7 +146,7 @@
             }
           ],
           "manufacturingInformation": {
-            "date": "2024-05-05T07:08:09",
+            "date": "2024-05-05T07:08:09Z",
             "country": "HUR",
             "sites": [
               {
@@ -193,7 +194,7 @@
       ],
       "urn:samm:io.catenax.serial_part:2.0.0#SerialPart": [
         {
-          "catenaXId": "urn:uuid:162cb1f1-c619-47db-ab7f-44a111a762fc",
+          "catenaXId": "urn:uuid:6e709d64-bdc7-49f4-a87d-4e1f7e2c3b7c",
           "localIdentifiers": [
             {
               "value": "SN34567890",
@@ -231,7 +232,7 @@
       ],
       "urn:samm:io.catenax.serial_part:2.0.0#SerialPart": [
         {
-          "catenaXId": "urn:uuid:bc8b6912-4be3-4b4c-a28a-919ba405a5c2",
+          "catenaXId": "urn:uuid:d23f278b-2d8b-4f11-af76-2a9a7bb91cfc",
           "localIdentifiers": [
             {
               "value": "SN45678901",
