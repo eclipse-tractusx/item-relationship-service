@@ -42,13 +42,15 @@ public class CustomKeyValueProvider extends DefaultClientRequestObservationConve
     @Override
     public @NotNull KeyValues getLowCardinalityKeyValues(@NotNull final ClientRequestObservationContext context) {
 
-        final KeyValues keyValues = KeyValues.empty();
+        KeyValues keyValues = KeyValues.empty();
 
-        keyValues.and(KeyValues.of(clientName(context), outcome(context), method(context), status(context)));
+        keyValues = keyValues.and(
+                KeyValues.of(clientName(context), outcome(context), method(context), status(context)));
 
         final KeyValue uri = uri(context);
 
-        keyValues.and(KeyValue.of(uri.getKey(), uri.getValue().replaceAll(GLOBAL_ASSET_ID_REGEX, "{uuid}")));
+        keyValues = keyValues.and(
+                KeyValue.of(uri.getKey(), uri.getValue().replaceAll(GLOBAL_ASSET_ID_REGEX, "{uuid}")));
 
         return keyValues;
     }
