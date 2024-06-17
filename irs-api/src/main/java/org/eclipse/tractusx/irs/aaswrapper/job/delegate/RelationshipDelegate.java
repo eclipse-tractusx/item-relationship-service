@@ -115,14 +115,8 @@ public class RelationshipDelegate extends AbstractDelegate {
             aasTransferProcess.addIdsToProcess(idsToProcess);
             itemContainerBuilder.relationships(relationships);
             itemContainerBuilder.bpns(getBpnsFrom(relationships));
-        } catch (final UsagePolicyPermissionException e) {
-            log.info("Encountered usage policy permission exception: {}. Creating Tombstone.", e.getMessage());
-            itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
-                            ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
-                            jsonUtil.asMap(e.getPolicy())));
-        } catch (final UsagePolicyExpiredException e) {
-            log.info("Encountered usage policy expired exception: {}. Creating Tombstone.", e.getMessage());
+        } catch (final UsagePolicyPermissionException | UsagePolicyExpiredException e) {
+            log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
             itemContainerBuilder.tombstone(
                     Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
                             ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
