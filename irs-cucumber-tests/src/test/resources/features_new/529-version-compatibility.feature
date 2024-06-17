@@ -1,5 +1,9 @@
 Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
 
+  # Notes:
+  # - For possible values of "direction" and "bomLifecycle" see RealtionshipAspect.
+
+
   Background:
     Given the IRS URL "https://irs.dev.demo.catena-x.net"
     And the admin user api key
@@ -15,7 +19,6 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
     And collectAspects "true"
     And depth 10
 
-    # SingleLevelBomAsBuilt (see RelationshipAspect)
     And direction "downward"
     And bomLifecycle "asBuilt"
 
