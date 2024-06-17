@@ -41,6 +41,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyExpiredException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
@@ -143,7 +144,12 @@ public class SubmodelDelegate extends AbstractDelegate {
                         ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
             } catch (final UsagePolicyPermissionException e) {
-                log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
+                log.info("Encountered usage policy permission exception: {}. Creating Tombstone.", e.getMessage());
+                itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
+                        ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
+                        jsonUtil.asMap(e.getPolicy())));
+            } catch (final UsagePolicyExpiredException e) {
+                log.info("Encountered usage policy expired exception: {}. Creating Tombstone.", e.getMessage());
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
                         ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
                         jsonUtil.asMap(e.getPolicy())));
