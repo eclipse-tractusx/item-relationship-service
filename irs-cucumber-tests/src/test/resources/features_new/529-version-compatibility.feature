@@ -20,10 +20,9 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
     And bomLifecycle "asBuilt"
 
     And aspects :
-      | urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt |
-      | urn:samm:io.catenax.serial_part:1.0.1#SerialPart                          |
-      | urn:samm:io.catenax.serial_part:2.0.0#SerialPart                          |
-      | urn:samm:io.catenax.serial_part:3.0.0#SerialPart                          |
+      | urn:samm:io.catenax.serial_part:1.0.1#SerialPart |
+      | urn:samm:io.catenax.serial_part:2.0.0#SerialPart |
+      | urn:samm:io.catenax.serial_part:3.0.0#SerialPart |
 
     When I get the job-id
     Then I check, if the job has status "COMPLETED" within 20 minutes

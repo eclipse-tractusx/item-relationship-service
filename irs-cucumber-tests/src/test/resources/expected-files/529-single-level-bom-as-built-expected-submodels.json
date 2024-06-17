@@ -1,11 +1,11 @@
 {
   "submodels": [
     {
-      "identification": "urn:uuid:54d3e5a3-4f80-4386-ae43-3a5080544f29",
+      "identification": "urn:uuid:3cbca689-83ed-40d9-81c1-3d060d54fd80",
       "aspectType": "urn:samm:io.catenax.serial_part:1.0.1#SerialPart",
       "contractAgreementId": null,
       "payload": {
-        "catenaXId": "urn:uuid:25bba830-bcd8-4123-be72-e5507b2ae827",
+        "catenaXId": "urn:uuid:bec0a457-4d6b-4c1c-88f7-125d04f04d68",
         "localIdentifiers": [
           {
             "value": "SN12345678",
@@ -26,11 +26,11 @@
       }
     },
     {
-      "identification": "urn:uuid:4e94baab-6de5-4fe4-8dea-65030e5ef45e",
+      "identification": "urn:uuid:b7a19cfc-eed3-4f98-a440-352641cad328",
       "aspectType": "urn:samm:io.catenax.serial_part:2.0.0#SerialPart",
       "contractAgreementId": null,
       "payload": {
-        "catenaXId": "urn:uuid:162cb1f1-c619-47db-ab7f-44a111a762fc",
+        "catenaXId": "urn:uuid:6e709d64-bdc7-49f4-a87d-4e1f7e2c3b7c",
         "localIdentifiers": [
           {
             "value": "SN34567890",
@@ -57,11 +57,79 @@
       }
     },
     {
-      "identification": "urn:uuid:877f0599-a54a-4131-98e5-1334a15efb68",
+      "identification": "urn:uuid:11d9d776-1239-45f8-9f28-e8e841a78b92",
       "aspectType": "urn:samm:io.catenax.serial_part:2.0.0#SerialPart",
       "contractAgreementId": null,
       "payload": {
-        "catenaXId": "urn:uuid:bc8b6912-4be3-4b4c-a28a-919ba405a5c2",
+        "catenaXId": "urn:uuid:589d7f27-d200-4009-b24c-27b0f4b81528",
+        "localIdentifiers": [
+          {
+            "value": "SN23456789",
+            "key": "partInstanceID"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2024-03-04T11:12:13",
+          "country": "HUR"
+        },
+        "sites": [
+          {
+            "catenaXsiteId": "BPNS3456789012ZZ",
+            "function": "production"
+          }
+        ],
+        "partTypeInformation": {
+          "manufacturerPartId": "567-8.901-2345-B",
+          "customerPartId": "PRT-78901",
+          "classification": "product",
+          "nameAtManufacturer": "Test part 2",
+          "nameAtCustomer": "Test part 2 customer"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:d68ebb1b-9ab5-405f-956d-a5b514484c99",
+      "aspectType": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
+      "contractAgreementId": null,
+      "payload": {
+        "catenaXId": "urn:uuid:589d7f27-d200-4009-b24c-27b0f4b81528",
+        "localIdentifiers": [
+          {
+            "value": "SN56789012",
+            "key": "partInstanceId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2024-05-05T07:08:09Z",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS5678901234ZZ",
+              "function": "production"
+            }
+          ]
+        },
+        "partTypeInformation": {
+          "partClassification": [
+            {
+              "classificationStandard": "IEC",
+              "classificationID": "72451- 3:2012 ",
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components."
+            }
+          ],
+          "manufacturerPartId": "890-1.234-5678-E",
+          "customerPartId": "PRT-89012",
+          "nameAtManufacturer": "Test part 3",
+          "nameAtCustomer": "Test part 3 customer"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:1c685bc9-efdc-4f74-b5f1-c9d2af385b55",
+      "aspectType": "urn:samm:io.catenax.serial_part:2.0.0#SerialPart",
+      "contractAgreementId": null,
+      "payload": {
+        "catenaXId": "urn:uuid:d23f278b-2d8b-4f11-af76-2a9a7bb91cfc",
         "localIdentifiers": [
           {
             "value": "SN45678901",
