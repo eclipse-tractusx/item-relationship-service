@@ -1,13 +1,12 @@
 Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
 
   # Notes:
-  # - For possible values of "direction" and "bomLifecycle" see RealtionshipAspect.
+  # - For possible values of "direction" and "bomLifecycle" see RelationshipAspect.
 
 
   Background:
     Given the IRS URL "https://irs.dev.demo.catena-x.net"
     And the admin user api key
-
 
 
   ######################################################################################################################
@@ -38,11 +37,10 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
   ######################################################################################################################
 
   Scenario: SingleLevelBomAsPlanned
-    Given I register an IRS job for globalAssetId "urn:uuid:db884234-9266-4c4a-a5f7-de87d95d0cb5" and BPN "BPNL00000003AYRE"
+    Given I register an IRS job for globalAssetId "urn:uuid:0bc18367-69c3-428f-925d-6f8a461edefd" and BPN "BPNL00000007QG00"
     And collectAspects "true"
     And depth 10
 
-    # SingleLevelBomAsPlanned (see RelationshipAspect)
     And direction "downward"
     And bomLifecycle "asPlanned"
 
@@ -53,7 +51,6 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
     Then I check, if the job has status "COMPLETED" within 20 minutes
     And I check, if "relationships" are equal to "529-single-level-bom-as-planned-expected-relationships.json"
     And I check, if "submodels" are equal to "529-single-level-bom-as-planned-expected-submodels.json"
-
 
 
   ######################################################################################################################
@@ -73,7 +70,6 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
     Then I check, if the job has status "COMPLETED" within 20 minutes
     And I check, if "relationships" are equal to "529-single-level-usage-as-built-expected-relationships.json"
     And I check, if "submodels" are equal to "529-single-level-usage-as-built-expected-submodels.json"
-
 
 
   ######################################################################################################################

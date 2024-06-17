@@ -40,15 +40,15 @@
   },
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
     {
-      "catenaXId": "urn:uuid:db884234-9266-4c4a-a5f7-de87d95d0cb5",
-      "bpnl": "BPNL00E2EASPCPT1",
+      "catenaXId": "urn:uuid:0bc18367-69c3-428f-925d-6f8a461edefd",
+      "bpnl": "BPNL00000007QG00",
       "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned": [
         {
-          "catenaXId": "urn:uuid:db884234-9266-4c4a-a5f7-de87d95d0cb5",
+          "catenaXId": "urn:uuid:0bc18367-69c3-428f-925d-6f8a461edefd",
           "childItems": [
             {
-              "catenaXId": "urn:uuid:cb5fdf70-9ddd-42cd-b8c1-0e09bc561601",
-              "businessPartner": "BPNL00E2EASPCP11",
+              "catenaXId": "urn:uuid:db60f953-8894-4568-ab74-746ce00e78a1",
+              "businessPartner": "BPNL00000007QG00",
               "validityPeriod": {
                 "validFrom": "2023-03-21T08:17:29.187+01:00",
                 "validTo": "2024-07-01T16:10:00.000+01:00"
@@ -61,8 +61,8 @@
               "lastModifiedOn": "2022-02-03T14:48:54.709Z"
             },
             {
-              "catenaXId": "urn:uuid:8acc354c-5ca3-4cd7-83bf-a28681e99f28",
-              "businessPartner": "BPNL00E2EASPCP12",
+              "catenaXId": "urn:uuid:4e8dd2c1-0d21-4794-af92-03a12f85a2eb",
+              "businessPartner": "BPNL00000007QG00",
               "validityPeriod": {
                 "validFrom": "2023-03-21T08:17:29.187+01:00",
                 "validTo": "2024-07-01T16:10:00.000+01:00"
@@ -79,18 +79,18 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:cb5fdf70-9ddd-42cd-b8c1-0e09bc561601",
-      "bpnl": "BPNL00E2EASPCP11",
+      "catenaXId": "urn:uuid:db60f953-8894-4568-ab74-746ce00e78a1",
+      "bpnl": "BPNL00000007QG00",
       "urn:samm:io.catenax.single_level_bom_as_planned:3.1.0#SingleLevelBomAsPlanned": [
         {
-          "catenaXId": "urn:uuid:cb5fdf70-9ddd-42cd-b8c1-0e09bc561601",
+          "catenaXId": "urn:uuid:db60f953-8894-4568-ab74-746ce00e78a1",
           "childItems": [],
           "futureAddedField": "test"
         }
       ],
       "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned": [
         {
-          "catenaXId": "urn:uuid:4bf0acbc-fd1c-46f3-a4df-6da98be2ee8d",
+          "catenaXId": "urn:uuid:db60f953-8894-4568-ab74-746ce00e78a1",
           "partTypeInformation": {
             "classification": "product",
             "manufacturerPartId": "123-4.567-8901-A",
@@ -99,7 +99,7 @@
           "partSitesInformationAsPlanned": [
             {
               "functionValidUntil": "2023-12-11T06:14:55.183Z",
-              "catenaXsiteId": "BPNS1234567890ZZ",
+              "catenaXsiteId": "BPNL00000007QG00",
               "function": "production",
               "functionValidFrom": "2023-12-11T06:14:55.181Z"
             }
@@ -108,14 +108,14 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:8acc354c-5ca3-4cd7-83bf-a28681e99f28",
-      "bpnl": "BPNL00E2EASPCP12",
+      "catenaXId": "urn:uuid:4e8dd2c1-0d21-4794-af92-03a12f85a2eb",
+      "bpnl": "BPNL00000007QG00",
       "urn:samm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
         {
-          "catenaXId": "urn:uuid:8acc354c-5ca3-4cd7-83bf-a28681e99f28",
+          "catenaXId": "urn:uuid:4e8dd2c1-0d21-4794-af92-03a12f85a2eb",
           "childItems" : [ {
-            "catenaXId" : "urn:uuid:3161de8c-923a-415a-9a6b-0b902e3153b9",
-            "businessPartner" : "BPNL00E2EASPC121",
+            "catenaXId" : "urn:uuid:7eb80b65-2e43-438c-8c2a-32b814d2cb88",
+            "businessPartner" : "BPNL00000007QG00",
             "validityPeriod" : {
               "validFrom" : "2023-03-21T08:17:29.187+01:00",
               "validTo" : "2024-07-01T16:10:00.000+01:00"
@@ -131,16 +131,16 @@
       ],
       "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned": [
         {
-          "catenaXId": "urn:uuid:1ddca474-2fd6-48c4-aa16-54a03fe40cd7",
+          "catenaXId": "urn:uuid:4e8dd2c1-0d21-4794-af92-03a12f85a2eb",
           "partTypeInformation": {
             "classification": "product",
             "manufacturerPartId": "345-6.789-0123-A",
-            "nameAtManufacturer": "Test part 3"
+            "nameAtManufacturer": "Test part 2"
           },
           "partSitesInformationAsPlanned": [
             {
               "functionValidUntil": "2023-12-11T06:14:55.183Z",
-              "catenaXsiteId": "BPNS1234567890ZZ",
+              "catenaXsiteId": "BPNL00000007QG00",
               "function": "production",
               "functionValidFrom": "2023-12-11T06:14:55.181Z"
             }
@@ -149,26 +149,26 @@
       ]
     },
     {
-      "catenaXId": "urn:uuid:3161de8c-923a-415a-9a6b-0b902e3153b9",
-      "bpnl": "BPNL00E2EASPC121",
+      "catenaXId": "urn:uuid:7eb80b65-2e43-438c-8c2a-32b814d2cb88",
+      "bpnl": "BPNL00000007QG00",
       "urn:samm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
         {
-          "catenaXId": "urn:uuid:3161de8c-923a-415a-9a6b-0b902e3153b9",
+          "catenaXId": "urn:uuid:7eb80b65-2e43-438c-8c2a-32b814d2cb88",
           "childItems" : [ ]
         }
       ],
       "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned": [
         {
-          "catenaXId": "urn:uuid:b091ce38-22dc-4f79-bb3b-7e1af648b176",
+          "catenaXId": "urn:uuid:7eb80b65-2e43-438c-8c2a-32b814d2cb88",
           "partTypeInformation": {
             "classification": "product",
             "manufacturerPartId": "234-5.678-9012-A",
-            "nameAtManufacturer": "Test part 2"
+            "nameAtManufacturer": "Test part 3"
           },
           "partSitesInformationAsPlanned": [
             {
               "functionValidUntil": "2023-12-11T06:14:55.183Z",
-              "catenaXsiteId": "BPNS1234567890ZZ",
+              "catenaXsiteId": "BPNL00000007QG00",
               "function": "production",
               "functionValidFrom": "2023-12-11T06:14:55.181Z"
             }
