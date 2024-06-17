@@ -26,7 +26,7 @@ import org.eclipse.edc.policy.model.Policy;
  * Usage Policy Expired Exception errors in the contract negotiation.
  */
 @Getter
-public class UsagePolicyExpiredException extends EdcClientException {
+public class UsagePolicyExpiredException extends EdcClientException implements PolicyException  {
 
     private final transient Policy policy;
     private final String businessPartnerNumber;

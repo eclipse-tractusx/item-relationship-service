@@ -30,7 +30,7 @@ import org.eclipse.edc.policy.model.Policy;
  * Usage Policy Permission Exception errors in the contract negotiation.
  */
 @Getter
-public class UsagePolicyPermissionException extends EdcClientException {
+public class UsagePolicyPermissionException extends EdcClientException implements PolicyException {
 
     private final transient Policy policy;
     private final String businessPartnerNumber;
