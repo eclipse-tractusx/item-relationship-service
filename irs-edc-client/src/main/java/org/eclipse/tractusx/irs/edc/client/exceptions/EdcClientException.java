@@ -43,11 +43,11 @@ public class EdcClientException extends Exception {
         super(msg);
     }
 
-    public String getBusinessPartnerNumber(){
+    public String getBusinessPartnerNumber() {
         throw new NotImplementedException();
     }
 
-    public Policy getPolicy(){
+    public Policy getPolicy() {
         throw new NotImplementedException();
     }
 }
