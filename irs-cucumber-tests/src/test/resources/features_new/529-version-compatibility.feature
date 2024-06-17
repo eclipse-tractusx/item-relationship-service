@@ -11,13 +11,19 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
   ######################################################################################################################
 
   Scenario: SingleLevelBomAsBuilt
-    Given I register an IRS job for globalAssetId "urn:uuid:15cf842e-b20e-4219-a61b-99c01cec42ea" and BPN "BPNL00000003AVTH"
+    Given I register an IRS job for globalAssetId "urn:uuid:bec0a457-4d6b-4c1c-88f7-125d04f04d68" and BPN "BPNL00000007QG00"
     And collectAspects "true"
     And depth 10
 
     # SingleLevelBomAsBuilt (see RelationshipAspect)
     And direction "downward"
     And bomLifecycle "asBuilt"
+
+    And aspects :
+      | urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt |
+      | urn:samm:io.catenax.serial_part:1.0.1#SerialPart                          |
+      | urn:samm:io.catenax.serial_part:2.0.0#SerialPart                          |
+      | urn:samm:io.catenax.serial_part:3.0.0#SerialPart                          |
 
     When I get the job-id
     Then I check, if the job has status "COMPLETED" within 20 minutes

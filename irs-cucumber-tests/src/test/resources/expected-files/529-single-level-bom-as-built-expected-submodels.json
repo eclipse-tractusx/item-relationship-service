@@ -1,5 +1,93 @@
 {
-    "_todo": "todo #529 execute test, check if result is ok, add submodels here",
-    "submodels": [
-    ]
+  "submodels": [
+    {
+      "identification": "urn:uuid:54d3e5a3-4f80-4386-ae43-3a5080544f29",
+      "aspectType": "urn:samm:io.catenax.serial_part:1.0.1#SerialPart",
+      "contractAgreementId": null,
+      "payload": {
+        "catenaXId": "urn:uuid:25bba830-bcd8-4123-be72-e5507b2ae827",
+        "localIdentifiers": [
+          {
+            "value": "SN12345678",
+            "key": "partInstanceID"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2024-02-04T14:48:54",
+          "country": "HUR"
+        },
+        "partTypeInformation": {
+          "manufacturerPartId": "456-7.890-1234-A",
+          "customerPartId": "PRT-12345",
+          "classification": "product",
+          "nameAtManufacturer": "Test part 1",
+          "nameAtCustomer": "Test part 1 customer"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:4e94baab-6de5-4fe4-8dea-65030e5ef45e",
+      "aspectType": "urn:samm:io.catenax.serial_part:2.0.0#SerialPart",
+      "contractAgreementId": null,
+      "payload": {
+        "catenaXId": "urn:uuid:162cb1f1-c619-47db-ab7f-44a111a762fc",
+        "localIdentifiers": [
+          {
+            "value": "SN34567890",
+            "key": "partInstanceID"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2024-05-04T03:02:01",
+          "country": "HUR"
+        },
+        "sites": [
+          {
+            "catenaXsiteId": "BPNS4567890123ZZ",
+            "function": "production"
+          }
+        ],
+        "partTypeInformation": {
+          "manufacturerPartId": "678-9.012-3456-C",
+          "customerPartId": "PRT-90123",
+          "classification": "product",
+          "nameAtManufacturer": "Test part 4",
+          "nameAtCustomer": "Test part 4 customer"
+        }
+      }
+    },
+    {
+      "identification": "urn:uuid:877f0599-a54a-4131-98e5-1334a15efb68",
+      "aspectType": "urn:samm:io.catenax.serial_part:2.0.0#SerialPart",
+      "contractAgreementId": null,
+      "payload": {
+        "catenaXId": "urn:uuid:bc8b6912-4be3-4b4c-a28a-919ba405a5c2",
+        "localIdentifiers": [
+          {
+            "value": "SN45678901",
+            "key": "partInstanceID"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2024-06-05T04:03:02",
+          "country": "HUR"
+        },
+        "sites": [
+          {
+            "catenaXsiteId": "BPNS5678901234ZZ",
+            "function": "production"
+          }
+        ],
+        "partTypeInformation": {
+          "manufacturerPartId": "789-0.123-4567-D",
+          "customerPartId": "PRT-01234",
+          "classification": "product",
+          "nameAtManufacturer": "Test part 5",
+          "nameAtCustomer": "Test part 5 customer"
+        }
+      }
+    }
+  ],
+  "bpns": [
+  ]
 }

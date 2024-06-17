@@ -14,23 +14,22 @@ Test data:
 
 
 Structure of test data:
-- SingleLevelBomAsBuilt 3.0.0, BPNL00E2EASPCPT1, urn:uuid:a0589022-a790-4560-aad1-5e8f7939fe92
-  - SerialPart 1.0.1, urn:uuid:6d759367-12fe-4f04-9a8c-5c9432135e41
-  - SingleLevelBomAsBuilt 3.1.0, BPNL00E2EASPCP11, urn:uuid:4b1b50f7-686d-4c3a-b81a-5f6fc6ae5c42
-    - futureAddedField
-    - SerialPart 2.0.0, urn:uuid:ff5d998c-aadb-4189-9cf0-9ab5c42c94fe
-    - SerialPart 3.0.0, urn:uuid:976dbbce-5a5f-4118-a2bd-5fbca2aeabb5
-  - SingleLevelBomAsBuilt 2.0.0, BPNL00E2EASPCP12, urn:uuid:62aa5c23-780c-4036-8416-97922e3f71a4
-    - SerialPart 2.0.0, urn:uuid:024f941b-594f-43ce-a42e-d17d1c302685
-    - SingleLevelBomAsBuilt 2.0.0, BPNL00E2EASPC121, urn:uuid:2507bfdd-22df-43c2-99ab-9c2cf9ac0251
-      - SerialPart 2.0.0, urn:uuid:34c790e9-afa3-475c-a41b-3a86a9969f61
+- OK: SingleLevelBomAsBuilt 3.0.0, BPNL00000007QG00, urn:uuid:bec0a457-4d6b-4c1c-88f7-125d04f04d68
+  - OK: SerialPart 1.0.1, urn:uuid:25bba830-bcd8-4123-be72-e5507b2ae827
+  - ??: SingleLevelBomAsBuilt 3.1.0, BPNL00000007RI31, urn:uuid:589d7f27-d200-4009-b24c-27b0f4b81528 --> Tombstone: Unable to find any of the requested shells. Why?
+    - ??: futureAddedField
+    - ??: SerialPart 2.0.0, urn:uuid:1c151801-0d9d-4fc6-af91-0ddcfe8d86e3
+    - ??: SerialPart 3.0.0, urn:uuid:5bd8e513-b69d-4b08-a387-24d787ac5545
+  - SingleLevelBomAsBuilt 2.0.0, BPNL00000003CSAP, urn:uuid:6e709d64-bdc7-49f4-a87d-4e1f7e2c3b7c
+    - OK: SerialPart 2.0.0, urn:uuid:162cb1f1-c619-47db-ab7f-44a111a762fc
+    - OK: SingleLevelBomAsBuilt 2.0.0, BPNL00000007RNYV, urn:uuid:d23f278b-2d8b-4f11-af76-2a9a7bb91cfc
+      - OK: SerialPart 2.0.0, urn:uuid:bc8b6912-4be3-4b4c-a28a-919ba405a5c2
 
 Test:
 
 - [Cucumber test - scenario "SingleLevelBomAsBuilt"](../../../irs-cucumber-tests/src/test/resources/features_new/529-version-compatibility.feature)
   - [529-single-level-bom-as-built-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-relationships.json)
   - [529-single-level-bom-as-built-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-submodels.json)
-
 
 
 ## SingleLevelBomAsPlanned
