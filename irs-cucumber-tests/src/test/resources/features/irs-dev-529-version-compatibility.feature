@@ -18,6 +18,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
+# Tests for Aspect Version Compatibility
 Feature: Integration Tests for Aspect Version Compatibility #529
 
   # Notes:
@@ -31,6 +32,7 @@ Feature: Integration Tests for Aspect Version Compatibility #529
     And the admin user api key
 
 
+  # Requires test data CX_Testdata_529_compatibility_SingleLevelBomAsBuilt.json
   @DEV @INTEGRATION_TEST
   @TRI-2047
   Scenario: SingleLevelBomAsBuilt Version Compatibility
@@ -52,6 +54,7 @@ Feature: Integration Tests for Aspect Version Compatibility #529
     And I check, if "submodels" are equal to "529-single-level-bom-as-built-expected-submodels.json"
 
 
+  # Requires test data CX_Testdata_529_compatibility_SingleLevelBomAsPlanned.json
   @DEV @INTEGRATION_TEST
   @TRI-2048
   Scenario: SingleLevelBomAsPlanned Version Compatibility
@@ -71,6 +74,7 @@ Feature: Integration Tests for Aspect Version Compatibility #529
     And I check, if "submodels" are equal to "529-single-level-bom-as-planned-expected-submodels.json"
 
 
+  # Requires test data CX_Testdata_529_compatibility_SingleLevelUsageAsBuilt.json
   @DEV @INTEGRATION_TEST
   @TRI-2049
   Scenario: SingleLevelUsageAsBuilt Version Compatibility
@@ -87,6 +91,7 @@ Feature: Integration Tests for Aspect Version Compatibility #529
     And I check, if "submodels" are equal to "529-single-level-usage-as-built-expected-submodels.json"
 
 
+  # Requires test data CX_Testdata_529_compatibility_SingleLevelUsageAsPlanned.json
   @DEV @INTEGRATION_TEST
   @TRI-2050
   Scenario: SingleLevelUsageAsPlanned Version Compatibility

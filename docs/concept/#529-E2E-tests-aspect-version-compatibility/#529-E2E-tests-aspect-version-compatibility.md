@@ -1,12 +1,11 @@
 
 # #529 E2E Tests for Aspect Version Compatibility
 
-- [The cucumber test](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
-  - checks for compatibility of [supported model versions](../../../COMPATIBILITY_MATRIX.md)
+Story: [[TESTING] Integration E2E Tests for backward compatibility (Happy + Unhappy Path) #529](https://github.com/eclipse-tractusx/item-relationship-service/issues/529)
 
 
 
-## SingleLevelBomAsBuilt
+## SingleLevelBomAsBuilt Version Compatibility
 
 
 Test data:
@@ -27,12 +26,12 @@ Structure of test data:
 
 Test:
 
-- [Cucumber test - scenario "SingleLevelBomAsBuilt"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
+- [Cucumber test - scenario "SingleLevelBomAsBuilt Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
   - [529-single-level-bom-as-built-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-relationships.json)
   - [529-single-level-bom-as-built-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-submodels.json)
 
 
-## SingleLevelBomAsPlanned
+## SingleLevelBomAsPlanned Version Compatibility
 
 Test data:
 - [CX_Testdata_529_compatibility_SingleLevelBomAsPlanned.json](../../../local/testing/testdata/CX_Testdata_529_compatibility_SingleLevelBomAsPlanned.json)
@@ -49,13 +48,10 @@ Structure of test data:
 
 
 Test:
-
-- [Cucumber test - scenario "SingleLevelBomAsPlanned"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
-  - [529-single-level-bom-as-planned-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-planned-expected-relationships.json)
-  - [529-single-level-bom-as-planned-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-planned-expected-submodels.json)
+- [Cucumber test - scenario "SingleLevelBomAsPlanned Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
 
 
-## SingleLevelUsageAsBuilt
+## SingleLevelUsageAsBuilt Version Compatibility
 
 Tests without submodel aspects because there are already tests for SerialPart in the SingleLevelBomAsBuilt tests.
 
@@ -72,13 +68,10 @@ Structure of test data:
 
 
 Test:
-
-- [Cucumber test - scenario "SingleLevelBomAsBuilt"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
-  - [529-single-level-usage-as-built-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-usage-as-built-expected-relationships.json)
-  - [529-single-level-usage-as-built-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-usage-as-built-expected-submodels.json)
+- [Cucumber test - scenario "SingleLevelBomAsBuilt Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
 
 
-## SingleLevelUsageAsPlanned
+## SingleLevelUsageAsPlanned Version Compatibility
 
 Tests without submodel aspects because there are already tests for PartAsPlanned in the SingleLevelBomAsPlanned tests.
 
@@ -94,10 +87,7 @@ Structure of test data:
 
 
 Test:
-
-- [Cucumber test - scenario "SingleLevelUsageAsPlanned"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
-  - [529-single-level-usage-as-planned-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-usage-as-planned-expected-relationships.json)
-  - [529-single-level-usage-as-planned-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-usage-as-planned-expected-submodels.json)
+- [Cucumber test - scenario "SingleLevelUsageAsPlanned Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
 
 
 
