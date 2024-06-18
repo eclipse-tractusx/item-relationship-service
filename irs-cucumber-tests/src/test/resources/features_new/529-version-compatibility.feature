@@ -78,7 +78,7 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
   ######################################################################################################################
 
   Scenario: SingleLevelUsageAsPlanned
-    Given I register an IRS job for globalAssetId "urn:uuid:15cf842e-b20e-4219-a61b-99c01cec42ea" and BPN "BPNL00000003AVTH"
+    Given I register an IRS job for globalAssetId "urn:uuid:7fe9ac70-23c4-449a-88c1-3832a1cc6da6" and BPN "BPNL00000007QG00"
     And collectAspects "true"
     And depth 10
 
