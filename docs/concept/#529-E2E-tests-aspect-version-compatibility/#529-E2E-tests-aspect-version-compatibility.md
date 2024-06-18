@@ -1,7 +1,7 @@
 
 # #529 E2E Tests for Aspect Version Compatibility
 
-- [The cucumber test](../../../irs-cucumber-tests/src/test/resources/features_new/529-version-compatibility.feature)
+- [The cucumber test](../../../irs-cucumber-tests/src/test/resources/features_new/irs-dev-529-version-compatibility.feature)
   - checks for compatibility of [supported model versions](../../../COMPATIBILITY_MATRIX.md)
 
 
@@ -27,7 +27,7 @@ Structure of test data:
 
 Test:
 
-- [Cucumber test - scenario "SingleLevelBomAsBuilt"](../../../irs-cucumber-tests/src/test/resources/features_new/529-version-compatibility.feature)
+- [Cucumber test - scenario "SingleLevelBomAsBuilt"](../../../irs-cucumber-tests/src/test/resources/features_new/irs-dev-529-version-compatibility.feature)
   - [529-single-level-bom-as-built-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-relationships.json)
   - [529-single-level-bom-as-built-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-submodels.json)
 
@@ -50,7 +50,7 @@ Structure of test data:
 
 Test:
 
-- [Cucumber test - scenario "SingleLevelBomAsPlanned"](../../../irs-cucumber-tests/src/test/resources/features_new/529-version-compatibility.feature)
+- [Cucumber test - scenario "SingleLevelBomAsPlanned"](../../../irs-cucumber-tests/src/test/resources/features_new/irs-dev-529-version-compatibility.feature)
   - [529-single-level-bom-as-planned-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-planned-expected-relationships.json)
   - [529-single-level-bom-as-planned-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-planned-expected-submodels.json)
 
@@ -73,7 +73,7 @@ Structure of test data:
 
 Test:
 
-- [Cucumber test - scenario "SingleLevelBomAsBuilt"](../../../irs-cucumber-tests/src/test/resources/features_new/529-version-compatibility.feature)
+- [Cucumber test - scenario "SingleLevelBomAsBuilt"](../../../irs-cucumber-tests/src/test/resources/features_new/irs-dev-529-version-compatibility.feature)
   - [529-single-level-usage-as-built-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-usage-as-built-expected-relationships.json)
   - [529-single-level-usage-as-built-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-usage-as-built-expected-submodels.json)
 
@@ -95,7 +95,7 @@ Structure of test data:
 
 Test:
 
-- [Cucumber test - scenario "SingleLevelUsageAsPlanned"](../../../irs-cucumber-tests/src/test/resources/features_new/529-version-compatibility.feature)
+- [Cucumber test - scenario "SingleLevelUsageAsPlanned"](../../../irs-cucumber-tests/src/test/resources/features_new/irs-dev-529-version-compatibility.feature)
   - [529-single-level-usage-as-planned-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-usage-as-planned-expected-relationships.json)
   - [529-single-level-usage-as-planned-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-usage-as-planned-expected-submodels.json)
 
