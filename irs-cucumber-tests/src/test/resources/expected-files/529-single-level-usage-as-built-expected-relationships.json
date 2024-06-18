@@ -1,5 +1,42 @@
 {
-  "_todo": "todo #529 execute test, check if result is ok, add relationships here",
   "relationships": [
+    {
+      "catenaXId": "urn:uuid:13d35275-3b9b-4f0c-bc5e-00f656bb7cbc",
+      "linkedItem": {
+        "quantity": {
+          "quantityNumber": 12.0,
+          "measurementUnit": {
+            "datatypeURI": null,
+            "lexicalValue": "unit:piece"
+          }
+        },
+        "lifecycleContext": "asBuilt",
+        "assembledOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+        "childCatenaXId": "urn:uuid:2ea93a69-7ecb-4747-94f4-960c2535dc7b",
+        "hasAlternatives": false
+      },
+      "aspectType": "SingleLevelUsageAsBuilt",
+      "bpn": "BPNL00000007QG00"
+    },
+    {
+      "catenaXId": "urn:uuid:677582a5-bdca-45e1-a671-7a98ff5ddcb7",
+      "linkedItem": {
+        "quantity": {
+          "quantityNumber": 11.0,
+          "measurementUnit": {
+            "datatypeURI": null,
+            "lexicalValue": "unit:piece"
+          }
+        },
+        "lifecycleContext": "asBuilt",
+        "assembledOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z",
+        "childCatenaXId": "urn:uuid:13d35275-3b9b-4f0c-bc5e-00f656bb7cbc",
+        "hasAlternatives": false
+      },
+      "aspectType": "SingleLevelUsageAsBuilt",
+      "bpn": "BPNL00000007QG00"
+    }
   ]
 }

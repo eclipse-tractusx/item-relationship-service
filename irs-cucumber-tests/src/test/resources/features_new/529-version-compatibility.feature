@@ -58,11 +58,10 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
   ######################################################################################################################
 
   Scenario: SingleLevelUsageAsBuilt
-    Given I register an IRS job for globalAssetId "urn:uuid:15cf842e-b20e-4219-a61b-99c01cec42ea" and BPN "BPNL00000003AVTH"
+    Given I register an IRS job for globalAssetId "urn:uuid:2ea93a69-7ecb-4747-94f4-960c2535dc7b" and BPN "BPNL00000007QG00"
     And collectAspects "true"
     And depth 10
 
-    # SingleLevelUsageAsBuilt (see RelationshipAspect)
     And direction "upward"
     And bomLifecycle "asBuilt"
 
@@ -70,6 +69,8 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
     Then I check, if the job has status "COMPLETED" within 20 minutes
     And I check, if "relationships" are equal to "529-single-level-usage-as-built-expected-relationships.json"
     And I check, if "submodels" are equal to "529-single-level-usage-as-built-expected-submodels.json"
+
+
 
 
   ######################################################################################################################
@@ -81,7 +82,6 @@ Feature:  [TESTING] Integration E2E Tests for backward compatibility #529
     And collectAspects "true"
     And depth 10
 
-    # SingleLevelUsageAsPlanned (see RelationshipAspect)
     And direction "upward"
     And bomLifecycle "asPlanned"
 

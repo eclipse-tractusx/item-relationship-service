@@ -65,10 +65,10 @@ Test data:
 
 
 Structure of test data:
-- SingleLevelUsageAsBuilt 3.0.0, BPNL00E2EASPCPT1, urn:uuid:c7b5c21b-d2c0-4b86-8283-a8932baf03b3
-  - SingleLevelUsageAsBuilt 3.1.0, BPNL00E2EASPCP11, urn:uuid:13d35275-3b9b-4f0c-bc5e-00f656bb7cbc
+- SingleLevelUsageAsBuilt 3.0.0, BPNL00000007QG00, urn:uuid:677582a5-bdca-45e1-a671-7a98ff5ddcb7
+  - SingleLevelUsageAsBuilt 3.1.0, BPNL00000007QG00, urn:uuid:13d35275-3b9b-4f0c-bc5e-00f656bb7cbc
     - futureAddedField
-  - SingleLevelUsageAsBuilt 2.0.0, BPNL00E2EASPCP12, urn:uuid:2ea93a69-7ecb-4747-94f4-960c2535dc7b
+    - SingleLevelUsageAsBuilt 2.0.0, BPNL00000007QG00, urn:uuid:2ea93a69-7ecb-4747-94f4-960c2535dc7b
 
 
 Test:
