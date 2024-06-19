@@ -37,17 +37,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class CustomKeyValueProvider extends DefaultClientRequestObservationConvention {
-    private static final String GLOBAL_ASSET_ID_REGEX = "urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
+    private static final String GLOBAL_ASSET_ID_REGEX = "(urn:uuid:)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}";
 
     @Override
     public @NotNull KeyValues getLowCardinalityKeyValues(@NotNull final ClientRequestObservationContext context) {
-
         KeyValues keyValues = KeyValues.of(clientName(context), outcome(context), method(context), status(context));
 
         final KeyValue uri = uri(context);
-
-        keyValues = keyValues.and(
-                KeyValue.of(uri.getKey(), uri.getValue().replaceAll(GLOBAL_ASSET_ID_REGEX, "{uuid}")));
+        final String uriWithUuidReplaced = uri.getValue().replaceAll(GLOBAL_ASSET_ID_REGEX, "{uuid}");
+        keyValues = keyValues.and(KeyValue.of(uri.getKey(), uriWithUuidReplaced));
 
         return keyValues;
     }
