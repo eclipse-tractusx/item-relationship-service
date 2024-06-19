@@ -30,6 +30,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Integration Test Policy Store API Unhappy Path. #519
 - Support for SingleLevelUsageAsPlanned. #470
 - Documentation to describe the delegate process. #470
+- Utility class for test data generation for use in IrsWireMockIntegrationTest
 
 ## [5.1.4] - 2024-05-27
 
