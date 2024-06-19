@@ -12,6 +12,7 @@
 [![OWASP Dependency Check](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/owasp.yml)
 [![Eclipse-dash](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/eclipse-dash.yml)
 [![Tavern IRS API test](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml/badge.svg)](https://github.com/eclipse-tractusx/item-relationship-service/actions/workflows/tavern.yml)
+[![CucumberReports: item-relationship-service](https://messages.cucumber.io/api/report-collections/b82bcadd-0d19-41c4-ae1a-c623e259c36f/badge)](https://reports.cucumber.io/report-collections/b82bcadd-0d19-41c4-ae1a-c623e259c36f)
 
 
 ## Introduction

@@ -22,6 +22,12 @@
             <version>${gatling.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.tractusx.irs</groupId>
+            <artifactId>irs-testing</artifactId>
+            <version>${irs-registry-client.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
