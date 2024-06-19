@@ -14,6 +14,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ### Changed
 
+- Updated Spring Boot to version 3.3 #380
 - Improved policy store API input validation. #528
 - Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
 - Marked createAccessPolicy requests with deprecation mark.

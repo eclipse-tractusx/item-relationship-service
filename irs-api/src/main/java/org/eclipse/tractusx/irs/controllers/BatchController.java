@@ -197,8 +197,8 @@ public class BatchController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderResponse getBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class),
-                       name = "orderId",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable final UUID orderId) {
+                       name = "orderId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable(
+                    "orderId") final UUID orderId) {
         return queryBatchService.findOrderById(orderId);
     }
 
@@ -242,11 +242,11 @@ public class BatchController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchResponse getBatch(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class),
-                       name = "orderId",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable final UUID orderId,
+                       name = "orderId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable(
+                    "orderId") final UUID orderId,
             @Parameter(description = "Id of the batch.", schema = @Schema(implementation = UUID.class),
-                       name = "batchId",
-                       example = "4bce40b8-64c7-41bf-9ca3-e9432c7fef98") @Valid @PathVariable final UUID batchId) {
+                       name = "batchId", example = "4bce40b8-64c7-41bf-9ca3-e9432c7fef98") @Valid @PathVariable(
+                    "batchId") final UUID batchId) {
         return queryBatchService.findBatchById(orderId, batchId);
     }
 
@@ -290,8 +290,8 @@ public class BatchController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public BatchOrderResponse cancelBatchOrder(
             @Parameter(description = "Id of the order.", schema = @Schema(implementation = UUID.class),
-                       name = "orderId",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable final UUID orderId) {
+                       name = "orderId", example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable(
+                    "orderId") final UUID orderId) {
         cancelBatchProcessingService.cancelNotFinishedJobsInBatchOrder(orderId);
         return queryBatchService.findOrderById(orderId);
     }

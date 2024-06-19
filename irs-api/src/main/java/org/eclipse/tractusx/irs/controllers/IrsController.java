@@ -175,10 +175,11 @@ public class IrsController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public ResponseEntity<Jobs> getJobById(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable final UUID id, @Parameter(
-            description = "\\<true\\> Return job with current processed item graph. \\<false\\> Return job with item graph if job is in state COMPLETED, otherwise job.") @Schema(
-            implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
-                                                                                 required = false) final boolean returnUncompletedJob) {
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable("id") final UUID id,
+            @Parameter(
+                    description = "\\<true\\> Return job with current processed item graph. \\<false\\> Return job with item graph if job is in state COMPLETED, otherwise job.") @Schema(
+                    implementation = Boolean.class, defaultValue = "true") @RequestParam(value = "returnUncompletedJob",
+                                                                                         required = false) final boolean returnUncompletedJob) {
         final Jobs job = itemJobService.getJobForJobId(id, returnUncompletedJob);
         if (job.getJob().getState().equals(JobState.RUNNING)) {
             return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(job);
@@ -225,7 +226,7 @@ public class IrsController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public Job cancelJobByJobId(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable final UUID id) {
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable("id") final UUID id) {
 
         return this.itemJobService.cancelJobById(id);
     }
