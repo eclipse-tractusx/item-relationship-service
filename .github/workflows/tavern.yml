@@ -48,11 +48,7 @@ on:
         description: Incident BPN to search for which violates against environmental and social standards.
         default: 'BPNS00000003B6LU'
         required: true
-      execution-ticket:
-        type: string
-        description: JIRA execution ticket to safe results in.
-        default: 'TRI-910'
-        required: true
+
   schedule:
     - cron: '0 1 * * 1-5' # At 01:00 on every day-of-week from Monday through Friday.
 
@@ -92,16 +88,14 @@ jobs:
         run: |
           python -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
 
-      - name: Upload results
+      - name: Mask credentials
         if: always()
-        env:
-          JIRA_USERNAME: ${{ secrets.ORG_IRS_JIRA_USERNAME }}
-          JIRA_PASSWORD: ${{ secrets.ORG_IRS_JIRA_PASSWORD }}
-          TEST_EXECUTION_TICKET: ${{ github.event.inputs.execution-ticket || 'TRI-910' }}
-        # Remove tokens and upload the tavern results to JIRA Test execution
         run: |
           sed "s/access_tok.*:s = '.*'//g" tavern-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > result.xml
-          curl -H "Content-Type: multipart/form-data" \
-          -u $JIRA_USERNAME:$JIRA_PASSWORD \
-          -F 'file=@result.xml' \
-          "https://jira.catena-x.net/rest/raven/1.0/import/execution/junit?testExecKey=$TEST_EXECUTION_TICKET"
+
+      - name: Publish Tavern Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        if: always()
+        with:
+          files: |
+            result.xml

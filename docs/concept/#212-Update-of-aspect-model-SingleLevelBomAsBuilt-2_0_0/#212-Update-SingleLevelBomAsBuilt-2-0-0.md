@@ -2,7 +2,7 @@
 
 # Problem Statement
 
-SingleLevelBomAsBuilt 2.0.0 introduces a new boolean property `hasAlternatives`.
+[SingleLevelBomAsBuilt 2.0.0](https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built/2.0.0) introduces a new boolean property `hasAlternatives`.
 The model now allows to reference items that are not available as AsBuilt Twins - (e.g. Serial items or batches) but as AsPlanned twins.
 Sometimes, however, it is not known what exact AsPlanned twin is needed to build the BoM asBuilt because there are different alternative twins to choose from.
 In that case, all potential alternatives have to be referenced. To indicate that ambiguity, the property "hasAlternative" has been added to the aspect model.

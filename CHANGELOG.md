@@ -23,14 +23,18 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation. eclipse-tractusx/traceability-foss#978
 - Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
 - IRS job cancellation now actually cancels jobs. #411
+- Updated contributing, notice, and readme files for TRG 7 #681
+- Handling of expired policies when approving a notification eclipse-tractusx/traceability-foss#639
 
-## Added
+### Added
 
+- Added tests for aspect version compatibility. #529
 - Added endpoint for dedicated removal of policy from BPNL. #559
 - Integration Test Policy Store API Unhappy Path. #519
 - Support for SingleLevelUsageAsPlanned. #470
 - Documentation to describe the delegate process. #470
 - Utility class for test data generation for use in IrsWireMockIntegrationTest
+- Added file for CC BY 4.0 license for TRG 7 #681
 
 ## [5.1.4] - 2024-05-27
 

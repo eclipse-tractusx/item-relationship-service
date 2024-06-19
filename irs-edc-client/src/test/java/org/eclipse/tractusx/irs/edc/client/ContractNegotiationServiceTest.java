@@ -40,7 +40,8 @@ import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointD
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyExpiredException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.Response;
@@ -80,12 +81,14 @@ class ContractNegotiationServiceTest {
 
     @Test
     void shouldNegotiateSuccessfully()
-            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
+            throws ContractNegotiationException, UsagePolicyPermissionException, TransferProcessException,
+            UsagePolicyExpiredException {
         // arrange
         final var assetId = "testTarget";
         final String offerId = "offerId";
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isExpired(any(), any())).thenReturn(Boolean.FALSE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 Response.builder().responseId("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.completedFuture(
@@ -112,6 +115,7 @@ class ContractNegotiationServiceTest {
         final String offerId = "offerId";
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isExpired(any(), any())).thenReturn(Boolean.FALSE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 Response.builder().responseId("negotiationId").build());
         CompletableFuture<NegotiationResponse> response = CompletableFuture.failedFuture(
@@ -131,6 +135,7 @@ class ContractNegotiationServiceTest {
         final String offerId = "offerId";
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isExpired(any(), any())).thenReturn(Boolean.FALSE);
 
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 Response.builder().responseId("negotiationId").build());
@@ -159,7 +164,8 @@ class ContractNegotiationServiceTest {
                                                    .policy(createPolicy(assetId))
                                                    .assetPropId(assetId)
                                                    .build();
-        when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.FALSE);
+        when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isExpired(any(), any())).thenReturn(Boolean.TRUE);
 
         // act & assert
         assertThatThrownBy(() -> testee.negotiate(CONNECTOR_URL, catalogItem,
@@ -169,12 +175,14 @@ class ContractNegotiationServiceTest {
 
     @Test
     void shouldStartNegotiationProcessWhenTokenStatusIsRequiredNew()
-            throws TransferProcessException, UsagePolicyException, ContractNegotiationException {
+            throws TransferProcessException, UsagePolicyPermissionException, ContractNegotiationException,
+            UsagePolicyExpiredException {
         // given
         final var assetId = "testTarget";
         final String offerId = "offerId";
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isExpired(any(), any())).thenReturn(Boolean.FALSE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 Response.builder().responseId("negotiationId").build());
         CompletableFuture<NegotiationResponse> negotiationResponse = CompletableFuture.completedFuture(
@@ -195,12 +203,14 @@ class ContractNegotiationServiceTest {
 
     @Test
     void shouldStartNegotiationProcessWhenTokenStatusIsMissing()
-            throws TransferProcessException, UsagePolicyException, ContractNegotiationException {
+            throws TransferProcessException, UsagePolicyPermissionException, ContractNegotiationException,
+            UsagePolicyExpiredException {
         // given
         final var assetId = "testTarget";
         final String offerId = "offerId";
         final CatalogItem catalogItem = createCatalogItem(assetId, offerId);
         when(policyCheckerService.isValid(any(), any())).thenReturn(Boolean.TRUE);
+        when(policyCheckerService.isExpired(any(), any())).thenReturn(Boolean.FALSE);
         when(edcControlPlaneClient.startNegotiations(any())).thenReturn(
                 Response.builder().responseId("negotiationId").build());
         CompletableFuture<NegotiationResponse> negotiationResponse = CompletableFuture.completedFuture(
@@ -220,7 +230,8 @@ class ContractNegotiationServiceTest {
 
     @Test
     void shouldNotStartNewNegotiationWhenTokenIsExpired()
-            throws TransferProcessException, UsagePolicyException, ContractNegotiationException {
+            throws TransferProcessException, UsagePolicyPermissionException, ContractNegotiationException,
+            UsagePolicyExpiredException {
         // given
         final var assetId = "testTarget";
         final String offerId = "offerId";
