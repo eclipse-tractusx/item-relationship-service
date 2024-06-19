@@ -17,37 +17,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-package org.eclipse.tractusx.irs.cucumber;
+package org.eclipse.tractusx.irs.edc.client.exceptions;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.Getter;
+import org.eclipse.edc.policy.model.Policy;
 
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
+/**
+ * Usage Policy Expired Exception errors in the contract negotiation.
+ */
+@Getter
+public class UsagePolicyExpiredException extends EdcClientException {
 
-public class TestStepDefinition {
-    private Integer int1;
-    private Integer int2;
-    private Integer result;
+    private final transient Policy policy;
+    private final String businessPartnerNumber;
 
-    @Given("I have entered {int} into the calculator")
-    public void iHaveEnteredIntoTheCalculator(Integer int1) {
-        this.int2 = this.int1;
-        this.int1 = int1;
-    }
-
-    @When("I press add")
-    public void iPressAdd() {
-        this.result = this.int1 + this.int2;
-    }
-
-    @When("I press multiply")
-    public void iPressMultiply() {
-        this.result = this.int1 * this.int2;
-    }
-
-    @Then("the result should be {int} on the screen")
-    public void theResultShouldBeOnTheScreen(Integer value) {
-        assertThat(this.result).isEqualTo(value);
+    public UsagePolicyExpiredException(final String itemId, final Policy policy, final String businessPartnerNumber) {
+        super("Consumption of asset '" + itemId
+                + "' is not permitted as the required catalog offer policies are expired.");
+        this.policy = policy;
+        this.businessPartnerNumber = businessPartnerNumber;
     }
 }

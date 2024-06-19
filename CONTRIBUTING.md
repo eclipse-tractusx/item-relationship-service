@@ -4,14 +4,16 @@ Thanks for your interest in this project.
 
 # Table of Contents
 1. [Project description](#project-description)
-2. [Developer resources](#developer-resources)
-3. [Eclipse Development Process](#eclipse-development-process)
-4. [Eclipse Contributor Agreement](#eclipse-contributor-agreement)
-5. [Code of Conduct](#code-of-conduct)
-6. [General contribution to the project](#general-contribution-to-the-project)
-7. [Contributing as a Consultant](#contributing-as-a-consultant)
-8. [Contributing as a Developer](#contributing-as-a-developer)
-9. [Contact](#contact)
+2. [Project licenses](#project-licenses)
+3. [Terms of Use](#terms-of-use)
+4. [Developer resources](#developer-resources)
+5. [Eclipse Development Process](#eclipse-development-process)
+6. [Eclipse Contributor Agreement](#eclipse-contributor-agreement)
+7. [Code of Conduct](#code-of-conduct)
+8. [General contribution to the project](#general-contribution-to-the-project)
+9. [Contributing as a Consultant](#contributing-as-a-consultant)
+10. [Contributing as a Developer](#contributing-as-a-developer)
+11. [Contact](#contact)
 
 ## Project Description
 
@@ -28,12 +30,29 @@ Catena-X alliance focusing on parts traceability.
 * https://projects.eclipse.org/projects/automotive.tractusx
 * https://github.com/eclipse-tractusx/item-relationship-service
 
+## Project licenses
+
+The Tractus-X project uses the following licenses:
+
+* Apache-2.0 for code
+* CC-BY-4.0 for non-code
+
+## Terms of Use
+
+This repository is subject to the Terms of Use of the Eclipse Foundation
+
+* https://www.eclipse.org/legal/termsofuse.php
+
 ## Developer Resources
 
 Information regarding source code management, builds, coding standards, and
 more.
 
 * https://projects.eclipse.org/projects/automotive.tractusx/developer
+
+Getting started:
+
+* https://eclipse-tractusx.github.io/docs/developer
 
 The project maintains the source code repositories in the following GitHub organization:
 
@@ -71,7 +90,7 @@ See [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md).
 
 In case of new dependencies or version updates, it might be necessary to have the new library checked and accepted by the Eclipse foundation. Do create new tickets for this, you can use this command:
 ```
-mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.iplab.token=$ECLIPSE_DASH_TOKEN -Ddash.projectId=automotive.tractusx --batch-mode -DskipTests
+mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.iplab.token=$ECLIPSE_DASH_TOKEN -Ddash.projectId=automotive.tractusx --batch-mode -DskipTests -P dash
 ```
 
 For more information on the tool and how to acquire the token, check https://github.com/eclipse/dash-licenses.

@@ -384,7 +384,7 @@ policy store in order to receice further on assets with the specific policy.
     },
     "processingError": {
        "processStep": "UsagePolicyValidation", 
-       "errorDetail": "Consumption of asset (itemId) is not permitted as the required catalog offer policies do not comply with defined IRS policies.",
+       "errorDetail": "Consumption of asset (itemId) is not permitted as the required catalog offer policies do not comply with defined policies.",
        "lastAttempt": "2024-01-17T09:02:36.648055745Z",
        "retryCounter": 3
     }

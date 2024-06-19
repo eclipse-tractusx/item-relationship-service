@@ -252,4 +252,54 @@ class PolicyCheckerServiceTest {
                                                                 .build();
     }
 
+    @Test
+    void shouldHaveNoExpiredConstraints() {
+        // given
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
+        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
+        final var policyList = List.of(
+                new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
+                        OffsetDateTime.now().plusYears(1)));
+
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
+        Policy policy = createOrConstraintPolicy(
+                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                                TestConstants.STATUS_ACTIVE),
+                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
+        // when
+        boolean result = policyCheckerService.isExpired(policy, "bpn");
+
+        // then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    void shouldHaveExpiredConstraints() {
+        // given
+        final Constraint constraint1 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
+        final Constraint constraint2 = new Constraint(TestConstants.MEMBERSHIP, new Operator(OperatorType.EQ),
+                TestConstants.STATUS_ACTIVE);
+        final Constraint constraint3 = new Constraint(TestConstants.FRAMEWORK_AGREEMENT_DISMANTLER,
+                new Operator(OperatorType.EQ), TestConstants.STATUS_ACTIVE);
+        final var policyList = List.of(
+                new AcceptedPolicy(policy("and-policy", List.of(), List.of(constraint1, constraint2, constraint3)),
+                        OffsetDateTime.now().minusYears(1)));
+
+        when(policyStore.getAcceptedPolicies(any())).thenReturn(policyList);
+        Policy policy = createOrConstraintPolicy(
+                List.of(createAtomicConstraint(TestConstants.FRAMEWORK_AGREEMENT_TRACEABILITY,
+                                TestConstants.STATUS_ACTIVE),
+                        createAtomicConstraint(TestConstants.MEMBERSHIP, TestConstants.STATUS_ACTIVE)));
+        // when
+        boolean result = policyCheckerService.isExpired(policy, "bpn");
+
+        // then
+        assertThat(result).isTrue();
+    }
+
 }
