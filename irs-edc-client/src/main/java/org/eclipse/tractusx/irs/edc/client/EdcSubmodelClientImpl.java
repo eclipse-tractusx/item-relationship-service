@@ -46,7 +46,8 @@ import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyExpiredException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
@@ -318,7 +319,8 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         try {
             response = contractNegotiationService.negotiate(providerWithSuffix, catalogItem,
                     endpointDataReferenceStatus, bpn);
-        } catch (TransferProcessException | UsagePolicyException | ContractNegotiationException e) {
+        } catch (TransferProcessException | UsagePolicyPermissionException | UsagePolicyExpiredException
+                 | ContractNegotiationException e) {
             throw new EdcClientException(("Negotiation failed for endpoint '%s', " + "tokenStatus '%s', "
                     + "providerWithSuffix '%s', catalogItem '%s'").formatted(
                     endpointDataReferenceStatus.endpointDataReference(), endpointDataReferenceStatus.tokenStatus(),
