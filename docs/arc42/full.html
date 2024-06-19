@@ -560,7 +560,7 @@ in which context the service runs and which stakeholders are involved.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>provide a top-down BoM asBuilt tree structure along the submodel "SingleLevelBomAsBuilt"</p>
+<p>provide a top-down BoM asBuilt tree structure along the submodel <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">"SingleLevelBomAsBuilt"</a></p>
 </li>
 <li>
 <p>usage of EDC consumer for communicating with the Catena-X network</p>
@@ -914,7 +914,7 @@ The following table entries define overall IRS quality goals. The order of the t
 <div class="sect4">
 <h5 id="_registry_api">Registry API</h5>
 <div class="paragraph">
-<p>The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like SingleLevelBomAsBuilt, SerialPart etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
+<p>The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a>, <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part">SerialPart</a> etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
 </div>
 <div class="sect5">
 <h6 id="_discovery_service">Discovery Service</h6>
@@ -1884,7 +1884,7 @@ The input provided by the caller determines how the job will operate (starting p
 <p>After a job has been created (see Scenario 1: Create Job), the first transfer containing the root item ID is passed to the ExecutorService. The transfer is then started asynchronously and retrieves the necessary information from the Catena-X network, first by fetching the AAS information from the DigitalTwin registry and then calling the SubmodelProviders for the submodel payload.</p>
 </div>
 <div class="paragraph">
-<p>At least the aspect SingleLevelBomAsBuilt is required for the tree to be built. If the customer that started the job provided more aspects to be fetched, they will be retrieved here too.
+<p>At least the aspect <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a> is required for the tree to be built. If the customer that started the job provided more aspects to be fetched, they will be retrieved here too.
 The result of each transfer is stored in the BlobStore.</p>
 </div>
 <div class="paragraph">
@@ -3741,7 +3741,7 @@ For more information see:
 <td class="tableblock halign-left valign-top"><p class="tableblock">Traversal Aspect</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">aka Edge: Aspect which the IRS uses for traversal through the data chain. Identified by a parent-child or a child-parent relationship.</p>
-<p class="tableblock">Samples: SingleLevelBomAsPlanned, SingleLevelBomAsBuilt and SingleLevelUsageAsBuilt</p></td>
+<p class="tableblock">Samples: <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_planned">SingleLevelBomAsPlanned</a>, <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a> and <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_usage_as_built">SingleLevelUsageAsBuilt</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Verifiable Credential</p></td>
@@ -3788,7 +3788,7 @@ For more information see:
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-06-11 09:05:16 UTC
+Last updated 2024-06-19 12:37:44 UTC
 </div>
 </div>
 </body>

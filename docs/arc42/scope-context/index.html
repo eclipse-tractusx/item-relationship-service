@@ -513,7 +513,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="_registry_api">Registry API</h4>
 <div class="paragraph">
-<p>The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like SingleLevelBomAsBuilt, SerialPart etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
+<p>The IRS acts as a consumer of the component Asset Administration Shell Registry. The IRS contains a Restful client (REST template) that build a REST call to the mentioned Digital Twin Registry API based on its known URL (the AAS registry URL is configured in the IRS Restful API). The request contains the given "globalAssetId" by the consumer. Like described in the above section, the security aspect is required in order to achieve a REST call against the AAS Registry. As a response, the IRS gets the corresponding asset administration shell descriptor. The last one contains a list of submodel descriptors which can be filtered by the aspect type entered by the consumer. An aspect type like <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.single_level_bom_as_built">SingleLevelBomAsBuilt</a>, <a href="https://github.com/eclipse-tractusx/sldt-semantic-models/tree/main/io.catenax.serial_part">SerialPart</a> etc. And as mentioned above, the transport protocol HTTP(S) is used for the REST call communication.</p>
 </div>
 <div class="sect4">
 <h5 id="_discovery_service">Discovery Service</h5>
@@ -711,7 +711,7 @@ With these EDC connector URLs, IRS searches the provider catalog for a asset of 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-06-11 09:05:16 UTC
+Last updated 2024-06-19 12:37:44 UTC
 </div>
 </div>
 </body>
