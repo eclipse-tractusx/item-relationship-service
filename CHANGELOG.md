@@ -22,6 +22,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Added missing @context values in edc asset creation. eclipse-tractusx/traceability-foss#978
 - Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation. eclipse-tractusx/traceability-foss#978
 - Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
+- IRS job cancellation now actually cancels jobs. #411
 
 ## Added
 
