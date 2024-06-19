@@ -44,20 +44,34 @@ public class PolicyCheckerService {
     private final ConstraintCheckerService constraintCheckerService;
 
     public boolean isValid(final Policy policy, final String bpn) {
-        return policy.getPermissions().stream().allMatch(permission -> isValid(permission, getValidStoredPolicies(bpn)));
+        final List<AcceptedPolicy> validStoredPolicies = getValidStoredPolicies(bpn);
+        return policy.getPermissions()
+                     .stream()
+                     .allMatch(permission -> hasValidConstraints(permission, validStoredPolicies));
     }
 
-    private boolean isValid(final Permission permission, final List<AcceptedPolicy> validStoredPolicies) {
+    private boolean hasValidConstraints(final Permission permission, final List<AcceptedPolicy> validStoredPolicies) {
         return validStoredPolicies.stream()
                                   .anyMatch(acceptedPolicy -> constraintCheckerService.hasAllConstraint(
                                           acceptedPolicy.policy(), permission.getConstraints()));
     }
 
+    public boolean isExpired(final Policy policy, final String bpn) {
+        return policy.getPermissions()
+                     .stream()
+                     .allMatch(permission -> hasExpiredConstraint(permission, getValidStoredPolicies(bpn)));
+    }
+
+    private boolean hasExpiredConstraint(final Permission permission, final List<AcceptedPolicy> validStoredPolicies) {
+        return validStoredPolicies.stream()
+                                  .filter(acceptedPolicy -> constraintCheckerService.hasAllConstraint(
+                                          acceptedPolicy.policy(), permission.getConstraints()))
+                                  .allMatch(
+                                          acceptedPolicy -> acceptedPolicy.validUntil().isBefore(OffsetDateTime.now()));
+    }
+
     private List<AcceptedPolicy> getValidStoredPolicies(final String bpn) {
-        return policyStore.getAcceptedPolicies(bpn)
-                          .stream()
-                          .filter(p -> p.validUntil().isAfter(OffsetDateTime.now()))
-                          .toList();
+        return policyStore.getAcceptedPolicies(bpn).stream().toList();
     }
 
 }

@@ -40,7 +40,8 @@ import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyExpiredException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.ContractOffer;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationRequest;
@@ -70,7 +71,8 @@ public class ContractNegotiationService {
 
     public NegotiationResponse negotiate(final String providerConnectorUrl, final CatalogItem catalogItem,
             final EndpointDataReferenceStatus endpointDataReferenceStatus, final String bpn)
-            throws ContractNegotiationException, UsagePolicyException, TransferProcessException {
+            throws ContractNegotiationException, UsagePolicyPermissionException, TransferProcessException,
+            UsagePolicyExpiredException {
 
         EndpointDataReferenceStatus resultEndpointDataReferenceStatus;
 
@@ -119,12 +121,19 @@ public class ContractNegotiationService {
     }
 
     private CompletableFuture<NegotiationResponse> startNewNegotiation(final String providerConnectorUrl,
-            final CatalogItem catalogItem, final String bpn) throws UsagePolicyException {
+            final CatalogItem catalogItem, final String bpn)
+            throws UsagePolicyPermissionException, UsagePolicyExpiredException {
         log.info("Staring new contract negotiation.");
 
         if (!policyCheckerService.isValid(catalogItem.getPolicy(), bpn)) {
-            log.info("Policy was not allowed, canceling negotiation.");
-            throw new UsagePolicyException(catalogItem.getItemId(), catalogItem.getPolicy(),
+            log.warn("Policy was not allowed, canceling negotiation.");
+            throw new UsagePolicyPermissionException(catalogItem.getItemId(), catalogItem.getPolicy(),
+                    catalogItem.getConnectorId());
+        }
+
+        if (policyCheckerService.isExpired(catalogItem.getPolicy(), bpn)) {
+            log.warn("Policy is expired, canceling negotiation.");
+            throw new UsagePolicyExpiredException(catalogItem.getItemId(), catalogItem.getPolicy(),
                     catalogItem.getConnectorId());
         }
 

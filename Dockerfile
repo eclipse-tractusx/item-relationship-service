@@ -26,7 +26,6 @@ ARG BUILD_TARGET=irs-api
 WORKDIR /build
 
 COPY .config .config
-COPY .mvn .mvn
 COPY pom.xml .
 
 COPY irs-policy-store irs-policy-store
