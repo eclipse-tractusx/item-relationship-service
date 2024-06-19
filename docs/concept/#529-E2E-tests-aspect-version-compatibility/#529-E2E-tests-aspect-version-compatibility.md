@@ -48,7 +48,7 @@ Structure of test data:
 
 
 Test:
-- [Cucumber test - scenario "SingleLevelBomAsPlanned Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
+- [Cucumber test - scenario "SingleLevelBomAsPlanned Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features/irs-dev-529-version-compatibility.feature)
 
 
 ## SingleLevelUsageAsBuilt Version Compatibility
@@ -68,7 +68,7 @@ Structure of test data:
 
 
 Test:
-- [Cucumber test - scenario "SingleLevelBomAsBuilt Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
+- [Cucumber test - scenario "SingleLevelBomAsBuilt Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features/irs-dev-529-version-compatibility.feature)
 
 
 ## SingleLevelUsageAsPlanned Version Compatibility
@@ -87,7 +87,7 @@ Structure of test data:
 
 
 Test:
-- [Cucumber test - scenario "SingleLevelUsageAsPlanned Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
+- [Cucumber test - scenario "SingleLevelUsageAsPlanned Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features/irs-dev-529-version-compatibility.feature)
 
 
 
