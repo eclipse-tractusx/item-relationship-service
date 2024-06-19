@@ -90,7 +90,7 @@ See [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md).
 
 In case of new dependencies or version updates, it might be necessary to have the new library checked and accepted by the Eclipse foundation. Do create new tickets for this, you can use this command:
 ```
-mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.iplab.token=$ECLIPSE_DASH_TOKEN -Ddash.projectId=automotive.tractusx --batch-mode -DskipTests
+mvn org.eclipse.dash:license-tool-plugin:license-check -Ddash.iplab.token=$ECLIPSE_DASH_TOKEN -Ddash.projectId=automotive.tractusx --batch-mode -DskipTests -P dash
 ```
 
 For more information on the tool and how to acquire the token, check https://github.com/eclipse/dash-licenses.
