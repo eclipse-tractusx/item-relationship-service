@@ -1,0 +1,20 @@
+name: IRS INT Cucumber Integration test execution
+
+on:
+  workflow_dispatch: # Trigger manually
+
+# Cancel previous Test executions if a new one is triggered.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  trigger-integration-test:
+    uses: ./.github/workflows/cucumber-integration-test.yaml
+    secrets:
+      regularUserApiKey: ${{ secrets.INT_REGULAR_USER_API_KEY }}
+      adminUserApiKey: ${{ secrets.INT_ADMIN_USER_API_KEY }}
+      cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
+    with:
+      executionFilter: "!Ignore & !INACTIVE & INTEGRATION_TEST & INT"
+
