@@ -26,9 +26,7 @@ Structure of test data:
 
 Test:
 
-- [Cucumber test - scenario "SingleLevelBomAsBuilt Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/features/irs-dev-529-version-compatibility.feature)
-  - [529-single-level-bom-as-built-expected-relationships.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-relationships.json)
-  - [529-single-level-bom-as-built-expected-submodels.json](../../../irs-cucumber-tests/src/test/resources/expected-files/529-single-level-bom-as-built-expected-submodels.json)
+- [Cucumber test - scenario "SingleLevelBomAsBuilt Version Compatibility"](../../../irs-cucumber-tests/src/test/resources/org/eclipse/tractusx/irs/cucumber/features/irs-dev-529-version-compatibility.feature)
 
 
 ## SingleLevelBomAsPlanned Version Compatibility
