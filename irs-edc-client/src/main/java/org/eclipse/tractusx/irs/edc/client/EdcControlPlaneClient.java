@@ -252,6 +252,7 @@ public class EdcControlPlaneClient {
         return edcRestTemplate.exchange(url, HttpMethod.GET, objectHttpEntity, TransferProcessResponse.class).getBody();
     }
 
+    @SuppressWarnings({ "PMD.LooseCoupling" })
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));

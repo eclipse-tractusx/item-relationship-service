@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -277,7 +278,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
     }
 
     private static Stream<Policy> sortByPolicyId(final List<Policy> policies) {
-        final TreeSet<Policy> result = new TreeSet<>(Comparator.comparing(Policy::getPolicyId));
+        final Set<Policy> result = new TreeSet<>(Comparator.comparing(Policy::getPolicyId));
         result.addAll(policies);
         return result.stream();
     }

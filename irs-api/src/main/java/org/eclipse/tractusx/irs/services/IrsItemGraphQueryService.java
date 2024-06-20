@@ -184,7 +184,7 @@ public class IrsItemGraphQueryService implements IIrsItemGraphQueryService {
 
     private void validateAspectTypeValues(final List<String> aspectTypeValues) {
         try {
-            final HashSet<AspectModel> availableModels = new HashSet<>(
+            final Set<AspectModel> availableModels = new HashSet<>(
                     semanticsHubFacade.getAllAspectModels().models());
             log.debug("Number of available AspectModels: '{}'", availableModels.size());
             log.debug("Provided AspectModels: '{}'", aspectTypeValues);

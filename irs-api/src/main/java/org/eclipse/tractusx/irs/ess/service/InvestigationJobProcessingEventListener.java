@@ -162,7 +162,7 @@ class InvestigationJobProcessingEventListener {
         final Map<String, List<String>> bpns = getBPNsFromRelationships(completedJob.getRelationships());
         log.debug("Extracted BPNs '{}'", bpns);
 
-        final HashMap<String, List<String>> resolvedBPNs = new HashMap<>();
+        final Map<String, List<String>> resolvedBPNs = new HashMap<>();
         bpns.keySet().forEach(bpn -> resolvedBPNs.put(bpn, connectorEndpointsService.fetchConnectorEndpoints(bpn)));
         log.debug("Found Endpoints to BPNs '{}'", resolvedBPNs);
 

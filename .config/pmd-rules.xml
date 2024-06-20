@@ -26,8 +26,8 @@
         <exclude name="AtLeastOneConstructor"/>
         <!-- Clashes with the usage of var -->
         <exclude name="UseDiamondOperator"/>
-        <!-- Deprecated and counterproductive per PMD doc (replaced by CommentDefaultAccessModifier) -->
-        <exclude name="DefaultPackage"/>
+        <!-- Counterproductive -->
+        <exclude name="CommentDefaultAccessModifier"/>
     </rule>
     <rule ref="category/java/design.xml">
         <exclude name="LoosePackageCoupling"/>
@@ -47,7 +47,7 @@
         <!-- Classes should generally use generated SerialVersionUID unless there is a reason to implement compatibility. -->
         <exclude name="MissingSerialVersionUID"/>
         <!-- Too many false positives, as the rules assumes every class is serializable. -->
-        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="NonSerializableClass"/>
     </rule>
     <rule ref="category/java/multithreading.xml">
         <exclude name="DoNotUseThreads" />

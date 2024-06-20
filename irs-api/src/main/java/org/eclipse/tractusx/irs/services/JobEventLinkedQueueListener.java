@@ -142,6 +142,7 @@ public class JobEventLinkedQueueListener {
         }
     }
 
+    @SuppressWarnings({ "PMD.LooseCoupling" })
     record LimitedJobEventQueue(ConcurrentLinkedQueue<JobProcessingFinishedEvent> linkedQueue, Integer limit) {
         private boolean hasReachLimit() {
             return linkedQueue.size() == limit;

@@ -64,6 +64,7 @@ public class EdcDataPlaneClient {
         return extractEmbeddedData(response);
     }
 
+    @SuppressWarnings({ "PMD.LooseCoupling" })
     public EdcNotificationResponse sendData(final EndpointDataReference dataReference,
             final EdcNotification<NotificationContent> notification) {
         final String url = dataReference.getEndpoint();
@@ -77,6 +78,7 @@ public class EdcDataPlaneClient {
         return () -> response.getStatusCode().is2xxSuccessful();
     }
 
+    @SuppressWarnings({ "PMD.LooseCoupling" })
     private HttpHeaders headers(final EndpointDataReference dataReference) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
