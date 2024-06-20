@@ -1,0 +1,180 @@
+{
+  "policies": {
+    "traceability-core": {
+      "@context": {
+        "odrl": "http://www.w3.org/ns/odrl/2/",
+        "cx-policy": "https://w3id.org/catenax/policy/"
+      },
+      "@type": "PolicyDefinitionRequestDto",
+      "@id": "traceability-core",
+      "policy": {
+        "@type": "odrl:Set",
+        "odrl:permission": [
+          {
+            "odrl:action": "use",
+            "odrl:constraint": {
+              "@type": "AtomicConstraint",
+              "odrl:and": [
+                {
+                  "@type": "Constraint",
+                  "odrl:leftOperand": "cx-policy:FrameworkAgreement",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "traceability:1.0"
+                },
+                {
+                  "@type": "Constraint",
+                  "odrl:leftOperand": "cx-policy:UsagePurpose",
+                  "odrl:operator": {
+                    "@id": "odrl:eq"
+                  },
+                  "odrl:rightOperand": "cx.core.industrycore:1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "https://catenax.io/schema/TestDataContainer/1.0.0": [
+    {
+      "catenaXId": "urn:uuid:0bc18367-69c3-428f-925d-6f8a461edefd",
+      "bpnl": "BPNL00000007QG00",
+      "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:0bc18367-69c3-428f-925d-6f8a461edefd",
+          "childItems": [
+            {
+              "catenaXId": "urn:uuid:db60f953-8894-4568-ab74-746ce00e78a1",
+              "businessPartner": "BPNL00000007QG00",
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "value": 20.0,
+                "unit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+            },
+            {
+              "catenaXId": "urn:uuid:4e8dd2c1-0d21-4794-af92-03a12f85a2eb",
+              "businessPartner": "BPNL00000007QG00",
+              "validityPeriod": {
+                "validFrom": "2023-03-21T08:17:29.187+01:00",
+                "validTo": "2024-07-01T16:10:00.000+01:00"
+              },
+              "quantity": {
+                "value": 20.0,
+                "unit": "unit:piece"
+              },
+              "createdOn": "2022-02-03T14:48:54.709Z",
+              "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:db60f953-8894-4568-ab74-746ce00e78a1",
+      "bpnl": "BPNL00000007QG00",
+      "urn:samm:io.catenax.single_level_bom_as_planned:3.1.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:db60f953-8894-4568-ab74-746ce00e78a1",
+          "childItems": [],
+          "futureAddedField": "test"
+        }
+      ],
+      "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:db60f953-8894-4568-ab74-746ce00e78a1",
+          "partTypeInformation": {
+            "classification": "product",
+            "manufacturerPartId": "123-4.567-8901-A",
+            "nameAtManufacturer": "Test part 1"
+          },
+          "partSitesInformationAsPlanned": [
+            {
+              "functionValidUntil": "2023-12-11T06:14:55.183Z",
+              "catenaXsiteId": "BPNL00000007QG00",
+              "function": "production",
+              "functionValidFrom": "2023-12-11T06:14:55.181Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:4e8dd2c1-0d21-4794-af92-03a12f85a2eb",
+      "bpnl": "BPNL00000007QG00",
+      "urn:samm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:4e8dd2c1-0d21-4794-af92-03a12f85a2eb",
+          "childItems" : [ {
+            "catenaXId" : "urn:uuid:7eb80b65-2e43-438c-8c2a-32b814d2cb88",
+            "businessPartner" : "BPNL00000007QG00",
+            "validityPeriod" : {
+              "validFrom" : "2023-03-21T08:17:29.187+01:00",
+              "validTo" : "2024-07-01T16:10:00.000+01:00"
+            },
+            "quantity" : {
+              "quantityNumber" : 2.5,
+              "measurementUnit" : "unit:litre"
+            },
+            "createdOn" : "2022-02-03T14:48:54.709Z",
+            "lastModifiedOn" : "2022-02-03T14:48:54.709Z"
+          } ]
+        }
+      ],
+      "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:4e8dd2c1-0d21-4794-af92-03a12f85a2eb",
+          "partTypeInformation": {
+            "classification": "product",
+            "manufacturerPartId": "345-6.789-0123-A",
+            "nameAtManufacturer": "Test part 2"
+          },
+          "partSitesInformationAsPlanned": [
+            {
+              "functionValidUntil": "2023-12-11T06:14:55.183Z",
+              "catenaXsiteId": "BPNL00000007QG00",
+              "function": "production",
+              "functionValidFrom": "2023-12-11T06:14:55.181Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "catenaXId": "urn:uuid:7eb80b65-2e43-438c-8c2a-32b814d2cb88",
+      "bpnl": "BPNL00000007QG00",
+      "urn:samm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:7eb80b65-2e43-438c-8c2a-32b814d2cb88",
+          "childItems" : [ ]
+        }
+      ],
+      "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned": [
+        {
+          "catenaXId": "urn:uuid:7eb80b65-2e43-438c-8c2a-32b814d2cb88",
+          "partTypeInformation": {
+            "classification": "product",
+            "manufacturerPartId": "234-5.678-9012-A",
+            "nameAtManufacturer": "Test part 3"
+          },
+          "partSitesInformationAsPlanned": [
+            {
+              "functionValidUntil": "2023-12-11T06:14:55.183Z",
+              "catenaXsiteId": "BPNL00000007QG00",
+              "function": "production",
+              "functionValidFrom": "2023-12-11T06:14:55.181Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

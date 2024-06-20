@@ -28,6 +28,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## Added
 
+- Added tests for aspect version compatibility. #529
 - Added endpoint for dedicated removal of policy from BPNL. #559
 - Integration Test Policy Store API Unhappy Path. #519
 - Support for SingleLevelUsageAsPlanned. #470

@@ -656,7 +656,7 @@ if __name__ == "__main__":
                     dataplane_url = dataplane_urls[contract_number % len(dataplane_urls)]
                     edc_asset_id = edc_asset_ids[contract_number % len(edc_asset_ids)]
 
-                    submodel_name = tmp_key[tmp_key.index("#") + 1: len(tmp_key)]
+                    submodel_name = tmp_key
                     submodel_identification = uuid.uuid4().urn
                     semantic_id = tmp_key
                     if is_ess and tmp_data["bpnl"] in bpnl_fail:
