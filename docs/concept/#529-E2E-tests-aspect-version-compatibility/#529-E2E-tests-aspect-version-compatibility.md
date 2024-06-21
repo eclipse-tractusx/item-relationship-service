@@ -3,6 +3,8 @@
 
 Story: [[TESTING] Integration E2E Tests for backward compatibility (Happy + Unhappy Path) #529](https://github.com/eclipse-tractusx/item-relationship-service/issues/529)
 
+**Note:**
+futureAddedField: For testing compatibility with future versions of semantic models we added new random attribute to aspect model.  
 
 
 ## SingleLevelBomAsBuilt Version Compatibility
