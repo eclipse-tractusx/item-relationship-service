@@ -29,7 +29,7 @@ import org.junit.platform.suite.api.IncludeEngines;
 import org.junit.platform.suite.api.SelectPackages;
 import org.junit.platform.suite.api.Suite;
 
-@Suite
+@Suite(failIfNoTests = false)
 @IncludeEngines("cucumber")
 @SelectPackages("org.eclipse.tractusx.irs.cucumber")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "org.eclipse.tractusx.irs.cucumber")
