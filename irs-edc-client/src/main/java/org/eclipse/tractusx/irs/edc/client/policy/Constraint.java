@@ -39,13 +39,14 @@ import lombok.NoArgsConstructor;
 public class Constraint {
 
     @Schema(implementation = String.class, example = "string")
-    @JsonAlias({"odrl:leftOperand"})
+    @JsonAlias({ "odrl:leftOperand" })
     private String leftOperand;
     @JsonAlias("odrl:operator")
     @Schema
     private Operator operator;
     @Schema(implementation = String.class, example = "string")
-    @JsonProperty("odrl:rightOperand")
+    @JsonAlias("odrl:rightOperand")
+    @JsonProperty("rightOperand")
     private String rightOperand;
 
 }

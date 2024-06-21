@@ -56,14 +56,14 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                                                       "operator": {
                                                           "@id": "eq"
                                                       },
-                                                      "odrl:rightOperand": "active"
+                                                      "rightOperand": "active"
                                                   },
                                                   {
                                                       "leftOperand": "PURPOSE",
                                                       "operator": {
                                                           "@id": "eq"
                                                       },
-                                                      "odrl:rightOperand": "ID 3.1 Trace"
+                                                      "rightOperand": "ID 3.1 Trace"
                                                   }
                                               ],
                                               "or": null
