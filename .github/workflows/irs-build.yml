@@ -18,6 +18,14 @@ on:
     tags:
       - '**'
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+  SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+  IMAGE_NAMESPACE: tractusx
+  IMAGE_NAME: irs-api
 
 jobs:
   build:
@@ -44,11 +52,6 @@ jobs:
           mvn clean verify --batch-mode
 
   analyze_with_Sonar:
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
     # No need to run if we cannot use the sonar token
     if: >-
       (env.GITHUB_TOKEN != '' && env.SONAR_TOKEN != '' && env.SONAR_PROJECT_KEY != '' && env.SONAR_ORGANIZATION != '')
@@ -119,8 +122,6 @@ jobs:
           echo "::set-output name=image_tag::$VERSION"
 
       - name: Log in to registry
-        env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
         if: >-
           env.DOCKER_HUB_USER == '' &&
           (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
@@ -130,8 +131,6 @@ jobs:
 
 
       - name: Login to Docker Hub
-        env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
         if: env.DOCKER_HUB_USER != ''
         uses: docker/login-action@v3
         with:
@@ -139,10 +138,6 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Push image (DockerHub)
-        env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-          IMAGE_NAMESPACE: tractusx
-          IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != ''
         run: |
           docker tag ${{ matrix.image }} ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
@@ -153,10 +148,6 @@ jobs:
 
       # https://github.com/peter-evans/dockerhub-description
       - name: Update Docker Hub description
-        env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-          IMAGE_NAMESPACE: tractusx
-          IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
         uses: peter-evans/dockerhub-description@v4
         with:
