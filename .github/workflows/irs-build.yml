@@ -24,10 +24,22 @@ env:
   SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
   SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
   DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-  IMAGE_NAMESPACE: tractusx
-  IMAGE_NAME: irs-api
 
 jobs:
+  init:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Preparing variables"
+    outputs:
+      image_namespace: tractusx
+      image_name: irs-api
+      github_token: ${{ env.GITHUB_TOKEN }}
+      sonar_token: ${{ env.SONAR_TOKEN }}
+      sonar_project_key: ${{ env.SONAR_PROJECT_KEY }}
+      sonar_organization: ${{ env.SONAR_ORGANIZATION }}
+      docker_hub_user: ${{ env.DOCKER_HUB_USER }}
+
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -52,8 +64,13 @@ jobs:
           mvn clean verify --batch-mode
 
   analyze_with_Sonar:
+    needs: [init]
     # No need to run if we cannot use the sonar token
-    if: (env.GITHUB_TOKEN != '' && env.SONAR_TOKEN != '' && env.SONAR_PROJECT_KEY != '' && env.SONAR_ORGANIZATION != '') && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && github.actor != 'dependabot[bot]'
+    if: >-
+      (needs.init.outputs.github_token != '' && needs.init.outputs.sonar_token != '' 
+      && needs.init.outputs.sonar_project_key != '' && needs.init.outputs.sonar_organization != '') 
+      && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
+      && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -84,10 +101,11 @@ jobs:
         run: |
           mvn --batch-mode --update-snapshots verify \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+          -Dsonar.projectKey=${{ needs.init.outputs.sonar_project_key }} -Dsonar.organization=${{ needs.init.outputs.sonar_organization }} \
           -Dcheckstyle.skip -Dpmd.skip=true
 
   build_images:
+    needs: [init]
     strategy:
       matrix:
         image:
@@ -120,7 +138,7 @@ jobs:
 
       - name: Log in to registry
         if: >-
-          env.DOCKER_HUB_USER == '' &&
+          needs.init.outputs.docker_hub_user == '' &&
           (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
           github.actor != 'dependabot[bot]'
         # This is where you will update the personal access token to GITHUB_TOKEN
@@ -128,29 +146,29 @@ jobs:
 
 
       - name: Login to Docker Hub
-        if: env.DOCKER_HUB_USER != ''
+        if: needs.init.outputs.docker_hub_user != ''
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          username: ${{ needs.init.outputs.docker_hub_user }}
+          password: ${{ needs.init.outputs.docker_hub_token }}
 
       - name: Push image (DockerHub)
-        if: env.DOCKER_HUB_USER != ''
+        if: needs.init.outputs.DOCKER_HUB_USER != ''
         run: |
-          docker tag ${{ matrix.image }} ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
-          docker push ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
+          docker tag ${{ matrix.image }} ${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}:${{ steps.version.outputs.image_tag }}
+          docker push ${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}:${{ steps.version.outputs.image_tag }}
           
           docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
           docker push $IMAGE_ID:$GITHUB_SHA
 
       # https://github.com/peter-evans/dockerhub-description
       - name: Update Docker Hub description
-        if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
+        if: needs.init.outputs.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
         uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          repository: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
+          repository: ${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}
           readme-filepath: ./DOCKER_NOTICE.md
 
   trigger-trivy-image-scan:
