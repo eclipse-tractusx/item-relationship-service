@@ -23,12 +23,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Update Chart.yaml appVersion
-        uses: mikefarah/yq@v4.44.1
+        uses: mikefarah/yq@v4.44.2
         with:
           cmd: yq -i eval '.appVersion = "${{ inputs.new-irs-version }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Update Chart.yaml version
-        uses: mikefarah/yq@v4.44.1
+        uses: mikefarah/yq@v4.44.2
         with:
           cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' charts/item-relationship-service/Chart.yaml
 
