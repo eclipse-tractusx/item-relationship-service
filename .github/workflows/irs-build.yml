@@ -18,13 +18,6 @@ on:
     tags:
       - '**'
 
-env:
-  SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-  SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
-  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-#  SONAR_TOKEN_AVAILABLE: ${{ secrets.SONAR_TOKEN != '' }}
-#  GITHUB_TOKEN_AVAILABLE: ${{ secrets.GITHUB_TOKEN != '' }}
-
 jobs:
   init:
     runs-on: ubuntu-latest
@@ -33,10 +26,8 @@ jobs:
     outputs:
       image_namespace: tractusx
       image_name: irs-api
-      sonar_project_key: ${{ env.SONAR_PROJECT_KEY }}
-      sonar_organization: ${{ env.SONAR_ORGANIZATION }}
-      docker_hub_user: ${{ env.DOCKER_HUB_USER }}
-      sonar_token_available: ${{ secrets.SONAR_TOKEN != '' }}
+      docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
+      sonar_configured: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
       github_token_available: ${{ secrets.GITHUB_TOKEN != '' }}
 
   build:
@@ -66,8 +57,7 @@ jobs:
     needs: [init]
     # No need to run if we cannot use the sonar token
     if: >-
-      (needs.init.outputs.github_token_available && needs.init.outputs.sonar_token_available
-      && needs.init.outputs.sonar_project_key != '' && needs.init.outputs.sonar_organization != '') 
+      needs.init.outputs.sonar_configured
       && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
       && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
@@ -141,8 +131,8 @@ jobs:
       - name: Log in to registry
         if: >-
           needs.init.outputs.docker_hub_user == '' &&
-          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
-          github.actor != 'dependabot[bot]'
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
+          && github.actor != 'dependabot[bot]'
         # This is where you will update the personal access token to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
@@ -179,3 +169,4 @@ jobs:
     needs:
       - build_images
     uses: ./.github/workflows/trivy-docker-hub-scan.yml
+
