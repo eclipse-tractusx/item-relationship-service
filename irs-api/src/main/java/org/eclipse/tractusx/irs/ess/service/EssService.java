@@ -56,8 +56,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class EssService {
 
-    private static final String PART_AS_PLANNED = SemanticModelNames.PART_AS_PLANNED_2_0_0;
-    private static final String PART_SITE_INFORMATION_AS_PLANNED = SemanticModelNames.PART_SITE_INFORMATION_AS_PLANNED_1_0_0;
+    public static final String PART_AS_PLANNED = SemanticModelNames.PART_AS_PLANNED_2_0_0;
+    public static final String PART_SITE_INFORMATION_AS_PLANNED = SemanticModelNames.PART_SITE_INFORMATION_AS_PLANNED_1_0_0;
 
     private final IrsItemGraphQueryService irsItemGraphQueryService;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
