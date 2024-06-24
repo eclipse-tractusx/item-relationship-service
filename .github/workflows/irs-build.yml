@@ -53,10 +53,7 @@ jobs:
 
   analyze_with_Sonar:
     # No need to run if we cannot use the sonar token
-    if: >-
-      (env.GITHUB_TOKEN != '' && env.SONAR_TOKEN != '' && env.SONAR_PROJECT_KEY != '' && env.SONAR_ORGANIZATION != '')
-      && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
-      && github.actor != 'dependabot[bot]'
+    if: (env.GITHUB_TOKEN != '' && env.SONAR_TOKEN != '' && env.SONAR_PROJECT_KEY != '' && env.SONAR_ORGANIZATION != '') && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
