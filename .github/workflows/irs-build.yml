@@ -22,8 +22,8 @@ env:
   SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
   SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
   DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-  SONAR_TOKEN_AVAILABLE: ${{ secrets.SONAR_TOKEN != '' }}
-  GITHUB_TOKEN_AVAILABLE: ${{ secrets.GITHUB_TOKEN != '' }}
+#  SONAR_TOKEN_AVAILABLE: ${{ secrets.SONAR_TOKEN != '' }}
+#  GITHUB_TOKEN_AVAILABLE: ${{ secrets.GITHUB_TOKEN != '' }}
 
 jobs:
   init:
@@ -36,6 +36,8 @@ jobs:
       sonar_project_key: ${{ env.SONAR_PROJECT_KEY }}
       sonar_organization: ${{ env.SONAR_ORGANIZATION }}
       docker_hub_user: ${{ env.DOCKER_HUB_USER }}
+      sonar_token_available: ${{ secrets.SONAR_TOKEN != '' }}
+      github_token_available: ${{ secrets.GITHUB_TOKEN != '' }}
 
   build:
     runs-on: ubuntu-latest
@@ -64,7 +66,7 @@ jobs:
     needs: [init]
     # No need to run if we cannot use the sonar token
     if: >-
-      (env.GITHUB_TOKEN_AVAILABLE && env.SONAR_TOKEN_AVAILABLE
+      (needs.init.outputs.github_token_available && needs.init.outputs.sonar_token_available
       && needs.init.outputs.sonar_project_key != '' && needs.init.outputs.sonar_organization != '') 
       && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
       && github.actor != 'dependabot[bot]'
