@@ -1,4 +1,4 @@
-name: Release IRS and call appropriate subsequent workflows
+name: Release IRS
 
 on:
   workflow_dispatch:
