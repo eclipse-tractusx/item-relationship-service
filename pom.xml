@@ -335,7 +335,7 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
-                            <excludedGroups>INTEGRATION_TEST,INACTIVE</excludedGroups>
+                            <excludedGroups>INTEGRATION_TEST,INACTIVE,Ignore</excludedGroups>
                             <properties>
                                 <configurationParameters>
                                     cucumber.execution.dry-run=true

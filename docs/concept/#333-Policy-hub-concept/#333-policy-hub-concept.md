@@ -108,14 +108,14 @@ sequenceDiagram
 
 ### Policy Validation 
 
-| PolicyContentDefinition Request        | PolicyTemplate  Response | Policy              | Description                                                                                                                                               | 
-|----------------------------------------|--------------------------|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------| 
-| PolicyType (Usage/Access)              | action(use, access)      | action(use, access) | Mappring of correct type                                                                                                                                  |  
-| ConstraintOperand (And/Or)             | odrl:and/:or             |odrl:and/:or| Logical Operand to use AND and OR is supported                                                                                                            |
-| Constraints.Key                        | leftOperand              | leftOperand         |                     |                                                                                                                                      |
-| Constraints.Operator (Equals, In, ...) | operator(eq,in,neq, ...) | operator  (eq,in,neq, ...)          |    |                                                                                                                                                       |  
-| Constraints.Value Static               | rightOperand             | rightOperand        | For static value check right operand for dynamic value check if Policy.rightOperand.value is in PolicyTemplate.rightOperand.atrributes.key.possibleValues | 
-| Constraints.Value Attributes           | rightOperand @attributes | rightOperand        | Dynamic value check if Policy.rightOperand.value is in PolicyTemplate.rightOperand.atrributes.key.possibleValues                                          | 
+| PolicyContentDefinition Request        | PolicyTemplate  Response | Policy                     | Description                                                                                                                                               | 
+|----------------------------------------|--------------------------|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------| 
+| PolicyType (Usage/Access)              | action(use, access)      | action(use, access)        | Mapping of correct type                                                                                                                                   |  
+| ConstraintOperand (And/Or)             | odrl:and/:or             | odrl:and/:or               | Logical Operand to use AND and OR is supported                                                                                                            |
+| Constraints.Key                        | leftOperand              | leftOperand                |                                                                                                                                                           |                                                                                                                                      |
+| Constraints.Operator (Equals, In, ...) | operator(eq,in,neq, ...) | operator  (eq,in,neq, ...) |                                                                                                                                                           |                                                                                                                                                       |  
+| Constraints.Value Static               | rightOperand             | rightOperand               | For static value check right operand for dynamic value check if Policy.rightOperand.value is in PolicyTemplate.rightOperand.atrributes.key.possibleValues | 
+| Constraints.Value Attributes           | rightOperand @attributes | rightOperand               | Dynamic value check if Policy.rightOperand.value is in PolicyTemplate.rightOperand.atrributes.key.possibleValues                                          | 
 
 ### Detailed error message 
 
