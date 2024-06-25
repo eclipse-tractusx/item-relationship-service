@@ -57,6 +57,7 @@ jobs:
         continue-on-error: false
 
       - name: Update changelog
+        id: main-changelog-update
         run: |
           date=$(date +"%Y-%m-%d")
 
@@ -65,6 +66,7 @@ jobs:
 
           # previous version can be extracted from line below uppermost comparison
           previous_irs_version=$(awk "NR==$((latest_comparison_url_line_number+1))" ${{ env.CHANGELOG_PATH }} | grep -Eo "\[${{ env.SEMVER_PATTERN }}\]" | tr -d "[]")
+          echo "previous-irs-version=$previous_irs_version" >> "$GITHUB_OUTPUT"
 
           # correct uppermost comparison
           sed -i "$latest_comparison_url_line_number s|${{ env.SEMVER_PATTERN_SED }}\.\.\.HEAD|${{ inputs.irs-version }}...HEAD|" ${{ env.CHANGELOG_PATH }}         
@@ -113,7 +115,7 @@ jobs:
           sed -i "$((helm_changelog_placeholder_line_number+1)) s|^|\n## [${{ inputs.helm-chart-version }}] - $date\n|" ${{ env.HELM_CHART_PATH }}/CHANGELOG.md
 
       - name: Update IrsApplication.java
-        run: sed -i "s|API_VERSION = \"${{ env.SEMVER_PATTERN_SED }}\"|API_VERSION = \"${{ inputs.irs-version }}\"|" ${{ env.IRS_APPLICATION_PATH }}
+        run: sed -i "s|${{ steps.main-changelog-update.outputs.previous-irs-version }}|${{ inputs.irs-version }}|" ${{ env.IRS_APPLICATION_PATH }}
 
       - name: Update irs-api.yaml
         uses: mikefarah/yq@v4.44.2
