@@ -24,7 +24,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
 - Updated contributing, notice, and readme files for TRG 7 #681
 - Handling of expired policies when approving a notification eclipse-tractusx/traceability-foss#639
-- The project now uses JDK version 21 instead of 17.
+- Upgrade to JDK 21
 
 ## Added
 

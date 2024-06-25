@@ -26,8 +26,6 @@
         <exclude name="AtLeastOneConstructor"/>
         <!-- Clashes with the usage of var -->
         <exclude name="UseDiamondOperator"/>
-        <!-- Counterproductive -->
-        <exclude name="CommentDefaultAccessModifier"/>
     </rule>
     <rule ref="category/java/design.xml">
         <exclude name="LoosePackageCoupling"/>

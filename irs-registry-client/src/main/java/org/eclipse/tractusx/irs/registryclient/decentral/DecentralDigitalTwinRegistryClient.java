@@ -92,7 +92,7 @@ public class DecentralDigitalTwinRegistryClient {
         return Base64.getEncoder().encodeToString(serializationHelper.serialize(assetIds));
     }
 
-    @SuppressWarnings({ "PMD.LooseCoupling" })
+    @SuppressWarnings({ "PMD.LooseCoupling" }) // intended use of implementation class HttpHeaders
     private HttpHeaders headers(final EndpointDataReference dataReference) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));

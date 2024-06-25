@@ -63,7 +63,7 @@ public class DigitalTwinRegistryCreateShellService {
                 "Failed to create shell %s".formatted(assetAdministrationShellDescriptor.getGlobalAssetId()));
     }
 
-    @SuppressWarnings({ "PMD.LooseCoupling" })
+    @SuppressWarnings({ "PMD.LooseCoupling" }) // intended use of implementation class HttpHeaders
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
