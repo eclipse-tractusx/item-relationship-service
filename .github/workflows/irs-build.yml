@@ -21,15 +21,24 @@ on:
 jobs:
   init:
     runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Preparing variables"
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN != '' }}
+      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY != '' }}
+      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION != '' }}
+      SONAR_CONFIGURED: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
     outputs:
       image_namespace: tractusx
       image_name: irs-api
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
       sonar_configured: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
-      github_token_available: ${{ secrets.GITHUB_TOKEN != '' }}
+      github_token_available: ${{ env.SONAR_CONFIGURED }}
+    steps:
+      - run: |
+          echo "Preparing variables"
+          echo "SONAR_CONFIGURED: ${{ env.SONAR_CONFIGURED }}"
+          echo "SONAR_CONFIGURED: ${{ env.SONAR_ORGANIZATION }}"
+          echo "SONAR_CONFIGURED: ${{ env.SONAR_PROJECT_KEY }}"
+          echo "SONAR_CONFIGURED: ${{ env.SONAR_TOKEN }}"
 
   dbg:
     runs-on: ubuntu-latest
