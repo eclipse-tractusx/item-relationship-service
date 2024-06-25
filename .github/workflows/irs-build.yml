@@ -65,7 +65,7 @@ jobs:
     needs: [init]
     # No need to run if we cannot use the sonar token
     if: >-
-      needs.init.outputs.sonar_configured
+      needs.init.outputs.sonar_configured == true
       && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
       && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
