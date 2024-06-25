@@ -22,9 +22,9 @@ jobs:
   init:
     runs-on: ubuntu-latest
     env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN != '' }}
-      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY != '' }}
-      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION != '' }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+      SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
       SONAR_CONFIGURED: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
     outputs:
       image_namespace: tractusx
@@ -36,9 +36,9 @@ jobs:
       - run: |
           echo "Preparing variables"
           echo "SONAR_CONFIGURED: ${{ env.SONAR_CONFIGURED }}"
-          echo "SONAR_CONFIGURED: ${{ env.SONAR_ORGANIZATION }}"
-          echo "SONAR_CONFIGURED: ${{ env.SONAR_PROJECT_KEY }}"
-          echo "SONAR_CONFIGURED: ${{ env.SONAR_TOKEN }}"
+          echo "SONAR_ORGANIZATION: ${{ env.SONAR_ORGANIZATION }}"
+          echo "SONAR_PROJECT_KEY: ${{ env.SONAR_PROJECT_KEY }}"
+          echo "SONAR_TOKEN: ${{ env.SONAR_TOKEN }}"
 
   dbg:
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
     needs: [init]
     # No need to run if we cannot use the sonar token
     if: >-
-      needs.init.outputs.sonar_configured == true
+      needs.init.outputs.sonar_configured == 'true'
       && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
       && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
