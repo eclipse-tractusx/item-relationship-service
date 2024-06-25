@@ -24,13 +24,19 @@ jobs:
     steps:
       - run: |
           echo "Preparing variables"
-          echo "needs.init.outputs.sonar_configured: ${{ needs.init.outputs.sonar_configured }}"
     outputs:
       image_namespace: tractusx
       image_name: irs-api
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
       sonar_configured: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
       github_token_available: ${{ secrets.GITHUB_TOKEN != '' }}
+
+  dbg:
+    runs-on: ubuntu-latest
+    needs: [init]
+    steps:
+      - run: |
+          echo "needs.init.outputs.sonar_configured: ${{ needs.init.outputs.sonar_configured }}"
 
   build:
     runs-on: ubuntu-latest
