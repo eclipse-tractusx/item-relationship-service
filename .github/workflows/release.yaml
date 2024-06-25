@@ -104,7 +104,7 @@ jobs:
              fi
           
            else
-             helm_changelog_placeholder_line_number+1)) s|^|\n### Changed\n\n- Update IRS version to ${{ inputs.irs-version }}\n|" ${{ env.HELM_CHANGELOG_PATH }}
+             sed -i "$((helm_changelog_placeholder_line_number+1)) s|^|\n### Changed\n\n- Update IRS version to ${{ inputs.irs-version }}\n|" ${{ env.HELM_CHANGELOG_PATH }}
            fi
           fi
 
