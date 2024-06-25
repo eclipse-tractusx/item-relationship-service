@@ -31,14 +31,11 @@ jobs:
       image_name: irs-api
       docker_hub_user: ${{ secrets.DOCKER_HUB_USER }}
       sonar_configured: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
-      github_token_available: ${{ env.SONAR_CONFIGURED }}
     steps:
       - run: |
           echo "Preparing variables"
           echo "SONAR_CONFIGURED: ${{ env.SONAR_CONFIGURED }}"
-          echo "SONAR_ORGANIZATION: ${{ env.SONAR_ORGANIZATION }}"
-          echo "SONAR_PROJECT_KEY: ${{ env.SONAR_PROJECT_KEY }}"
-          echo "SONAR_TOKEN: ${{ env.SONAR_TOKEN }}"
+
 
   dbg:
     runs-on: ubuntu-latest
@@ -46,6 +43,7 @@ jobs:
     steps:
       - run: |
           echo "needs.init.outputs.sonar_configured: ${{ needs.init.outputs.sonar_configured }}"
+          
 
   build:
     runs-on: ubuntu-latest
