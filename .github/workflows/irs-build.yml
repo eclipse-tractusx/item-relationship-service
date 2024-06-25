@@ -138,8 +138,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: Push image (DockerHub)
-        if: needs.init.outputs.docker_hub_user != ''
-        # nur pushen wenn nicht auf pull request
+        if: needs.init.outputs.docker_hub_user != '' && github.event_name != 'pull_request'
         run: |
           docker tag ${{ matrix.image }} ${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}:${{ steps.version.outputs.image_tag }}
           docker push ${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}:${{ steps.version.outputs.image_tag }}
