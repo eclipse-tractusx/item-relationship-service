@@ -1,20 +1,31 @@
 name: Release IRS
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      new-irs-version:
+      irs-version:
         description: 'New IRS version'
         required: true
         type: string
-      previous-irs-version:
-        description: 'Previous IRS version'
-        required: true
-        type: string
+
       helm-chart-version:
         description: 'New Helm Chart version'
         required: true
         type: string
+
+      add-change-to-helm-changelog:
+        description: 'Add "Update IRS to ..." change to Helm Chart changelog'
+        required: true
+        type: boolean
+
+env:
+  IRS_APPLICATION_PATH: 'irs-api/src/main/java/org/eclipse/tractusx/irs/IrsApplication.java'
+  CHANGELOG_PATH: 'CHANGELOG.md'
+  OPENAPI_SPEC_PATH: 'docs/src/api/irs-api.yaml'
+  HELM_CHANGELOG_PATH: 'charts/item-relationship-service/CHANGELOG.md'
+  SEMVER_PATTERN: '[0-9]+\.[0-9]+\.[0-9]+'
+  SEMVER_PATTERN_SED: '[0-9]\+\.[0-9]\+\.[0-9]\+\'
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   release:
@@ -22,43 +33,177 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate that workflow inputs are SemVer strings
+        run: |
+          matched_irs_semver_string=$(echo '${{ inputs.irs-version }}" | grep -Ex "${{ env.SEMVER_PATTERN }}" || echo "")
+          matched_helm_chart_semver_string=$(echo "${{ inputs.helm-chart-version }}" | grep -Ex "${{ env.SEMVER_PATTERN }}" || echo "")
+          if [[ -z "$matched_irs_semver_string"  || -z "$matched_helm_chart_semver_string" ]]; then
+              echo "At least one of the version numbers ${{ inputs.irs-version }} or ${{ inputs.helm-chart-version }} is not a SemVer string."
+              exit 1
+          fi
+        continue-on-error: false
+
+      - name: Validate that IRS and Helm Chart versions don't exist yet
+        run: |
+          # IRS version can be checked via git tag since every release has a tag
+          matched_irs_version=$(git tag | grep -Eo "${{ inputs.irs-version }}" || echo "")
+          # extract from Helm Chart changelog
+          matched_helm_chart_version=$(grep -Eo "## \[${{ inputs.helm-chart-version }}\]" ${{ env.HELM_CHANGELOG_PATH }} || echo "")
+          
+          if [[ -n "$matched_irs_version" || -n "$matched_helm_chart_version" ]]; then
+              echo "At least one of the version numbers ${{ inputs.irs-version }} or ${{ inputs.helm-chart-version }} already exists."
+              exit 1
+          fi
+        continue-on-error: false
+
+      - name: Update changelog
+        run: |
+          date=$(date +"%Y-%m-%d")
+
+          # get line number of uppermost comparison url at bottom of changelog ("[Unreleased]: https://github.com/.../version...HEAD")
+          latest_comparison_url_line_number=$(cat -n ${{ env.CHANGELOG_PATH }} | grep -Eoi "[0-9]+.\[Unreleased\]" | grep -Eo "[0-9]+")
+
+          # previous version can be extracted from line below uppermost comparison
+          previous_irs_version=$(awk "NR==$((latest_comparison_url_line_number+1))" ${{ env.CHANGELOG_PATH }} | grep -Eo "\[${{ env.SEMVER_PATTERN }}\]" | tr -d "[]")
+
+          # correct uppermost comparison
+          sed -i "$latest_comparison_url_line_number s|${{ env.SEMVER_PATTERN_SED }}\.\.\.HEAD|${{ inputs.irs-version }}...HEAD|" ${{ env.CHANGELOG_PATH }}         
+
+          # insert new comparison below uppermost one
+          sed -i "$((latest_comparison_url_line_number+1)) s|^|[${{ inputs.irs-version }}]: \
+          https://github.com/eclipse-tractusx/item-relationship-service/compare/$previous_irs_version...${{ inputs.irs-version }}\n|" ${{ env.CHANGELOG_PATH }}        
+
+          # replace placeholder
+          placeholder_line_number=$(cat -n ${{ env.CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
+          sed -i "$((placeholder_line_number+1)) s|^|\n## [${{ inputs.irs-version }}] - $date\n|" ${{ env.CHANGELOG_PATH }}
+
+      - name: Update Helm changelog
+        run: |
+          date=$(date +"%Y-%m-%d")
+          
+          ### update Helm Chart directory's CHANGELOG.md ###
+          helm_changelog_placeholder_line_number=$(cat -n ${{ env.HELM_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
+
+          if [[ "${{ inputs.add-change-to-helm-changelog }}" == "true" ]]; then
+           # get line number of first header which is not placeholder
+           next_header_line_number=$(cat -n ${{ env.HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.## \[${{ env.SEMVER_PATTERN }}\]" | grep -Eo "^[0-9]+")
+          
+           # get line number of first  "### Changed" section
+           first_changed_section_line_number=$(cat -n ${{ env.HELM_CHANGELOG_PATH }} | grep -Eo -m 1 "[0-9]+.### Changed" | grep -Eo "[0-9]+")
+          
+           # "### Changed" is already present for current changelog if it comes before next header -> just insert line below
+           if [[ $first_changed_section_line_number -lt $next_header_line_number ]]; then
+          
+             # check if markdown was properly formatted (with blank line between "### Changed" and first change)
+             line_after=$(awk "NR==$((first_changed_section_line_number+1))" ${{ env.HELM_CHANGELOG_PATH }})
+          
+             if [[ "$line_after" == "" ]]; then
+               sed -i "$((first_changed_section_line_number+1)) s|^|\n- Update IRS version to ${{ inputs.irs-version }}|" ${{ env.HELM_CHANGELOG_PATH }}
+             else # format properly with blank line
+               sed -i "$((first_changed_section_line_number+1)) s|^|\n- Update IRS version to ${{ inputs.irs-version }}\n|" ${{ env.HELM_CHANGELOG_PATH }}
+             fi
+          
+           else
+             helm_changelog_placeholder_line_number+1)) s|^|\n### Changed\n\n- Update IRS version to ${{ inputs.irs-version }}\n|" ${{ env.HELM_CHANGELOG_PATH }}
+           fi
+          fi
+
+          # replace placeholder
+          helm_changelog_placeholder_line_number=$(cat -n ${{ env.HELM_CHANGELOG_PATH }} | grep -Eoi "[0-9]+.## \[Unreleased\]" | grep -Eo "[0-9]+")
+          sed -i "$((helm_changelog_placeholder_line_number+1)) s|^|\n## [${{ inputs.helm-chart-version }}] - $date\n|" ${{ env.HELM_CHANGELOG_PATH }}
+
+      - name: Update irs-api.yaml
+        run: |
+          openapi_spec_irs_version_line_number=$(cat -n ${{ env.OPENAPI_SPEC_PATH }} | grep -Eo -m 1 "[0-9]+.+version: ${{ env.SEMVER_PATTERN }}" | grep -Eo "^[0-9]+")
+          sed -i "$openapi_spec_irs_version_line_number s|${{ env.SEMVER_PATTERN_SED }}|${{ inputs.irs-version }}|" ${{ env.OPENAPI_SPEC_PATH }}
+
+      - name: Update IrsApplication.java
+        run: sed -i "s|API_VERSION = \"${{ env.SEMVER_PATTERN_SED }}\"|API_VERSION = \"${{ inputs.irs-version }}\"|" ${{ env.IRS_APPLICATION_PATH }}
+
       - name: Update Chart.yaml appVersion
         uses: mikefarah/yq@v4.44.2
         with:
-          cmd: yq -i eval '.appVersion = "${{ inputs.new-irs-version }}"' charts/item-relationship-service/Chart.yaml
+          cmd: yq -i eval '.appVersion = "${{ inputs.irs-version }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Update Chart.yaml version
         uses: mikefarah/yq@v4.44.2
         with:
           cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' charts/item-relationship-service/Chart.yaml
 
-      - name: Prepare Helm release
+      - name: Update docs for release
+        id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "chore(release): Prepare release for Helm version ${{ inputs.helm-chart-version }}"
-          branch: chore/prepare-helm-release-${{ inputs.helm-chart-version }}
-          base: main
+          commit-message: 'chore(docs): Update docs for IRS release ${{ inputs.irs-version }}'
+          branch: chore/docs-update-release-${{ inputs.irs-version }}
           delete-branch: true
-          title: Prepare Helm release for next version
-          body: |
-            This PR prepares the Helm chart release for version ${{ inputs.helm-chart-version }}. 
-            Please check whether the Chart was updated correctly and that the CHANGELOG contains the relevant information
-            for this release. Also, make sure that the values.yaml is correct before merging this PR.
+          title: "chore: updated docs for release"
+          body: This PR prepares the docs and the Helm chart for IRS release ${{ inputs.irs-version }}.
+            Please check whether everything was updated correctly. Once this PR is merged, the release process will continue automatically.
+
+      - name: Wait for pull request merge
+        run: |
+          pull_request_number=${{ steps.cpr.outputs.pull-request-number }}
+          pull_request_merged="False"
+          seconds_waited_for_merge=0
+          # set duration between api requests
+          sleep_interval_length=30 # seconds
+          timeout_in_minutes=15
+          
+          echo "Waiting for merge of PR #$pull_request_number."
+          
+          while [[ "$pull_request_merged" == "False" ]]
+          do
+            # give some time to merge pull request
+            sleep "$sleep_interval_length"s
+          
+            # retrieve pr status using GH API's pull requests endpoint with GH CLI
+            pr_status=$(gh pr view $pull_request_number --json state --jq ".state")
+          
+            case $pr_status in
+          
+              MERGED)
+                pull_request_merged="True"
+                echo "PR #$pull_request_number merged, continuing the workflow."
+                ;;
+          
+              OPEN)
+                seconds_waited_for_merge=$((seconds_waited_for_merge+sleep_interval_length))
+          
+                # abort workflow when having waited for more than allowed time
+                if [[ $seconds_waited_for_merge -gt $((timeout_in_minutes*60)) ]]; then
+                  echo "Timeout waiting for merge of PR #$pull_request_number, aborting the workflow."
+                  exit 1
+                fi                
+                ;;
+          
+              CLOSED)
+                echo "PR #$pull_request_number was closed, aborting the workflow."
+                exit 1
+                ;;
+          
+            esac
+          
+          done
+        continue-on-error: false
+
+      - name: Create and push new Git tag for release
+        run: git tag ${{ inputs.irs-version }} && git push ${{ inputs.irs-version }}
 
       - name: Extract changelog text
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
-          sed -n -e '/## \[${{ inputs.new-irs-version }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
-          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.new-irs-version }} >> $GITHUB_ENV
+          sed -n -e '/## \[${{ inputs.irs-version }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
+          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.irs-version }} >> $GITHUB_ENV
           echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Create IRS release
         uses: softprops/action-gh-release@v2
         with:
           body: ${{ env.CHANGELOG }}
-          tag_name: ${{ inputs.new-irs-version }}
+          tag_name: ${{ inputs.irs-version }}
 
   publish-to-swaggerhub:
     name: "Publish OpenAPI spec to Swaggerhub"
@@ -68,5 +213,5 @@ jobs:
       - release
     uses: ./.github/workflows/publish-swagger-hub.yml
     with:
-      version: ${{ inputs.new-irs-version }}
+      version: ${{ inputs.irs-version }}
     secrets: inherit
