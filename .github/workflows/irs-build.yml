@@ -22,7 +22,9 @@ jobs:
   init:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Preparing variables"
+      - run: |
+          echo "Preparing variables"
+          echo "needs.init.outputs.sonar_configured: ${{ needs.init.outputs.sonar_configured }}"
     outputs:
       image_namespace: tractusx
       image_name: irs-api
