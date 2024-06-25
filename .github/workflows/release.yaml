@@ -136,10 +136,10 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: 'chore(docs): Update docs for IRS release ${{ inputs.irs-version }}'
+          commit-message: 'chore(docs): updated docs and Helm chart for IRS release ${{ inputs.irs-version }}'
           branch: chore/docs-update-release-${{ inputs.irs-version }}
           delete-branch: true
-          title: "chore: updated docs for release"
+          title: "chore: updated docs and Helm chart for release"
           body: This PR prepares the docs and the Helm chart for IRS release ${{ inputs.irs-version }}.
             Please check whether everything was updated correctly. Once this PR is merged, the release process will continue automatically.
 
