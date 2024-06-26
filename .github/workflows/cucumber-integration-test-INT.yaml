@@ -25,14 +25,13 @@ jobs:
             echo "Error: Missing secret: Please configure INT_ADMIN_USER_API_KEY."
             exit 1
           fi
-# TODO it this really required?
-#      - name: Check if IRS_CUCUMBER_PUBLISH_TOKEN is defined
-#        run: |
-#          if [[ -z "${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}" ]]; then
-#            echo "Error: Missing secret: Please configure IRS_CUCUMBER_PUBLISH_TOKEN."
-#            exit 1
-#          fi
-#        shell: bash
+      - name: Check if IRS_CUCUMBER_PUBLISH_TOKEN is defined
+        run: |
+          if [[ -z "${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}" ]]; then
+            echo "Error: Missing secret: Please configure IRS_CUCUMBER_PUBLISH_TOKEN."
+            exit 1
+          fi
+        shell: bash
 
   trigger-integration-test:
     needs: check-config

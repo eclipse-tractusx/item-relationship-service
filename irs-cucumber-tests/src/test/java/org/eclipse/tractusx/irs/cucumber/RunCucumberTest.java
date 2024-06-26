@@ -38,15 +38,4 @@ import org.junit.platform.suite.api.Suite;
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME,
                         value = "pretty,junit:target/cucumber-junit-report.xml,html:target/report.html")
 public class RunCucumberTest {
-
-    //    private static final String PUBLISH_REPORT_PROPERTY = "publish.report";
-    //
-    //    static {
-    //        String token = "CUCUMBER_TOKEN_IRS_PLACEHOLDER";
-    //        if (StringUtils.isNotBlank(token)) {
-    //            System.setProperty(PLUGIN_PROPERTY_NAME,
-    //                    "pretty,junit:target/cucumber-junit-report.xml,html:target/report.html");
-    //            System.setProperty(PLUGIN_PUBLISH_TOKEN_PROPERTY_NAME, token);
-    //        }
-    //    }
 }
