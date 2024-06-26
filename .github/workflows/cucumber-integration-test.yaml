@@ -15,7 +15,36 @@ on:
         type: string
 
 jobs:
+
+  check-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for required secrets
+        run: |
+          CONFIG_OK=false
+          
+          if [[ -z "${{ secrets.regularUserApiKey }}" ]]; then
+            echo "Error: Secret regularUserApiKey is not defined."
+            CONFIG_OK=true
+          fi
+          
+          if [[ -z "${{ secrets.adminUserApiKey }}" ]]; then
+            echo "Error: Secret adminUserApiKey is not defined."
+            CONFIG_OK=true
+          fi
+          
+          if [[ -z "${{ secrets.cucumberPublishToken }}" ]]; then
+            echo "Error: Secret cucumberPublishToken is not defined."
+            CONFIG_OK=true
+          fi
+          
+          if [ "$CONFIG_OK" = true ]; then
+            exit 1
+          fi
+        shell: bash
+
   build:
+    needs: check-config
     runs-on: ubuntu-latest
 
     steps:
