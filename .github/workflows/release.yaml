@@ -189,15 +189,15 @@ jobs:
           done
         continue-on-error: false
 
-      - name: Create and push new Git tag for release
-        run: git tag ${{ inputs.irs-version }} && git push origin ${{ inputs.irs-version }}
+      - name: Create and push new Git tag for release and pull latest changes
+        run: git tag ${{ inputs.irs-version }} && git push origin ${{ inputs.irs-version }} && git pull
 
       - name: Extract changelog text
         # See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
-          sed -n -e '/## \[${{ inputs.irs-version }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
+          sed -n -e '/## \[${{ inputs.irs-version }}\]/,/## \[/ p' ${{ env.CHANGELOG_PATH }} | head -n -1 | tail -n +2 >> $GITHUB_ENV
           echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare\
           /${{ steps.main-changelog-update.outputs.previous-irs-version }}...${{ inputs.irs-version }} >> $GITHUB_ENV
           echo "$EOF" >> "$GITHUB_ENV"
