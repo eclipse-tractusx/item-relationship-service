@@ -22,9 +22,13 @@ package org.eclipse.tractusx.irs.edc.client.util;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * Url Validator since apache commons validator is too strict.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UrlValidator {
 
     /**
