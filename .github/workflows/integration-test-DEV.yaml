@@ -2,6 +2,11 @@ name: IRS DEV Cucumber Integration test execution
 
 on:
   workflow_dispatch: # Trigger manually
+    inputs:
+      additionalFilter:
+        description: 'Additional execution filter'
+        required: false
+        default: ''
   push:
     branches:
       - 'main'
