@@ -24,17 +24,17 @@ jobs:
           CONFIG_OK=false
           
           if [[ -z "${{ secrets.regularUserApiKey }}" ]]; then
-            echo "Error: Secret regularUserApiKey is not defined."
+            echo "Missing secret: Please configure the regular user API key."
             CONFIG_OK=true
           fi
           
           if [[ -z "${{ secrets.adminUserApiKey }}" ]]; then
-            echo "Error: Secret adminUserApiKey is not defined."
+            echo "Missing secret: Please configure the admin user API key."
             CONFIG_OK=true
           fi
           
           if [[ -z "${{ secrets.cucumberPublishToken }}" ]]; then
-            echo "Error: Secret cucumberPublishToken is not defined."
+            echo "Missing secret: Please confifure the cucumber publish token."
             CONFIG_OK=true
           fi
           
