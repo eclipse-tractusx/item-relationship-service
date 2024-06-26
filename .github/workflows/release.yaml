@@ -198,7 +198,8 @@ jobs:
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "CHANGELOG<<$EOF" >> $GITHUB_ENV
           sed -n -e '/## \[${{ inputs.irs-version }}\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> $GITHUB_ENV
-          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare/${{ inputs.previous-irs-version }}...${{ inputs.irs-version }} >> $GITHUB_ENV
+          echo **Full Changelog**: ${{ github.server_url }}/${{ github.repository }}/compare\
+          /${{ steps.main-changelog-update.outputs.previous-irs-version }}...${{ inputs.irs-version }} >> $GITHUB_ENV
           echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Create IRS release
