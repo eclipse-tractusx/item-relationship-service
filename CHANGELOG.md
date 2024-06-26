@@ -25,6 +25,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
 - Updated contributing, notice, and readme files for TRG 7 #681
 - Handling of expired policies when approving a notification eclipse-tractusx/traceability-foss#639
+- Improve validation for URLs returned by discovery service and dspEndpoint to allow custom top-level-domains. #226
 
 ## Added
 
