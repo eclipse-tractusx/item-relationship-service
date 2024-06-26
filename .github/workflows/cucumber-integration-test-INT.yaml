@@ -9,6 +9,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+
+  check-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if required secrets are defined
+        run: |
+          if [[ -z "${{ secrets.INT_REGULAR_USER_API_KEY }}" ]]; then
+            echo "Error: Secret INT_REGULAR_USER_API_KEY is not defined."
+            exit 1
+          fi
+          if [[ -z "${{ secrets.INT_ADMIN_USER_API_KEY }}" ]]; then
+            echo "Error: Secret INT_ADMIN_USER_API_KEY is not defined."
+            exit 1
+          fi
+          if [[ -z "${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}" ]]; then
+            echo "Error: Secret IRS_CUCUMBER_PUBLISH_TOKEN is not defined."
+            exit 1
+          fi
+        shell: bash
+
   trigger-integration-test:
     uses: ./.github/workflows/cucumber-integration-test.yaml
     secrets:
