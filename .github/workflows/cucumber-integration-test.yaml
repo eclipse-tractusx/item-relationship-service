@@ -16,35 +16,7 @@ on:
 
 jobs:
 
-  check-config:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check for required secrets
-        run: |
-          CONFIG_OK=false
-          
-          if [[ -z "${{ secrets.regularUserApiKey }}" ]]; then
-            echo "Missing secret: Please configure the regular user API key."
-            CONFIG_OK=true
-          fi
-          
-          if [[ -z "${{ secrets.adminUserApiKey }}" ]]; then
-            echo "Missing secret: Please configure the admin user API key."
-            CONFIG_OK=true
-          fi
-          
-          if [[ -z "${{ secrets.cucumberPublishToken }}" ]]; then
-            echo "Missing secret: Please confifure the cucumber publish token."
-            CONFIG_OK=true
-          fi
-          
-          if [ "$CONFIG_OK" = true ]; then
-            exit 1
-          fi
-        shell: bash
-
   build:
-    needs: check-config
     runs-on: ubuntu-latest
 
     steps:
