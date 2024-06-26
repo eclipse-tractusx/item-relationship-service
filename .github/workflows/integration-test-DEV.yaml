@@ -3,10 +3,10 @@ name: IRS DEV Cucumber Integration test execution
 on:
   workflow_dispatch: # Trigger manually
     inputs:
-      additionalFilter:
-        description: 'Additional execution filter'
+      executionFilter:
+        description: 'Execution filter'
         required: false
-        default: ''
+        default: '!Ignore & !INACTIVE & INTEGRATION_TEST & DEV'
   push:
     branches:
       - 'main'
@@ -52,31 +52,12 @@ jobs:
           fi
         shell: bash
 
-
-  prepare-execution-filter:
-    runs-on: ubuntu-latest
-    needs: check-config
-    outputs:
-      executionFilter: ${{ steps.set-filter.outputs.executionFilter }}
-    steps:
-      - name: Set execution filter
-        id: set-filter
-        run: |
-          base_filter="!Ignore & !INACTIVE & INTEGRATION_TEST & DEV"
-          if [ -n "${{ github.event.inputs.additionalFilter }}" ]; then
-            execution_filter="${base_filter} & ${{ github.event.inputs.additionalFilter }}"
-          else
-            execution_filter="${base_filter}"
-          fi
-          echo "::set-output name=executionFilter::${execution_filter}"
-          
-
   trigger-integration-test:
-    needs: prepare-execution-filter
+    needs: check-config
     uses: ./.github/workflows/cucumber-integration-test.yaml
     secrets:
       regularUserApiKey: ${{ secrets.DEV_REGULAR_USER_API_KEY }}
       adminUserApiKey: ${{ secrets.DEV_ADMIN_USER_API_KEY }}
       cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
     with:
-      executionFilter: ${{ needs.prepare-execution-filter.outputs.executionFilter }}
+      executionFilter: ${{ github.event.inputs.executionFilter }}
