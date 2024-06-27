@@ -17,6 +17,7 @@ on:
         description: 'Add "Update IRS to ..." change to Helm Chart changelog'
         required: true
         type: boolean
+        default: true
 
 env:
   IRS_APPLICATION_PATH: 'irs-api/src/main/java/org/eclipse/tractusx/irs/IrsApplication.java'
@@ -207,14 +208,3 @@ jobs:
         with:
           body: ${{ env.CHANGELOG }}
           tag_name: ${{ inputs.irs-version }}
-
-  publish-to-swaggerhub:
-    name: "Publish OpenAPI spec to Swaggerhub"
-    permissions:
-      contents: read
-    needs:
-      - release
-    uses: ./.github/workflows/publish-swagger-hub.yml
-    with:
-      version: ${{ inputs.irs-version }}
-    secrets: inherit
