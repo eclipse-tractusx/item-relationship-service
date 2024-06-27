@@ -17,19 +17,7 @@ on:
         type: string
 
 jobs:
-
-  check-repository:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check repository
-        run: |
-          if [ "${{ github.repository }}" != "eclipse-tractusx/your-repository-name" ]; then
-            echo "Releases must be created on Tractus-X only."
-            exit 1
-          fi
-
   release:
-    needs: check-repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

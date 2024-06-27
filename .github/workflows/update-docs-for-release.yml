@@ -28,20 +28,8 @@ on:
           - 'No'
         default: 'No'
 jobs:
-
-  check-repository:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check repository
-        run: |
-          if [ "${{ github.repository }}" != "eclipse-tractusx/your-repository-name" ]; then
-            echo "Releases must be created on Tractus-X only."
-            exit 1
-          fi
-
   update-docs-for-release:
     runs-on: ubuntu-latest
-    needs: check-repository
     outputs:
       previous-irs-version: ${{ steps.update-docs.outputs.previous-irs-version }}
 
