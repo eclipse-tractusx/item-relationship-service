@@ -51,17 +51,21 @@ public class JsonLdConfiguration {
     public static final String NAMESPACE_EDC_PARTICIPANT_ID = NAMESPACE_EDC + "participantId";
     public static final String NAMESPACE_EDC_ID = NAMESPACE_EDC + "id";
     public static final String NAMESPACE_TRACTUSX = "https://w3id.org/tractusx/v0.0.1/ns/";
-    public static final String NAMESPACE_DCT = "https://purl.org/dc/terms/";
+    public static final String NAMESPACE_DCT = "http://purl.org/dc/terms/";
     public static final String JSON_LD_OBJECT_MAPPER = "jsonLdObjectMapper";
+    public static final String NAMESPACE_CATENAX_POLICY = "https://w3id.org/catenax/policy/";
+    public static final String NAMESPACE_CX_TAXONOMY = "https://w3id.org/catenax/taxonomy#";
+    public static final String NAMESPACE_CX_ONTOLOGY = "https://w3id.org/catenax/ontology/common#";
 
     @Bean /* package */ TitaniumJsonLd titaniumJsonLd(final Monitor monitor) {
         final TitaniumJsonLd titaniumJsonLd = new TitaniumJsonLd(monitor);
-        titaniumJsonLd.registerNamespace("odrl", JsonLdConfiguration.NAMESPACE_ODRL);
+        titaniumJsonLd.registerNamespace("odrl", NAMESPACE_ODRL);
         titaniumJsonLd.registerNamespace("dct", NAMESPACE_DCT);
         titaniumJsonLd.registerNamespace("tx", NAMESPACE_TRACTUSX);
         titaniumJsonLd.registerNamespace("edc", NAMESPACE_EDC);
-        titaniumJsonLd.registerNamespace("dcat", JsonLdConfiguration.NAMESPACE_DCAT);
+        titaniumJsonLd.registerNamespace("dcat", NAMESPACE_DCAT);
         titaniumJsonLd.registerNamespace("dspace", NAMESPACE_DSPACE);
+        titaniumJsonLd.registerNamespace("cx-policy", NAMESPACE_CATENAX_POLICY);
         return titaniumJsonLd;
     }
 

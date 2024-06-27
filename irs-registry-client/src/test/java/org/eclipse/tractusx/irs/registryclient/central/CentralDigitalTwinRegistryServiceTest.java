@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.github.resilience4j.core.functions.Either;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
@@ -58,8 +59,6 @@ import org.springframework.web.client.RestClientException;
 @ExtendWith(MockitoExtension.class)
 class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAware {
 
-    private final String singleLevelBomAsBuiltURN = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
-    private final String serialPartURN = "urn:samm:io.catenax.serial_part:3.0.0#SerialPart";
     private DigitalTwinRegistryService digitalTwinRegistryService;
     @Mock
     private DigitalTwinRegistryClient dtRegistryClientMock;
@@ -94,8 +93,9 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
         assertThat(endpoint.getProtocolInformation().getSubprotocolBody()).contains(existingCatenaXId);
         assertThat(shellEndpoints.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
-                singleLevelBomAsBuiltURN);
-        assertThat(shellEndpoints.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartURN);
+                SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
+        assertThat(shellEndpoints.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SemanticModelNames.SERIAL_PART_3_0_0);
     }
 
     @Test
@@ -197,6 +197,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);
 
-        assertThat(endpoint.getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltURN);
+        assertThat(endpoint.getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
     }
 }

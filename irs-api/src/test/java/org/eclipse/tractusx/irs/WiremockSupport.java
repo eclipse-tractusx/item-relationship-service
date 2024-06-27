@@ -27,12 +27,12 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATCH_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 import static org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport.semanticHubWillReturnAllModels;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.DATAPLANE_PUBLIC_URL;
 import static org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport.submodelDescriptor;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
-import static org.eclipse.tractusx.irs.util.TestMother.batchAspectName;
-import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -55,6 +55,9 @@ import org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 
 public class WiremockSupport {
+
+    public static final String SUBMODEL_SUFFIX = "/\\$value";
+
     public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
         final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
                                                    .cid(contractAgreementId)
@@ -85,7 +88,7 @@ public class WiremockSupport {
         return RegisterJob.builder()
                           .key(PartChainIdentificationKey.builder().bpn(bpn).globalAssetId(globalAssetId).build())
                           .depth(depth)
-                          .aspects(List.of(batchAspectName, singleLevelBomAsBuiltAspectName))
+                          .aspects(List.of(BATCH_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0))
                           .collectAspects(true)
                           .direction(Direction.DOWNWARD)
                           .build();
@@ -126,7 +129,7 @@ public class WiremockSupport {
     }
 
     static void successfulDataRequests(final String assetId, final String fileName) {
-        stubFor(get(urlPathMatching(DtrWiremockSupport.DATAPLANE_PUBLIC_PATH + "/" + assetId)).willReturn(
+        stubFor(get(urlPathMatching(DtrWiremockSupport.DATAPLANE_PUBLIC_PATH + "/" + assetId+ SUBMODEL_SUFFIX)).willReturn(
                 responseWithStatus(200).withBodyFile(fileName)));
     }
 
@@ -144,12 +147,12 @@ public class WiremockSupport {
         return UUID.randomUUID().toString();
     }
 
-    static String submodelRequest(final String edcAssetId, final String SingleLevelBomAsBuilt, final String semanticId,
+    static String submodelRequest(final String edcAssetId, final String idShort, final String semanticId,
             final String sbomFileName) {
-        final String sbomId = randomUUIDwithPrefix();
-        final String submoodel = submodelDescriptor(DATAPLANE_PUBLIC_URL, edcAssetId,
-                DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, SingleLevelBomAsBuilt, sbomId, semanticId);
-        successfulDataRequests(sbomId, sbomFileName);
-        return submoodel;
+        final String submodelDescriptorId = randomUUIDwithPrefix();
+        final String submodel = submodelDescriptor(DATAPLANE_PUBLIC_URL, edcAssetId,
+                DiscoveryServiceWiremockSupport.CONTROLPLANE_PUBLIC_URL, idShort, submodelDescriptorId, semanticId);
+        successfulDataRequests(submodelDescriptorId, sbomFileName);
+        return submodel;
     }
 }

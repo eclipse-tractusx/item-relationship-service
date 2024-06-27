@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import os
+import re
 from box import Box
 
 
@@ -49,29 +50,43 @@ def ESS_job_parameter_are_as_requested(response):
     assert parameter.get('depth') == 1
     assert parameter.get('direction') == 'downward'
     aspects_list = parameter.get("aspects")
-    assert 'PartSiteInformationAsPlanned' in aspects_list
-    assert 'PartAsPlanned' in aspects_list
+    assert 'urn:samm:io.catenax.part_site_information_as_planned:1.0.0#PartSiteInformationAsPlanned' in aspects_list
+    assert 'urn:samm:io.catenax.part_as_planned:1.0.1#PartAsPlanned' in aspects_list
 
 
-def tombstone_for_EssValidation_are_correct(response, expectedTombstone):
+def tombstone_for_ess_validation_is_correct(response, expected_error_detail):
+    response_contains_expected_error(response, expected_error_detail, 'EssValidation')
+
+
+def tombstone_for_submodel_validation_is_correct(response, expected_error_detail):
+    response_contains_expected_error(response, expected_error_detail, 'SchemaValidation')
+
+
+def check_tombstones(tombstones, criteria):
+    for tombstone in tombstones:
+        for criterion in criteria:
+            if (tombstone.get("processingError").get("processStep") == criterion.get("processStep") and
+                    tombstone.get("processingError").get("errorDetail") == criterion.get("errorDetail")):
+                return True
+    return False
+
+
+def response_contains_expected_error(response, expected_error_detail, expected_process_step):
     error_list = response.json().get("tombstones")
-
-    for i in error_list:
-        print("Given tombstone: ", i)
-        catenaXId = i.get("catenaXId")
-        print("Given catenaXID: ", catenaXId)
-        processingErrorStep = i.get("processingError").get("processStep")
-        print("Processstep in ProcessingError: ", processingErrorStep)
-        processingErrorDetail = i.get("processingError").get("errorDetail")
-        print("ErrorMessage: ", processingErrorDetail)
-        processingErrorLastAttempt = i.get("processingError").get("lastAttempt")
-        print("LastAttempt: ", processingErrorLastAttempt)
-        processingErrorRetryCounter = i.get("processingError").get("retryCounter")
-        print("RetryCounter: ", processingErrorRetryCounter)
-        assert 'EssValidation' in processingErrorStep
-        assert expectedTombstone in processingErrorDetail
-        assert processingErrorLastAttempt is not None
-        assert 0 is processingErrorRetryCounter
+    criteria = [
+        {
+            "processStep": expected_process_step,
+            "errorDetail": expected_error_detail
+        }
+    ]
+    assert check_tombstones(error_list, criteria) is True
+    for tombstone in error_list:
+        processing_error_last_attempt = tombstone.get("processingError").get("lastAttempt")
+        print("LastAttempt: ", processing_error_last_attempt)
+        processing_error_retry_counter = tombstone.get("processingError").get("retryCounter")
+        print("RetryCounter: ", processing_error_retry_counter)
+        assert processing_error_last_attempt is not None
+        assert 0 == processing_error_retry_counter
 
 
 ############################## /\ ESS helpers /\ ##############################
@@ -87,6 +102,12 @@ def tombstones_are_empty(response):
     print(response.json().get("tombstones"))
     print("Check array is empty ", len(response.json().get("tombstones")))
     assert len(response.json().get("tombstones")) == 0
+
+
+def tombstones_have_size(response, number_of_tombstones):
+    print(response.json().get("tombstones"))
+    print("Check if tombstones have expected number of elements: ", number_of_tombstones)
+    assert len(response.json().get("tombstones")) == number_of_tombstones
 
 
 def tombstones_are_not_empty(response):
@@ -162,7 +183,7 @@ def errors_for_unknown_globalAssetId_are_correct(response):
         assert 'DigitalTwinRequest' in processingErrorStep
         #assert 'Shell for identifier urn:uuid:cce14502-958a-42e1-8bb7-f4f41aaaaaaa not found' in processingErrorDetail #commented out since this error message is not possible currently after DTR changes
         assert processingErrorLastAttempt is not None
-        assert 3 is processingErrorRetryCounter
+        assert 3 == processingErrorRetryCounter
 
 
 def status_of_jobs_are_as_expected(response, expected_status):
@@ -187,7 +208,8 @@ def status_of_all_jobs_are_given(response):
 def errors_for_unknown_requested_globalAssetId_are_correct(response):
     print(response.json().get("messages"))
     error_list = response.json().get("messages")
-    assert 'No job exists with id bc1b4f4f-aa00-4296-8738-e7913c95f2d9' in error_list
+    pattern = r"No job exists with id bc1b4f4f-aa00-4296-8738-e7913c95f2d9 \(errorRef: [0-9a-fA-F-]{36}\)"
+    assert any(re.compile(pattern).search(element) for element in error_list), ( "No element in the list matches the expected error message pattern")
 
 
 def check_timestamps_for_completed_jobs(response):

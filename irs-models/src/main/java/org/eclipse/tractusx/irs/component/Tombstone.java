@@ -61,7 +61,8 @@ public class Tombstone {
     }
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
-            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber, final Map<String, Object> policy) {
+            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber,
+            final Map<String, Object> policy) {
 
         return Tombstone.builder()
                         .endpointURL(endpointURL)

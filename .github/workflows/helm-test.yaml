@@ -35,14 +35,14 @@ jobs:
           version: v0.20.0
 
       - name: Build image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: kind-registry:5000/irs-api:testing
 
       - name: Set up Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
         with:
           version: v3.9.3
 

@@ -23,17 +23,17 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Update Chart.yaml appVersion
-        uses: mikefarah/yq@v4.40.5
+        uses: mikefarah/yq@v4.44.2
         with:
           cmd: yq -i eval '.appVersion = "${{ inputs.new-irs-version }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Update Chart.yaml version
-        uses: mikefarah/yq@v4.40.5
+        uses: mikefarah/yq@v4.44.2
         with:
           cmd: yq -i eval '.version = "${{ inputs.helm-chart-version }}"' charts/item-relationship-service/Chart.yaml
 
       - name: Prepare Helm release
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v6
         with:
           commit-message: "chore(release): Prepare release for Helm version ${{ inputs.helm-chart-version }}"
           branch: chore/prepare-helm-release-${{ inputs.helm-chart-version }}
@@ -55,7 +55,7 @@ jobs:
           echo "$EOF" >> "$GITHUB_ENV"
 
       - name: Create IRS release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           body: ${{ env.CHANGELOG }}
           tag_name: ${{ inputs.new-irs-version }}

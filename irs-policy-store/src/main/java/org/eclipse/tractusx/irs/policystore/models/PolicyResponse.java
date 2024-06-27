@@ -48,7 +48,7 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                                   "validUntil": "2025-12-12T23:59:59.999Z",
                                   "permissions": [
                                       {
-                                          "action": "USE",
+                                          "action": "use",
                                           "constraint": {
                                               "and": [
                                                   {
@@ -56,14 +56,14 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                                                       "operator": {
                                                           "@id": "eq"
                                                       },
-                                                      "odrl:rightOperand": "active"
+                                                      "rightOperand": "active"
                                                   },
                                                   {
                                                       "leftOperand": "PURPOSE",
                                                       "operator": {
                                                           "@id": "eq"
                                                       },
-                                                      "odrl:rightOperand": "ID 3.1 Trace"
+                                                      "rightOperand": "ID 3.1 Trace"
                                                   }
                                               ],
                                               "or": null
@@ -94,7 +94,7 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                 		"policy": {
                 			"odrl:permission": [
                 				{
-                					"odrl:action": "USE",
+                					"odrl:action": "use",
                 					"odrl:constraint": {
                 						"odrl:and": [
                 							{

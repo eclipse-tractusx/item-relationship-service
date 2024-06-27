@@ -37,7 +37,9 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
 /**
  * Public API facade for EDC domain
  */
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.UseObjectForClearerAPI"})
+@SuppressWarnings({ "PMD.ExcessiveImports",
+                    "PMD.UseObjectForClearerAPI"
+})
 public interface EdcSubmodelClient {
 
     CompletableFuture<SubmodelDescriptor> getSubmodelPayload(String connectorEndpoint, String submodelDataplaneUrl,
@@ -52,5 +54,8 @@ public interface EdcSubmodelClient {
     List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String endpointAddress,
             String filterKey, String filterValue, EndpointDataReferenceStatus cachedEndpointDataReference, String bpn)
             throws EdcClientException;
+
+    List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(String endpointAddress,
+            String bpn) throws EdcClientException;
 }
 

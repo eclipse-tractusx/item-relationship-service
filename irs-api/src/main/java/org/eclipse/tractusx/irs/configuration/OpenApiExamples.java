@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.examples.Example;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.AsyncFetchedItems;
 import org.eclipse.tractusx.irs.component.BatchOrderResponse;
 import org.eclipse.tractusx.irs.component.BatchResponse;
@@ -90,8 +91,8 @@ public class OpenApiExamples {
     private static final String SUPPLY_CHAIN_IMPACTED_ASPECT_TYPE = "supply_chain_impacted";
     private static final String SUPPLY_CHAIN_IMPACTED_KEY = "supplyChainImpacted";
     private static final String SUPPLY_CHAIN_IMPACTER_RESULT = "YES";
-    private static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT = "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt";
-    private static final String SERIAL_PART_ASPECT = "urn:bamm:io.catenax.serial_part:1.0.1#SerialPart";
+    private static final String SINGLE_LEVEL_BOM_AS_BUILT_ASPECT = SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+    private static final String SERIAL_PART_ASPECT = SemanticModelNames.SERIAL_PART_3_0_0;
     private static final int FETCHED_ITEMS_SIZE = 3;
     private static final int NO_RUNNING_OR_FAILED_ITEMS = 0;
     private static final int SENT_NOTIFICATIONS_SIZE = 6;
@@ -144,16 +145,16 @@ public class OpenApiExamples {
         final AspectModel assemblyPartRelationship = AspectModel.builder()
                                                                 .name("SingleLevelBomAsBuilt")
                                                                 .urn(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT)
-                                                                .version("2.0.0")
+                                                                .version("3.0.0")
                                                                 .status("RELEASED")
-                                                                .type("BAMM")
+                                                                .type("SAMM")
                                                                 .build();
         final AspectModel serialPart = AspectModel.builder()
                                                   .name("SerialPart")
                                                   .urn(SERIAL_PART_ASPECT)
-                                                  .version("1.0.1")
+                                                  .version("3.0.0")
                                                   .status("RELEASED")
-                                                  .type("BAMM")
+                                                  .type("SAMM")
                                                   .build();
 
         return toExample(AspectModels.builder()
@@ -358,12 +359,24 @@ public class OpenApiExamples {
     }
 
     private Map<String, Object> createSingleLevelBomAsBuiltPayloadMap() {
-        final String singleLevelBomAsBuiltPayload =
-                "{\"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                        + "\"childItems\": [ { \"createdOn\": \"2022-02-03T14:48:54.709Z\", \"catenaXId\": \"urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447\", "
-                        + "\"lastModifiedOn\": \"2022-02-03T14:48:54.709Z\", \"lifecycleContext\": \"AsBuilt\", \"quantity\": "
-                        + "{\"measurementUnit\": {\"datatypeURI\": \"urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece\",\"lexicalValue\": \"piece\"},\"quantityNumber\": 1}}]}";
-
+        final String singleLevelBomAsBuiltPayload = """
+                  {
+                  "catenaXId": "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
+                  "childItems": [
+                    {
+                      "catenaXId": "urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447",
+                      "quantity": {
+                        "value": 20.0,
+                        "unit": "unit:piece"
+                      },
+                      "hasAlternatives": false,
+                      "createdOn": "2022-02-03T14:48:54.709Z",
+                      "businessPartner": "BPNL00012345aNXY",
+                      "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+                    }
+                  ]
+                }
+                """;
         return new JsonUtil().fromString(singleLevelBomAsBuiltPayload, Map.class);
     }
 
@@ -440,7 +453,7 @@ public class OpenApiExamples {
                                  .semanticId(Reference.builder()
                                                       .keys(List.of(SemanticId.builder()
                                                                               .type("ExternalReference")
-                                                                              .value("urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned")
+                                                                              .value(SINGLE_LEVEL_BOM_AS_BUILT_ASPECT)
                                                                               .build()))
                                                       .type("ModelReference")
                                                       .build())

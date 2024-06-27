@@ -24,13 +24,18 @@
 package org.eclipse.tractusx.irs.component.assetadministrationshell;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.util.TestMother.serialPartAspectName;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_2_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_1_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
-import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
+import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithoutHref;
 
 import java.util.List;
 
+import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.junit.jupiter.api.Test;
 
 class AssetAdministrationShellDescriptorTest {
@@ -42,7 +47,7 @@ class AssetAdministrationShellDescriptorTest {
     void shouldFilterByAspectTypeWhenEndingWithAspectName() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutHref(singleLevelBomAsBuiltAspectName)));
+                List.of(submodelDescriptorWithoutHref(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0)));
         final List<String> aspectTypeFilter = List.of("SingleLevelBomAsBuilt");
 
         // Act
@@ -50,7 +55,8 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
     }
 
     @Test
@@ -72,7 +78,7 @@ class AssetAdministrationShellDescriptorTest {
     void shouldFilterByAspectTypeWhenWithDifferentAspects() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutHref(serialPartAspectName),
+                List.of(submodelDescriptorWithoutHref(SERIAL_PART_3_0_0),
                         submodelDescriptorWithoutHref(singleLevelBomAsBuiltId)));
 
         final List<String> aspectTypeFilter = List.of("SerialPart");
@@ -82,26 +88,46 @@ class AssetAdministrationShellDescriptorTest {
 
         // Assert
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(SERIAL_PART_3_0_0);
     }
 
     @Test
     void shouldFilterByAspectTypeForUrnFormat() {
         // Arrange
         final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
-                List.of(submodelDescriptorWithoutHref(serialPartAspectName),
-                        submodelDescriptorWithoutHref(singleLevelBomAsBuiltAspectName)));
+                List.of(submodelDescriptorWithoutHref(SERIAL_PART_3_0_0),
+                        submodelDescriptorWithoutHref(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0)));
 
-        final List<String> aspectTypeFilter = List.of(serialPartAspectName,
-                singleLevelBomAsBuiltAspectName);
+        final List<String> aspectTypeFilter = List.of(SERIAL_PART_3_0_0, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
 
         // Act
         final List<SubmodelDescriptor> result = shellDescriptor.filterDescriptorsByAspectTypes(aspectTypeFilter);
 
         // Assert
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartAspectName);
-        assertThat(result.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltAspectName);
+        assertThat(result.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(SERIAL_PART_3_0_0);
+        assertThat(result.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
+    }
+
+    @Test
+    void shouldFilterByByRelationshipAspectType() {
+        // Arrange
+        final AssetAdministrationShellDescriptor shellDescriptor = shellDescriptor(
+                List.of(submodelDescriptorWithDspEndpoint(SINGLE_LEVEL_BOM_AS_BUILT_2_0_0, "endpoint1"),
+                        submodelDescriptorWithDspEndpoint(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0, "endpoint2"),
+                        submodelDescriptorWithDspEndpoint(SINGLE_LEVEL_BOM_AS_BUILT_3_1_0, "endpoint3"),
+                        submodelDescriptorWithDspEndpoint(SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0, "endpoint4")));
+
+        // Act
+        final List<Endpoint> result = shellDescriptor.findRelationshipEndpointAddresses(
+                AspectType.SINGLE_LEVEL_BOM_AS_BUILT);
+
+        // Assert
+        assertThat(result).hasSize(3);
+        assertThat(result.get(0).getProtocolInformation().getHref()).isEqualTo("endpoint1");
+        assertThat(result.get(1).getProtocolInformation().getHref()).isEqualTo("endpoint2");
+        assertThat(result.get(2).getProtocolInformation().getHref()).isEqualTo("endpoint3");
     }
 
 }

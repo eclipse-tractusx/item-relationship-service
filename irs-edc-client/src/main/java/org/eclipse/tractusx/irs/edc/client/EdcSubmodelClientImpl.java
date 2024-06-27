@@ -27,6 +27,7 @@ import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.En
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -41,10 +42,12 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
 import org.eclipse.tractusx.irs.edc.client.exceptions.ContractNegotiationException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.TransferProcessException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyExpiredException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.edc.client.model.CatalogItem;
 import org.eclipse.tractusx.irs.edc.client.model.NegotiationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
@@ -52,6 +55,7 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
 import org.eclipse.tractusx.irs.edc.client.util.Masker;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StopWatch;
 
 /**
@@ -64,6 +68,12 @@ import org.springframework.util.StopWatch;
                     "PMD.UseObjectForClearerAPI"
 })
 public class EdcSubmodelClientImpl implements EdcSubmodelClient {
+
+    private static final String DT_DCAT_TYPE_ID = "'" + JsonLdConfiguration.NAMESPACE_DCT + "type'.'@id'";
+    private static final String DT_TAXONOMY_REGISTRY =
+            JsonLdConfiguration.NAMESPACE_CX_TAXONOMY + "DigitalTwinRegistry";
+    private static final String DT_EDC_TYPE = JsonLdConfiguration.NAMESPACE_EDC + "type";
+    private static final String DT_DATA_CORE_REGISTRY = "data.core.digitalTwinRegistry";
 
     private final EdcConfiguration config;
     private final ContractNegotiationService contractNegotiationService;
@@ -99,8 +109,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
             final String payload = edcDataPlaneClient.getData(endpointDataReference, submodelDataplaneUrl);
             stopWatchOnEdcTask(stopWatch);
 
-            return Optional.of(
-                    new SubmodelDescriptor(endpointDataReference.getContractId(), payload));
+            return Optional.of(new SubmodelDescriptor(endpointDataReference.getContractId(), payload));
         }
 
         return Optional.empty();
@@ -234,11 +243,17 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
                             endpointAddress, filterKey, filterValue));
         }
 
-        // We need to process each contract offer in parallel
-        // (see src/docs/arc42/cross-cutting/discovery-DTR--multiple-EDCs-with-multiple-DTRs.puml
-        // and src/docs/arc42/cross-cutting/discovery-DTR--multiple-EDCs-with-multiple-DTRs--detailed.puml)
-        return contractOffers.stream().map(contractOffer -> {
+        return createCompletableFuturesForContractOffers(endpointDataReferenceStatus, bpn, contractOffers,
+                providerWithSuffix, stopWatch);
+    }
 
+    // We need to process each contract offer in parallel
+    // (see src/docs/arc42/cross-cutting/discovery-DTR--multiple-EDCs-with-multiple-DTRs.puml
+    // and src/docs/arc42/cross-cutting/discovery-DTR--multiple-EDCs-with-multiple-DTRs--detailed.puml)
+    private @NotNull List<CompletableFuture<EndpointDataReference>> createCompletableFuturesForContractOffers(
+            final EndpointDataReferenceStatus endpointDataReferenceStatus, final String bpn,
+            final List<CatalogItem> contractOffers, final String providerWithSuffix, final StopWatch stopWatch) {
+        return contractOffers.stream().map(contractOffer -> {
             final NegotiationResponse negotiationResponse;
             try {
                 negotiationResponse = negotiateContract(endpointDataReferenceStatus, contractOffer, providerWithSuffix,
@@ -272,6 +287,41 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         }).toList();
     }
 
+    @Override
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(
+            final String endpointAddress, final String bpn) throws EdcClientException {
+        return execute(endpointAddress, () -> getEndpointReferencesForRegistryAsset(endpointAddress,
+                new EndpointDataReferenceStatus(null, TokenStatus.REQUIRED_NEW), bpn));
+    }
+
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(
+            final String endpointAddress, final EndpointDataReferenceStatus endpointDataReferenceStatus,
+            final String bpn) throws EdcClientException {
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start("Get EndpointDataReference task for shell descriptor, endpoint " + endpointAddress);
+        final String providerWithSuffix = appendSuffix(endpointAddress, config.getControlplane().getProviderSuffix());
+
+        // CatalogItem = contract offer
+        final List<CatalogItem> contractOffers = new ArrayList<>(
+                catalogFacade.fetchCatalogByFilter(providerWithSuffix, DT_DCAT_TYPE_ID, DT_TAXONOMY_REGISTRY, bpn));
+
+        if (contractOffers.isEmpty()) {
+            final List<CatalogItem> contractOffersDataCore = catalogFacade.fetchCatalogByFilter(providerWithSuffix,
+                    DT_EDC_TYPE, DT_DATA_CORE_REGISTRY, bpn);
+            contractOffers.addAll(contractOffersDataCore);
+        }
+
+        if (contractOffers.isEmpty()) {
+            throw new EdcClientException(
+                    "No DigitalTwinRegistry contract offers found for endpointAddress '%s' filterKey '%s', filterValue '%s' or filterKey '%s', filterValue '%s'".formatted(
+                            endpointAddress, DT_DCAT_TYPE_ID, DT_TAXONOMY_REGISTRY, DT_EDC_TYPE,
+                            DT_DATA_CORE_REGISTRY));
+        }
+
+        return createCompletableFuturesForContractOffers(endpointDataReferenceStatus, bpn, contractOffers,
+                providerWithSuffix, stopWatch);
+    }
+
     private NegotiationResponse negotiateContract(final EndpointDataReferenceStatus endpointDataReferenceStatus,
             final CatalogItem catalogItem, final String providerWithSuffix, final String bpn)
             throws EdcClientException {
@@ -279,7 +329,8 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
         try {
             response = contractNegotiationService.negotiate(providerWithSuffix, catalogItem,
                     endpointDataReferenceStatus, bpn);
-        } catch (TransferProcessException | UsagePolicyException | ContractNegotiationException e) {
+        } catch (TransferProcessException | UsagePolicyPermissionException | UsagePolicyExpiredException
+                 | ContractNegotiationException e) {
             throw new EdcClientException(("Negotiation failed for endpoint '%s', " + "tokenStatus '%s', "
                     + "providerWithSuffix '%s', catalogItem '%s'").formatted(
                     endpointDataReferenceStatus.endpointDataReference(), endpointDataReferenceStatus.tokenStatus(),

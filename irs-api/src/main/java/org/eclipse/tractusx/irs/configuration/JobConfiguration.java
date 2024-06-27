@@ -97,11 +97,11 @@ public class JobConfiguration {
             @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JobStore jobStore,
             final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
-            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs) {
+            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs, final JsonUtil jsonUtil) {
 
         final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(),
-                blobStore);
-        final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
+                blobStore, jsonUtil);
+        final var logic = new TreeRecursiveLogic(blobStore, jsonUtil, new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
         final JobTTL jobTTL = new JobTTL(ttlCompletedJobs, ttlFailedJobs);
 

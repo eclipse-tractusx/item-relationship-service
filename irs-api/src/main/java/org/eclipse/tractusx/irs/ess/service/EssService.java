@@ -30,14 +30,13 @@ import java.util.function.Predicate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.common.auth.SecurityHelperService;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.JobHandle;
 import org.eclipse.tractusx.irs.component.Jobs;
 import org.eclipse.tractusx.irs.component.Notification;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.RegisterBpnInvestigationJob;
 import org.eclipse.tractusx.irs.component.RegisterJob;
-import org.eclipse.tractusx.irs.component.enums.AspectType;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.JobState;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
@@ -57,8 +56,10 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class EssService {
 
+    public static final String PART_AS_PLANNED = SemanticModelNames.PART_AS_PLANNED_1_0_1;
+    public static final String PART_SITE_INFORMATION_AS_PLANNED = SemanticModelNames.PART_SITE_INFORMATION_AS_PLANNED_1_0_0;
+
     private final IrsItemGraphQueryService irsItemGraphQueryService;
-    private final SecurityHelperService securityHelperService;
     private final BpnInvestigationJobCache bpnInvestigationJobCache;
     private final JobStore jobStore;
     private final EssRecursiveNotificationHandler recursiveNotificationHandler;
@@ -167,8 +168,7 @@ public class EssService {
                           .key(key)
                           .bomLifecycle(bomLifecycle != null ? bomLifecycle : BomLifecycle.AS_PLANNED)
                           .depth(1)
-                          .aspects(List.of(AspectType.PART_SITE_INFORMATION_AS_PLANNED.toString(),
-                                  AspectType.PART_AS_PLANNED.toString()))
+                          .aspects(List.of(PART_SITE_INFORMATION_AS_PLANNED, PART_AS_PLANNED))
                           .collectAspects(true)
                           .build();
     }

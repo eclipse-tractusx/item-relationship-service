@@ -21,7 +21,7 @@ To this end, the API and the necessary changes to the IRS must be determined, do
 ## Summary
 Extension of reference implementation of Digital Twin Registry (DTR) in Catena-X for scalable access management to Asset Administration Shells (AAS) and adhering Submodel server(s).
 
-## Assessment 
+## Assessment
 
 - IRS uses the EDC for any request to the dDTR and Submodel Server 
 
@@ -71,15 +71,21 @@ No impact on data consumers.
 
 ### AAS_Access_v3_Architecture
 
-![AAS_Access_v3_Architecture.jpg](AAS_Access_v3_Architecture.jpg)
+![AAS_Access_v3_Architecture.svg](AAS_Access_v3_Architecture.svg)
+
+<sup><sub>*This diagram was created with <a href="http://www.inkscape.org/" target="_blank" alt="Inkscape">Inkscape</a>
+from
+the original JPG from
+[#438: Investigation and impact determination on new dDTR API endpoints for access management](https://github.com/eclipse-tractusx/item-relationship-service/issues/438)
+in order to fulfill [TRG 1.04](https://eclipse-tractusx.github.io/docs/release/trg-1/trg-1-4).*</sub></sup>
 
 ## Glossary
 
 | Abbreviation | Name                      |
 |--------------|---------------------------|
-| CRUD             | Create Read Update Delete |
-| MIW             | Managed Identity Wallet  |
-| AAS | Asset Adminstration Shell | 
+| CRUD         | Create Read Update Delete |
+| MIW          | Managed Identity Wallet   |
+| AAS          | Asset Adminstration Shell | 
 
 ## References
 - [Concept of CRUD API for Access management APIs](https://github.com/eclipse-tractusx/sldt-digital-twin-registry/issues/291)

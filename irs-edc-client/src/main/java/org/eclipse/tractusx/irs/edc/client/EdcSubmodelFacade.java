@@ -43,7 +43,9 @@ import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationConten
  */
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.UseObjectForClearerAPI"})
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                    "PMD.UseObjectForClearerAPI"
+})
 public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
@@ -54,7 +56,9 @@ public class EdcSubmodelFacade {
     public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId, final String bpn) throws EdcClientException {
         try {
-            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId, bpn)
+            final String fullSubmodelDataplaneUrl = submodelDataplaneUrl + config.getSubmodel().getSubmodelSuffix();
+            log.debug("Requesting Submodel for URL: '{}'", fullSubmodelDataplaneUrl);
+            return client.getSubmodelPayload(connectorEndpoint, fullSubmodelDataplaneUrl, assetId, bpn)
                          .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred.", e);
@@ -93,9 +97,9 @@ public class EdcSubmodelFacade {
         }
     }
 
-    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(final String endpointAddress,
-            final String filterKey, final String filterValue, final String bpn) throws EdcClientException {
-        return client.getEndpointReferencesForAsset(endpointAddress, filterKey, filterValue, bpn);
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(
+            final String endpointAddress, final String bpn) throws EdcClientException {
+        return client.getEndpointReferencesForRegistryAsset(endpointAddress, bpn);
     }
 
 }

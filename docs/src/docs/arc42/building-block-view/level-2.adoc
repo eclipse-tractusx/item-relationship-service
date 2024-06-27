@@ -102,6 +102,26 @@ include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-
 |The ExecutorService enables the simultaneous execution of requests of transfer processes.
 |===
 
+== AASTransferProcessManager
+
+The AASTransferProcessManager coordinates creation of Runnables which are then passed to the ExecutorService for asynchronous and parallel execution.
+The Runnable consists of different Delegates which are each responsible for requesting certain types of data.
+
+=== Component diagram
+[plantuml, level-2-int-transfer-process-delegate, format=svg]
+....
+include::../../../uml-diagrams/building-block-view/level-2-int-transfer-process-delegate.puml[]
+....
+
+=== Component description
+|===
+|Components |Description
+|DigitalTwinDelegate | Request the digital twin for the globalAssetId. The result is stored in "shells" of the job response.
+|RelationshipDelegate| Request the payload for relationship aspects, found in the DTR. Relationships are mapped to the internal linkedItem data structure of IRS and validated to be within the supported major Traversal Aspect version range which can be found in the technical context.
+The result is stored in "relationships" of the job response.
+|SubmodelDelegate | Request the payload for the other semantic models requested by the Job. The result is stored in "submodels" of the job response.
+|===
+
 == ESS controller
 
 The ESS REST controller is used to provide a RESTful web service to related Environmental and Social Standards functionalities.

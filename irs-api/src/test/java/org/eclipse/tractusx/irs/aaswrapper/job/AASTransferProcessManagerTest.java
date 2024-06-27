@@ -38,7 +38,7 @@ import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
-import org.eclipse.tractusx.irs.util.TestMother;
+import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,13 +46,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AASTransferProcessManagerTest {
 
-    private final TestMother generate = new TestMother();
-
     DigitalTwinDelegate digitalTwinProcessor = mock(DigitalTwinDelegate.class);
     ExecutorService pool = mock(ExecutorService.class);
 
     final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinProcessor, pool,
-            new InMemoryBlobStore());
+            new InMemoryBlobStore(), new JsonUtil());
 
     @Test
     void shouldExecuteThreadForProcessing() {

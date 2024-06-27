@@ -67,13 +67,15 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <revision>0.0.2-SNAPSHOT</revision>
+
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.reporting.outputDirectory}/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- IRS Registry Client Library -->
-        <irs-registry-client.version>2.0.4-SNAPSHOT</irs-registry-client.version>
+        <irs-registry-client.version>2.1.0-SNAPSHOT</irs-registry-client.version>
 
         <!-- Dependencies -->
         <springboot.version>3.1.11</springboot.version>
@@ -87,8 +89,8 @@
         <rest-assured.version>5.4.0</rest-assured.version>
         <awaitility.version>4.2.0</awaitility.version>
         <jsonassert.version>1.5.1</jsonassert.version>
-        <junit-bom.version>5.9.2</junit-bom.version>
-        <cucumber-bom.version>7.11.1</cucumber-bom.version>
+        <junit-bom.version>5.10.2</junit-bom.version>
+        <cucumber-bom.version>7.18.0</cucumber-bom.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <commons-validator.version>1.8.0</commons-validator.version>
         <swagger-annotations.version>2.2.18</swagger-annotations.version>
@@ -125,6 +127,7 @@
         <snappy-java.version>1.1.10.5</snappy-java.version>
         <commons-compress.version>1.26.1</commons-compress.version>
         <commons-collections4.version>4.4</commons-collections4.version>
+        <xmlunit-core.version>2.10.0</xmlunit-core.version>
     </properties>
 
     <dependencyManagement>
@@ -138,6 +141,12 @@
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xmlunit</groupId>
+                <artifactId>xmlunit-core</artifactId>
+                <version>${xmlunit-core.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -307,11 +316,37 @@
             <plugin>
                 <groupId>org.eclipse.dash</groupId>
                 <artifactId>license-tool-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludedGroups>INTEGRATION_TEST,INACTIVE,Ignore</excludedGroups>
+                            <properties>
+                                <configurationParameters>
+                                    cucumber.execution.dry-run=true
+                                    cucumber.publish.enabled-run=false
+                                </configurationParameters>
+                            </properties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>dependency-check</id>
             <build>
@@ -435,6 +470,48 @@
                         </executions>
                         <configuration>
                             <sourcepath>${project.build.directory}/generated-sources/delombok</sourcepath>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dash</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.dash</groupId>
+                        <artifactId>license-tool-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                            <failWhenReviewNeeded>true</failWhenReviewNeeded>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skipTests>true</skipTests>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>cucumber</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludedGroups>Ignore,INACTIVE</excludedGroups>
+                            <properties>
+                                <configurationParameters>
+                                    cucumber.execution.dry-run=false
+                                    cucumber.publish.enabled-run=true
+                                </configurationParameters>
+                            </properties>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -7,20 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 _**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
 
 ## [Unreleased]
- 
+
+### Fixed
+
+- Fixed ESS Investigation job processing not starting #579
+- Policy store API returns 'rightOperand' without 'odrl:' prefix now (see traceability-foss/issues/970).
+
 ### Changed
 
 - Improved policy store API input validation. #528
 - Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
 - Marked createAccessPolicy requests with deprecation mark.
-- remove edc namespace from EdcContractAgreementNegotiationResponse and
-  EdcContractAgreementsResponse eclipse-tractusx/traceability-foss#963
-
+- Remove edc namespace from EdcContractAgreementNegotiationResponse and
+  EdcContractAgreementsResponse. eclipse-tractusx/traceability-foss#963
+- Added missing @context values in edc asset creation. eclipse-tractusx/traceability-foss#978
+- Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation. eclipse-tractusx/traceability-foss#978
+- Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
+- Updated contributing, notice, and readme files for TRG 7 #681
+- Handling of expired policies when approving a notification eclipse-tractusx/traceability-foss#639
 
 ## Added
 
-- Added endpoint for dedicated removal of policy from BPNL. #559 
+- Added tests for aspect version compatibility. #529
+- Added endpoint for dedicated removal of policy from BPNL. #559
 - Integration Test Policy Store API Unhappy Path. #519
+- Support for SingleLevelUsageAsPlanned. #470
+- Documentation to describe the delegate process. #470
+- Added file for CC BY 4.0 license for TRG 7 #681
+
+## [5.1.4] - 2024-05-27
+
+### Fixed
+
+- Fixed submodel request path by introducing configuration property `irs-edc-client.submodel.submodel-suffix` which will
+  be appended to the href URL.
+
+## [5.1.3] - 2024-05-17
+
+### Fixed
+
+- IRS now searches for Digital Twin Registry contract offers by
+  type `dct:type`: `https://w3id.org/catenax/taxonomy#DigitalTwinRegistry`
+  or `edc:type`: `data.core.digitalTwinRegistry`. #616
+- Fix missing and malformed properties for EDC policy transformation. #648
 
 ## Fixed
 
@@ -37,7 +66,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Updated default accepted policy to latest traceability framework agreement #596
 - BPN summary was removed from Job response #568
-- Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
 
 
 ## [5.1.1] - 2024-05-08
@@ -675,7 +703,9 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.2...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.4...HEAD
+[5.1.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.3...5.1.4
+[5.1.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.2...5.1.3
 [5.1.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.1...5.1.2
 [5.1.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.0...5.1.1
 [5.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.0...5.1.0

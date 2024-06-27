@@ -42,7 +42,7 @@ class EdcContractAgreementsResponseTest {
                 			"odrl:permission": {
                 				"odrl:target": "registry-asset",
                 				"odrl:action": {
-                					"odrl:type": "USE"
+                					"odrl:type": "use"
                 				},
                 				"odrl:constraint": {
                 					"odrl:or": {
@@ -62,7 +62,7 @@ class EdcContractAgreementsResponseTest {
                 		"edc:consumerId": "BPNL00000003CML1",
                 		"edc:providerId": "BPNL00000003CML1",
                 		"@context": {
-                			"dct": "https://purl.org/dc/terms/",
+                			"dct": "http://purl.org/dc/terms/",
                 			"tx": "https://w3id.org/tractusx/v0.0.1/ns/",
                 			"edc": "https://w3id.org/edc/v0.0.1/ns/",
                 			"dcat": "https://www.w3.org/ns/dcat/",

@@ -3,7 +3,7 @@ info:
   description: The API of the Item Relationship Service (IRS) for retrieving item
     graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: 5.1.2
+  version: 5.1.4
 servers:
 - url: http://localhost:8080
 security:
@@ -821,17 +821,17 @@ paths:
                       createdOn: 2024-03-28T03:34:42.9454448Z
                       validUntil: 2025-12-12T23:59:59.999Z
                       permissions:
-                      - action: USE
+                      - action: use
                         constraint:
                           and:
                           - leftOperand: Membership
                             operator:
                               '@id': eq
-                            odrl:rightOperand: active
+                            rightOperand: active
                           - leftOperand: PURPOSE
                             operator:
                               '@id': eq
-                            odrl:rightOperand: ID 3.1 Trace
+                            rightOperand: ID 3.1 Trace
                           or: null
                 BPNA1234567890DF: []
               schema:
@@ -1077,14 +1077,14 @@ components:
         models:
         - name: SingleLevelBomAsBuilt
           status: RELEASED
-          type: BAMM
+          type: SAMM
           urn: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-          version: 2.0.0
+          version: 3.0.0
         - name: SerialPart
           status: RELEASED
-          type: BAMM
-          urn: urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
-          version: 1.0.1
+          type: SAMM
+          urn: urn:samm:io.catenax.serial_part:3.0.0#SerialPart
+          version: 3.0.0
     canceled-job-response:
       value:
         completedOn: 2022-02-03T14:48:54.709Z
@@ -1109,7 +1109,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1160,7 +1160,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1218,7 +1218,7 @@ components:
               semanticId:
                 keys:
                 - type: ExternalReference
-                  value: urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned
+                  value: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
                 type: ModelReference
             - description:
               - language: en
@@ -1283,7 +1283,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1341,7 +1341,7 @@ components:
               semanticId:
                 keys:
                 - type: ExternalReference
-                  value: urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned
+                  value: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
                 type: ModelReference
             - description:
               - language: en
@@ -1370,15 +1370,14 @@ components:
           payload:
             catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
             childItems:
-            - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+            - businessPartner: BPNL00012345aNXY
+              catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
               createdOn: 2022-02-03T14:48:54.709Z
+              hasAlternatives: false
               lastModifiedOn: 2022-02-03T14:48:54.709Z
-              lifecycleContext: AsBuilt
               quantity:
-                measurementUnit:
-                  datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
-                  lexicalValue: piece
-                quantityNumber: 1
+                unit: unit:piece
+                value: 20.0
         tombstones:
         - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -1443,7 +1442,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1481,7 +1480,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1539,7 +1538,7 @@ components:
               semanticId:
                 keys:
                 - type: ExternalReference
-                  value: urn:bamm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned
+                  value: urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
                 type: ModelReference
             - description:
               - language: en
@@ -1568,15 +1567,14 @@ components:
           payload:
             catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
             childItems:
-            - catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
+            - businessPartner: BPNL00012345aNXY
+              catenaXId: urn:uuid:d9bec1c6-e47c-4d18-ba41-0a5fe8b7f447
               createdOn: 2022-02-03T14:48:54.709Z
+              hasAlternatives: false
               lastModifiedOn: 2022-02-03T14:48:54.709Z
-              lifecycleContext: AsBuilt
               quantity:
-                measurementUnit:
-                  datatypeURI: urn:bamm:io.openmanufacturing:meta-model:1.0.0#piece
-                  lexicalValue: piece
-                quantityNumber: 1
+                unit: unit:piece
+                value: 20.0
         tombstones:
         - catenaXId: urn:uuid:6c311d29-5753-46d4-b32c-19b918ea93b0
           endpointURL: https://catena-x.net/vehicle/partdetails/
@@ -1601,7 +1599,7 @@ components:
           parameter:
             aspects:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
-            - urn:bamm:io.catenax.serial_part:1.0.1#SerialPart
+            - urn:samm:io.catenax.serial_part:3.0.0#SerialPart
             auditContractNegotiation: false
             bomLifecycle: asBuilt
             collectAspects: false
@@ -1860,7 +1858,7 @@ components:
             policy:
               '@type': Policy
               odrl:permission:
-              - odrl:action: USE
+              - odrl:action: use
                 odrl:constraint:
                   odrl:and:
                   - odrl:leftOperand: Membership
@@ -2253,7 +2251,7 @@ components:
         policy:
           '@type': Policy
           odrl:permission:
-          - odrl:action: USE
+          - odrl:action: use
             odrl:constraint:
               odrl:and:
               - odrl:leftOperand: Membership

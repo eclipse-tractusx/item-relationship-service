@@ -46,11 +46,12 @@ class JsonObjectToCatalogTransformerTest {
     void setUp() {
         final TitaniumJsonLd jsonLd = new TitaniumJsonLd(new ConsoleMonitor());
         jsonLd.registerNamespace("odrl", "http://www.w3.org/ns/odrl/2/");
-        jsonLd.registerNamespace("dct", "https://purl.org/dc/terms/");
+        jsonLd.registerNamespace("dct", "http://purl.org/dc/terms/");
         jsonLd.registerNamespace("tx", "https://w3id.org/tractusx/v0.0.1/ns/");
         jsonLd.registerNamespace("edc", "https://w3id.org/edc/v0.0.1/ns/");
         jsonLd.registerNamespace("dcat", "https://www.w3.org/ns/dcat/");
         jsonLd.registerNamespace("dspace", "https://w3id.org/dspace/v0.8/");
+        jsonLd.registerNamespace("cx-policy", "https://w3id.org/catenax/policy/");
 
         ObjectMapper objectMapper = objectMapper();
         edcTransformer = new EdcTransformer(objectMapper, jsonLd, new TypeTransformerRegistryImpl());
@@ -96,7 +97,7 @@ class JsonObjectToCatalogTransformerTest {
                 				"@type": "odrl:Offer",
                 				"odrl:permission": {
                 					"odrl:action": {
-                						"odrl:type": "USE"
+                						"odrl:type": "use"
                 					},
                 					"odrl:constraint": {
                 						"odrl:or": {
@@ -161,7 +162,7 @@ class JsonObjectToCatalogTransformerTest {
                 				"@type": "odrl:Offer",
                 				"odrl:permission": {
                 					"odrl:action": {
-                						"odrl:type": "USE"
+                						"odrl:type": "use"
                 					},
                 					"odrl:constraint": {
                 						"odrl:or": {

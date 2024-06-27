@@ -64,7 +64,8 @@ public enum AspectType {
     SINGLE_LEVEL_BOM_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_BUILT),
     SINGLE_LEVEL_BOM_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_PLANNED),
     SINGLE_LEVEL_BOM_AS_SPECIFIED(AspectTypesConstants.SINGLE_LEVEL_BOM_AS_SPECIFIED),
-    SINGLE_LEVEL_USAGE_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_USAGE_AS_BUILT);
+    SINGLE_LEVEL_USAGE_AS_BUILT(AspectTypesConstants.SINGLE_LEVEL_USAGE_AS_BUILT),
+    SINGLE_LEVEL_USAGE_AS_PLANNED(AspectTypesConstants.SINGLE_LEVEL_USAGE_AS_PLANNED);
 
     private final String name;
 
@@ -134,5 +135,6 @@ public enum AspectType {
         public static final String SINGLE_LEVEL_BOM_AS_PLANNED = "SingleLevelBomAsPlanned";
         public static final String SINGLE_LEVEL_BOM_AS_SPECIFIED = "SingleLevelBomAsSpecified";
         public static final String SINGLE_LEVEL_USAGE_AS_BUILT = "SingleLevelUsageAsBuilt";
+        public static final String SINGLE_LEVEL_USAGE_AS_PLANNED = "SingleLevelUsageAsPlanned";
     }
 }

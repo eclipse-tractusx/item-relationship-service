@@ -26,14 +26,14 @@ package org.eclipse.tractusx.irs.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.given;
 import static org.eclipse.tractusx.irs.util.TestMother.EXISTING_GLOBAL_ASSET_ID;
-import static org.eclipse.tractusx.irs.util.TestMother.productDescriptionAspectName;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATTERY_PRODUCT_DESCRIPTION_1_0_1;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJob;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspect;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDepthAndAspectAndCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithDirection;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepth;
-import static org.eclipse.tractusx.irs.util.TestMother.serialPartAspectName;
-import static org.eclipse.tractusx.irs.util.TestMother.singleLevelBomAsBuiltAspectName;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -105,9 +105,9 @@ class IrsItemGraphQueryServiceSpringBootTest {
     @BeforeEach
     void setUp() throws SchemaNotFoundException {
         final List<AspectModel> models = List.of(
-                getAspectModel(AspectType.SERIAL_PART.toString(), serialPartAspectName),
-                getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(), productDescriptionAspectName),
-                getAspectModel(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString(), singleLevelBomAsBuiltAspectName));
+                getAspectModel(AspectType.SERIAL_PART.toString(), SERIAL_PART_3_0_0),
+                getAspectModel(AspectType.PRODUCT_DESCRIPTION.toString(), BATTERY_PRODUCT_DESCRIPTION_1_0_1),
+                getAspectModel(AspectType.SINGLE_LEVEL_BOM_AS_BUILT.toString(), SINGLE_LEVEL_BOM_AS_BUILT_3_0_0));
         final AspectModels aspectModels = new AspectModels(models, "2023-02-13T08:18:11.990659500Z");
         when(semanticsHubFacade.getAllAspectModels()).thenReturn(aspectModels);
     }
@@ -136,7 +136,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("https://connector.endpoint.nl"));
         final RegisterJob registerJob = registerJob(EXISTING_GLOBAL_ASSET_ID, 100,
-                List.of(serialPartAspectName, productDescriptionAspectName, singleLevelBomAsBuiltAspectName),
+                List.of(SERIAL_PART_3_0_0, BATTERY_PRODUCT_DESCRIPTION_1_0_1, SINGLE_LEVEL_BOM_AS_BUILT_3_0_0),
                 true, false, Direction.DOWNWARD);
         when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
                 List.of("singleLevelBomAsBuilt"));
@@ -159,7 +159,7 @@ class IrsItemGraphQueryServiceSpringBootTest {
                 List.of("https://connector.endpoint.nl"));
 
         final RegisterJob registerJob = registerJobWithDepthAndAspectAndCollectAspects(3,
-                List.of(singleLevelBomAsBuiltAspectName));
+                List.of(SINGLE_LEVEL_BOM_AS_BUILT_3_0_0));
         when(connectorEndpointsService.fetchConnectorEndpoints(registerJob.getKey().getBpn())).thenReturn(
                 List.of("singleLevelBomAsBuilt"));
 
@@ -260,13 +260,23 @@ class IrsItemGraphQueryServiceSpringBootTest {
     }
 
     @Test
-    void shouldThrowIllegalArgumentExceptionForLifecycleAsPlannedAndDirectionUpward() {
-        final RegisterJob registerJob = new RegisterJob();
-        registerJob.setKey(PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).build());
-        registerJob.setDirection(Direction.UPWARD);
+    void registerJobWithUpwardDirectionAsPlannedShouldBuildRelationships() {
+        // given
+        final RegisterJob registerJob = registerJobWithDirection("urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
+                Direction.UPWARD);
         registerJob.setBomLifecycle(BomLifecycle.AS_PLANNED);
 
-        assertThrows(IllegalArgumentException.class, () -> service.registerItemJob(registerJob));
+        when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
+                List.of("http://localhost/discovery"));
+
+        // when
+        final JobHandle registeredJob = service.registerItemJob(registerJob);
+
+        // then
+        given().ignoreException(ResponseStatusException.class)
+               .await()
+               .atMost(5, TimeUnit.SECONDS)
+               .until(() -> getRelationshipsSize(registeredJob.getId()), greaterThan(0));
     }
 
     @Test
