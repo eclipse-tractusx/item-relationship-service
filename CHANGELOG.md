@@ -8,6 +8,14 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
+### Added
+
+- soemthing was added
+
+### Changed
+
+- and something else was changed
+
 ## [5.1.5] - 2024-06-27
 
 ### Fixed
