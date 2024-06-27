@@ -34,5 +34,5 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public record Site(ZonedDateTime functionValidUntil, String function, ZonedDateTime functionValidFrom,
-                   String catenaXSiteId) {
+                   String catenaXsiteId) {
 }
