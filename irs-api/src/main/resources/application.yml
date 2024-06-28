@@ -9,22 +9,19 @@ spring:
     oauth2:
       client:
         registration:
-          common:
+          semantics:
             authorization-grant-type: client_credentials
-            client-id: ${OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
-            client-secret: ${OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
-          portal:
+            client-id: ${SEMANTICS_OAUTH2_CLIENT_ID} # Semantic Hub OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${SEMANTICS_OAUTH2_CLIENT_SECRET} # Semantic Hub OAuth2 client secret used to authenticate with the IAM
+          discovery:
             authorization-grant-type: client_credentials
-            client-id: ${PORTAL_OAUTH2_CLIENT_ID} # OAuth2 client ID used to authenticate with the IAM
-            client-secret: ${PORTAL_OAUTH2_CLIENT_SECRET} # OAuth2 client secret used to authenticate with the IAM
+            client-id: ${DISCOVERY_OAUTH2_CLIENT_ID} # Dataspace Discovery OAuth2 client ID used to authenticate with the IAM
+            client-secret: ${DISCOVERY_OAUTH2_CLIENT_SECRET} # Dataspace Discovery OAuth2 client secret used to authenticate with the IAM
         provider:
-          common:
-            token-uri: ${OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
-          portal:
-            token-uri: ${PORTAL_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
-      resourceserver:
-        jwt:
-          jwk-set-uri: ${OAUTH2_JWK_SET_URI:https://default} # OAuth2 endpoint to request the JWK set
+          semantics:
+            token-uri: ${SEMANTICS_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
+          discovery:
+            token-uri: ${DISCOVERY_OAUTH2_CLIENT_TOKEN_URI:https://default} # OAuth2 endpoint to request tokens using the client credentials
 
 management: # Spring management API config, see https://spring.io/guides/gs/centralized-configuration/
   endpoints:
@@ -56,13 +53,7 @@ management: # Spring management API config, see https://spring.io/guides/gs/cent
   server:
     port: 4004
 
-logging:
-  pattern:
-    console: "%d %-5level %logger : %msg%n"
-  level:
-    root: WARN
-    org.springframework: INFO
-    org.eclipse.tractusx.irs: INFO
+logging.config: "classpath:log4j2.xml"
 
 springdoc: # API docs configuration
   api-docs:
@@ -96,6 +87,11 @@ irs: # Application config
         completed: P7D # ISO 8601 Duration
       cron:
         expression: "*/10 * * * * ?" # Determines how often the number of stored jobs is updated in the metrics API.
+  security:
+    api:
+      keys:
+        admin: ${API_KEY_ADMIN}  # API Key to access IRS API with admin role
+        regular: ${API_KEY_REGULAR}  # API Key to access IRS API with view role
 
 blobstore:
   endpoint: "${MINIO_URL}" # S3 compatible API endpoint (e.g. Minio)
@@ -127,7 +123,10 @@ resilience4j:
         baseConfig: default
 
 irs-edc-client:
+  callback:
+    mapping: /internal/endpoint-data-reference  # The callback endpoint mapping
   callback-url: ${EDC_TRANSFER_CALLBACK_URL:} # The URL where the EDR token callback will be sent to.
+  asyncTimeout: PT10M # Timout for future.get requests as ISO 8601 Duration
   controlplane:
     request-ttl: ${EDC_CONTROLPLANE_REQUEST_TTL:PT10M} # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
@@ -149,6 +148,7 @@ irs-edc-client:
   submodel:
     request-ttl: ${EDC_SUBMODEL_REQUEST_TTL:PT10M} # How long to wait for an async EDC submodel retrieval to finish, ISO 8601 Duration
     urn-prefix: ${EDC_SUBMODEL_URN_PREFIX:/urn} # A prefix used to identify URNs correctly in the submodel endpoint address
+    submodel-suffix: "/$value"
     timeout:
       read: PT90S # HTTP read timeout for the submodel client
       connect: PT90S # HTTP connect timeout for the submodel client
@@ -157,17 +157,16 @@ irs-edc-client:
     # IRS will only negotiate contracts for offers with a policy as defined in the acceptedPolicies list.
     # If a requested asset does not provide one of these policies, a tombstone will be created and this node will not be processed.
     acceptedPolicies:
-      - leftOperand: "PURPOSE"
+      - leftOperand: "cx-policy:FrameworkAgreement"
         operator: "eq"
-        rightOperand: "ID 3.1 Trace"
-      - leftOperand: "FrameworkAgreement.traceability"
+        rightOperand: "traceability:1.0"
+      - leftOperand: "cx-policy:UsagePurpose"
         operator: "eq"
-        rightOperand: "active"
-      - leftOperand: "Membership"
-        operator: "eq"
-        rightOperand: "active"
+        rightOperand: "cx.core.industrycore:1"
+  discoveryFinderClient:
+    cacheTTL: PT24H  # Time to live for DiscoveryFinderClient for findDiscoveryEndpoints method cache
   connectorEndpointService:
-    cacheTTL: 86400000
+    cacheTTL: PT24H  # Time to live for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 digitalTwinRegistry:
   type: ${DIGITALTWINREGISTRY_TYPE:decentral} # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
@@ -175,11 +174,16 @@ digitalTwinRegistry:
   shellLookupEndpoint: ${DIGITALTWINREGISTRY_SHELL_LOOKUP_URL:} # The endpoint to lookup shells from the DTR, must contain the placeholder {assetIds}
   shellDescriptorTemplate: ${DIGITALTWINREGISTRY_SHELL_DESCRIPTOR_TEMPLATE:/shell-descriptors/{aasIdentifier}} # The path to retrieve AAS descriptors from the decentral DTR, must contain the placeholder {aasIdentifier}
   lookupShellsTemplate: ${DIGITALTWINREGISTRY_QUERY_SHELLS_PATH:/lookup/shells?assetIds={assetIds}} # The path to lookup shells from the decentral DTR, must contain the placeholder {assetIds}
-  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-  discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
+  oAuthClientId: discovery # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the digital twin registry client
     connect: PT90S # HTTP connect timeout for the digital twin registry client
+  discovery:
+    oAuthClientId: discovery # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+    discoveryFinderUrl: ${DIGITALTWINREGISTRY_DISCOVERY_FINDER_URL:} # The endpoint to discover EDC endpoints to a particular BPN.
+    timeout:
+      read: PT90S # HTTP read timeout for the discovery client
+      connect: PT90S # HTTP connect timeout for the discovery client
 
 semanticshub:
   # The endpoint to retrieve the json schema of a model from the semantic hub. If specified, must contain the placeholder {urn}.
@@ -200,38 +204,21 @@ semanticshub:
     #          │ │ │  │ │ │
     scheduler: 0 0 23 * * * # How often to clear the semantic model cache
   defaultUrns: "${SEMANTICSHUB_DEFAULT_URNS:urn:bamm:io.catenax.serial_part:1.0.0#SerialPart}" # IDs of models to cache at IRS startup
-  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
+  oAuthClientId: semantics # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
   timeout:
     read: PT90S # HTTP read timeout for the semantic hub client
     connect: PT90S # HTTP connect timeout for the semantic hub client
   pageSize: "${SEMANTICSHUB_PAGE_SIZE:100}"
 
-bpdm:
-  bpnEndpoint: "${BPDM_URL:}" # Endpoint to resolve BPNs, must contain the placeholders {partnerId} and {idType}
-  oAuthClientId: common # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-  timeout:
-    read: PT90S # HTTP read timeout for the bpdm client
-    connect: PT90S # HTTP connect timeout for the bpdm client
-
 # ESS Module specific properties
 ess:
   localBpn: ${ESS_LOCAL_BPN:} # BPN value of product - used during EDC notification communication
-  localEdcEndpoint: ${EDC_PROVIDER_URL:} # EDC Provider Url - used during EDC notification communication
-  managementPath: ${EDC_MANAGEMENT_PATH:/management/v2} # EDC management API path - used for notification asset creation
+  localEdcEndpoint: ${ESS_EDC_URL:} # EDC base URL - used for creation of EDC assets for ESS notifications and as sender EDC for sent notifications
+  assetsPath: ${EDC_MANAGEMENT_PATH:/management/v3/assets} # EDC management API "assets" path - used for notification asset creation
+  policydefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/policydefinitions} # EDC management API "policydefinitions" path - used for notification policy definition creation
+  contractdefinitionsPath: ${EDC_MANAGEMENT_PATH:/management/v2/contractdefinitions} # EDC management API "contractdefinitions" path - used for notification contract definitions creation
   irs:
     url: "${IRS_URL:}" # IRS Url to connect with
   discovery:
-    oAuthClientId: portal # ID of the OAuth2 client registration to use, see config spring.security.oauth2.client
-    timeout:
-      read: PT90S # HTTP read timeout for the discovery client
-      connect: PT90S # HTTP connect timeout for the discovery client
     mockEdcResult: { } # Mocked BPN Investigation results
     mockRecursiveEdcAsset: # Mocked BPN Recursive Investigation results
-
-apiAllowedBpn: ${API_ALLOWED_BPN:BPNL00000001CRHK} # BPN value that is allowed to access IRS API
-
-# OAuth2 JWT token parse config. This configures the structure IRS expects when parsing the IRS role of an access token.
-oauth:
-  resourceClaim: "resource_access" # Name of the JWT claim for roles
-  irsNamespace: "Cl20-CX-IRS" # Namespace for the IRS roles
-  roles: "roles" # Name of the list of roles within the IRS namespace

@@ -1,0 +1,16 @@
+{
+  "catenaXId": "urn:uuid:7e4541ea-bb0f-464c-8cb3-021abccbfaf5",
+  "childItems": [
+    {
+      "catenaXId": "urn:uuid:a314ad6b-77ea-417e-ae2d-193b3e249e99",
+      "quantity": {
+        "quantityNumber": 0.4014,
+        "measurementUnit": "unit:kilogram"
+      },
+      "hasAlternatives": true,
+      "businessPartner": "BPNL00000000TEST",
+      "createdOn": "2022-02-03T14:48:54.709Z",
+      "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+    }
+  ]
+}

@@ -1,10 +1,12 @@
+[[Back to IRS main README](../README.md)]
+
 # Digital Twin Registry Client Library
 
 This library assists in communicating with the Digital Twin Registry in a central or decentral approach.
 
 In the decentral approach, it also handles the communication via the Discovery Finder and EDC.
 
-The library is based on Spring Boot and uses its configuration features.
+The library is based on [Spring Boot](https://spring.io/projects/spring-boot) and uses its configuration features.
 
 ## Usage
 
@@ -26,7 +28,7 @@ Add the following configuration to your `application.yaml`:
 
 ```yaml
 digitalTwinRegistryClient:
-  type: "central" # or "decentral"
+  type: "decentral"  # The type of DTR. This can be either "central" or "decentral". If "decentral", descriptorEndpoint, shellLookupEndpoint and oAuthClientId is not required.
 
   discoveryFinderUrl: "" # required if type is "decentral"
 
@@ -37,6 +39,7 @@ digitalTwinRegistryClient:
 
 irs-edc-client:
   callback-url: "" # The URL where the EDR token callback will be sent to. This defaults to {BASE_URL}/internal/endpoint-data-reference. If you want to use a different mapping, you can override it with irs-edc-client.callback.mapping.
+  asyncTimeout: PT10M # Timout for future.get requests as ISO 8601 Duration  
   controlplane:
     request-ttl: PT10M # How long to wait for an async EDC negotiation request to finish, ISO 8601 Duration
     endpoint:
@@ -66,13 +69,7 @@ irs-edc-client:
     acceptedPolicies:
       - leftOperand: "PURPOSE"
         operator: "eq"
-        rightOperand: "ID 3.0 Trace"
-      - leftOperand: "PURPOSE"
-        operator: "eq"
         rightOperand: "ID 3.1 Trace"
-      - leftOperand: "PURPOSE"
-        operator: "eq"
-        rightOperand: R2_Traceability
       - leftOperand: "FrameworkAgreement.traceability"
         operator: "eq"
         rightOperand: "active"

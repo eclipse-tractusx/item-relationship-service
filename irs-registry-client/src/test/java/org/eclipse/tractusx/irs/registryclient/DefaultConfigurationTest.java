@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,22 +25,30 @@ package org.eclipse.tractusx.irs.registryclient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.registryclient.TestMother.endpointDataReference;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 class DefaultConfigurationTest {
 
     private final DefaultConfiguration testee = new DefaultConfiguration();
+
+    private final EdcConfiguration edcConfiguration = new EdcConfiguration();
     private final String descriptorTemplate = "descriptor/{aasIdentifier}";
     private final String shellLookupTemplate = "shell?{assetIds}";
 
@@ -58,31 +66,61 @@ class DefaultConfigurationTest {
         final var service = testee.decentralDigitalTwinRegistryService(
                 testee.connectorEndpointsService(testee.discoveryFinderClient(new RestTemplate(), "finder")),
                 testee.endpointDataForConnectorsService(facadeMock),
-                testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate));
+                testee.decentralDigitalTwinRegistryClient(new RestTemplate(), descriptorTemplate, shellLookupTemplate),
+                edcConfiguration);
 
         assertThat(service).isNotNull();
     }
 
     @Test
+    void edcSubmodelFacade() {
+        final EdcSubmodelClient facadeMock = mock(EdcSubmodelClient.class);
+        final EdcSubmodelFacade edcSubmodelFacade = testee.edcSubmodelFacade(facadeMock, edcConfiguration);
+
+        assertThat(edcSubmodelFacade).isNotNull();
+    }
+
+    @Test
     void endpointDataForConnectorsService() throws EdcClientException {
+
+        // ARRANGE
         final var mock = mock(EdcSubmodelFacade.class);
+        final var endpointAddress = "endpointaddress";
+        final String contractAgreementId = "contractAgreementId";
+        final var endpointDataReference = endpointDataReference(contractAgreementId, endpointAddress);
+        when(mock.getEndpointReferencesForRegistryAsset(eq(endpointAddress), any())).thenReturn(
+                List.of(CompletableFuture.completedFuture(endpointDataReference)));
 
+        // ACT
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
-        endpointDataForConnectorsService.findEndpointDataForConnectors(List.of("test"));
 
-        verify(mock).getEndpointReferenceForAsset(any(), any(), any());
+        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(List.of(endpointAddress), "bpn") //
+                                        .forEach(future -> {
+                                            try {
+                                                future.get();
+                                            } catch (InterruptedException e) {
+                                                Thread.currentThread().interrupt();
+                                                throw new RuntimeException(e);
+                                            } catch (ExecutionException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        });
+
+        // ASSERT
+        verify(mock).getEndpointReferencesForRegistryAsset(eq(endpointAddress), any());
     }
 
     @Test
     void endpointDataForConnectorsService_withException() throws EdcClientException {
         final var mock = mock(EdcSubmodelFacade.class);
-        when(mock.getEndpointReferenceForAsset(any(), any(), any())).thenThrow(new EdcClientException("test"));
+        when(mock.getEndpointReferencesForRegistryAsset(any(), any())).thenThrow(new EdcClientException("test"));
 
         final var endpointDataForConnectorsService = testee.endpointDataForConnectorsService(mock);
         final var dummyEndpoints = List.of("test");
-        assertThatThrownBy(
-                () -> endpointDataForConnectorsService.findEndpointDataForConnectors(dummyEndpoints)).isInstanceOf(
-                RestClientException.class);
-
+        endpointDataForConnectorsService.createFindEndpointDataForConnectorsFutures(dummyEndpoints, "bpn").forEach(future -> {
+            assertThatThrownBy(future::get).isInstanceOf(ExecutionException.class)
+                                           .extracting(Throwable::getCause)
+                                           .isInstanceOf(EdcRetrieverException.class);
+        });
     }
 }

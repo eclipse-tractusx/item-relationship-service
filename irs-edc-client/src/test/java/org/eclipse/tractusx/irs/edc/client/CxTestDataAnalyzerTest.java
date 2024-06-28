@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,7 +24,15 @@
 package org.eclipse.tractusx.irs.edc.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.eclipse.tractusx.irs.data.CxTestDataContainer.CxTestData.*;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATCH_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.BATTERY_PRODUCT_DESCRIPTION_1_0_1;
+import static org.eclipse.tractusx.irs.SemanticModelNames.MATERIAL_FOR_RECYCLING_1_1_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.PART_AS_PLANNED_2_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.PHYSICAL_DIMENSION_1_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_USAGE_AS_BUILT_3_0_0;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,12 +45,12 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.Relationship;
 import org.eclipse.tractusx.irs.component.Submodel;
 import org.eclipse.tractusx.irs.component.enums.BomLifecycle;
 import org.eclipse.tractusx.irs.component.enums.Direction;
-
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.edc.client.relationships.RelationshipAspect;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
 
@@ -289,33 +297,32 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
         if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_BUILT)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsBuilt);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsBuilt, relationshipSubmodelData, submodels,
-                    SINGLE_LEVEL_BOM_AS_BUILT_ASPECT_TYPE);
+                    SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
 
             checkAndAddSubmodel(testParameters.shouldCountSerialPart,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPart), submodels,
-                    SERIAL_PART_ASPECT_TYPE);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getSerialPart), submodels, SERIAL_PART_3_0_0);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelUsageAsBuilt,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned), submodels,
-                    SINGLE_LEVEL_USAGE_BUILT_ASPECT_TYPE);
+                    SINGLE_LEVEL_USAGE_AS_BUILT_3_0_0);
             checkAndAddSubmodel(testParameters.shouldCountBatch,
-                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels, BATCH_ASPECT_TYPE);
+                    cxTestData.flatMap(CxTestDataContainer.CxTestData::getBatch), submodels, BATCH_3_0_0);
             checkAndAddSubmodel(testParameters.shouldCountMaterialForRecycling,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getMaterialForRecycling), submodels,
-                    MATERIAL_FOR_RECYCLING_ASPECT_TYPE);
+                    MATERIAL_FOR_RECYCLING_1_1_0);
             checkAndAddSubmodel(testParameters.shouldCountProductDescription,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getProductDescription), submodels,
-                    PRODUCT_DESCRIPTION_ASPECT_TYPE);
+                    BATTERY_PRODUCT_DESCRIPTION_1_0_1);
             checkAndAddSubmodel(testParameters.shouldCountPhysicalDimension,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getPhysicalDimension), submodels,
-                    PHYSICAL_DIMENSION_ASPECT_TYPE);
+                    PHYSICAL_DIMENSION_1_0_0);
         } else if (relationshipAspect.equals(RelationshipAspect.SINGLE_LEVEL_BOM_AS_PLANNED)) {
             relationshipSubmodelData = cxTestData.flatMap(CxTestDataContainer.CxTestData::getSingleLevelBomAsPlanned);
             checkAndAddSubmodel(testParameters.shouldCountSingleLevelBomAsPlanned, relationshipSubmodelData, submodels,
-                    SINGLE_LEVEL_BOM_AS_PLANNED_ASPECT_TYPE);
+                    SINGLE_LEVEL_BOM_AS_PLANNED_3_0_0);
 
             checkAndAddSubmodel(testParameters.shouldCountPartAsPlanned,
                     cxTestData.flatMap(CxTestDataContainer.CxTestData::getPartAsPlanned), submodels,
-                    PART_AS_PLANNED_ASPECT_TYPE);
+                    PART_AS_PLANNED_2_0_0);
         }
 
         if (relationshipSubmodelData.isPresent()) {
@@ -341,7 +348,8 @@ class CxTestDataAnalyzerTest extends LocalTestDataConfigurationAware {
     private void checkAndAddSubmodel(final boolean shouldCountSubmodel, final Optional<Map<String, Object>> payload,
             final List<Submodel> submodels, final String aspectType) {
         if (shouldCountSubmodel && payload.isPresent()) {
-            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, payload.get()));
+            submodels.add(Submodel.from(UUID.randomUUID().toString(), aspectType, UUID.randomUUID().toString(),
+                    payload.get()));
         }
     }
 

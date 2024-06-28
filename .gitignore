@@ -16,6 +16,7 @@ target/
 ### IntelliJ IDEA ###
 .idea
 !.idea/codeStyles/
+!.idea/copyright/*
 !.idea/fileTemplates/
 *.iws
 *.iml
@@ -57,7 +58,20 @@ dependency-reduced-pom.xml
 ### Local files ###
 dev/local/*
 /local/testing/api-tests/variable.env
+/local/testing/api-tests/variable.ps1
 local/testing/api-tests/__pycache__/
 
 ### Cucumber ###
 /irs-cucumber-tests/report.json
+
+### Local documentation build ###
+node_modules
+docs/src/diagram-replacer/generated-adocs
+docs/src/diagram-replacer/package-lock.json
+docs/src/diagram-replacer/package.json
+docs/src/diagram-replacer/plantuml.jar
+
+# Helm Chart Dependencies
+/charts/item-relationship-service/Chart.lock
+/charts/item-relationship-service/charts/
+/docs/src/api/irs-api.actual.yaml

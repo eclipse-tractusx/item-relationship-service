@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,8 +23,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.policy.model.AndConstraint;
@@ -45,8 +46,7 @@ public class ConstraintCheckerService {
     public boolean hasAllConstraint(final Policy acceptedPolicy, final List<Constraint> constraints) {
         final List<Constraints> acceptedConstraintsList = acceptedPolicy.getPermissions()
                                                                         .stream()
-                                                                        .map(Permission::getConstraints)
-                                                                        .flatMap(Collection::stream)
+                                                                        .map(Permission::getConstraint)
                                                                         .toList();
 
         return constraints.stream().allMatch(constraint -> isValidOnList(constraint, acceptedConstraintsList));
@@ -65,12 +65,14 @@ public class ConstraintCheckerService {
         if (constraint instanceof AndConstraint andConstraint) {
             return andConstraint.getConstraints()
                                 .stream()
-                                .allMatch(constr -> isInList(constr, acceptedConstraints.getAnd()));
+                                .allMatch(constr -> isInList(constr, Optional.ofNullable(acceptedConstraints.getAnd())
+                                                                             .orElse(Collections.emptyList())));
         }
         if (constraint instanceof OrConstraint orConstraint) {
             return orConstraint.getConstraints()
                                .stream()
-                               .anyMatch(constr -> isInList(constr, acceptedConstraints.getOr()));
+                               .anyMatch(constr -> isInList(constr, Optional.ofNullable(acceptedConstraints.getOr())
+                                                                            .orElse(Collections.emptyList())));
         }
         return false;
     }
@@ -89,9 +91,9 @@ public class ConstraintCheckerService {
         return AtomicConstraintValidator.builder()
                                         .atomicConstraint(atomicConstraint)
                                         .leftExpressionValue(acceptedConstraint.getLeftOperand())
-                                        .rightExpressionValue(
-                                                acceptedConstraint.getRightOperand().stream().findFirst().orElse(""))
-                                        .expectedOperator(Operator.valueOf(acceptedConstraint.getOperator().name()))
+                                        .rightExpressionValue(acceptedConstraint.getRightOperand())
+                                        .expectedOperator(Operator.valueOf(
+                                                acceptedConstraint.getOperator().getOperatorType().name()))
                                         .build()
                                         .isValid();
     }

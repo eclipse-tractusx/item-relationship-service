@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,11 +37,9 @@ import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcessManager;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemDataRequest;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemTreesAssembler;
 import org.eclipse.tractusx.irs.aaswrapper.job.TreeRecursiveLogic;
-import org.eclipse.tractusx.irs.aaswrapper.job.delegate.BpdmDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.RelationshipDelegate;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.SubmodelDelegate;
-import org.eclipse.tractusx.irs.bpdm.BpdmFacade;
 import org.eclipse.tractusx.irs.common.OutboundMeterRegistryService;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistence;
 import org.eclipse.tractusx.irs.common.persistence.BlobPersistenceException;
@@ -49,8 +47,20 @@ import org.eclipse.tractusx.irs.common.persistence.MinioBlobPersistence;
 import org.eclipse.tractusx.irs.connector.job.JobOrchestrator;
 import org.eclipse.tractusx.irs.connector.job.JobStore;
 import org.eclipse.tractusx.irs.connector.job.JobTTL;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
+import org.eclipse.tractusx.irs.edc.client.AsyncPollingService;
+import org.eclipse.tractusx.irs.edc.client.ContractNegotiationService;
+import org.eclipse.tractusx.irs.edc.client.EDCCatalogFacade;
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
+import org.eclipse.tractusx.irs.edc.client.EdcDataPlaneClient;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClient;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientImpl;
+import org.eclipse.tractusx.irs.edc.client.EdcSubmodelClientLocalStub;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
+import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.registryclient.DigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient;
+import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientLocalStub;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.MeterRegistryService;
@@ -87,11 +97,11 @@ public class JobConfiguration {
             @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JobStore jobStore,
             final MeterRegistryService meterService, final ApplicationEventPublisher applicationEventPublisher,
             @Value("${irs.job.jobstore.ttl.failed:}") final Duration ttlFailedJobs,
-            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs) {
+            @Value("${irs.job.jobstore.ttl.completed:}") final Duration ttlCompletedJobs, final JsonUtil jsonUtil) {
 
         final var manager = new AASTransferProcessManager(digitalTwinDelegate, Executors.newCachedThreadPool(),
-                blobStore);
-        final var logic = new TreeRecursiveLogic(blobStore, new JsonUtil(), new ItemTreesAssembler());
+                blobStore, jsonUtil);
+        final var logic = new TreeRecursiveLogic(blobStore, jsonUtil, new ItemTreesAssembler());
         final var handler = new AASRecursiveJobHandler(logic);
         final JobTTL jobTTL = new JobTTL(ttlCompletedJobs, ttlFailedJobs);
 
@@ -132,15 +142,10 @@ public class JobConfiguration {
     }
 
     @Bean
-    public RelationshipDelegate relationshipDelegate(final BpdmDelegate bpdmDelegate,
+    public RelationshipDelegate relationshipDelegate(final SubmodelDelegate submodelDelegate,
             final EdcSubmodelFacade submodelFacade, final ConnectorEndpointsService connectorEndpointsService,
             final JsonUtil jsonUtil) {
-        return new RelationshipDelegate(bpdmDelegate, submodelFacade, connectorEndpointsService, jsonUtil);
-    }
-
-    @Bean
-    public BpdmDelegate bpdmDelegate(final SubmodelDelegate submodelDelegate, final BpdmFacade bpdmFacade) {
-        return new BpdmDelegate(submodelDelegate, bpdmFacade);
+        return new RelationshipDelegate(submodelDelegate, submodelFacade, connectorEndpointsService, jsonUtil);
     }
 
     @Bean
@@ -151,4 +156,30 @@ public class JobConfiguration {
                 connectorEndpointsService);
     }
 
+    @Profile({ "local",
+               "stubtest"
+    })
+    @Bean
+    public DigitalTwinRegistryClient digitalTwinRegistryClient(final CxTestDataContainer cxTestDataContainer) {
+        return new DigitalTwinRegistryClientLocalStub(cxTestDataContainer);
+    }
+
+    @Profile({ "local",
+               "stubtest"
+    })
+    @Bean
+    public EdcSubmodelClient edcLocalSubmodelClient(final CxTestDataContainer cxTestDataContainer) {
+        return new EdcSubmodelClientLocalStub(cxTestDataContainer);
+    }
+
+    @Profile({ "!local && !stubtest" })
+    @Bean
+    public EdcSubmodelClient edcSubmodelClient(final EdcConfiguration edcConfiguration,
+            final ContractNegotiationService contractNegotiationService, final EdcDataPlaneClient edcDataPlaneClient,
+            final AsyncPollingService pollingService, final RetryRegistry retryRegistry,
+            final EDCCatalogFacade catalogFacade,
+            final EndpointDataReferenceCacheService endpointDataReferenceCacheService) {
+        return new EdcSubmodelClientImpl(edcConfiguration, contractNegotiationService, edcDataPlaneClient,
+                pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
+    }
 }

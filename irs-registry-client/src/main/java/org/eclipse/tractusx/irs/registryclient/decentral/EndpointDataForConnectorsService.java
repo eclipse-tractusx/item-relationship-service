@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,12 +23,14 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
-import org.springframework.web.client.RestClientException;
+import org.springframework.util.StopWatch;
 
 /**
  * Service that use edc client to make calls to edc connector endpoints
@@ -38,24 +40,50 @@ import org.springframework.web.client.RestClientException;
 @RequiredArgsConstructor
 public class EndpointDataForConnectorsService {
 
-    private static final String DT_REGISTRY_ASSET_TYPE = "https://w3id.org/edc/v0.0.1/ns/type";
-    private static final String DT_REGISTRY_ASSET_VALUE = "data.core.digitalTwinRegistry";
+    private static final String TOOK_MS = "{} took {} ms";
 
     private final EdcEndpointReferenceRetriever edcSubmodelFacade;
 
-    public EndpointDataReference findEndpointDataForConnectors(final List<String> connectorEndpoints) {
-        for (final String connector : connectorEndpoints) {
-            log.info("Trying to retrieve EndpointDataReference for connector {}", connector);
-            try {
-                return edcSubmodelFacade.getEndpointReferenceForAsset(connector, DT_REGISTRY_ASSET_TYPE,
-                        DT_REGISTRY_ASSET_VALUE);
-            } catch (EdcRetrieverException e) {
-                log.warn("Exception occurred when retrieving EndpointDataReference from connector {}", connector, e);
-            }
+    public List<CompletableFuture<EndpointDataReference>> createFindEndpointDataForConnectorsFutures(
+            final List<String> edcUrls, final String bpn) {
+
+        final var watch = new StopWatch();
+        final String msg = "Creating futures to get EndpointDataReferences for endpoints: %s".formatted(edcUrls);
+        watch.start(msg);
+        log.info(msg);
+
+        List<CompletableFuture<EndpointDataReference>> futures = Collections.emptyList();
+        try {
+            log.info("Creating futures to get EndpointDataReferences for endpoints: {}", edcUrls);
+            futures = edcUrls.stream()
+                             .flatMap(edcUrl -> createGetEndpointReferencesForAssetFutures(edcUrl, bpn).stream())
+                             .toList();
+            return futures;
+        } finally {
+            log.info("Created {} futures", futures.size());
+            watch.stop();
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
-        throw new RestClientException(
-                "EndpointDataReference was not found. Requested connectorEndpoints: " + String.join(", ",
-                        connectorEndpoints));
+    }
+
+    private List<CompletableFuture<EndpointDataReference>> createGetEndpointReferencesForAssetFutures(
+            final String edcUrl, final String bpn) {
+
+        final var watch = new StopWatch();
+        final String msg = "Trying to retrieve EndpointDataReference for connector '%s'".formatted(edcUrl);
+        watch.start(msg);
+        log.info(msg);
+
+        try {
+            return edcSubmodelFacade.getEndpointReferencesForAsset(edcUrl, bpn);
+        } catch (EdcRetrieverException e) {
+            log.warn("Exception occurred when retrieving EndpointDataReference from connector '{}'", edcUrl, e);
+            return List.of(CompletableFuture.failedFuture(e));
+        } finally {
+            watch.stop();
+            log.info(TOOK_MS, watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+        }
+
     }
 
 }

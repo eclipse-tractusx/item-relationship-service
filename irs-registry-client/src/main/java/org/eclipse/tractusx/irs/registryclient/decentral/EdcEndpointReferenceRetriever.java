@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,6 +23,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.registryclient.decentral;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 
 /**
@@ -31,13 +34,13 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 public interface EdcEndpointReferenceRetriever {
 
     /**
-     * Retrieves the EDC endpoint reference from the specified connector endpoint and asset combination
+     * Retrieves the EDC endpoint references from the specified connector endpoint and asset combination
+     *
      * @param edcConnectorEndpoint the endpoint URL
-     * @param assetType the asset type id
-     * @param assetValue the asset type value
-     * @return the endpoint data reference
+     * @param bpn                  bpn value
+     * @return the endpoint data references as list of futures
      * @throws EdcRetrieverException on any EDC errors
      */
-    EndpointDataReference getEndpointReferenceForAsset(String edcConnectorEndpoint, String assetType, String assetValue)
-            throws EdcRetrieverException;
+    @SuppressWarnings("PMD.UseObjectForClearerAPI")
+    List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForAsset(String edcConnectorEndpoint, String bpn) throws EdcRetrieverException;
 }

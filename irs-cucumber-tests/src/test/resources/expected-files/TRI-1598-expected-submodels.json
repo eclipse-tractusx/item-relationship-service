@@ -1,264 +1,76 @@
 {
-    "submodels" : [
-        {
-            "identification": "urn:uuid:5d4b8b58-9deb-4366-8b16-bad1797e0a72",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+  "submodels": [
+    {
+      "identification": "urn:uuid:2ac3ea31-3c7e-498e-bed6-5b736e9f5d51",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "de569b1d-e253-449d-a92d-3fa16b3d2f10",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003AXS3",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003AXS3",
+              "function": "production"
             }
+          ]
         },
-        {
-            "identification": "urn:uuid:5d4b8b58-9deb-4366-8b16-bad1797e0a72",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "catenaXId": "urn:uuid:91babdbe-859f-46c8-8be4-8894cd1504e4",
+        "partTypeInformation": {
+          "manufacturerPartId": "VH-09",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
             }
+          ],
+          "nameAtManufacturer": "Mirror left"
         },
-        {
-            "identification": "urn:uuid:c43e8cd9-132e-4f42-9331-b004c66441dc",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "itemVersion": "04"
+      }
+    },
+    {
+      "identification": "urn:uuid:ff58d35b-baf0-4df7-9721-3a9894fa7712",
+      "aspectType": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "contractAgreementId": "de569b1d-e253-449d-a92d-3fa16b3d2f10",
+      "payload": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000003B0Q0",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "HUR",
+          "sites": [
+            {
+              "catenaXsiteId": "BPNS00000003B0Q0",
+              "function": "production"
             }
+          ]
         },
-        {
-            "identification": "urn:uuid:5d4b8b58-9deb-4366-8b16-bad1797e0a72",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
+        "catenaXId": "urn:uuid:8e35cbe0-57ac-49e7-b87a-1a9bdef178e0",
+        "partTypeInformation": {
+          "manufacturerPartId": "CI-85",
+          "partClassification": [
+            {
+              "classificationDescription": "Standard data element types with associated classification scheme for electric components.",
+              "classificationStandard": "IEC",
+              "classificationID": "61360- 2:2012 "
             }
+          ],
+          "nameAtManufacturer": "Mirror left"
         },
-        {
-            "identification": "urn:uuid:5d4b8b58-9deb-4366-8b16-bad1797e0a72",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:c43e8cd9-132e-4f42-9331-b004c66441dc",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:c43e8cd9-132e-4f42-9331-b004c66441dc",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:c43e8cd9-132e-4f42-9331-b004c66441dc",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:c43e8cd9-132e-4f42-9331-b004c66441dc",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:e3754252-85e0-4b50-98a0-b4010565fa07",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:5d4b8b58-9deb-4366-8b16-bad1797e0a72",
-            "aspectType": "urn:samm:io.catenax.batch:2.0.0#Batch",
-            "payload": {
-                "localIdentifiers": [
-                    {
-                        "value": "BPNL00000003B0Q0",
-                        "key": "manufacturerId"
-                    },
-                    {
-                        "value": "BID12345678",
-                        "key": "batchId"
-                    }
-                ],
-                "manufacturingInformation": {
-                    "date": "2022-02-04T14:48:54",
-                    "country": "HUR"
-                },
-                "catenaXId": "urn:uuid:98a8a7e9-b265-479c-a11e-77219f94d659",
-                "partTypeInformation": {
-                    "manufacturerPartId": "123-0.740-3434-A",
-                    "classification": "product",
-                    "nameAtManufacturer": "Cathode Material"
-                }
-            }
-        }
-    ]
+        "itemVersion": "02"
+      }
+    }
+  ]
 }

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -24,8 +24,11 @@
 package org.eclipse.tractusx.irs.aaswrapper.job.delegate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SERIAL_PART_3_0_0;
+import static org.eclipse.tractusx.irs.SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterCollectAspects;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameterFilter;
+import static org.eclipse.tractusx.irs.util.TestMother.shell;
 import static org.eclipse.tractusx.irs.util.TestMother.shellDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptor;
 import static org.eclipse.tractusx.irs.util.TestMother.submodelDescriptorWithDspEndpoint;
@@ -43,7 +46,8 @@ import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.ItemNotFoundInCatalogException;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
@@ -63,21 +67,17 @@ class SubmodelDelegateTest {
     final SubmodelDelegate submodelDelegate = new SubmodelDelegate(submodelFacade, semanticsHubFacade,
             jsonValidatorService, new JsonUtil(), connectorEndpointsService);
 
-    private static PartChainIdentificationKey createKey() {
-        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
-    }
-
     @Test
-    void shouldFilterSubmodelDescriptorsByAspectTypeFilter() {
+    void shouldNotFilterSubmodelDescriptorsByAspectTypeFilter() {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
-                                                                                                   .shell(shellDescriptor(
+                                                                                                   .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part_typization:1.0.0#SerialPartTypization",
+                                                                                                                           SERIAL_PART_3_0_0,
                                                                                                                            "testSerialPartTypizationEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.assembly_part_relationship:1.0.0#AssemblyPartRelationship",
-                                                                                                                           "testAssemblyPartRelationshipEndpoint"))));
+                                                                                                                           SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                                                           "testAssemblyPartRelationshipEndpoint")))));
 
         // when
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels, jobParameterFilter(),
@@ -85,20 +85,20 @@ class SubmodelDelegateTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getShells().get(0).getSubmodelDescriptors()).isEmpty();
+        assertThat(result.getShells().get(0).payload().getSubmodelDescriptors()).isNotEmpty();
     }
 
     @Test
     void shouldCatchJsonParseExceptionAndPutTombstone() throws SchemaNotFoundException {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
-                                                                                                   .shell(shellDescriptor(
+                                                                                                   .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           SERIAL_PART_3_0_0,
                                                                                                                            "testSerialPartEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
+                                                                                                                           SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
         when(semanticsHubFacade.getModelJsonSchema(any())).thenThrow(
@@ -117,13 +117,13 @@ class SubmodelDelegateTest {
     @Test
     void shouldPutTombstoneForMissingBpn() {
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
-                                                                                                   .shell(shellDescriptor(
+                                                                                                   .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           SERIAL_PART_3_0_0,
                                                                                                                            "testSerialPartEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
+                                                                                                                           SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
@@ -141,17 +141,19 @@ class SubmodelDelegateTest {
     @Test
     void shouldCatchUsagePolicyExceptionAndPutTombstone() throws EdcClientException {
         // given
+        final String businessPartnerNumber = "BPNL000000011111";
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
-                                                                                                   .shell(shellDescriptor(
+                                                                                                   .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           SERIAL_PART_3_0_0,
                                                                                                                            "testSerialPartEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
+                                                                                                                           SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
-        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(new UsagePolicyException("itemId"));
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
+                new UsagePolicyPermissionException("itemId", null, businessPartnerNumber));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of("connector.endpoint.nl"));
         final ItemContainer result = submodelDelegate.process(itemContainerShellWithTwoSubmodels,
                 jobParameterCollectAspects(), new AASTransferProcess(), createKey());
@@ -160,6 +162,7 @@ class SubmodelDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(2);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
+        assertThat(result.getTombstones().get(0).getBusinessPartnerNumber()).isEqualTo(businessPartnerNumber);
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.USAGE_POLICY_VALIDATION);
     }
@@ -168,17 +171,17 @@ class SubmodelDelegateTest {
     void shouldRequestForAllEndpoints() throws EdcClientException, InvalidSchemaException {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithOneSubmodel = ItemContainer.builder()
-                                                                                                  .shell(shellDescriptor(
+                                                                                                  .shell(shell("", shellDescriptor(
                                                                                                           List.of(submodelDescriptor(
-                                                                                                                  "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                  SERIAL_PART_3_0_0,
                                                                                                                   "testSerialPartEndpoint",
-                                                                                                                  ""))));
+                                                                                                                  "")))));
 
         // when
-        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(
-                new ItemNotFoundInCatalogException("test", "itemId")).thenReturn("""
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(
+                new ItemNotFoundInCatalogException("test", "itemId")).thenReturn(new SubmodelDescriptor("cid", """
                 {"test": "test"}
-                """);
+                """));
         when(jsonValidatorService.validate(any(), any())).thenReturn(ValidationResult.builder().valid(true).build());
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(
                 List.of("connector.endpoint.n1", "connector.endpoint.n2"));
@@ -188,8 +191,8 @@ class SubmodelDelegateTest {
         // then
         assertThat(result).isNotNull();
         assertThat(result.getSubmodels()).hasSize(1);
-        assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo(
-                "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart");
+        assertThat(result.getSubmodels().get(0).getAspectType()).isEqualTo(SERIAL_PART_3_0_0);
+        assertThat(result.getSubmodels().get(0).getContractAgreementId()).isNull();
         assertThat(result.getTombstones()).isEmpty();
     }
 
@@ -197,13 +200,13 @@ class SubmodelDelegateTest {
     void shouldCatchRestClientExceptionAndPutTombstone() throws SchemaNotFoundException {
         // given
         final ItemContainer.ItemContainerBuilder itemContainerShellWithTwoSubmodels = ItemContainer.builder()
-                                                                                                   .shell(shellDescriptor(
+                                                                                                   .shell(shell("", shellDescriptor(
                                                                                                            List.of(submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.serial_part:1.0.0#SerialPart",
+                                                                                                                           SERIAL_PART_3_0_0,
                                                                                                                            "testSerialPartEndpoint"),
                                                                                                                    submodelDescriptorWithDspEndpoint(
-                                                                                                                           "urn:bamm:com.catenax.single_level_bom_as_built:1.0.0#SingleLevelBomAsBuilt",
-                                                                                                                           "testSingleLevelBomAsBuiltEndpoint"))));
+                                                                                                                           SINGLE_LEVEL_BOM_AS_BUILT_3_0_0,
+                                                                                                                           "testSingleLevelBomAsBuiltEndpoint")))));
 
         // when
         when(semanticsHubFacade.getModelJsonSchema(any())).thenThrow(
@@ -217,6 +220,10 @@ class SubmodelDelegateTest {
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.SCHEMA_REQUEST);
+    }
+
+    private static PartChainIdentificationKey createKey() {
+        return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
     }
 
 }

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -58,9 +58,11 @@ public class PollingJob<T> {
 
         final Runnable actionToUse = () -> action.get().ifPresent(completableFuture::complete);
 
-        final ScheduledFuture<?> scheduledFuture = scheduler.scheduleWithFixedDelay(
-                wrapWithErrorHandler(wrapWithTimeout(actionToUse), completableFuture), 0, pollInterval.toMillis(),
-                TimeUnit.MILLISECONDS);
+        final Runnable actionWithTimeoutAndErrorHandling = wrapWithErrorHandler(wrapWithTimeout(actionToUse),
+                completableFuture);
+
+        final ScheduledFuture<?> scheduledFuture = scheduler.scheduleWithFixedDelay(actionWithTimeoutAndErrorHandling,
+                0, pollInterval.toMillis(), TimeUnit.MILLISECONDS);
 
         completableFuture.whenComplete((result, thrown) -> scheduledFuture.cancel(true));
 

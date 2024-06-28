@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -55,11 +55,14 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private final AbstractDelegate abstractDelegate;
 
+    private final JsonUtil jsonUtil;
+
     public AASTransferProcessManager(final AbstractDelegate abstractDelegate, final ExecutorService executor,
-            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore) {
+            @Qualifier(JOB_BLOB_PERSISTENCE) final BlobPersistence blobStore, final JsonUtil jsonUtil) {
         this.abstractDelegate = abstractDelegate;
         this.executor = executor;
         this.blobStore = blobStore;
+        this.jsonUtil = jsonUtil;
     }
 
     @Override
@@ -95,7 +98,6 @@ public class AASTransferProcessManager implements TransferProcessManager<ItemDat
 
     private void storeItemContainer(final String processId, final ItemContainer itemContainer) {
         try {
-            final JsonUtil jsonUtil = new JsonUtil();
             blobStore.putBlob(processId, jsonUtil.asString(itemContainer).getBytes(StandardCharsets.UTF_8));
         } catch (BlobPersistenceException e) {
             log.error("Unable to store AAS result", e);

@@ -2,7 +2,7 @@
 
 The deployment contains the components required to connect the IRS to an existing Catena-X network. This includes:
 
-- IRS with Minio - part of the "irs-helm" Helm chart
+- IRS with Minio - part of the "item-relationship-service" Helm chart
 - EDC Consumer (controlplane & dataplane) - part of the "irs-edc-consumer" Helm chart
 
 Everything else needs to be provided externally.
@@ -10,13 +10,13 @@ Everything else needs to be provided externally.
 ## Data Chain Kit
 
 You can use the Data Chain Kit to deploy the whole demo scenario with all participating components.  
-Instructions can be found here: [Data Chain Kit](https://eclipse-tractusx.github.io/docs/kits/Data%20Chain%20Kit/Operation%20View/).
+Instructions can be found here: [Data Chain Kit](https://eclipse-tractusx.github.io/docs-kits/kits/Data%20Chain%20Kit/Operation%20View).
 
 ## Installation
 
-The IRS Helm repository can be found here: [https://eclipse-tractusx.github.io/item-relationship-service/index.yaml](https://eclipse-tractusx.github.io/docs/kits/Data%20Chain%20Kit/Operation%20View/)
+The IRS Helm repository can be found here: [index.yaml](https://eclipse-tractusx.github.io/item-relationship-service/index.yaml)
 
-Use the latest release of the "irs-helm" chart.
+Use the latest release of the "item-relationship-service" Helm chart.
 It contains all required dependencies.
 
 If you also want to set up your own EDC consumer, use the "irs-edc-consumer" chart.
@@ -35,19 +35,19 @@ Add the IRS Helm repository:
 Then install the Helm chart into your cluster:
 
 ```(shell)
-    helm install -f your-values.yaml irs-app irs/irs-helm
+    helm install -f your-values.yaml irs-app irs/item-relationship-service
 ```
 
 Or create a new Helm chart and use the IRS as a dependency.
 
 ```(yaml)
     dependencies:
-      - name: irs-helm
+      - name: item-relationship-service
         repository: https://eclipse-tractusx.github.io/item-relationship-service
-        version: 3.x.x
-      - name: irs-edc-consumer # optional
-        repository: https://eclipse-tractusx.github.io/item-relationship-service
-        version: 1.x.x
+        version: 6.x.x
+      - name: tractusx-connector
+        repository: https://eclipse-tractusx.github.io/tractusx-edc
+        version: 0.5.x
 ```
 
 Then provide your configuration as the values.yaml of that chart.
@@ -62,4 +62,8 @@ A detailed instruction on how to configure the IRS and EDC can be found here: [A
 IRS provides a local setup which can be deployed to kubernetes.
 This setup includes all third-party services which IRS uses and interacts with.
 
-Instructions can be found here [README.md](https://github.com/eclipse-tractusx/item-relationship-service/blob/main/local/deployment/full-irs/README.md).
+Instructions can be found here [README](README.md).
+
+## Sample Calls
+
+Sample calls can be found here [USAGE](USAGE.md).

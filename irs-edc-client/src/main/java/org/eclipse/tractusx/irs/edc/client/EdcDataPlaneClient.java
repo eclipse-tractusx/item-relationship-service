@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -57,33 +57,11 @@ public class EdcDataPlaneClient {
     }
 
     public String getData(final EndpointDataReference dataReference, final String submodelDataplaneUrl) {
-
         final String response = edcRestTemplate.exchange(submodelDataplaneUrl, HttpMethod.GET,
                 new HttpEntity<>(null, headers(dataReference)), String.class).getBody();
 
         log.info("Extracting raw embeddedData from EDC data plane response");
-        return extractData(response);
-    }
-
-    private HttpHeaders headers(final EndpointDataReference dataReference) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        final var authKey = dataReference.getAuthKey();
-        if (authKey != null) {
-            headers.add(authKey, dataReference.getAuthCode());
-        }
-        return headers;
-    }
-
-    private String extractData(final String response) {
-        String modifiedResponse = response;
-        Matcher dataMatcher = RESPONSE_PATTERN.matcher(modifiedResponse);
-        while (dataMatcher.matches()) {
-            modifiedResponse = dataMatcher.group("embeddedData");
-            modifiedResponse = modifiedResponse.replace("\\\"", "\"").replace("\\\\", "\\");
-            dataMatcher = RESPONSE_PATTERN.matcher(response);
-        }
-        return modifiedResponse;
+        return extractEmbeddedData(response);
     }
 
     public EdcNotificationResponse sendData(final EndpointDataReference dataReference,
@@ -97,5 +75,26 @@ public class EdcDataPlaneClient {
         log.info("Call to {} returned with status code {}", url, response.getStatusCode());
 
         return () -> response.getStatusCode().is2xxSuccessful();
+    }
+
+    private HttpHeaders headers(final EndpointDataReference dataReference) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        final var authKey = dataReference.getAuthKey();
+        if (authKey != null) {
+            headers.add(authKey, dataReference.getAuthCode());
+        }
+        return headers;
+    }
+
+    private String extractEmbeddedData(final String response) {
+        String modifiedResponse = response;
+        Matcher dataMatcher = RESPONSE_PATTERN.matcher(modifiedResponse);
+        while (dataMatcher.matches()) {
+            modifiedResponse = dataMatcher.group("embeddedData");
+            modifiedResponse = modifiedResponse.replace("\\\"", "\"").replace("\\\\", "\\");
+            dataMatcher = RESPONSE_PATTERN.matcher(response);
+        }
+        return modifiedResponse;
     }
 }

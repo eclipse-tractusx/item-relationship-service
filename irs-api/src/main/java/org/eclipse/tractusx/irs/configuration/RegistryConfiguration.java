@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.configuration;
 
+import org.eclipse.tractusx.irs.edc.client.EdcConfiguration;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.registryclient.central.CentralDigitalTwinRegistryService;
@@ -30,9 +31,11 @@ import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClient
 import org.eclipse.tractusx.irs.registryclient.central.DigitalTwinRegistryClientImpl;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryClient;
 import org.eclipse.tractusx.irs.registryclient.decentral.DecentralDigitalTwinRegistryService;
+import org.eclipse.tractusx.irs.registryclient.decentral.EdcEndpointReferenceRetriever;
 import org.eclipse.tractusx.irs.registryclient.decentral.EdcRetrieverException;
 import org.eclipse.tractusx.irs.registryclient.decentral.EndpointDataForConnectorsService;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
+import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClient;
 import org.eclipse.tractusx.irs.registryclient.discovery.DiscoveryFinderClientImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,23 +73,39 @@ public class RegistryConfiguration {
             @Qualifier(RestTemplateConfig.EDC_REST_TEMPLATE) final RestTemplate edcRestTemplate,
             final ConnectorEndpointsService connectorEndpointsService, final EdcSubmodelFacade facade,
             @Value("${digitalTwinRegistry.shellDescriptorTemplate:}") final String shellDescriptorTemplate,
-            @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate) {
-        return new DecentralDigitalTwinRegistryService(connectorEndpointsService,
-                new EndpointDataForConnectorsService((edcConnectorEndpoint, assetType, assetValue) -> {
-                    try {
-                        return facade.getEndpointReferenceForAsset(edcConnectorEndpoint, assetType, assetValue);
-                    } catch (EdcClientException e) {
-                        throw new EdcRetrieverException(e);
-                    }
-                }),
-                new DecentralDigitalTwinRegistryClient(edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate));
+            @Value("${digitalTwinRegistry.lookupShellsTemplate:}") final String lookupShellsTemplate,
+            final EdcConfiguration edcConfiguration) {
+
+        final EdcEndpointReferenceRetriever endpointReferenceRetriever = (edcConnectorEndpoint, bpn) -> {
+            try {
+                return facade.getEndpointReferencesForRegistryAsset(edcConnectorEndpoint, bpn);
+            } catch (EdcClientException e) {
+                throw new EdcRetrieverException(e);
+            }
+        };
+
+        final DecentralDigitalTwinRegistryClient digitalTwinRegistryClient = new DecentralDigitalTwinRegistryClient(
+                edcRestTemplate, shellDescriptorTemplate, lookupShellsTemplate);
+
+        final EndpointDataForConnectorsService endpointDataForConnectorsService = new EndpointDataForConnectorsService(
+                endpointReferenceRetriever);
+
+        return new DecentralDigitalTwinRegistryService(connectorEndpointsService, endpointDataForConnectorsService,
+                digitalTwinRegistryClient, edcConfiguration);
     }
 
     @Bean
     public ConnectorEndpointsService connectorEndpointsService(
             @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
-            @Value("${digitalTwinRegistry.discoveryFinderUrl:}") final String finderUrl) {
-        return new ConnectorEndpointsService(new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate));
+            @Value("${digitalTwinRegistry.discovery.discoveryFinderUrl:}") final String finderUrl) {
+        return new ConnectorEndpointsService(discoveryFinderClient(dtrRestTemplate, finderUrl));
+    }
+
+    @Bean
+    public DiscoveryFinderClient discoveryFinderClient(
+            @Qualifier(RestTemplateConfig.DTR_REST_TEMPLATE) final RestTemplate dtrRestTemplate,
+            @Value("${digitalTwinRegistry.discovery.discoveryFinderUrl:}") final String finderUrl) {
+        return new DiscoveryFinderClientImpl(finderUrl, dtrRestTemplate);
     }
 
 }

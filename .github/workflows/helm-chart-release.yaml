@@ -25,13 +25,13 @@ jobs:
       - name: Get helm charts latest tag version
         id: step1
         run: |
-          latestVersion=$(git tag | grep "irs-helm-[1-9]" | tail -1)
+          latestVersion=$(git tag | grep "item-relationship-service-[1-9]" | sort -V | tail -1)
           echo "::set-output name=latest_version::$latestVersion"
           echo "Exported $latestVersion latest helm charts version"
       - name: Get helm charts current version
         id: step2
         run: |
-          chartVersion=irs-helm-$(cat ./charts/irs-helm/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
+          chartVersion=item-relationship-service-$(cat ./charts/item-relationship-service/Chart.yaml | grep "version:" | head -1 | cut -d ":" -d " " -f2)
           echo "::set-output name=current_version::$chartVersion"
           echo "Exported $chartVersion helm charts version"
 
@@ -55,12 +55,12 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Install Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
         with:
-          version: v3.8.1
+          version: v3.9.3
 
       - name: Update helm dependencies for irs
-        working-directory: charts/irs-helm/
+        working-directory: charts/item-relationship-service/
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add minio https://charts.min.io/
@@ -69,11 +69,11 @@ jobs:
           helm dependency update
 
       - name: Create temporary CHANGELOG file for helm release
-        working-directory: charts/irs-helm/
+        working-directory: charts/item-relationship-service/
         run: |
           touch CHANGELOG-temp.md
           
-          currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^irs-helm-//" )
+          currentVersionNumber=$(echo ${{ needs.get-helm-charts-versions-irs.outputs.current_version }} | sed -e "s/^item-relationship-service-//" )
           echo currentVersionNumber=$currentVersionNumber
           
           sed -n -e '/## \['"${currentVersionNumber}"'\]/,/## \[/ p' CHANGELOG.md | head -n -1 | tail -n +2 >> CHANGELOG-temp.md
@@ -83,7 +83,7 @@ jobs:
           cat CHANGELOG-temp.md
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.5.0
+        uses: helm/chart-releaser-action@v1.6.0
         with:
           config: ./.github/configs/cr-config.yml
         env:

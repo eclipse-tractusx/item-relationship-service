@@ -4,12 +4,256 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+_**For better traceability add the corresponding GitHub issue number in each changelog entry, please.**_
+
 ## [Unreleased]
+
+### Fixed
+
+- Fixed ESS Investigation job processing not starting #579
+- Policy store API returns 'rightOperand' without 'odrl:' prefix now (see traceability-foss/issues/970).
+
+### Changed
+
+- Improved policy store API input validation. #528
+- Extended datamodel of EdcPolicyPermissionConstraint to include andConstraints
+- Marked createAccessPolicy requests with deprecation mark.
+- Remove edc namespace from EdcContractAgreementNegotiationResponse and
+  EdcContractAgreementsResponse. eclipse-tractusx/traceability-foss#963
+- Added missing @context values in edc asset creation. eclipse-tractusx/traceability-foss#978
+- Switch to `dct:type` `https://w3id.org/catenax/taxonomy#` for notification asset creation. eclipse-tractusx/traceability-foss#978
+- Shells in Job response will contain all submodel descriptors returned by provider, instead filtered by aspect-type parameter. #510
+- Updated contributing, notice, and readme files for TRG 7 #681
+- Handling of expired policies when approving a notification eclipse-tractusx/traceability-foss#639
+
+## Added
+
+- Added tests for aspect version compatibility. #529
+- Added endpoint for dedicated removal of policy from BPNL. #559
+- Integration Test Policy Store API Unhappy Path. #519
+- Support for SingleLevelUsageAsPlanned. #470
+- Documentation to describe the delegate process. #470
+- Added file for CC BY 4.0 license for TRG 7 #681
+
+## [5.1.4] - 2024-05-27
+
+### Fixed
+
+- Fixed submodel request path by introducing configuration property `irs-edc-client.submodel.submodel-suffix` which will
+  be appended to the href URL.
+
+## [5.1.3] - 2024-05-17
+
+### Fixed
+
+- IRS now searches for Digital Twin Registry contract offers by
+  type `dct:type`: `https://w3id.org/catenax/taxonomy#DigitalTwinRegistry`
+  or `edc:type`: `data.core.digitalTwinRegistry`. #616
+- Fix missing and malformed properties for EDC policy transformation. #648
+
+## [5.1.2] - 2024-05-13
+
+### Fixed
+
+-  Cleaning up BPNLs without policies. #533
+
+### Changed
+
+- Updated default accepted policy to latest traceability framework agreement #596
+- BPN summary was removed from Job response #568
+
+
+## [5.1.1] - 2024-05-08
+
+### Fixed
+
+- Fixed issue in EDR token renewal. #358
+
+### Added
+
+- Cucumber test step definitions for Policy Store API (Happy Path) including some test helper utilities. #518
+
+## [5.1.0] - 2024-05-06
+
+### Changed
+
+- Removed obsolete entries from acceptedPolicies configuration. #530
+- Support of building relationships based on SingleLevelUsageAsBuilt v3.0.0 #558
+- Support of building relationships based on SingleLevelBomAsPlanned v3.0.0 #558
+- BPN lookup feature was removed #568
+- Update IRS EDC client to use EDC 0.7.0 #358
+
+### Fixed
+
+- Update bouncycastle to 1.78 to fix CVE's.
+- Fixed validation of json-schemas - IRS is creating tombstone instead collecting Submodel payload, when it not passes validation of schema #522
+
+## [5.0.0] - 2024-04-16
+
+### Added
+
+- SAMM models can now be added locally #488
+- Introduced new Cucumber Tests to cover Industry Core 2.0.0 compatibility #488
+
+
+### Fixed
+
+- Policy store API fixes. #199, #505
+  - Create policy request limited to create exactly one policy, not multiple (reason: error handling).
+  - Create policy request returns policy id of the created policy now.
+  - Harmonized policy store API between #199 and policy structure from #249.
+  - Consistent naming for business partner number parameters.
+  - Corrected default policy handling.
+  - Validation of business partner numbers. #505
+
+- ClassCastException in exception handling of EdcSubmodelClientImp#getEndpointReferencesForAsset corrected (returns the
+  exception as failed future now). #405
+- RestClientExceptions are handled correctly in BpdmFacade now. #405
+- Fixed Base64 encoding and decoding for locally provided Semantic Models #488
+
+## [4.9.0] - 2024-04-03
+### Added
+- Extended EdcPolicyDefinitionService to check if a policy in the edc exists
+
+### Changed
+- IRS now supports Asset Administration Shell v3.1 - adjusted lookup shells endpoint changes (assetIds query param is encoded). #359
+- Support of building relationships based on SingleLevelBomAsBuilt v3.0.0 #488
+- Renamed item relationship service Helm chart from "irs-helm" to "item-relationship-service". #489
+
+
+## [4.8.0] - 2024-03-18
+### Changed
+
+- Improved maintainability in EdcSubmodelClientImpl by reduced method visibility and better naming (in context of #448).
+- EdcPolicyDefinitionService, EdcContractDefinitionService and EdcAssetService throw AlreadyExist exceptions when
+  conflict is returned from EDC
+- Added AssetAdministrationShellDescriptor specificAssetIds support for externalSubjectId required for data provisioning
+- Registering a job - aspects array is now accepting full urn of aspect model instead of name only, eg. 'urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt' instead 'SingleLevelBomAsBuilt'. #439
+- Changed the version of irs-registry-client from 1.6.0-SNAPSHOT to 1.6.0
+- Policies can now be registered for certain bpnls. #199
+
+
+## Fixed
+- Fixed missing timeouts including configuration. #448
+
+## [4.7.0] - 2024-03-04
+### Added
+- DigitalTwinRegistryCreateShellService in irs-registry-client for creating shells in DTR directly
+- POST /management/v2/contractagreements/request and GET /management/v2/contractagreements/{contractAgreementId}/negotiation to irs-edc-client lib
+
+### Changed
+- EDC client handles multiple Digital Twin Registries and Digital Twins now #395
+- Change logo of irs
+- Added 'businessPartnerNumber' field to Tombstone model. This will be filled only when UsagePolicyValidation tombstone is being created. #404
+
+### Fixed
+- Update to Spring Boot 3.1.9 to fix CVE's. #423
+- Fixed a case where policy validation could result in a NullPointerException
+  if either orConstraint or andConstraint of accepted policies were null. #436
+
+## [4.6.0] - 2024-02-20
+### Added
+
+- Added concept to conform with IndustryCore Changes CX-0126 and CX-127. #367
+- Added release instructions to CONTRIBUTING.md
+- EdcAssetService capable to create assets inside EDC
+- EdcPolicyDefinitionService capable to create polices inside EDC
+- EdcContractDefinitionService capable to create contracts inside EDC
+
+### Changed
+- Updated AUTHORS.md
+- Reduced log level in MeterRegistryService in order to avoid excessive logging
+
+### Fixed
+
+- Fixed Log4J configuration. #396
+- Fix tavern and cucumber tests
+
+## [4.5.2] - 2024-02-22
+## Changed
+- Updated IRS OpenAPI version to 4.5.2
+
+## [4.5.1] - 2024-02-20
+### Changed
+
+- Moved Docker notice to separate file. #425
+
+## [4.5.0] - 2024-02-07
+### Added
+- Added helper script for building documentation locally.
+- Added new job parameter flag "auditContractNegotiation" which toggles setting contractAgreementId in Shells and Submodels
+- Added "contractAgreementId" field to Submodel model
+- Added Integration Tests for the entire IRS flow using stubbed responses of Discovery Service, Semantic Hub, EDC,
+  Digital Twin Registry and BPDM Pool. #344
+
+### Changed
+
+- Dataspace Discovery Service handles multiple EDC-Urls received for BPN now. #214
+- Updated license header to "Copyright (c) 2021,2024 Contributors to the Eclipse Foundation" #349
+- Changed lookupGlobalAssetIds to lookupShellsByBPN, which provides full object.
+- Suppressed CVE-2024-20932 from graal-sdk-21.2.0.jar because this is not applicable for IRS.
+- Updated configuration of `DISCOVERY_REST_TEMPLATE` from `ess.discovery.*` to `digitalTwinRegistry.discovery.*` and discovery finder URL from `digitalTwinRegistry.discoveryFinderUrl` to `digitalTwinRegistry.discovery.discoveryFinderUrl`
+- Redesigned shell object - wrapped payload and added "contractAgreementId" field. #370
+- Changed structure of policy creation to match EDC format. #249
+- Update irs-registry-client to 1.6.0-SNAPSHOT
+
+### Fixed
+- Update to Spring Boot 3.1.8. This fixes the following CVEs:
+  - CVE-2023-6378 serialization vulnerability in logback
+  - CVE-2023-51074 json-path v2.8.0 stack overflow
+  - CVE-2024-22233 Spring Framework server Web DoS Vulnerability
+
+## [4.4.0] - 2024-01-15
+### Added
+
+- Added EDR token cache to reuse token after contract negotiation. #256
+- Added cache mechanism in DiscoveryFinderClientImpl for findDiscoveryEndpoints. #225
+- Add concept docs/#322-Provisioning-of-contractAgreementId-for-assets.md. #322
+
+### Changed
+
+- Authentication was redesigned to use API keys, instead of OAuth2 protocol. The api key has to be sent as an X-API-KEY
+  request header. IRS is supporting two types of API keys - one for admin and one for regular/view usage. Use
+  new ``apiKeyAdmin`` and ``apiKeyRegular`` config entries to set up API keys. #259
+
+### Removed
+
+- Removed ``oauth.resourceClaim``, ``oauth.irsNamespace``,``oauth.roles``,``oauth2.jwkSetUri`` config entries. #259
+
+## [4.3.0] - 2023-12-08
+### Added
+
+- Added support for `hasAlternatives` property in SingleLevelBomAsBuilt aspect. #296
+
+### Changed
+
+- Updated EDC dependencies to 0.2.1
+- Update deprecated field `providerUrl` to `counterPartyAddress` in EDC catalog request
+- Update ESS EDC notification creation asset endpoint to v3
+
+## [4.2.0] - 2023-11-28
+### Changed
+- Changed default behaviour of IRS - when aspects list is not provided or empty in request body, IRS will not collect any submodel now (previously default aspects were collected).
+- ESS
+  - Added 'hops' parameter to SupplyChainImpacted Aspect model - contains relative distance in the supply chain
+  - Added `impactedSuppliersOnFirstTier` parameter to Supply SupplyChainImpacted Aspect model - contains information of first level supply chain impacted
+- Exported health endpoints to prometheus (see HealthMetricsExportConfiguration,
+  DependenciesHealthMetricsExportConfiguration) and
+  added [system health dashboard](charts/item-relationship-service/dashboards/system-health-dashboard.json)
+  in order to visualize health metrics of IRS and its dependencies. #283
+
+### Fixed
+- Fixed incorrect passing of incidentBPNS for ESS Orders
+
+### Known knowns
+
+- [#253] Cancellation of order jobs is not working stable
 
 ## [4.1.0] - 2023-11-15
 ### Added
 - IRS can now check the readiness of external services. Use the new ``management.health.dependencies.enabled`` config entry to determine if external dependencies health checks should be checked (false by default).
   - The map of external services healthcheck endpoints can be configured with ``management.health.dependencies.urls`` property, eg. ``service_name: http://service_name_host/health``
+- Added cache mechanism for ConnectorEndpointService for fetchConnectorEndpoints method cache
 
 ### Changed
 - Changed name of spring's OAuth2 client registration from 'keycloak' to 'common' like below:
@@ -43,10 +287,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
               token-uri:
   ```
 - Update IRS API Swagger documentation to match AAS 3.0.0
-  
+
 ### Fixed
 - IRS will return 206 Http status from GET /jobs/{id} endpoint if Job is still running
-  
+
+## [4.0.2] - 2023-11-20
+### Changed
+- Remove `apk upgrade --no-cache libssl3 libcrypto3` in Docker base image to be TRG compliant
+
 ## [4.0.1] - 2023-11-10
 ### Changed
 - Added state `STARTED` as acceptable state to complete the EDC transfer process to be compatible with EDC 0.5.1
@@ -57,7 +305,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added role "admin_irs" again
 
 ### Changed
-- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint
+- Deprecated query parameter 'jobStates' was removed from GET {{IRS_HOST}}/irs/jobs endpoint. TRI-996
 - Moved OAuth2 JWT token claim to configuration. The fields can be configured with `oauth.resourceClaim`, `oauth.irsNamespace`, `oauth.roles`.
 - ESS
   - Added Tombstone to ESS investigation in case required aspect models "PartAsPlanned" or "PartSiteInformationAsPlanned" are missing
@@ -132,7 +380,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduced new IRS role `admin_irs` which has unrestricted access to every API endpoint
 
 ### Changed
-- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. PolicyStore API access is restricted to role `admin_irs`.
+
+- Adjusted API access control. Users with role `view_irs` can only access jobs they created themselves. Policy Store API
+  access is restricted to role `admin_irs`.
 
 ### Fixed
 - Fixed bug where BPN's were delivered without 'manufacturerName' property filled
@@ -446,8 +696,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...HEAD
-[4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.1.0
+
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.4...HEAD
+[5.1.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.3...5.1.4
+[5.1.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.2...5.1.3
+[5.1.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.1...5.1.2
+[5.1.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.1.0...5.1.1
+[5.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/5.0.0...5.1.0
+[5.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.9.0...5.0.0
+[4.9.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.8.0...4.9.0
+[4.8.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.7.0...4.8.0
+[4.7.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.6.0...4.7.0
+[4.6.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.2...4.6.0
+[4.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.1...4.5.2
+[4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1
+[4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1
+[4.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...4.5.0
+[4.4.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.3.0...4.4.0
+[4.3.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.2.0...4.3.0
+[4.2.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.1.0...4.2.0
+[4.1.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.2...4.1.0
+[4.0.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.1...4.0.2
 [4.0.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.4...4.0.0
 [3.5.4]: https://github.com/eclipse-tractusx/item-relationship-service/compare/3.5.3...3.5.4

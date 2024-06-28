@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,16 +41,14 @@ import lombok.Getter;
 @Schema(description = "The lifecycle context in which the child part was assembled into the parent part.")
 @Getter
 public enum BomLifecycle {
-    AS_BUILT("asBuilt", AspectType.SERIAL_PART),
-    AS_PLANNED("asPlanned", AspectType.PART_AS_PLANNED),
-    AS_SPECIFIED("asSpecified", AspectType.PART_AS_SPECIFIED);
+    AS_BUILT("asBuilt"),
+    AS_PLANNED("asPlanned"),
+    AS_SPECIFIED("asSpecified");
 
     private final String name;
-    private final String defaultAspect;
 
-    BomLifecycle(final String name, final AspectType aspectType) {
+    BomLifecycle(final String name) {
         this.name = name;
-        this.defaultAspect = aspectType.toString();
     }
 
     /**

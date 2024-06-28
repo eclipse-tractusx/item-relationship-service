@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,6 +40,7 @@ import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 
 /**
@@ -85,31 +86,36 @@ public abstract class AbstractDelegate {
         return itemContainerBuilder.build();
     }
 
-    protected String requestSubmodelAsString(final EdcSubmodelFacade submodelFacade,
-            final ConnectorEndpointsService connectorEndpointsService, final Endpoint endpoint, final String bpn)
-            throws EdcClientException {
-        final String subprotocolBody = endpoint.getProtocolInformation().getSubprotocolBody();
+    protected SubmodelDescriptor requestSubmodel(final EdcSubmodelFacade submodelFacade,
+            final ConnectorEndpointsService connectorEndpointsService, final Endpoint digitalTwinRegistryEndpoint,
+            final String bpn) throws EdcClientException {
+
+        final String subprotocolBody = digitalTwinRegistryEndpoint.getProtocolInformation().getSubprotocolBody();
         final Optional<String> dspEndpoint = extractDspEndpoint(subprotocolBody);
+
         if (dspEndpoint.isPresent()) {
             log.debug("Using dspEndpoint of subprotocolBody '{}' to get submodel payload", subprotocolBody);
-            return submodelFacade.getSubmodelRawPayload(dspEndpoint.get(), endpoint.getProtocolInformation().getHref(),
-                    extractAssetId(subprotocolBody));
+            return submodelFacade.getSubmodelPayload(dspEndpoint.get(),
+                    digitalTwinRegistryEndpoint.getProtocolInformation().getHref(), extractAssetId(subprotocolBody),
+                    bpn);
         } else {
             log.info("SubprotocolBody does not contain '{}'. Using Discovery Service as fallback.", DSP_ENDPOINT);
             final List<String> connectorEndpoints = connectorEndpointsService.fetchConnectorEndpoints(bpn);
-            return getSubmodel(submodelFacade, endpoint, connectorEndpoints);
+
+            return getSubmodel(submodelFacade, digitalTwinRegistryEndpoint, connectorEndpoints, bpn);
         }
     }
 
-    private String getSubmodel(final EdcSubmodelFacade submodelFacade, final Endpoint endpoint,
-            final List<String> connectorEndpoints) throws EdcClientException {
+    private SubmodelDescriptor getSubmodel(final EdcSubmodelFacade submodelFacade,
+            final Endpoint digitalTwinRegistryEndpoint, final List<String> connectorEndpoints, final String bpn)
+            throws EdcClientException {
         for (final String connectorEndpoint : connectorEndpoints) {
             try {
-                return submodelFacade.getSubmodelRawPayload(connectorEndpoint,
-                        endpoint.getProtocolInformation().getHref(),
-                        extractAssetId(endpoint.getProtocolInformation().getSubprotocolBody()));
+                return submodelFacade.getSubmodelPayload(connectorEndpoint,
+                        digitalTwinRegistryEndpoint.getProtocolInformation().getHref(),
+                        extractAssetId(digitalTwinRegistryEndpoint.getProtocolInformation().getSubprotocolBody()), bpn);
             } catch (EdcClientException e) {
-                log.info("EdcClientException while accessing endpoint '{}'", connectorEndpoint, e);
+                log.info("EdcClientException while accessing digitalTwinRegistryEndpoint '{}'", connectorEndpoint, e);
             }
         }
         throw new EdcClientException(

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -41,7 +41,7 @@ import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
-import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.semanticshub.SemanticsHubFacade;
 import org.eclipse.tractusx.irs.services.validation.InvalidSchemaException;
@@ -49,12 +49,12 @@ import org.eclipse.tractusx.irs.services.validation.JsonValidatorService;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
 import org.eclipse.tractusx.irs.services.validation.ValidationResult;
 import org.eclipse.tractusx.irs.util.JsonUtil;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.web.client.RestClientException;
 
 /**
  * Builds submodels array for AAShell from previous steps.
  * All submodels are being retrieved from EDC's components.
- * Additionally submodel descriptors from shell are being filtered to requested aspect types.
  */
 @Slf4j
 public class SubmodelDelegate extends AbstractDelegate {
@@ -82,30 +82,30 @@ public class SubmodelDelegate extends AbstractDelegate {
             final PartChainIdentificationKey itemId) {
 
         itemContainerBuilder.build().getShells().stream().findFirst().ifPresent(shell -> {
-            final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.getSubmodelDescriptors();
+            final List<SubmodelDescriptor> aasSubmodelDescriptors = shell.payload().getSubmodelDescriptors();
             log.info("Retrieved {} SubmodelDescriptor for itemId {}", aasSubmodelDescriptors.size(), itemId);
-
-            final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.filterDescriptorsByAspectTypes(
-                    jobData.getAspects());
 
             if (jobData.isCollectAspects()) {
                 log.info("Collecting Submodels.");
+                final List<SubmodelDescriptor> filteredSubmodelDescriptorsByAspectType = shell.payload()
+                                                                                              .filterDescriptorsByAspectTypes(
+                                                                                                      jobData.getAspects());
+
                 filteredSubmodelDescriptorsByAspectType.forEach(submodelDescriptor -> itemContainerBuilder.submodels(
                         getSubmodels(submodelDescriptor, itemContainerBuilder, itemId.getGlobalAssetId(),
-                                itemId.getBpn())));
+                                itemId.getBpn(), jobData.isAuditContractNegotiation())));
+
+                log.trace("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
+                log.trace("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
             }
-            log.debug("Unfiltered SubmodelDescriptor: {}", aasSubmodelDescriptors);
-            log.debug("Filtered SubmodelDescriptor: {}", filteredSubmodelDescriptorsByAspectType);
-
-            shell.setSubmodelDescriptors(filteredSubmodelDescriptorsByAspectType);
-
         });
 
         return next(itemContainerBuilder, jobData, aasTransferProcess, itemId);
     }
 
     private List<Submodel> getSubmodels(final SubmodelDescriptor submodelDescriptor,
-            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId, final String bpn) {
+            final ItemContainer.ItemContainerBuilder itemContainerBuilder, final String itemId, final String bpn,
+            final boolean auditContractNegotiation) {
         final List<Submodel> submodels = new ArrayList<>();
         submodelDescriptor.getEndpoints().forEach(endpoint -> {
 
@@ -118,15 +118,16 @@ public class SubmodelDelegate extends AbstractDelegate {
 
             try {
                 final String jsonSchema = semanticsHubFacade.getModelJsonSchema(submodelDescriptor.getAspectType());
-                final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
-                        endpoint, bpn);
+                final org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor submodel = requestSubmodel(
+                        submodelFacade, connectorEndpointsService, endpoint, bpn);
+                final String submodelRawPayload = submodel.getPayload();
+                final String contractAgreementId = getContractAgreementId(auditContractNegotiation, submodel);
 
                 final ValidationResult validationResult = jsonValidatorService.validate(jsonSchema, submodelRawPayload);
 
                 if (validationResult.isValid()) {
-                    final Submodel submodel = Submodel.from(submodelDescriptor.getId(),
-                            submodelDescriptor.getAspectType(), jsonUtil.fromString(submodelRawPayload, Map.class));
-                    submodels.add(submodel);
+                    submodels.add(Submodel.from(submodelDescriptor.getId(), submodelDescriptor.getAspectType(),
+                            contractAgreementId, jsonUtil.fromString(submodelRawPayload, Map.class)));
                 } else {
                     final String errors = String.join(", ", validationResult.getValidationErrors());
                     itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(),
@@ -141,10 +142,11 @@ public class SubmodelDelegate extends AbstractDelegate {
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
                         ProcessStep.SCHEMA_REQUEST));
                 log.info("Cannot load JSON schema for validation. Creating Tombstone.");
-            } catch (final UsagePolicyException e) {
+            } catch (final UsagePolicyPermissionException e) {
                 log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
-                        ProcessStep.USAGE_POLICY_VALIDATION));
+                        ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
+                        jsonUtil.asMap(e.getPolicy())));
             } catch (final EdcClientException e) {
                 log.info("Submodel Endpoint could not be retrieved for Item: {}. Creating Tombstone.", itemId);
                 itemContainerBuilder.tombstone(Tombstone.from(itemId, endpoint.getProtocolInformation().getHref(), e, 0,
@@ -152,6 +154,12 @@ public class SubmodelDelegate extends AbstractDelegate {
             }
         });
         return submodels;
+    }
+
+    @Nullable
+    private String getContractAgreementId(final boolean auditContractNegotiation,
+            final org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor submodel) {
+        return auditContractNegotiation ? submodel.getCid() : null;
     }
 
 }

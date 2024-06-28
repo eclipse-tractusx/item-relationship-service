@@ -1,3 +1,5 @@
+[[Back to main IRS README](../../../README.md)]
+
 # transform-and-upload.py
 
 ## Prerequisites
@@ -50,12 +52,12 @@ An example policy can look like this:
 ```json
 {
   "policies": {
-    "ID 3.0 Trace": {
+    "ID 3.1 Trace": {
        "@context": {
           "odrl": "http://www.w3.org/ns/odrl/2/"
        },
        "@type": "PolicyDefinitionRequestDto",
-       "@id": "id-3.0-trace",
+       "@id": "id-3.1-trace",
        "policy": {
           "@type": "Policy",
           "odrl:permission": [
@@ -68,7 +70,7 @@ An example policy can look like this:
                          "@type": "Constraint",
                          "odrl:leftOperand": "idsc:PURPOSE",
                          "odrl:operator": "EQ",
-                         "odrl:rightOperand": "ID 3.0 Trace"
+                         "odrl:rightOperand": "ID 3.1 Trace"
                       }
                    ]
                 }
@@ -85,8 +87,8 @@ An example policy can look like this:
 
 There are two options to apply the policy.
 
-1. Use the parameter `-p id-3.0-trace` to apply this policy to every asset
-2. Add a field `policy: "id-3.0-trace"` to the top level of each asset you want to use this policy. Every other asset
+1. Use the parameter `-p id-3.1-trace` to apply this policy to every asset
+2. Add a field `policy: "id-3.1-trace"` to the top level of each asset you want to use this policy. Every other asset
    will get the default, empty policy.
 
 It is also possible to define more than one policy at the beginning and then use the `"policy": "<id>"` field to apply a

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,8 +40,9 @@ import org.eclipse.tractusx.irs.component.enums.Direction;
 import org.eclipse.tractusx.irs.component.enums.ProcessStep;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
-import org.eclipse.tractusx.irs.edc.client.RelationshipAspect;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.exceptions.UsagePolicyPermissionException;
+import org.eclipse.tractusx.irs.edc.client.relationships.RelationshipAspect;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.eclipse.tractusx.irs.util.JsonUtil;
 
@@ -76,7 +77,8 @@ public class RelationshipDelegate extends AbstractDelegate {
                             .getShells()
                             .stream()
                             .findFirst()
-                            .ifPresent(shell -> shell.findRelationshipEndpointAddresses(
+                            .ifPresent(shell -> shell.payload()
+                                                     .findRelationshipEndpointAddresses(
                                                              AspectType.fromValue(relationshipAspect.getName()))
                                                      .forEach(endpoint -> processEndpoint(endpoint, relationshipAspect,
                                                              aasTransferProcess, itemContainerBuilder, itemId)));
@@ -98,8 +100,8 @@ public class RelationshipDelegate extends AbstractDelegate {
         }
 
         try {
-            final String submodelRawPayload = requestSubmodelAsString(submodelFacade, connectorEndpointsService,
-                    endpoint, itemId.getBpn());
+            final String submodelRawPayload = requestSubmodel(submodelFacade, connectorEndpointsService, endpoint,
+                    itemId.getBpn()).getPayload();
 
             final var relationships = jsonUtil.fromString(submodelRawPayload, relationshipAspect.getSubmodelClazz())
                                               .asRelationships();
@@ -112,22 +114,32 @@ public class RelationshipDelegate extends AbstractDelegate {
             aasTransferProcess.addIdsToProcess(idsToProcess);
             itemContainerBuilder.relationships(relationships);
             itemContainerBuilder.bpns(getBpnsFrom(relationships));
+        } catch (final UsagePolicyPermissionException e) {
+            log.info("Encountered usage policy exception: {}. Creating Tombstone.", e.getMessage());
+            itemContainerBuilder.tombstone(
+                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
+                            ProcessStep.USAGE_POLICY_VALIDATION, e.getBusinessPartnerNumber(),
+                            jsonUtil.asMap(e.getPolicy())));
         } catch (final EdcClientException e) {
             log.info("Submodel Endpoint could not be retrieved for Endpoint: {}. Creating Tombstone.",
                     endpoint.getProtocolInformation().getHref());
             itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
-                            retryCount, ProcessStep.SUBMODEL_REQUEST));
+                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
+                            ProcessStep.SUBMODEL_REQUEST));
         } catch (final JsonParseException e) {
             log.info("Submodel payload did not match the expected AspectType. Creating Tombstone.");
             itemContainerBuilder.tombstone(
-                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e,
-                            retryCount, ProcessStep.SUBMODEL_REQUEST));
+                    Tombstone.from(itemId.getGlobalAssetId(), endpoint.getProtocolInformation().getHref(), e, 0,
+                            ProcessStep.SUBMODEL_REQUEST));
         }
     }
 
     private static List<Bpn> getBpnsFrom(final List<Relationship> relationships) {
-        return relationships.stream().map(Relationship::getBpn).filter(StringUtils::isNotBlank).map(Bpn::withManufacturerId).toList();
+        return relationships.stream()
+                            .map(Relationship::getBpn)
+                            .filter(StringUtils::isNotBlank)
+                            .map(Bpn::withManufacturerId)
+                            .toList();
     }
 
     private List<PartChainIdentificationKey> getIdsToProcess(final List<Relationship> relationships,

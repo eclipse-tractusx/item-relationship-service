@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -166,10 +166,46 @@ class ConstraintCheckerServiceTest {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void shouldBeNullsafeOnNoAnd() {
+        final OrConstraint orConstraint = createOrConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+        final AndConstraint andConstraint = createAndConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+        final List<Operand> operands = List.of(new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE));
+        final List<Constraint> constraints = operands.stream()
+                                                     .map(operand -> new Constraint(operand.left(),
+                                                             new Operator(OperatorType.EQ), operand.right()))
+                                                     .toList();
+
+        final Policy acceptedOrPolicy = createPolicyWithConstraint(new Constraints(null, constraints));
+        final boolean resultOr = cut.hasAllConstraint(acceptedOrPolicy, List.of(orConstraint, andConstraint));
+        assertThat(resultOr).isFalse();
+    }
+
+    @Test
+    void shouldBeNullsafeOnNoOr() {
+        final OrConstraint orConstraint = createOrConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+        final AndConstraint andConstraint = createAndConstraint(
+                List.of(createAtomicConstraint(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE)));
+
+        final List<Operand> operands = List.of(new Operand(TestConstants.PURPOSE, TestConstants.ID_3_1_TRACE));
+        final List<Constraint> constraints = operands.stream()
+                                                     .map(operand -> new Constraint(operand.left(),
+                                                             new Operator(OperatorType.EQ), operand.right()))
+                                                     .toList();
+
+        final Policy acceptedAndPolicy = createPolicyWithConstraint(new Constraints(constraints, null));
+        final boolean resultAnd = cut.hasAllConstraint(acceptedAndPolicy, List.of(orConstraint, andConstraint));
+        assertThat(resultAnd).isFalse();
+    }
+
     private Policy createPolicyWithAndConstraint(List<Operand> operands) {
         List<Constraint> and = operands.stream()
-                                       .map(operand -> new Constraint(operand.left, OperatorType.EQ,
-                                               List.of(operand.right)))
+                                       .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
+                                               operand.right))
                                        .toList();
         Constraints constraints = new Constraints(and, new ArrayList<>());
         return createPolicyWithConstraint(constraints);
@@ -177,19 +213,23 @@ class ConstraintCheckerServiceTest {
 
     private Policy createPolicyWithOrConstraint(List<Operand> operands) {
         List<Constraint> or = operands.stream()
-                                      .map(operand -> new Constraint(operand.left, OperatorType.EQ,
-                                              List.of(operand.right)))
+                                      .map(operand -> new Constraint(operand.left, new Operator(OperatorType.EQ),
+                                              operand.right))
                                       .toList();
         Constraints constraints = new Constraints(new ArrayList<>(), or);
         return createPolicyWithConstraint(constraints);
     }
 
     private Policy createPolicyWithConstraint(Constraints constraints) {
-        List<Constraints> constraintsList = List.of(constraints);
-        Permission permission = new Permission(PolicyType.ACCESS, constraintsList);
+        Permission permission = new Permission(PolicyType.ACCESS, constraints);
         List<Permission> permissions = List.of(permission);
         final String policyId = "policyId";
-        return new Policy(policyId, OffsetDateTime.now(), OffsetDateTime.now().plusYears(1), permissions);
+        return org.eclipse.tractusx.irs.edc.client.policy.Policy.builder()
+                                                                .policyId(policyId)
+                                                                .validUntil(OffsetDateTime.now().plusYears(1))
+                                                                .createdOn(OffsetDateTime.now())
+                                                                .permissions(permissions)
+                                                                .build();
     }
 
     public AndConstraint createAndConstraint(final List<org.eclipse.edc.policy.model.Constraint> constraints) {

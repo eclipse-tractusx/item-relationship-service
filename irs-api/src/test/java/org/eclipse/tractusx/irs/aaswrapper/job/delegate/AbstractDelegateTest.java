@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,6 +37,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInformation;
 import org.eclipse.tractusx.irs.edc.client.EdcSubmodelFacade;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.registryclient.discovery.ConnectorEndpointsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +62,7 @@ class AbstractDelegateTest {
     @Test
     void shouldUseDspEndpointIfPresent() throws EdcClientException {
         // Arrange
-        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenReturn("test");
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenReturn(new SubmodelDescriptor("cid", "test"));
         final Endpoint endpoint = Endpoint.builder()
                                           .protocolInformation(ProtocolInformation.builder()
                                                                                   .href("http://dataplane.test/123")
@@ -72,11 +73,11 @@ class AbstractDelegateTest {
         final String bpn = "BPN123";
 
         // Act
-        final String submodel = submodelDelegate.requestSubmodelAsString(submodelFacade, null, endpoint, bpn);
+        final String submodel = submodelDelegate.requestSubmodel(submodelFacade, null, endpoint, bpn).getPayload();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
-        verify(submodelFacade, times(1)).getSubmodelRawPayload("http://edc.test", "http://dataplane.test/123", "123");
+        verify(submodelFacade, times(1)).getSubmodelPayload("http://edc.test", "http://dataplane.test/123", "123", "BPN123");
     }
 
     @Test
@@ -84,9 +85,9 @@ class AbstractDelegateTest {
         // Arrange
         final String connector1 = "http://edc.test1";
         final String connector2 = "http://edc.test2";
-        when(submodelFacade.getSubmodelRawPayload(eq(connector1), any(), any())).thenThrow(
+        when(submodelFacade.getSubmodelPayload(eq(connector1), any(), any(), any())).thenThrow(
                 new EdcClientException("test"));
-        when(submodelFacade.getSubmodelRawPayload(eq(connector2), any(), any())).thenReturn("test");
+        when(submodelFacade.getSubmodelPayload(eq(connector2), any(), any(), any())).thenReturn(new SubmodelDescriptor("cid", "test"));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of(connector1, connector2));
         final String dataplaneUrl = "http://dataplane.test/123";
         final Endpoint endpoint = Endpoint.builder()
@@ -98,13 +99,13 @@ class AbstractDelegateTest {
         final String bpn = "BPN123";
 
         // Act
-        final String submodel = submodelDelegate.requestSubmodelAsString(submodelFacade, connectorEndpointsService,
-                endpoint, bpn);
+        final String submodel = submodelDelegate.requestSubmodel(submodelFacade, connectorEndpointsService,
+                endpoint, bpn).getPayload();
 
         // Assert
         assertThat(submodel).isEqualTo("test");
-        verify(submodelFacade, times(1)).getSubmodelRawPayload(connector1, dataplaneUrl, "123");
-        verify(submodelFacade, times(1)).getSubmodelRawPayload(connector2, dataplaneUrl, "123");
+        verify(submodelFacade, times(1)).getSubmodelPayload(connector1, dataplaneUrl, "123", "BPN123");
+        verify(submodelFacade, times(1)).getSubmodelPayload(connector2, dataplaneUrl, "123", "BPN123");
         verify(connectorEndpointsService, times(1)).fetchConnectorEndpoints(bpn);
     }
 
@@ -113,7 +114,7 @@ class AbstractDelegateTest {
         // Arrange
         final String connector1 = "http://edc.test1";
         final String connector2 = "http://edc.test2";
-        when(submodelFacade.getSubmodelRawPayload(any(), any(), any())).thenThrow(new EdcClientException("test"));
+        when(submodelFacade.getSubmodelPayload(any(), any(), any(), any())).thenThrow(new EdcClientException("test"));
         when(connectorEndpointsService.fetchConnectorEndpoints(any())).thenReturn(List.of(connector1, connector2));
         final String dataplaneUrl = "http://dataplane.test/123";
         final Endpoint endpoint = Endpoint.builder()
@@ -126,12 +127,12 @@ class AbstractDelegateTest {
 
         // Act
         assertThatExceptionOfType(EdcClientException.class).isThrownBy(
-                () -> submodelDelegate.requestSubmodelAsString(submodelFacade, connectorEndpointsService, endpoint,
+                () -> submodelDelegate.requestSubmodel(submodelFacade, connectorEndpointsService, endpoint,
                         bpn));
 
         // Assert
-        verify(submodelFacade, times(1)).getSubmodelRawPayload(connector1, dataplaneUrl, "123");
-        verify(submodelFacade, times(1)).getSubmodelRawPayload(connector2, dataplaneUrl, "123");
+        verify(submodelFacade, times(1)).getSubmodelPayload(connector1, dataplaneUrl, "123", "BPN123");
+        verify(submodelFacade, times(1)).getSubmodelPayload(connector2, dataplaneUrl, "123", "BPN123");
         verify(connectorEndpointsService, times(1)).fetchConnectorEndpoints(bpn);
     }
 }

@@ -1,227 +1,297 @@
 {
-    "submodels" : [
+    "submodels": [
         {
-            "identification": "urn:uuid:91c60637-1262-4a5b-8529-edd494ad8099",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:6e6834a3-6343-4c23-926a-2c37d3197fa3",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "MzI0MGNkNTAtMjA0OS00ODFlLWFkZGUtOTJmOTJkZjViOWVm:dXJuOnV1aWQ6Y2JjNDI2YjUtZmE2ZS00M2Q4LTlmMWItYWMyZjUzZjFhMTcw:N2Y4NGI4ZDQtZWYyOS00NTI1LWI5NDEtYzQzOTlkYmVlY2E0",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2017-01-03T07:45:04.000Z",
-                    "validTo": "2029-11-15T11:57:45.000Z"
-                },
                 "catenaXId": "urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e",
                 "partTypeInformation": {
                     "manufacturerPartId": "ZX-55",
                     "classification": "product",
                     "nameAtManufacturer": "Vehicle Model A"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:a555cc6c-3e22-431a-89bb-8430c2df0c6c",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:034a516c-9920-4997-8b40-f7e595c2ff49",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "MzI0MGNkNTAtMjA0OS00ODFlLWFkZGUtOTJmOTJkZjViOWVm:dXJuOnV1aWQ6Y2JjNDI2YjUtZmE2ZS00M2Q4LTlmMWItYWMyZjUzZjFhMTcw:N2Y4NGI4ZDQtZWYyOS00NTI1LWI5NDEtYzQzOTlkYmVlY2E0",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2017-07-03T05:23:01.000Z",
-                    "validTo": "2032-09-25T10:26:27.000Z"
-                },
-                "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
-                "partTypeInformation": {
-                    "manufacturerPartId": "32494586-73",
-                    "classification": "product",
-                    "nameAtManufacturer": "Tier A Gearbox"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:3b6bcc29-6f4a-493f-abd0-fc2300b8e858",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
-            "payload": {
-                "validityPeriod": {
-                    "validFrom": "2015-05-18T23:10:44.000Z",
-                    "validTo": "2025-10-23T14:46:01.000Z"
-                },
                 "catenaXId": "urn:uuid:aad27ddb-43aa-4e42-98c2-01e529ef127c",
                 "partTypeInformation": {
                     "manufacturerPartId": "38049661-08",
                     "classification": "product",
                     "nameAtManufacturer": "OEM A High Voltage Battery"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:b2f5bb58-bf20-4e82-83be-0692096f1d23",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:7b795601-bbd2-4b0a-954b-5f70c87fafc3",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "NGYzNjdkMGMtZmMyOC00Y2U5LWJkYTQtYjAwZGFjMGFkYWZh:dXJuOnV1aWQ6Njc0NzU2NjItNjFmMy00NTY4LWJlMGItYWVlNDJjNGFlZjM5:MTFjZjg2OGEtZjU0ZS00YWJkLThjOGYtOWU0OGRmZTM1NmIz",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2016-04-24T08:26:56.000Z",
-                    "validTo": "2031-12-17T23:55:04.000Z"
+                "catenaXId": "urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7",
+                "partTypeInformation": {
+                    "manufacturerPartId": "32494586-73",
+                    "classification": "product",
+                    "nameAtManufacturer": "Tier A Gearbox"
                 },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
+            }
+        },
+        {
+            "identification": "urn:uuid:b889b852-3c9c-4933-bc8f-13d9f3edd08a",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "NGYzNjdkMGMtZmMyOC00Y2U5LWJkYTQtYjAwZGFjMGFkYWZh:dXJuOnV1aWQ6Njc0NzU2NjItNjFmMy00NTY4LWJlMGItYWVlNDJjNGFlZjM5:MTFjZjg2OGEtZjU0ZS00YWJkLThjOGYtOWU0OGRmZTM1NmIz",
+            "payload": {
                 "catenaXId": "urn:uuid:07cb071f-8716-45fe-89f1-f2f77a1ce93b",
                 "partTypeInformation": {
                     "manufacturerPartId": "ZX-55",
                     "classification": "product",
                     "nameAtManufacturer": "Tier B ECU1"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:e7a0b342-6b66-4cd7-8da3-facf4de3feab",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:2e8ea560-693d-4755-83b6-03e111975f71",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "ZmM1MmY1ODItOTQyYy00NzQwLTljOWUtNjZlM2Q0ZTc5Y2Qx:dXJuOnV1aWQ6Nzg0ZWZkMDYtZWY1Zi00ZDUyLWJmZTgtODVkNDQ4OWRlNzBm:ZmUyNjM5OGItMTVkNy00NTJiLTkxNWEtOTNmY2NkNWJhYjMw",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2019-08-17T14:14:30.000Z",
-                    "validTo": "2032-08-30T04:32:28.000Z"
-                },
-                "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
-                "partTypeInformation": {
-                    "manufacturerPartId": "6775244-06",
-                    "classification": "product",
-                    "nameAtManufacturer": "Sub Tier B Glue"
-                }
-            }
-        },
-        {
-            "identification": "urn:uuid:0e886a1b-a08d-407a-a27e-3768fc970a21",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
-            "payload": {
-                "validityPeriod": {
-                    "validFrom": "2018-01-25T08:42:58.000Z",
-                    "validTo": "2029-02-10T03:24:30.000Z"
-                },
                 "catenaXId": "urn:uuid:e5c96ab5-896a-482c-8761-efd74777ca97",
                 "partTypeInformation": {
                     "manufacturerPartId": "8840838-04",
                     "classification": "product",
                     "nameAtManufacturer": "HV Modul"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:866affae-92e0-45f2-85ba-da63b149c8ed",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:8dd549bf-1fc4-4ec7-87b3-d652293a73df",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "ZmM1MmY1ODItOTQyYy00NzQwLTljOWUtNjZlM2Q0ZTc5Y2Qx:dXJuOnV1aWQ6Nzg0ZWZkMDYtZWY1Zi00ZDUyLWJmZTgtODVkNDQ4OWRlNzBm:ZmUyNjM5OGItMTVkNy00NTJiLTkxNWEtOTNmY2NkNWJhYjMw",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2015-01-23T16:24:59.000Z",
-                    "validTo": "2031-05-04T12:01:38.000Z"
-                },
                 "catenaXId": "urn:uuid:4518c080-14fb-4252-b8de-4362d615868d",
                 "partTypeInformation": {
                     "manufacturerPartId": "7A987KK-04",
                     "classification": "product",
                     "nameAtManufacturer": "N Tier A Plastics"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:b1331f10-abd1-4caf-97c8-80890fc0b8f0",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:f1e6c9ff-9177-4d6a-8b62-be3a3a889808",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "MzI0MGNkNTAtMjA0OS00ODFlLWFkZGUtOTJmOTJkZjViOWVm:dXJuOnV1aWQ6Y2JjNDI2YjUtZmE2ZS00M2Q4LTlmMWItYWMyZjUzZjFhMTcw:N2Y4NGI4ZDQtZWYyOS00NTI1LWI5NDEtYzQzOTlkYmVlY2E0",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2013-06-18T03:47:22.000Z",
-                    "validTo": "2030-12-31T23:33:25.000Z"
-                },
                 "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
                 "partTypeInformation": {
                     "manufacturerPartId": "6740244-02",
                     "classification": "product",
                     "nameAtManufacturer": "Sub Tier A Sensor"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:b1331f10-abd1-4caf-97c8-80890fc0b8f0",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:f1e6c9ff-9177-4d6a-8b62-be3a3a889808",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "MzI0MGNkNTAtMjA0OS00ODFlLWFkZGUtOTJmOTJkZjViOWVm:dXJuOnV1aWQ6Y2JjNDI2YjUtZmE2ZS00M2Q4LTlmMWItYWMyZjUzZjFhMTcw:N2Y4NGI4ZDQtZWYyOS00NTI1LWI5NDEtYzQzOTlkYmVlY2E0",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2013-06-18T03:47:22.000Z",
-                    "validTo": "2030-12-31T23:33:25.000Z"
-                },
                 "catenaXId": "urn:uuid:bee5614f-9e46-4c98-9209-61a6f2b2a7fc",
                 "partTypeInformation": {
                     "manufacturerPartId": "6740244-02",
                     "classification": "product",
                     "nameAtManufacturer": "Sub Tier A Sensor"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:0e36b0a2-2086-4dab-bbd1-239f3f6d8f9e",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:8d3e53b6-f562-466b-8b90-4cee6e8cd88e",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "MzI0MGNkNTAtMjA0OS00ODFlLWFkZGUtOTJmOTJkZjViOWVm:dXJuOnV1aWQ6Y2JjNDI2YjUtZmE2ZS00M2Q4LTlmMWItYWMyZjUzZjFhMTcw:N2Y4NGI4ZDQtZWYyOS00NTI1LWI5NDEtYzQzOTlkYmVlY2E0",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2017-09-12T21:34:41.000Z",
-                    "validTo": "2030-06-04T20:52:15.000Z"
+                "catenaXId": "urn:uuid:3cdd2826-5df0-4c7b-b540-9eeccecb2301",
+                "partTypeInformation": {
+                    "manufacturerPartId": "6775244-06",
+                    "classification": "product",
+                    "nameAtManufacturer": "Sub Tier B Glue"
                 },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
+            }
+        },
+        {
+            "identification": "urn:uuid:93a7b6eb-3896-4a79-9a87-1327addb5981",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "ZmM1MmY1ODItOTQyYy00NzQwLTljOWUtNjZlM2Q0ZTc5Y2Qx:dXJuOnV1aWQ6Nzg0ZWZkMDYtZWY1Zi00ZDUyLWJmZTgtODVkNDQ4OWRlNzBm:ZmUyNjM5OGItMTVkNy00NTJiLTkxNWEtOTNmY2NkNWJhYjMw",
+            "payload": {
                 "catenaXId": "urn:uuid:15d2fcc8-6439-4d1e-904b-e62b4d3bf323",
                 "partTypeInformation": {
                     "manufacturerPartId": "9A047C7-01",
                     "classification": "product",
                     "nameAtManufacturer": "Sub Tier B Sealant"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:906a739b-206e-44dd-8c74-c98a7c915b18",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:117ee062-7a3a-4120-8613-b327d2453d60",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "NGYzNjdkMGMtZmMyOC00Y2U5LWJkYTQtYjAwZGFjMGFkYWZh:dXJuOnV1aWQ6Njc0NzU2NjItNjFmMy00NTY4LWJlMGItYWVlNDJjNGFlZjM5:MTFjZjg2OGEtZjU0ZS00YWJkLThjOGYtOWU0OGRmZTM1NmIz",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2016-04-28T20:00:55.000Z",
-                    "validTo": "2027-04-27T00:59:41.000Z"
-                },
                 "catenaXId": "urn:uuid:c7a2b803-f8fe-4b79-b6fc-967ce847c9a9",
                 "partTypeInformation": {
                     "manufacturerPartId": "8840374-09",
                     "classification": "product",
                     "nameAtManufacturer": "ZB ZELLE"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:04ef1184-b086-4b47-813b-b009886d1e5a",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:ed6d30aa-a729-496f-a647-cc5a7d14a924",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "MzI0MGNkNTAtMjA0OS00ODFlLWFkZGUtOTJmOTJkZjViOWVm:dXJuOnV1aWQ6Y2JjNDI2YjUtZmE2ZS00M2Q4LTlmMWItYWMyZjUzZjFhMTcw:N2Y4NGI4ZDQtZWYyOS00NTI1LWI5NDEtYzQzOTlkYmVlY2E0",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2019-01-02T09:42:18.000Z",
-                    "validTo": "2031-05-02T13:45:12.000Z"
-                },
                 "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
                 "partTypeInformation": {
                     "manufacturerPartId": "7A047KK-01",
                     "classification": "product",
                     "nameAtManufacturer": "N Tier A NTier Product"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:04ef1184-b086-4b47-813b-b009886d1e5a",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:ed6d30aa-a729-496f-a647-cc5a7d14a924",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "MzI0MGNkNTAtMjA0OS00ODFlLWFkZGUtOTJmOTJkZjViOWVm:dXJuOnV1aWQ6Y2JjNDI2YjUtZmE2ZS00M2Q4LTlmMWItYWMyZjUzZjFhMTcw:N2Y4NGI4ZDQtZWYyOS00NTI1LWI5NDEtYzQzOTlkYmVlY2E0",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2019-01-02T09:42:18.000Z",
-                    "validTo": "2031-05-02T13:45:12.000Z"
-                },
                 "catenaXId": "urn:uuid:86f69643-3b90-4e34-90bf-789edcf40e7e",
                 "partTypeInformation": {
                     "manufacturerPartId": "7A047KK-01",
                     "classification": "product",
                     "nameAtManufacturer": "N Tier A NTier Product"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         },
         {
-            "identification": "urn:uuid:8863f5d0-12ba-4c7b-9464-1b5584ad14b6",
-            "aspectType": "urn:bamm:io.catenax.part_as_planned:1.0.1#PartAsPlanned",
+            "identification": "urn:uuid:dc1c71be-03c9-40a3-9537-d67267d39a47",
+            "aspectType": "urn:samm:io.catenax.part_as_planned:2.0.0#PartAsPlanned",
+            "contractAgreementId": "MzI0MGNkNTAtMjA0OS00ODFlLWFkZGUtOTJmOTJkZjViOWVm:dXJuOnV1aWQ6Y2JjNDI2YjUtZmE2ZS00M2Q4LTlmMWItYWMyZjUzZjFhMTcw:N2Y4NGI4ZDQtZWYyOS00NTI1LWI5NDEtYzQzOTlkYmVlY2E0",
             "payload": {
-                "validityPeriod": {
-                    "validFrom": "2013-11-24T00:27:33.000Z",
-                    "validTo": "2025-08-16T09:18:35.000Z"
-                },
                 "catenaXId": "urn:uuid:4f7b1cf2-a598-4027-bc78-63f6d8e55699",
                 "partTypeInformation": {
                     "manufacturerPartId": "7A047C7-01",
                     "classification": "product",
                     "nameAtManufacturer": "N Tier A CathodeMaterial"
-                }
+                },
+                "partSitesInformationAsPlanned": [
+                    {
+                        "functionValidUntil": "2023-12-11T06:14:55.183Z",
+                        "catenaXsiteId": "BPNS1234567890ZZ",
+                        "function": "production",
+                        "functionValidFrom": "2023-12-11T06:14:55.181Z"
+                    }
+                ]
             }
         }
     ]

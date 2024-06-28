@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -50,11 +50,12 @@ public class JsonObjectFromCatalogRequestTransformer extends AbstractJsonLdTrans
     public @Nullable JsonObject transform(@NotNull final CatalogRequest dto,
             @NotNull final TransformerContext context) {
         final JsonObjectBuilder builder = this.jsonFactory.createObjectBuilder();
-        builder.add(JsonLdKeywords.TYPE, CatalogRequest.EDC_CATALOG_REQUEST_TYPE)
-               .add(CatalogRequest.EDC_CATALOG_REQUEST_PROVIDER_URL, dto.getProviderUrl())
-               .add(CatalogRequest.EDC_CATALOG_REQUEST_PROTOCOL, dto.getProtocol());
+        builder.add(JsonLdKeywords.TYPE, CatalogRequest.CATALOG_REQUEST_TYPE)
+               .add(CatalogRequest.CATALOG_REQUEST_COUNTER_PARTY_ADDRESS, dto.getCounterPartyAddress())
+               .add(CatalogRequest.CATALOG_REQUEST_COUNTER_PARTY_ID, dto.getCounterPartyId())
+               .add(CatalogRequest.CATALOG_REQUEST_PROTOCOL, dto.getProtocol());
         Optional.ofNullable(dto.getQuerySpec())
-                .ifPresent(s -> builder.add(CatalogRequest.EDC_CATALOG_REQUEST_QUERY_SPEC,
+                .ifPresent(s -> builder.add(CatalogRequest.CATALOG_REQUEST_QUERY_SPEC,
                         context.transform(dto.getQuerySpec(), JsonObject.class)));
 
         return builder.build();

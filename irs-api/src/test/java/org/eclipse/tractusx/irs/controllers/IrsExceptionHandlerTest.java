@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,113 +23,180 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.controllers;
 
+import static io.restassured.RestAssured.given;
 import static org.eclipse.tractusx.irs.util.TestMother.registerJobWithoutDepthAndAspect;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.client.HttpServerErrorException.InternalServerError;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import org.eclipse.tractusx.irs.ControllerTest;
+import org.eclipse.tractusx.irs.TestConfig;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
-import org.eclipse.tractusx.irs.configuration.SecurityConfiguration;
-import org.eclipse.tractusx.irs.common.auth.AuthorizationService;
 import org.eclipse.tractusx.irs.services.IrsItemGraphQueryService;
 import org.eclipse.tractusx.irs.services.SemanticHubService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@WebMvcTest(IrsController.class)
-@Import(SecurityConfiguration.class)
-class IrsExceptionHandlerTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = { "digitalTwinRegistry.type=central" })
+@ActiveProfiles(profiles = { "test",
+                             "local"
+})
+@Import(TestConfig.class)
+@ExtendWith({ MockitoExtension.class,
+              SpringExtension.class
+})
+class IrsExceptionHandlerTest extends ControllerTest {
 
     @MockBean
     private IrsItemGraphQueryService service;
+
     @MockBean
     private SemanticHubService semanticHubService;
-    @MockBean(name = "authorizationService")
-    private AuthorizationService authorizationService;
 
-    @Autowired
-    private MockMvc mockMvc;
+    @LocalServerPort
+    private int port;
 
-    @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
-    void handleAll() throws Exception {
-        when(service.registerItemJob(any())).thenThrow(InternalServerError.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
-
-        this.mockMvc.perform(post("/irs/jobs").contentType(MediaType.APPLICATION_JSON)
-                                              .content(new ObjectMapper().writeValueAsString(
-                                                      registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().is5xxServerError());
+    @BeforeEach
+    public void configureRestAssured() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
     }
 
-    @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
-    void shouldReturn500WhenGetSemanticModelsFails() throws Exception {
-        when(semanticHubService.getAllAspectModels()).thenThrow(InternalServerError.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+    @Nested
+    class PoliciesTests {
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().is5xxServerError());
+        @Test
+        void getPolicies_forbidden() {
+            authenticateWith(IrsRoles.VIEW_IRS);
+            given().port(port).get("/irs/policies").then().statusCode(FORBIDDEN.value());
+        }
+
+        @Test
+        void getPolicies_success() {
+            authenticateWith(IrsRoles.ADMIN_IRS);
+            given().port(port).get("/irs/policies").then().statusCode(OK.value());
+        }
+
+        @Test
+        void getPolicies_withInvalidBpn() {
+            authenticateWith(IrsRoles.ADMIN_IRS);
+            given().port(port)
+                   .get("/irs/policies?businessPartnerNumbers=invalid")
+                   .then()
+                   .statusCode(BAD_REQUEST.value())
+                   .body("messages[0]", containsString("The business partner number at index 0 is invalid"));
+        }
+
+        @Test
+        void getPolicies_withValidAndInvalidBpn() {
+            authenticateWith(IrsRoles.ADMIN_IRS);
+            given().port(port)
+                   .get("/irs/policies" //
+                           + "?businessPartnerNumbers=BPNL1234567890AB" //
+                           + "&businessPartnerNumbers=__invalid__BPN__" //
+                           + "&businessPartnerNumbers=BPNL1234567890AB")
+                   .then()
+                   .statusCode(BAD_REQUEST.value())
+                   .body("messages[0]", containsString("The business partner number at index 1 is invalid"));
+        }
+
+        @Test
+        void getPolicies_withEmptyBpn() {
+            authenticateWith(IrsRoles.ADMIN_IRS);
+            given().port(port)
+                   .get("/irs/policies" //
+                           + "?businessPartnerNumbers=BPNL1234567890AB" //
+                           + "&businessPartnerNumbers=__invalid__BPN__" //
+                           + "&businessPartnerNumbers=BPNL1234567890AB")
+                   .then()
+                   .statusCode(BAD_REQUEST.value())
+                   .body("messages[0]", containsString("The business partner number at index 1 is invalid"));
+        }
     }
 
-    @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
-    void shouldReturn400WhenProvidingBadInput() throws Exception {
-        when(semanticHubService.getAllAspectModels()).thenThrow(IllegalArgumentException.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+    @Nested
+    class JobsTests {
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isBadRequest());
+        @Test
+        void handleAll() {
+            authenticateWith(IrsRoles.VIEW_IRS);
+
+            when(service.registerItemJob(any())).thenThrow(InternalServerError.class);
+
+            given().port(port)
+                   .contentType(ContentType.JSON)
+                   .body(registerJobWithoutDepthAndAspect())
+                   .post("/irs/jobs")
+                   .then()
+                   .statusCode(INTERNAL_SERVER_ERROR.value());
+        }
     }
 
-    @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
-    void shouldReturn400WhenCatchingIllegalStateException() throws Exception {
-        when(semanticHubService.getAllAspectModels()).thenThrow(IllegalStateException.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+    @Nested
+    class AspectModelsTests {
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isBadRequest());
-    }
+        @Test
+        void shouldReturn500WhenGetSemanticModelsFails() throws Exception {
+            authenticateWith(IrsRoles.VIEW_IRS);
 
-    @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
-    void shouldReturn400WhenCatchingMethodArgumentTypeMismatchException() throws Exception {
-        when(semanticHubService.getAllAspectModels()).thenThrow(MethodArgumentTypeMismatchException.class);
-        when(authorizationService.verifyBpn()).thenReturn(Boolean.TRUE);
+            when(semanticHubService.getAllAspectModels()).thenThrow(InternalServerError.class);
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isBadRequest());
-    }
+            given().port(port).get("/irs/aspectmodels").then().statusCode(INTERNAL_SERVER_ERROR.value());
+        }
 
-    @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
-    void shouldReturn403WhenRightsAreMissing() throws Exception {
-        when(semanticHubService.getAllAspectModels()).thenThrow(AccessDeniedException.class);
+        @Test
+        void shouldReturn400WhenProvidingBadInput() throws Exception {
+            authenticateWith(IrsRoles.VIEW_IRS);
 
-        this.mockMvc.perform(get("/irs/aspectmodels").contentType(MediaType.APPLICATION_JSON)
-                                                     .content(new ObjectMapper().writeValueAsString(
-                                                             registerJobWithoutDepthAndAspect())))
-                    .andExpect(status().isForbidden());
+            when(semanticHubService.getAllAspectModels()).thenThrow(IllegalArgumentException.class);
+
+            given().port(port).get("/irs/aspectmodels").then().statusCode(BAD_REQUEST.value());
+        }
+
+        @Test
+        void shouldReturn400WhenCatchingIllegalStateException() throws Exception {
+            authenticateWith(IrsRoles.VIEW_IRS);
+
+            when(semanticHubService.getAllAspectModels()).thenThrow(IllegalStateException.class);
+
+            given().port(port).get("/irs/aspectmodels").then().statusCode(BAD_REQUEST.value());
+        }
+
+        @Test
+        void shouldReturn400WhenCatchingMethodArgumentTypeMismatchException() throws Exception {
+            authenticateWith(IrsRoles.VIEW_IRS);
+
+            when(semanticHubService.getAllAspectModels()).thenThrow(MethodArgumentTypeMismatchException.class);
+
+            given().port(port).get("/irs/aspectmodels").then().statusCode(BAD_REQUEST.value());
+        }
+
+        @Test
+        void shouldReturn403WhenRightsAreMissing() throws Exception {
+            authenticateWith(IrsRoles.VIEW_IRS);
+
+            when(semanticHubService.getAllAspectModels()).thenThrow(AccessDeniedException.class);
+
+            given().port(port).get("/irs/aspectmodels").then().statusCode(FORBIDDEN.value());
+        }
     }
 }

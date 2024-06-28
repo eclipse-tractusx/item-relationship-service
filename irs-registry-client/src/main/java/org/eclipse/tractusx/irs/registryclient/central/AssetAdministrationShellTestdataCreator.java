@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.IdentifierKeyValuePair;
@@ -36,6 +35,7 @@ import org.eclipse.tractusx.irs.component.assetadministrationshell.ProtocolInfor
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Reference;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SemanticId;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
+import org.eclipse.tractusx.irs.data.CxTestDataContainer;
 import org.springframework.web.client.RestClientException;
 
 /**
@@ -80,6 +80,9 @@ class AssetAdministrationShellTestdataCreator {
                   .ifPresent(submodel -> submodelDescriptors.add(
                           createSingleLevelBomAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get()
+                  .getSingleLevelUsageAsPlanned()
+                  .ifPresent(submodel -> submodelDescriptors.add(createSingleLevelUsageAsPlannedSubmodelDescriptor(catenaXId)));
+        cxTestData.get()
                   .getPartAsPlanned()
                   .ifPresent(submodel -> submodelDescriptors.add(createPartAsPlannedSubmodelDescriptor(catenaXId)));
         cxTestData.get()
@@ -114,53 +117,58 @@ class AssetAdministrationShellTestdataCreator {
     }
 
     private SubmodelDescriptor createSingleLevelBomAsBuiltSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
                 "singleLevelBomAsBuilt");
     }
 
+    private SubmodelDescriptor createSingleLevelUsageAsPlannedSubmodelDescriptor(final String catenaXId) {
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_usage_as_planned:2.0.0#SingleLevelUsageAsPlanned",
+                "singleLevelUsageAsPlanned");
+    }
+
     private SubmodelDescriptor createSingleLevelUsageAsBuiltSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_usage_as_built:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt",
                 "singleLevelUsageAsBuilt");
     }
 
     private SubmodelDescriptor createSingleLevelBomAsSpecifiedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_specified:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified",
                 "singleLevelBomAsSpecified");
     }
 
     private SubmodelDescriptor createSerialPartSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.serial_part:1.0.0", "serialPart");
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.serial_part:3.0.0#SerialPart", "serialPart");
     }
 
     private SubmodelDescriptor createSingleLevelBomAsPlannedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.single_level_bom_as_planned:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned",
                 "singleLevelBomAsPlanned");
     }
 
     private SubmodelDescriptor createPartAsPlannedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_planned:1.0.0", "partAsPlanned");
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.part_as_planned:1.0.1#PartAsPlanned", "partAsPlanned");
     }
 
     private SubmodelDescriptor createBatchSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.batch:1.0.0", "batch");
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.batch:3.0.0#Batch", "batch");
     }
 
     private SubmodelDescriptor createMaterialForRecyclingSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.material_for_recycling:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.material_for_recycling:1.1.0#MaterialForRecycling",
                 "materialForRecycling");
     }
 
     private SubmodelDescriptor createProductDescriptionSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.product_description:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.battery.product_description:1.0.1#ProductDescription",
                 "productDescription");
     }
 
     private SubmodelDescriptor createPhysicalDimensionSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.physical_dimension:1.0.0", "physicalDimension");
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.physical_dimension:1.0.0#PhysicalDimension", "physicalDimension");
     }
 
     private SubmodelDescriptor createPartAsSpecifiedSubmodelDescriptor(final String catenaXId) {
-        return createSubmodelDescriptor(catenaXId, "urn:bamm:io.catenax.part_as_specified:1.0.0",
+        return createSubmodelDescriptor(catenaXId, "urn:samm:io.catenax.part_as_specified:2.0.0#PartAsSpecified",
                 "partAsSpecified");
     }
 

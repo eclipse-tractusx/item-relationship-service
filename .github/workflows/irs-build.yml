@@ -9,6 +9,7 @@ on:
       - 'charts/**'
       - '.config/**'
       - 'docs/**'
+      - '!docs/src/api/**'
       - 'local/**'
       - 'CHANGELOG.md'
   push:
@@ -26,13 +27,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Cache maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
@@ -54,20 +55,20 @@ jobs:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonar analysis
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Cache maven packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
       - name: Cache SonarCloud packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
@@ -80,7 +81,8 @@ jobs:
         run: |
           mvn --batch-mode --update-snapshots verify \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
+          -Dcheckstyle.skip -Dpmd.skip=true
 
   build_images:
     strategy:
@@ -168,11 +170,12 @@ jobs:
           IMAGE_NAMESPACE: tractusx
           IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
-        uses: peter-evans/dockerhub-description@v3
+        uses: peter-evans/dockerhub-description@v4
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
           repository: ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
+          readme-filepath: ./DOCKER_NOTICE.md
 
   trigger-trivy-image-scan:
     if: >-

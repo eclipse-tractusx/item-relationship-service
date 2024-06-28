@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -61,8 +61,8 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
                 PLACEHOLDER_AAS_IDENTIFIER);
     }
 
-    private static void require(final String bpdmUrl, final String configPath, final String placeholder) {
-        if (!bpdmUrl.contains(wrap(placeholder))) {
+    private static void require(final String descriptorEndpoint, final String configPath, final String placeholder) {
+        if (!descriptorEndpoint.contains(wrap(placeholder))) {
             throw new IllegalStateException(
                     "Configuration value for '" + configPath + "' must contain the URL placeholder '" + placeholder
                             + "'!");
@@ -77,11 +77,11 @@ public class DigitalTwinRegistryClientImpl implements DigitalTwinRegistryClient 
         return Base64.getEncoder().encodeToString(aasIdentifier.getBytes(StandardCharsets.UTF_8));
     }
 
-    private void ensureUrlContainsPlaceholders(final String bpdmUrl, final String configPath,
+    private void ensureUrlContainsPlaceholders(final String descriptorEndpoint, final String configPath,
             final String... placeholders) {
-        if (StringUtils.isNotBlank(bpdmUrl)) {
+        if (StringUtils.isNotBlank(descriptorEndpoint)) {
             for (final var placeholder : placeholders) {
-                require(bpdmUrl, configPath, placeholder);
+                require(descriptorEndpoint, configPath, placeholder);
             }
         }
     }

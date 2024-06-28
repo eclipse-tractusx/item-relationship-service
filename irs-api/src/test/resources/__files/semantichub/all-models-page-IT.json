@@ -1,0 +1,701 @@
+{
+  "items": [
+    {
+      "urn": "urn:bamm:io.catenax.battery.battery_pass:3.0.1#BatteryPass",
+      "version": "3.0.1",
+      "name": "BatteryPass",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.bom_as_specified:1.0.0#BomAsSpecified",
+      "version": "1.0.0",
+      "name": "BomAsSpecified",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.bom_as_specified:1.0.1#BomAsSpecified",
+      "version": "1.0.1",
+      "name": "BomAsSpecified",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.certificate_of_destruction:1.0.1#CertificateOfDestruction",
+      "version": "1.0.1",
+      "name": "CertificateOfDestruction",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.classified_load_spectrum:1.0.0#ClassifiedLoadSpectrum",
+      "version": "1.0.0",
+      "name": "ClassifiedLoadSpectrum",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.decomissioning_certificate:1.0.0#DecommissioningCertificate",
+      "version": "1.0.0",
+      "name": "DecommissioningCertificate",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.eol_story:1.0.0#EndOfLife",
+      "version": "1.0.0",
+      "name": "EndOfLife",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.fleet.claim_data:1.0.0#ClaimData",
+      "version": "1.0.0",
+      "name": "ClaimData",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.fleet.diagnostic_data:1.0.0#DiagnosticData",
+      "version": "1.0.0",
+      "name": "DiagnosticData",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.idconversion:1.0.0#IdConversion",
+      "version": "1.0.0",
+      "name": "IdConversion",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.individual_asset_definition:1.0.0#IndividualAssetDefinition",
+      "version": "1.0.0",
+      "name": "IndividualAssetDefinition",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.manufactured_parts_quality_information:1.0.0#ManufacturedPartsQualityInformation",
+      "version": "1.0.0",
+      "name": "ManufacturedPartsQualityInformation",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.market_place_offer:1.2.0#MarketplaceOffer",
+      "version": "1.2.0",
+      "name": "MarketplaceOffer",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.market_place_offer:1.4.0#MarketplaceOffer",
+      "version": "1.4.0",
+      "name": "MarketplaceOffer",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.material_flow_simulation_result:1.0.0#MaterialFlowSimulationResult",
+      "version": "1.0.0",
+      "name": "MaterialFlowSimulationResult",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.material_for_homologation:1.0.0#MaterialForHomologation",
+      "version": "1.0.0",
+      "name": "MaterialForHomologation",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.part_as_specified:1.0.0#PartAsSpecified",
+      "version": "1.0.0",
+      "name": "PartAsSpecified",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.part_as_specified:1.0.1#PartAsSpecified",
+      "version": "1.0.1",
+      "name": "PartAsSpecified",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.part_as_specified:2.0.0#PartAsSpecified",
+      "version": "2.0.0",
+      "name": "PartAsSpecified",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.pcf:2.0.0#Pcf",
+      "version": "2.0.0",
+      "name": "Pcf",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.pcf:3.0.0#Pcf",
+      "version": "3.0.0",
+      "name": "Pcf",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.pcf:4.0.0#Pcf",
+      "version": "4.0.0",
+      "name": "Pcf",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.pcf:4.0.1#Pcf",
+      "version": "4.0.1",
+      "name": "Pcf",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.product_stock:1.0.0#ProductStock",
+      "version": "1.0.0",
+      "name": "ProductStock",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.quality_task:1.0.0#QualityTask",
+      "version": "1.0.0",
+      "name": "QualityTask",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.refurbishing_certificate:1.0.0#RefurbishingCertificate",
+      "version": "1.0.0",
+      "name": "RefurbishingCertificate",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.remanufacturing_certificate:1.0.0#RemanufacturingCertificate",
+      "version": "1.0.0",
+      "name": "RemanufacturingCertificate",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.return_request:1.1.1#ReturnRequest",
+      "version": "1.1.1",
+      "name": "ReturnRequest",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.return_request:1.1.2#ReturnRequest",
+      "version": "1.1.2",
+      "name": "ReturnRequest",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.reuse_certificate:1.0.0#ReuseCertificate",
+      "version": "1.0.0",
+      "name": "ReuseCertificate",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.rul:1.0.0#RemainingUsefulLife",
+      "version": "1.0.0",
+      "name": "RemainingUsefulLife",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.shared.address_characteristic:1.0.1#AddressAspect",
+      "version": "1.0.1",
+      "name": "AddressAspect",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.shared.address_characteristic:2.0.0#AddressAspect",
+      "version": "2.0.0",
+      "name": "AddressAspect",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.shared.contact_information:1.0.0#ContactInformation",
+      "version": "1.0.0",
+      "name": "ContactInformation",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.shared.contact_information:2.0.0#ContactInformation",
+      "version": "2.0.0",
+      "name": "ContactInformation",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.shared.physical_dimension:1.0.0#PhysicalDimensions",
+      "version": "1.0.0",
+      "name": "PhysicalDimensions",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.shared.physical_dimension:2.0.0#PhysicalDimensions",
+      "version": "2.0.0",
+      "name": "PhysicalDimensions",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.shared.recycling_strategy_certificate:1.0.0#RecyclingStrategyCertificate",
+      "version": "1.0.0",
+      "name": "RecyclingStrategyCertificate",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.single_level_bom_as_specified:1.0.0#SingleLevelBomAsSpecified",
+      "version": "1.0.0",
+      "name": "SingleLevelBomAsSpecified",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.single_level_usage_as_planned:1.1.0#SingleLevelUsageAsPlanned",
+      "version": "1.1.0",
+      "name": "SingleLevelUsageAsPlanned",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.user_estimated_loading:1.0.0#UserEstimatedLoading",
+      "version": "1.0.0",
+      "name": "UserEstimatedLoading",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.vehicle.product_description:1.0.0#ProductDescription",
+      "version": "1.0.0",
+      "name": "ProductDescription",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.vehicle.product_description:2.0.0#ProductDescription",
+      "version": "2.0.0",
+      "name": "ProductDescription",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.waste:1.0.0#Waste",
+      "version": "1.0.0",
+      "name": "Waste",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.week_based_capacity_group:1.0.1#WeekBasedCapacityGroup",
+      "version": "1.0.1",
+      "name": "WeekBasedCapacityGroup",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:bamm:io.catenax.week_based_material_demand:1.0.1#WeekBasedMaterialDemand",
+      "version": "1.0.1",
+      "name": "WeekBasedMaterialDemand",
+      "type": "BAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.asset_tracker_links:2.0.0#AssetTrackerLinks",
+      "version": "2.0.0",
+      "name": "AssetTrackerLinks",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.batch:2.0.1#Batch",
+      "version": "2.0.1",
+      "name": "Batch",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "version": "3.0.0",
+      "name": "Batch",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.demand_and_capacity_notification:1.0.0#DemandAndCapacityNotification",
+      "version": "1.0.0",
+      "name": "DemandAndCapacityNotification",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.demand_and_capacity_notification:2.0.0#DemandAndCapacityNotification",
+      "version": "2.0.0",
+      "name": "DemandAndCapacityNotification",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.early_warning_notification:1.0.0#EarlyWarningNotification",
+      "version": "1.0.0",
+      "name": "EarlyWarningNotification",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.essincident:2.0.0#EssIncident",
+      "version": "2.0.0",
+      "name": "EssIncident",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.failure_pattern:1.0.0#FailurePattern",
+      "version": "1.0.0",
+      "name": "FailurePattern",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.fleet.vehicles:1.0.0#Vehicles",
+      "version": "1.0.0",
+      "name": "Vehicles",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.fleet.vehicles:2.1.0#Vehicles",
+      "version": "2.1.0",
+      "name": "Vehicles",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.id_based_comment:1.0.0#IdBasedComment",
+      "version": "1.0.0",
+      "name": "IdBasedComment",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.id_based_request_for_update:1.0.0#IdBasedRequestForUpdate",
+      "version": "1.0.0",
+      "name": "IdBasedRequestForUpdate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.id_based_request_for_update:2.0.0#IdBasedRequestForUpdate",
+      "version": "2.0.0",
+      "name": "IdBasedRequestForUpdate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.id_based_request_for_update:3.0.0#IdBasedRequestForUpdate",
+      "version": "3.0.0",
+      "name": "IdBasedRequestForUpdate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.just_in_sequence_part:3.0.0#JustInSequencePart",
+      "version": "3.0.0",
+      "name": "JustInSequencePart",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.mandatory_dismantling:1.0.0#MandatoryDismantling",
+      "version": "1.0.0",
+      "name": "MandatoryDismantling",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.manufactured_parts_quality_information:2.1.0#ManufacturedPartsQualityInformation",
+      "version": "2.1.0",
+      "name": "ManufacturedPartsQualityInformation",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.material_flow_simulation_result:2.0.0#MaterialFlowSimulationResultAspect",
+      "version": "2.0.0",
+      "name": "MaterialFlowSimulationResultAspect",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.packing_list:1.0.0#PackingList",
+      "version": "1.0.0",
+      "name": "PackingList",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.part_type_information:1.0.0#PartTypeInformation",
+      "version": "1.0.0",
+      "name": "PartTypeInformation",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.parts_analyses:2.0.0#PartsAnalyses",
+      "version": "2.0.0",
+      "name": "PartsAnalyses",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.planned_production_output:1.0.0#PlannedProductionOutput",
+      "version": "1.0.0",
+      "name": "PlannedProductionOutput",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.planned_production_output:2.0.0#PlannedProductionOutput",
+      "version": "2.0.0",
+      "name": "PlannedProductionOutput",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.quality_task_attachment:2.0.0#QualityTaskAttachment",
+      "version": "2.0.0",
+      "name": "QualityTaskAttachment",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.refurbishing_certificate:3.0.0#RefurbishingCertificate",
+      "version": "3.0.0",
+      "name": "RefurbishingCertificate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.remanufacturing_certificate:3.0.0#RemanufacturingCertificate",
+      "version": "3.0.0",
+      "name": "RemanufacturingCertificate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.repair_certificate:1.0.0#RepairCertificate",
+      "version": "1.0.0",
+      "name": "RepairCertificate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.reuse_certificate:3.0.0#ReuseCertificate",
+      "version": "3.0.0",
+      "name": "ReuseCertificate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.secondary_material_content:1.0.0#SecondaryMaterialContent",
+      "version": "1.0.0",
+      "name": "SecondaryMaterialContent",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.serial_part:3.0.0#SerialPart",
+      "version": "3.0.0",
+      "name": "SerialPart",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.address_characteristic:3.0.0#AddressAspect",
+      "version": "3.0.0",
+      "name": "AddressAspect",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.address_characteristic:4.0.0#AddressAspect",
+      "version": "4.0.0",
+      "name": "AddressAspect",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.business_partner_number:1.0.0#BusinessPartnerNumber",
+      "version": "1.0.0",
+      "name": "BusinessPartnerNumber",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.business_partner_number:2.0.0#BusinessPartnerNumber",
+      "version": "2.0.0",
+      "name": "BusinessPartnerNumber",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.contact_information:3.0.0#ContactInformation",
+      "version": "3.0.0",
+      "name": "ContactInformation",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.contact_information:4.0.0#ContactInformation",
+      "version": "4.0.0",
+      "name": "ContactInformation",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.message_header:2.0.0#MessageHeaderAspect",
+      "version": "2.0.0",
+      "name": "MessageHeaderAspect",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.message_header:3.0.0#MessageHeaderAspect",
+      "version": "3.0.0",
+      "name": "MessageHeaderAspect",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.part_classification:1.0.0#PartClassification",
+      "version": "1.0.0",
+      "name": "PartClassification",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.part_site_information_as_built:1.0.0#PartSiteInformationAsBuilt",
+      "version": "1.0.0",
+      "name": "PartSiteInformationAsBuilt",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.part_site_information_as_built:2.0.0#PartSiteInformationAsBuilt",
+      "version": "2.0.0",
+      "name": "PartSiteInformationAsBuilt",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.physical_dimension:3.0.0#PhysicalDimensions",
+      "version": "3.0.0",
+      "name": "PhysicalDimensions",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.quantity:1.0.0#Quantity",
+      "version": "1.0.0",
+      "name": "Quantity",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.quantity:2.0.0#Quantity",
+      "version": "2.0.0",
+      "name": "Quantity",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.recycling_strategy_certificate:2.0.0#RecyclingStrategyCertificate",
+      "version": "2.0.0",
+      "name": "RecyclingStrategyCertificate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.recycling_strategy_certificate:3.0.0#RecyclingStrategyCertificate",
+      "version": "3.0.0",
+      "name": "RecyclingStrategyCertificate",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.shared.shopfloor_information_types:2.0.0#ShopfloorInformationTypes",
+      "version": "2.0.0",
+      "name": "ShopfloorInformationTypes",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+      "version": "3.0.0",
+      "name": "SingleLevelBomAsBuilt",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned",
+      "version": "3.0.0",
+      "name": "SingleLevelBomAsPlanned",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified",
+      "version": "2.0.0",
+      "name": "SingleLevelBomAsSpecified",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt",
+      "version": "3.0.0",
+      "name": "SingleLevelUsageAsBuilt",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.single_level_usage_as_planned:2.0.0#SingleLevelUsageAsPlanned",
+      "version": "2.0.0",
+      "name": "SingleLevelUsageAsPlanned",
+      "type": "SAMM",
+      "status": "RELEASED"
+    },
+    {
+      "urn": "urn:samm:io.catenax.traction_battery_code:2.0.0#TractionBatteryCode",
+      "version": "2.0.0",
+      "name": "TractionBatteryCode",
+      "type": "SAMM",
+      "status": "RELEASED"
+    }
+  ],
+  "totalItems": 99,
+  "currentPage": 0,
+  "totalPages": 1,
+  "itemCount": 99
+}

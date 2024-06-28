@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,24 +23,81 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.models;
 
+import static org.eclipse.tractusx.irs.policystore.controllers.PolicyStoreController.BPN_REGEX;
+
 import java.time.OffsetDateTime;
-import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.json.JsonObject;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
-import org.eclipse.tractusx.irs.edc.client.policy.Permission;
+import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 
 /**
- * Request object for policy creation
- *
- * @param policyId   the ID of the policy
- * @param validUntil the timestamp after which the policy should no longer be accepted
+ * Object for API to create policy
  */
+@SuppressWarnings("FileTabCharacter")
 @Schema(description = "Request to add a policy")
-public record CreatePolicyRequest(@Schema(description = "The ID of the policy to add") @NotNull String policyId,
+@Builder
+public record CreatePolicyRequest(
 
-                                  @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations") @NotNull OffsetDateTime validUntil,
-                                  @Schema(description = "List of permissions that will be added to the Policy on creation.") @NotNull List<Permission> permissions
-                                  ) {
+        @Schema(description = "Timestamp after which the policy will no longer be accepted in negotiations.",
+                example = "2025-12-12T23:59:59.999Z") //
+        @NotNull //
+        @Future(message = "must be in future") //
+        OffsetDateTime validUntil, //
 
+        @Schema(description = """
+                The business partner number (BPN) for which the policy should be registered.
+                This parameter is optional.
+                If not set the policy is registered for each existing BPN.
+                """, //
+                example = "BPNL1234567890AB") //
+        @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") //
+        String businessPartnerNumber,
+
+        @Schema(description = "The policy payload.", //
+                example = CreatePolicyRequest.EXAMPLE_PAYLOAD) //
+        @NotNull //
+        JsonObject payload) {
+
+    @SuppressWarnings("java:S2479")
+    // this value is used by open-api to show example payload
+    // \u0009 character is required for this value to be correctly shown in open-api
+    public static final String EXAMPLE_PAYLOAD = """
+            {
+                "@context": {
+                    "odrl": "http://www.w3.org/ns/odrl/2/"
+                },
+                "@id": "e917f5f-8dac-49ac-8d10-5b4d254d2b48",
+                "@type": "PolicyDefinitionRequestDto",
+                "policy": {
+                    "@type": "Policy",
+                    "odrl:permission": [
+                        {
+                            "odrl:action": "use",
+                            "odrl:constraint": {
+                                "odrl:and": [
+                                    {
+                                        "odrl:leftOperand": "Membership",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
+                                        },
+                                        "odrl:rightOperand": "active"
+                                    },
+                                    {
+                                        "odrl:leftOperand": "PURPOSE",
+                                        "odrl:operator": {
+                                            "@id": "odrl:eq"
+                                        },
+                                        "odrl:rightOperand": "ID 3.1 Trace"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+            """;
 }

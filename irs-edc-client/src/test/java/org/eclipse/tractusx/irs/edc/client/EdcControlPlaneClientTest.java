@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -102,6 +102,7 @@ class EdcControlPlaneClientTest {
         // arrange
         final var catalog = mock(Catalog.class);
         final var catalogString = "test";
+        final String providerBpn = "BPN000123456";
         final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
         doReturn(emptyJsonObject).when(edcTransformer).transformCatalogRequestToJson(any(CatalogRequest.class));
         doReturn(catalog).when(edcTransformer).transformCatalog(anyString(), eq(StandardCharsets.UTF_8));
@@ -109,7 +110,7 @@ class EdcControlPlaneClientTest {
                 eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(catalogString)));
 
         // act
-        final var result = testee.getCatalog("test", 0);
+        final var result = testee.getCatalog("test", 0, providerBpn);
 
         // assert
         assertThat(result).isEqualTo(catalog);
@@ -120,6 +121,7 @@ class EdcControlPlaneClientTest {
         // arrange
         final var catalog = mock(Catalog.class);
         final var catalogString = "test";
+        final String providerBpn = "BPN000123456";
         final JsonObject emptyJsonObject = JsonObject.EMPTY_JSON_OBJECT;
         doReturn(emptyJsonObject).when(edcTransformer).transformCatalogRequestToJson(any(CatalogRequest.class));
         doReturn(catalog).when(edcTransformer).transformCatalog(anyString(), eq(StandardCharsets.UTF_8));
@@ -127,7 +129,7 @@ class EdcControlPlaneClientTest {
                 eq(String.class))).thenReturn(ResponseEntity.of(Optional.of(catalogString)));
 
         // act
-        final var result = testee.getCatalogWithFilter("test", "asset:prop:type", "data.core.digitalTwinRegistry");
+        final var result = testee.getCatalogWithFilter("test", "asset:prop:type", "data.core.digitalTwinRegistry", providerBpn);
 
         // assert
         assertThat(result).isEqualTo(catalog);

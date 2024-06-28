@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,16 +23,18 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.testutil;
 
+import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_CATENAX_POLICY;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCAT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DCT;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_DSPACE;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC;
-import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_PARTICIPANT_ID;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_ODRL;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_TRACTUSX;
 import static org.mockito.Mockito.mock;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -48,6 +50,7 @@ import org.eclipse.edc.catalog.spi.Catalog;
 import org.eclipse.edc.catalog.spi.DataService;
 import org.eclipse.edc.catalog.spi.Dataset;
 import org.eclipse.edc.catalog.spi.Distribution;
+import org.eclipse.edc.core.transform.TypeTransformerRegistryImpl;
 import org.eclipse.edc.jsonld.TitaniumJsonLd;
 import org.eclipse.edc.policy.model.Action;
 import org.eclipse.edc.policy.model.AndConstraint;
@@ -60,6 +63,11 @@ import org.eclipse.edc.policy.model.Permission;
 import org.eclipse.edc.policy.model.Policy;
 import org.eclipse.edc.policy.model.XoneConstraint;
 import org.eclipse.edc.spi.monitor.ConsoleMonitor;
+import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
+import org.eclipse.tractusx.irs.data.StringMapper;
+import org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration;
+import org.eclipse.tractusx.irs.edc.client.model.EDRAuthCode;
+import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,7 +81,8 @@ public class TestMother {
         titaniumJsonLd.registerNamespace("edc", NAMESPACE_EDC);
         titaniumJsonLd.registerNamespace("dcat", NAMESPACE_DCAT);
         titaniumJsonLd.registerNamespace("dspace", NAMESPACE_DSPACE);
-        return new EdcTransformer(objectMapper(), titaniumJsonLd);
+        titaniumJsonLd.registerNamespace("cx-policy", NAMESPACE_CATENAX_POLICY);
+        return new EdcTransformer(objectMapper(), titaniumJsonLd, new TypeTransformerRegistryImpl());
     }
 
     public static ObjectMapper objectMapper() {
@@ -97,13 +106,33 @@ public class TestMother {
         final List<Dataset> datasets = IntStream.range(0, numberOfOffers)
                                                 .boxed()
                                                 .map(i -> Dataset.Builder.newInstance()
-                                                                         .properties(
-                                                                                 Map.of(NAMESPACE_EDC_ID, assetId + i))
+                                                                         .id(assetId + i)
                                                                          .offer(getOfferId(assetId + i), policy)
                                                                          .distribution(distribution)
                                                                          .build())
                                                 .toList();
-        return Catalog.Builder.newInstance().datasets(datasets).properties(Map.of(NAMESPACE_EDC_PARTICIPANT_ID, "BPNTEST")).build();
+        return Catalog.Builder.newInstance()
+                              .datasets(datasets)
+                              .properties(Map.of(NAMESPACE_EDC_PARTICIPANT_ID, "BPNTEST"))
+                              .build();
+    }
+
+    public static Catalog createCatalog(final String assetId, final Policy policy, final String bpn,
+            final String offerId) {
+        final Distribution distribution = Distribution.Builder.newInstance()
+                                                              .format("HttpProxy")
+                                                              .dataService(new DataService())
+                                                              .build();
+
+        final Dataset dataset = Dataset.Builder.newInstance()
+                                                .id(assetId)
+                                                .offer(offerId, policy)
+                                                .distribution(distribution)
+                                                .build();
+        return Catalog.Builder.newInstance()
+                              .dataset(dataset)
+                              .properties(Map.of(NAMESPACE_EDC_PARTICIPANT_ID, bpn))
+                              .build();
     }
 
     @NotNull
@@ -113,7 +142,7 @@ public class TestMother {
 
     private static Permission createUsePermission(final Constraint constraint) {
         return Permission.Builder.newInstance()
-                                 .action(Action.Builder.newInstance().type("USE").build())
+                                 .action(Action.Builder.newInstance().type(PolicyType.USE.getValue()).build())
                                  .constraint(constraint)
                                  .build();
     }
@@ -148,5 +177,29 @@ public class TestMother {
         final XoneConstraint orConstraint = XoneConstraint.Builder.newInstance().constraints(constraints).build();
         final Permission permission = createUsePermission(orConstraint);
         return Policy.Builder.newInstance().permission(permission).build();
+    }
+
+    public static EndpointDataReference endpointDataReference(final String contractAgreementId) {
+        return EndpointDataReference.Builder.newInstance()
+                                            .authKey("testkey")
+                                            .authCode(edrAuthCode(contractAgreementId))
+                                            .properties(
+                                                    Map.of(JsonLdConfiguration.NAMESPACE_EDC_CID, contractAgreementId))
+                                            .endpoint("http://provider.dataplane/api/public")
+                                            .id("testid")
+                                            .contractId(contractAgreementId)
+                                            .build();
+    }
+
+    public static String edrAuthCode(final String contractAgreementId) {
+        final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
+                                                   .cid(contractAgreementId)
+                                                   .dad("test")
+                                                   .exp(9999999999L)
+                                                   .build();
+        final String b64EncodedAuthCode = Base64.getUrlEncoder()
+                                                .encodeToString(StringMapper.mapToString(edrAuthCode)
+                                                                            .getBytes(StandardCharsets.UTF_8));
+        return "eyJhbGciOiJSUzI1NiJ9." + b64EncodedAuthCode + ".test";
     }
 }

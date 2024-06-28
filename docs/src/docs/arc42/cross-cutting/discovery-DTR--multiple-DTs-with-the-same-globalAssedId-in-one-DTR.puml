@@ -1,0 +1,8 @@
+@startuml
+participant IRS
+participant DTR
+
+IRS -> DTR: /query for globalAssetId
+DTR -> IRS: return list of two results
+IRS -> IRS: use first
+@enduml

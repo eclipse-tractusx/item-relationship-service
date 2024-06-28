@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -37,6 +37,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.tractusx.irs.SemanticModelNames;
+import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.Endpoint;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.SubmodelDescriptor;
@@ -56,8 +58,6 @@ import org.springframework.web.client.RestClientException;
 @ExtendWith(MockitoExtension.class)
 class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAware {
 
-    private final String singleLevelBomAsBuiltURN = "urn:bamm:io.catenax.single_level_bom_as_built:1.0.0";
-    private final String serialPartURN = "urn:bamm:io.catenax.serial_part:1.0.0";
     private DigitalTwinRegistryService digitalTwinRegistryService;
     @Mock
     private DigitalTwinRegistryClient dtRegistryClientMock;
@@ -76,13 +76,14 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() throws RegistryServiceException {
-        final String existingCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
+        final String existingCatenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
 
-        final Collection<AssetAdministrationShellDescriptor> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
+        final Collection<Shell> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
                 List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")));
         final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.stream()
                                                                           .findFirst()
                                                                           .get()
+                                                                          .payload()
                                                                           .getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
@@ -90,8 +91,9 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
         assertThat(endpoint.getProtocolInformation().getSubprotocolBody()).contains(existingCatenaXId);
         assertThat(shellEndpoints.get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
-                singleLevelBomAsBuiltURN);
-        assertThat(shellEndpoints.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(serialPartURN);
+                SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
+        assertThat(shellEndpoints.get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SemanticModelNames.SERIAL_PART_3_0_0);
     }
 
     @Test
@@ -119,7 +121,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                 LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(
-                List.of(new DigitalTwinRegistryKey(catenaXId, ""))).stream().findFirst().get().getSubmodelDescriptors();
+                List.of(new DigitalTwinRegistryKey(catenaXId, ""))).stream().findFirst().get().payload().getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -155,6 +157,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                                                                                    .stream()
                                                                                    .findFirst()
                                                                                    .get()
+                                                                                   .payload()
                                                                                    .getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
@@ -171,18 +174,20 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
 
     @Test
     void shouldReturnSubmodelEndpointsWhenFilteringByAspectType() throws RegistryServiceException {
-        final String existingCatenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
+        final String existingCatenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
 
         final List<SubmodelDescriptor> shellEndpoints = digitalTwinRegistryService.fetchShells(
                                                                                           List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")))
                                                                                   .stream()
                                                                                   .findFirst()
                                                                                   .get()
+                                                                                  .payload()
                                                                                   .getSubmodelDescriptors();
 
         assertThat(shellEndpoints).isNotNull().isNotEmpty();
         final SubmodelDescriptor endpoint = shellEndpoints.get(0);
 
-        assertThat(endpoint.getSemanticId().getKeys().get(0).getValue()).isEqualTo(singleLevelBomAsBuiltURN);
+        assertThat(endpoint.getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
     }
 }

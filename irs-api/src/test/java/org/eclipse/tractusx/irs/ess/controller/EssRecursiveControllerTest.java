@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,45 +23,58 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.controller;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static io.restassured.RestAssured.given;
+import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.tractusx.irs.ess.service.EssRecursiveService;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import org.eclipse.tractusx.irs.ControllerTest;
+import org.eclipse.tractusx.irs.TestConfig;
 import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationHeader;
 import org.eclipse.tractusx.irs.edc.client.model.notification.InvestigationNotificationContent;
+import org.eclipse.tractusx.irs.ess.service.EssRecursiveService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@WebMvcTest(EssRecursiveController.class)
-class EssRecursiveControllerTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+                properties = { "digitalTwinRegistry.type=central" })
+@ActiveProfiles(profiles = { "test", "local" })
+@Import(TestConfig.class)
+@ExtendWith({ MockitoExtension.class, SpringExtension.class })
+class EssRecursiveControllerTest extends ControllerTest {
 
     private final String path = "/ess/notification/receive-recursive";
-
-    @Autowired
-    private MockMvc mockMvc;
 
     @MockBean
     private EssRecursiveService essRecursiveService;
 
-    @Test
-    @WithMockUser(authorities = IrsRoles.VIEW_IRS)
-    void shouldHandleRecursiveBpnInvestigationByNotification() throws Exception {
+    @LocalServerPort
+    private int port;
 
-        this.mockMvc.perform(post(path).with(csrf())
-                                       .contentType(MediaType.APPLICATION_JSON)
-                                       .content(new ObjectMapper().writeValueAsString(prepareNotification())))
-                    .andExpect(status().isCreated());
+    @BeforeEach
+    public void configureRestAssured() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
+    }
+
+    @Test
+    void shouldHandleRecursiveBpnInvestigationByNotification() throws Exception {
+        authenticateWith(IrsRoles.VIEW_IRS);
+
+        given().port(port).contentType(ContentType.JSON).body(prepareNotification()).post(path)
+               .then().statusCode(CREATED.value());
     }
 
     private EdcNotification<InvestigationNotificationContent> prepareNotification() {

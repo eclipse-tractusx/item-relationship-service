@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,7 +25,9 @@ package org.eclipse.tractusx.irs.controllers;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
@@ -54,7 +56,9 @@ public class IrsExceptionHandler {
      */
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<ErrorResponse> handleResponseStatusException(final ResponseStatusException exception) {
-        log.info(exception.getClass().getName(), exception);
+        final UUID errorRef = UUID.randomUUID();
+        final String messageTemplate = "%s (errorRef: %s)";
+        log.info(messageTemplate.formatted(exception.getClass().getName(), errorRef), exception);
 
         final HttpStatus httpStatus = HttpStatus.valueOf(exception.getStatusCode().value());
 
@@ -62,7 +66,27 @@ public class IrsExceptionHandler {
                              .body(ErrorResponse.builder()
                                                 .withStatusCode(httpStatus)
                                                 .withError(httpStatus.getReasonPhrase())
-                                                .withMessages(List.of(exception.getReason()))
+                                                .withMessages(List.of(messageTemplate.formatted(exception.getReason(),
+                                                        errorRef)))
+                                                .build());
+    }
+
+    /**
+     * Handler for {@link ConstraintViolationException}
+     *
+     * @param exception see {@link ConstraintViolationException}
+     * @return see {@link ErrorResponse}
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(final ConstraintViolationException exception) {
+        log.info(exception.getClass().getName(), exception);
+
+        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus)
+                             .body(ErrorResponse.builder()
+                                                .withStatusCode(httpStatus)
+                                                .withError(httpStatus.getReasonPhrase())
+                                                .withMessages(List.of(exception.getMessage()))
                                                 .build());
     }
 
@@ -91,7 +115,8 @@ public class IrsExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(final MethodArgumentTypeMismatchException exception) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(
+            final MethodArgumentTypeMismatchException exception) {
         log.info(exception.getClass().getName(), exception);
 
         if (exception.getRootCause() instanceof IllegalArgumentException illegalArgumentException) {
@@ -117,7 +142,8 @@ public class IrsExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException exception) {
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
+            final HttpMessageNotReadableException exception) {
         log.info(exception.getClass().getName(), exception);
 
         String message = "Malformed JSON request";

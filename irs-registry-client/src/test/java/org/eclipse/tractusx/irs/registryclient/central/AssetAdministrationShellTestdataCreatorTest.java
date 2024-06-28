@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -31,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
 import org.eclipse.tractusx.irs.testing.containers.LocalTestDataConfigurationAware;
 import org.junit.jupiter.api.Test;
@@ -42,12 +43,13 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
     AssetAdministrationShellTestdataCreatorTest() throws IOException {
         super();
 
-        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator(localTestDataConfiguration.cxTestDataContainer());
+        assetAdministrationShellTestdataCreator = new AssetAdministrationShellTestdataCreator(
+                localTestDataConfiguration.cxTestDataContainer());
     }
 
     @Test
     void shouldReturnAssetAdministrationShellDescriptorWhenRequestingWithCatenaXId() {
-        final String catenaXId = "urn:uuid:a65c35a8-8d31-4a86-899b-57912de33675";
+        final String catenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
 
         final AssetAdministrationShellDescriptor aasDescriptor = assetAdministrationShellTestdataCreator.createDummyAssetAdministrationShellDescriptorForId(
                 catenaXId);
@@ -64,8 +66,10 @@ class AssetAdministrationShellTestdataCreatorTest extends LocalTestDataConfigura
         assertThat(endpointAddress).isEqualTo("singleLevelBomAsBuilt");
         assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getEndpoints().get(0).getProtocolInformation().getSubprotocolBody()).contains(catenaXId);
 
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo("urn:bamm:io.catenax.single_level_bom_as_built:1.0.0");
-        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo("urn:bamm:io.catenax.serial_part:1.0.0");
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(0).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SemanticModelNames.SINGLE_LEVEL_BOM_AS_BUILT_3_0_0);
+        assertThat(aasDescriptor.getSubmodelDescriptors().get(1).getSemanticId().getKeys().get(0).getValue()).isEqualTo(
+                SemanticModelNames.SERIAL_PART_3_0_0);
     }
 
     @Test

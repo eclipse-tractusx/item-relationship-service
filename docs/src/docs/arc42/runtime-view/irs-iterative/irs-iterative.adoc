@@ -1,7 +1,3 @@
-= IRS iterative
-
-This section describes the iterative flow of the IRS
-
 [plantuml, target=overall, format=svg]
 ....
 include::../../../../uml-diagrams/runtime-view/api-call-asynchrous-sequence.puml[]

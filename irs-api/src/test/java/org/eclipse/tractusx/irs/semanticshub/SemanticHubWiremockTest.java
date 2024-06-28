@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,81 +23,85 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.semanticshub;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.givenThat;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport.SEMANTIC_HUB_SCHEMA_URL;
+import static org.eclipse.tractusx.irs.semanticshub.SemanticHubWireMockSupport.semanticHubWillReturnBatchSchema;
+import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.eclipse.tractusx.irs.configuration.SemanticsHubConfiguration;
 import org.eclipse.tractusx.irs.services.validation.SchemaNotFoundException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestTemplate;
 
+@WireMockTest
 class SemanticHubWiremockTest {
-    private WireMockServer wireMockServer;
-
+    private static final String PROXY_SERVER_HOST = "127.0.0.1";
     private SemanticsHubFacade semanticsHubFacade;
-    private SemanticsHubConfiguration config;
 
     @BeforeEach
-    void configureSystemUnderTest() {
-        this.wireMockServer = new WireMockServer(options().dynamicPort());
-        this.wireMockServer.start();
-        configureFor(this.wireMockServer.port());
+    void configureSystemUnderTest(WireMockRuntimeInfo wireMockRuntimeInfo) {
+        final RestTemplate restTemplate = restTemplateProxy(PROXY_SERVER_HOST, wireMockRuntimeInfo.getHttpPort());
 
-        config = new SemanticsHubConfiguration();
+        final SemanticsHubConfiguration config = new SemanticsHubConfiguration();
         config.setPageSize(10);
-        config.setUrl(String.format("http://localhost:%d/models", this.wireMockServer.port()));
-        config.setModelJsonSchemaEndpoint("sem.hub/models/{urn}/json-schema");
+        config.setUrl("http://semantic.hub/models");
+        config.setModelJsonSchemaEndpoint(SEMANTIC_HUB_SCHEMA_URL);
 
-        final RestTemplate restTemplate = new RestTemplate();
         final SemanticsHubClient semanticsHubClient = new SemanticsHubClientImpl(restTemplate, config);
         semanticsHubFacade = new SemanticsHubFacade(semanticsHubClient);
     }
 
-    @AfterEach
-    void tearDown() {
-        this.wireMockServer.stop();
-    }
-
     @Test
     void shouldReturn1Page() throws SchemaNotFoundException {
-        givenThat(get(urlPathEqualTo("/models")).willReturn(aResponse().withStatus(200)
-                                                                       .withHeader("Content-Type",
-                                                                               "application/json;charset=UTF-8")
-                                                                       .withBodyFile("all-models-page.json")));
+        SemanticHubWireMockSupport.semanticHubWillReturnAllModels("all-models-page.json");
 
         final AspectModels allAspectModels = semanticsHubFacade.getAllAspectModels();
 
         assertThat(allAspectModels.models()).isNotEmpty();
         assertThat(allAspectModels.models().get(0).name()).isEqualTo("SerialPartTypization");
+        SemanticHubWireMockSupport.verifySemanticHubWasCalledForAllModels(1);
     }
 
     @Test
     void shouldReturn2Pages() throws SchemaNotFoundException {
-        givenThat(get(urlPathEqualTo("/models")).withQueryParam("page", equalTo("0"))
-                                                .withQueryParam("pageSize", equalTo("10"))
-                                                .willReturn(aResponse().withStatus(200)
-                                                                       .withHeader("Content-Type",
-                                                                               "application/json;charset=UTF-8")
-                                                                       .withBodyFile("all-models-page1.json")));
-        givenThat(get(urlPathEqualTo("/models")).withQueryParam("page", equalTo("1"))
-                                                .withQueryParam("pageSize", equalTo("10"))
-                                                .willReturn(aResponse().withStatus(200)
-                                                                       .withHeader("Content-Type",
-                                                                               "application/json;charset=UTF-8")
-                                                                       .withBodyFile("all-models-page2.json")));
+        SemanticHubWireMockSupport.semanticHubWillReturnPagedModels(0, 10, "all-models-page1.json");
+        SemanticHubWireMockSupport.semanticHubWillReturnPagedModels(1, 10, "all-models-page2.json");
 
         final AspectModels allAspectModels = semanticsHubFacade.getAllAspectModels();
 
         assertThat(allAspectModels.models()).hasSize(20);
         assertThat(allAspectModels.models().get(0).name()).isEqualTo("SerialPartTypization");
+        SemanticHubWireMockSupport.verifySemanticHubWasCalledForAllModels(2);
     }
+
+    @Test
+    void shouldReturnJsonSchema() throws SchemaNotFoundException {
+        // Arrange
+        semanticHubWillReturnBatchSchema();
+
+        // Act
+        final String modelJsonSchema = semanticsHubFacade.getModelJsonSchema("urn:samm:io.catenax.batch:3.0.0#Batch");
+
+        // Assert
+        assertThat(modelJsonSchema).contains("urn_samm_io.catenax.shared.uuid_2.0.0_UuidV4Trait")
+                                   .contains("A batch is a quantity of(semi-)finished products or(raw)material");
+        SemanticHubWireMockSupport.verifySemanticHubWasCalledForModel("urn:samm:io.catenax.batch:3.0.0%23Batch", 1);
+    }
+
+    @Test
+    void shouldThrowSchemaExceptionWhenSchemaNotFound() {
+        // Arrange
+        final String semanticModel = "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0%23SingleLevelBomAsBuilt";
+        SemanticHubWireMockSupport.semanticHubWillThrowErrorForSemanticModel(semanticModel);
+
+        // Act & Assert
+        assertThatExceptionOfType(SchemaNotFoundException.class).isThrownBy(() -> semanticsHubFacade.getModelJsonSchema(
+                "urn:bamm:io.catenax.single_level_bom_as_built:2.0.0#SingleLevelBomAsBuilt"));
+        SemanticHubWireMockSupport.verifySemanticHubWasCalledForModel(semanticModel, 1);
+    }
+
 }

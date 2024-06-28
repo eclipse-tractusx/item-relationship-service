@@ -35,18 +35,18 @@ jobs:
           version: v0.20.0
 
       - name: Build image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: kind-registry:5000/irs-api:testing
 
       - name: Set up Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
         with:
           version: v3.9.3
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
           check-latest: true
@@ -72,5 +72,5 @@ jobs:
           helm repo add minio https://charts.min.io/
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo add grafana https://grafana.github.io/helm-charts
-          ct install --charts charts/irs-helm --helm-extra-set-args "--set=image.tag=testing --set=image.repository=kind-registry:5000/irs-api"
+          ct install --charts charts/item-relationship-service --helm-extra-set-args "--set=image.tag=testing --set=image.repository=kind-registry:5000/irs-api"
         if: steps.list-changed.outputs.changed == 'true'

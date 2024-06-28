@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,11 +23,19 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.policy;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * A PolicyType object use in Permission
  */
+@Getter
+@RequiredArgsConstructor
 public enum PolicyType {
+    ACCESS("access"),
+    USE("use");
 
-    ACCESS, USE
-
+    @JsonValue
+    private final String value;
 }

@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -72,13 +72,16 @@ public class JobParameter {
     @Schema(implementation = Boolean.class, example = "false")
     private boolean lookupBPNs;
 
+    @Schema(implementation = Boolean.class, example = "false")
+    private boolean auditContractNegotiation;
+
     @Schema(implementation = String.class, example = "https://hostname.com/callback?id={id}&state={state}")
     private String callbackUrl;
 
     public static JobParameter create(final @NonNull RegisterJob request) {
         final BomLifecycle bomLifecycle = Optional.ofNullable(request.getBomLifecycle()).orElse(BomLifecycle.AS_BUILT);
         final List<String> aspectTypeValues = Optional.ofNullable(request.getAspects())
-                                                      .orElse(List.of(bomLifecycle.getDefaultAspect()));
+                                                      .orElse(List.of());
         final Direction direction = Optional.ofNullable(request.getDirection()).orElse(Direction.DOWNWARD);
 
         return JobParameter.builder()
@@ -87,10 +90,11 @@ public class JobParameter {
                            .bpn(request.getKey().getBpn())
                            .direction(direction)
                            .aspects(aspectTypeValues.isEmpty()
-                                   ? List.of(bomLifecycle.getDefaultAspect())
+                                   ? List.of()
                                    : aspectTypeValues)
                            .collectAspects(request.isCollectAspects())
                            .lookupBPNs(request.isLookupBPNs())
+                           .auditContractNegotiation(request.isAuditContractNegotiation())
                            .callbackUrl(request.getCallbackUrl())
                            .build();
     }

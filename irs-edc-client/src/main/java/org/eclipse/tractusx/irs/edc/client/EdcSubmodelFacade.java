@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,33 +23,43 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
+import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotification;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
 import org.eclipse.tractusx.irs.edc.client.model.notification.NotificationContent;
-import org.springframework.stereotype.Service;
 
 /**
  * Public API Facade for submodel domain
  */
-@Service("irsEdcClientEdcSubmodelFacade")
 @Slf4j
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
+@SuppressWarnings({ "PMD.AvoidDuplicateLiterals",
+                    "PMD.UseObjectForClearerAPI"
+})
 public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
 
+    private final EdcConfiguration config;
+
     @SuppressWarnings("PMD.PreserveStackTrace")
-    public String getSubmodelRawPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
-            final String assetId) throws EdcClientException {
+    public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
+            final String assetId, final String bpn) throws EdcClientException {
         try {
-            return client.getSubmodelRawPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get();
+            final String fullSubmodelDataplaneUrl = submodelDataplaneUrl + config.getSubmodel().getSubmodelSuffix();
+            log.debug("Requesting Submodel for URL: '{}'", fullSubmodelDataplaneUrl);
+            return client.getSubmodelPayload(connectorEndpoint, fullSubmodelDataplaneUrl, assetId, bpn)
+                         .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred.", e);
             Thread.currentThread().interrupt();
@@ -61,15 +71,18 @@ public class EdcSubmodelFacade {
                 throw exceptionCause;
             }
             throw new EdcClientException(cause);
+        } catch (TimeoutException e) {
+            throw new EdcClientException("Timeout while getting submodel payload", e);
         }
     }
 
     @SuppressWarnings("PMD.PreserveStackTrace")
     public EdcNotificationResponse sendNotification(final String submodelEndpointAddress, final String assetId,
-            final EdcNotification<NotificationContent> notification) throws EdcClientException {
+            final EdcNotification<NotificationContent> notification, final String bpn) throws EdcClientException {
         try {
             log.debug("Sending EDC Notification '{}'", notification);
-            return client.sendNotification(submodelEndpointAddress, assetId, notification).get();
+            return client.sendNotification(submodelEndpointAddress, assetId, notification, bpn)
+                         .get(config.getAsyncTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return null;
@@ -79,24 +92,14 @@ public class EdcSubmodelFacade {
                 throw exceptionCause;
             }
             throw new EdcClientException(cause);
+        } catch (TimeoutException e) {
+            throw new EdcClientException("Timeout while sending notification", e);
         }
     }
 
-    @SuppressWarnings("PMD.PreserveStackTrace")
-    public EndpointDataReference getEndpointReferenceForAsset(final String endpointAddress, final String filterKey,
-            final String filterValue) throws EdcClientException {
-        try {
-            return client.getEndpointReferenceForAsset(endpointAddress, filterKey, filterValue).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return null;
-        } catch (ExecutionException e) {
-            final Throwable cause = e.getCause();
-            if (cause instanceof EdcClientException exceptionCause) {
-                throw exceptionCause;
-            }
-            throw new EdcClientException(cause);
-        }
+    public List<CompletableFuture<EndpointDataReference>> getEndpointReferencesForRegistryAsset(
+            final String endpointAddress, final String bpn) throws EdcClientException {
+        return client.getEndpointReferencesForRegistryAsset(endpointAddress, bpn);
     }
 
 }

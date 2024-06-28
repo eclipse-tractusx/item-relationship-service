@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.component;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Map;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -50,26 +51,46 @@ public class Tombstone {
             pattern = "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
     private final String catenaXId;
     private final String endpointURL;
+    private final String businessPartnerNumber;
     private final ProcessingError processingError;
+    private final Map<String, Object> policy;
 
     public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
             final int retryCount, final ProcessStep processStep) {
         return from(catenaXId, endpointURL, exception.getMessage(), retryCount, processStep);
     }
 
-    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
-            final int retryCount, final ProcessStep processStep) {
+    public static Tombstone from(final String catenaXId, final String endpointURL, final Exception exception,
+            final int retryCount, final ProcessStep processStep, final String businessPartnerNumber,
+            final Map<String, Object> policy) {
 
-        final ProcessingError processingError = ProcessingError.builder()
-                                                               .withProcessStep(processStep)
-                                                               .withRetryCounter(retryCount)
-                                                               .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
-                                                               .withErrorDetail(errorDetails)
-                                                               .build();
         return Tombstone.builder()
                         .endpointURL(endpointURL)
                         .catenaXId(catenaXId)
-                        .processingError(processingError)
+                        .processingError(withProcessingError(processStep, retryCount, exception.getMessage()))
+                        .businessPartnerNumber(businessPartnerNumber)
+                        .policy(policy)
                         .build();
     }
+
+    public static Tombstone from(final String catenaXId, final String endpointURL, final String errorDetails,
+            final int retryCount, final ProcessStep processStep) {
+
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(catenaXId)
+                        .processingError(withProcessingError(processStep, retryCount, errorDetails))
+                        .build();
+    }
+
+    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
+            final String exception) {
+        return ProcessingError.builder()
+                              .withProcessStep(processStep)
+                              .withRetryCounter(retryCount)
+                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                              .withErrorDetail(exception)
+                              .build();
+    }
+
 }

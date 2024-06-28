@@ -1,0 +1,16 @@
+{
+  "tombstones": [
+    {
+      "catenaXId": "urn:uuid:aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+      "endpointURL": null,
+      "businessPartnerNumber": null,
+      "processingError": {
+        "processStep": "DigitalTwinRequest",
+        "errorDetail": "Unable to find any of the requested shells",
+        "lastAttempt": "2024-05-28T07:30:25.684266187Z",
+        "retryCounter": 3
+      },
+      "policy": null
+    }
+  ]
+}

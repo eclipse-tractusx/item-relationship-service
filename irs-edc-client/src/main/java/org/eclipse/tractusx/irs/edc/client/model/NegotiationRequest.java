@@ -1,10 +1,10 @@
 /********************************************************************************
- * Copyright (c) 2021,2022,2023
+ * Copyright (c) 2022,2024
  *       2022: ZF Friedrichshafen AG
  *       2022: ISTOS GmbH
- *       2022,2023: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
+ *       2022,2024: Bayerische Motoren Werke Aktiengesellschaft (BMW AG)
  *       2022,2023: BOSCH AG
- * Copyright (c) 2021,2022,2023 Contributors to the Eclipse Foundation
+ * Copyright (c) 2021,2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -40,7 +40,8 @@ import org.eclipse.edc.spi.types.domain.callback.CallbackAddress;
 @Builder(toBuilder = true)
 @Jacksonized
 public class NegotiationRequest {
-    public static final String NEGOTIATION_CONNECTOR_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/connectorAddress";
+    public static final String NEGOTIATION_COUNTER_PARTY_ADDRESS = "https://w3id.org/edc/v0.0.1/ns/counterPartyAddress";
+    public static final String NEGOTIATION_COUNTER_PARTY_ID = "https://w3id.org/edc/v0.0.1/ns/counterPartyId";
     public static final String NEGOTIATION_PROTOCOL = "https://w3id.org/edc/v0.0.1/ns/protocol";
     public static final String NEGOTIATION_CONNECTOR_ID = "https://w3id.org/edc/v0.0.1/ns/connectorId";
     public static final String NEGOTIATION_PROVIDER_ID = "https://w3id.org/edc/v0.0.1/ns/providerId";
@@ -51,16 +52,14 @@ public class NegotiationRequest {
     public static final String NEGOTIATION_ASSET_ID = "https://w3id.org/edc/v0.0.1/ns/assetId";
     public static final String NEGOTIATION_POLICY = "https://w3id.org/edc/v0.0.1/ns/policy";
 
-    @NotBlank(message = "connectorAddress is mandatory")
-    private String connectorAddress;
+    @NotBlank(message = "counterPartyAddress is mandatory")
+    private String counterPartyAddress;
+    @NotBlank(message = "counterPartyId is mandatory")
+    private String counterPartyId;
     @NotBlank(message = "protocol is mandatory")
     private String protocol;
-    @NotBlank(message = "connectorId is mandatory")
-    private String connectorId;
     @NotNull(message = "offer cannot be null")
-    private ContractOfferDescription offer;
-    private String providerId;
-    private String consumerId;
+    private ContractOffer contractOffer;
     private List<CallbackAddress> callbackAddresses = new ArrayList<>();
 }
 
