@@ -261,7 +261,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
 
                 final String storageId = getStorageId(endpointDataReferenceStatus, negotiationResponse);
 
-                // TODO (#405) Remove this comment and code later. 
+                // TODO (#538) Remove this comment and code later. 
                 //    This is just for quickly simulating and experimenting with negotiation
                 //    failed during development.
                 //    It should later be replaced with a real automated test in
