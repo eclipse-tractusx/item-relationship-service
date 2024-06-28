@@ -1,0 +1,30 @@
+apiVersion: v2
+name: irs-int
+description: IRS Helm chart for deployment on Catena-X ArgoCD
+
+
+# Application charts are a collection of templates that can be packaged into versioned archives
+# to be deployed.
+#
+# Library charts provide useful utilities or functions for the chart developer. They're included as
+# a dependency of application charts to inject those utilities and functions into the rendering
+# pipeline. Library charts do not define any templates and therefore cannot be deployed.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 1.0.4
+
+dependencies:
+  - name: item-relationship-service
+    repository: https://eclipse-tractusx.github.io/item-relationship-service
+    version: 7.1.4
+  - name: tractusx-connector
+    repository: https://eclipse-tractusx.github.io/tractusx-edc
+    version: 0.7.1
+  - condition: postgresql.enabled
+    alias: edc-postgresql
+    name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 12.1.6
