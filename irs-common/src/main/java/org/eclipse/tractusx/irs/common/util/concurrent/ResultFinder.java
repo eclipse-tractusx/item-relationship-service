@@ -79,7 +79,7 @@ public class ResultFinder {
 
             if (ex != null) {
                 log.warn("All failed: " + System.lineSeparator()
-                        // TODO (#405) can we remove logging here and log only up in call hierarchy
+                        // TODO (#538) can we remove logging here and log only up in call hierarchy
                         + exceptions.stream()
                                     .map(ExceptionUtils::getStackTrace)
                                     .collect(Collectors.joining(System.lineSeparator())), ex);
