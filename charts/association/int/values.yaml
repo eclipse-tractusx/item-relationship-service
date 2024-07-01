@@ -21,7 +21,7 @@ item-relationship-service:
             pathType: ImplementationSpecific
     tls:
       - hosts:
-          - "irs.int.demo.catena-x.net"
+          - "irs.int.catena-x.net"
         secretName: tls-secret-irs-int
   digitalTwinRegistry:
     shellDescriptorTemplate: /shell-descriptors/{aasIdentifier}
