@@ -31,10 +31,10 @@ public class UsagePolicyExpiredException extends EdcClientException {
     private final transient Policy policy;
     private final String businessPartnerNumber;
 
-    public UsagePolicyExpiredException(final String itemId, final Policy policy, final String businessPartnerNumber) {
-        super("Consumption of asset '" + itemId
-                + "' is not permitted as the required catalog offer policies are expired.");
+    public UsagePolicyExpiredException(final Policy policy, final String businessPartnerNumber) {
+        super("Policy  from " + businessPartnerNumber + " has expired.");
         this.policy = policy;
         this.businessPartnerNumber = businessPartnerNumber;
     }
+
 }

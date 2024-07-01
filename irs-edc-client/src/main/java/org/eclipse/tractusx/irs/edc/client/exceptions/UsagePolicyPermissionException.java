@@ -23,8 +23,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.exceptions;
 
+import java.util.List;
+
 import lombok.Getter;
 import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 
 /**
  * Usage Policy Permission Exception errors in the contract negotiation.
@@ -35,11 +38,15 @@ public class UsagePolicyPermissionException extends EdcClientException {
     private final transient Policy policy;
     private final String businessPartnerNumber;
 
-    public UsagePolicyPermissionException(final String itemId, final Policy policy,
-            final String businessPartnerNumber) {
-        super("Consumption of asset '" + itemId
-                + "' is not permitted as the required catalog offer policies do not comply with defined policies.");
-        this.policy = policy;
+    public UsagePolicyPermissionException(final List<AcceptedPolicy> acceptedPolicies,
+            final Policy providedCatalogItemPolicy, final String businessPartnerNumber) {
+        super("Policies "
+                + acceptedPolicies.stream().map(policy -> policy.policy().getPolicyId()).toList()
+                + " did not match with policy from " + businessPartnerNumber + ".");
+
+        this.policy = providedCatalogItemPolicy;
         this.businessPartnerNumber = businessPartnerNumber;
+
     }
+
 }
