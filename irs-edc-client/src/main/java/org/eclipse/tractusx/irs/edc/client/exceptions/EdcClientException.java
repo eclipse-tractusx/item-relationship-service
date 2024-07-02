@@ -23,6 +23,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.exceptions;
 
+import org.apache.commons.lang3.NotImplementedException;
+import org.eclipse.edc.policy.model.Policy;
+
 /**
  * Exception for errors in the EDC client.
  */
@@ -38,5 +41,13 @@ public class EdcClientException extends Exception {
 
     public EdcClientException(final String msg) {
         super(msg);
+    }
+
+    public String getBusinessPartnerNumber() {
+        throw new NotImplementedException();
+    }
+
+    public Policy getPolicy() {
+        throw new NotImplementedException();
     }
 }
