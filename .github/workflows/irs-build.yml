@@ -2,6 +2,7 @@ name: IRS build
 
 on:
   workflow_dispatch: # Trigger manually
+  workflow_call:
   pull_request:
     paths-ignore:
       - '**/*.md'

@@ -5,6 +5,7 @@ name: "Trivy vulnerability scanner for image"
 
 on:
   workflow_dispatch: # Trigger manually
+  workflow_call:
   pull_request:
     paths-ignore:
       - '**/*.md'
