@@ -27,6 +27,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,6 +45,7 @@ public class DefaultAcceptedPoliciesConfig {
      */
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class AcceptedPolicy {
         private String leftOperand;
         private String operator;

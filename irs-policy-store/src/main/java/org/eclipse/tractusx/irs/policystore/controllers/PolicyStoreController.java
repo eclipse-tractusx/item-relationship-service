@@ -173,7 +173,7 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public Map<String, List<PolicyResponse>> getPolicies(//
-            @RequestParam(required = false) //
+            @RequestParam(required = false, name = "businessPartnerNumbers") //
             @ValidListOfBusinessPartnerNumbers //
             @Parameter(description = "List of business partner numbers.") //
             final List<String> businessPartnerNumbers //

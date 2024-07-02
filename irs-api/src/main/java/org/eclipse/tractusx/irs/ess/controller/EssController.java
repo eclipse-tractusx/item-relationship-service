@@ -152,7 +152,7 @@ class EssController {
     @PreAuthorize("hasAnyAuthority('" + IrsRoles.ADMIN_IRS + "', '" + IrsRoles.VIEW_IRS + "')")
     public Jobs getBPNInvestigation(
             @Parameter(description = "Id of the job.", schema = @Schema(implementation = UUID.class), name = "id",
-                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable final UUID id) {
+                       example = "6c311d29-5753-46d4-b32c-19b918ea93b0") @Valid @PathVariable("id") final UUID id) {
         return essService.getIrsJob(id.toString());
     }
 
