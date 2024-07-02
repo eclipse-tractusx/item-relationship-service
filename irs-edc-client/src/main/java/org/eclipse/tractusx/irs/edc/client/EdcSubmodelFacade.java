@@ -44,11 +44,15 @@ public class EdcSubmodelFacade {
 
     private final EdcSubmodelClient client;
 
+    private final EdcConfiguration config;
+
     @SuppressWarnings("PMD.PreserveStackTrace")
     public SubmodelDescriptor getSubmodelPayload(final String connectorEndpoint, final String submodelDataplaneUrl,
             final String assetId) throws EdcClientException {
         try {
-            return client.getSubmodelPayload(connectorEndpoint, submodelDataplaneUrl, assetId).get();
+            final String fullSubmodelDataplaneUrl = submodelDataplaneUrl + config.getSubmodel().getSubmodelSuffix();
+            log.debug("Requesting Submodel for URL: '{}'", fullSubmodelDataplaneUrl);
+            return client.getSubmodelPayload(connectorEndpoint, fullSubmodelDataplaneUrl, assetId).get();
         } catch (InterruptedException e) {
             log.debug("InterruptedException occurred.", e);
             Thread.currentThread().interrupt();

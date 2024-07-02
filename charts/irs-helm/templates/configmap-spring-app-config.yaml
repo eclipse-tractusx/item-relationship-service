@@ -118,6 +118,7 @@ data:
       submodel:
         request-ttl: {{ tpl .Values.edc.submodel.request.ttl . | default "PT10M" | quote }}
         urn-prefix: {{ tpl (.Values.edc.submodel.urnprefix | default "/urn") . | quote }}
+        submodel-suffix: {{ tpl (.Values.edc.submodel.suffix | default "/$value") . | quote }}
 
       catalog:
         acceptedPolicies:

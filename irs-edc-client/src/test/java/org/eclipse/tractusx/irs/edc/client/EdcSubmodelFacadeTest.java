@@ -37,6 +37,7 @@ import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.exceptions.EdcClientException;
 import org.eclipse.tractusx.irs.edc.client.model.SubmodelDescriptor;
 import org.eclipse.tractusx.irs.edc.client.model.notification.EdcNotificationResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,12 @@ class EdcSubmodelFacadeTest {
     @Mock
     private EdcSubmodelClient client;
 
+    private final EdcConfiguration config = new EdcConfiguration();
+
+    @BeforeEach
+    public void beforeEach() {
+        this.testee = new EdcSubmodelFacade(client, config);
+    }
     @Nested
     @DisplayName("getSubmodelRawPayload")
     class GetSubmodelRawPayloadTests {

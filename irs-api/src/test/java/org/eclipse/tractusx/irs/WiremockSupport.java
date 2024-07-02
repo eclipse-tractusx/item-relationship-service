@@ -51,6 +51,7 @@ import org.eclipse.tractusx.irs.testing.wiremock.DtrWiremockSupport;
 import org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport;
 
 public class WiremockSupport {
+    public static final String SUBMODEL_SUFFIX = "/\\$value";
     public static EndpointDataReference createEndpointDataReference(final String contractAgreementId) {
         final EDRAuthCode edrAuthCode = EDRAuthCode.builder()
                                                    .cid(contractAgreementId)
@@ -113,7 +114,7 @@ public class WiremockSupport {
     }
 
     static void successfulDataRequests(final String assetId, final String fileName) {
-        stubFor(get(urlPathMatching(DtrWiremockSupport.DATAPLANE_PUBLIC_PATH + "/" + assetId)).willReturn(
+        stubFor(get(urlPathMatching(DtrWiremockSupport.DATAPLANE_PUBLIC_PATH + "/" + assetId+ SUBMODEL_SUFFIX)).willReturn(
                 responseWithStatus(200).withBodyFile(fileName)));
     }
 
