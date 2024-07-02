@@ -95,6 +95,7 @@ public class PolicyStoreController {
 
     public static final String BPN_REGEX = BusinessPartnerNumberListValidator.BPN_REGEX;
     public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int MAX_PAGE_SIZE = 1000;
 
     private final PolicyStoreService service;
 
@@ -213,6 +214,11 @@ public class PolicyStoreController {
             @ValidListOfBusinessPartnerNumbers //
             @Parameter(description = "List of business partner numbers.") //
             final List<String> businessPartnerNumbers) {
+
+        if (pageable.getPageSize() > MAX_PAGE_SIZE) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size too large");
+        }
+
         final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(businessPartnerNumbers);
         final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable);
         return policies.map(PolicyResponse::fromPolicyWithBpn);

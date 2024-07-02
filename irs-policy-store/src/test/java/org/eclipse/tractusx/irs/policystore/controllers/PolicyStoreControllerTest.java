@@ -24,6 +24,7 @@
 package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.ACTIVE_MEMBERSHIP;
 import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE;
 import static org.eclipse.tractusx.irs.edc.client.policy.ConstraintConstants.PURPOSE_ID_3_1_TRACE;
@@ -57,6 +58,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 public class PolicyStoreControllerTest {
@@ -127,6 +131,24 @@ public class PolicyStoreControllerTest {
             // assert
             verify(policyStoreServiceMock).registerPolicy(request);
             assertThat(createPoliciesResponse.policyId()).isEqualTo("dummy");
+        }
+    }
+
+    @Nested
+    class GetPoliciesPagedTests {
+
+        @Test
+        void pageSizeTooLarge() {
+            assertThatThrownBy(() -> testee.getPoliciesPaged(PageRequest.of(0, PolicyStoreController.MAX_PAGE_SIZE + 1),
+                    Collections.emptyList())).isInstanceOf(ResponseStatusException.class)
+                                             .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+        }
+
+        @Test
+        void pageSizeTooLow() {
+            assertThatThrownBy(
+                    () -> testee.getPoliciesPaged(PageRequest.of(0, 0), Collections.emptyList())).isInstanceOf(
+                    IllegalArgumentException.class).hasMessageContaining("Page size must not be less than one");
         }
     }
 
