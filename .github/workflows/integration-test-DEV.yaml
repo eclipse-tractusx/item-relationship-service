@@ -60,4 +60,4 @@ jobs:
       adminUserApiKey: ${{ secrets.DEV_ADMIN_USER_API_KEY }}
       cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
     with:
-      executionFilter: ${{ github.event.inputs.executionFilter }}
+      executionFilter: ${{ github.event.inputs.executionFilter || '!Ignore & !INACTIVE & INTEGRATION_TEST & DEV' }}
