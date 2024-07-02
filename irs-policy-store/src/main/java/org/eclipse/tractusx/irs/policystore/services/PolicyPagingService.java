@@ -51,10 +51,10 @@ public class PolicyPagingService {
      */
     public Page<PolicyWithBpn> getPolicies(final Map<String, List<Policy>> bpnToPoliciesMap, final Pageable pageable) {
 
-        // TODO #639 implement multi-sort
+        // TODO (mfischer): #639 implement multi-sort:
         final Comparator<PolicyWithBpn> comparator = getComparator(pageable);
 
-        // TODO #639 implement (multi-)filter
+        // TODO (mfischer): #750 implement (multi-)filter
         final Predicate<Policy> filter = policy -> true;
 
         final List<PolicyWithBpn> policies = bpnToPoliciesMap.entrySet()
