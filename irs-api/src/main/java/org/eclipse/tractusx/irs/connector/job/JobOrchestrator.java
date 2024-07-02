@@ -27,6 +27,8 @@ import static org.eclipse.tractusx.irs.controllers.IrsAppConstants.JOB_EXECUTION
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -145,6 +147,57 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
         }
 
         return JobInitiateResponse.builder().jobId(multiJob.getJobIdString()).status(ResponseStatus.OK).build();
+    }
+
+    public void cancelJob(final MultiTransferJob job) {
+        final Collection<String> transferProcessIds = job.getTransferProcessIds();
+
+        final List<String> futureNotFoundImpossibleCancellations = new ArrayList<>();
+        final List<String> failedCancellations = new ArrayList<>();
+
+        transferProcessIds.forEach(transferProcessId -> {
+            try {
+                processManager.cancelRequest(transferProcessId);
+            } catch (JobException e) {
+                if (e.getMessage()
+                     .equals(TransferProcessManager.CANCELLATION_IMPOSSIBLE_FUTURE_NOT_FOUND.formatted(
+                             transferProcessId))) {
+                    futureNotFoundImpossibleCancellations.add(transferProcessId);
+                } else if (e.getMessage()
+                            .equals(TransferProcessManager.CANCELLATION_FAILED.formatted(transferProcessId))) {
+                    failedCancellations.add(transferProcessId);
+                }
+            }
+        });
+
+        final boolean anyImpossibleOrFailed = !(futureNotFoundImpossibleCancellations.isEmpty()
+                && failedCancellations.isEmpty());
+
+        if (anyImpossibleOrFailed) {
+            reactIfAnyProcessNotCancelled(job, futureNotFoundImpossibleCancellations, failedCancellations);
+            return;
+        }
+
+        meterService.incrementJobCancelled();
+    }
+
+    private void reactIfAnyProcessNotCancelled(final MultiTransferJob job,
+            final List<String> futureNotFoundImpossibleCancellations, final List<String> failedCancellations) {
+        meterService.incrementException();
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        if (!futureNotFoundImpossibleCancellations.isEmpty()) {
+            stringBuilder.append("Cancellation impossible because no Future(s) were found for PID(s) ")
+                         .append(String.join(", ", futureNotFoundImpossibleCancellations));
+        }
+        if (!failedCancellations.isEmpty()) {
+            if (!stringBuilder.toString().isEmpty()) {
+                stringBuilder.append(" and ");
+            }
+            stringBuilder.append("Cancellation failed for PID(s) ").append(String.join(", ", failedCancellations));
+        }
+
+        markJobInError(job, new JobException(stringBuilder.toString()), "Error cancelling job");
     }
 
     /**
@@ -273,7 +326,8 @@ public class JobOrchestrator<T extends DataRequest, P extends TransferProcess> {
                 transferId -> jobStore.addTransferProcess(job.getJobIdString(), transferId),
                 this::transferProcessCompleted, jobData);
 
-        if (response.getStatus() != ResponseStatus.OK) {
+        if (response.getStatus() != ResponseStatus.OK
+                && response.getStatus() != ResponseStatus.NOT_STARTED_JOB_CANCELLED) {
             throw new JobException(response.getStatus().toString());
         }
 

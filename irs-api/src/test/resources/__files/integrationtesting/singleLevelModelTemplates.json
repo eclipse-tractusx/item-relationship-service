@@ -1,0 +1,194 @@
+{
+  "Batch": {
+    "3.0.0": {
+      "mainItem": {
+        "localIdentifiers": [
+          {
+            "value": "BPNL00000000TEST",
+            "key": "manufacturerId"
+          },
+          {
+            "value": "BID12345678",
+            "key": "batchId"
+          }
+        ],
+        "manufacturingInformation": {
+          "date": "2022-02-04T14:48:54Z",
+          "country": "HUR"
+        },
+        "catenaXId": "",
+        "partTypeInformation": {
+          "manufacturerPartId": "123-0.740-3434-A",
+          "classification": "product",
+          "nameAtManufacturer": "Component"
+        }
+      },
+      "mainItemIdKey": "catenaXId",
+      "aspectName": "urn:samm:io.catenax.batch:3.0.0#Batch",
+      "relationshipItem": {},
+      "relationshipsArrayKey": "n/a",
+      "relationshipItemIdKey": "n/a"
+    }
+  },
+  "SingleLevelBomAsBuilt": {
+    "3.0.0": {
+      "mainItem": {
+        "catenaXId": "",
+        "childItems": []
+      },
+      "relationshipItem": {
+        "catenaXId": "",
+        "quantity": {
+          "value": 0.2014,
+          "unit": "unit:kilogram"
+        },
+        "hasAlternatives": true,
+        "businessPartner": "BPNL00000000TEST",
+        "createdOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+      },
+      "mainItemIdKey": "catenaXId",
+      "aspectName": "urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt",
+      "relationshipsArrayKey": "childItems",
+      "relationshipItemIdKey": "catenaXId"
+    }
+  },
+  "SingleLevelBomAsPlanned": {
+    "2.0.0": {
+      "mainItem": {
+        "catenaXId": "",
+        "childItems": []
+      },
+      "relationshipItem": {
+        "validityPeriod": {
+          "validFrom": "2023-03-21T08:17:29.187+01:00",
+          "validTo": "2024-07-01T16:10:00.000+01:00"
+        },
+        "catenaXId": "",
+        "quantity": {
+          "quantityNumber": 1,
+          "measurementUnit": "unit:litre"
+        },
+        "businessPartner": "BPNL00000000TEST",
+        "createdOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+      },
+      "mainItemIdKey": "catenaXId",
+      "aspectName": "urn:samm:io.catenax.single_level_bom_as_planned:2.0.0#SingleLevelBomAsPlanned",
+      "relationshipsArrayKey": "childItems",
+      "relationshipItemIdKey": "catenaXId"
+    },
+    "3.0.0": {
+      "mainItem": {
+        "catenaXId": "",
+        "childItems": []
+      },
+      "relationshipItem": {
+        "validityPeriod": {
+          "validFrom": "2023-03-21T08:17:29.187+01:00",
+          "validTo": "2024-07-01T16:10:00.000+01:00"
+        },
+        "catenaXId": "",
+        "quantity": {
+          "unit": "unit:piece",
+          "value": 1
+        },
+        "businessPartner": "BPNL00000000TEST",
+        "createdOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+      },
+      "mainItemIdKey": "catenaXId",
+      "aspectName": "urn:samm:io.catenax.single_level_bom_as_planned:3.0.0#SingleLevelBomAsPlanned",
+      "relationshipsArrayKey": "childItems",
+      "relationshipItemIdKey": "catenaXId"
+    }
+  },
+  "SingleLevelBomAsSpecified": {
+    "2.0.0": {
+      "mainItem": {
+        "assetId": "",
+        "manufacturerId": "BPNL00000000TEST",
+        "childItems": []
+      },
+      "relationshipItem": {
+        "item": [
+          {
+            "itemClassification": [
+              {
+                "value": "Door Key",
+                "key": "BPNL00000003CSGV:PartFamily"
+              }
+            ],
+            "itemQuantity": {
+              "quantityNumber": 20,
+              "measurementUnit": "unit:piece"
+            },
+            "ownerItemId": "urn:uuid:c4ae951f-b68d-462b-a58c-c029cc926630",
+            "itemVersion": "05",
+            "itemDescription": "The steering wheel is nice and round",
+            "createdOn": "2022-02-03T14:48:54.709Z",
+            "itemPositioning": "right",
+            "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+          }
+        ],
+        "childAssetId": "",
+        "childItemCategory": "e.g. vehicle, winter wheels, bicycle rack"
+      },
+      "mainItemIdKey": "assetId",
+      "aspectName": "urn:samm:io.catenax.single_level_bom_as_specified:2.0.0#SingleLevelBomAsSpecified",
+      "relationshipsArrayKey": "childItems",
+      "relationshipItemIdKey": "childAssetId"
+    }
+  },
+  "SingleLevelUsageAsBuilt": {
+    "3.0.0": {
+      "mainItem": {
+        "catenaXId": "",
+        "parentItems": [],
+        "customers": [
+          "BPNL00000000TEST"
+        ]
+      },
+      "relationshipItem": {
+        "catenaXId": "",
+        "isOnlyPotentialParent": false,
+        "quantity": {
+          "unit": "unit:piece",
+          "value": 20
+        },
+        "businessPartner": "BPNL00000000TEST",
+        "createdOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+      },
+      "mainItemIdKey": "catenaXId",
+      "aspectName": "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt",
+      "relationshipsArrayKey": "parentItems",
+      "relationshipItemIdKey": "catenaXId"
+    }
+  },
+  "SingleLevelUsageAsPlanned": {
+    "1.1.0": {
+      "mainItem": {
+        "parentParts": [],
+        "catenaXId": ""
+      },
+      "relationshipItem": {
+        "validityPeriod": {
+          "validFrom": "2023-03-21T08:47:14.438+01:00",
+          "validTo": "2024-08-02T09:00:00.000+01:00"
+        },
+        "parentCatenaXId": "",
+        "quantity": {
+          "quantityNumber": 2.5,
+          "measurementUnit": "unit:litre"
+        },
+        "createdOn": "2022-02-03T14:48:54.709Z",
+        "lastModifiedOn": "2022-02-03T14:48:54.709Z"
+      },
+      "mainItemIdKey": "catenaXId",
+      "aspectName": "urn:samm:io.catenax.single_level_usage_as_planned:1.1.0#SingleLevelUsageAsPlanned",
+      "relationshipsArrayKey": "parentParts",
+      "relationshipItemIdKey": "parentCatenaXId"
+    }
+  }
+}

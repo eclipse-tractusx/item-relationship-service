@@ -25,17 +25,21 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.eclipse.tractusx.irs.util.TestMother.jobParameter;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import org.eclipse.tractusx.irs.InMemoryBlobStore;
 import org.eclipse.tractusx.irs.aaswrapper.job.delegate.DigitalTwinDelegate;
 import org.eclipse.tractusx.irs.component.PartChainIdentificationKey;
+import org.eclipse.tractusx.irs.connector.job.JobException;
 import org.eclipse.tractusx.irs.connector.job.ResponseStatus;
 import org.eclipse.tractusx.irs.connector.job.TransferInitiateResponse;
 import org.eclipse.tractusx.irs.util.JsonUtil;
@@ -46,9 +50,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AASTransferProcessManagerTest {
 
+    final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(
+            PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).bpn("bpn123").build());
     DigitalTwinDelegate digitalTwinProcessor = mock(DigitalTwinDelegate.class);
     ExecutorService pool = mock(ExecutorService.class);
-
     final AASTransferProcessManager manager = new AASTransferProcessManager(digitalTwinProcessor, pool,
             new InMemoryBlobStore(), new JsonUtil());
 
@@ -58,13 +63,15 @@ class AASTransferProcessManagerTest {
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(
                 PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).bpn("bpn123").build());
 
+        when(pool.submit(any(Runnable.class))).thenReturn(new CompletableFuture<>());
+
         // when
         manager.initiateRequest(itemDataRequest, s -> {
         }, aasTransferProcess -> {
         }, jobParameter());
 
         // then
-        verify(pool, times(1)).execute(any(Runnable.class));
+        verify(pool, times(1)).submit(any(Runnable.class));
     }
 
     @Test
@@ -72,6 +79,8 @@ class AASTransferProcessManagerTest {
         // given
         final ItemDataRequest itemDataRequest = ItemDataRequest.rootNode(
                 PartChainIdentificationKey.builder().globalAssetId(UUID.randomUUID().toString()).bpn("bpn123").build());
+
+        when(pool.submit(any(Runnable.class))).thenReturn(new CompletableFuture<>());
 
         // when
         final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {
@@ -81,6 +90,43 @@ class AASTransferProcessManagerTest {
         // then
         assertThat(initiateResponse.getTransferId()).isNotBlank();
         assertThat(initiateResponse.getStatus()).isEqualTo(ResponseStatus.OK);
+    }
+
+    @Test
+    void shouldInitiateProcessingAndAddFutureToMap() {
+        // when
+        when(pool.submit(any(Runnable.class))).thenReturn(new CompletableFuture<>());
+
+        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {
+        }, aasTransferProcess -> {
+        }, jobParameter());
+
+        // then
+        assertThat(manager.getFutures()).containsKey(initiateResponse.getTransferId());
+        assertThat(manager.getFutures().get(initiateResponse.getTransferId())).isNotNull();
+    }
+
+    @Test
+    void shouldThrowJobExceptionWhenNoFutureFound() {
+        assertThrows(JobException.class, () -> manager.cancelRequest("non-existent"));
+    }
+
+    @Test
+    void shouldCancelFutureAndRemoveFromMap() {
+        // when
+        when(pool.submit(any(Runnable.class))).thenReturn(new CompletableFuture<>());
+
+        // then
+        final TransferInitiateResponse initiateResponse = manager.initiateRequest(itemDataRequest, s -> {
+        }, aasTransferProcess -> {
+        }, jobParameter());
+
+        assertThat(manager.getFutures()).containsKey(initiateResponse.getTransferId());
+        assertThat(manager.getFutures().get(initiateResponse.getTransferId())).isNotNull();
+
+        manager.cancelRequest(initiateResponse.getTransferId());
+
+        assertThat(manager.getFutures()).doesNotContainKey(initiateResponse.getTransferId());
     }
 
 }

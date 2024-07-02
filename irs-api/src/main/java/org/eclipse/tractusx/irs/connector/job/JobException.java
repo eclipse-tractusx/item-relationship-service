@@ -56,6 +56,15 @@ public class JobException extends RuntimeException {
                                          .build();
     }
 
+    public JobException(final String message, final String detail) {
+        super(message);
+        jobErrorDetails = JobErrorDetails.builder()
+                                         .exception(message)
+                                         .errorDetail(detail)
+                                         .exceptionDate(ZonedDateTime.now(ZoneOffset.UTC))
+                                         .build();
+    }
+
     public JobException(final String message, final Throwable cause) {
         super(message, cause);
         jobErrorDetails = JobErrorDetails.builder()
