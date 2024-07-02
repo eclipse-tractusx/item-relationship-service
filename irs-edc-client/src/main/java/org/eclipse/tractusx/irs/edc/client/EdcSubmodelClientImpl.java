@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.edc.client;
 
 import static org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus.TokenStatus;
 import static org.eclipse.tractusx.irs.edc.client.configuration.JsonLdConfiguration.NAMESPACE_EDC_ID;
+import static org.eclipse.tractusx.irs.edc.client.util.UrlValidator.isValidUrl;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.validator.routines.UrlValidator;
 import org.eclipse.edc.spi.types.domain.edr.EndpointDataReference;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceCacheService;
 import org.eclipse.tractusx.irs.edc.client.cache.endpointdatareference.EndpointDataReferenceStatus;
@@ -82,7 +82,6 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
     private final RetryRegistry retryRegistry;
     private final EDCCatalogFacade catalogFacade;
     private final EndpointDataReferenceCacheService endpointDataReferenceCacheService;
-    private final UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS);
 
     private static void stopWatchOnEdcTask(final StopWatch stopWatch) {
         stopWatch.stop();
@@ -380,7 +379,7 @@ public class EdcSubmodelClientImpl implements EdcSubmodelClient {
                         "PMD.AvoidCatchingGenericException"
     })
     private <T> T execute(final String endpointAddress, final CheckedSupplier<T> supplier) throws EdcClientException {
-        if (!urlValidator.isValid(endpointAddress)) {
+        if (!isValidUrl(endpointAddress)) {
             throw new IllegalArgumentException(String.format("Malformed endpoint address '%s'", endpointAddress));
         }
         final String host = URI.create(endpointAddress).getHost();
