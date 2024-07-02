@@ -28,6 +28,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -106,10 +107,11 @@ class ResultFinderTest {
                                 .extracting(Throwable::getCause)
                                 .isInstanceOf(ResultFinder.CompletionExceptions.class)
                                 .extracting(collectedFailures -> (ResultFinder.CompletionExceptions) collectedFailures)
-                                .extracting(ResultFinder.CompletionExceptions::getCauses)
+                                .extracting(ResultFinder.CompletionExceptions::getSuppressed)
                                 .describedAs("should have collected all exceptions")
-                                .satisfies(causes -> assertThat(
-                                        causes.stream().map(Throwable::getMessage).toList()).containsExactlyInAnyOrder(
+                                .satisfies(causes -> assertThat(Arrays.stream(causes)
+                                                                      .map(Throwable::getMessage)
+                                                                      .toList()).containsExactlyInAnyOrder(
                                         "java.lang.RuntimeException: failing 1",
                                         "java.lang.RuntimeException: failing 2",
                                         "java.lang.RuntimeException: failing 3"));

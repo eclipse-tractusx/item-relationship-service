@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import io.github.resilience4j.core.functions.Either;
 import org.eclipse.tractusx.irs.SemanticModelNames;
 import org.eclipse.tractusx.irs.component.Shell;
 import org.eclipse.tractusx.irs.component.assetadministrationshell.AssetAdministrationShellDescriptor;
@@ -78,11 +79,12 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
     void shouldReturnSubmodelEndpointsWhenRequestingWithCatenaXId() throws RegistryServiceException {
         final String existingCatenaXId = "urn:uuid:5e1908ed-e176-4f57-9616-1415097d0fdf";
 
-        final Collection<Shell> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
+        final Collection<Either<Exception, Shell>> aasShellDescriptor = digitalTwinRegistryService.fetchShells(
                 List.of(new DigitalTwinRegistryKey(existingCatenaXId, "")));
         final List<SubmodelDescriptor> shellEndpoints = aasShellDescriptor.stream()
                                                                           .findFirst()
                                                                           .get()
+                                                                          .getOrNull()
                                                                           .payload()
                                                                           .getSubmodelDescriptors();
 
@@ -121,7 +123,13 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                 LookupShellsResponse.builder().result(Collections.emptyList()).build());
 
         final List<SubmodelDescriptor> submodelEndpoints = dtRegistryFacadeWithMock.fetchShells(
-                List.of(new DigitalTwinRegistryKey(catenaXId, ""))).stream().findFirst().get().payload().getSubmodelDescriptors();
+                                                                                           List.of(new DigitalTwinRegistryKey(catenaXId, "")))
+                                                                                   .stream()
+                                                                                   .findFirst()
+                                                                                   .get()
+                                                                                   .getOrNull()
+                                                                                   .payload()
+                                                                                   .getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
     }
 
@@ -157,6 +165,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                                                                                    .stream()
                                                                                    .findFirst()
                                                                                    .get()
+                                                                                   .getOrNull()
                                                                                    .payload()
                                                                                    .getSubmodelDescriptors();
         assertThat(submodelEndpoints).isEmpty();
@@ -181,6 +190,7 @@ class CentralDigitalTwinRegistryServiceTest extends LocalTestDataConfigurationAw
                                                                                   .stream()
                                                                                   .findFirst()
                                                                                   .get()
+                                                                                  .getOrNull()
                                                                                   .payload()
                                                                                   .getSubmodelDescriptors();
 

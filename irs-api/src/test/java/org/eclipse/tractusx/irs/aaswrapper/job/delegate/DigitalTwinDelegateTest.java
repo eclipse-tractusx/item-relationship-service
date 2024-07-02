@@ -35,6 +35,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import io.github.resilience4j.core.functions.Either;
 import io.github.resilience4j.retry.RetryRegistry;
 import org.eclipse.tractusx.irs.aaswrapper.job.AASTransferProcess;
 import org.eclipse.tractusx.irs.aaswrapper.job.ItemContainer;
@@ -55,7 +56,7 @@ class DigitalTwinDelegateTest {
     void shouldFillItemContainerWithShell() throws RegistryServiceException {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
+                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
 
         // when
         final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameter(),
@@ -72,11 +73,11 @@ class DigitalTwinDelegateTest {
     void shouldFillItemContainerWithShellAndContractAgreementIdWhenAuditFlag() throws RegistryServiceException {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
+                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
 
         // when
-        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(), jobParameterAuditContractNegotiation(),
-                new AASTransferProcess("id", 0), createKey());
+        final ItemContainer result = digitalTwinDelegate.process(ItemContainer.builder(),
+                jobParameterAuditContractNegotiation(), new AASTransferProcess("id", 0), createKey());
 
         // then
         assertThat(result).isNotNull();
@@ -86,10 +87,11 @@ class DigitalTwinDelegateTest {
     }
 
     @Test
-    void shouldFillItemContainerWithShellAndSubmodelDescriptorsWhenDepthReached() throws RegistryServiceException {
+    void shouldFillItemContainerWithShellAndSubmodelDescriptorsWhenDepthReached()
+            throws RegistryServiceException {
         // given
         when(digitalTwinRegistryService.fetchShells(any())).thenReturn(
-                List.of(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any"))))));
+                List.of(Either.right(shell("", shellDescriptor(List.of(submodelDescriptorWithoutHref("any")))))));
         final JobParameter jobParameter = JobParameter.builder().depth(1).aspects(List.of()).build();
 
         // when
@@ -132,7 +134,8 @@ class DigitalTwinDelegateTest {
         assertThat(result).isNotNull();
         assertThat(result.getTombstones()).hasSize(1);
         assertThat(result.getTombstones().get(0).getCatenaXId()).isEqualTo("itemId");
-        assertThat(result.getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo("Can't get relationship without a BPN");
+        assertThat(result.getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo(
+                "Can't get relationship without a BPN");
         assertThat(result.getTombstones().get(0).getProcessingError().getProcessStep()).isEqualTo(
                 ProcessStep.DIGITAL_TWIN_REQUEST);
     }
@@ -140,6 +143,7 @@ class DigitalTwinDelegateTest {
     private static PartChainIdentificationKey createKey() {
         return PartChainIdentificationKey.builder().globalAssetId("itemId").bpn("bpn123").build();
     }
+
     private static PartChainIdentificationKey createKeyWithoutBpn() {
         return PartChainIdentificationKey.builder().globalAssetId("itemId").build();
     }
