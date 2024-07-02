@@ -219,6 +219,7 @@ public class EdcRegistration {
         return new HttpEntity<>(body, headers());
     }
 
+    @SuppressWarnings({ "PMD.LooseCoupling" }) // intended use of implementation class HttpHeaders
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);

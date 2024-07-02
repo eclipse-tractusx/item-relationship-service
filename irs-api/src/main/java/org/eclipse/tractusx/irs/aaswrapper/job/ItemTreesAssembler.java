@@ -26,6 +26,7 @@ package org.eclipse.tractusx.irs.aaswrapper.job;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -54,9 +55,9 @@ public class ItemTreesAssembler {
     /* package */ ItemContainer retrieveItemGraph(final Stream<ItemContainer> partialGraph) {
         final var relationships = new LinkedHashSet<Relationship>();
         final var numberOfPartialTrees = new AtomicInteger();
-        final ArrayList<Tombstone> tombstones = new ArrayList<>();
-        final ArrayList<Shell> shells = new ArrayList<>();
-        final ArrayList<Submodel> submodels = new ArrayList<>();
+        final List<Tombstone> tombstones = new ArrayList<>();
+        final List<Shell> shells = new ArrayList<>();
+        final List<Submodel> submodels = new ArrayList<>();
         final Set<Bpn> bpns = new HashSet<>();
 
         partialGraph.forEachOrdered(itemGraph -> {

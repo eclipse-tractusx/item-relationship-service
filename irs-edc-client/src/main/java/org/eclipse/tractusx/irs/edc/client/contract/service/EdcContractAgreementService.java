@@ -96,6 +96,7 @@ public class EdcContractAgreementService {
         return new EdcContractAgreementRequest(edcContractAgreementFilterExpression);
     }
 
+    @SuppressWarnings({ "PMD.LooseCoupling" }) // intended use of implementation class HttpHeaders
     private HttpHeaders headers() {
         final HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));

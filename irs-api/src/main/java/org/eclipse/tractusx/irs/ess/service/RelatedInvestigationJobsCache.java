@@ -23,6 +23,7 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.ess.service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,7 +47,7 @@ interface RelatedInvestigationJobsCache {
 @Service
 class InMemoryRelatedInvestigationJobsCache implements RelatedInvestigationJobsCache {
 
-    private final ConcurrentHashMap<String, RelatedInvestigationJobs> inMemory = new ConcurrentHashMap<>();
+    private final Map<String, RelatedInvestigationJobs> inMemory = new ConcurrentHashMap<>();
 
     @Override
     public void store(final String notificationId, final RelatedInvestigationJobs relatedInvestigationJobs) {

@@ -27,6 +27,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +51,7 @@ interface BpnInvestigationJobCache {
 @Service
 class InMemoryBpnInvestigationJobCache implements BpnInvestigationJobCache {
 
-    private final ConcurrentHashMap<UUID, BpnInvestigationJob> inMemory = new ConcurrentHashMap<>();
+    private final Map<UUID, BpnInvestigationJob> inMemory = new ConcurrentHashMap<>();
 
     @Override
     public List<BpnInvestigationJob> findAll() {
