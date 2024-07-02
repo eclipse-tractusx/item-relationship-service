@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed submodel request path by introducing configuration property `irs-edc-client.submodel.submodel-suffix` which will
+  be appended to the href URL.
+
 ## [4.5.2] - 2024-02-22
 ## Changed
 - Updated IRS OpenAPI version to 4.5.2
