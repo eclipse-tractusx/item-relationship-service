@@ -36,7 +36,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.Clock;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +58,6 @@ import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig
 import org.eclipse.tractusx.irs.policystore.controllers.PolicyStoreControllerTest;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
-import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.eclipse.tractusx.irs.policystore.testutil.PolicyStoreTestUtil;
@@ -71,9 +69,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -308,114 +303,6 @@ class PolicyStoreServiceTest {
             final Constraints constraints = permissionList.get(0).getConstraint();
             assertThat(constraints.getOr()).hasSize(2);
             assertThat(constraints.getAnd()).hasSize(2);
-        }
-    }
-
-    @Nested
-    class GetPoliciesPagedTests {
-
-        private final Map<String, List<Policy>> policiesMap = Map.of( //
-                "BPN1", Arrays.asList( //
-                        createDummyPolicy("policy-1"), //
-                        createDummyPolicy("policy-4") //
-                ), //
-                "BPN2", Arrays.asList( //
-                        createDummyPolicy("policy-2"), //
-                        createDummyPolicy("policy-3"), //
-                        createDummyPolicy("policy-5") //
-                ));
-
-        @Test
-        public void whenUnsorted_shouldUseDefaultSortingBpnAscending() {
-            when(persistenceMock.readAll()).thenReturn(policiesMap);
-
-            final Page<PolicyWithBpn> result = testee.getPolicies(null, PageRequest.of(0, 10));
-
-            assertThat(result.getContent().stream().map(PolicyWithBpn::bpn).toList()).containsExactly("BPN1", "BPN1",
-                    "BPN2", "BPN2", "BPN2");
-        }
-
-        @Test
-        public void whenSortedByBpnAsc() {
-            when(persistenceMock.readAll()).thenReturn(policiesMap);
-
-            final Page<PolicyWithBpn> result = testee.getPolicies(null,
-                    PageRequest.of(0, 10, Sort.by("bpn").ascending()));
-
-            assertThat(result.getContent().stream().map(PolicyWithBpn::bpn).toList()).containsExactly("BPN1", "BPN1",
-                    "BPN2", "BPN2", "BPN2");
-        }
-
-        @Test
-        public void whenSortedByBpnDesc() {
-            when(persistenceMock.readAll()).thenReturn(policiesMap);
-
-            final Page<PolicyWithBpn> result = testee.getPolicies(null,
-                    PageRequest.of(0, 10, Sort.by("bpn").descending()));
-
-            assertThat(result.getContent().stream().map(PolicyWithBpn::bpn).toList()).containsExactly("BPN2", "BPN2",
-                    "BPN2", "BPN1", "BPN1");
-        }
-
-        @Test
-        public void whenRequestedPageIsAvailable_thenCorrectPageIsReturned() {
-            when(persistenceMock.readAll()).thenReturn(policiesMap);
-
-            final Page<PolicyWithBpn> result = testee.getPolicies(null, PageRequest.of(2, 2));
-
-            assertThat(result).isNotNull();
-            assertThat(result.getNumber()).isEqualTo(2);
-            assertThat(result.getTotalPages()).isEqualTo(3);
-            assertThat(result.getNumberOfElements()).isEqualTo(1);
-            assertThat(result.getTotalElements()).isEqualTo(5);
-            assertThat(result.getContent()).hasSize(1);
-            assertThat(result.isFirst()).isFalse();
-            assertThat(result.isLast()).isTrue();
-        }
-
-        @Test
-        public void whenNoPoliciesAvailableInDb_thenDefaultPolicyFromConfigIsReturned() {
-            when(persistenceMock.readAll()).thenReturn(emptyMap());
-
-            final Page<PolicyWithBpn> result = testee.getPolicies(null, PageRequest.of(0, 10));
-
-            assertThat(result).isNotNull();
-            assertThat(result.getNumber()).isEqualTo(0);
-            assertThat(result.getTotalPages()).isEqualTo(1);
-            assertThat(result.getNumberOfElements()).isEqualTo(1);
-            assertThat(result.getTotalElements()).isEqualTo(1);
-            assertThat(result.getContent()).isNotEmpty();
-            assertThat(result.isFirst()).isTrue();
-            assertThat(result.isLast()).isTrue();
-        }
-
-        @Test
-        public void whenPageRequestedBeyondAvailableData_thenReturnEmptyPage() {
-
-            // ARRANGE
-            when(persistenceMock.readAll()).thenReturn(policiesMap);
-
-            // ACT
-            final Page<PolicyWithBpn> result = testee.getPolicies(null, PageRequest.of(2, 10));
-
-            // ASSERT
-            assertThat(result).isNotNull();
-            assertThat(result.getNumber()).isEqualTo(2);
-            assertThat(result.getTotalPages()).isEqualTo(1);
-            assertThat(result.getNumberOfElements()).isEqualTo(0);
-            assertThat(result.getTotalElements()).isEqualTo(5);
-            assertThat(result.getContent()).isEmpty();
-            assertThat(result.isFirst()).isFalse();
-            assertThat(result.isLast()).isTrue();
-        }
-
-        private Policy createDummyPolicy(final String policyId) {
-            return Policy.builder()
-                         .policyId(policyId)
-                         .createdOn(OffsetDateTime.now())
-                         .validUntil(OffsetDateTime.now())
-                         .permissions(createPermissions())
-                         .build();
         }
     }
 

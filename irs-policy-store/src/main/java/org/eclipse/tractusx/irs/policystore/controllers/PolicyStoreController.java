@@ -55,6 +55,7 @@ import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.services.PolicyPagingService;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.eclipse.tractusx.irs.policystore.validators.BusinessPartnerNumberListValidator;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
@@ -96,6 +97,8 @@ public class PolicyStoreController {
     public static final int DEFAULT_PAGE_SIZE = 10;
 
     private final PolicyStoreService service;
+
+    private final PolicyPagingService policyPagingService;
 
     private final HttpServletRequest httpServletRequest;
 
@@ -210,7 +213,8 @@ public class PolicyStoreController {
             @ValidListOfBusinessPartnerNumbers //
             @Parameter(description = "List of business partner numbers.") //
             final List<String> businessPartnerNumbers) {
-        final Page<PolicyWithBpn> policies = service.getPolicies(businessPartnerNumbers, pageable);
+        final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(businessPartnerNumbers);
+        final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable);
         return policies.map(PolicyResponse::fromPolicyWithBpn);
     }
 

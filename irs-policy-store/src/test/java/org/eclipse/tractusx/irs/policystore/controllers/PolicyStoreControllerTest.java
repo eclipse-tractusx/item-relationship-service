@@ -48,6 +48,7 @@ import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.services.PolicyPagingService;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.eclipse.tractusx.irs.policystore.testutil.PolicyStoreTestUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -99,9 +100,13 @@ public class PolicyStoreControllerTest {
     @Mock
     private PolicyStoreService policyStoreServiceMock;
 
+    @Mock
+    private PolicyPagingService policyPagingServiceMock;
+
     @BeforeEach
     void setUp() {
-        testee = new PolicyStoreController(policyStoreServiceMock, mock(HttpServletRequest.class));
+        testee = new PolicyStoreController(policyStoreServiceMock, policyPagingServiceMock,
+                mock(HttpServletRequest.class));
     }
 
     @Nested

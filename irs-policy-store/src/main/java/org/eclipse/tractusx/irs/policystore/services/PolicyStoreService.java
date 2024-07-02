@@ -54,15 +54,9 @@ import org.eclipse.tractusx.irs.edc.client.transformer.EdcTransformer;
 import org.eclipse.tractusx.irs.policystore.config.DefaultAcceptedPoliciesConfig;
 import org.eclipse.tractusx.irs.policystore.exceptions.PolicyStoreException;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
-import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.persistence.PolicyPersistence;
 import org.eclipse.tractusx.irs.policystore.validators.PolicyValidator;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -141,99 +135,6 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         } catch (final PolicyStoreException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
-    }
-
-    /**
-     * Finds policies by list of BPN. Results are returned as pages.
-     *
-     * @param bpnList  list of BPNs
-     * @param pageable the page request options
-     * @return a map that maps BPN to list of policies
-     */
-    public Page<PolicyWithBpn> getPolicies(final List<String> bpnList, final Pageable pageable) {
-
-        Comparator<PolicyWithBpn> comparator = getComparator(getSortField(pageable));
-        if (!isFieldSortedAscending(pageable, getSortField(pageable))) {
-            comparator = comparator.reversed();
-        }
-
-        // data from the original request which maps BPN to list of policies
-        final Map<String, List<Policy>> bpnToPoliciesMap = getPolicies(bpnList);
-
-        final List<PolicyWithBpn> policies = bpnToPoliciesMap.entrySet()
-                                                             .stream()
-                                                             .flatMap(bpnWithPolicies -> bpnWithPolicies.getValue()
-                                                                                                        .stream()
-                                                                                                        .map(policy -> new PolicyWithBpn(
-                                                                                                                bpnWithPolicies.getKey(),
-                                                                                                                policy)))
-                                                             .sorted(comparator)
-                                                             .toList();
-
-        return applyPaging(pageable, policies);
-    }
-
-    private PageImpl<PolicyWithBpn> applyPaging(final Pageable pageable, final List<PolicyWithBpn> policies) {
-        final int start = Math.min(pageable.getPageNumber() * pageable.getPageSize(), policies.size());
-        final int end = Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), policies.size());
-        final List<PolicyWithBpn> pagedPolicies = policies.subList(start, end);
-
-        final String sortField = getSortField(pageable);
-        final Sort sort = isFieldSortedAscending(pageable, sortField)
-                ? Sort.by(sortField).ascending()
-                : Sort.by(sortField).descending();
-        return new PageImpl<>(pagedPolicies, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort),
-                policies.size());
-    }
-
-    private static Comparator<PolicyWithBpn> getComparator(final String sortField) {
-        Comparator<PolicyWithBpn> comparator;
-        if ("bpn".equals(sortField)) {
-            comparator = Comparator.comparing(PolicyWithBpn::bpn);
-        } else if ("validUntil".equals(sortField)) {
-            comparator = Comparator.comparing(p -> p.policy().getValidUntil());
-        } else if ("policyId".equals(sortField)) {
-            comparator = Comparator.comparing(p -> p.policy().getPolicyId());
-        } else if ("createdOn".equals(sortField)) {
-            comparator = Comparator.comparing(p -> p.policy().getCreatedOn());
-        } else if ("action".equals(sortField)) {
-            comparator = Comparator.comparing(p -> {
-                final List<Permission> permissions = p.policy().getPermissions();
-                return permissions.isEmpty() ? null : permissions.get(0).getAction();
-            });
-        } else {
-            throw new IllegalArgumentException("Sorting by this field is not supported");
-        }
-        return comparator;
-    }
-
-    private static String getSortField(final Pageable pageable) {
-        final String sortField;
-        final Sort requestedSort = pageable.getSort();
-        if (requestedSort.isUnsorted()) {
-            sortField = "bpn";
-        } else {
-            if (requestedSort.stream().count() > 1) {
-                throw new IllegalArgumentException("Currently only sorting by one field is supported");
-            }
-            sortField = requestedSort.toList().get(0).getProperty();
-        }
-        return sortField;
-    }
-
-    public boolean isFieldSortedAscending(final Pageable pageable, final String fieldName) {
-
-        if (pageable.getSort().isUnsorted()) {
-            return true;
-        }
-
-        final Sort sort = pageable.getSort();
-        for (final Sort.Order order : sort) {
-            if (order.getProperty().equals(fieldName) && order.getDirection() == Sort.Direction.ASC) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
