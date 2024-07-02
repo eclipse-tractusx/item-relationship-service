@@ -53,11 +53,16 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
+import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.eclipse.tractusx.irs.policystore.validators.BusinessPartnerNumberListValidator;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
 import org.eclipse.tractusx.irs.policystore.validators.ValidPolicyId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -88,6 +93,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class PolicyStoreController {
 
     public static final String BPN_REGEX = BusinessPartnerNumberListValidator.BPN_REGEX;
+    public static final int DEFAULT_PAGE_SIZE = 10;
 
     private final PolicyStoreService service;
 
@@ -194,6 +200,20 @@ public class PolicyStoreController {
                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
+    @GetMapping("/policies/paged")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    public Page<PolicyResponse> getPoliciesPaged(//
+            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = "bpn", direction = Sort.Direction.ASC) //
+            final Pageable pageable, //
+            @RequestParam(required = false) //
+            @ValidListOfBusinessPartnerNumbers //
+            @Parameter(description = "List of business partner numbers.") //
+            final List<String> businessPartnerNumbers) {
+        final Page<PolicyWithBpn> policies = service.getPolicies(businessPartnerNumbers, pageable);
+        return policies.map(PolicyResponse::fromPolicyWithBpn);
+    }
+
     @Operation(operationId = "deleteAllowedPolicy",
                summary = "Removes a policy that should no longer be accepted in EDC negotiation.",
                security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
@@ -252,8 +272,7 @@ public class PolicyStoreController {
     @DeleteMapping("/policies/{policyId}/bpnl/{bpnl}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void removeAllowedPolicyFromBpnl(
-            @PathVariable("policyId") final String policyId, //
+    public void removeAllowedPolicyFromBpnl(@PathVariable("policyId") final String policyId, //
             @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") //
             @PathVariable("bpnl") final String bpnl) {
         service.deletePolicyForEachBpn(policyId, List.of(bpnl));

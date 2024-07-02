@@ -126,7 +126,7 @@ public class PolicyStoreControllerTest {
     }
 
     @Nested
-    class GetPolicyTests {
+    class GetPoliciesTests {
 
         @Test
         void getPolicies() {

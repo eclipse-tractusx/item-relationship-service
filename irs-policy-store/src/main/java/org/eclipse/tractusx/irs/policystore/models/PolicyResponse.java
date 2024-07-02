@@ -30,7 +30,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
  */
 @Builder
 @Schema(example = PolicyResponse.EXAMPLE_PAYLOAD)
-public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
+public record PolicyResponse(OffsetDateTime validUntil, Payload payload, String bpn) {
 
     public static final String BPN_TO_POLICY_MAP_EXAMPLE = """
               {
@@ -143,4 +143,17 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload) {
                                              .build())
                              .build();
     }
+
+    public static PolicyResponse fromPolicyWithBpn(final PolicyWithBpn policyWithBpn) {
+        return PolicyResponse.builder()
+                             .validUntil(policyWithBpn.policy().getValidUntil())
+                             .payload(Payload.builder()
+                                             .policyId(policyWithBpn.policy().getPolicyId())
+                                             .context(Context.getDefault())
+                                             .policy(policyWithBpn.policy())
+                                             .build())
+                             .bpn(policyWithBpn.bpn())
+                             .build();
+    }
+
 }
