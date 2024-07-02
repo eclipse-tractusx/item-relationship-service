@@ -70,7 +70,7 @@ public class PolicyCheckerService {
                                           acceptedPolicy -> acceptedPolicy.validUntil().isBefore(OffsetDateTime.now()));
     }
 
-    private List<AcceptedPolicy> getValidStoredPolicies(final String bpn) {
+    public List<AcceptedPolicy> getValidStoredPolicies(final String bpn) {
         return policyStore.getAcceptedPolicies(bpn).stream().toList();
     }
 

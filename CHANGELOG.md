@@ -12,6 +12,7 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 - Fixed ESS Investigation job processing not starting #579
 - Policy store API returns 'rightOperand' without 'odrl:' prefix now (see traceability-foss/issues/970).
+- Fixed trivy workflow to fail only on CRITICAL, HIGH (according to https://github.com/eclipse-tractusx/eclipse-tractusx.github.io/pull/949/files).
 
 ### Changed
 
