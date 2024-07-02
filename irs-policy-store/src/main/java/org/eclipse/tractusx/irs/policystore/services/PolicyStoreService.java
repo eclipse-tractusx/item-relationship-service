@@ -228,7 +228,7 @@ public class PolicyStoreService implements AcceptedPoliciesProvider {
         }
 
         final Sort sort = pageable.getSort();
-        for (Sort.Order order : sort) {
+        for (final Sort.Order order : sort) {
             if (order.getProperty().equals(fieldName) && order.getDirection() == Sort.Direction.ASC) {
                 return true;
             }
