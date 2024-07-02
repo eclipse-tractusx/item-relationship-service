@@ -1,4 +1,4 @@
-name: IRS integration tests
+name: IRS smoke tests
 
 on:
   workflow_dispatch:

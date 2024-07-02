@@ -1,6 +1,8 @@
 name: "OWASP dependency scanner"
 
 on:
+  workflow_dispatch: # Additionally allow to trigger manually
+
   push:
     branches: main
     paths-ignore:
