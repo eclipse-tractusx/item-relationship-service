@@ -208,7 +208,7 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 
 ### Create a Release
 
-#### Full release
+### Full release
 
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/prepare-release-x.x.x`.
@@ -218,40 +218,18 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
     - Check if the changelog entries for the release are complete.
     - Add the corresponding GitHub issue numbers to each entry if missing.
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md).
-
-#### Old way of creating a release
-
-4. Update IRS API version in IrsApplication class and irs-api.yaml
-5. Create pull request
-   from [release preparation branch to main](https://github.com/eclipse-tractusx/item-relationship-service/compare/chore/prepare-release-x.x.x)
-6. Merge this pull request to main.
-7. Create Git tag for the desired release version `git tag x.x.x`
-   (note: the _item-relationship-service_ tag will be created automatically by the GitHub workflow based on the version
-   in the [helm chart changelog](charts/item-relationship-service/CHANGELOG.md)).
-8. Push Git tag to repository `git push origin x.x.x` (this will trigger the GitHub release workflow).
-9. Wait for release workflow to complete.
-10. Merge the pull request that was automatically opened by GitHub actions bot.
-
-#### New way of creating a release
-
-A new version of the release workflow is used which automates the changes that previously
-had to be done by hand.
-
-4. Execute the workflow named _"Release IRS"_ from the created `chore` branch. The workflow takes three inputs. These are:
+4. Execute the workflow named _"Release IRS"_. The workflow takes three inputs. These are:
     - IRS release version - type: semantic version string
     - Helm Chart release version - type: semantic version string
     - Whether to automatically update the Helm Chart changelog with the change
       _"- Update IRS version to x.x.x"_. This is a checkbox which is ticked by default.
-5. The workflow makes the automated changes and creates a pull request from them right away.
+5. The workflow makes automated changes and creates a pull request from them right away.
    Please review the created pull request within 15 minutes. If you fail to do so, or if the
    pull request gets closed, the workflow will fail.
 6. Once the pull request has been merged, the workflow continues execution. It pushes a tag (which will be
    the semantic IRS release version number) and creates the release. Subsequent workflows, such
    as the IRS build workflow, are triggered automatically.
-
-#### Regardless of performed preceding procedure
-
-Notify about the release in IRS Matrix Chat using the following template:
+7. Notify about the release in IRS Matrix Chat using the following template:
 
 > **IRS Release x.x.x**
 >
@@ -264,7 +242,7 @@ Notify about the release in IRS Matrix Chat using the following template:
 _(replace x.x.x with IRS version to release, y.y.y with Helm Chart version to release and w.w.w with previous IRS
 version)_
 
-#### Release Helm chart only
+### Release Helm chart only
 
 1. Choose a release version using [semantic versioning](https://semver.org/spec/v2.0.0.html)
    and create a corresponding branch according to the template: `chore/release-chart-x.x.x`.
