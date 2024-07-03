@@ -236,7 +236,7 @@ public class PolicyPagingService {
                     if (permissions == null || permissions.isEmpty()) {
                         return false;
                     }
-                    // TODO (mfischer) #639: clarify which to use
+                    // TODO (mfischer) #639: clarify which to use, add test
                     // option 1: filter on first action
                     //return permissions.get(0).getAction().getValue().equalsIgnoreCase((String) searchCriteria.getValue());
                     // option 2: filter on all actions

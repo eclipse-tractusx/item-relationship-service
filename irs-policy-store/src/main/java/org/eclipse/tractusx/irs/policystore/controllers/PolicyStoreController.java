@@ -194,10 +194,8 @@ public class PolicyStoreController {
     ) {
 
         final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
-        if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Please use parameter 'businessPartnerNumbers' instead");
-        }
+
+        ensureParamBusinessPartnerNumberCorrectlyNamed(parameterMap);
 
         final Map<String, List<Policy>> policies = service.getPolicies(businessPartnerNumbers);
 
@@ -221,28 +219,38 @@ public class PolicyStoreController {
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers //
             @Parameter(description = "List of business partner numbers.") //
-            final List<String> businessPartnerNumbers, //
-            // There seems to be a bug concerning interpretation of delimiters in Spring.
-            // If we pass only one search filter `?search=policyId,EQUALS,policy1`,
-            // the parts of this search filter are split up into several search filters even if we encode the comma.
-            // It only works if multiple search filters are passed `?search=policyId,EQUALS,policy1&search=...`.
-            // The solution described on stackoverflow
-            // (https://stackoverflow.com/questions/37058691/encoded-comma-in-url-is-read-as-list-in-spring)
-            // using the annotation Delimiter did not work either.
-            // Therefore, we read the search parameters from the request manually.
-            final HttpServletRequest request) {
+            final List<String> businessPartnerNumbers) {
 
         if (pageable.getPageSize() > MAX_PAGE_SIZE) {
             throw new IllegalArgumentException("Page size too large");
         }
 
+        final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
+
+        ensureParamBusinessPartnerNumberCorrectlyNamed(parameterMap);
+
         // TODO (mfischer): #639: add test coverage for this block
-        final List<String> searchParameters = Arrays.asList(request.getParameterMap().get("search"));
+        // There seems to be a bug concerning interpretation of delimiters in Spring.
+        // If we pass only one search filter `?search=policyId,EQUALS,policy1`,
+        // the parts of this search filter are split up into several search filters even if we encode the comma.
+        // It only works if multiple search filters are passed `?search=policyId,EQUALS,policy1&search=...`.
+        // The solution described on stackoverflow
+        // (https://stackoverflow.com/questions/37058691/encoded-comma-in-url-is-read-as-list-in-spring)
+        // using the annotation Delimiter did not work either.
+        // Therefore, we read the search parameters from the request manually.
+        final List<String> searchParameters = Arrays.asList(parameterMap.get("search"));
         final List<SearchCriteria<?>> searchCriteria = new SearchParameterParser(searchParameters).getSearchCriteria();
         final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(businessPartnerNumbers);
         final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable,
                 searchCriteria);
         return policies.map(PolicyResponse::fromPolicyWithBpn);
+    }
+
+    private static void ensureParamBusinessPartnerNumberCorrectlyNamed(final Map<String, String[]> parameterMap) {
+        if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Please use parameter 'businessPartnerNumbers' instead");
+        }
     }
 
     @Operation(operationId = "deleteAllowedPolicy",

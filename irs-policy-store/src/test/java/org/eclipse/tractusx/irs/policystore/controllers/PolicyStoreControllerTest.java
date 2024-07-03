@@ -138,15 +138,15 @@ public class PolicyStoreControllerTest {
         @Test
         void pageSizeTooLarge() {
             assertThatThrownBy(() -> testee.getPoliciesPaged(PageRequest.of(0, PolicyStoreController.MAX_PAGE_SIZE + 1),
-                    Collections.emptyList(), mock(HttpServletRequest.class))).isInstanceOf(
-                    IllegalArgumentException.class).hasMessageContaining("Page size too large");
+                    Collections.emptyList())).isInstanceOf(IllegalArgumentException.class)
+                                             .hasMessageContaining("Page size too large");
         }
 
         @Test
         void pageSizeTooLow() {
-            assertThatThrownBy(() -> testee.getPoliciesPaged(PageRequest.of(0, 0), Collections.emptyList(),
-                    mock(HttpServletRequest.class))).isInstanceOf(IllegalArgumentException.class)
-                                                    .hasMessageContaining("Page size must not be less than one");
+            assertThatThrownBy(
+                    () -> testee.getPoliciesPaged(PageRequest.of(0, 0), Collections.emptyList())).isInstanceOf(
+                    IllegalArgumentException.class).hasMessageContaining("Page size must not be less than one");
         }
     }
 
