@@ -49,8 +49,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: 'true'
-
-      - run: git checkout ${{ needs.determine-ref.outputs.ref }}
+          ref: ${{ needs.determine-ref.outputs.ref }}
 
       - name: Get helm charts latest tag version
         id: step1
@@ -79,8 +78,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: 'true'
-
-      - run: git checkout ${{ needs.determine-ref.outputs.ref }}
+          ref: ${{ needs.determine-ref.outputs.ref }}
 
       - name: Configure Git
         run: |
