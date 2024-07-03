@@ -314,7 +314,7 @@ class InvestigationJobProcessingEventListenerTest {
         final Optional<BpnInvestigationJob> job = bpnInvestigationJobCache.findByJobId(jobId);
         assertThat(job).isPresent();
         assertThat(job.get().getJobSnapshot().getTombstones()).hasSize(1);
-        assertThat(job.get().getJobSnapshot().getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo("'PartSiteInformationAsPlanned' exists, but catenaXSiteId could not be found.");
+        assertThat(job.get().getJobSnapshot().getTombstones().get(0).getProcessingError().getErrorDetail()).isEqualTo("'PartSiteInformationAsPlanned' exists, but catenaXsiteId could not be found.");
     }
 
     private void createMockForJobIdAndShell(final UUID mockedJobId, final String mockedShell,
@@ -378,7 +378,7 @@ class InvestigationJobProcessingEventListenerTest {
                       "functionValidUntil": "2025-02-08T04:30:48.000Z",
                       "function": "production",
                       "functionValidFrom": "2019-08-21T02:10:36.000Z",
-                      "catenaXSiteId": "BPNS000004711DMY"
+                      "catenaXsiteId": "BPNS000004711DMY"
                     }
                   ]
                 }

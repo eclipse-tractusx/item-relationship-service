@@ -37,6 +37,7 @@ import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSu
 import static org.eclipse.tractusx.irs.testing.wiremock.SubmodelFacadeWiremockSupport.TRACEABILITY_1_0;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.responseWithStatus;
 import static org.eclipse.tractusx.irs.testing.wiremock.WireMockConfig.restTemplateProxy;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -235,13 +236,13 @@ class SubmodelFacadeWiremockTest {
         final AcceptedPolicy acceptedPolicy = new AcceptedPolicy(policy("IRS Policy", List.of(permission)),
                 OffsetDateTime.now().plusYears(1));
 
-        when(acceptedPoliciesProvider.getAcceptedPolicies("bpn")).thenReturn(List.of(acceptedPolicy));
+        when(acceptedPoliciesProvider.getAcceptedPolicies(anyString())).thenReturn(List.of(acceptedPolicy));
 
         prepareNegotiation();
         givenThat(get(urlPathEqualTo(SUBMODEL_DATAPLANE_PATH)).willReturn(responseWithStatus(200).withBody("test")));
 
         // Act & Assert
-        final String errorMessage = "Consumption of asset '5a7ab616-989f-46ae-bdf2-32027b9f6ee6-31b614f5-ec14-4ed2-a509-e7b7780083e7' is not permitted as the required catalog offer policies do not comply with defined policies.";
+        final String errorMessage = "Policies [IRS Policy] did not match with policy from BPNL00000000TEST.";
         assertThatExceptionOfType(UsagePolicyPermissionException.class).isThrownBy(
                 () -> edcSubmodelClient.getSubmodelPayload(CONNECTOR_ENDPOINT_URL, SUBMODEL_DATAPLANE_URL, ASSET_ID, "bpn")
                                        .get()).withMessageEndingWith(errorMessage);
