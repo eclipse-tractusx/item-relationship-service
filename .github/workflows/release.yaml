@@ -214,7 +214,9 @@ jobs:
     needs:
       - release
     uses: ./.github/workflows/helm-chart-release.yaml
-    if: ${{ github.ref_name != 'main' }} # triggered automatically on main
+    with:
+      checkout-tag: true
+      ref-to-checkout: '${{ inputs.irs-version }}'
 
   build-irs:
     name: "Build IRS"
@@ -222,7 +224,9 @@ jobs:
       - release
     uses: ./.github/workflows/irs-build.yml
     secrets: inherit
-    if: ${{ github.ref_name != 'main' }} # triggered automatically on main
+    with:
+      checkout-tag: true
+      ref-to-checkout: '${{ inputs.irs-version }}'
 
   trivy-image-scan:
     name: "Scan image in local registry with Trivy"
@@ -230,7 +234,9 @@ jobs:
       - release
     uses: ./.github/workflows/trivy-image-scan.yml
     secrets: inherit
-    if: ${{ github.ref_name != 'main' }} # triggered automatically on main
+    with:
+      checkout-tag: true
+      ref-to-checkout: '${{ inputs.irs-version }}'
 
   validate-openapi-definition:
     needs:
@@ -238,4 +244,6 @@ jobs:
     name: "Validate OpenAPI definition"
     uses: ./.github/workflows/swagger-editor-validate.yml
     secrets: inherit
-    if: ${{ github.ref_name != 'main' }} # triggered automatically on main
+    with:
+      checkout-tag: true
+      ref-to-checkout: '${{ inputs.irs-version }}'
