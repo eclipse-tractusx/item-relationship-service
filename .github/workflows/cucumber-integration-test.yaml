@@ -15,6 +15,7 @@ on:
         type: string
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
@@ -40,9 +41,16 @@ jobs:
           ADMIN_USER_API_KEY: ${{ secrets.adminUserApiKey }}
           ISSUE_FILTER: ${{ inputs.executionFilter }}
           CUCUMBER_PUBLISH_TOKEN: ${{ secrets.cucumberPublishToken }}
-        # workaround replacement since injecting the token via environment variable does not work
         run: |
-          sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
+          if [ -z "${{ secrets.cucumberPublishToken }}" ]; then
+            echo "Publish cucumber report disabled"
+            sed -i "s/PUBLISH_ENABLED_FLAG/false/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
+          else
+            echo "Publish cucumber report enabled"
+            sed -i "s/PUBLISH_ENABLED_FLAG/true/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
+            # workaround replacement since injecting the token via environment variable does not work
+            sed -i "s/CUCUMBER_TOKEN_IRS_PLACEHOLDER/${CUCUMBER_PUBLISH_TOKEN}/g" irs-cucumber-tests/src/test/java/org/eclipse/tractusx/irs/cucumber/RunCucumberTest.java
+          fi          
 
           mvn clean verify -P cucumber -Dgroups="$ISSUE_FILTER" -pl irs-cucumber-tests -am --batch-mode 2> irs-cucumber-tests/report-banner.txt
 
