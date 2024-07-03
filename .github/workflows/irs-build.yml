@@ -26,20 +26,6 @@ on:
       - '**'
 
 jobs:
-  determine-ref:
-    runs-on: ubuntu-latest
-    outputs:
-      ref: ${{ steps.determine-ref.outputs.ref }}
-    steps:
-      - name: Determine ref to check out
-        id: determine-ref
-        run: |
-          if [[ "${{ inputs.checkout-tag }}" == "false" ]]; then
-            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
-          fi
-
   init:
     runs-on: ubuntu-latest
     outputs:

@@ -23,6 +23,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          fetch-tags: 'true'
           ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Run Trivy vulnerability scanner
