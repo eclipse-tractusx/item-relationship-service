@@ -86,37 +86,11 @@ public class PolicyPagingService {
 
         final List<Sort.Order> sort = pageable.getSort().stream().toList();
         for (final Sort.Order order : sort) {
-
-            Comparator<PolicyWithBpn> fieldComparator;
-            final String property = order.getProperty();
-            if (property.equals("bpn")) {
-                fieldComparator = Comparator.comparing(PolicyWithBpn::bpn);
-            } else if (property.equals("validUntil")) {
-                fieldComparator = Comparator.comparing(p -> p.policy().getValidUntil());
-            } else if (property.equals("policyId")) {
-                fieldComparator = Comparator.comparing(p -> p.policy().getPolicyId());
-            } else if (property.equals("createdOn")) {
-                fieldComparator = Comparator.comparing(p -> p.policy().getCreatedOn());
-            } else if (property.equals("action")) {
-                fieldComparator = Comparator.comparing(p -> {
-                    final List<Permission> permissions = p.policy().getPermissions();
-                    return permissions.isEmpty() ? null : permissions.get(0).getAction();
-                });
-            } else {
-                log.warn("Sorting by field '{}' is not supported", order.getProperty());
-                throw new IllegalArgumentException("Sorting by this field is not supported");
-            }
-
-            if (getSortDirection(pageable, order.getProperty()) == Sort.Direction.DESC) {
-                fieldComparator = fieldComparator.reversed();
-            }
-
             if (comparator == null) {
-                comparator = fieldComparator;
+                comparator = getComparator(pageable, order);
             } else {
-                comparator = comparator.thenComparing(fieldComparator);
+                comparator = comparator.thenComparing(getComparator(pageable, order));
             }
-
         }
 
         if (comparator == null) {
@@ -124,6 +98,34 @@ public class PolicyPagingService {
         }
 
         return comparator;
+    }
+
+    private Comparator<PolicyWithBpn> getComparator(final Pageable pageable, final Sort.Order order) {
+        Comparator<PolicyWithBpn> fieldComparator;
+        final String property = order.getProperty();
+        if ("bpn".equalsIgnoreCase(property)) {
+            fieldComparator = Comparator.comparing(PolicyWithBpn::bpn);
+        } else if ("validUntil".equalsIgnoreCase(property)) {
+            fieldComparator = Comparator.comparing(p -> p.policy().getValidUntil());
+        } else if ("policyId".equalsIgnoreCase(property)) {
+            fieldComparator = Comparator.comparing(p -> p.policy().getPolicyId());
+        } else if ("createdOn".equalsIgnoreCase(property)) {
+            fieldComparator = Comparator.comparing(p -> p.policy().getCreatedOn());
+        } else if ("action".equalsIgnoreCase(property)) {
+            fieldComparator = Comparator.comparing(p -> {
+                final List<Permission> permissions = p.policy().getPermissions();
+                return permissions.isEmpty() ? null : permissions.get(0).getAction();
+            });
+        } else {
+            log.warn("Sorting by field '{}' is not supported", order.getProperty());
+            throw new IllegalArgumentException("Sorting by this field is not supported");
+        }
+
+        if (getSortDirection(pageable, order.getProperty()) == Sort.Direction.DESC) {
+            fieldComparator = fieldComparator.reversed();
+        }
+
+        return fieldComparator;
     }
 
     public Sort.Direction getSortDirection(final Pageable pageable, final String fieldName) {
