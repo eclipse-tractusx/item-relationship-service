@@ -1,8 +1,9 @@
 openapi: 3.0.1
 info:
-  description: The API of the Item Relationship Service (IRS) for retrieving item graphs along the value chain of CATENA-X partners.
+  description: The API of the Item Relationship Service (IRS) for retrieving item
+    graphs along the value chain of CATENA-X partners.
   title: IRS API
-  version: 5.1.4
+  version: 5.2.0
 servers:
   - url: http://localhost:8080
 security:
@@ -10,7 +11,8 @@ security:
 paths:
   /ess/bpn/investigations:
     post:
-      description: Registers an IRS job to start an investigation if a given bpn is contained in a part chain of a given globalAssetId.
+      description: Registers an IRS job to start an investigation if a given bpn is
+        contained in a part chain of a given globalAssetId.
       operationId: registerBPNInvestigation
       requestBody:
         content:
@@ -57,7 +59,8 @@ paths:
           description: Authorization refused by server.
       security:
         - api_key: []
-      summary: Registers an IRS job to start an investigation if a given bpn is contained in a part chain of a given globalAssetId.
+      summary: Registers an IRS job to start an investigation if a given bpn is contained
+        in a part chain of a given globalAssetId.
       tags:
         - Environmental and Social Standards
   /ess/bpn/investigations/{id}:
@@ -126,7 +129,8 @@ paths:
         - Environmental and Social Standards
   /ess/notification/receive:
     post:
-      description: Accepts notifications via EDC. Notifications are filtered by their type and processed accordingly.
+      description: Accepts notifications via EDC. Notifications are filtered by their
+        type and processed accordingly.
       operationId: receiveEdcNotification
       requestBody:
         content:
@@ -188,7 +192,8 @@ paths:
         - Aspect Models
   /irs/ess/orders:
     post:
-      description: "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches."
+      description: "Registers an order for an ESS investigation with an array of {globalAssetIds}.\
+        \ Each globalAssetId will be processed in an separate job, grouped in batches."
       operationId: registerESSInvestigationOrder
       requestBody:
         content:
@@ -235,7 +240,8 @@ paths:
           description: Authorization refused by server.
       security:
         - api_key: []
-      summary: "Registers an order for an ESS investigation with an array of {globalAssetIds}. Each globalAssetId will be processed in an separate job, grouped in batches."
+      summary: "Registers an order for an ESS investigation with an array of {globalAssetIds}.\
+        \ Each globalAssetId will be processed in an separate job, grouped in batches."
       tags:
         - Environmental and Social Standards
   /irs/jobs:
@@ -275,7 +281,8 @@ paths:
           schema:
             type: integer
             default: 20
-        - description: "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported."
+        - description: "Sorting criteria in the format: property,(asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
           in: query
           name: sort
           required: false
@@ -289,7 +296,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PageResult'
-          description: Paginated list of jobs with state and execution times for requested job states.
+          description: Paginated list of jobs with state and execution times for requested
+            job states.
         "400":
           content:
             application/json:
@@ -388,7 +396,9 @@ paths:
             format: uuid
             maxLength: 36
             minLength: 36
-        - description: "\\<true\\> Return job with current processed item graph. \\<false\\> Return job with item graph if job is in state COMPLETED, otherwise job."
+        - description: "\\<true\\> Return job with current processed item graph. \\\
+          <false\\> Return job with item graph if job is in state COMPLETED, otherwise\
+          \ job."
           in: query
           name: returnUncompletedJob
           required: false
@@ -413,7 +423,8 @@ paths:
                   $ref: '#/components/examples/partial-job-result'
               schema:
                 $ref: '#/components/schemas/Jobs'
-          description: Return job with current processed item graph for the requested id.
+          description: Return job with current processed item graph for the requested
+            id.
         "400":
           content:
             application/json:
@@ -522,7 +533,8 @@ paths:
         - Item Relationship Service
   /irs/orders:
     post:
-      description: "Registers an IRS order with an array of {globalAssetIds}. Each globalAssetId will be processed in an IRS Job, grouped in batches."
+      description: "Registers an IRS order with an array of {globalAssetIds}. Each\
+        \ globalAssetId will be processed in an IRS Job, grouped in batches."
       operationId: registerOrder
       requestBody:
         content:
@@ -569,7 +581,8 @@ paths:
           description: Authorization refused by server.
       security:
         - api_key: []
-      summary: "Registers an IRS order with an array of {globalAssetIds}. Each globalAssetId will be processed in an IRS Job, grouped in batches."
+      summary: "Registers an IRS order with an array of {globalAssetIds}. Each globalAssetId\
+        \ will be processed in an IRS Job, grouped in batches."
       tags:
         - Item Relationship Service
   /irs/orders/{orderId}:
@@ -1005,7 +1018,8 @@ paths:
         - Item Relationship Service
   /irs/policies/{policyId}/bpnl/{bpnl}:
     delete:
-      description: Removes a policy from BPNL that should no longer be accepted in EDC negotiation.
+      description: Removes a policy from BPNL that should no longer be accepted in
+        EDC negotiation.
       operationId: removeAllowedPolicyFromBpnl
       parameters:
         - in: path
@@ -1051,7 +1065,8 @@ paths:
           description: Authorization refused by server.
       security:
         - api_key: []
-      summary: Removes a policy from BPNL that should no longer be accepted in EDC negotiation.
+      summary: Removes a policy from BPNL that should no longer be accepted in EDC
+        negotiation.
       tags:
         - Item Relationship Service
 components:
@@ -1705,7 +1720,11 @@ components:
       type: object
       additionalProperties: false
       description: BatchOrderAck Payload Response.
-      example: "{\"batchChecksum\"=1, \"batches\"=[{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"batchNumber\"=1, \"batchProcessingState\"=\"PARTIAL\", \"batchUrl\"=\"https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462\", \"jobsInBatchChecksum\"=1}], \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"state\"=\"COMPLETED\"}"
+      example: "{\"batchChecksum\"=1, \"batches\"=[{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\"\
+        , \"batchNumber\"=1, \"batchProcessingState\"=\"PARTIAL\", \"batchUrl\"=\"\
+        https://../irs/orders/f253718e-a270-4367-901b-9d50d9bd8462/batches/f253718e-a270-4367-901b-9d50d9bd8462\"\
+        , \"jobsInBatchChecksum\"=1}], \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\"\
+        , \"state\"=\"COMPLETED\"}"
       properties:
         batchChecksum:
           type: integer
@@ -1737,7 +1756,12 @@ components:
       type: object
       additionalProperties: false
       description: Batch model.
-      example: "{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"batchNumber\"=1, \"batchProcessingState\"=\"COMPLETED\", \"batchTotal\"=1, \"completedOn\"=\"2022-02-03T14:48:54.709Z\", \"jobs\"=[{\"completedOn\"=\"2022-02-03T14:48:54.709Z\", \"id\"=\"6c311d29-5753-46d4-b32c-19b918ea93b0\", \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"state\"=\"COMPLETED\"}], \"jobsInBatchChecksum\"=1, \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"totalJobs\"=1}"
+      example: "{\"batchId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\", \"batchNumber\"\
+        =1, \"batchProcessingState\"=\"COMPLETED\", \"batchTotal\"=1, \"completedOn\"\
+        =\"2022-02-03T14:48:54.709Z\", \"jobs\"=[{\"completedOn\"=\"2022-02-03T14:48:54.709Z\"\
+        , \"id\"=\"6c311d29-5753-46d4-b32c-19b918ea93b0\", \"startedOn\"=\"2022-02-03T14:48:54.709Z\"\
+        , \"state\"=\"COMPLETED\"}], \"jobsInBatchChecksum\"=1, \"orderId\"=\"f253718e-a270-4367-901b-9d50d9bd8462\"\
+        , \"startedOn\"=\"2022-02-03T14:48:54.709Z\", \"totalJobs\"=1}"
       properties:
         batchId:
           type: string
@@ -1861,7 +1885,8 @@ components:
         validUntil:
           type: string
           format: date-time
-          description: Timestamp after which the policy will no longer be accepted in negotiations.
+          description: Timestamp after which the policy will no longer be accepted
+            in negotiations.
           example: 2025-12-12T23:59:59.999Z
       required:
         - payload
@@ -2117,7 +2142,8 @@ components:
           example: false
         bomLifecycle:
           type: string
-          description: The lifecycle context in which the child part was assembled into the parent part.
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
           enum:
             - asBuilt
             - asPlanned
@@ -2208,7 +2234,8 @@ components:
           maxItems: 2147483647
         tombstones:
           type: array
-          description: Collection of not resolvable endpoints as tombstones. Including cause of error and endpoint URL.
+          description: Collection of not resolvable endpoints as tombstones. Including
+            cause of error and endpoint URL.
           items:
             $ref: '#/components/schemas/Tombstone'
           maxItems: 2147483647
@@ -2259,7 +2286,8 @@ components:
     LinkedItem:
       type: object
       additionalProperties: false
-      description: Set of child parts the parent object is assembled by (one structural level down).
+      description: Set of child parts the parent object is assembled by (one structural
+        level down).
       properties:
         assembledOn:
           type: string
@@ -2275,7 +2303,8 @@ components:
           pattern: "^urn:uuid:[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
         hasAlternatives:
           type: boolean
-          description: Expresses whether the part is built-in or whether it is one of several options.
+          description: Expresses whether the part is built-in or whether it is one
+            of several options.
         lastModifiedOn:
           type: string
           format: date-time
@@ -2283,7 +2312,8 @@ components:
           example: 2022-02-03T14:48:54.709Z
         lifecycleContext:
           type: string
-          description: The lifecycle context in which the child part was assembled into the parent part.
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
           enum:
             - asBuilt
             - asPlanned
@@ -2304,7 +2334,9 @@ components:
     PageResult:
       type: object
       additionalProperties: false
-      example: "{\"content\"=[{\"completedOn\"=\"test\", \"id\"=\"046b6c7f-0b8a-43b9-b35d-6489e6daee91\", \"startedOn\"=\"2000-01-23T04:56:07.000+00:00\", \"state\"=\"UNSAVED\"}], \"pageCount\"=0, \"pageNumber\"=6, \"pageSize\"=1, \"totalElements\"=5}"
+      example: "{\"content\"=[{\"completedOn\"=\"test\", \"id\"=\"046b6c7f-0b8a-43b9-b35d-6489e6daee91\"\
+        , \"startedOn\"=\"2000-01-23T04:56:07.000+00:00\", \"state\"=\"UNSAVED\"}],\
+        \ \"pageCount\"=0, \"pageNumber\"=6, \"pageSize\"=1, \"totalElements\"=5}"
       properties:
         content:
           type: array
@@ -2325,7 +2357,8 @@ components:
     PartChainIdentificationKey:
       type: object
       additionalProperties: false
-      description: Key object contains required attributes for identify part chain entry node.
+      description: Key object contains required attributes for identify part chain
+        entry node.
       properties:
         bpn:
           type: string
@@ -2424,7 +2457,8 @@ components:
       properties:
         aspects:
           type: array
-          description: List of aspect names that will be collected if \<collectAspects\> flag is set to true.
+          description: List of aspect names that will be collected if \<collectAspects\>
+            flag is set to true.
           example:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
           items:
@@ -2448,22 +2482,27 @@ components:
             - PRESERVE_BATCH_ORDER
         bomLifecycle:
           type: string
-          description: The lifecycle context in which the child part was assembled into the parent part.
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
           enum:
             - asBuilt
             - asPlanned
             - asSpecified
         callbackUrl:
           type: string
-          description: "Callback url to notify requestor when job processing is finished. There are four uri variable placeholders that can be used: orderId, batchId, orderState and batchState."
+          description: "Callback url to notify requestor when job processing is finished.\
+            \ There are four uri variable placeholders that can be used: orderId,\
+            \ batchId, orderState and batchState."
           example: "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}"
         collectAspects:
           type: boolean
-          description: Flag to specify whether aspects should be requested and collected. Default is false.
+          description: Flag to specify whether aspects should be requested and collected.
+            Default is false.
         depth:
           type: integer
           format: int32
-          description: Max depth of the item graph returned. If no depth is set item graph with max depth is returned.
+          description: Max depth of the item graph returned. If no depth is set item
+            graph with max depth is returned.
           maximum: 100
           minimum: 1
         direction:
@@ -2477,7 +2516,8 @@ components:
           type: integer
           format: int32
           default: 3600
-          description: Timeout in seconds for each job processing inside the complete order.
+          description: Timeout in seconds for each job processing inside the complete
+            order.
           maximum: 7200
           minimum: 60
         keys:
@@ -2488,7 +2528,8 @@ components:
         lookupBPNs:
           type: boolean
           deprecated: true
-          description: Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.
+          description: Flag to specify whether BPNs should be collected and resolved
+            via the configured BPDM URL. Default is false.
         timeout:
           type: integer
           format: int32
@@ -2501,7 +2542,8 @@ components:
     RegisterBpnInvestigationBatchOrder:
       type: object
       additionalProperties: false
-      description: Request body for registering a new Batch Order for ESS Investigation Job.
+      description: Request body for registering a new Batch Order for ESS Investigation
+        Job.
       properties:
         batchSize:
           type: integer
@@ -2519,14 +2561,17 @@ components:
             - PRESERVE_BATCH_ORDER
         bomLifecycle:
           type: string
-          description: The lifecycle context in which the child part was assembled into the parent part.
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
           enum:
             - asBuilt
             - asPlanned
             - asSpecified
         callbackUrl:
           type: string
-          description: "Callback url to notify requestor when job processing is finished. There are four uri variable placeholders that can be used: orderId, batchId, orderState and batchState."
+          description: "Callback url to notify requestor when job processing is finished.\
+            \ There are four uri variable placeholders that can be used: orderId,\
+            \ batchId, orderState and batchState."
           example: "https://hostname.com/callback?orderId={orderId}&batchId={batchId}&orderState={orderState}&batchState={batchState}"
         incidentBPNSs:
           type: array
@@ -2538,7 +2583,8 @@ components:
           type: integer
           format: int32
           default: 3600
-          description: Timeout in seconds for each job processing inside the complete order.
+          description: Timeout in seconds for each job processing inside the complete
+            order.
           maximum: 7200
           minimum: 60
         keys:
@@ -2563,7 +2609,8 @@ components:
       properties:
         bomLifecycle:
           type: string
-          description: The lifecycle context in which the child part was assembled into the parent part.
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
           enum:
             - asBuilt
             - asPlanned
@@ -2571,7 +2618,9 @@ components:
           example: asPlanned
         callbackUrl:
           type: string
-          description: "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: jobId and jobState."
+          description: "Callback url to notify requestor when job processing is finished.\
+            \ There are two uri variable placeholders that can be used: jobId and\
+            \ jobState."
           example: "https://hostname.com/callback?jobId={jobId}&jobState={jobState}"
         incidentBPNSs:
           type: array
@@ -2595,7 +2644,8 @@ components:
       properties:
         aspects:
           type: array
-          description: List of aspect names that will be collected if \<collectAspects\> flag is set to true.
+          description: List of aspect names that will be collected if \<collectAspects\>
+            flag is set to true.
           example:
             - urn:samm:io.catenax.single_level_bom_as_built:3.0.0#SingleLevelBomAsBuilt
           items:
@@ -2605,25 +2655,31 @@ components:
           pattern: "^(urn:[bs]amm:.*\\d\\.\\d\\.\\d)?(#)?(\\w+)?$"
         auditContractNegotiation:
           type: boolean
-          description: "Flag enables and disables auditing, including provisioning of ContractAgreementId inside submodels and shells objects. Default is true."
+          description: "Flag enables and disables auditing, including provisioning\
+            \ of ContractAgreementId inside submodels and shells objects. Default\
+            \ is true."
         bomLifecycle:
           type: string
-          description: The lifecycle context in which the child part was assembled into the parent part.
+          description: The lifecycle context in which the child part was assembled
+            into the parent part.
           enum:
             - asBuilt
             - asPlanned
             - asSpecified
         callbackUrl:
           type: string
-          description: "Callback url to notify requestor when job processing is finished. There are two uri variable placeholders that can be used: id and state."
+          description: "Callback url to notify requestor when job processing is finished.\
+            \ There are two uri variable placeholders that can be used: id and state."
           example: "https://hostname.com/callback?id={id}&state={state}"
         collectAspects:
           type: boolean
-          description: Flag to specify whether aspects should be requested and collected. Default is false.
+          description: Flag to specify whether aspects should be requested and collected.
+            Default is false.
         depth:
           type: integer
           format: int32
-          description: Max depth of the item graph returned. If no depth is set item graph with max depth is returned.
+          description: Max depth of the item graph returned. If no depth is set item
+            graph with max depth is returned.
           maximum: 100
           minimum: 1
         direction:
@@ -2638,7 +2694,8 @@ components:
         lookupBPNs:
           type: boolean
           deprecated: true
-          description: Flag to specify whether BPNs should be collected and resolved via the configured BPDM URL. Default is false.
+          description: Flag to specify whether BPNs should be collected and resolved
+            via the configured BPDM URL. Default is false.
       required:
         - key
     Relationship:
@@ -2703,7 +2760,8 @@ components:
     Submodel:
       type: object
       additionalProperties: false
-      description: "Submodel with identification of SubmodelDescriptor, aspect type and payload as String"
+      description: "Submodel with identification of SubmodelDescriptor, aspect type\
+        \ and payload as String"
       properties:
         aspectType:
           type: string
@@ -2786,7 +2844,8 @@ components:
         validUntil:
           type: string
           format: date-time
-          description: Timestamp after which the policy will no longer be accepted in negotiations.
+          description: Timestamp after which the policy will no longer be accepted
+            in negotiations.
       required:
         - policyIds
         - validUntil
