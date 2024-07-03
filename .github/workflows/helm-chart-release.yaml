@@ -4,13 +4,7 @@ on:
   workflow_dispatch: # Trigger manually
   workflow_call:
     inputs:
-      checkout-tag:
-        description: 'Whether to check out a tag'
-        required: false
-        type: boolean
-        default: false
-
-      ref-to-checkout:
+      ref-to-check-out:
         description: 'Ref of branch/tag from which to execute workflow'
         required: true
         type: string
@@ -21,22 +15,7 @@ on:
       - 'charts/**'
 
 jobs:
-  determine-ref:
-    runs-on: ubuntu-latest
-    outputs:
-      ref: ${{ steps.determine-ref.outputs.ref }}
-    steps:
-      - name: Determine ref to check out
-        id: determine-ref
-        run: |
-          if [[ "${{ inputs.checkout-tag }}" == "false" ]]; then
-            echo "ref=${{ github.ref }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "ref=${{ inputs.ref-to-checkout }}" >> "$GITHUB_OUTPUT"
-          fi
-
   get-helm-charts-versions-irs:
-    needs: determine-ref
     outputs:
       latest_version: ${{ steps.step1.outputs.latest_version }}
       current_version: ${{ steps.step2.outputs.current_version }}
@@ -49,7 +28,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: 'true'
-          ref: ${{ needs.determine-ref.outputs.ref }}
+          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Get helm charts latest tag version
         id: step1
@@ -65,7 +44,7 @@ jobs:
           echo "Exported $chartVersion helm charts version"
 
   release:
-    needs: [get-helm-charts-versions-irs, determine-ref]
+    needs: [get-helm-charts-versions-irs]
     if: needs.get-helm-charts-versions-irs.outputs.latest_version != needs.get-helm-charts-versions-irs.outputs.current_version
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
     # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
@@ -78,7 +57,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: 'true'
-          ref: ${{ needs.determine-ref.outputs.ref }}
+          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Configure Git
         run: |

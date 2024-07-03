@@ -4,13 +4,7 @@ on:
   workflow_dispatch: # Trigger manually
   workflow_call:
     inputs:
-      checkout-tag:
-        description: 'Whether to check out a tag'
-        required: false
-        type: boolean
-        default: false
-
-      ref-to-checkout:
+      ref-to-check-out:
         description: 'Ref of branch/tag from which to execute workflow'
         required: true
         type: string
@@ -61,13 +55,12 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: determine-ref
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-tags: 'true'
-          ref: ${{ needs.determine-ref.outputs.ref }}
+          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -87,7 +80,7 @@ jobs:
           mvn clean verify --batch-mode
 
   analyze_with_Sonar:
-    needs: [init, determine-ref]
+    needs: [init]
     # No need to run if we cannot use the sonar token
     if: >-
       needs.init.outputs.sonar_configured == 'true'
@@ -97,9 +90,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of sonar analysis
+          fetch-depth: 0
           fetch-tags: 'true'
-          ref: ${{ needs.determine-ref.outputs.ref }}
+          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -132,7 +125,7 @@ jobs:
           -Dcheckstyle.skip -Dpmd.skip=true
 
   build_images:
-    needs: [init, determine-ref]
+    needs: [init]
     strategy:
       matrix:
         image:
@@ -144,7 +137,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-tags: 'true'
-          ref: ${{ needs.determine-ref.outputs.ref }}
+          ref: ${{ inputs.ref-to-check-out || github.ref }}
 
       - name: Build image to make sure Dockerfile is valid
         run: |
@@ -156,9 +149,9 @@ jobs:
         id: version
         run: |
           # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          VERSION=$(echo "${{ inputs.ref-to-check-out || github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          [[ "${{ inputs.ref-to-check-out || github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # Support PR ref versions
           [[ "${{ github.ref }}" == "refs/pull/"* ]] && VERSION=PR-$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\)/merge,\1,')
           # Use Docker `latest` tag convention
@@ -198,4 +191,6 @@ jobs:
     needs:
       - build_images
     uses: ./.github/workflows/trivy-docker-hub-scan.yml
+    with:
+      ref-to-check-out: ${{ inputs.ref-to-check-out || github.ref }}
 
