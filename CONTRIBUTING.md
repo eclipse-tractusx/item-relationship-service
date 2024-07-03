@@ -219,7 +219,7 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
     - Add the corresponding GitHub issue numbers to each entry if missing.
 3. Update [COMPATIBILITY_MATRIX.md](COMPATIBILITY_MATRIX.md).
 
-#### Procedure used before July 1, 2024
+#### Old way of creating a release
 
 4. Update IRS API version in IrsApplication class and irs-api.yaml
 5. Create pull request
@@ -232,12 +232,12 @@ https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-
 9. Wait for release workflow to complete.
 10. Merge the pull request that was automatically opened by GitHub actions bot.
 
-#### Procedure used starting July 1, 2024
+#### New way of creating a release
 
-Starting July 1, 2024, a new version of the release workflow is used which automates the changes that previously
+A new version of the release workflow is used which automates the changes that previously
 had to be done by hand.
 
-4. Execute the workflow named _"Release IRS"_. The workflow takes three inputs. These are:
+4. Execute the workflow named _"Release IRS"_ from the created `chore` branch. The workflow takes three inputs. These are:
     - IRS release version - type: semantic version string
     - Helm Chart release version - type: semantic version string
     - Whether to automatically update the Helm Chart changelog with the change
