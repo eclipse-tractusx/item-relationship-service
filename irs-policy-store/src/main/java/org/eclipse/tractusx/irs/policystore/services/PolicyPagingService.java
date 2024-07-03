@@ -76,39 +76,51 @@ public class PolicyPagingService {
         final int end = Math.min((pageable.getPageNumber() + 1) * pageable.getPageSize(), policies.size());
         final List<PolicyWithBpn> pagedPolicies = policies.subList(start, end);
 
-        final String sortField = getSortField(pageable);
-        final Sort sort = isFieldSortedAscending(pageable, sortField)
-                ? Sort.by(sortField).ascending()
-                : Sort.by(sortField).descending();
-        return new PageImpl<>(pagedPolicies, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort),
-                policies.size());
+        return new PageImpl<>(pagedPolicies,
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), policies.size());
     }
 
     private Comparator<PolicyWithBpn> getComparator(final Pageable pageable) {
 
-        Comparator<PolicyWithBpn> comparator;
+        Comparator<PolicyWithBpn> comparator = null;
 
-        final String sortField = getSortField(pageable);
+        final List<Sort.Order> sort = pageable.getSort().stream().toList();
+        for (final Sort.Order order : sort) {
 
-        if ("bpn".equals(sortField)) {
-            comparator = Comparator.comparing(PolicyWithBpn::bpn);
-        } else if ("validUntil".equals(sortField)) {
-            comparator = Comparator.comparing(p -> p.policy().getValidUntil());
-        } else if ("policyId".equals(sortField)) {
-            comparator = Comparator.comparing(p -> p.policy().getPolicyId());
-        } else if ("createdOn".equals(sortField)) {
-            comparator = Comparator.comparing(p -> p.policy().getCreatedOn());
-        } else if ("action".equals(sortField)) {
-            comparator = Comparator.comparing(p -> {
-                final List<Permission> permissions = p.policy().getPermissions();
-                return permissions.isEmpty() ? null : permissions.get(0).getAction();
-            });
-        } else {
-            throw new IllegalArgumentException("Sorting by this field is not supported");
+            Comparator<PolicyWithBpn> fieldComparator;
+            final String property = order.getProperty();
+            if (property.equals("bpn")) {
+                fieldComparator = Comparator.comparing(PolicyWithBpn::bpn);
+            } else if (property.equals("validUntil")) {
+                fieldComparator = Comparator.comparing(p -> p.policy().getValidUntil());
+            } else if (property.equals("policyId")) {
+                fieldComparator = Comparator.comparing(p -> p.policy().getPolicyId());
+            } else if (property.equals("createdOn")) {
+                fieldComparator = Comparator.comparing(p -> p.policy().getCreatedOn());
+            } else if (property.equals("action")) {
+                fieldComparator = Comparator.comparing(p -> {
+                    final List<Permission> permissions = p.policy().getPermissions();
+                    return permissions.isEmpty() ? null : permissions.get(0).getAction();
+                });
+            } else {
+                log.warn("Sorting by field '{}' is not supported", order.getProperty());
+                throw new IllegalArgumentException("Sorting by this field is not supported");
+            }
+
+            if (getSortDirection(pageable, order.getProperty()) == Sort.Direction.DESC) {
+                fieldComparator = fieldComparator.reversed();
+            }
+
+            if (comparator == null) {
+                comparator = fieldComparator;
+            } else {
+                comparator = comparator.thenComparing(fieldComparator);
+            }
+
         }
 
-        if (!isFieldSortedAscending(pageable, sortField)) {
-            comparator = comparator.reversed();
+        if (comparator == null) {
+            comparator = Comparator.comparing(PolicyWithBpn::bpn);
         }
 
         return comparator;
@@ -129,18 +141,20 @@ public class PolicyPagingService {
         return sortField;
     }
 
-    public boolean isFieldSortedAscending(final Pageable pageable, final String fieldName) {
+    public Sort.Direction getSortDirection(final Pageable pageable, final String fieldName) {
 
         if (pageable.getSort().isUnsorted()) {
-            return true;
+            return Sort.Direction.ASC;
         }
 
         final Sort sort = pageable.getSort();
         for (final Sort.Order order : sort) {
-            if (order.getProperty().equals(fieldName) && order.getDirection() == Sort.Direction.ASC) {
-                return true;
+            if (order.getProperty().equals(fieldName)) {
+                return order.getDirection();
             }
         }
-        return false;
+
+        log.warn("Sort field '{}' not found", fieldName);
+        throw new IllegalArgumentException("Property not found");
     }
 }

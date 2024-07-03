@@ -53,23 +53,26 @@ class PolicyPagingServiceTest {
     }
 
     private final Map<String, List<Policy>> policiesMap = Map.of( //
-            "BPN1", Arrays.asList( //
-                    createPolicy("policy-1"), //
-                    createPolicy("policy-4") //
-            ), //
             "BPN2", Arrays.asList( //
-                    createPolicy("policy-2"), //
                     createPolicy("policy-3"), //
+                    createPolicy("policy-2"), //
                     createPolicy("policy-5") //
-            ));
+            ), "BPN1", Arrays.asList( //
+                    createPolicy("policy-4"), //
+                    createPolicy("policy-1") //
+            ) //
+    );
 
     @Test
     public void whenUnsorted_shouldUseDefaultSortingBpnAscending() {
 
         final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10));
 
-        assertThat(result.getContent().stream().map(PolicyWithBpn::bpn).toList()).containsExactly("BPN1", "BPN1",
-                "BPN2", "BPN2", "BPN2");
+        assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                // BPN1
+                "policy-4", "policy-1",
+                // BPN2
+                "policy-3", "policy-2", "policy-5");
     }
 
     @Test
@@ -78,8 +81,11 @@ class PolicyPagingServiceTest {
         final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
                 PageRequest.of(0, 10, Sort.by("bpn").ascending()));
 
-        assertThat(result.getContent().stream().map(PolicyWithBpn::bpn).toList()).containsExactly("BPN1", "BPN1",
-                "BPN2", "BPN2", "BPN2");
+        assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                // BPN1
+                "policy-4", "policy-1",
+                // BPN2
+                "policy-3", "policy-2", "policy-5");
     }
 
     @Test
@@ -90,6 +96,32 @@ class PolicyPagingServiceTest {
 
         assertThat(result.getContent().stream().map(PolicyWithBpn::bpn).toList()).containsExactly("BPN2", "BPN2",
                 "BPN2", "BPN1", "BPN1");
+    }
+
+    @Test
+    public void whenSortedByBpnAscAndPolicyIdDesc() {
+
+        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
+                PageRequest.of(0, 10, Sort.by("bpn").ascending().and(Sort.by("policyId").descending())));
+
+        assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                // BPN1
+                "policy-4", "policy-1",
+                // BPN2
+                "policy-5", "policy-3", "policy-2");
+    }
+
+    @Test
+    public void whenSortedByBpnDescAndPolicyIdAsc() {
+
+        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
+                PageRequest.of(0, 10, Sort.by("bpn").descending().and(Sort.by("policyId").ascending())));
+
+        assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                // BPN2
+                "policy-2", "policy-3", "policy-5",
+                // BPN1
+                "policy-1", "policy-4");
     }
 
     @Test
