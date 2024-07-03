@@ -86,15 +86,16 @@ public class PolicyPagingService {
     /**
      * Builder for {@link Comparator} for sorting a list of {@link PolicyWithBpn} objects.
      */
-    static class PolicyComparatorBuilder {
+    private static class PolicyComparatorBuilder {
+        // TODO (mfischer): #639: maybe extract to separate class
 
         private final Pageable pageable;
 
-        PolicyComparatorBuilder(final Pageable pageable) {
+        /* package */ PolicyComparatorBuilder(final Pageable pageable) {
             this.pageable = pageable;
         }
 
-        public Comparator<PolicyWithBpn> build() {
+        /* package */ Comparator<PolicyWithBpn> build() {
 
             Comparator<PolicyWithBpn> comparator = null;
 
@@ -163,15 +164,16 @@ public class PolicyPagingService {
     /**
      * Builder for {@link Predicate} for filtering a list of {@link PolicyWithBpn} objects.
      */
-    static class PolicyFilterBuilder {
+    private static class PolicyFilterBuilder {
+        // TODO (mfischer): #639: maybe extract to separate class
 
         private final List<SearchCriteria<?>> searchCriteriaList;
 
-        PolicyFilterBuilder(final List<SearchCriteria<?>> searchCriteriaList) {
+        /* package */ PolicyFilterBuilder(final List<SearchCriteria<?>> searchCriteriaList) {
             this.searchCriteriaList = searchCriteriaList;
         }
 
-        private Predicate<PolicyWithBpn> build() {
+        /* package */ Predicate<PolicyWithBpn> build() {
             Predicate<PolicyWithBpn> policyFilter = policy -> true;
 
             for (final SearchCriteria<?> searchCriteria : searchCriteriaList) {

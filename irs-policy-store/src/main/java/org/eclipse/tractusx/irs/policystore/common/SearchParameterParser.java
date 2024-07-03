@@ -39,8 +39,9 @@ public class SearchParameterParser {
             CommonConstants.PROPERTY_CREATED_ON);
 
     public static final String CRITERIA_INNER_SEPARATOR = ",";
+    public static final int NUM_PARTS_OF_FILTERS = 3;
 
-    final List<SearchCriteria<?>> searchCriteria;
+    private final List<SearchCriteria<?>> searchCriteria;
 
     public SearchParameterParser(final List<String> searchParameters) {
         searchCriteria = parseSearchParameters(searchParameters);
@@ -54,7 +55,7 @@ public class SearchParameterParser {
                 final String searchParameter = searchParameterList.get(i);
                 final String[] splittedSearchParam = StringUtils.split(searchParameter, CRITERIA_INNER_SEPARATOR);
 
-                if (splittedSearchParam.length < 3) {
+                if (splittedSearchParam.length < NUM_PARTS_OF_FILTERS) {
                     throw new IllegalArgumentException(("Illegal search parameter at index %s. "
                             + "Format should be <propertyName>,<operation>,<value>.").formatted(i));
                 }
