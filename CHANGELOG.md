@@ -8,18 +8,6 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 
 ## [Unreleased]
 
-## [5.1.9] - 2024-06-27
-
-### Added
-
-- soemthing was added
-
-### Changed
-
-- and something else was changed
-
-## [5.1.5] - 2024-06-27
-
 ### Fixed
 
 - Fixed ESS Investigation job processing not starting #579
