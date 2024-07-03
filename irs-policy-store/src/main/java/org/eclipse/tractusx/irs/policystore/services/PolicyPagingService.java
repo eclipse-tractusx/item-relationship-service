@@ -126,21 +126,6 @@ public class PolicyPagingService {
         return comparator;
     }
 
-    @SuppressWarnings("PMD.AvoidLiteralsInIfCondition")
-    private static String getSortField(final Pageable pageable) {
-        final String sortField;
-        final Sort requestedSort = pageable.getSort();
-        if (requestedSort.isUnsorted()) {
-            sortField = "bpn";
-        } else {
-            if (requestedSort.stream().count() > 1) {
-                throw new IllegalArgumentException("Currently only sorting by one field is supported");
-            }
-            sortField = requestedSort.toList().get(0).getProperty();
-        }
-        return sortField;
-    }
-
     public Sort.Direction getSortDirection(final Pageable pageable, final String fieldName) {
 
         if (pageable.getSort().isUnsorted()) {
