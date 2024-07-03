@@ -59,8 +59,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 public class PolicyStoreControllerTest {
@@ -140,15 +138,15 @@ public class PolicyStoreControllerTest {
         @Test
         void pageSizeTooLarge() {
             assertThatThrownBy(() -> testee.getPoliciesPaged(PageRequest.of(0, PolicyStoreController.MAX_PAGE_SIZE + 1),
-                    Collections.emptyList())).isInstanceOf(ResponseStatusException.class)
-                                             .hasFieldOrPropertyWithValue("status", HttpStatus.BAD_REQUEST);
+                    Collections.emptyList(), mock(HttpServletRequest.class))).isInstanceOf(
+                    IllegalArgumentException.class).hasMessageContaining("Page size too large");
         }
 
         @Test
         void pageSizeTooLow() {
-            assertThatThrownBy(
-                    () -> testee.getPoliciesPaged(PageRequest.of(0, 0), Collections.emptyList())).isInstanceOf(
-                    IllegalArgumentException.class).hasMessageContaining("Page size must not be less than one");
+            assertThatThrownBy(() -> testee.getPoliciesPaged(PageRequest.of(0, 0), Collections.emptyList(),
+                    mock(HttpServletRequest.class))).isInstanceOf(IllegalArgumentException.class)
+                                                    .hasMessageContaining("Page size must not be less than one");
         }
     }
 

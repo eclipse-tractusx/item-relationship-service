@@ -28,6 +28,7 @@ import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,10 +51,13 @@ import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.policystore.common.CommonConstants;
+import org.eclipse.tractusx.irs.policystore.common.SearchParameterParser;
 import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
 import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
+import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.services.PolicyPagingService;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
@@ -204,23 +208,40 @@ public class PolicyStoreController {
                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
+    // TODO (mfischer): #639: add documentation
+    // TODO (mfischer): #639: add integration tests
+    // TODO (mfischer): #639: update insomnia
     @GetMapping("/policies/paged")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public Page<PolicyResponse> getPoliciesPaged(//
-            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = "bpn", direction = Sort.Direction.ASC) //
+            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = CommonConstants.PROPERTY_BPN,
+                             direction = Sort.Direction.ASC) //
             final Pageable pageable, //
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers //
             @Parameter(description = "List of business partner numbers.") //
-            final List<String> businessPartnerNumbers) {
+            final List<String> businessPartnerNumbers, //
+            // There seems to be a bug concerning interpretation of delimiters in Spring.
+            // If we pass only one search filter `?search=policyId,EQUALS,policy1`,
+            // the parts of this search filter are split up into several search filters even if we encode the comma.
+            // It only works if multiple search filters are passed `?search=policyId,EQUALS,policy1&search=...`.
+            // The solution described on stackoverflow
+            // (https://stackoverflow.com/questions/37058691/encoded-comma-in-url-is-read-as-list-in-spring)
+            // using the annotation Delimiter did not work either.
+            // Therefore, we read the search parameters from the request manually.
+            final HttpServletRequest request) {
 
         if (pageable.getPageSize() > MAX_PAGE_SIZE) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page size too large");
+            throw new IllegalArgumentException("Page size too large");
         }
 
+        // TODO (mfischer): #639: add test coverage for this block
+        final List<String> searchParameters = Arrays.asList(request.getParameterMap().get("search"));
+        final List<SearchCriteria<?>> searchCriteria = new SearchParameterParser(searchParameters).getSearchCriteria();
         final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(businessPartnerNumbers);
-        final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable);
+        final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable,
+                searchCriteria);
         return policies.map(PolicyResponse::fromPolicyWithBpn);
     }
 

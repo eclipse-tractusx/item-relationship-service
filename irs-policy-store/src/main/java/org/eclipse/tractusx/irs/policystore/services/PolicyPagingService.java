@@ -25,9 +25,13 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.policystore.common.CommonConstants;
 import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
+import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
+import org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -47,24 +51,23 @@ public class PolicyPagingService {
      *
      * @param bpnToPoliciesMap map that maps BPN to policies
      * @param pageable         the page request options
+     * @param searchCriteria   the search criteria list
      * @return a paged list of policies including BPN
      */
-    public Page<PolicyWithBpn> getPolicies(final Map<String, List<Policy>> bpnToPoliciesMap, final Pageable pageable) {
+    public Page<PolicyWithBpn> getPolicies(final Map<String, List<Policy>> bpnToPoliciesMap, final Pageable pageable,
+            final List<SearchCriteria<?>> searchCriteria) {
 
-        // TODO (mfischer): #639 implement multi-sort:
-        final Comparator<PolicyWithBpn> comparator = getComparator(pageable);
-
-        // TODO (mfischer): #750 implement (multi-)filter
-        final Predicate<Policy> filter = policy -> true;
+        final Comparator<PolicyWithBpn> comparator = new PolicyComparatorBuilder(pageable).build();
+        final Predicate<PolicyWithBpn> filter = new PolicyFilterBuilder(searchCriteria).build();
 
         final List<PolicyWithBpn> policies = bpnToPoliciesMap.entrySet()
                                                              .stream()
                                                              .flatMap(bpnWithPolicies -> bpnWithPolicies.getValue()
                                                                                                         .stream()
-                                                                                                        .filter(filter)
                                                                                                         .map(policy -> new PolicyWithBpn(
                                                                                                                 bpnWithPolicies.getKey(),
                                                                                                                 policy)))
+                                                             .filter(filter)
                                                              .sorted(comparator)
                                                              .toList();
 
@@ -80,68 +83,172 @@ public class PolicyPagingService {
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort()), policies.size());
     }
 
-    private Comparator<PolicyWithBpn> getComparator(final Pageable pageable) {
+    /**
+     * Builder for {@link Comparator} for sorting a list of {@link PolicyWithBpn} objects.
+     */
+    static class PolicyComparatorBuilder {
 
-        Comparator<PolicyWithBpn> comparator = null;
+        private final Pageable pageable;
 
-        final List<Sort.Order> sort = pageable.getSort().stream().toList();
-        for (final Sort.Order order : sort) {
+        public PolicyComparatorBuilder(final Pageable pageable) {
+            this.pageable = pageable;
+        }
+
+        public Comparator<PolicyWithBpn> build() {
+
+            Comparator<PolicyWithBpn> comparator = null;
+
+            final List<Sort.Order> sort = pageable.getSort().stream().toList();
+            for (final Sort.Order order : sort) {
+                if (comparator == null) {
+                    comparator = getPolicyComparator(pageable, order);
+                } else {
+                    comparator = comparator.thenComparing(getPolicyComparator(pageable, order));
+                }
+            }
+
             if (comparator == null) {
-                comparator = getComparator(pageable, order);
+                comparator = Comparator.comparing(PolicyWithBpn::bpn);
+            }
+
+            return comparator;
+        }
+
+        private Comparator<PolicyWithBpn> getPolicyComparator(final Pageable pageable, final Sort.Order order) {
+            Comparator<PolicyWithBpn> fieldComparator;
+            final String property = order.getProperty();
+            if (CommonConstants.PROPERTY_BPN.equalsIgnoreCase(property)) {
+                fieldComparator = Comparator.comparing(PolicyWithBpn::bpn);
+            } else if (CommonConstants.PROPERTY_VALID_UNTIL.equalsIgnoreCase(property)) {
+                fieldComparator = Comparator.comparing(p -> p.policy().getValidUntil());
+            } else if (CommonConstants.PROPERTY_POLICY_ID.equalsIgnoreCase(property)) {
+                fieldComparator = Comparator.comparing(p -> p.policy().getPolicyId());
+            } else if (CommonConstants.PROPERTY_CREATED_ON.equalsIgnoreCase(property)) {
+                fieldComparator = Comparator.comparing(p -> p.policy().getCreatedOn());
+            } else if (CommonConstants.PROPERTY_ACTION.equalsIgnoreCase(property)) {
+                fieldComparator = Comparator.comparing(p -> {
+                    final List<Permission> permissions = p.policy().getPermissions();
+                    return permissions.isEmpty() ? null : permissions.get(0).getAction();
+                });
             } else {
-                comparator = comparator.thenComparing(getComparator(pageable, order));
+                log.warn("Sorting by field '{}' is not supported", order.getProperty());
+                throw new IllegalArgumentException("Sorting by this field is not supported");
+            }
+
+            if (getSortDirection(pageable, order.getProperty()) == Sort.Direction.DESC) {
+                fieldComparator = fieldComparator.reversed();
+            }
+
+            return fieldComparator;
+        }
+
+        public Sort.Direction getSortDirection(final Pageable pageable, final String fieldName) {
+
+            if (pageable.getSort().isUnsorted()) {
+                return Sort.Direction.ASC;
+            }
+
+            final Sort sort = pageable.getSort();
+            for (final Sort.Order order : sort) {
+                if (order.getProperty().equals(fieldName)) {
+                    return order.getDirection();
+                }
+            }
+
+            log.warn("Sort field '{}' not found", fieldName);
+            throw new IllegalArgumentException("Property not found");
+        }
+    }
+
+    /**
+     * Builder for {@link Predicate} for filtering a list of {@link PolicyWithBpn} objects.
+     */
+    static class PolicyFilterBuilder {
+
+        private final List<SearchCriteria<?>> searchCriteriaList;
+
+        public PolicyFilterBuilder(final List<SearchCriteria<?>> searchCriteriaList) {
+            this.searchCriteriaList = searchCriteriaList;
+        }
+
+        private Predicate<PolicyWithBpn> build() {
+            Predicate<PolicyWithBpn> policyFilter = policy -> true;
+
+            for (final SearchCriteria<?> searchCriteria : searchCriteriaList) {
+
+                final Predicate<PolicyWithBpn> fieldFilter = getPolicyPredicate(searchCriteria);
+                policyFilter = policyFilter.and(fieldFilter);
+            }
+
+            return policyFilter;
+        }
+
+        private Predicate<PolicyWithBpn> getPolicyPredicate(final SearchCriteria<?> searchCriteria) {
+
+            if (CommonConstants.PROPERTY_BPN.equalsIgnoreCase(searchCriteria.getProperty())) {
+                return getBpnFilter(searchCriteria);
+            } else if (CommonConstants.PROPERTY_POLICY_ID.equalsIgnoreCase(searchCriteria.getProperty())) {
+                return getPolicyIdFilter(searchCriteria);
+
+                // TODO (mfischer): #639: add coverage for action, createdOn, validUntil
+            } else if (CommonConstants.PROPERTY_ACTION.equalsIgnoreCase(searchCriteria.getProperty())) {
+                return getActionFilter(searchCriteria);
+            } else if (CommonConstants.PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
+                // TODO (mfischer): #639: implement createdOn filter
+                throw new IllegalArgumentException("Filtering by '%s' has not been implemented yet".formatted(
+                        CommonConstants.PROPERTY_CREATED_ON));
+            } else if (CommonConstants.PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
+                // TODO (mfischer): #639: implement validUntil filter
+                throw new IllegalArgumentException("Filtering by '%s' has not been implemented yet".formatted(
+                        CommonConstants.PROPERTY_VALID_UNTIL));
+            } else {
+                throw new IllegalArgumentException("Not supported");
             }
         }
 
-        if (comparator == null) {
-            comparator = Comparator.comparing(PolicyWithBpn::bpn);
+        private Predicate<PolicyWithBpn> getPolicyIdFilter(final SearchCriteria<?> searchCriteria) {
+            return switch (searchCriteria.getOperation()) {
+                case EQUALS -> p -> p.policy().getPolicyId().equalsIgnoreCase((String) searchCriteria.getValue());
+                case STARTS_WITH -> p -> StringUtils.startsWithIgnoreCase(p.policy().getPolicyId(),
+                        (String) searchCriteria.getValue());
+                default -> throw new IllegalArgumentException(
+                        "The property 'policyId' only supports the following operations: %s".formatted(
+                                List.of(Operation.EQUALS, Operation.STARTS_WITH)));
+            };
         }
 
-        return comparator;
-    }
-
-    private Comparator<PolicyWithBpn> getComparator(final Pageable pageable, final Sort.Order order) {
-        Comparator<PolicyWithBpn> fieldComparator;
-        final String property = order.getProperty();
-        if ("bpn".equalsIgnoreCase(property)) {
-            fieldComparator = Comparator.comparing(PolicyWithBpn::bpn);
-        } else if ("validUntil".equalsIgnoreCase(property)) {
-            fieldComparator = Comparator.comparing(p -> p.policy().getValidUntil());
-        } else if ("policyId".equalsIgnoreCase(property)) {
-            fieldComparator = Comparator.comparing(p -> p.policy().getPolicyId());
-        } else if ("createdOn".equalsIgnoreCase(property)) {
-            fieldComparator = Comparator.comparing(p -> p.policy().getCreatedOn());
-        } else if ("action".equalsIgnoreCase(property)) {
-            fieldComparator = Comparator.comparing(p -> {
-                final List<Permission> permissions = p.policy().getPermissions();
-                return permissions.isEmpty() ? null : permissions.get(0).getAction();
-            });
-        } else {
-            log.warn("Sorting by field '{}' is not supported", order.getProperty());
-            throw new IllegalArgumentException("Sorting by this field is not supported");
+        private Predicate<PolicyWithBpn> getBpnFilter(final SearchCriteria<?> searchCriteria) {
+            return switch (searchCriteria.getOperation()) {
+                case EQUALS -> p -> p.bpn().equalsIgnoreCase((String) searchCriteria.getValue());
+                case STARTS_WITH -> p -> StringUtils.startsWithIgnoreCase(p.bpn(), (String) searchCriteria.getValue());
+                default -> throw new IllegalArgumentException(
+                        "The property 'BPN' only supports the following operations: %s".formatted(
+                                List.of(Operation.EQUALS, Operation.STARTS_WITH)));
+            };
         }
 
-        if (getSortDirection(pageable, order.getProperty()) == Sort.Direction.DESC) {
-            fieldComparator = fieldComparator.reversed();
-        }
-
-        return fieldComparator;
-    }
-
-    public Sort.Direction getSortDirection(final Pageable pageable, final String fieldName) {
-
-        if (pageable.getSort().isUnsorted()) {
-            return Sort.Direction.ASC;
-        }
-
-        final Sort sort = pageable.getSort();
-        for (final Sort.Order order : sort) {
-            if (order.getProperty().equals(fieldName)) {
-                return order.getDirection();
+        private Predicate<PolicyWithBpn> getActionFilter(final SearchCriteria<?> searchCriteria) {
+            if (Operation.EQUALS.equals(searchCriteria.getOperation())) {
+                return p -> {
+                    final List<Permission> permissions = p.policy().getPermissions();
+                    if (permissions == null || permissions.isEmpty()) {
+                        return false;
+                    }
+                    // TODO (mfischer) #639: clarify which to use
+                    // option 1: filter on first action
+                    //return permissions.get(0).getAction().getValue().equalsIgnoreCase((String) searchCriteria.getValue());
+                    // option 2: filter on all actions
+                    return permissions.stream()
+                                      .map(Permission::getAction)
+                                      .anyMatch(action -> action.getValue()
+                                                                .equalsIgnoreCase((String) searchCriteria.getValue()));
+                };
+            } else {
+                throw new IllegalArgumentException(
+                        "The property 'action' only supports the following operations: %s".formatted(
+                                List.of(Operation.EQUALS)));
             }
         }
-
-        log.warn("Sort field '{}' not found", fieldName);
-        throw new IllegalArgumentException("Property not found");
     }
 }
+

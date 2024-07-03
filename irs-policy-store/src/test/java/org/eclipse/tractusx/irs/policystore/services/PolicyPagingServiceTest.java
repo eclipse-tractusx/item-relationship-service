@@ -19,12 +19,13 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.services;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -34,16 +35,22 @@ import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
 import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
+import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.testcontainers.shaded.org.apache.commons.lang3.builder.ToStringBuilder;
+import org.testcontainers.shaded.org.apache.commons.lang3.builder.ToStringStyle;
 
 @ExtendWith(MockitoExtension.class)
 class PolicyPagingServiceTest {
+
+    private static final List<SearchCriteria<?>> NO_SEARCH_CRITERIA = emptyList();
 
     private PolicyPagingService testee;
 
@@ -63,110 +70,221 @@ class PolicyPagingServiceTest {
             ) //
     );
 
-    @Test
-    public void whenUnsorted_shouldUseDefaultSortingBpnAscending() {
+    @Nested
+    class SortTest {
 
-        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10));
+        @Test
+        public void whenUnsorted_shouldUseDefaultSortingBpnAscending() {
 
-        assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
-                // BPN1
-                "policy-4", "policy-1",
-                // BPN2
-                "policy-3", "policy-2", "policy-5");
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
+                    NO_SEARCH_CRITERIA);
+
+            assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                    // BPN1
+                    "policy-4", "policy-1",
+                    // BPN2
+                    "policy-3", "policy-2", "policy-5");
+        }
+
+        @Test
+        public void whenSortedByBpnAsc() {
+
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
+                    PageRequest.of(0, 10, Sort.by("bpn").ascending()), NO_SEARCH_CRITERIA);
+
+            assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                    // BPN1
+                    "policy-4", "policy-1",
+                    // BPN2
+                    "policy-3", "policy-2", "policy-5");
+        }
+
+        @Test
+        public void whenSortedByBpnDesc() {
+
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
+                    PageRequest.of(0, 10, Sort.by("bpn").descending()), NO_SEARCH_CRITERIA);
+
+            assertThat(result.getContent().stream().map(PolicyWithBpn::bpn).toList()).containsExactly("BPN2", "BPN2",
+                    "BPN2", "BPN1", "BPN1");
+        }
+
+        @Test
+        public void whenSortedByBpnAscAndPolicyIdDesc() {
+
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
+                    PageRequest.of(0, 10, Sort.by("bpn").ascending().and(Sort.by("policyId").descending())),
+                    NO_SEARCH_CRITERIA);
+
+            assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                    // BPN1
+                    "policy-4", "policy-1",
+                    // BPN2
+                    "policy-5", "policy-3", "policy-2");
+        }
+
+        @Test
+        public void whenSortedByBpnDescAndPolicyIdAsc() {
+
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
+                    PageRequest.of(0, 10, Sort.by("bpn").descending().and(Sort.by("policyId").ascending())),
+                    NO_SEARCH_CRITERIA);
+
+            assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                    // BPN2
+                    "policy-2", "policy-3", "policy-5",
+                    // BPN1
+                    "policy-1", "policy-4");
+        }
     }
 
-    @Test
-    public void whenSortedByBpnAsc() {
+    @Nested
+    class PageTests {
 
-        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
-                PageRequest.of(0, 10, Sort.by("bpn").ascending()));
+        @Test
+        public void whenRequestedPageIsAvailable_thenCorrectPageIsReturned() {
 
-        assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
-                // BPN1
-                "policy-4", "policy-1",
-                // BPN2
-                "policy-3", "policy-2", "policy-5");
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(2, 2),
+                    NO_SEARCH_CRITERIA);
+
+            assertThat(result).isNotNull();
+            assertThat(result.getNumber()).isEqualTo(2);
+            assertThat(result.getTotalPages()).isEqualTo(3);
+            assertThat(result.getNumberOfElements()).isEqualTo(1);
+            assertThat(result.getTotalElements()).isEqualTo(5);
+            assertThat(result.getContent()).hasSize(1);
+            assertThat(result.isFirst()).isFalse();
+            assertThat(result.isLast()).isTrue();
+        }
+
+        @Test
+        public void whenNoPoliciesAvailable_thenEmptyPage() {
+
+            final Page<PolicyWithBpn> result = testee.getPolicies(emptyMap(), PageRequest.of(0, 10),
+                    NO_SEARCH_CRITERIA);
+
+            assertThat(result).isNotNull();
+            assertThat(result.getNumber()).isEqualTo(0);
+            assertThat(result.getTotalPages()).isEqualTo(0);
+            assertThat(result.getNumberOfElements()).isEqualTo(0);
+            assertThat(result.getTotalElements()).isEqualTo(0);
+            assertThat(result.getContent()).isEmpty();
+            assertThat(result.isFirst()).isTrue();
+            assertThat(result.isLast()).isTrue();
+        }
+
+        @Test
+        public void whenPageRequestedBeyondAvailableData_thenReturnEmptyPage() {
+
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(2, 10),
+                    NO_SEARCH_CRITERIA);
+
+            assertThat(result).isNotNull();
+            assertThat(result.getNumber()).isEqualTo(2);
+            assertThat(result.getTotalPages()).isEqualTo(1);
+            assertThat(result.getNumberOfElements()).isEqualTo(0);
+            assertThat(result.getTotalElements()).isEqualTo(5);
+            assertThat(result.getContent()).isEmpty();
+            assertThat(result.isFirst()).isFalse();
+            assertThat(result.isLast()).isTrue();
+        }
     }
 
-    @Test
-    public void whenSortedByBpnDesc() {
+    @Nested
+    class FilterTests {
 
-        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
-                PageRequest.of(0, 10, Sort.by("bpn").descending()));
+        @Test
+        public void policyId_invalidOperation() {
 
-        assertThat(result.getContent().stream().map(PolicyWithBpn::bpn).toList()).containsExactly("BPN2", "BPN2",
-                "BPN2", "BPN1", "BPN1");
-    }
+            assertThatThrownBy(() -> testee.getPolicies(policiesMap, PageRequest.of(0, 10),
+                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.BETWEEN,
+                            "policy-2")))).isInstanceOf(IllegalArgumentException.class)
+                                          .hasMessageContaining(
+                                                  "The property 'policyId' only supports the following operations");
+        }
 
-    @Test
-    public void whenSortedByBpnAscAndPolicyIdDesc() {
+        @Test
+        public void filterByPolicyIdEquals_shouldFindExactlyOne() {
 
-        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
-                PageRequest.of(0, 10, Sort.by("bpn").ascending().and(Sort.by("policyId").descending())));
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
+                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.EQUALS, "policy-2")));
 
-        assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
-                // BPN1
-                "policy-4", "policy-1",
-                // BPN2
-                "policy-5", "policy-3", "policy-2");
-    }
+            assertThat(result).isNotNull();
+            assertThat(result.getContent()).hasSize(1);
 
-    @Test
-    public void whenSortedByBpnDescAndPolicyIdAsc() {
+            final PolicyWithBpn policyWithBpn = result.getContent().get(0);
+            assertThat(policyWithBpn.policy().getPolicyId()).isEqualTo("policy-2");
+            assertThat(policyWithBpn.bpn()).isEqualTo("BPN2");
+        }
 
-        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap,
-                PageRequest.of(0, 10, Sort.by("bpn").descending().and(Sort.by("policyId").ascending())));
+        @Test
+        public void filterByPolicyIdEqualsAndBpnEquals_noResult() {
 
-        assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
-                // BPN2
-                "policy-2", "policy-3", "policy-5",
-                // BPN1
-                "policy-1", "policy-4");
-    }
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
+                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.EQUALS, "policy-4"),
+                            new SearchCriteria<>("bpn", SearchCriteria.Operation.EQUALS, "BPN2")));
 
-    @Test
-    public void whenRequestedPageIsAvailable_thenCorrectPageIsReturned() {
+            assertThat(result).isNotNull();
+            assertThat(result.getContent()).isEmpty();
+        }
 
-        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(2, 2));
+        @Test
+        public void filterByPolicyIdStartingWith_shouldFindAllMatches() {
 
-        assertThat(result).isNotNull();
-        assertThat(result.getNumber()).isEqualTo(2);
-        assertThat(result.getTotalPages()).isEqualTo(3);
-        assertThat(result.getNumberOfElements()).isEqualTo(1);
-        assertThat(result.getTotalElements()).isEqualTo(5);
-        assertThat(result.getContent()).hasSize(1);
-        assertThat(result.isFirst()).isFalse();
-        assertThat(result.isLast()).isTrue();
-    }
+            final Map<String, List<Policy>> policiesMap = Map.of( //
+                    "BPN2", Arrays.asList( //
+                            createPolicy("policy-3"), //
+                            createPolicy("policy-22"), //
+                            createPolicy("policy-5") //
+                    ), "BPN1", Arrays.asList( //
+                            createPolicy("policy-2"), //
+                            createPolicy("policy-1") //
+                    ) //
+            );
 
-    @Test
-    public void whenNoPoliciesAvailable_thenEmptyPage() {
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
+                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.STARTS_WITH, "policy-2")));
 
-        final Page<PolicyWithBpn> result = testee.getPolicies(emptyMap(), PageRequest.of(0, 10));
+            assertThat(result).isNotNull();
+            assertThat(result.getContent()).hasSize(2);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getNumber()).isEqualTo(0);
-        assertThat(result.getTotalPages()).isEqualTo(0);
-        assertThat(result.getNumberOfElements()).isEqualTo(0);
-        assertThat(result.getTotalElements()).isEqualTo(0);
-        assertThat(result.getContent()).isEmpty();
-        assertThat(result.isFirst()).isTrue();
-        assertThat(result.isLast()).isTrue();
-    }
+            assertThat(result.getContent().stream().map(p -> {
+                final ToStringBuilder toStringBuilder = new ToStringBuilder(p, ToStringStyle.SHORT_PREFIX_STYLE);
+                return toStringBuilder.append("BPN", p.bpn()) //
+                                      .append("policyId", p.policy().getPolicyId()).toString();
+            }).toList()).isEqualTo(List.of( //
+                    "PolicyWithBpn[BPN=BPN1,policyId=policy-2]",  //
+                    "PolicyWithBpn[BPN=BPN2,policyId=policy-22]"));
+        }
 
-    @Test
-    public void whenPageRequestedBeyondAvailableData_thenReturnEmptyPage() {
+        @Test
+        public void filterByPolicyIdStartingWithAndByBpnEquals_shouldNarrowDown() {
 
-        final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(2, 10));
+            final Map<String, List<Policy>> policiesMap = Map.of( //
+                    "BPN2", Arrays.asList( //
+                            createPolicy("policy-3"), //
+                            createPolicy("policy-22"), //
+                            createPolicy("policy-5") //
+                    ), "BPN1", Arrays.asList( //
+                            createPolicy("policy-2"), //
+                            createPolicy("policy-1") //
+                    ) //
+            );
 
-        assertThat(result).isNotNull();
-        assertThat(result.getNumber()).isEqualTo(2);
-        assertThat(result.getTotalPages()).isEqualTo(1);
-        assertThat(result.getNumberOfElements()).isEqualTo(0);
-        assertThat(result.getTotalElements()).isEqualTo(5);
-        assertThat(result.getContent()).isEmpty();
-        assertThat(result.isFirst()).isFalse();
-        assertThat(result.isLast()).isTrue();
+            final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
+                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.STARTS_WITH, "policy-2"),
+                            new SearchCriteria<>("BPN", SearchCriteria.Operation.EQUALS, "BPN1")));
+
+            assertThat(result).isNotNull();
+            assertThat(result.getContent()).hasSize(1);
+
+            assertThat(result.getContent().stream().map(p -> {
+                final ToStringBuilder toStringBuilder = new ToStringBuilder(p, ToStringStyle.SHORT_PREFIX_STYLE);
+                return toStringBuilder.append("BPN", p.bpn()) //
+                                      .append("policyId", p.policy().getPolicyId()).toString();
+            }).toList()).isEqualTo(List.of("PolicyWithBpn[BPN=BPN1,policyId=policy-2]"));
+        }
+
     }
 
     private Policy createPolicy(final String policyId) {
@@ -184,7 +302,7 @@ class PolicyPagingServiceTest {
     }
 
     private Constraints createConstraints() {
-        return new Constraints(Collections.emptyList(), List.of(ConstraintConstants.ACTIVE_MEMBERSHIP,
+        return new Constraints(emptyList(), List.of(ConstraintConstants.ACTIVE_MEMBERSHIP,
                 ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE, ConstraintConstants.PURPOSE_ID_3_1_TRACE));
     }
 }
