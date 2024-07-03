@@ -26,6 +26,9 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
 
+/**
+ * Parser for search parameters.
+ */
 @Getter
 public class SearchParameterParser {
 

@@ -90,7 +90,7 @@ public class PolicyPagingService {
 
         private final Pageable pageable;
 
-        public PolicyComparatorBuilder(final Pageable pageable) {
+        PolicyComparatorBuilder(final Pageable pageable) {
             this.pageable = pageable;
         }
 
@@ -167,7 +167,7 @@ public class PolicyPagingService {
 
         private final List<SearchCriteria<?>> searchCriteriaList;
 
-        public PolicyFilterBuilder(final List<SearchCriteria<?>> searchCriteriaList) {
+        PolicyFilterBuilder(final List<SearchCriteria<?>> searchCriteriaList) {
             this.searchCriteriaList = searchCriteriaList;
         }
 

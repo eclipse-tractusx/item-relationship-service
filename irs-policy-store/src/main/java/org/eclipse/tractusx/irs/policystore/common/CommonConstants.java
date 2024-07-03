@@ -19,6 +19,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.common;
 
+/**
+ * Common constants.
+ */
 public class CommonConstants {
     public static final String PROPERTY_BPN = "bpn";
     public static final String PROPERTY_POLICY_ID = "policyId";

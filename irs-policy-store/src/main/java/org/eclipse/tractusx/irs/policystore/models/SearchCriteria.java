@@ -22,13 +22,22 @@ package org.eclipse.tractusx.irs.policystore.models;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * Search criteria.
+ *
+ * @param <T> type for value
+ */
 @AllArgsConstructor
 @Getter
 public class SearchCriteria<T> {
+
     private String property;
     private Operation operation;
     private T value;
 
+    /**
+     * Search filter operation.
+     */
     public enum Operation {
         EQUALS,
         STARTS_WITH,
