@@ -243,7 +243,7 @@ public class PolicyStoreController {
         final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(businessPartnerNumbers);
         final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable,
                 searchCriteria);
-        return policies.map(PolicyResponse::fromPolicyWithBpn);
+        return policies.map(policyWithBpn -> PolicyResponse.from(policyWithBpn.policy(), policyWithBpn.bpn()));
     }
 
     private static void ensureParamBusinessPartnerNumberCorrectlyNamed(final Map<String, String[]> parameterMap) {

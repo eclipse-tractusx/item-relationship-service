@@ -136,6 +136,10 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload,
             """;
 
     public static PolicyResponse fromPolicy(final Policy policy) {
+        return from(policy, null);
+    }
+
+    public static PolicyResponse from(final Policy policy, final String bpn) {
         return PolicyResponse.builder()
                              .validUntil(policy.getValidUntil())
                              .payload(Payload.builder()
@@ -143,18 +147,7 @@ public record PolicyResponse(OffsetDateTime validUntil, Payload payload,
                                              .context(Context.getDefault())
                                              .policy(policy)
                                              .build())
-                             .build();
-    }
-
-    public static PolicyResponse fromPolicyWithBpn(final PolicyWithBpn policyWithBpn) {
-        return PolicyResponse.builder()
-                             .validUntil(policyWithBpn.policy().getValidUntil())
-                             .payload(Payload.builder()
-                                             .policyId(policyWithBpn.policy().getPolicyId())
-                                             .context(Context.getDefault())
-                                             .policy(policyWithBpn.policy())
-                                             .build())
-                             .bpn(policyWithBpn.bpn())
+                             .bpn(bpn)
                              .build();
     }
 
