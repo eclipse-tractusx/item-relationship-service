@@ -29,6 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -100,6 +101,7 @@ public class PolicyStoreController {
     public static final String BPN_REGEX = BusinessPartnerNumberListValidator.BPN_REGEX;
     public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int MAX_PAGE_SIZE = 1000;
+    public static final String SEARCH = "search";
 
     private final PolicyStoreService service;
 
@@ -238,12 +240,16 @@ public class PolicyStoreController {
         // (https://stackoverflow.com/questions/37058691/encoded-comma-in-url-is-read-as-list-in-spring)
         // using the annotation Delimiter did not work either.
         // Therefore, we read the search parameters from the request manually.
-        final List<String> searchParameters = Arrays.asList(parameterMap.get("search"));
-        final List<SearchCriteria<?>> searchCriteria = new SearchParameterParser(searchParameters).getSearchCriteria();
+        final List<SearchCriteria<?>> searchCriteria = new SearchParameterParser(
+                getSearchParameters(parameterMap)).getSearchCriteria();
         final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(businessPartnerNumbers);
         final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable,
                 searchCriteria);
         return policies.map(policyWithBpn -> PolicyResponse.from(policyWithBpn.policy(), policyWithBpn.bpn()));
+    }
+
+    private List<String> getSearchParameters(final Map<String, String[]> parameterMap) {
+        return parameterMap.get(SEARCH) != null ? Arrays.asList(parameterMap.get(SEARCH)) : Collections.emptyList();
     }
 
     private static void ensureParamBusinessPartnerNumberCorrectlyNamed(final Map<String, String[]> parameterMap) {
