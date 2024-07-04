@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.policystore.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.AFTER_LOCAL_DATE;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
 
 import java.util.List;
@@ -58,9 +59,10 @@ public class SearchParameterParserTest {
 
     @Test
     void betweenNotForNonDateProperties() {
-        final ThrowingCallable call = () -> new SearchParameterParser(List.of("policyId,BETWEEN,test"));
+        final ThrowingCallable call = () -> new SearchParameterParser(
+                List.of("policyId," + AFTER_LOCAL_DATE + ",test"));
         assertThatThrownBy(call).isInstanceOf(IllegalArgumentException.class)
-                                .hasMessageContaining("Operation BETWEEN is only supported for date properties");
+                                .hasMessageContaining("Date operation are only supported for date properties");
     }
 
     @Test

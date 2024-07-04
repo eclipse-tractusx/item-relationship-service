@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_ACTION;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_BPN;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_POLICY_ID;
-import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BETWEEN;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BEFORE_LOCAL_DATE;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.STARTS_WITH;
 
@@ -203,10 +203,10 @@ class PolicyPagingServiceTest {
         public void policyId_invalidOperation() {
 
             assertThatThrownBy(() -> testee.getPolicies(policiesMap, PageRequest.of(0, 10),
-                    List.of(new SearchCriteria<>(PROPERTY_POLICY_ID, BETWEEN, "policy-2")))).isInstanceOf(
-                                                                                                    IllegalArgumentException.class)
-                                                                                            .hasMessageContaining(
-                                                                                                    "The property 'policyId' only supports the following operations");
+                    List.of(new SearchCriteria<>(PROPERTY_POLICY_ID, BEFORE_LOCAL_DATE, "policy-2")))).isInstanceOf(
+                                                                                                              IllegalArgumentException.class)
+                                                                                                      .hasMessageContaining(
+                                                                                                              "The property 'policyId' only supports the following operations");
         }
 
         @Test

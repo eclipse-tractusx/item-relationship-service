@@ -41,6 +41,7 @@ public class SearchCriteria<T> {
     public enum Operation {
         EQUALS,
         STARTS_WITH,
-        BETWEEN
+        BEFORE_LOCAL_DATE,
+        AFTER_LOCAL_DATE
     }
 }

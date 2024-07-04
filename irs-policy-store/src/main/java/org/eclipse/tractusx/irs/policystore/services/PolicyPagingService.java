@@ -204,15 +204,14 @@ public class PolicyPagingService {
                 return getBpnFilter(searchCriteria);
             } else if (PROPERTY_POLICY_ID.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getPolicyIdFilter(searchCriteria);
-                // TODO (mfischer): #750: add test coverage for createdOn, validUntil
             } else if (PROPERTY_ACTION.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getActionFilter(searchCriteria);
             } else if (PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
-                // TODO (mfischer): #750: implement createdOn filter
+                // TODO (mfischer): #750: implement createdOn filter incl. test
                 throw new IllegalArgumentException(
                         "Filtering by '%s' has not been implemented yet".formatted(PROPERTY_CREATED_ON));
             } else if (PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
-                // TODO (mfischer): #750: implement validUntil filter
+                // TODO (mfischer): #750: implement validUntil filter incl. test
                 throw new IllegalArgumentException(
                         "Filtering by '%s' has not been implemented yet".formatted(PROPERTY_VALID_UNTIL));
             } else {

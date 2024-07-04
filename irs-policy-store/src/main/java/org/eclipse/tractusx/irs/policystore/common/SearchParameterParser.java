@@ -24,7 +24,8 @@ import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPER
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_CREATED_ON;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_POLICY_ID;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_VALID_UNTIL;
-import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BETWEEN;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.AFTER_LOCAL_DATE;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BEFORE_LOCAL_DATE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ public class SearchParameterParser {
     public static final List<String> SUPPORTED_PROPERTIES = List.of(PROPERTY_BPN, PROPERTY_VALID_UNTIL,
             PROPERTY_POLICY_ID, PROPERTY_CREATED_ON, PROPERTY_ACTION);
     public static final List<String> DATE_PROPERTIES = List.of(PROPERTY_VALID_UNTIL, PROPERTY_CREATED_ON);
+    public static final List<Operation> DATE_OPERATORS = List.of(BEFORE_LOCAL_DATE, AFTER_LOCAL_DATE);
 
     public static final String CRITERIA_INNER_SEPARATOR = ",";
     public static final int NUM_PARTS_OF_FILTERS = 3;
@@ -93,8 +95,9 @@ public class SearchParameterParser {
 
     private Operation getOperation(final String operationStr, final String property) {
         final Operation operation = Operation.valueOf(StringUtils.trimToEmpty(operationStr));
-        if (operation == BETWEEN && DATE_PROPERTIES.stream().noneMatch(p -> p.equalsIgnoreCase(property))) {
-            throw new IllegalArgumentException("Operation BETWEEN is only supported for date properties");
+        if (DATE_OPERATORS.contains(operation) && DATE_PROPERTIES.stream()
+                                                                 .noneMatch(p -> p.equalsIgnoreCase(property))) {
+            throw new IllegalArgumentException("Date operation are only supported for date properties");
         }
         return operation;
     }

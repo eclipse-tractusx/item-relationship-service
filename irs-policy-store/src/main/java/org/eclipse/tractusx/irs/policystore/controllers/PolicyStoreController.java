@@ -208,9 +208,7 @@ public class PolicyStoreController {
                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
-    // TODO (mfischer): #750: add documentation
-    // TODO (mfischer): #750: add / adapt integration tests
-    // TODO (mfischer): #750: update insomnia
+    // TODO (mfischer): #639: add documentation and insomnia collection
     @GetMapping("/policies/paged")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
