@@ -38,6 +38,7 @@ import org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation;
  * Parser for search parameters.
  */
 @Getter
+@SuppressWarnings({ "PMD.TooManyStaticImports" })
 public class SearchParameterParser {
 
     public static final List<String> SUPPORTED_PROPERTIES = List.of(PROPERTY_BPN, PROPERTY_VALID_UNTIL,

@@ -50,6 +50,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@SuppressWarnings({ "PMD.TooManyStaticImports" })
 public class PolicyPagingService {
 
     /**
@@ -121,6 +122,7 @@ public class PolicyPagingService {
             return comparator;
         }
 
+        @SuppressWarnings({ "PMD.CognitiveComplexity" })
         private Comparator<PolicyWithBpn> getPolicyComparator(final Pageable pageable, final Sort.Order order) {
             Comparator<PolicyWithBpn> fieldComparator;
             final String property = order.getProperty();
