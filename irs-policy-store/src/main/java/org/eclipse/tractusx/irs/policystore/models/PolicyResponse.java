@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.policystore.models;
 
 import java.time.OffsetDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
@@ -30,7 +31,8 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
  */
 @Builder
 @Schema(example = PolicyResponse.EXAMPLE_PAYLOAD)
-public record PolicyResponse(OffsetDateTime validUntil, Payload payload, String bpn) {
+public record PolicyResponse(OffsetDateTime validUntil, Payload payload,
+                             @JsonInclude(JsonInclude.Include.NON_NULL) String bpn) {
 
     public static final String BPN_TO_POLICY_MAP_EXAMPLE = """
               {
