@@ -94,7 +94,6 @@ public class PolicyPagingService {
      * Builder for {@link Comparator} for sorting a list of {@link PolicyWithBpn} objects.
      */
     private static class PolicyComparatorBuilder {
-        // TODO (mfischer): #750: maybe extract to separate class
 
         private final Pageable pageable;
 
@@ -178,7 +177,6 @@ public class PolicyPagingService {
      * Builder for {@link Predicate} for filtering a list of {@link PolicyWithBpn} objects.
      */
     private static class PolicyFilterBuilder {
-        // TODO (mfischer): #750: maybe extract to separate class
 
         private final List<SearchCriteria<?>> searchCriteriaList;
 
@@ -187,14 +185,12 @@ public class PolicyPagingService {
         }
 
         /* package */ Predicate<PolicyWithBpn> build() {
+
             Predicate<PolicyWithBpn> policyFilter = policy -> true;
-
             for (final SearchCriteria<?> searchCriteria : searchCriteriaList) {
-
                 final Predicate<PolicyWithBpn> fieldFilter = getPolicyPredicate(searchCriteria);
                 policyFilter = policyFilter.and(fieldFilter);
             }
-
             return policyFilter;
         }
 
@@ -206,16 +202,17 @@ public class PolicyPagingService {
                 return getPolicyIdFilter(searchCriteria);
             } else if (PROPERTY_ACTION.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getActionFilter(searchCriteria);
-            } else if (PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
-                // TODO (mfischer): #750: implement createdOn filter incl. test
-                throw new IllegalArgumentException(
-                        "Filtering by '%s' has not been implemented yet".formatted(PROPERTY_CREATED_ON));
-            } else if (PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
-                // TODO (mfischer): #750: implement validUntil filter incl. test
-                throw new IllegalArgumentException(
-                        "Filtering by '%s' has not been implemented yet".formatted(PROPERTY_VALID_UNTIL));
             } else {
-                throw new IllegalArgumentException("Not supported");
+                final String notYetImplementedMessage = "Filtering by '%s' has not been implemented yet";
+                if (PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
+                    // TODO (mfischer): #750: implement createdOn filter incl. test
+                    throw new IllegalArgumentException(notYetImplementedMessage.formatted(PROPERTY_CREATED_ON));
+                } else if (PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
+                    // TODO (mfischer): #750: implement validUntil filter incl. test
+                    throw new IllegalArgumentException(notYetImplementedMessage.formatted(PROPERTY_VALID_UNTIL));
+                } else {
+                    throw new IllegalArgumentException("Not supported");
+                }
             }
         }
 
