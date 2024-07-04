@@ -251,13 +251,15 @@ class PolicyPagingServiceTest {
             assertThat(result).isNotNull();
             assertThat(result.getContent()).hasSize(2);
 
-            assertThat(result.getContent().stream().map(p -> {
-                final ToStringBuilder toStringBuilder = new ToStringBuilder(p, ToStringStyle.SHORT_PREFIX_STYLE);
-                return toStringBuilder.append("BPN", p.bpn()) //
-                                      .append("policyId", p.policy().getPolicyId()).toString();
-            }).toList()).isEqualTo(List.of( //
-                    "PolicyWithBpn[BPN=BPN1,policyId=policy-2]",  //
-                    "PolicyWithBpn[BPN=BPN2,policyId=policy-22]"));
+            final List<String> policies = result.getContent()
+                                                .stream()
+                                                .map(p -> toStringBuilder(p).append("BPN", p.bpn()) //
+                                                                            .append("policyId",
+                                                                                    p.policy().getPolicyId())
+                                                                            .toString())
+                                                .toList();
+            assertThat(policies).containsExactlyInAnyOrder("[BPN=BPN1,policyId=policy-2]",
+                    "[BPN=BPN2,policyId=policy-22]");
         }
 
         @Test
@@ -281,11 +283,14 @@ class PolicyPagingServiceTest {
             assertThat(result).isNotNull();
             assertThat(result.getContent()).hasSize(1);
 
-            assertThat(result.getContent().stream().map(p -> {
-                final ToStringBuilder toStringBuilder = new ToStringBuilder(p, ToStringStyle.SHORT_PREFIX_STYLE);
-                return toStringBuilder.append("BPN", p.bpn()) //
-                                      .append("policyId", p.policy().getPolicyId()).toString();
-            }).toList()).isEqualTo(List.of("PolicyWithBpn[BPN=BPN1,policyId=policy-2]"));
+            final List<String> policies = result.getContent()
+                                                .stream()
+                                                .map(p -> toStringBuilder(p).append("BPN", p.bpn()) //
+                                                                            .append("policyId",
+                                                                                    p.policy().getPolicyId())
+                                                                            .toString())
+                                                .toList();
+            assertThat(policies).containsExactlyInAnyOrder("[BPN=BPN1,policyId=policy-2]");
         }
 
     }
@@ -307,5 +312,9 @@ class PolicyPagingServiceTest {
     private Constraints createConstraints() {
         return new Constraints(emptyList(), List.of(ConstraintConstants.ACTIVE_MEMBERSHIP,
                 ConstraintConstants.FRAMEWORK_AGREEMENT_TRACEABILITY_ACTIVE, ConstraintConstants.PURPOSE_ID_3_1_TRACE));
+    }
+
+    private ToStringBuilder toStringBuilder(final PolicyWithBpn p) {
+        return new ToStringBuilder(p, ToStringStyle.NO_CLASS_NAME_STYLE);
     }
 }
