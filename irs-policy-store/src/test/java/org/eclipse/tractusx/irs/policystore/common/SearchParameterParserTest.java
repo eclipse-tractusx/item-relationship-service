@@ -21,6 +21,7 @@ package org.eclipse.tractusx.irs.policystore.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
 
 import java.util.List;
 
@@ -75,7 +76,7 @@ public class SearchParameterParserTest {
                 List.of("  policyId  ,   EQUALS   ,   policy1  ")).getSearchCriteria();
         assertThat(searchCriteriaList).hasSize(1);
         assertThat(searchCriteriaList.get(0).getProperty()).isEqualTo("policyId");
-        assertThat(searchCriteriaList.get(0).getOperation()).isEqualTo(SearchCriteria.Operation.EQUALS);
+        assertThat(searchCriteriaList.get(0).getOperation()).isEqualTo(EQUALS);
         assertThat(searchCriteriaList.get(0).getValue()).isEqualTo("policy1");
     }
 

@@ -19,6 +19,9 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.services;
 
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.STARTS_WITH;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +34,6 @@ import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.policystore.common.CommonConstants;
 import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
-import org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -216,7 +218,7 @@ public class PolicyPagingService {
                         (String) searchCriteria.getValue());
                 default -> throw new IllegalArgumentException(
                         "The property 'policyId' only supports the following operations: %s".formatted(
-                                List.of(Operation.EQUALS, Operation.STARTS_WITH)));
+                                List.of(EQUALS, STARTS_WITH)));
             };
         }
 
@@ -226,12 +228,12 @@ public class PolicyPagingService {
                 case STARTS_WITH -> p -> StringUtils.startsWithIgnoreCase(p.bpn(), (String) searchCriteria.getValue());
                 default -> throw new IllegalArgumentException(
                         "The property 'BPN' only supports the following operations: %s".formatted(
-                                List.of(Operation.EQUALS, Operation.STARTS_WITH)));
+                                List.of(EQUALS, STARTS_WITH)));
             };
         }
 
         private Predicate<PolicyWithBpn> getActionFilter(final SearchCriteria<?> searchCriteria) {
-            if (Operation.EQUALS.equals(searchCriteria.getOperation())) {
+            if (EQUALS.equals(searchCriteria.getOperation())) {
                 return p -> {
                     final List<Permission> permissions = p.policy().getPermissions();
                     if (permissions == null || permissions.isEmpty()) {
@@ -248,8 +250,7 @@ public class PolicyPagingService {
                 };
             } else {
                 throw new IllegalArgumentException(
-                        "The property 'action' only supports the following operations: %s".formatted(
-                                List.of(Operation.EQUALS)));
+                        "The property 'action' only supports the following operations: %s".formatted(List.of(EQUALS)));
             }
         }
     }

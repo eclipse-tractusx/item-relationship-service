@@ -19,6 +19,8 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.common;
 
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BETWEEN;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +89,7 @@ public class SearchParameterParser {
 
     private Operation getOperation(final String operationStr, final String property) {
         final Operation operation = Operation.valueOf(StringUtils.trimToEmpty(operationStr));
-        if (operation == Operation.BETWEEN && DATE_PROPERTIES.stream().noneMatch(p -> p.equalsIgnoreCase(property))) {
+        if (operation == BETWEEN && DATE_PROPERTIES.stream().noneMatch(p -> p.equalsIgnoreCase(property))) {
             throw new IllegalArgumentException("Operation BETWEEN is only supported for date properties");
         }
         return operation;
