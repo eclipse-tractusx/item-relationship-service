@@ -25,6 +25,7 @@ import java.util.List;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
+import org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation;
 
 /**
  * Parser for search parameters.
@@ -84,13 +85,9 @@ public class SearchParameterParser {
         return trimmedProperty;
     }
 
-    private SearchCriteria.Operation getOperation(final String operationStr, final String property) {
-        final SearchCriteria.Operation operation = SearchCriteria.Operation.valueOf(
-                StringUtils.trimToEmpty(operationStr));
-
-        if (operation == SearchCriteria.Operation.BETWEEN && DATE_PROPERTIES.stream()
-                                                                            .noneMatch(p -> p.equalsIgnoreCase(
-                                                                                    property))) {
+    private Operation getOperation(final String operationStr, final String property) {
+        final Operation operation = Operation.valueOf(StringUtils.trimToEmpty(operationStr));
+        if (operation == Operation.BETWEEN && DATE_PROPERTIES.stream().noneMatch(p -> p.equalsIgnoreCase(property))) {
             throw new IllegalArgumentException("Operation BETWEEN is only supported for date properties");
         }
         return operation;
