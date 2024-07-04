@@ -129,6 +129,8 @@ public class PolicyPagingService {
             } else if (CommonConstants.PROPERTY_ACTION.equalsIgnoreCase(property)) {
                 fieldComparator = Comparator.comparing(p -> {
                     final List<Permission> permissions = p.policy().getPermissions();
+                    // TODO (mfischer) #639: filter by action: clarify business logic
+                    //          because there are multiple permissions and therefore multiple actions in a policy
                     return permissions.isEmpty() ? null : permissions.get(0).getAction();
                 });
             } else {
@@ -236,10 +238,10 @@ public class PolicyPagingService {
                     if (permissions == null || permissions.isEmpty()) {
                         return false;
                     }
-                    // TODO (mfischer) #639: clarify which to use, add test
-                    // option 1: filter on first action
-                    //return permissions.get(0).getAction().getValue().equalsIgnoreCase((String) searchCriteria.getValue());
-                    // option 2: filter on all actions
+                    // TODO (mfischer) #639: filter by action: clarify which to use, add test
+                    //      option 1: filter on first action
+                    //            return permissions.get(0).getAction().getValue().equalsIgnoreCase((String) searchCriteria.getValue());
+                    //      option 2: filter on all actions
                     return permissions.stream()
                                       .map(Permission::getAction)
                                       .anyMatch(action -> action.getValue()
