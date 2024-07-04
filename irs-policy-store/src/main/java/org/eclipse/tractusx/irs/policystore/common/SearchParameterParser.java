@@ -19,6 +19,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.common;
 
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_ACTION;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_BPN;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_CREATED_ON;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_POLICY_ID;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_VALID_UNTIL;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BETWEEN;
 
 import java.util.ArrayList;
@@ -35,11 +40,9 @@ import org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation;
 @Getter
 public class SearchParameterParser {
 
-    public static final List<String> SUPPORTED_PROPERTIES = List.of(CommonConstants.PROPERTY_BPN,
-            CommonConstants.PROPERTY_VALID_UNTIL, CommonConstants.PROPERTY_POLICY_ID,
-            CommonConstants.PROPERTY_CREATED_ON, CommonConstants.PROPERTY_ACTION);
-    public static final List<String> DATE_PROPERTIES = List.of(CommonConstants.PROPERTY_VALID_UNTIL,
-            CommonConstants.PROPERTY_CREATED_ON);
+    public static final List<String> SUPPORTED_PROPERTIES = List.of(PROPERTY_BPN, PROPERTY_VALID_UNTIL,
+            PROPERTY_POLICY_ID, PROPERTY_CREATED_ON, PROPERTY_ACTION);
+    public static final List<String> DATE_PROPERTIES = List.of(PROPERTY_VALID_UNTIL, PROPERTY_CREATED_ON);
 
     public static final String CRITERIA_INNER_SEPARATOR = ",";
     public static final int NUM_PARTS_OF_FILTERS = 3;

@@ -19,6 +19,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.policystore.services;
 
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_ACTION;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_BPN;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_CREATED_ON;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_POLICY_ID;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_VALID_UNTIL;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.STARTS_WITH;
 
@@ -31,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
-import org.eclipse.tractusx.irs.policystore.common.CommonConstants;
 import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
 import org.springframework.data.domain.Page;
@@ -120,15 +124,15 @@ public class PolicyPagingService {
         private Comparator<PolicyWithBpn> getPolicyComparator(final Pageable pageable, final Sort.Order order) {
             Comparator<PolicyWithBpn> fieldComparator;
             final String property = order.getProperty();
-            if (CommonConstants.PROPERTY_BPN.equalsIgnoreCase(property)) {
+            if (PROPERTY_BPN.equalsIgnoreCase(property)) {
                 fieldComparator = Comparator.comparing(PolicyWithBpn::bpn);
-            } else if (CommonConstants.PROPERTY_VALID_UNTIL.equalsIgnoreCase(property)) {
+            } else if (PROPERTY_VALID_UNTIL.equalsIgnoreCase(property)) {
                 fieldComparator = Comparator.comparing(p -> p.policy().getValidUntil());
-            } else if (CommonConstants.PROPERTY_POLICY_ID.equalsIgnoreCase(property)) {
+            } else if (PROPERTY_POLICY_ID.equalsIgnoreCase(property)) {
                 fieldComparator = Comparator.comparing(p -> p.policy().getPolicyId());
-            } else if (CommonConstants.PROPERTY_CREATED_ON.equalsIgnoreCase(property)) {
+            } else if (PROPERTY_CREATED_ON.equalsIgnoreCase(property)) {
                 fieldComparator = Comparator.comparing(p -> p.policy().getCreatedOn());
-            } else if (CommonConstants.PROPERTY_ACTION.equalsIgnoreCase(property)) {
+            } else if (PROPERTY_ACTION.equalsIgnoreCase(property)) {
                 fieldComparator = Comparator.comparing(p -> {
                     final List<Permission> permissions = p.policy().getPermissions();
                     if (permissions == null || permissions.isEmpty()) {
@@ -194,21 +198,21 @@ public class PolicyPagingService {
 
         private Predicate<PolicyWithBpn> getPolicyPredicate(final SearchCriteria<?> searchCriteria) {
 
-            if (CommonConstants.PROPERTY_BPN.equalsIgnoreCase(searchCriteria.getProperty())) {
+            if (PROPERTY_BPN.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getBpnFilter(searchCriteria);
-            } else if (CommonConstants.PROPERTY_POLICY_ID.equalsIgnoreCase(searchCriteria.getProperty())) {
+            } else if (PROPERTY_POLICY_ID.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getPolicyIdFilter(searchCriteria);
                 // TODO (mfischer): #750: add test coverage for createdOn, validUntil
-            } else if (CommonConstants.PROPERTY_ACTION.equalsIgnoreCase(searchCriteria.getProperty())) {
+            } else if (PROPERTY_ACTION.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getActionFilter(searchCriteria);
-            } else if (CommonConstants.PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
+            } else if (PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
                 // TODO (mfischer): #750: implement createdOn filter
-                throw new IllegalArgumentException("Filtering by '%s' has not been implemented yet".formatted(
-                        CommonConstants.PROPERTY_CREATED_ON));
-            } else if (CommonConstants.PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
+                throw new IllegalArgumentException(
+                        "Filtering by '%s' has not been implemented yet".formatted(PROPERTY_CREATED_ON));
+            } else if (PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
                 // TODO (mfischer): #750: implement validUntil filter
-                throw new IllegalArgumentException("Filtering by '%s' has not been implemented yet".formatted(
-                        CommonConstants.PROPERTY_VALID_UNTIL));
+                throw new IllegalArgumentException(
+                        "Filtering by '%s' has not been implemented yet".formatted(PROPERTY_VALID_UNTIL));
             } else {
                 throw new IllegalArgumentException("Not supported");
             }

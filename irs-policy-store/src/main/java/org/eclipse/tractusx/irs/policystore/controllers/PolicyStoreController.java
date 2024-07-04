@@ -25,6 +25,7 @@ package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.eclipse.tractusx.irs.common.ApiConstants.FORBIDDEN_DESC;
 import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_BPN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.AbstractMap;
@@ -52,7 +53,6 @@ import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
-import org.eclipse.tractusx.irs.policystore.common.CommonConstants;
 import org.eclipse.tractusx.irs.policystore.common.SearchParameterParser;
 import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
@@ -215,8 +215,7 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public Page<PolicyResponse> getPoliciesPaged(//
-            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = CommonConstants.PROPERTY_BPN,
-                             direction = Sort.Direction.ASC) //
+            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = PROPERTY_BPN, direction = Sort.Direction.ASC) //
             final Pageable pageable, //
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers //
