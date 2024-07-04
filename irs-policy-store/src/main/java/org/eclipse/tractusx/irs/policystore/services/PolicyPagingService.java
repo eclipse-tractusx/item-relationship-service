@@ -131,9 +131,12 @@ public class PolicyPagingService {
             } else if (CommonConstants.PROPERTY_ACTION.equalsIgnoreCase(property)) {
                 fieldComparator = Comparator.comparing(p -> {
                     final List<Permission> permissions = p.policy().getPermissions();
-                    // TODO (mfischer) #639: filter by action: clarify business logic
-                    //          because there are multiple permissions and therefore multiple actions in a policy
-                    return permissions.isEmpty() ? null : permissions.get(0).getAction();
+                    if (permissions == null || permissions.isEmpty()) {
+                        return null;
+                    } else {
+                        // we use the action of the first permission in the list for sorting
+                        return permissions.get(0).getAction();
+                    }
                 });
             } else {
                 log.warn("Sorting by field '{}' is not supported", order.getProperty());
@@ -195,7 +198,7 @@ public class PolicyPagingService {
                 return getBpnFilter(searchCriteria);
             } else if (CommonConstants.PROPERTY_POLICY_ID.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getPolicyIdFilter(searchCriteria);
-                // TODO (mfischer): #750: add coverage for action, createdOn, validUntil
+                // TODO (mfischer): #750: add test coverage for createdOn, validUntil
             } else if (CommonConstants.PROPERTY_ACTION.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getActionFilter(searchCriteria);
             } else if (CommonConstants.PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
@@ -238,15 +241,13 @@ public class PolicyPagingService {
                     final List<Permission> permissions = p.policy().getPermissions();
                     if (permissions == null || permissions.isEmpty()) {
                         return false;
+                    } else {
+                        // we use the action of the first permission in the list for filtering
+                        return permissions.get(0)
+                                          .getAction()
+                                          .getValue()
+                                          .equalsIgnoreCase((String) searchCriteria.getValue());
                     }
-                    // TODO (mfischer) #639: filter by action: clarify which to use, add test
-                    //      option 1: filter on first action
-                    //            return permissions.get(0).getAction().getValue().equalsIgnoreCase((String) searchCriteria.getValue());
-                    //      option 2: filter on all actions
-                    return permissions.stream()
-                                      .map(Permission::getAction)
-                                      .anyMatch(action -> action.getValue()
-                                                                .equalsIgnoreCase((String) searchCriteria.getValue()));
                 };
             } else {
                 throw new IllegalArgumentException(
