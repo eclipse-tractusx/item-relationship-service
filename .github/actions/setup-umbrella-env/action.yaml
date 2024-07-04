@@ -17,6 +17,7 @@
 #
 #  SPDX-License-Identifier: Apache-2.0
 #
+---
 name: Umbrella E2E Test Environment
 description: "Sets up the Umbrella E2E Test Environment"
 runs:
@@ -125,7 +126,7 @@ runs:
     - name: Setup test data
       run: |
         chmod +x ./local/testing/testdata/upload-testdata.sh
-        ./local/testing/testdata/upload-testdata.sh "TEST2" "BPNL00000003AYRE" \
+        ./local/testing/testdata/upload-testdata.sh "TEST2" "BPNL00000003AYRE" "BPNL00000003AZQP" \
           "http://umbrella-dataprovider-submodelserver:8080" "http://localhost:9999" \
           "http://umbrella-dataprovider-dtr:8080/api/v3" "http://localhost:4444/api/v3" \
           "http://umbrella-dataprovider-edc-controlplane:8084" "http://localhost:8888" \

@@ -17,6 +17,7 @@
 #
 #  SPDX-License-Identifier: Apache-2.0
 #
+---
 name: IRS Umbrella logs
 description: "Retrieves the IRS logs and uploads them as artifact"
 runs:

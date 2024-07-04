@@ -56,7 +56,7 @@ jobs:
           regularUserApiKey: "password"
           adminUserApiKey: "password"
           cucumberPublishToken: ${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}
-          executionFilter: "!Ignore & !INACTIVE & INTEGRATION_TEST & HELM"
+          executionFilter: "!Ignore & !INACTIVE & INTEGRATION_TEST & UMBRELLA"
 
       - name: Attach logs
         if: always() && steps.setup-env.outcome == 'success'
