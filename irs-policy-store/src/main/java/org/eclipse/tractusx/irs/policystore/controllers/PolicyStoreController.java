@@ -208,9 +208,9 @@ public class PolicyStoreController {
                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
-    // TODO (mfischer): #639: add documentation
-    // TODO (mfischer): #639: add integration tests
-    // TODO (mfischer): #639: update insomnia
+    // TODO (mfischer): #750: add documentation
+    // TODO (mfischer): #750: add / adapt integration tests
+    // TODO (mfischer): #750: update insomnia
     @GetMapping("/policies/paged")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
@@ -231,7 +231,7 @@ public class PolicyStoreController {
 
         ensureParamBusinessPartnerNumberCorrectlyNamed(parameterMap);
 
-        // TODO (mfischer): #639: add test coverage for this block
+        // TODO (mfischer): #750: add test coverage for this block
         // There seems to be a bug concerning interpretation of delimiters in Spring.
         // If we pass only one search filter `?search=policyId,EQUALS,policy1`,
         // the parts of this search filter are split up into several search filters even if we encode the comma.

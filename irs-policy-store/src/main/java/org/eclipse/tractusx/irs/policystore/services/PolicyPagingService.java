@@ -87,7 +87,7 @@ public class PolicyPagingService {
      * Builder for {@link Comparator} for sorting a list of {@link PolicyWithBpn} objects.
      */
     private static class PolicyComparatorBuilder {
-        // TODO (mfischer): #639: maybe extract to separate class
+        // TODO (mfischer): #750: maybe extract to separate class
 
         private final Pageable pageable;
 
@@ -167,7 +167,7 @@ public class PolicyPagingService {
      * Builder for {@link Predicate} for filtering a list of {@link PolicyWithBpn} objects.
      */
     private static class PolicyFilterBuilder {
-        // TODO (mfischer): #639: maybe extract to separate class
+        // TODO (mfischer): #750: maybe extract to separate class
 
         private final List<SearchCriteria<?>> searchCriteriaList;
 
@@ -193,16 +193,15 @@ public class PolicyPagingService {
                 return getBpnFilter(searchCriteria);
             } else if (CommonConstants.PROPERTY_POLICY_ID.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getPolicyIdFilter(searchCriteria);
-
-                // TODO (mfischer): #639: add coverage for action, createdOn, validUntil
+                // TODO (mfischer): #750: add coverage for action, createdOn, validUntil
             } else if (CommonConstants.PROPERTY_ACTION.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getActionFilter(searchCriteria);
             } else if (CommonConstants.PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
-                // TODO (mfischer): #639: implement createdOn filter
+                // TODO (mfischer): #750: implement createdOn filter
                 throw new IllegalArgumentException("Filtering by '%s' has not been implemented yet".formatted(
                         CommonConstants.PROPERTY_CREATED_ON));
             } else if (CommonConstants.PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
-                // TODO (mfischer): #639: implement validUntil filter
+                // TODO (mfischer): #750: implement validUntil filter
                 throw new IllegalArgumentException("Filtering by '%s' has not been implemented yet".formatted(
                         CommonConstants.PROPERTY_VALID_UNTIL));
             } else {
