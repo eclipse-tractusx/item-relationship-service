@@ -23,6 +23,9 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BETWEEN;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.STARTS_WITH;
 
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -197,17 +200,17 @@ class PolicyPagingServiceTest {
         public void policyId_invalidOperation() {
 
             assertThatThrownBy(() -> testee.getPolicies(policiesMap, PageRequest.of(0, 10),
-                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.BETWEEN,
-                            "policy-2")))).isInstanceOf(IllegalArgumentException.class)
-                                          .hasMessageContaining(
-                                                  "The property 'policyId' only supports the following operations");
+                    List.of(new SearchCriteria<>("policyId", BETWEEN, "policy-2")))).isInstanceOf(
+                                                                                            IllegalArgumentException.class)
+                                                                                    .hasMessageContaining(
+                                                                                            "The property 'policyId' only supports the following operations");
         }
 
         @Test
         public void filterByPolicyIdEquals_shouldFindExactlyOne() {
 
             final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
-                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.EQUALS, "policy-2")));
+                    List.of(new SearchCriteria<>("policyId", EQUALS, "policy-2")));
 
             assertThat(result).isNotNull();
             assertThat(result.getContent()).hasSize(1);
@@ -221,8 +224,8 @@ class PolicyPagingServiceTest {
         public void filterByPolicyIdEqualsAndBpnEquals_noResult() {
 
             final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
-                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.EQUALS, "policy-4"),
-                            new SearchCriteria<>("bpn", SearchCriteria.Operation.EQUALS, "BPN2")));
+                    List.of(new SearchCriteria<>("policyId", EQUALS, "policy-4"),
+                            new SearchCriteria<>("bpn", EQUALS, "BPN2")));
 
             assertThat(result).isNotNull();
             assertThat(result.getContent()).isEmpty();
@@ -243,7 +246,7 @@ class PolicyPagingServiceTest {
             );
 
             final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
-                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.STARTS_WITH, "policy-2")));
+                    List.of(new SearchCriteria<>("policyId", STARTS_WITH, "policy-2")));
 
             assertThat(result).isNotNull();
             assertThat(result.getContent()).hasSize(2);
@@ -272,8 +275,8 @@ class PolicyPagingServiceTest {
             );
 
             final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10),
-                    List.of(new SearchCriteria<>("policyId", SearchCriteria.Operation.STARTS_WITH, "policy-2"),
-                            new SearchCriteria<>("BPN", SearchCriteria.Operation.EQUALS, "BPN1")));
+                    List.of(new SearchCriteria<>("policyId", STARTS_WITH, "policy-2"),
+                            new SearchCriteria<>("BPN", EQUALS, "BPN1")));
 
             assertThat(result).isNotNull();
             assertThat(result.getContent()).hasSize(1);
