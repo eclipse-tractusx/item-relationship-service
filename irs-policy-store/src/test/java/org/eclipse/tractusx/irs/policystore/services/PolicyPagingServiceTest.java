@@ -25,7 +25,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_ACTION;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_BPN;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_CREATED_ON;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_POLICY_ID;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_VALID_UNTIL;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.AFTER_LOCAL_DATE;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BEFORE_LOCAL_DATE;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.STARTS_WITH;
@@ -40,6 +43,7 @@ import org.eclipse.tractusx.irs.edc.client.policy.Constraints;
 import org.eclipse.tractusx.irs.edc.client.policy.Permission;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
 import org.eclipse.tractusx.irs.edc.client.policy.PolicyType;
+import org.eclipse.tractusx.irs.policystore.common.DateUtils;
 import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
 import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
 import org.junit.jupiter.api.BeforeEach;
@@ -142,6 +146,43 @@ class PolicyPagingServiceTest {
                     // BPN1
                     "policy-1", "policy-4");
         }
+
+        @Nested
+        class SortByDateTests {
+
+            final Map<String, List<Policy>> policiesMap = Map.of( //
+                    "BPN2", Arrays.asList( //
+                            createPolicy("policy-3", "2025-04-12", "2029-11-08"), //
+                            createPolicy("policy-5", "2024-09-01", "2030-03-25"), //
+                            createPolicy("policy-2", "2024-09-01", "2027-02-15") //
+                    ), "BPN1", Arrays.asList( //
+                            createPolicy("policy-4", "2022-12-31", "2026-08-05"), //
+                            createPolicy("policy-1", "2023-03-15", "2028-07-10") //
+                    ));
+
+            @Test
+            public void whenSortedByCreatedOnAscAndValidUntilAsc() {
+
+                final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10,
+                                Sort.by(PROPERTY_CREATED_ON).ascending().and(Sort.by(PROPERTY_VALID_UNTIL).ascending())),
+                        NO_SEARCH_CRITERIA);
+
+                assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                        "policy-4", "policy-1", "policy-2", "policy-5", "policy-3");
+            }
+
+            @Test
+            public void whenSortedByCreatedOnAscAndValidUntilDesc() {
+
+                final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10,
+                                Sort.by(PROPERTY_CREATED_ON).ascending().and(Sort.by(PROPERTY_VALID_UNTIL).descending())),
+                        NO_SEARCH_CRITERIA);
+
+                assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                        "policy-4", "policy-1", "policy-5", "policy-2", "policy-3");
+            }
+        }
+
     }
 
     @Nested
@@ -297,6 +338,32 @@ class PolicyPagingServiceTest {
             assertThat(policies).containsExactlyInAnyOrder("[bpn=BPN1,policyId=policy-2]");
         }
 
+        @Nested
+        class FilterByDateTests {
+
+            final Map<String, List<Policy>> policiesMap = Map.of( //
+                    "BPN2", Arrays.asList( //
+                            createPolicy("policy-3", "2025-04-12", "2029-11-08"), //
+                            createPolicy("policy-5", "2024-09-01", "2030-03-25"), //
+                            createPolicy("policy-2", "2024-09-01", "2027-02-15") //
+                    ), "BPN1", Arrays.asList( //
+                            createPolicy("policy-4", "2022-12-31", "2026-08-05"), //
+                            createPolicy("policy-1", "2023-03-15", "2028-07-10") //
+                    ));
+
+            @Test
+            public void whenFilteredByCreatedOnAndValidUntil() {
+
+                final Page<PolicyWithBpn> result = testee.getPolicies(policiesMap, PageRequest.of(0, 10,
+                                Sort.by(PROPERTY_CREATED_ON).ascending().and(Sort.by(PROPERTY_VALID_UNTIL).ascending())),
+                        List.of(new SearchCriteria<>(PROPERTY_CREATED_ON, BEFORE_LOCAL_DATE, "2024-09-01"),
+                                new SearchCriteria<>(PROPERTY_VALID_UNTIL, AFTER_LOCAL_DATE, "2026-08-04")));
+
+                assertThat(result.getContent().stream().map(p -> p.policy().getPolicyId()).toList()).containsExactly(
+                        "policy-4", "policy-1");
+            }
+
+        }
     }
 
     private Policy createPolicy(final String policyId, final PolicyType firstPermissionAction) {
@@ -308,8 +375,22 @@ class PolicyPagingServiceTest {
                      .build();
     }
 
+    private Policy createPolicy(final String policyId, final String createdOnString, final String validUntilString) {
+        return Policy.builder()
+                     .policyId(policyId)
+                     .createdOn(DateUtils.toOffsetDateTimeAtStartOfDay(createdOnString))
+                     .validUntil(DateUtils.toOffsetDateTimeAtEndOfDay(validUntilString))
+                     .permissions(createPermissions())
+                     .build();
+    }
+
     private List<Permission> createPermissions(final PolicyType firstPermissionAction) {
         return List.of(new Permission(firstPermissionAction, createConstraints()),
+                new Permission(PolicyType.ACCESS, createConstraints()));
+    }
+
+    private List<Permission> createPermissions() {
+        return List.of(new Permission(PolicyType.USE, createConstraints()),
                 new Permission(PolicyType.ACCESS, createConstraints()));
     }
 

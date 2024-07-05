@@ -24,9 +24,14 @@ import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPER
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_CREATED_ON;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_POLICY_ID;
 import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_VALID_UNTIL;
+import static org.eclipse.tractusx.irs.policystore.common.DateUtils.isDateAfter;
+import static org.eclipse.tractusx.irs.policystore.common.DateUtils.isDateBefore;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.AFTER_LOCAL_DATE;
+import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.BEFORE_LOCAL_DATE;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.EQUALS;
 import static org.eclipse.tractusx.irs.policystore.models.SearchCriteria.Operation.STARTS_WITH;
 
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -178,6 +183,7 @@ public class PolicyPagingService {
      */
     private static class PolicyFilterBuilder {
 
+        public static final String MSG_PROPERTY_ONLY_SUPPORTS_THE_FOLLOWING_OPERATIONS = "The property '%s' only supports the following operations: %s";
         private final List<SearchCriteria<?>> searchCriteriaList;
 
         /* package */ PolicyFilterBuilder(final List<SearchCriteria<?>> searchCriteriaList) {
@@ -195,24 +201,18 @@ public class PolicyPagingService {
         }
 
         private Predicate<PolicyWithBpn> getPolicyPredicate(final SearchCriteria<?> searchCriteria) {
-
             if (PROPERTY_BPN.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getBpnFilter(searchCriteria);
             } else if (PROPERTY_POLICY_ID.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getPolicyIdFilter(searchCriteria);
             } else if (PROPERTY_ACTION.equalsIgnoreCase(searchCriteria.getProperty())) {
                 return getActionFilter(searchCriteria);
+            } else if (PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
+                return getCreatedOnFilter(searchCriteria);
+            } else if (PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
+                return getValidUntilFilter(searchCriteria);
             } else {
-                final String notYetImplementedMessage = "Filtering by '%s' has not been implemented yet";
-                if (PROPERTY_CREATED_ON.equalsIgnoreCase(searchCriteria.getProperty())) {
-                    // TODO (mfischer): #750: implement createdOn filter incl. test
-                    throw new IllegalArgumentException(notYetImplementedMessage.formatted(PROPERTY_CREATED_ON));
-                } else if (PROPERTY_VALID_UNTIL.equalsIgnoreCase(searchCriteria.getProperty())) {
-                    // TODO (mfischer): #750: implement validUntil filter incl. test
-                    throw new IllegalArgumentException(notYetImplementedMessage.formatted(PROPERTY_VALID_UNTIL));
-                } else {
-                    throw new IllegalArgumentException("Not supported");
-                }
+                throw new IllegalArgumentException("Not supported");
             }
         }
 
@@ -222,7 +222,7 @@ public class PolicyPagingService {
                 case STARTS_WITH -> p -> StringUtils.startsWithIgnoreCase(p.policy().getPolicyId(),
                         (String) searchCriteria.getValue());
                 default -> throw new IllegalArgumentException(
-                        "The property 'policyId' only supports the following operations: %s".formatted(
+                        MSG_PROPERTY_ONLY_SUPPORTS_THE_FOLLOWING_OPERATIONS.formatted(searchCriteria.getProperty(),
                                 List.of(EQUALS, STARTS_WITH)));
             };
         }
@@ -232,7 +232,7 @@ public class PolicyPagingService {
                 case EQUALS -> p -> p.bpn().equalsIgnoreCase((String) searchCriteria.getValue());
                 case STARTS_WITH -> p -> StringUtils.startsWithIgnoreCase(p.bpn(), (String) searchCriteria.getValue());
                 default -> throw new IllegalArgumentException(
-                        "The property 'BPN' only supports the following operations: %s".formatted(
+                        MSG_PROPERTY_ONLY_SUPPORTS_THE_FOLLOWING_OPERATIONS.formatted(searchCriteria.getProperty(),
                                 List.of(EQUALS, STARTS_WITH)));
             };
         }
@@ -253,8 +253,41 @@ public class PolicyPagingService {
                 };
             } else {
                 throw new IllegalArgumentException(
-                        "The property 'action' only supports the following operations: %s".formatted(List.of(EQUALS)));
+                        MSG_PROPERTY_ONLY_SUPPORTS_THE_FOLLOWING_OPERATIONS.formatted(searchCriteria.getProperty(),
+                                List.of(EQUALS)));
             }
+        }
+
+        private Predicate<PolicyWithBpn> getCreatedOnFilter(final SearchCriteria<?> searchCriteria) {
+            return switch (searchCriteria.getOperation()) {
+                case BEFORE_LOCAL_DATE -> p -> {
+                    final OffsetDateTime createdOn = p.policy().getCreatedOn();
+                    return isDateBefore(createdOn, searchCriteria.getValue().toString());
+                };
+                case AFTER_LOCAL_DATE -> p -> {
+                    final OffsetDateTime createdOn = p.policy().getCreatedOn();
+                    return isDateAfter(createdOn, searchCriteria.getValue().toString());
+                };
+                default -> throw new IllegalArgumentException(
+                        MSG_PROPERTY_ONLY_SUPPORTS_THE_FOLLOWING_OPERATIONS.formatted(searchCriteria.getProperty(),
+                                List.of(BEFORE_LOCAL_DATE, AFTER_LOCAL_DATE)));
+            };
+        }
+
+        private Predicate<PolicyWithBpn> getValidUntilFilter(final SearchCriteria<?> searchCriteria) {
+            return switch (searchCriteria.getOperation()) {
+                case BEFORE_LOCAL_DATE -> p -> {
+                    final OffsetDateTime createdOn = p.policy().getValidUntil();
+                    return isDateBefore(createdOn, searchCriteria.getValue().toString());
+                };
+                case AFTER_LOCAL_DATE -> p -> {
+                    final OffsetDateTime createdOn = p.policy().getValidUntil();
+                    return isDateAfter(createdOn, searchCriteria.getValue().toString());
+                };
+                default -> throw new IllegalArgumentException(
+                        MSG_PROPERTY_ONLY_SUPPORTS_THE_FOLLOWING_OPERATIONS.formatted(searchCriteria.getProperty(),
+                                List.of(BEFORE_LOCAL_DATE, AFTER_LOCAL_DATE)));
+            };
         }
     }
 }
