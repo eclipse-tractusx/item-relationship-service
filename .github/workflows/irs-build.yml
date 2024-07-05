@@ -21,9 +21,7 @@ on:
       - '**'
 
 
-
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -131,6 +129,35 @@ jobs:
           [ "$VERSION" == "main" ] && VERSION=latest
           echo VERSION=$VERSION
           echo "::set-output name=image_tag::$VERSION"
+
+      - name: Log in to registry
+        env:
+          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+        if: >-
+          env.DOCKER_HUB_USER == '' &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+          github.actor != 'dependabot[bot]'
+        # This is where you will update the PAT to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image (GHCR)
+        env:
+          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+        if: >- 
+          env.DOCKER_HUB_USER == '' &&
+          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
+          github.actor != 'dependabot[bot]'
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          echo IMAGE_ID=$IMAGE_ID
+
+          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          
+          docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
+          docker push $IMAGE_ID:$GITHUB_SHA
 
       - name: Login to Docker Hub
         env:
