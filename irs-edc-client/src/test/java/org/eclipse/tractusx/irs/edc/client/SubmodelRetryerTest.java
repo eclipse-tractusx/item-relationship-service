@@ -84,7 +84,7 @@ class SubmodelExponentialRetryTest {
         final EdcSubmodelClient client = new EdcSubmodelClientImpl(config, negotiationService, dataPlaneClient,
                 endpointDataReferenceStorage,
                 pollingService, retryRegistry, catalogFacade, endpointDataReferenceCacheService);
-        testee = new EdcSubmodelFacade(client);
+        testee = new EdcSubmodelFacade(client, config);
     }
 
     @Test

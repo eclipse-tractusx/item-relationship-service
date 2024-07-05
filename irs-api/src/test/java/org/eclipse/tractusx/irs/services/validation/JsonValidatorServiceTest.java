@@ -33,12 +33,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import org.eclipse.tractusx.irs.util.JsonUtil;
 import org.junit.jupiter.api.Test;
 
 class JsonValidatorServiceTest {
 
-    private final JsonValidatorService testee = new JsonValidatorService(new JsonUtil());
+    private final JsonValidatorService testee = new JsonValidatorService();
 
     @Test
     void shouldValidateAssemblyPartRelationship() throws Exception {
