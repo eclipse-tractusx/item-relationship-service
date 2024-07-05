@@ -24,21 +24,6 @@ on:
 
 jobs:
 
-  init:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "Preparing variables"
-          
-          echo "IMAGE_NAMESPACE=tractusx" >> $GITHUB_ENV
-          echo "IMAGE_NAMESPACE: $IMAGE_NAMESPACE"
-          
-          echo "IMAGE_NAME: irs-api" >> $GITHUB_ENV
-          echo "IMAGE_NAME: $IMAGE_NAME"
-          
-          echo "SONAR_CONFIGURED=${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}" >> $GITHUB_ENV
-          echo "SONAR_CONFIGURED: $SONAR_CONFIGURED"
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -63,7 +48,9 @@ jobs:
           mvn clean verify --batch-mode
 
   analyze_with_Sonar:
-    needs: [init]
+    env:
+      SONAR_CONFIGURED: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}"
+
     # No need to run if we cannot use the sonar token
     if: >-
       env.SONAR_CONFIGURED == 'true'
@@ -106,7 +93,6 @@ jobs:
           -Dcheckstyle.skip -Dpmd.skip=true
 
   build_images:
-    needs: [init]
     strategy:
       matrix:
         image:
@@ -149,6 +135,8 @@ jobs:
       - name: Push image (DockerHub)
         env:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+          IMAGE_NAMESPACE: tractusx
+          IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
         run: |
           docker tag ${{ matrix.image }} ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
@@ -161,6 +149,8 @@ jobs:
       - name: Update Docker Hub description
         env:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+          IMAGE_NAMESPACE: tractusx
+          IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
         uses: peter-evans/dockerhub-description@v4
         with:
