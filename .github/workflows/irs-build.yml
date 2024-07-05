@@ -47,13 +47,17 @@ jobs:
         run: |
           mvn clean verify --batch-mode
 
-  analyze_with_Sonar:
-    env:
-      SONAR_CONFIGURED: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}"
+  check_sonar_configured:
+    runs-on: ubuntu-latest
+    steps:
+    outputs:
+      sonar_configured: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}"
 
+  analyze_with_Sonar:
+    needs: [check_sonar_configured]
     # No need to run if we cannot use the sonar token
     if: >-
-      env.SONAR_CONFIGURED == 'true'
+      needs.check_sonar_configured.outputs.sonar_configured == 'true'
       && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
       && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
