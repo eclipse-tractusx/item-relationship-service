@@ -41,7 +41,7 @@
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
     {
       "catenaXId": "urn:uuid:4e8aa114-cf50-4780-811c-11723c9f0647",
-      "bpnl": "BPNL00000007QG00",
+      "bpnl": "BPNL00000003AYRE",
       "urn:samm:io.catenax.single_level_usage_as_planned:2.0.0#SingleLevelUsageAsPlanned": [
         {
           "catenaXId": "urn:uuid:4e8aa114-cf50-4780-811c-11723c9f0647",
@@ -51,14 +51,14 @@
     },
     {
       "catenaXId": "urn:uuid:01f4b57e-1ab3-4822-ab1b-e20651f6fd32",
-      "bpnl": "BPNL00000007QG00",
+      "bpnl": "BPNL00000003AYRE",
       "urn:samm:io.catenax.single_level_usage_as_planned:2.1.0#SingleLevelUsageAsPlanned": [
         {
           "catenaXId": "urn:uuid:01f4b57e-1ab3-4822-ab1b-e20651f6fd32",
           "parentItems": [
             {
               "catenaXId": "urn:uuid:4e8aa114-cf50-4780-811c-11723c9f0647",
-              "businessPartner": "BPNL00000007QG00",
+              "businessPartner": "BPNL00000003AYRE",
               "validityPeriod": {
                 "validFrom": "2023-03-21T08:17:29.187+01:00",
                 "validTo": "2024-07-01T16:10:00.000+01:00"
@@ -72,7 +72,7 @@
             }
           ],
           "customers": [
-            "BPNL00000007QG00"
+            "BPNL00000003AYRE"
           ],
           "futureAddedField": "test"
         }
@@ -80,14 +80,14 @@
     },
     {
       "catenaXId": "urn:uuid:7fe9ac70-23c4-449a-88c1-3832a1cc6da6",
-      "bpnl": "BPNL00000007QG00",
+      "bpnl": "BPNL00000003AYRE",
       "urn:samm:io.catenax.single_level_usage_as_planned:2.0.0#SingleLevelUsageAsPlanned": [
         {
           "catenaXId": "urn:uuid:7fe9ac70-23c4-449a-88c1-3832a1cc6da6",
           "parentItems": [
             {
               "catenaXId": "urn:uuid:01f4b57e-1ab3-4822-ab1b-e20651f6fd32",
-              "businessPartner": "BPNL00000007QG00",
+              "businessPartner": "BPNL00000003AYRE",
               "validityPeriod": {
                 "validFrom": "2023-03-21T08:17:29.187+01:00",
                 "validTo": "2024-07-01T16:10:00.000+01:00"
@@ -101,7 +101,7 @@
             }
           ],
           "customers": [
-            "BPNL00000007QG00"
+            "BPNL00000003AYRE"
           ]
         }
       ]

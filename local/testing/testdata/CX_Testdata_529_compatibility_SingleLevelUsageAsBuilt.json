@@ -41,7 +41,7 @@
   "https://catenax.io/schema/TestDataContainer/1.0.0": [
     {
       "catenaXId": "urn:uuid:677582a5-bdca-45e1-a671-7a98ff5ddcb7",
-      "bpnl": "BPNL00000007QG00",
+      "bpnl": "BPNL00000003AYRE",
       "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt": [
         {
           "catenaXId": "urn:uuid:677582a5-bdca-45e1-a671-7a98ff5ddcb7",
@@ -51,14 +51,14 @@
     },
     {
       "catenaXId": "urn:uuid:13d35275-3b9b-4f0c-bc5e-00f656bb7cbc",
-      "bpnl": "BPNL00000007QG00",
+      "bpnl": "BPNL00000003AYRE",
       "urn:samm:io.catenax.single_level_usage_as_built:3.1.0#SingleLevelUsageAsBuilt": [
         {
           "catenaXId": "urn:uuid:13d35275-3b9b-4f0c-bc5e-00f656bb7cbc",
           "parentItems": [
             {
               "catenaXId": "urn:uuid:677582a5-bdca-45e1-a671-7a98ff5ddcb7",
-              "businessPartner": "BPNL00000007QG00",
+              "businessPartner": "BPNL00000003AYRE",
               "isOnlyPotentialParent": false,
               "quantity": {
                 "value": 11.0,
@@ -69,7 +69,7 @@
             }
           ],
           "customers": [
-            "BPNL00000007QG00"
+            "BPNL00000003AYRE"
           ],
           "futureAddedField": "test"
         }
@@ -77,14 +77,14 @@
     },
     {
       "catenaXId": "urn:uuid:2ea93a69-7ecb-4747-94f4-960c2535dc7b",
-      "bpnl": "BPNL00000007QG00",
+      "bpnl": "BPNL00000003AYRE",
       "urn:samm:io.catenax.single_level_usage_as_built:3.0.0#SingleLevelUsageAsBuilt": [
         {
           "catenaXId": "urn:uuid:2ea93a69-7ecb-4747-94f4-960c2535dc7b",
           "parentItems": [
             {
               "catenaXId": "urn:uuid:13d35275-3b9b-4f0c-bc5e-00f656bb7cbc",
-              "businessPartner": "BPNL00000007QG00",
+              "businessPartner": "BPNL00000003AYRE",
               "isOnlyPotentialParent": false,
               "quantity": {
                 "value": 12.0,
@@ -95,7 +95,7 @@
             }
           ],
           "customers": [
-            "BPNL00000007QG00"
+            "BPNL00000003AYRE"
           ]
         }
       ]

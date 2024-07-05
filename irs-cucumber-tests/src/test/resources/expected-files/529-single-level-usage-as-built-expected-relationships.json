@@ -17,7 +17,7 @@
         "hasAlternatives": false
       },
       "aspectType": "SingleLevelUsageAsBuilt",
-      "bpn": "BPNL00000007QG00"
+      "bpn": "BPNL00000003AYRE"
     },
     {
       "catenaXId": "urn:uuid:677582a5-bdca-45e1-a671-7a98ff5ddcb7",
@@ -36,7 +36,7 @@
         "hasAlternatives": false
       },
       "aspectType": "SingleLevelUsageAsBuilt",
-      "bpn": "BPNL00000007QG00"
+      "bpn": "BPNL00000003AYRE"
     }
   ]
 }

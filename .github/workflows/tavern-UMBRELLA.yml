@@ -52,7 +52,7 @@ jobs:
           pip install tavern
           pip list
 
-      - name: Run tests
+      - name: Run IRS tests
         env:
           IRS_HOST: 'http://localhost:8080'
           IRS_ESS_HOST: 'http://localhost:8080'
@@ -66,7 +66,7 @@ jobs:
           BPN_ESS_INCIDENT: 'BPNS00000003B6LU'
           BPN_AS_PLANNED: 'BPNL00000003AYRE'
           GLOBAL_ASSET_ID_AS_BUILT: 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c'
-          BPN_AS_BUILT: 'BPNL00000003AVTH'
+          BPN_AS_BUILT: 'BPNL00000003AYRE'
         run: |
           python -m pytest local/testing/api-tests/irs-api-tests.tavern.yaml --junitxml=tavern-results.xml
 
@@ -81,6 +81,38 @@ jobs:
         with:
           files: |
             result.xml
+
+      - name: Run ESS tests
+        if: always() && steps.setup-env.outcome == 'success'
+        env:
+          IRS_HOST: 'http://localhost:8080'
+          IRS_ESS_HOST: 'http://localhost:8080'
+          REGULAR_USER_API_KEY: 'password'
+          ADMIN_USER_API_KEY: 'password'
+          REGULAR_USER_API_KEY_ESS: 'password'
+          ADMIN_USER_API_KEY_ESS: 'password'
+          GLOBAL_ASSET_ID_AS_PLANNED: 'urn:uuid:0733946c-59c6-41ae-9570-cb43a6e4c79e'
+          GLOBAL_ASSET_ID_ESS_AS_BUILT: 'urn:uuid:2c57b0e9-a653-411d-bdcd-64787e9fd3a7'
+          BPN_ESS_AS_BUILT: 'BPNL00000003CRHK'
+          BPN_ESS_INCIDENT: 'BPNS00000003B6LU'
+          BPN_AS_PLANNED: 'BPNL00000003AYRE'
+          GLOBAL_ASSET_ID_AS_BUILT: 'urn:uuid:4509ea7c-c8d2-41a1-83ca-c214ee34af6c'
+          BPN_AS_BUILT: 'BPNL00000003AYRE'
+        run: |
+          python -m pytest local/testing/api-tests/irs-ess-api-tests.tavern.yaml --junitxml=tavern-ess-results.xml
+
+      - name: Mask credentials
+        if: always()
+        run: |
+          sed "s/access_tok.*:s = '.*'//g" tavern-ess-results.xml | sed "s/Authorization: Bearer .*/Authorization:/g" | uniq > ess-result.xml
+
+      - name: Publish Tavern Results
+        uses: EnricoMi/publish-unit-test-result-action@v2.16.1
+        if: always()
+        with:
+          files: |
+            ess-result.xml
+
 
       - name: Attach logs
         if: always() && steps.setup-env.outcome == 'success'

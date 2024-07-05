@@ -17,7 +17,7 @@
                 "hasAlternatives": false
             },
             "aspectType": "SingleLevelBomAsBuilt",
-            "bpn": "BPNL00000003B3NX"
+            "bpn": "BPNL00000003AYRE"
         },
         {
             "catenaXId": "urn:uuid:aeada37a-a1d8-4535-a476-5f5e1142e3fe",
@@ -36,7 +36,7 @@
                 "hasAlternatives": false
             },
             "aspectType": "SingleLevelBomAsBuilt",
-            "bpn": "BPNL00000003AZQP"
+            "bpn": "BPNL00000003AYRE"
         },
         {
             "catenaXId": "urn:uuid:aeada37a-a1d8-4535-a476-5f5e1142e3fe",
@@ -74,7 +74,7 @@
                 "hasAlternatives": false
             },
             "aspectType": "SingleLevelBomAsBuilt",
-            "bpn": "BPNL00000003B0Q0"
+            "bpn": "BPNL00000003AYRE"
         }
     ]
 }
