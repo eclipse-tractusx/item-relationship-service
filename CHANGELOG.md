@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.5.3] - 2024-07-05
+
 ### Fixed
 
 - Fixed submodel request path by introducing configuration property `irs-edc-client.submodel.submodel-suffix` which will
@@ -526,7 +528,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Unresolved
 - **Select Aspects you need**  You are able to select the needed aspects for which you want to collect the correct endpoint information.
 
-[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.2...HEAD
+[Unreleased]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.3...HEAD
+[4.5.3]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.2...4.5.3
 [4.5.2]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.1...4.5.2
 [4.5.1]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.5.0...4.5.1
 [4.5.0]: https://github.com/eclipse-tractusx/item-relationship-service/compare/4.4.0...4.5.0
