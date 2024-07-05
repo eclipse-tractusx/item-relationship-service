@@ -50,6 +50,9 @@ jobs:
   check_sonar_configured:
     runs-on: ubuntu-latest
     steps:
+      - name: check_sonar_configured
+        run: |
+          mvn clean verify --batch-mode
     outputs:
       sonar_configured: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}"
 
