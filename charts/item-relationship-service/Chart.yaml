@@ -43,7 +43,7 @@ version: 7.2.0
 appVersion: "5.2.0"
 dependencies:
   - name: common
-    repository: oci://registry-1.docker.io/bitnamicharts
+    repository: https://charts.bitnami.com/bitnami
     version: 2.x.x
   - name: minio
     repository: https://charts.min.io/
