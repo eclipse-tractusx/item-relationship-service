@@ -9,32 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
-  check-config:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if DIL_REGULAR_USER_API_KEY is defined
-        run: |
-          if [[ -z "${{ secrets.DIL_REGULAR_USER_API_KEY }}" ]]; then
-            echo "Error: Missing secret: Please configure DIL_REGULAR_USER_API_KEY."
-            exit 1
-          fi
-      - name: Check if DIL_ADMIN_USER_API_KEY is defined
-        run: |
-          if [[ -z "${{ secrets.DIL_ADMIN_USER_API_KEY }}" ]]; then
-            echo "Error: Missing secret: Please configure DIL_ADMIN_USER_API_KEY."
-            exit 1
-          fi
-      - name: Check if IRS_CUCUMBER_PUBLISH_TOKEN is defined
-        run: |
-          if [[ -z "${{ secrets.IRS_CUCUMBER_PUBLISH_TOKEN }}" ]]; then
-            echo "Error: Missing secret: Please configure IRS_CUCUMBER_PUBLISH_TOKEN."
-            exit 1
-          fi
-        shell: bash
-
   trigger-integration-test:
-    needs: check-config
     uses: ./.github/workflows/cucumber-integration-test.yaml
     secrets:
       regularUserApiKey: ${{ secrets.DIL_REGULAR_USER_API_KEY }}
