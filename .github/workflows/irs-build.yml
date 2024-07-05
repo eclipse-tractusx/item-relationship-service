@@ -174,4 +174,3 @@ jobs:
     needs:
       - build_images
     uses: ./.github/workflows/trivy-docker-hub-scan.yml
-
