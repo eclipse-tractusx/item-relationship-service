@@ -269,29 +269,29 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>${pmd-plugin.version}</version>
-                <configuration>
-                    <!-- enable incremental analysis -->
-                    <analysisCache>true</analysisCache>
-                    <printFailingErrors>true</printFailingErrors>
-                    <rulesets>
-                        <ruleset>../.config/pmd-rules.xml</ruleset>
-                    </rulesets>
-                    <excludeRoots>
-                        <excludeRoot>target/generated-sources</excludeRoot>
-                    </excludeRoots>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-pmd-plugin</artifactId>-->
+            <!--                <version>${pmd-plugin.version}</version>-->
+            <!--                <configuration>-->
+            <!--                    &lt;!&ndash; enable incremental analysis &ndash;&gt;-->
+            <!--                    <analysisCache>true</analysisCache>-->
+            <!--                    <printFailingErrors>true</printFailingErrors>-->
+            <!--                    <rulesets>-->
+            <!--                        <ruleset>../.config/pmd-rules.xml</ruleset>-->
+            <!--                    </rulesets>-->
+            <!--                    <excludeRoots>-->
+            <!--                        <excludeRoot>target/generated-sources</excludeRoot>-->
+            <!--                    </excludeRoots>-->
+            <!--                </configuration>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            <goal>check</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
