@@ -156,7 +156,7 @@ jobs:
           IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
         run: |
-          IMAGE_ID=$${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
+          IMAGE_ID=${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}
           
           docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
           docker push IMAGE_ID:${{ steps.version.outputs.image_tag }}
