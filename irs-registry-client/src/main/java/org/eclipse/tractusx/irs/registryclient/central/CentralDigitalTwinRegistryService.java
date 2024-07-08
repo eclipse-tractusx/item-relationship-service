@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import io.github.resilience4j.core.functions.Either;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.tractusx.irs.component.Shell;
@@ -44,12 +45,13 @@ public class CentralDigitalTwinRegistryService implements DigitalTwinRegistrySer
     private final DigitalTwinRegistryClient digitalTwinRegistryClient;
 
     @Override
-    public Collection<Shell> fetchShells(final Collection<DigitalTwinRegistryKey> keys) {
+    public Collection<Either<Exception, Shell>> fetchShells(final Collection<DigitalTwinRegistryKey> keys) {
         return keys.stream().map(key -> {
             final String aaShellIdentification = getAAShellIdentificationOrGlobalAssetId(key.shellId());
             log.info("Retrieved AAS Identification {} for globalAssetId {}", aaShellIdentification, key.shellId());
 
-            return new Shell("", digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification));
+            return Either.<Exception, Shell>right(new Shell("",
+                    digitalTwinRegistryClient.getAssetAdministrationShellDescriptor(aaShellIdentification)));
         }).toList();
     }
 
