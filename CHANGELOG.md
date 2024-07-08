@@ -36,7 +36,12 @@ _**For better traceability add the corresponding GitHub issue number in each cha
 - Integration Test Policy Store API Unhappy Path. #519
 - Support for SingleLevelUsageAsPlanned. #470
 - Documentation to describe the delegate process. #470
-- Added file for CC BY 4.0 license for TRG 7 #681
+- Added file for CC BY 4.0 license for TRG 7. #681
+- Paging for Policy Store API GET policies. #639
+  - New endpoint GET /irs/policies/paged.
+  - Supports sorting by multiple of the properties "bpn", "validUntil", "policyId", "createdOn", "action" with ascending / descending order. 
+  - Supports filtering by multiple of properties "bpn", "validUntil", "policyId" (AND).
+    - note: filtering by "createdOn", "validUntil" has not been implemted yet
 
 ## [5.1.4] - 2024-05-27
 

@@ -25,9 +25,12 @@ package org.eclipse.tractusx.irs.policystore.controllers;
 
 import static org.eclipse.tractusx.irs.common.ApiConstants.FORBIDDEN_DESC;
 import static org.eclipse.tractusx.irs.common.ApiConstants.UNAUTHORIZED_DESC;
+import static org.eclipse.tractusx.irs.policystore.common.CommonConstants.PROPERTY_BPN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.AbstractMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -50,14 +53,22 @@ import org.eclipse.tractusx.irs.common.auth.IrsRoles;
 import org.eclipse.tractusx.irs.data.JsonParseException;
 import org.eclipse.tractusx.irs.dtos.ErrorResponse;
 import org.eclipse.tractusx.irs.edc.client.policy.Policy;
+import org.eclipse.tractusx.irs.policystore.common.SearchParameterParser;
 import org.eclipse.tractusx.irs.policystore.models.CreatePoliciesResponse;
 import org.eclipse.tractusx.irs.policystore.models.CreatePolicyRequest;
 import org.eclipse.tractusx.irs.policystore.models.PolicyResponse;
+import org.eclipse.tractusx.irs.policystore.models.PolicyWithBpn;
+import org.eclipse.tractusx.irs.policystore.models.SearchCriteria;
 import org.eclipse.tractusx.irs.policystore.models.UpdatePolicyRequest;
+import org.eclipse.tractusx.irs.policystore.services.PolicyPagingService;
 import org.eclipse.tractusx.irs.policystore.services.PolicyStoreService;
 import org.eclipse.tractusx.irs.policystore.validators.BusinessPartnerNumberListValidator;
 import org.eclipse.tractusx.irs.policystore.validators.ValidListOfBusinessPartnerNumbers;
 import org.eclipse.tractusx.irs.policystore.validators.ValidPolicyId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -88,8 +99,13 @@ import org.springframework.web.server.ResponseStatusException;
 public class PolicyStoreController {
 
     public static final String BPN_REGEX = BusinessPartnerNumberListValidator.BPN_REGEX;
+    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int MAX_PAGE_SIZE = 1000;
+    public static final String SEARCH = "search";
 
     private final PolicyStoreService service;
+
+    private final PolicyPagingService policyPagingService;
 
     private final HttpServletRequest httpServletRequest;
 
@@ -180,10 +196,8 @@ public class PolicyStoreController {
     ) {
 
         final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
-        if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Please use parameter 'businessPartnerNumbers' instead");
-        }
+
+        ensureParamBusinessPartnerNumberCorrectlyNamed(parameterMap);
 
         final Map<String, List<Policy>> policies = service.getPolicies(businessPartnerNumbers);
 
@@ -192,6 +206,48 @@ public class PolicyStoreController {
                        .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(),
                                entry.getValue().stream().map(PolicyResponse::fromPolicy).toList()))
                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+    }
+
+    // TODO (mfischer): #639: add documentation and insomnia collection
+    @GetMapping("/policies/paged")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
+    public Page<PolicyResponse> getPoliciesPaged(//
+            @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = PROPERTY_BPN, direction = Sort.Direction.ASC) //
+            final Pageable pageable, //
+            @RequestParam(required = false) //
+            @ValidListOfBusinessPartnerNumbers //
+            @Parameter(description = "List of business partner numbers.") //
+            final List<String> businessPartnerNumbers) {
+
+        if (pageable.getPageSize() > MAX_PAGE_SIZE) {
+            throw new IllegalArgumentException("Page size too large");
+        }
+
+        final Map<String, String[]> parameterMap = this.httpServletRequest.getParameterMap();
+
+        ensureParamBusinessPartnerNumberCorrectlyNamed(parameterMap);
+
+        // There seems to be a bug concerning interpretation of delimiters
+        // (https://stackoverflow.com/questions/37058691/encoded-comma-in-url-is-read-as-list-in-spring).
+        // The described annotation Delimiter did not work either. Therefore, we read the params manually from request:
+        final List<SearchCriteria<?>> searchCriteria = new SearchParameterParser(
+                getSearchParameters(parameterMap)).getSearchCriteria();
+        final Map<String, List<Policy>> bpnToPoliciesMap = service.getPolicies(businessPartnerNumbers);
+        final Page<PolicyWithBpn> policies = policyPagingService.getPolicies(bpnToPoliciesMap, pageable,
+                searchCriteria);
+        return policies.map(policyWithBpn -> PolicyResponse.from(policyWithBpn.policy(), policyWithBpn.bpn()));
+    }
+
+    private List<String> getSearchParameters(final Map<String, String[]> parameterMap) {
+        return parameterMap.get(SEARCH) != null ? Arrays.asList(parameterMap.get(SEARCH)) : Collections.emptyList();
+    }
+
+    private static void ensureParamBusinessPartnerNumberCorrectlyNamed(final Map<String, String[]> parameterMap) {
+        if (CollectionUtils.containsAny(parameterMap.keySet(), List.of("bpn", "bpns", "bpnls"))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Please use parameter 'businessPartnerNumbers' instead");
+        }
     }
 
     @Operation(operationId = "deleteAllowedPolicy",
@@ -252,8 +308,7 @@ public class PolicyStoreController {
     @DeleteMapping("/policies/{policyId}/bpnl/{bpnl}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
-    public void removeAllowedPolicyFromBpnl(
-            @PathVariable("policyId") final String policyId, //
+    public void removeAllowedPolicyFromBpnl(@PathVariable("policyId") final String policyId, //
             @Pattern(regexp = BPN_REGEX, message = " Invalid BPN.") //
             @PathVariable("bpnl") final String bpnl) {
         service.deletePolicyForEachBpn(policyId, List.of(bpnl));
