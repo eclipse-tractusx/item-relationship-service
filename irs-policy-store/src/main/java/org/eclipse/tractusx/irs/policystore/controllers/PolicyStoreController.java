@@ -226,7 +226,7 @@ public class PolicyStoreController {
                        
                        - **Paging:**
                          Example: `page=1&size=20`
-                       """,//
+                       """, //
                security = @SecurityRequirement(name = API_KEY), //
                tags = { POLICY_API_TAG }, //
                responses = { //
