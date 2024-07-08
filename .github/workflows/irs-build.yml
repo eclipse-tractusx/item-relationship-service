@@ -156,11 +156,13 @@ jobs:
           IMAGE_NAME: irs-api
         if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
         run: |
-          docker tag ${{ matrix.image }} ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
-          docker push ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
+          IMAGE_ID=${{ needs.init.outputs.image_namespace }}/${{ needs.init.outputs.image_name }}
           
-          docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
-          docker push $IMAGE_ID:$GITHUB_SHA
+          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          docker push IMAGE_ID:${{ steps.version.outputs.image_tag }}
+          
+          docker tag ${{ matrix.image }} IMAGE_ID:$GITHUB_SHA
+          docker push IMAGE_ID:$GITHUB_SHA
 
       # https://github.com/peter-evans/dockerhub-description
       - name: Update Docker Hub description
