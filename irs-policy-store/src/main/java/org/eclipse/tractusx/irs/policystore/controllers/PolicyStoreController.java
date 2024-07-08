@@ -214,37 +214,31 @@ public class PolicyStoreController {
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     @Operation(summary = "Autocomplete for policy fields",
                description = "Provides autocomplete suggestions for policy fields based on input criteria.",
-               tags = { "Policy" }, responses = { @ApiResponse(responseCode = "200",
-                                                               description = "Successful retrieval of autocomplete suggestions",
-                                                               content = @Content(mediaType = "application/json",
-                                                                                  schema = @Schema(
-                                                                                          implementation = List.class))),
-                                                  @ApiResponse(responseCode = "400",
-                                                               description = "Invalid input parameters",
-                                                               content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                                                    schema = @Schema(
-                                                                                            implementation = ErrorResponse.class),
-                                                                                    examples = @ExampleObject(
-                                                                                            name = "error",
-                                                                                            ref = "#/components/examples/error-response-403"))
-                                                               }),
-                                                  @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
-                                                               content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                                                    schema = @Schema(
-                                                                                            implementation = ErrorResponse.class),
-                                                                                    examples = @ExampleObject(
-                                                                                            name = "error",
-                                                                                            ref = "#/components/examples/error-response-401"))
-                                                               }),
-                                                  @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
-                                                               content = { @Content(mediaType = APPLICATION_JSON_VALUE,
-                                                                                    schema = @Schema(
-                                                                                            implementation = ErrorResponse.class),
-                                                                                    examples = @ExampleObject(
-                                                                                            name = "error",
-                                                                                            ref = "#/components/examples/error-response-403"))
-                                                               })
-    }, security = @SecurityRequirement(name = "bearerAuth"))
+               security = @SecurityRequirement(name = API_KEY), //
+               tags = { POLICY_API_TAG }, //
+               responses = { @ApiResponse(responseCode = "200",
+                                          description = "Successful retrieval of autocomplete suggestions",
+                                          content = @Content(mediaType = "application/json",
+                                                             schema = @Schema(implementation = List.class))),
+                             @ApiResponse(responseCode = "400", description = "Invalid input parameters",
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-403"))
+                                          }),
+                             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-401"))
+                                          }),
+                             @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-403"))
+                                          })
+               })
     public List<String> autocomplete(
             @Parameter(description = "The field to autocomplete (BPN, policyId, createdOn, validUntil, action)") //
             @PathVariable("field") final String field,
