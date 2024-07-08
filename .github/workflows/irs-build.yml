@@ -12,6 +12,8 @@ on:
       - '!docs/src/api/**'
       - 'local/**'
       - 'CHANGELOG.md'
+
+
   push:
     branches:
       - main
@@ -43,11 +45,24 @@ jobs:
         run: |
           mvn clean verify --batch-mode
 
+  check_sonar_configured:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check_sonar_configured
+        run: |
+          echo "Checking if sonar is configured: ${{ env.SONAR_CONFIGURED }}"
+    env:
+      SONAR_CONFIGURED: ${{ secrets.SONAR_TOKEN != '' && secrets.SONAR_PROJECT_KEY != '' && secrets.SONAR_ORGANIZATION != '' }}
+    outputs:
+      sonar_configured: ${{ env.SONAR_CONFIGURED }}
+
   analyze_with_Sonar:
+    needs: [check_sonar_configured]
     # No need to run if we cannot use the sonar token
     if: >-
-      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
-      github.actor != 'dependabot[bot]'
+      needs.check_sonar_configured.outputs.sonar_configured == 'true'
+      && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) 
+      && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -125,25 +140,6 @@ jobs:
         # This is where you will update the PAT to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Push image (GHCR)
-        env:
-          DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
-        if: >- 
-          env.DOCKER_HUB_USER == '' &&
-          (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
-          github.actor != 'dependabot[bot]'
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          echo IMAGE_ID=$IMAGE_ID
-
-          docker tag ${{ matrix.image }} $IMAGE_ID:${{ steps.version.outputs.image_tag }}
-          docker push $IMAGE_ID:${{ steps.version.outputs.image_tag }}
-          
-          docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
-          docker push $IMAGE_ID:$GITHUB_SHA
-          
       - name: Login to Docker Hub
         env:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
@@ -158,10 +154,13 @@ jobs:
           DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
           IMAGE_NAMESPACE: tractusx
           IMAGE_NAME: irs-api
-        if: env.DOCKER_HUB_USER != ''
+        if: env.DOCKER_HUB_USER != '' && github.event_name != 'pull_request'
         run: |
           docker tag ${{ matrix.image }} ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
           docker push ${{ env.IMAGE_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.image_tag }}
+          
+          docker tag ${{ matrix.image }} $IMAGE_ID:$GITHUB_SHA
+          docker push $IMAGE_ID:$GITHUB_SHA
 
       # https://github.com/peter-evans/dockerhub-description
       - name: Update Docker Hub description
