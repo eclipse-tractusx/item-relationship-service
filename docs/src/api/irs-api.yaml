@@ -860,7 +860,7 @@ paths:
       - api_key: []
       summary: Lists the registered policies that should be accepted in EDC negotiation.
       tags:
-        - Item Relationship Service - Policy API
+        - Policy Store API
     post:
       description: Register a policy that should be accepted in EDC negotiation.
       operationId: registerAllowedPolicy
@@ -917,7 +917,7 @@ paths:
       - api_key: []
       summary: Register a policy that should be accepted in EDC negotiation.
       tags:
-        - Item Relationship Service - Policy API
+        - Policy Store API
     put:
       description: Updates existing policies.
       operationId: updateAllowedPolicy
@@ -970,7 +970,7 @@ paths:
       - api_key: []
       summary: Updates existing policies.
       tags:
-        - Item Relationship Service - Policy API
+        - Policy Store API
   /irs/policies/paged:
     get:
       description: |
@@ -1028,7 +1028,7 @@ paths:
         - api_key: [ ]
       summary: Find policies.
       tags:
-        - Item Relationship Service - Policy API
+        - Policy Store API
   /irs/policies/{policyId}:
     delete:
       description: Removes a policy that should no longer be accepted in EDC negotiation.
@@ -1073,7 +1073,7 @@ paths:
       - api_key: []
       summary: Removes a policy that should no longer be accepted in EDC negotiation.
       tags:
-        - Item Relationship Service - Policy API
+        - Policy Store API
   /irs/policies/{policyId}/bpnl/{bpnl}:
     delete:
       description: Removes a policy from BPNL that should no longer be accepted in
@@ -1126,7 +1126,7 @@ paths:
       summary: Removes a policy from BPNL that should no longer be accepted in EDC
         negotiation.
       tags:
-        - Item Relationship Service - Policy API
+        - Policy Store API
 components:
   examples:
     aspect-models-list:
