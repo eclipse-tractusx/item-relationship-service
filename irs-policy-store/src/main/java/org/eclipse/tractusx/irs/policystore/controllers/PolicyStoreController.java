@@ -103,6 +103,8 @@ public class PolicyStoreController {
     public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int MAX_PAGE_SIZE = 1000;
     public static final String SEARCH = "search";
+    public static final String POLICY_API_TAG = "Item Relationship Service - Policy API";
+    public static final String API_KEY = "api_key";
 
     private final PolicyStoreService service;
 
