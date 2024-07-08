@@ -25,6 +25,8 @@ package org.eclipse.tractusx.irs.component;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -84,6 +86,21 @@ public class Tombstone {
     }
 
     private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
+            final Throwable[] suppressed) {
+        final List<String> rootCauses = Arrays.stream(suppressed)
+                                                .flatMap(
+                                                        throwable -> Arrays.stream(throwable.getCause().getSuppressed())
+                                                                           .map(Throwable::getMessage))
+                                                .toList();
+        return ProcessingError.builder()
+                              .withProcessStep(processStep)
+                              .withRetryCounter(retryCount)
+                              .withLastAttempt(ZonedDateTime.now(ZoneOffset.UTC))
+                              .withRootCauses(rootCauses)
+                              .build();
+    }
+
+    private static ProcessingError withProcessingError(final ProcessStep processStep, final int retryCount,
             final String exception) {
         return ProcessingError.builder()
                               .withProcessStep(processStep)
@@ -93,4 +110,12 @@ public class Tombstone {
                               .build();
     }
 
+    public static Tombstone from(final String globalAssetId, final String endpointURL, final Throwable[] suppressed,
+            final int retryCount, final ProcessStep processStep) {
+        return Tombstone.builder()
+                        .endpointURL(endpointURL)
+                        .catenaXId(globalAssetId)
+                        .processingError(withProcessingError(processStep, retryCount, suppressed))
+                        .build();
+    }
 }

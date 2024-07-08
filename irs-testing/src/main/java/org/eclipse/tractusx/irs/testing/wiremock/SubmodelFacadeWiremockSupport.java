@@ -76,7 +76,8 @@ public final class SubmodelFacadeWiremockSupport {
                                                                             .withBody(getCatalogResponse(edcAssetId,
                                                                                     contractAgreementId,
                                                                                     PERMISSION_TYPE,
-                                                                                    EDC_PROVIDER_BPN))));
+                                                                                    EDC_PROVIDER_BPN,
+                                                                                    createConstraints()))));
 
         stubFor(post(urlPathEqualTo(PATH_NEGOTIATE)).willReturn(
                 WireMockConfig.responseWithStatus(STATUS_CODE_OK).withBody(startNegotiationResponse(negotiationId))));
@@ -105,6 +106,20 @@ public final class SubmodelFacadeWiremockSupport {
                               .withBody(
                                       getTransferConfirmedResponse(transferProcessId, transferProcessState, edcAssetId,
                                               contractAgreementId))));
+    }
+
+    public static void prepareMissmatchPolicyCatalog(final String edcAssetId, final String contractAgreementId) {
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(STATUS_CODE_OK)
+                                                                            .withBody(getCatalogResponse(edcAssetId,
+                                                                                    contractAgreementId,
+                                                                                    PERMISSION_TYPE,
+                                                                                    EDC_PROVIDER_BPN,
+                                                                                    createNotAcceptedConstraints()))));
+    }
+
+    public static void prepareFailingCatalog() {
+        stubFor(post(urlPathEqualTo(PATH_CATALOG)).willReturn(WireMockConfig.responseWithStatus(502)
+                                                                            .withBody("")));
     }
 
     private static String startTransferProcessResponse(final String transferProcessId) {
@@ -190,7 +205,7 @@ public final class SubmodelFacadeWiremockSupport {
 
     @SuppressWarnings("PMD.UseObjectForClearerAPI") // used only for testing
     public static String getCatalogResponse(final String edcAssetId, final String offerId, final String permissionType,
-            final String edcProviderBpn) {
+            final String edcProviderBpn, final String constraints) {
         return """
                 {
                    "@id": "78ff625c-0c05-4014-965c-bd3d0a6a0de0",
@@ -237,7 +252,7 @@ public final class SubmodelFacadeWiremockSupport {
                    "dspace:participantId": "%s",
                    "@context": %s
                  }
-                """.formatted(edcAssetId, offerId, permissionType, createConstraints(), EDC_PROVIDER_DUMMY_URL,
+                """.formatted(edcAssetId, offerId, permissionType, constraints, EDC_PROVIDER_DUMMY_URL,
                 edcAssetId, EDC_PROVIDER_DUMMY_URL, edcProviderBpn, edcProviderBpn, CONTEXT);
     }
 
@@ -245,6 +260,17 @@ public final class SubmodelFacadeWiremockSupport {
         final List<String> atomitConstraints = List.of(
                 createAtomicConstraint(CX_POLICY_FRAMEWORK_AGREEMENT, TRACEABILITY_1_0),
                 createAtomicConstraint(CX_POLICY_USAGE_PURPOSE, CX_CORE_INDUSTRYCORE_1));
+        return """
+                {
+                  "odrl:and": [
+                    %s
+                  ]
+                }""".formatted(String.join(",\n", atomitConstraints));
+    }
+
+    private static String createNotAcceptedConstraints() {
+        final List<String> atomitConstraints = List.of(
+                createAtomicConstraint("test", "test"));
         return """
                 {
                   "odrl:and": [

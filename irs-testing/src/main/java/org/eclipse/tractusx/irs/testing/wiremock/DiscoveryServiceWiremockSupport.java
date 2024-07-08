@@ -48,6 +48,10 @@ public final class DiscoveryServiceWiremockSupport {
         return postEdcDiscovery200(TEST_BPN, List.of(CONTROLPLANE_PUBLIC_URL));
     }
 
+    public static MappingBuilder postEdcDiscovery200Empty() {
+        return post(urlPathEqualTo(EDC_DISCOVERY_PATH)).willReturn(responseWithStatus(STATUS_CODE_OK).withBody("[]"));
+    }
+
     public static MappingBuilder postEdcDiscoveryEmpty200() {
         return postEdcDiscovery200(TEST_BPN, List.of());
     }
