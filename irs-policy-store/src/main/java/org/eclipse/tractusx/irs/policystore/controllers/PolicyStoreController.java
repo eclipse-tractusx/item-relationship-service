@@ -214,15 +214,15 @@ public class PolicyStoreController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find policies.", //
                description = """
-                       Fetch a page of policies with options to filter and sort. 
+                       Fetch a page of policies with options to filter and sort.
                        
-                       - **Filtering:**  
+                       - **Filtering:**
                          `search=<property>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<value>`.
-                         Example: 'search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2'.
+                         Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
                        
-                       - **Sorting:**  
+                       - **Sorting:**
                          `sort=<property>,[asc|desc]`.
-                         Example: 'sort=BPN,asc&sort=policyId,desc'.
+                         Example: `sort=BPN,asc&sort=policyId,desc`.
                        
                        - **Paging:**
                          Example: `page=1&size=20`
