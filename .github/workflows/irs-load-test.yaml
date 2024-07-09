@@ -19,32 +19,7 @@ on:
         required: false
 
 jobs:
-
-  check-config:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check if OAUTH2_CLIENT_TOKEN_URI is defined
-        run: |
-          if [[ -z "${{ secrets.OAUTH2_CLIENT_TOKEN_URI }}" ]]; then
-            echo "Error: Missing secret: Please configure OAUTH2_CLIENT_TOKEN_URI."
-            exit 1
-          fi
-      - name: Check if OAUTH2_CLIENT_SECRET is defined
-        run: |
-          if [[ -z "${{ secrets.OAUTH2_CLIENT_SECRET }}" ]]; then
-            echo "Error: Missing secret: Please configure OAUTH2_CLIENT_SECRET."
-            exit 1
-          fi
-      - name: Check if OAUTH2_CLIENT_ID is defined
-        run: |
-          if [[ -z "${{ secrets.OAUTH2_CLIENT_ID }}" ]]; then
-            echo "Error: Missing secret: Please configure OAUTH2_CLIENT_ID."
-            exit 1
-          fi
-        shell: bash
-
   gatling-test:
-    needs: check-config
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

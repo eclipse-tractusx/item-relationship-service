@@ -133,7 +133,8 @@ public class ContractNegotiationService {
 
         if (policyCheckerService.isExpired(catalogItem.getPolicy(), bpn)) {
             log.warn("Policy is expired, canceling negotiation.");
-            throw new UsagePolicyExpiredException(catalogItem.getPolicy(),
+            throw new UsagePolicyExpiredException(policyCheckerService.getValidStoredPolicies(catalogItem.getConnectorId()),
+                    catalogItem.getPolicy(),
                     catalogItem.getConnectorId());
         }
 
