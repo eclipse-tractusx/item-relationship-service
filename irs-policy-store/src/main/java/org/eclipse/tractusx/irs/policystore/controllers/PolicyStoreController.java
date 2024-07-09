@@ -234,7 +234,7 @@ public class PolicyStoreController {
                                           description = "Successfully retrieved the paged policies",
                                           content = @Content(mediaType = APPLICATION_JSON_VALUE,
                                                              schema = @Schema(implementation = Page.class),
-                                                             examples = @ExampleObject(name = "error",
+                                                             examples = @ExampleObject(name = "success",
                                                                                        ref = "#/components/examples/get-policies-paged-result"))),
 
                              @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,

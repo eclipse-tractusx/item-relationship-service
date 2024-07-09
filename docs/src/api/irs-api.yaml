@@ -1001,7 +1001,7 @@ paths:
           content:
             application/json:
               examples:
-                error:
+                success:
                   $ref: '#/components/examples/get-policies-paged-result'
               schema:
                 $ref: '#/components/schemas/Page'
