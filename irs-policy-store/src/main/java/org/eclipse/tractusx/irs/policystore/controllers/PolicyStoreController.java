@@ -102,6 +102,8 @@ public class PolicyStoreController {
     public static final int DEFAULT_PAGE_SIZE = 10;
     public static final int MAX_PAGE_SIZE = 1000;
     public static final String SEARCH = "search";
+    public static final String POLICY_API_TAG = "Policy Store API";
+    public static final String API_KEY = "api_key";
 
     private final PolicyStoreService service;
 
@@ -111,7 +113,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "registerAllowedPolicy",
                summary = "Register a policy that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Register a policy that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "201"),
                             @ApiResponse(responseCode = "500",
@@ -162,7 +164,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "getAllowedPoliciesByBpn",
                summary = "Lists the registered policies that should be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Lists the registered policies that should be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200",
                                          description = "Returns the policies as map of BPN to list of policies.",
@@ -208,16 +210,54 @@ public class PolicyStoreController {
                        .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
-    // TODO (mfischer): #639: add documentation and insomnia collection
     @GetMapping("/policies/paged")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find policies.", //
+               description = """
+                       Fetch a page of policies with options to filter and sort. 
+                       
+                       - **Filtering:**  
+                         `search=<property>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<value>`.
+                         Example: 'search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2'.
+                       
+                       - **Sorting:**  
+                         `sort=<property>,[asc|desc]`.
+                         Example: 'sort=BPN,asc&sort=policyId,desc'.
+                       
+                       - **Paging:**
+                         Example: `page=1&size=20`
+                       """, //
+               security = @SecurityRequirement(name = API_KEY), //
+               tags = { POLICY_API_TAG }, //
+               responses = { //
+                             @ApiResponse(responseCode = "200",
+                                          description = "Successfully retrieved the paged policies",
+                                          content = @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                             schema = @Schema(implementation = Page.class),
+                                                             examples = @ExampleObject(name = "error",
+                                                                                       ref = "#/components/examples/get-policies-paged-result"))),
+
+                             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_DESC,
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-401"))
+                                          }),
+                             @ApiResponse(responseCode = "403", description = FORBIDDEN_DESC,
+                                          content = { @Content(mediaType = APPLICATION_JSON_VALUE,
+                                                               schema = @Schema(implementation = ErrorResponse.class),
+                                                               examples = @ExampleObject(name = "error",
+                                                                                         ref = "#/components/examples/error-response-403"))
+                                          }),
+               })
     @PreAuthorize("hasAuthority('" + IrsRoles.ADMIN_IRS + "')")
     public Page<PolicyResponse> getPoliciesPaged(//
             @PageableDefault(size = DEFAULT_PAGE_SIZE, sort = PROPERTY_BPN, direction = Sort.Direction.ASC) //
+            @Parameter(description = "Page configuration", hidden = true) //
             final Pageable pageable, //
             @RequestParam(required = false) //
             @ValidListOfBusinessPartnerNumbers //
-            @Parameter(description = "List of business partner numbers.") //
+            @Parameter(name = "businessPartnerNumbers", description = "List of business partner numbers.") //
             final List<String> businessPartnerNumbers) {
 
         if (pageable.getPageSize() > MAX_PAGE_SIZE) {
@@ -252,7 +292,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "deleteAllowedPolicy",
                summary = "Removes a policy that should no longer be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Removes a policy that should no longer be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
                             @ApiResponse(responseCode = "400", description = "Policy deletion failed.",
@@ -283,7 +323,7 @@ public class PolicyStoreController {
 
     @Operation(operationId = "removeAllowedPolicyFromBpnl",
                summary = "Removes a policy from BPNL that should no longer be accepted in EDC negotiation.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Removes a policy from BPNL that should no longer be accepted in EDC negotiation.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
                             @ApiResponse(responseCode = "400", description = "Policy deletion failed.",
@@ -315,7 +355,7 @@ public class PolicyStoreController {
     }
 
     @Operation(operationId = "updateAllowedPolicy", summary = "Updates existing policies.",
-               security = @SecurityRequirement(name = "api_key"), tags = { "Item Relationship Service" },
+               security = @SecurityRequirement(name = API_KEY), tags = { POLICY_API_TAG },
                description = "Updates existing policies.")
     @ApiResponses(value = { @ApiResponse(responseCode = "200"),
                             @ApiResponse(responseCode = "500",
