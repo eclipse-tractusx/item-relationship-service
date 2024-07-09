@@ -102,7 +102,7 @@ jobs:
     env:
       IMAGE_NAMESPACE: tractusx
       IMAGE_NAME: irs-api
-      TARGET_PLATFORMS: "linux/amd64, linux/arm64"
+      TARGET_PLATFORMS: "linux/amd64"  # add 'linux/arm64' once the upgrade to JDK 21 is done
     runs-on: ubuntu-latest
     outputs:
       image-tag: ${{ steps.version.outputs.image_tag }}
