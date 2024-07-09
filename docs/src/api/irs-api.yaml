@@ -860,7 +860,7 @@ paths:
       - api_key: []
       summary: Lists the registered policies that should be accepted in EDC negotiation.
       tags:
-        - Policy Store API
+      - Policy Store API
     post:
       description: Register a policy that should be accepted in EDC negotiation.
       operationId: registerAllowedPolicy
@@ -917,7 +917,7 @@ paths:
       - api_key: []
       summary: Register a policy that should be accepted in EDC negotiation.
       tags:
-        - Policy Store API
+      - Policy Store API
     put:
       description: Updates existing policies.
       operationId: updateAllowedPolicy
@@ -970,7 +970,7 @@ paths:
       - api_key: []
       summary: Updates existing policies.
       tags:
-        - Policy Store API
+      - Policy Store API
   /irs/policies/paged:
     get:
       description: |
@@ -978,30 +978,30 @@ paths:
 
         - **Filtering:**
           `search=<property>,[EQUALS|STARTS_WITH|BEFORE_LOCAL_DATE|AFTER_LOCAL_DATE],<value>`.
-          Example: 'search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2'.
+          Example: `search=BPN,STARTS_WITH,BPNL12&search=policyId,STARTS_WITH,policy2`.
 
         - **Sorting:**
           `sort=<property>,[asc|desc]`.
-          Example: 'sort=BPN,asc&sort=policyId,desc'.
+          Example: `sort=BPN,asc&sort=policyId,desc`.
 
         - **Paging:**
           Example: `page=1&size=20`
       operationId: getPoliciesPaged
       parameters:
-        - description: List of business partner numbers.
-          in: query
-          name: businessPartnerNumbers
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+      - description: List of business partner numbers.
+        in: query
+        name: businessPartnerNumbers
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
       responses:
         "200":
           content:
             application/json:
               examples:
-                error:
+                success:
                   $ref: '#/components/examples/get-policies-paged-result'
               schema:
                 $ref: '#/components/schemas/Page'
@@ -1025,10 +1025,10 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
           description: Authorization refused by server.
       security:
-        - api_key: [ ]
+      - api_key: []
       summary: Find policies.
       tags:
-        - Policy Store API
+      - Policy Store API
   /irs/policies/{policyId}:
     delete:
       description: Removes a policy that should no longer be accepted in EDC negotiation.
@@ -1073,7 +1073,7 @@ paths:
       - api_key: []
       summary: Removes a policy that should no longer be accepted in EDC negotiation.
       tags:
-        - Policy Store API
+      - Policy Store API
   /irs/policies/{policyId}/bpnl/{bpnl}:
     delete:
       description: Removes a policy from BPNL that should no longer be accepted in
@@ -1126,7 +1126,7 @@ paths:
       summary: Removes a policy from BPNL that should no longer be accepted in EDC
         negotiation.
       tags:
-        - Policy Store API
+      - Policy Store API
 components:
   examples:
     aspect-models-list:
@@ -1520,44 +1520,44 @@ components:
     get-policies-paged-result:
       value:
         content:
-          - bpn: BPNL1234567890AB
-            policy:
-              createdOn: 2024-07-08T12:01:19.4677109+02:00
-              permissions:
-                - action: use
-                  constraint:
-                    and: [ ]
-                    or:
-                      - leftOperand: Membership
-                        operator:
-                          '@id': eq
-                        rightOperand: active
-                      - leftOperand: FrameworkAgreement.traceability
-                        operator:
-                          '@id': eq
-                        rightOperand: active
-                      - leftOperand: PURPOSE
-                        operator:
-                          '@id': eq
-                        rightOperand: ID 3.1 Trace
-                - action: access
-                  constraint:
-                    and: [ ]
-                    or:
-                      - leftOperand: Membership
-                        operator:
-                          '@id': eq
-                        rightOperand: active
-                      - leftOperand: FrameworkAgreement.traceability
-                        operator:
-                          '@id': eq
-                        rightOperand: active
-                      - leftOperand: PURPOSE
-                        operator:
-                          '@id': eq
-                        rightOperand: ID 3.1 Trace
-              policyId: 13a8523f-c80a-40b8-9e43-faab47fbceaa
-              validUntil: 2025-07-08T12:01:19.4677109+02:00
+        - bpn: BPNL1234567890AB
+          policy:
+            createdOn: 2024-07-08T12:01:19.4677109+02:00
+            permissions:
+            - action: use
+              constraint:
+                and: []
+                or:
+                - leftOperand: Membership
+                  operator:
+                    '@id': eq
+                  rightOperand: active
+                - leftOperand: FrameworkAgreement.traceability
+                  operator:
+                    '@id': eq
+                  rightOperand: active
+                - leftOperand: PURPOSE
+                  operator:
+                    '@id': eq
+                  rightOperand: ID 3.1 Trace
+            - action: access
+              constraint:
+                and: []
+                or:
+                - leftOperand: Membership
+                  operator:
+                    '@id': eq
+                  rightOperand: active
+                - leftOperand: FrameworkAgreement.traceability
+                  operator:
+                    '@id': eq
+                  rightOperand: active
+                - leftOperand: PURPOSE
+                  operator:
+                    '@id': eq
+                  rightOperand: ID 3.1 Trace
+            policyId: 13a8523f-c80a-40b8-9e43-faab47fbceaa
+            validUntil: 2025-07-08T12:01:19.4677109+02:00
         empty: false
         first: false
         last: true
