@@ -955,6 +955,7 @@ This behavior is shown in the table below.
 | Category | Action | Endpoint | view_irs | admin_irs |
 | Policy Store | Add policy | POST /irs/policies |  | x |
 |  | Get policies | GET /irs/policies |  | x |
+|  | Find policies (paged) | GET /irs/policies/paged |  | x |
 |  | Update policy | PUT /irs/policies/{policyId} |  | x |
 |  | Delete policy | DELETE /irs/policies/{policyId} |  | x |
 | Aspect models | Get aspect models | GET /irs/aspectmodels | x | x |
