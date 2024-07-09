@@ -40,8 +40,7 @@ public class UsagePolicyPermissionException extends EdcClientException {
 
     public UsagePolicyPermissionException(final List<AcceptedPolicy> acceptedPolicies,
             final Policy providedCatalogItemPolicy, final String businessPartnerNumber) {
-        super("Policies "
-                + acceptedPolicies.stream().map(policy -> policy.policy().getPolicyId()).toList()
+        super("Policies " + acceptedPolicies.stream().map(policy -> policy.policy().getPolicyId()).toList()
                 + " did not match with policy from " + businessPartnerNumber + ".");
 
         this.policy = providedCatalogItemPolicy;
