@@ -19,8 +19,11 @@
  ********************************************************************************/
 package org.eclipse.tractusx.irs.edc.client.exceptions;
 
+import java.util.List;
+
 import lombok.Getter;
 import org.eclipse.edc.policy.model.Policy;
+import org.eclipse.tractusx.irs.edc.client.policy.AcceptedPolicy;
 
 /**
  * Usage Policy Expired Exception errors in the contract negotiation.
@@ -31,9 +34,11 @@ public class UsagePolicyExpiredException extends EdcClientException {
     private final transient Policy policy;
     private final String businessPartnerNumber;
 
-    public UsagePolicyExpiredException(final Policy policy, final String businessPartnerNumber) {
-        super("Policy  from " + businessPartnerNumber + " has expired.");
-        this.policy = policy;
+    public UsagePolicyExpiredException(final List<AcceptedPolicy> acceptedPolicies,
+            final Policy providedCatalogItemPolicy, final String businessPartnerNumber) {
+        super("Policy " + acceptedPolicies.stream().map(policy -> policy.policy().getPolicyId()).toList()
+                + " has expired.");
+        this.policy = providedCatalogItemPolicy;
         this.businessPartnerNumber = businessPartnerNumber;
     }
 
