@@ -94,6 +94,27 @@
 					"value": "BPNL1234567890XX",
 					"description": "",
 					"disabled": false
+				},
+				{
+					"id": "pair_05398fd8c0f048b996b9f9af94fcc8ba",
+					"name": "search",
+					"value": "policyId,STARTS_WITH,policy4",
+					"description": "",
+					"disabled": true
+				},
+				{
+					"id": "pair_88cfa390e59c456493e70736b32d529d",
+					"name": "page",
+					"value": "1",
+					"description": "",
+					"disabled": false
+				},
+				{
+					"id": "pair_05e508de308f4f25993a39aebb5c462e",
+					"name": "size",
+					"value": "10",
+					"description": "",
+					"disabled": false
 				}
 			],
 			"headers": [],
